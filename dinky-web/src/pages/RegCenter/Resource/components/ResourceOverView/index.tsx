@@ -27,7 +27,12 @@ import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
 import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
 import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
-import { handleOption, handleRemoveById, queryDataByParams } from '@/services/BusinessCrud';
+import {
+  handleGetOption,
+  handleOption,
+  handleRemoveById,
+  queryDataByParams
+} from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { InitResourceState } from '@/types/RegCenter/init.d';
@@ -180,6 +185,11 @@ const ResourceOverView: React.FC = () => {
     }));
   };
 
+  const handleSync = async () => {
+    await handleGetOption(API_CONSTANTS.RESOURCE_SYNC_DATA, l('rc.resource.sync'), {});
+    await refreshTree();
+  };
+
   /**
    * the rename cancel
    */
@@ -260,6 +270,7 @@ const ResourceOverView: React.FC = () => {
                 treeData={resourceState.treeData}
                 onRightClick={handleRightClick}
                 onNodeClick={(info: any) => handleNodeClick(info)}
+                onSync={handleSync}
               />
               <RightContextMenu
                 contextMenuPosition={resourceState.contextMenuPosition}

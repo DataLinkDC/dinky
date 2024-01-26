@@ -19,13 +19,20 @@
 
 package org.dinky.service.resource.impl;
 
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.Resources;
 import org.dinky.oss.OssTemplate;
 import org.dinky.service.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,6 +85,34 @@ public class OssResourceManager implements BaseResourceManager {
     @Override
     public String getFileContent(String path) {
         return IoUtil.readUtf8(readFile(path));
+    }
+
+    @Override
+    public List<Resources> getFullDirectoryStructure(int rootId) {
+        String basePath = getBasePath();
+        List<S3ObjectSummary> listBucketObjects = getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
+        return listBucketObjects.stream()
+                .map(obj -> {
+                    Path path = Paths.get(obj.getKey());
+                    if (path.toString().equals(basePath)) {
+                        // 跳过根目录 | skip root directory
+                        return null;
+                    }
+                    String parent = path.getParent().toString().replace(basePath, "");
+                    String self = path.toString().replace(basePath, "");
+                    int pid = parent.isEmpty() ? rootId : parent.hashCode();
+                    return Resources.builder()
+                            .id(self.hashCode())
+                            .pid(pid)
+                            .fullName(self)
+                            .fileName(path.getFileName().toString())
+                            .isDirectory(obj.getKey().endsWith("/"))
+                            .type(0)
+                            .size(obj.getSize())
+                            .build();
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override
