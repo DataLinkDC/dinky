@@ -29,8 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 
 import java.util.Collections;
@@ -80,7 +78,9 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
             if (null != Class.forName("org.apache.log4j.Logger")) {
-                parseAndLoadConfiguration(statement, tEnv);
+                if (this.isValid()) {
+                    callSet(new SetOperation(this.getKey(), this.getValue()), tEnv);
+                }
                 return Optional.of(TABLE_RESULT_OK);
             }
         } catch (ClassNotFoundException e) {
@@ -98,26 +98,6 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         return Optional.of(TABLE_RESULT_OK);
     }
 
-    public boolean parseAndLoadConfiguration(String statement, CustomTableEnvironment tEnv) {
-        List<Operation> operations = tEnv.getParser().parse(statement);
-        for (Operation operation : operations) {
-            if (operation instanceof SetOperation) {
-                callSet((SetOperation) operation, tEnv);
-                return true;
-            } else if (operation instanceof ResetOperation) {
-                callReset((ResetOperation) operation, tEnv);
-                return true;
-            } else if (operation instanceof CustomSetOperation) {
-                CustomSetOperation customSetOperation = (CustomSetOperation) operation;
-                if (customSetOperation.isValid()) {
-                    callSet(new SetOperation(customSetOperation.getKey(), customSetOperation.getValue()), tEnv);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void callSet(SetOperation setOperation, CustomTableEnvironment environment) {
         if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
             return;
@@ -130,20 +110,6 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         }
 
         setConfiguration(environment, Collections.singletonMap(key, value));
-    }
-
-    private void callReset(ResetOperation resetOperation, CustomTableEnvironment environment) {
-        final Optional<String> keyOptional = resetOperation.getKey();
-        if (!keyOptional.isPresent()) {
-            return;
-        }
-
-        String key = keyOptional.get().trim();
-        if (Asserts.isNullString(key)) {
-            return;
-        }
-
-        setConfiguration(environment, Collections.singletonMap(key, null));
     }
 
     private void setConfiguration(CustomTableEnvironment environment, Map<String, String> config) {
