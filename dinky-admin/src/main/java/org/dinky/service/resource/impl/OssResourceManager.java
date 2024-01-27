@@ -30,7 +30,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -90,30 +93,39 @@ public class OssResourceManager implements BaseResourceManager {
     @Override
     public List<Resources> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
+
         List<S3ObjectSummary> listBucketObjects = getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
-        return listBucketObjects.stream()
-                .map(obj -> {
-                    Path path = Paths.get(obj.getKey());
-                    if (path.toString().equals(basePath)) {
-                        // 跳过根目录 | skip root directory
-                        return null;
-                    }
-                    String parent = path.getParent().toString().replace(basePath, "");
-                    String self = path.toString().replace(basePath, "");
-                    int pid = parent.isEmpty() ? rootId : parent.hashCode();
-                    return Resources.builder()
-                            .id(self.hashCode())
-                            .pid(pid)
-                            .fullName(self)
-                            .fileName(path.getFileName().toString())
-                            .isDirectory(obj.getKey().endsWith("/"))
-                            .type(0)
-                            .size(obj.getSize())
-                            .build();
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        Map<Integer, Resources> resourcesMap = new HashMap<>();
+
+        for (S3ObjectSummary obj : listBucketObjects) {
+            obj.setKey(obj.getKey().replace(basePath, ""));
+            if (obj.getKey().isEmpty()) {
+                continue;
+            }
+            String[] split = obj.getKey().split("/");
+            String parent = "";
+            for (int i = 0; i < split.length; i++) {
+                String s = split[i];
+                int pid = parent.isEmpty() ? rootId : parent.hashCode();
+                parent = parent  + "/" + s;
+                Resources.ResourcesBuilder builder = Resources.builder()
+                        .id(parent.hashCode())
+                        .pid(pid)
+                        .fullName(parent)
+                        .fileName(s)
+                        .isDirectory(obj.getKey().endsWith("/"))
+                        .size(obj.getSize());
+                if (i == split.length - 1) {
+                    builder.isDirectory(obj.getKey().endsWith("/"));
+                } else {
+                    builder.isDirectory(true);
+                }
+                resourcesMap.put(parent.hashCode(), builder.build());
+            }
+        }
+        return new ArrayList<>(resourcesMap.values());
     }
+
 
     @Override
     public InputStream readFile(String path) {
