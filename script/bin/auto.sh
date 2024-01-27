@@ -4,13 +4,13 @@ FLINK_VERSION=${2:-1.16}
 
 JAR_NAME="dinky-admin"
 
-# Use FLINK_HOME:
-CLASS_PATH=".:./lib/*:config:./extends/*:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/dinky/*:./plugins/flink${FLINK_VERSION}/*:./extends/flink${FLINK_VERSION}/dinky/*:./extends/flink${FLINK_VERSION}/*"
+APP_HOME="$(cd `dirname $0`; pwd)"
 
+# Use FLINK_HOME:
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${APP_HOME}/extends/*:${APP_HOME}/plugins/*:${APP_HOME}/customJar/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/*:${APP_HOME}/extends/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/extends/flink${FLINK_VERSION}/*"
 PID_FILE="dinky.pid"
 
 # JMX path
-APP_HOME="$(cd `dirname $0`; pwd)"
 JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.20.0.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
 
 # Check whether the pid path exists
