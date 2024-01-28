@@ -94,12 +94,11 @@ public class LocalResourceManager implements BaseResourceManager {
         String basePath = getBasePath();
         try (Stream<Path> paths = Files.walk(Paths.get(basePath))) {
             return paths.map(path -> {
-
                         if (path.compareTo(Paths.get(basePath)) == 0) {
                             // 跳过根目录 | skip root directory
                             return null;
                         }
-                        Path parentPath =path.getParent();
+                        Path parentPath = path.getParent();
                         String parent = "";
                         if (parentPath != null) {
                             parent = parentPath.toString().replace(basePath, "");

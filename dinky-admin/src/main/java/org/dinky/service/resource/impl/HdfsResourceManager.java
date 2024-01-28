@@ -89,7 +89,7 @@ public class HdfsResourceManager implements BaseResourceManager {
 
     @Override
     public List<Resources> getFullDirectoryStructure(int rootId) {
-        return null;
+        throw new RuntimeException("Sync HDFS Not implemented!");
     }
 
     @Override

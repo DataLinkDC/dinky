@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.Resources;
@@ -28,19 +27,16 @@ import org.dinky.service.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -94,7 +90,8 @@ public class OssResourceManager implements BaseResourceManager {
     public List<Resources> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
 
-        List<S3ObjectSummary> listBucketObjects = getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
+        List<S3ObjectSummary> listBucketObjects =
+                getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
         Map<Integer, Resources> resourcesMap = new HashMap<>();
 
         for (S3ObjectSummary obj : listBucketObjects) {
@@ -107,7 +104,7 @@ public class OssResourceManager implements BaseResourceManager {
             for (int i = 0; i < split.length; i++) {
                 String s = split[i];
                 int pid = parent.isEmpty() ? rootId : parent.hashCode();
-                parent = parent  + "/" + s;
+                parent = parent + "/" + s;
                 Resources.ResourcesBuilder builder = Resources.builder()
                         .id(parent.hashCode())
                         .pid(pid)
@@ -125,7 +122,6 @@ public class OssResourceManager implements BaseResourceManager {
         }
         return new ArrayList<>(resourcesMap.values());
     }
-
 
     @Override
     public InputStream readFile(String path) {
