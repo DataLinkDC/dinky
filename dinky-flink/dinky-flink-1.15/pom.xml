@@ -34,7 +34,7 @@
         <commons.version>1.3.1</commons.version>
         <flink.guava.version>15.0</flink.guava.version>
         <flink.version>1.15.4</flink.version>
-        <flinkcdc.version>3.0.0</flinkcdc.version>
+        <flinkcdc.version>3.0.1</flinkcdc.version>
         <junit.version>4.12</junit.version>
     </properties>
 
