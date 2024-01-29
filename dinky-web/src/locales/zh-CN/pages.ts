@@ -1173,7 +1173,6 @@ export default {
   'lineage.hideMap': '隐藏小地图',
   'lineage.refresh': '刷新血缘',
 
-
-  'sys.classLoaderJars.tips': '下述内容展示了 Dinky 服务内部的系统类加载器加载的 jar 包列表,可以通过此种方式直观的查看服务内部已经加载的所有 Jar 文件,以助于排查 Jar 包冲突等问题',
-
+  'sys.classLoaderJars.tips':
+    '下述内容展示了 Dinky 服务内部的系统类加载器加载的 jar 包列表,可以通过此种方式直观的查看服务内部已经加载的所有 Jar 文件,以助于排查 Jar 包冲突等问题'
 };

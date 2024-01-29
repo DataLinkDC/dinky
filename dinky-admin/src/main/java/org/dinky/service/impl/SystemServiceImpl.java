@@ -19,11 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.util.ClassLoaderUtil;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collections;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.service.SystemService;
@@ -31,9 +26,14 @@ import org.dinky.utils.DirUtil;
 import org.dinky.utils.TreeUtil;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import cn.hutool.core.util.ClassLoaderUtil;
 
 /**
  * SystemServiceImpl
