@@ -66,6 +66,12 @@ mysql> source /opt/dinky/sql/dinky-mysql.sql
 
 ## Dinky 部署
 
+:::danger 注意事项
+
+自 Dinky v1.0.0 版本开始，Dinky 采用了新的打包部署方式, 提供了适配每个 Flink 版本的二进制包(tar.gz) ,需要根据 Flink 版本选择对应的 Dinky 版本,不再支持多个版本共存在单一二进制包内,请根据实际情况选择对应版本
+
+:::
+
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -75,11 +81,9 @@ import TabItem from '@theme/TabItem';
 
 ** 解压到指定目录 **
 
-Dinky 不依赖任何外部的 Hadoop 或者 Flink 环境，可以单独部署在 flink、 hadoop 和 K8S 集群之外，完全解耦，支持同时连接多个不同的集群实例进行运维。
-
 ```shell
-tar -zxf dinky-release-${version}.tar.gz
-mv dinky-release-${version} dinky
+tar -zxf dinky-release-${flink.version}-${dinky.version}.tar.gz
+mv dinky-release-${flink.version}-${dinky.version} dinky
 cd dinky
 ```
 
