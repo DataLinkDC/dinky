@@ -20,6 +20,7 @@
 package org.dinky.service.resource;
 
 import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.Resources;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.oss.OssTemplate;
 import org.dinky.service.resource.impl.HdfsResourceManager;
@@ -32,6 +33,7 @@ import org.apache.hadoop.fs.FileSystem;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,6 +55,8 @@ public interface BaseResourceManager {
     void putFile(String path, File file);
 
     String getFileContent(String path);
+
+    List<Resources> getFullDirectoryStructure(int rootId);
 
     InputStream readFile(String path);
 
@@ -102,8 +106,14 @@ public interface BaseResourceManager {
     }
 
     default String getFilePath(String path) {
-        return FileUtil.normalize(
-                FileUtil.file(instances.getResourcesUploadBasePath().getValue(), path)
-                        .toString());
+        return FileUtil.normalize(FileUtil.file(getBasePath(), path).toString());
+    }
+
+    default String getBasePath() {
+        String basePath = instances.getResourcesUploadBasePath().getValue();
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
+        }
+        return basePath;
     }
 }

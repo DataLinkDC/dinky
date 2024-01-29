@@ -34,6 +34,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 public interface ResourcesService extends IService<Resources> {
 
+    boolean syncRemoteDirectoryStructure();
+
     /**
      * Create a new folder with the specified parameters.
      *

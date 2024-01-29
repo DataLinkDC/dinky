@@ -291,6 +291,7 @@ export enum API_CONSTANTS {
   RESOURCE_CREATE_FOLDER = '/api/resource/createFolder',
   RESOURCE_RENAME = '/api/resource/rename',
   RESOURCE_UPLOAD = '/api/resource/uploadFile',
+  RESOURCE_SYNC_DATA = '/api/resource/syncRemoteDirectory',
 
   // catalog
   DELETE_CATALOGUE_BY_ID_URL = '/api/catalogue/deleteCatalogueById',

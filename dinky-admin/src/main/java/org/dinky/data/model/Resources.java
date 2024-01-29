@@ -37,17 +37,23 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /** @TableName dinky_resources */
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "dinky_resources")
 @Data
 @ApiModel(value = "Resources", description = "Resource Information")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Resources extends Model<Resources> {
 
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the resource")
     private Integer id;
 

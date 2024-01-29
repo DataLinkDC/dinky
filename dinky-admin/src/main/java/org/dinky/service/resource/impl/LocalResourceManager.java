@@ -20,12 +20,20 @@
 package org.dinky.service.resource.impl;
 
 import org.dinky.data.exception.BusException;
+import org.dinky.data.model.Resources;
 import org.dinky.service.resource.BaseResourceManager;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -79,6 +87,40 @@ public class LocalResourceManager implements BaseResourceManager {
     @Override
     public String getFileContent(String path) {
         return IoUtil.readUtf8(readFile(path));
+    }
+
+    @Override
+    public List<Resources> getFullDirectoryStructure(int rootId) {
+        String basePath = getBasePath();
+        try (Stream<Path> paths = Files.walk(Paths.get(basePath))) {
+            return paths.map(path -> {
+                        if (path.compareTo(Paths.get(basePath)) == 0) {
+                            // 跳过根目录 | skip root directory
+                            return null;
+                        }
+                        Path parentPath = path.getParent();
+                        String parent = "";
+                        if (parentPath != null) {
+                            parent = parentPath.toString().replace(basePath, "");
+                        }
+                        String self = path.toString().replace(basePath, "");
+                        int pid = parent.isEmpty() ? rootId : parent.hashCode();
+                        File file = new File(path.toString());
+                        return Resources.builder()
+                                .id(self.hashCode())
+                                .pid(pid)
+                                .fullName(self)
+                                .fileName(file.getName())
+                                .isDirectory(file.isDirectory())
+                                .type(0)
+                                .size(file.length())
+                                .build();
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -972,6 +972,8 @@ export default {
   'rc.resource.upload.tip1': 'Click or drag file to this area to upload',
   'rc.resource.upload.tip2':
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
+  'rc.resource.filelist': 'File list',
+  'rc.resource.sync': 'Sync remote files',
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',
   'rc.template.create': 'Create UDF Template',

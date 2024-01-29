@@ -930,6 +930,9 @@ export default {
   'rc.resource.upload.fail': '文件 【{fileName}】 上传失败',
   'rc.resource.upload.tip1': '点击或拖拽文件到此区域上传',
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
+  'rc.resource.filelist': '文件列表',
+  'rc.resource.sync': '同步目录结构',
+
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',
   'rc.template.create': '创建 UDF 模板',

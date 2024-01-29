@@ -20,6 +20,7 @@
 package org.dinky.service.resource.impl;
 
 import org.dinky.data.exception.BusException;
+import org.dinky.data.model.Resources;
 import org.dinky.service.resource.BaseResourceManager;
 
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -29,6 +30,7 @@ import org.apache.hadoop.fs.Path;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,6 +85,11 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public String getFileContent(String path) {
         return IoUtil.readUtf8(readFile(path));
+    }
+
+    @Override
+    public List<Resources> getFullDirectoryStructure(int rootId) {
+        throw new RuntimeException("Sync HDFS Not implemented!");
     }
 
     @Override
