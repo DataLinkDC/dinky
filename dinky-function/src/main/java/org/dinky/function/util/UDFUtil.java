@@ -95,7 +95,7 @@ import cn.hutool.json.JSONUtil;
 public class UDFUtil {
 
     public static final String FUNCTION_SQL_REGEX =
-            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s+)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
+            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s*)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
     public static final Pattern PATTERN = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
 
     public static final String SESSION = "SESSION";
@@ -118,7 +118,7 @@ public class UDFUtil {
      */
     protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
 
-    public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
+    public static final String PYTHON_UDF_ATTR = "(\\S+)\\s*=\\s*ud(?:f|tf|af|taf)";
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
     public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
     public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
@@ -343,7 +343,7 @@ public class UDFUtil {
             String gitPackage = UdfCodePool.getGitPackage(className);
 
             if (StrUtil.isNotBlank(gitPackage) && FileUtil.exist(gitPackage)) {
-                if (FileUtil.getSuffix(gitPackage).equals("jar")) {
+                if ("jar".equals(FileUtil.getSuffix(gitPackage))) {
                     udfPathContextHolder.addUdfPath(new File(gitPackage));
                 } else {
                     udfPathContextHolder.addPyUdfPath(new File(gitPackage));

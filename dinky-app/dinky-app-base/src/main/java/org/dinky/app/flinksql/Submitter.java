@@ -46,7 +46,6 @@ import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.python.PythonOptions;
@@ -56,13 +55,10 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.SQLException;
@@ -82,6 +78,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.http.HttpUtil;
 import lombok.SneakyThrows;
 
 /**
@@ -126,8 +123,7 @@ public class Submitter {
                 executorConfig, new WeakReference<>(DinkyClassLoader.build()).get());
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
-        // loadDep(appTask.getType(),
-        // config.getTaskId(),DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey()), executorConfig);
+        loadDep(appTask.getType(), config.getTaskId(), executorConfig);
         log.info("The job configuration is as follows: {}", executorConfig);
 
         String[] statements =
@@ -169,7 +165,8 @@ public class Submitter {
         return sb.toString();
     }
 
-    private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorConfig executorConfig) {
+    private static void loadDep(String type, Integer taskId, ExecutorConfig executorConfig) {
+        String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
         if (StringUtils.isBlank(dinkyAddr)) {
             return;
         }
@@ -187,32 +184,38 @@ public class Submitter {
                 if (exists) {
                     String depPath = flinkHome + "/dep";
                     ZipUtils.unzip(depZip, depPath);
-                    // move all jar
-                    FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
-                        FileUtil.moveContent(
-                                FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
-                    });
-                    URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
-                            .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
-                            .toArray(URL[]::new);
-                    URL[] pyUrls = FileUtil.listFileNames(depPath + "/py/").stream()
-                            .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
-                            .toArray(URL[]::new);
+                    log.info(
+                            "download dep success, include :{}",
+                            Arrays.stream(FileUtil.file(depPath).listFiles())
+                                    .map(File::getName)
+                                    .collect(Collectors.joining(",\n")));
 
-                    addURLs(jarUrls);
-                    executorConfig
-                            .getConfig()
-                            .put(
-                                    PipelineOptions.JARS.key(),
-                                    Arrays.stream(jarUrls).map(URL::toString).collect(Collectors.joining(";")));
-                    if (ArrayUtil.isNotEmpty(pyUrls)) {
-                        executorConfig
-                                .getConfig()
-                                .put(
-                                        PythonOptions.PYTHON_FILES.key(),
-                                        Arrays.stream(jarUrls)
-                                                .map(URL::toString)
-                                                .collect(Collectors.joining(",")));
+                    // move all jar
+                    if (FileUtil.isDirectory(depPath + "/jar/")) {
+                        FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
+                            FileUtil.move(FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
+                        });
+                        if (FileUtil.isDirectory(usrlib)) {
+                            URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
+                                    .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
+                                    .toArray(URL[]::new);
+                            addURLs(jarUrls);
+                            executor.getCustomTableEnvironment()
+                                    .addJar(FileUtil.file(usrlib).listFiles());
+                        }
+                    }
+                    if (FileUtil.isDirectory(depPath + "/py/")) {
+                        URL[] pyUrls = FileUtil.listFileNames(depPath + "/py/").stream()
+                                .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
+                                .toArray(URL[]::new);
+                        if (ArrayUtil.isNotEmpty(pyUrls)) {
+                            executor.getCustomTableEnvironment()
+                                    .addConfiguration(
+                                            PythonOptions.PYTHON_FILES,
+                                            Arrays.stream(pyUrls)
+                                                    .map(URL::toString)
+                                                    .collect(Collectors.joining(",")));
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -220,11 +223,11 @@ public class Submitter {
                 throw new RuntimeException(e);
             }
         }
-        executorConfig.getConfig().put("python.files", "./python_udf.zip");
     }
 
     private static void addURLs(URL[] jarUrls) {
-        URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        Thread.currentThread().setContextClassLoader(new DinkyClassLoader(new URL[] {}));
+        URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
         try {
             Method add = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             add.setAccessible(true);
@@ -238,23 +241,10 @@ public class Submitter {
 
     public static boolean downloadFile(String url, String path) throws IOException {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            // 设置超时间为3秒
-            conn.setConnectTimeout(3 * 1000);
-            // 获取输入流
-            try (InputStream inputStream = conn.getInputStream()) {
-                // 获取输出流
-                try (FileOutputStream outputStream = new FileOutputStream(path)) {
-                    // 每次下载1024位
-                    byte[] b = new byte[1024];
-                    int len = -1;
-                    while ((len = inputStream.read(b)) != -1) {
-                        outputStream.write(b, 0, len);
-                    }
-                    return true;
-                }
-            }
+            HttpUtil.downloadFile(url, path);
+            return true;
         } catch (Exception e) {
+            log.error("download failed, Reason:", e);
             return false;
         }
     }

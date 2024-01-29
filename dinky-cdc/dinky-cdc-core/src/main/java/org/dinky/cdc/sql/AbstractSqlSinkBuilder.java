@@ -30,6 +30,7 @@ import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.common.functions.Partitioner;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
@@ -55,6 +56,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder implements Serializable {
     protected ZoneId sinkTimeZone = ZoneId.of("UTC");
@@ -147,7 +149,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 buildColumn(columnNameList, columnTypeList, table.getColumns());
                 DataStream<Row> rowDataDataStream = buildRow(
                                 filterOperator, columnNameList, columnTypeList, schemaTableName)
-                        .rebalance();
+                        .forward();
                 logger.info("Build {} flatMap successful...", schemaTableName);
                 logger.info("Start build {} sink...", schemaTableName);
 
@@ -166,6 +168,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
         SingleOutputStreamOperator<Map> mapOperator =
                 dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
         Map<String, String> split = config.getSplit();
+        partitionByTableAndPrimarykey(mapOperator, tableMap);
         return mapOperator.process(new ProcessFunction<Map, Map>() {
             @Override
             public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) {
@@ -236,6 +239,33 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
         }
         logger.info("A total of {} table cdc sync were build successful...", trans.size());
         return dataStreamSource;
+    }
+
+    protected void partitionByTableAndPrimarykey(
+            SingleOutputStreamOperator<Map> mapOperator, Map<String, Table> tableMap) {
+        mapOperator.partitionCustom(
+                new Partitioner<String>() {
+                    @Override
+                    public int partition(String key, int numPartitions) {
+                        return Math.abs(key.hashCode()) % numPartitions;
+                    }
+                },
+                map -> {
+                    LinkedHashMap source = (LinkedHashMap) map.get("source");
+                    String tableName = createTableName(source, config.getSchemaFieldName(), config.getSplit());
+                    Table table = tableMap.get(tableName);
+                    List<String> primaryKeys = table.getColumns().stream()
+                            .map(column -> {
+                                if (column.isKeyFlag()) {
+                                    return column.getName();
+                                }
+                                return "";
+                            })
+                            .collect(Collectors.toList());
+
+                    return tableName + String.join("_", primaryKeys);
+                });
+        mapOperator.name("PartitionByPrimarykey");
     }
 
     protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {}

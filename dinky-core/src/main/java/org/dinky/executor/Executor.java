@@ -60,13 +60,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.URLUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Executor
  *
  * @since 2021/11/17
  */
+@Slf4j
 public abstract class Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(Executor.class);
@@ -133,7 +136,22 @@ public abstract class Executor {
         return getTableConfig().getLocalTimeZone().getId();
     }
 
+    private void initClassloader(DinkyClassLoader classLoader) {
+        if (classLoader != null) {
+            try {
+                StreamExecutionEnvironment env = this.environment;
+                // Fix the Classloader in the env above  to appClassLoader, causing ckp to fail to compile
+                ReflectUtil.setFieldValue(env, "userClassloader", classLoader);
+                env.configure(env.getConfiguration(), classLoader);
+            } catch (Throwable e) {
+                log.warn(
+                        "The version of flink does not have a Classloader field and the classloader cannot be set.", e);
+            }
+        }
+    }
+
     protected void init(DinkyClassLoader classLoader) {
+        initClassloader(classLoader);
         this.dinkyClassLoader = classLoader;
         if (executorConfig.isValidParallelism()) {
             environment.setParallelism(executorConfig.getParallelism());

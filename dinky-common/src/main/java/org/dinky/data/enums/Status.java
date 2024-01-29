@@ -402,6 +402,12 @@ public enum Status {
     SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER_NOTE(173, "sys.resource.settings.hdfs.root.user.note"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS(174, "sys.resource.settings.hdfs.fs.defaultFS"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE(175, "sys.resource.settings.hdfs.fs.defaultFS.note"),
+
+    SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE(178, "sys.resource.settings.hdfs.core.site"),
+    SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE_NOTE(179, "sys.resource.settings.hdfs.core.site.note"),
+    SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE(380, "sys.resource.settings.hdfs.hdfs.site"),
+    SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE_NOTE(381, "sys.resource.settings.hdfs.hdfs.site.note"),
+
     SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS(176, "sys.resource.settings.oss.path.style.access"),
     SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE(177, "sys.resource.settings.oss.path.style.access.note"),
 

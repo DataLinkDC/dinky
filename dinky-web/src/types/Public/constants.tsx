@@ -220,7 +220,25 @@ export enum PermissionConstants {
   AUTH_TENANT_VIEW_USER = '/auth/tenant/viewUser',
 
   /**
-   * system setting
+   * global setting
+   */
+  SETTING_GLOBAL_DINKY = '/settings/globalsetting/dinky',
+  SETTING_GLOBAL_DINKY_EDIT = '/settings/globalsetting/dinky/edit',
+  SETTING_GLOBAL_FLINK = '/settings/globalsetting/flink',
+  SETTING_GLOBAL_FLINK_EDIT = '/settings/globalsetting/flink/edit',
+  SETTING_GLOBAL_MAVEN = '/settings/globalsetting/maven',
+  SETTING_GLOBAL_MAVEN_EDIT = '/settings/globalsetting/maven/edit',
+  SETTING_GLOBAL_DS = '/settings/globalsetting/ds',
+  SETTING_GLOBAL_DS_EDIT = '/settings/globalsetting/ds/edit',
+  SETTING_GLOBAL_LDAP = '/settings/globalsetting/ldap',
+  SETTING_GLOBAL_LDAP_EDIT = '/settings/globalsetting/ldap/edit',
+  SETTING_GLOBAL_METRICS = '/settings/globalsetting/metrics',
+  SETTING_GLOBAL_METRICS_EDIT = '/settings/globalsetting/metrics/edit',
+  SETTING_GLOBAL_RESOURCE = '/settings/globalsetting/resource',
+  SETTING_GLOBAL_RESOURCE_EDIT = '/settings/globalsetting/resource/edit',
+
+  /**
+   * system log
    */
   SYSTEM_SETTING_INFO_LOG_LIST = '/settings/systemlog/loglist',
   SYSTEM_SETTING_INFO_ROOT_LOG = '/settings/systemlog/rootlog',

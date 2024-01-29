@@ -18,7 +18,7 @@
         <commons.version>1.3.1</commons.version>
         <flink.shaded.version>17.0</flink.shaded.version>
         <flink.version>1.18.0</flink.version>
-        <flinkcdc.version>3.0.0</flinkcdc.version>
+        <flinkcdc.version>3.0.1</flinkcdc.version>
     </properties>
 
     <dependencies>

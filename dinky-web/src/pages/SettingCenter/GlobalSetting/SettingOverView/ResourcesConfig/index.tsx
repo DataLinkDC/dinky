@@ -26,6 +26,7 @@ import React, { useEffect, useState } from 'react';
 interface ResourcesConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
 const ModelType = {
@@ -39,7 +40,7 @@ type ResourceConfig = {
   oss: BaseConfigProperties[];
 };
 
-export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
+export const ResourcesConfig = ({ data, onSave, auth }: ResourcesConfigProps) => {
   const [loading, setLoading] = React.useState(false);
   const [model, setModel] = React.useState('hdfs');
   const [filterData, setFilterData] = useState<ResourceConfig>({
@@ -90,6 +91,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
     <>
       <GeneralConfig
         loading={loading}
+        auth={auth}
         onSave={onSaveHandler}
         tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
         data={filterData.base}
@@ -98,6 +100,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
       {model.toLocaleUpperCase() === ModelType.HDFS && (
         <GeneralConfig
           loading={loading}
+          auth={auth}
           onSave={onSaveHandler}
           tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
           data={filterData.hdfs}
@@ -106,6 +109,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
       {model.toLocaleUpperCase() === ModelType.OSS && (
         <GeneralConfig
           loading={loading}
+          auth={auth}
           onSave={onSaveHandler}
           tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
           data={filterData.oss}

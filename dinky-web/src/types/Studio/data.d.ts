@@ -318,6 +318,6 @@ export type ButtonRoute = {
   click?: () => any;
   hotKey?: (e: KeyboardEvent) => boolean;
   hotKeyDesc?: string;
-  isShow: boolean;
+  isShow?: boolean;
   props?: ButtonProps;
 };

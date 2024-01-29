@@ -1,0 +1,49 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Issue Check Inactive
+
+# 定时触发：每月 1 号 UTC 0 点，即北京时间 8 点
+# Timed trigger: UTC 0 on the 1st of each month.
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  check-inactive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check-inactive
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'check-inactive'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # 为 30 天不活跃的 issues 增加 inactive label，更多参数请参考：https://github.com/actions-cool/issues-helper
+          # Add the inactive label to all issues that have not been active for more than 30 days. More see: https://github.com/actions-cool/issues-helper
+          inactive-day: 30
+          inactive-label: 'Invalid'
+          body: |
+            Hello, this issue has not been active for more than 30 days. This issue will be closed in 7 days if there is no response. If you have any questions, you can comment and reply.
+            
+            你好, 这个 issue 30 天内没有活跃，7 天后将关闭，如需回复，可以评论回复。
+
+      - name: Add inactive labels
+        if: ${{ success() }} # 代表上边的 check-inactive 成功执行 才会执行本步骤
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'add-labels'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          labels: 'Invalid'

@@ -111,18 +111,4 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
 
     @ApiModelProperty(value = "taskId", required = true, dataType = "Integer", example = "test", notes = "task id")
     private Integer taskId;
-
-    public static ClusterInstance autoRegistersCluster(
-            String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
-        ClusterInstance clusterInstance = new ClusterInstance();
-        clusterInstance.setName(name);
-        clusterInstance.setAlias(alias);
-        clusterInstance.setHosts(hosts);
-        clusterInstance.setType(type);
-        clusterInstance.setClusterConfigurationId(clusterConfigurationId);
-        clusterInstance.setTaskId(taskId);
-        clusterInstance.setAutoRegisters(true);
-        clusterInstance.setEnabled(true);
-        return clusterInstance;
-    }
 }

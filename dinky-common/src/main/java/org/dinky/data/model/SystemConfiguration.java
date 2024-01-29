@@ -169,6 +169,16 @@ public class SystemConfiguration {
             .defaultValue("")
             .note(Status.SYS_LDAP_SETTINGS_BASEDN_NOTE);
 
+    private final Configuration<String> ldapCastUsername = key(Status.SYS_LDAP_SETTINGS_CASTUSERNAME)
+            .stringType()
+            .defaultValue("cn")
+            .note(Status.SYS_LDAP_SETTINGS_CASTUSERNAME_NOTE);
+
+    private final Configuration<String> ldapCastNickname = key(Status.SYS_LDAP_SETTINGS_CASTNICKNAME)
+            .stringType()
+            .defaultValue("sn")
+            .note(Status.SYS_LDAP_SETTINGS_CASTNICKNAME_NOTE);
+
     private final Configuration<String> ldapFilter = key(Status.SYS_LDAP_SETTINGS_FILTER)
             .stringType()
             .defaultValue("")
@@ -183,16 +193,6 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue("DefaultTenant")
             .note(Status.SYS_LDAP_SETTINGS_DEFAULTTEANT_NOTE);
-
-    private final Configuration<String> ldapCastUsername = key(Status.SYS_LDAP_SETTINGS_CASTUSERNAME)
-            .stringType()
-            .defaultValue("cn")
-            .note(Status.SYS_LDAP_SETTINGS_CASTUSERNAME_NOTE);
-
-    private final Configuration<String> ldapCastNickname = key(Status.SYS_LDAP_SETTINGS_CASTNICKNAME)
-            .stringType()
-            .defaultValue("sn")
-            .note(Status.SYS_LDAP_SETTINGS_CASTNICKNAME_NOTE);
 
     private final Configuration<Boolean> ldapEnable = key(Status.SYS_LDAP_SETTINGS_ENABLE)
             .booleanType()
@@ -265,6 +265,14 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue("file:///")
             .note(Status.SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE);
+    private final Configuration<String> resourcesHdfsCoreSite = key(Status.SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE_NOTE);
+    private final Configuration<String> resourcesHdfsHdfsSite = key(Status.SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE)
+            .stringType()
+            .defaultValue("")
+            .note(Status.SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE_NOTE);
     private final Configuration<Boolean> resourcesPathStyleAccess = key(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS)
             .booleanType()
             .defaultValue(true)

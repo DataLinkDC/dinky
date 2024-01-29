@@ -62,22 +62,17 @@ import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 
-import java.io.File;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.URLUtil;
 
 /**
  * CustomTableEnvironmentImpl
@@ -211,31 +206,15 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public void addJar(File... jarPath) {
-        Configuration configuration =
-                (Configuration) getStreamExecutionEnvironment().getConfiguration();
-        List<String> pathList =
-                Arrays.stream(URLUtil.getURLs(jarPath)).map(URL::toString).collect(Collectors.toList());
-        List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars != null) {
-            CollUtil.addAll(jars, pathList);
-        }
-        Map<String, Object> flinkConfigurationMap = getFlinkConfigurationMap();
-        flinkConfigurationMap.put(PipelineOptions.JARS.key(), jars);
-    }
-
-    @Override
     public <T> void addConfiguration(ConfigOption<T> option, T value) {
         Map<String, Object> flinkConfigurationMap = getFlinkConfigurationMap();
+        getConfig().set(option, value);
         flinkConfigurationMap.put(option.key(), value);
     }
 
     private Map<String, Object> getFlinkConfigurationMap() {
-        Field configuration = null;
         try {
-            configuration = StreamExecutionEnvironment.class.getDeclaredField("configuration");
-            configuration.setAccessible(true);
-            Configuration o = (Configuration) configuration.get(getStreamExecutionEnvironment());
+            Configuration o = getRootConfiguration();
             Field confData = Configuration.class.getDeclaredField("confData");
             confData.setAccessible(true);
             Map<String, Object> temp = (Map<String, Object>) confData.get(o);

@@ -26,9 +26,10 @@ import React from 'react';
 interface DSConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
-export const DSConfig = ({ data, onSave }: DSConfigProps) => {
+export const DSConfig = ({ data, onSave, auth }: DSConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -38,10 +39,10 @@ export const DSConfig = ({ data, onSave }: DSConfigProps) => {
   };
   return (
     <>
-      {/*tooltip={l('sys.setting.ds.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
+        auth={auth}
         tag={
           <>
             <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>

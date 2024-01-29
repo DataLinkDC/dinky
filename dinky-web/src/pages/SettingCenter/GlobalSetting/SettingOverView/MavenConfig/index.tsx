@@ -26,9 +26,10 @@ import React from 'react';
 interface MavenConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
-export const MavenConfig = ({ data, onSave }: MavenConfigProps) => {
+export const MavenConfig = ({ data, onSave, auth }: MavenConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -39,10 +40,10 @@ export const MavenConfig = ({ data, onSave }: MavenConfigProps) => {
 
   return (
     <>
-      {/*tooltip={l('sys.setting.maven.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
+        auth={auth}
         tag={
           <>
             <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>

@@ -30,6 +30,7 @@ import org.dinky.service.LdapService;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.naming.directory.Attributes;
@@ -87,10 +88,10 @@ public class LdapServiceImpl implements LdapService {
                 // Build the User with cast
                 User user = new User();
                 user.setUsername(loginDTO.getUsername());
-                user.setNickname(attributes
-                        .get(configuration.getLdapCastNickname().getValue())
-                        .get()
-                        .toString());
+                Optional.of(attributes
+                                .get(configuration.getLdapCastNickname().getValue())
+                                .get())
+                        .ifPresent(obj -> user.setNickname(obj.toString()));
                 return user;
             } catch (Exception e) {
                 if (e instanceof AuthenticationException) {

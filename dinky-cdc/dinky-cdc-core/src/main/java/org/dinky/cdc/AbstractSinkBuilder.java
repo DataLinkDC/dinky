@@ -146,8 +146,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected DataStream<Map> shunt(SingleOutputStreamOperator<Map> processOperator, Table table, OutputTag<Map> tag) {
-
-        return processOperator.getSideOutput(tag);
+        processOperator.forward();
+        return processOperator.getSideOutput(tag).forward();
     }
 
     @SuppressWarnings("rawtypes")
