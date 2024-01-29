@@ -22,7 +22,7 @@ on:
 jobs:
   assign-udf-problem-to-developer:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.labels.*.name, 'bug')
+    if: contains(github.event.issue.title, 'udf') == true || contains(github.event.issue.title, 'udtf') == true || contains(github.event.issue.body, 'udaf') == true
     steps:
       - name: assign problem to developer of udf
         uses: actions-cool/issues-helper@v3
@@ -85,7 +85,7 @@ jobs:
 
   assign-cdc-problem-to-developer:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.title, 'cdc') == true || contains(github.event.issue.title, 'cdcsource') == true || contains(github.event.issue.body, 'cdcsource') == true
+    if: contains(github.event.issue.title, 'cdc') == true || contains(github.event.issue.title, 'cdcsource') == true || contains(github.event.issue.body, 'pipeline') == true
     steps:
       - name: assign problem to developer of cdc and cdcsource
         uses: actions-cool/issues-helper@v3

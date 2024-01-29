@@ -18,7 +18,7 @@
 name: Bug report
 title: "[Bug] [Module Name] Bug title "
 description: Problems and issues with code of Dinky
-labels: [ "bug", "Waiting for reply" ]
+labels: [ "Bug", "Waiting for reply" ]
 body:
   - type: markdown
     attributes:
