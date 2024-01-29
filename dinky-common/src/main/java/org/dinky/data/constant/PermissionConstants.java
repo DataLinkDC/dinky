@@ -232,6 +232,8 @@ public class PermissionConstants {
 
     public static final String SYSTEM_SETTING_INFO_ROOT_LOG = "settings:systemlog:rootlog";
 
+    public static final String SYSTEM_SETTING_INFO_CLASSLOADER_LIST = "settings:classloaderjars";
+
     /**
      * alert 策略
      */

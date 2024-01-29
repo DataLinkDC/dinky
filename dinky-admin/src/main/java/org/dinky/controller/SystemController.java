@@ -43,7 +43,7 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "System Controller")
 @RequestMapping("/api/system")
 @RequiredArgsConstructor
-public class SystemInfoController {
+public class SystemController {
 
     private final SystemService systemService;
 
@@ -83,4 +83,13 @@ public class SystemInfoController {
     public Result<String> readFile(@RequestParam String path) {
         return Result.data(systemService.readFile(path));
     }
+
+
+    @GetMapping("/queryAllClassLoaderJarFiles")
+    @ApiOperation("Query All ClassLoader Jar Files")
+    @SaCheckPermission(PermissionConstants.SYSTEM_SETTING_INFO_CLASSLOADER_LIST)
+    public Result<List<String>> queryAllClassLoaderJarFiles() {
+        return Result.succeed(systemService.queryAllClassLoaderJarFiles());
+    }
+
 }

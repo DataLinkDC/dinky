@@ -275,6 +275,12 @@ export default [
         name: 'alertrulelist',
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/AlertRule'
+      },
+      {
+        path: '/settings/classloaderjars',
+        name: 'classloaderjars',
+        icon: 'CodepenOutlined',
+        component: './SettingCenter/ClassLoaderJars'
       }
     ]
   },
