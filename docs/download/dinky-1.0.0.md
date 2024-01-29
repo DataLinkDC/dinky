@@ -3,9 +3,13 @@ sidebar_position: 83
 title: 1.0.0 release
 ---
 
-| 版本        | 二进制程序                                                                                                                             | Source                                                                                    |
-|-----------|-----------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| 1.0.0-rc3 | [dinky-release-1.0.0-rc3.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc3/dinky-release-1.0.0-rc3.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc3.zip) |
+| Dinky 版本  | Flink 版本 | 二进制程序                                                                                                                                       | Source                                                                                    |
+|-----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| 1.0.0-rc4 | 1.14     | [dinky-release-1.14-1.0.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc4/dinky-release-1.14-1.0.0-rc4.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc4.zip) |
+| 1.0.0-rc4 | 1.15     | [dinky-release-1.15-1.0.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc4/dinky-release-1.15-1.0.0-rc4.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc4.zip) |
+| 1.0.0-rc4 | 1.16     | [dinky-release-1.16-1.0.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc4/dinky-release-1.16-1.0.0-rc4.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc4.zip) |
+| 1.0.0-rc4 | 1.17     | [dinky-release-1.17-1.0.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc4/dinky-release-1.17-1.0.0-rc4.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc4.zip) |
+| 1.0.0-rc4 | 1.18     | [dinky-release-1.18-1.0.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.0-rc4/dinky-release-1.18-1.0.0-rc4.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.0-rc4.zip) |
 
 ## Dinky-1.0.0-rc1 发行说明
 
@@ -15,12 +19,14 @@ Dinky是一个基于Apache Flink的数据开发平台，敏捷地进行数据开
 
 ### 升级说明
 
-Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了若干企业级功能，修复了 0.7 的一些局限性问题。 目前无法直接从 0.7 升级到 1.0，后续提供升级方案。
+Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了若干企业级功能，修复了 0.7 的一些局限性问题。 目前无法直接从 0.7 升级到
+1.0，后续提供升级方案。
 
 ### 主要功能
 
 - FlinkSQL 数据开发：自动提示补全、语法高亮、语句美化、语法校验、执行计划、MetaStore、血缘分析、版本对比等
-- 支持 FlinkSQL 多版本开发及多种执行模式：Local、Standalone、Yarn/Kubernetes Session、Yarn Per-Job、Yarn/Kubernetes Application
+- 支持 FlinkSQL 多版本开发及多种执行模式：Local、Standalone、Yarn/Kubernetes Session、Yarn Per-Job、Yarn/Kubernetes
+  Application
 - 支持 Apache Flink 生态：Connector、FlinkCDC、Paimon 等
 - 支持 FlinkSQL 语法增强：整库同步、执行环境、全局变量、语句合并、表值聚合函数、加载依赖、行级权限、提交Jar等
 - 支持 FlinkCDC 整库实时入仓入湖：多库输出、自动建表、模式演变、分库分表
@@ -32,7 +38,6 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 - 支持自动托管的 SavePoint/CheckPoint 恢复及触发机制：最近一次、最早一次、指定一次等
 - 支持多种资源管理：集群实例、集群配置、数据源、告警、文档、全局变量、Git项目、UDF、系统配置等
 - 支持企业级管理：租户、用户、角色、菜单、令牌、数据权限
-
 
 ### 部分新功能
 
@@ -59,7 +64,6 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 ### 贡献者
 
 在此感谢参与 1.0.0 建设的贡献者们，详情见：https://github.com/DataLinkDC/dinky/graphs/contributors
-
 
 ## Dinky-1.0.0-rc2 发行说明
 
@@ -137,14 +141,16 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 @Zzm0809
 
 ## Dinky-1.0.0-rc3 发行说明
+
 ### 新功能
+
 - 默认 Flink 启动版本修改为 1.16
 - 实现 CodeShow 组件换行按钮
 - 实现 Flink 实例停止功能
 - 实现删除已定义的任务监控布局
 
-
 ### 优化
+
 - 获取版本方式优化为后端接口返回
 - 优化CANCEL作业逻辑，对于失联作业可强制停止
 - 优化注册中心部分删除时的检测引用逻辑
@@ -154,9 +160,8 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 - 优化 Dinky 进程 PID 检测逻辑
 - 优化执行预览时控制台与结果 Tag 自动切换
 
-
-
 ### 修复
+
 - 修复告警实例表单渲染问题
 - 修复FlinkSQLEnv 无法检查的问题
 - 修复 set 语句无法生效的问题
@@ -179,6 +184,7 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 - 修复注册数据源时密码为必填的问题
 
 ### 文档
+
 - 添加部分数据开发相关文档
 - 优化注册中心部分文档
 - 删除一些弃用/错误的文档
@@ -187,6 +193,7 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 - 添加部署文档
 
 ### 贡献者
+
 @aiwenmo
 @drgnchan
 @gaoyan1998
@@ -201,3 +208,63 @@ Dinky 1.0 是一个重构版本，对已有的功能进行重构，并新增了�
 @YardStrong
 @zackyoungh
 @Zzm0809
+
+## Dinky-1.0.0-rc4 发行说明
+
+### 新功能
+
+- 实现整库同步多并行度下数据有序
+- 实现资源中心的 hdfs ha
+- 实现配置中心全局配置的权限控制
+- 实现可配置方式的告警防重发功能
+- 实现DB SQL 可被 DolphinScheduler 调度
+- 新增资源中心的按照配置的资源存储类型(目前实现 oss)同步目录
+
+### 优化
+
+- 优化 K8S的 UDF 下载逻辑
+- 优化 CDC3.0相关逻辑
+- 优化整库同步之分库分表
+- 优化集成 LDAP逻辑
+- 优化注册中心->数据源列表跳转到详情页的逻辑
+- 作业配置逻辑优化(作业已发布状态下作业配置不可编辑)
+- 优化数据开发中作业配置的集群实例渲染逻辑
+- 优化启动脚本,使之可以配置环境变量的方式进行启动
+
+### 修复
+
+- 修复集群实例心跳检测不正确的问题
+- 修复分隔符问题
+- 修复 Jar 任务提交不能使用 set 语法的问题
+- 修复 LDAP 获取用户相关信息时NPE 的问题
+- 修复分配菜单权限时无法携带上一级 ID 的问题
+- 修复数据开发切换 Key 时 版本历史无法正常更新的问题
+- 修复 PG sql 文件的一些默认值问题
+- 修复因Resource配置错误导致Dinky无法启动
+- 修复权限控制默认路由跳转问题
+- 修复数据开发-> 作业列表部分情况下无法折叠的问题
+- 修复多线程下告警信息重复发送的问题
+- 修复数据开发-> 打开作业的 tag 高度问题
+- 修复集成 gitlab 时认证相关问题
+- 修复运维中心作业详情的 jobmanager 日志部分情况下无法正常展示的问题
+- 修复 CataLog NPE 的问题
+- 修复 yarn 的 port 是 0 的问题
+- 修复数据源的前端表单状态问题
+- 修复 Kubeconfig 获取的问题
+- 修复prejob 任务状态错误的问题
+- 修复 add customjar 语法问题
+- 修复一些 web 的 NPE 异常
+- 修复告警实例为邮件类型时启用 ssl 的 bug
+- 修复 jar 任务无法监控的问题
+
+### 文档
+
+- 优化分库分表的文档
+- 优化常规部署文档
+- 添加告警防重发相关文档
+- 优化 openapi 文档
+- 添加 HDFS HA 配置文档
+
+### 其他
+
+- 增加一些自动化 Action
