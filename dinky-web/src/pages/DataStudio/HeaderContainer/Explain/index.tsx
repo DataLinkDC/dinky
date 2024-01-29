@@ -228,7 +228,7 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
           style={{ alignItems: 'inherit' }}
           code={explainInfo}
           language='java'
-          height='500px'
+          height='92vh'
         />
       </Drawer>
     </>
