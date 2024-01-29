@@ -47,5 +47,4 @@ public interface SystemService {
     String readFile(String path);
 
     List<String> queryAllClassLoaderJarFiles();
-
 }

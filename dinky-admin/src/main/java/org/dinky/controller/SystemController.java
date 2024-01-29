@@ -84,11 +84,9 @@ public class SystemController {
         return Result.data(systemService.readFile(path));
     }
 
-
     @GetMapping("/queryAllClassLoaderJarFiles")
     @ApiOperation("Query All ClassLoader Jar Files")
     public Result<List<String>> queryAllClassLoaderJarFiles() {
         return Result.succeed(systemService.queryAllClassLoaderJarFiles());
     }
-
 }
