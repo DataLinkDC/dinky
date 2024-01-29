@@ -5,6 +5,13 @@ id: docker_deploy
 title: Docker 部署
 ---
 
+:::danger 注意
+
+Dinky v1.0.0 的 Docker 镜像正在开发中，敬请期待。以下步骤目前由于镜像未发布，无法使用。请耐心等待。如您对 Docker 镜像有兴趣，欢迎加入我们的开发群，一起参与开发。
+
+:::
+
+
 ## Docker 快速使用教程
 本教程使用三种不同的方式通过 Docker 完成 Dinky 的部署，如果你想要快速体验，推荐使用 standalone-server 镜像， 如果你想要体验比较完整的服务，推荐使用 docker-compose 启动服务。如果你已经有自己的数据库服务 你想要沿用这些基础服务，你可以参考沿用已有的 Mysql 、 Hadoop 和 Flink  服务完成部署。
 
