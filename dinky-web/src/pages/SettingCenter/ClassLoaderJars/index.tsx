@@ -19,7 +19,7 @@ export default () => {
   return (
     <Space size={'large'} direction={'vertical'}>
       <Alert message={l('sys.classLoaderJars.tips')} type="info" showIcon/>
-      <CodeShow height={'88vh'} code={data} language={'java'}/>
+      <CodeShow showFloatButton enableMiniMap height={'88vh'} code={data} language={'java'}/>
     </Space>
   )
 }

@@ -87,7 +87,6 @@ public class SystemController {
 
     @GetMapping("/queryAllClassLoaderJarFiles")
     @ApiOperation("Query All ClassLoader Jar Files")
-    @SaCheckPermission(PermissionConstants.SYSTEM_SETTING_INFO_CLASSLOADER_LIST)
     public Result<List<String>> queryAllClassLoaderJarFiles() {
         return Result.succeed(systemService.queryAllClassLoaderJarFiles());
     }
