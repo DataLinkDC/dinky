@@ -214,3 +214,10 @@ Q4: 为什么在 IDEA 中启动 Dinky 后，Profile 也加载了,我用到了一
 > A4-1: Dinky 只加载了 Dinky 在开发中过程中用到的相关 Flink 依赖以及 Flink 的基本环境依赖.如报此类错误,请检查你的 pom.xml 文件,是否包含了 connector 所依赖的 jar 包
 
 > A4-2: 如上述问题未解决,请检查你的 `dinky-flink` 模块下的与你Flink 版本一致的 `pom.xml` 文件,是否包含了 connector 所依赖的 jar 包
+
+##  文档补全 FAQ
+Q1: 使用0.7.5 使用yarn-per-job模式提交应用。应用起来但是不会打印日志，抛异常找不到日志文件
+org.apache.flink.util.FlinkException: The file STDOUT is not available on the TaskExecutor
+> A3-1: 对于Dinky 版本 0.7.5 使用yarn-per-job模式提交应用，在配置集群环境中 --> 【Flink 配置文件路径】如图：
+<img width="569" alt="image" src="https://github.com/sunnyboy3/dinky/assets/13884959/1885f4a0-2dc7-4598-8a53-298eefbb3f34">
+这个文件夹不仅要包含flink-conf.yaml文件还需要包含flink的日志文件log4j.properties
