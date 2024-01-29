@@ -34,8 +34,8 @@ export default () => {
 
   return (
     <Space size={'large'} direction={'vertical'}>
-      <Alert message={l('sys.classLoaderJars.tips')} type="info" showIcon/>
-      <CodeShow showFloatButton enableMiniMap height={'88vh'} code={data} language={'java'}/>
+      <Alert message={l('sys.classLoaderJars.tips')} type='info' showIcon />
+      <CodeShow showFloatButton enableMiniMap height={'88vh'} code={data} language={'java'} />
     </Space>
   );
 };
