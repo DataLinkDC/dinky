@@ -50,6 +50,8 @@ Clone 完成后, 等待 IDEA 自动下载依赖(前提 IDEA 已经正确配置�
 
 - 打包 Profile
 
+> 注意: 需要勾选 web,否则无法打包前端资源
+
 ![locadenug_single_package_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/locadenug_single_package_profile.png)
 
 
