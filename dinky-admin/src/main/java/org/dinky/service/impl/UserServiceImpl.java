@@ -19,6 +19,20 @@
 
 package org.dinky.service.impl;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
@@ -55,26 +69,8 @@ import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
 import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-
-import cn.dev33.satoken.secure.SaSecureUtil;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
-import lombok.RequiredArgsConstructor;
 
 /**
  * UserServiceImpl
@@ -141,7 +137,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO) {
         User user = getById(modifyPasswordDTO.getId());
         if (Asserts.isNull(user)) {
-            return Result.failed(Status.USER_NOT_EXIST);
+            return Result.authorizeFailed(Status.USER_NOT_EXIST, modifyPasswordDTO.getUsername());
         }
         if (!Asserts.isEquals(SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
             return Result.failed(Status.USER_OLD_PASSWORD_INCORRECT);
@@ -180,7 +176,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
         } catch (AuthException e) {
             // Handle authentication exceptions and return the corresponding error status
-            return Result.authorizeFailed(Status.USER_NOT_EXIST,loginDTO.getUsername());
+            return Result.authorizeFailed(Status.USER_NOT_EXIST, loginDTO.getUsername());
         }
 
         // Check if the user is enabled
@@ -247,7 +243,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
             // User doesn't exist
-            throw new AuthException(Status.USER_NOT_EXIST);
+            throw new AuthException(Status.USER_NOT_EXIST,loginDTO.getUsername());
         }
 
         String userPassword = user.getPassword();
