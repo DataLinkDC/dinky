@@ -20,5 +20,9 @@
 import { queryDataByParams } from '@/services/BusinessCrud';
 
 export const queryClassLoaderJars = async () => {
-  return (await queryDataByParams<Record<string, string[]>>('/api/system/queryAllClassLoaderJarFiles')) ?? {};
+  return (
+    (await queryDataByParams<Record<string, string[]>>(
+      '/api/system/queryAllClassLoaderJarFiles'
+    )) ?? {}
+  );
 };
