@@ -33,6 +33,7 @@ public class SqlUtil {
 
     private static final String SEMICOLON = ";";
     private static final String SQL_SEPARATOR = ";\\s*(?:\\n|--.*)";
+
     private SqlUtil() {}
 
     public static String[] getStatements(String sql) {

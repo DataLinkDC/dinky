@@ -643,7 +643,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         + "'password' = '%s',\n"
                         + "    'url' = '%s'\n"
                         + ")%suse catalog my_catalog%s",
-                dsProperties.getUsername(), dsProperties.getPassword(), dsProperties.getUrl(), FlinkSQLConstant.SEPARATOR, FlinkSQLConstant.SEPARATOR);
+                dsProperties.getUsername(),
+                dsProperties.getPassword(),
+                dsProperties.getUrl(),
+                FlinkSQLConstant.SEPARATOR,
+                FlinkSQLConstant.SEPARATOR);
 
         if (null != defaultFlinkSQLEnvTask) {
             defaultFlinkSQLEnvTask.setStatement(sql);

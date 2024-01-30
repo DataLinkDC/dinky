@@ -20,9 +20,7 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.model.LineageRel;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
@@ -86,8 +84,7 @@ public class Explainer {
         this.jobManager = jobManager;
     }
 
-    public static Explainer build(
-            Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public static Explainer build(Executor executor, boolean useStatementSet, JobManager jobManager) {
         return new Explainer(executor, useStatementSet, jobManager);
     }
 

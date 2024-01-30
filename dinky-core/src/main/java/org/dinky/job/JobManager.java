@@ -22,7 +22,6 @@ package org.dinky.job;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
-import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.context.RowLevelPermissionsContext;
@@ -327,8 +326,8 @@ public class JobManager {
         ready();
 
         DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
-        jobParam = Explainer.build(executor, useStatementSet, this)
-                .pretreatStatements(SqlUtil.getStatements(statement));
+        jobParam =
+                Explainer.build(executor, useStatementSet, this).pretreatStatements(SqlUtil.getStatements(statement));
         try {
             // step 1: init udf
             JobUDFBuilder.build(this).run();

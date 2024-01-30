@@ -19,7 +19,6 @@
 
 package org.dinky.job;
 
-import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.executor.Executor;
 import org.dinky.gateway.enums.GatewayType;
 

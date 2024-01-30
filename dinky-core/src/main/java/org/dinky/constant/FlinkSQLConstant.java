@@ -19,8 +19,6 @@
 
 package org.dinky.constant;
 
-import org.dinky.data.model.SystemConfiguration;
-
 /**
  * FlinkSQLConstant
  *
