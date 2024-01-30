@@ -80,6 +80,7 @@ export default {
   'menu.settings': '配置中心',
   'menu.settings.globalsetting': '全局配置',
   'menu.settings.systemlog': '系统日志',
+  'menu.settings.classloaderjars': '类加载器 Jars',
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
   'menu.settings.alertrulelist': '告警策略',

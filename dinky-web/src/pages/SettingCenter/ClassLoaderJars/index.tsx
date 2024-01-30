@@ -17,34 +17,25 @@
  *
  */
 
-package org.dinky.service;
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { queryClassLoaderJars } from '@/pages/SettingCenter/ClassLoaderJars/service';
+import { l } from '@/utils/intl';
+import { Alert, Space } from 'antd';
+import { useEffect, useState } from 'react';
 
-import org.dinky.data.dto.TreeNodeDTO;
-import org.dinky.data.model.ext.FileNode;
+export default () => {
+  const [data, setData] = useState<string>('');
 
-import java.util.List;
+  useEffect(() => {
+    queryClassLoaderJars().then((res) => {
+      if (res && res.length > 0) setData(res.join('\n'));
+    });
+  }, []);
 
-/**
- * SystemService
- *
- * @since 2022/10/15 19:16
- */
-public interface SystemService {
-
-    /**
-     * List log root dir.
-     *
-     * @return {@link List<FileNode>}
-     */
-    List<TreeNodeDTO> listLogDir();
-
-    /**
-     * readFile
-     *
-     * @param path
-     * @return {@link String}
-     */
-    String readFile(String path);
-
-    List<String> queryAllClassLoaderJarFiles();
-}
+  return (
+    <Space size={'large'} direction={'vertical'}>
+      <Alert message={l('sys.classLoaderJars.tips')} type='info' showIcon />
+      <CodeShow showFloatButton enableMiniMap height={'88vh'} code={data} language={'java'} />
+    </Space>
+  );
+};

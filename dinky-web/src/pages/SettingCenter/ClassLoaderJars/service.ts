@@ -17,34 +17,8 @@
  *
  */
 
-package org.dinky.service;
+import { queryDataByParams } from '@/services/BusinessCrud';
 
-import org.dinky.data.dto.TreeNodeDTO;
-import org.dinky.data.model.ext.FileNode;
-
-import java.util.List;
-
-/**
- * SystemService
- *
- * @since 2022/10/15 19:16
- */
-public interface SystemService {
-
-    /**
-     * List log root dir.
-     *
-     * @return {@link List<FileNode>}
-     */
-    List<TreeNodeDTO> listLogDir();
-
-    /**
-     * readFile
-     *
-     * @param path
-     * @return {@link String}
-     */
-    String readFile(String path);
-
-    List<String> queryAllClassLoaderJarFiles();
-}
+export const queryClassLoaderJars = async () => {
+  return (await queryDataByParams<string[]>('/api/system/queryAllClassLoaderJarFiles')) ?? [];
+};

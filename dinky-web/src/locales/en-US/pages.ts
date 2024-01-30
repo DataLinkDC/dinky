@@ -1215,5 +1215,8 @@ export default {
   'lineage.collapseUpstream': 'Collapse Upstream(UnSupported)',
   'lineage.showMap': 'Show Map',
   'lineage.hideMap': 'Hide Map',
-  'lineage.refresh': 'Refresh'
+  'lineage.refresh': 'Refresh',
+
+  'sys.classLoaderJars.tips':
+    'The following content shows the list of jar packages loaded by the system class loader inside the Dinky service. In this way, you can visually view all Jar files that have been loaded inside the service to help troubleshoot Jar package conflicts and other issues.'
 };

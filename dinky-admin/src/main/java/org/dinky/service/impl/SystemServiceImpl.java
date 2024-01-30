@@ -26,9 +26,14 @@ import org.dinky.utils.DirUtil;
 import org.dinky.utils.TreeUtil;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+
+import cn.hutool.core.util.ClassLoaderUtil;
 
 /**
  * SystemServiceImpl
@@ -47,5 +52,22 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public String readFile(String path) {
         return DirUtil.readFile(path);
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public List<String> queryAllClassLoaderJarFiles() {
+        List<String> jarFiles = new ArrayList<>();
+        ClassLoader systemClassLoader = ClassLoaderUtil.getSystemClassLoader();
+        if (systemClassLoader instanceof URLClassLoader) {
+            URLClassLoader urlClassLoader = (URLClassLoader) systemClassLoader;
+            URL[] urlClassLoaderURLs = urlClassLoader.getURLs();
+            for (URL url : urlClassLoaderURLs) {
+                jarFiles.add(url.getFile());
+            }
+        }
+        return jarFiles;
     }
 }
