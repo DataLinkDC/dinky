@@ -20,7 +20,6 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.SystemConfiguration;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -33,11 +32,11 @@ import java.util.regex.Pattern;
 public class SqlUtil {
 
     private static final String SEMICOLON = ";";
-
+    private static final String SQL_SEPARATOR = ";\\s*(?:\\n|--.*)";
     private SqlUtil() {}
 
     public static String[] getStatements(String sql) {
-        return getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
+        return getStatements(sql, SQL_SEPARATOR);
     }
 
     public static String[] getStatements(String sql, String sqlSeparator) {
@@ -45,8 +44,7 @@ public class SqlUtil {
             return new String[0];
         }
 
-        final String localSqlSeparator = ";\\s*(?:\\n|--.*)";
-        String[] splits = sql.replace("\r\n", "\n").split(localSqlSeparator);
+        String[] splits = sql.replace("\r\n", "\n").split(sqlSeparator);
         String lastStatement = splits[splits.length - 1].trim();
         if (lastStatement.endsWith(SEMICOLON)) {
             splits[splits.length - 1] = lastStatement.substring(0, lastStatement.length() - 1);

@@ -20,6 +20,7 @@
 package org.dinky.job.builder;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
@@ -104,14 +105,14 @@ public class JobTransBuilder extends JobBuilder {
     }
 
     private void processWithGateway(List<String> inserts) throws Exception {
-        jobManager.setCurrentSql(String.join(sqlSeparator, inserts));
+        jobManager.setCurrentSql(String.join(FlinkSQLConstant.SEPARATOR, inserts));
         GatewayResult gatewayResult = submitByGateway(inserts);
         setJobResultFromGatewayResult(gatewayResult);
     }
 
     private void processWithoutGateway(List<String> inserts) throws Exception {
         if (!inserts.isEmpty()) {
-            jobManager.setCurrentSql(String.join(sqlSeparator, inserts));
+            jobManager.setCurrentSql(String.join(FlinkSQLConstant.SEPARATOR, inserts));
             TableResult tableResult = executor.executeStatementSet(inserts);
             updateJobWithTableResult(tableResult);
         }

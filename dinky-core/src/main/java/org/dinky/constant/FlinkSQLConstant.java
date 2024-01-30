@@ -19,7 +19,7 @@
 
 package org.dinky.constant;
 
-import org.dinky.sql.FlinkQuery;
+import org.dinky.data.model.SystemConfiguration;
 
 /**
  * FlinkSQLConstant
@@ -30,13 +30,7 @@ public class FlinkSQLConstant {
     private FlinkSQLConstant() {}
 
     /** 分隔符 */
-    public static final String SEPARATOR = FlinkQuery.separator();
-    /** DDL 类型 */
-    public static final String DDL = "DDL";
-    /** DML 类型 */
-    public static final String DML = "DML";
-    /** DATASTREAM 类型 */
-    public static final String DATASTREAM = "DATASTREAM";
+    public static final String SEPARATOR = ";\\n";
 
     /** The define identifier of FlinkSQL Variable */
     public static final String VARIABLES = ":=";

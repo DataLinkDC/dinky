@@ -104,7 +104,6 @@ public class JobManager {
     private boolean isPlanMode = false;
     private boolean useStatementSet = false;
     private boolean useRestAPI = false;
-    private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private GatewayType runMode = GatewayType.LOCAL;
 
     private JobParam jobParam = null;
@@ -162,10 +161,6 @@ public class JobManager {
         return useRestAPI;
     }
 
-    public String getSqlSeparator() {
-        return sqlSeparator;
-    }
-
     public boolean isUseGateway() {
         return useGateway;
     }
@@ -216,7 +211,6 @@ public class JobManager {
         }
         useStatementSet = config.isStatementSet();
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
-        sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
         executorConfig = config.getExecutorSetting();
         executorConfig.setPlan(isPlanMode);
         executor = ExecutorFactory.buildExecutor(executorConfig, getDinkyClassLoader());
@@ -333,8 +327,8 @@ public class JobManager {
         ready();
 
         DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
-        jobParam = Explainer.build(executor, useStatementSet, sqlSeparator, this)
-                .pretreatStatements(SqlUtil.getStatements(statement, sqlSeparator));
+        jobParam = Explainer.build(executor, useStatementSet, this)
+                .pretreatStatements(SqlUtil.getStatements(statement));
         try {
             // step 1: init udf
             JobUDFBuilder.build(this).run();
@@ -367,7 +361,7 @@ public class JobManager {
     }
 
     public IResult executeDDL(String statement) {
-        String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
+        String[] statements = SqlUtil.getStatements(statement);
         try {
             IResult result = null;
             for (String item : statements) {
@@ -401,19 +395,19 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+        return Explainer.build(executor, useStatementSet, this)
                 .initialize(config, statement)
                 .explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+        return Explainer.build(executor, useStatementSet, this)
                 .initialize(config, statement)
                 .getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor, useStatementSet, sqlSeparator, this)
+        return Explainer.build(executor, useStatementSet, this)
                 .initialize(config, statement)
                 .getJobPlanInfo(statement)
                 .getJsonPlan();
