@@ -45,7 +45,8 @@ public class SqlUtil {
             return new String[0];
         }
 
-        String[] splits = sql.replace("\r\n", "\n").split(sqlSeparator);
+        final String localSqlSeparator = ";\\s*(?:\\n|--.*)";
+        String[] splits = sql.replace("\r\n", "\n").split(localSqlSeparator);
         String lastStatement = splits[splits.length - 1].trim();
         if (lastStatement.endsWith(SEMICOLON)) {
             splits[splits.length - 1] = lastStatement.substring(0, lastStatement.length() - 1);
