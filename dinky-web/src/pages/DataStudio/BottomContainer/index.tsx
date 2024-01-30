@@ -33,7 +33,7 @@ import { BottomBtnRoute, LeftBottomMoreTabs, LeftBottomSide, Tab } from '@/pages
 import { BottomTabRoute } from '@/pages/DataStudio/TabRoute';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
-import { ConfigProvider, Space, Tabs } from 'antd';
+import { ConfigProvider, Space, Tabs ,theme} from 'antd';
 import React, { useEffect, useState } from 'react';
 
 export type BottomContainerProps = {
@@ -50,6 +50,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
     tabs: { activeKey, panes }
   } = props;
   const currentData = getCurrentData(panes, activeKey);
+  const {useToken}=theme
   const taskId = currentData?.id ?? 0;
   const [tabState, setTabState] = useState<Record<string, Tab[]>>(
     Object.keys(BottomTabRoute)
@@ -300,7 +301,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         zIndex: 999,
         height: height,
         marginTop: 0,
-        backgroundColor: '#fff',
+        backgroundColor: useToken().token.colorBgBase,
         position: 'fixed',
         bottom: VIEW.footerHeight
       }}
