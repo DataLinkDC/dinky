@@ -89,21 +89,8 @@ mybatis-plus:
 #################################################################################################################
 ################################################# SMS Config ####################################################
 #################################################################################################################
-#sms:
-#  # Whether to enable SMS
-#  config-type: sql_config
-#  is-print: false
-#  sql:
-#    # The database connection information
-#    url: ${spring.datasource.url}
-#    username: ${spring.datasource.username}
-#    password: ${spring.datasource.password}
-#    driver-class-name: ${spring.datasource.driver-class-name}
-#    table-name: dinky_alert_instance
-#    supplier-field-name: manufacturers
-#    config-name: params
-#    start-name: enabled
-#    is-start: 1
+sms:
+  is-print: false
 
 
 
@@ -144,8 +131,7 @@ knife4j:
   setting:
     language: en
 
-sms:
-  is-print: false
+
 
 #################################################################################################################
 ################################################# Crypto Config #################################################
