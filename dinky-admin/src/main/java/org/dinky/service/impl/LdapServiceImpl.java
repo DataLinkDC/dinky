@@ -73,7 +73,7 @@ public class LdapServiceImpl implements LdapService {
         if (result.size() == 0) {
             log.info(String.format(
                     "No results found for search, base: '%s'; filter: '%s'", configuration.getLdapBaseDn(), filter));
-            throw new AuthException(Status.USER_NOT_EXIST,loginDTO.getUsername());
+            throw new AuthException(Status.USER_NOT_EXIST, loginDTO.getUsername());
         } else if (result.size() > 1) {
             log.error(String.format(
                     "IncorrectResultSize, base: '%s'; filter: '%s'", configuration.getLdapBaseDn(), filter));
