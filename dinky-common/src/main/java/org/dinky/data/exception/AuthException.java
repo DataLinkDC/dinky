@@ -19,8 +19,9 @@
 
 package org.dinky.data.exception;
 
-import java.text.MessageFormat;
 import org.dinky.data.enums.Status;
+
+import java.text.MessageFormat;
 
 import lombok.Data;
 
@@ -44,7 +45,7 @@ public class AuthException extends Exception {
         this.status = status;
     }
 
-    public AuthException(Status status ,Object... args) {
+    public AuthException(Status status, Object... args) {
         super(MessageFormat.format(status.getMessage(), args));
         this.status = status;
     }
