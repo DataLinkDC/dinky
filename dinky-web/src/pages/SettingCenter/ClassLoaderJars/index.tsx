@@ -20,22 +20,41 @@
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { queryClassLoaderJars } from '@/pages/SettingCenter/ClassLoaderJars/service';
 import { l } from '@/utils/intl';
-import { Alert, Space } from 'antd';
+import { Alert, Space, Tabs } from 'antd';
 import { useEffect, useState } from 'react';
 
 export default () => {
-  const [data, setData] = useState<string>('');
+  const [data, setData] = useState<Record<string, string[]>>();
 
   useEffect(() => {
     queryClassLoaderJars().then((res) => {
-      if (res && res.length > 0) setData(res.join('\n'));
+      if (res) setData(res);
     });
   }, []);
 
   return (
     <Space size={'large'} direction={'vertical'}>
       <Alert message={l('sys.classLoaderJars.tips')} type='info' showIcon />
-      <CodeShow showFloatButton enableMiniMap height={'88vh'} code={data} language={'java'} />
+      {data && (
+        <Tabs
+          defaultActiveKey='1'
+          items={Object.keys(data).map((key) => {
+            return {
+              key: key,
+              label: key,
+              children: (
+                <CodeShow
+                  showFloatButton
+                  enableMiniMap
+                  height={'75vh'}
+                  code={data[key].join('\n')}
+                  language={'java'}
+                />
+              )
+            };
+          })}
+        />
+      )}
     </Space>
   );
 };
