@@ -75,6 +75,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * UserServiceImpl
@@ -83,6 +84,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
 
     private static final String DEFAULT_PASSWORD = "123456";
@@ -464,8 +466,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 userTenantService.list(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
         userTenants.forEach(userTenant -> {
             User user = getById(userTenant.getUserId());
-            user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
-            userList.add(user);
+            if (!Asserts.isNull(user)) {
+                user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+                userList.add(user);
+            } else {
+                log.error(
+                        "Unable to obtain user information, the user may have been deleted, please contact the administrator to verify, userId:[{}]",
+                        userTenant.getUserId());
+            }
         });
         return userList;
     }
