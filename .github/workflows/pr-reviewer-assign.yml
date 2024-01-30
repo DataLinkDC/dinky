@@ -23,13 +23,3 @@ jobs:
           pr-emoji: '+1, rocket'
           reviewers: 'zackyoungh,gaoyan1998,Zzm0809,aiwenmo'
           review-creator: false
-
-
-      - name: Add project
-        if: "github.event_name == 'pull_request_target'"
-        uses: alex-page/github-project-automation-plus@v0.8.1
-        with:
-          project: Dinky Roadmap
-          column: RoadMap
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          action: add

@@ -17,7 +17,8 @@
 
 spring:
   datasource:
-    username: postgres
-    password: dinky
+    username: ${POSTGRES_USER:dinky}
+    password: ${POSTGRES_PASSWORD:dinky}
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/dinky?stringtype=unspecified
+    # The POSTGRES_ADDR variable is not officially provided. If you use docker, please manually add an env to support it.
+    url: jdbc:postgresql://${POSTGRES_ADDR:localhost:5432}/${POSTGRES_DB:dinky}?stringtype=unspecified
