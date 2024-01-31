@@ -101,7 +101,7 @@ export const errorConfig: RequestConfig = {
         if (error.response.status === 401) {
           history.push(API_CONSTANTS.LOGIN_PATH);
         } else {
-          if (Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))) {
+          if (getValueFromLocalStorage(ENABLE_MODEL_TIP) == 'true') {
             ErrorNotification(error.message, error.code);
           }
         }
