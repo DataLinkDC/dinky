@@ -20,41 +20,23 @@
 package org.dinky.data.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/** @TableName dinky_resources */
-@EqualsAndHashCode(callSuper = true)
-@TableName(value = "dinky_resources")
 @Data
 @ApiModel(value = "Resources", description = "Resource Information")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Resources extends Model<Resources> {
+public class ResourcesVO {
 
-    @TableId(type = IdType.ASSIGN_ID)
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the resource")
     private Integer id;
 
@@ -105,9 +87,6 @@ public class Resources extends Model<Resources> {
             notes = "Flag indicating if the resource is a directory")
     private Boolean isDirectory;
 
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(
             value = "Create Time",
@@ -115,9 +94,6 @@ public class Resources extends Model<Resources> {
             notes = "Timestamp indicating the creation time of the resource")
     private LocalDateTime createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(
             value = "Update Time",
@@ -125,14 +101,8 @@ public class Resources extends Model<Resources> {
             notes = "Timestamp indicating the last update time of the resource")
     private LocalDateTime updateTime;
 
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
-    @TableField(exist = false)
-    @ApiModelProperty(value = "Children", required = true, dataType = "List<Resources>", example = "[]")
-    private List<Resources> children = new ArrayList<>();
-
-    @TableField(exist = false)
     @ApiModelProperty(
             value = "Is Leaf",
             dataType = "boolean",
@@ -140,15 +110,9 @@ public class Resources extends Model<Resources> {
             notes = "Indicates whether the tree node is a leaf node (true/false)")
     private boolean isLeaf;
 
-    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "Creator", required = true, dataType = "Integer", example = "creator")
     private Integer creator;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "Updater", required = true, dataType = "Integer", example = "updater")
     private Integer updater;
-
-    public static Resources of(ResourcesVO resourcesVO) {
-        return BeanUtil.toBean(resourcesVO, Resources.class);
-    }
 }

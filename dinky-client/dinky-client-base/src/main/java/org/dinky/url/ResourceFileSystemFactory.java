@@ -17,16 +17,25 @@
  *
  */
 
-package org.dinky.app.url;
+package org.dinky.url;
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
+import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.core.fs.FileSystemFactory;
 
-public class RsURLStreamHandler extends URLStreamHandler {
+import java.io.IOException;
+import java.net.URI;
+
+import com.google.auto.service.AutoService;
+
+@AutoService(FileSystemFactory.class)
+public class ResourceFileSystemFactory implements FileSystemFactory {
+    @Override
+    public String getScheme() {
+        return ResourceFileSystem.URI_SCHEMA.getScheme();
+    }
 
     @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
+    public FileSystem create(URI fsUri) throws IOException {
+        return ResourceFileSystem.getSharedInstance();
     }
 }

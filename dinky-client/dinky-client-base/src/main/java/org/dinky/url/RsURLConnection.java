@@ -17,30 +17,34 @@
  *
  */
 
-package org.dinky.app.resource.impl;
+package org.dinky.url;
 
-import org.dinky.app.resource.BaseResourceManager;
-import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.exception.BusException;
+import org.dinky.resource.BaseResourceManager;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
-import cn.hutool.core.util.URLUtil;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-public class LocalResourceManager implements BaseResourceManager {
-    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+public class RsURLConnection extends URLConnection {
+    private InputStream inputStream;
 
     @Override
-    public InputStream readFile(String path) {
-        try {
-            return new URL("http://" + systemConfiguration.getDinkyAddr().getValue() + "/download/downloadFromRs?path="
-                            + URLUtil.encode(path))
-                    .openStream();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void connect() {
+        BaseResourceManager instance = BaseResourceManager.getInstance();
+        if (instance == null) {
+            throw BusException.valueOf("ResourceManager is disabled");
         }
+        inputStream = instance.readFile(getURL().getPath());
+    }
+
+    @Override
+    public InputStream getInputStream() {
+        connect();
+        return inputStream;
+    }
+
+    public RsURLConnection(URL url) {
+        super(url);
     }
 }

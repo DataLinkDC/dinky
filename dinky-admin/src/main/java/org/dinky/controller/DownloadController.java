@@ -26,7 +26,7 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.util.ZipWriter;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;

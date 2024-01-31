@@ -17,34 +17,16 @@
  *
  */
 
-package org.dinky.app.url;
+package org.dinky.url;
 
-import org.dinky.app.resource.BaseResourceManager;
-import org.dinky.data.exception.BusException;
-
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLStreamHandler;
 
-public class RsURLConnection extends URLConnection {
-    private InputStream inputStream;
-
-    @Override
-    public void connect() {
-        BaseResourceManager instance = BaseResourceManager.getInstance();
-        if (instance == null) {
-            throw BusException.valueOf("ResourceManager is disabled");
-        }
-        inputStream = instance.readFile(getURL().getPath());
-    }
+public class RsURLStreamHandler extends URLStreamHandler {
 
     @Override
-    public InputStream getInputStream() {
-        connect();
-        return inputStream;
-    }
-
-    public RsURLConnection(URL url) {
-        super(url);
+    protected URLConnection openConnection(URL u) {
+        return new RsURLConnection(u);
     }
 }

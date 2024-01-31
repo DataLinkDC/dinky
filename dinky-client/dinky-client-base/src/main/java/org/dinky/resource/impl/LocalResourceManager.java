@@ -17,11 +17,11 @@
  *
  */
 
-package org.dinky.service.resource.impl;
+package org.dinky.resource.impl;
 
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.Resources;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.data.model.ResourcesVO;
+import org.dinky.resource.BaseResourceManager;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
@@ -69,10 +67,10 @@ public class LocalResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public void putFile(String path, MultipartFile file) {
+    public void putFile(String path, InputStream fileStream) {
         try {
-            FileUtil.writeFromStream(file.getInputStream(), getFilePath(path));
-        } catch (IOException e) {
+            FileUtil.writeFromStream(fileStream, getFilePath(path));
+        } catch (Exception e) {
             log.error("putFile file failed", e);
             throw new BusException(e.getMessage());
         }
@@ -90,7 +88,7 @@ public class LocalResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public List<Resources> getFullDirectoryStructure(int rootId) {
+    public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
         try (Stream<Path> paths = Files.walk(Paths.get(basePath))) {
             return paths.map(path -> {
@@ -106,7 +104,7 @@ public class LocalResourceManager implements BaseResourceManager {
                         String self = path.toString().replace(basePath, "");
                         int pid = parent.isEmpty() ? rootId : parent.hashCode();
                         File file = new File(path.toString());
-                        return Resources.builder()
+                        return ResourcesVO.builder()
                                 .id(self.hashCode())
                                 .pid(pid)
                                 .fullName(self)
