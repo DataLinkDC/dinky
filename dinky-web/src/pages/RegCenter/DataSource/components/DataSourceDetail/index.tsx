@@ -19,7 +19,10 @@
 
 import { DataSourceDetailBackButton } from '@/components/StyledComponents';
 import { Authorized, HasAuthority, useAccess } from '@/hooks/useAccess';
-import {clearDataSourceTable, showDataSourceTable} from '@/pages/DataStudio/LeftContainer/DataSource/service';
+import {
+  clearDataSourceTable,
+  showDataSourceTable
+} from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
