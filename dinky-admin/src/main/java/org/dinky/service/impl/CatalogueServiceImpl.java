@@ -31,6 +31,7 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
@@ -466,13 +467,15 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     throw new BusException(Status.TASK_IS_PUBLISH_CANNOT_DELETE);
                 }
                 if (task.getJobInstanceId() != null) {
-                    // 获取前 先强制刷新一下, 避免获取任务信息状态不准确
-                    jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), true);
                     // 获取当前 job instance
                     JobInstance currentJobInstance = jobInstanceService.getById(task.getJobInstanceId());
-                    if (currentJobInstance != null
-                            && currentJobInstance.getStatus().equals(JobStatus.RUNNING.getValue())) {
-                        throw new BusException(Status.TASK_IS_RUNNING_CANNOT_DELETE);
+                    if (currentJobInstance != null) {
+                        // 获取前 先强制刷新一下, 避免获取任务信息状态不准确
+                        JobInfoDetail jobInfoDetail =
+                                jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), true);
+                        if (jobInfoDetail.getInstance().getStatus().equals(JobStatus.RUNNING.getValue())) {
+                            throw new BusException(Status.TASK_IS_RUNNING_CANNOT_DELETE);
+                        }
                     }
                 }
             }

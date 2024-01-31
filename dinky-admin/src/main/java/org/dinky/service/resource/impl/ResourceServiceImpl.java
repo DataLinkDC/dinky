@@ -19,6 +19,7 @@
 
 package org.dinky.service.resource.impl;
 
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
@@ -137,7 +138,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     public void rename(Integer id, String fileName, String desc) {
         Resources byId = getById(id);
         String sourceFullName = byId.getFullName();
-        Assert.notNull(byId, () -> new BusException("resource is not exists!"));
+        DinkyAssert.checkNull(byId, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
         long count = count(new LambdaQueryWrapper<Resources>()
                 .eq(Resources::getPid, byId.getPid())
                 .eq(Resources::getFileName, fileName)
@@ -216,7 +217,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public String getContentByResourceId(Integer id) {
         Resources resources = getById(id);
-        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        DinkyAssert.checkNull(resources, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
         Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
         return getBaseResourceManager().getFileContent(resources.getFullName());
     }
@@ -224,7 +225,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public File getFile(Integer id) {
         Resources resources = getById(id);
-        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        DinkyAssert.checkNull(resources, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
         Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
         return URLUtils.toFile("rs://" + resources.getFullName());
     }

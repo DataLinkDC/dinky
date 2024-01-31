@@ -185,7 +185,7 @@ public class JobAlertData {
 
         if (jobDataDto.isError()) {
             builder.errorMsg(jobDataDto.getErrorMsg());
-        } else if (exceptions != null && ExceptionRule.isException(id, exceptions)) {
+        } else if (exceptions != null && ExceptionRule.isException(exceptions)) {
             // The error message is too long to send an alarm,
             // and only the first line of abnormal information is used
             String err = Optional.ofNullable(exceptions.getRootException())
@@ -198,8 +198,8 @@ public class JobAlertData {
         }
 
         if (checkpoints != null) {
-            builder.checkpointCostTime(CheckpointsRule.checkpointTime(id, checkpoints))
-                    .isCheckpointFailed(CheckpointsRule.checkFailed(id, checkpoints));
+            builder.checkpointCostTime(CheckpointsRule.checkpointTime(checkpoints))
+                    .isCheckpointFailed(CheckpointsRule.checkFailed(checkpoints));
             if (checkpoints.getCounts() != null) {
                 builder.checkpointFailedCount(checkpoints.getCounts().getNumberFailedCheckpoints())
                         .checkpointCompleteCount(checkpoints.getCounts().getNumberCompletedCheckpoints());

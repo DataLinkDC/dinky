@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import cn.hutool.core.thread.ThreadUtil;
 import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.data.dto.ClusterInstanceDTO;
@@ -88,14 +89,14 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
         // TODO 这里判空逻辑有问题，clusterInstance有可能为null
-        Assert.check(clusterInstance);
+        DinkyAssert.check(clusterInstance);
         FlinkClusterInfo info =
                 FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
         }
-        Assert.checkHost(host);
+        DinkyAssert.checkHost(host);
         if (!host.equals(clusterInstance.getJobManagerHost())) {
             clusterInstance.setJobManagerHost(host);
             updateById(clusterInstance);
