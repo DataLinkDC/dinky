@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import org.apache.http.util.TextUtils;
 import org.dinky.context.LdapContext;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.enums.Status;
@@ -29,6 +28,8 @@ import org.dinky.data.model.LdapUserIdentification;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.rbac.User;
 import org.dinky.service.LdapService;
+
+import org.apache.http.util.TextUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +42,6 @@ import org.springframework.ldap.AuthenticationException;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
