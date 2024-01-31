@@ -17,15 +17,15 @@
  *
  */
 
-package org.dinky.service.resource;
+package org.dinky.resource;
 
 import org.dinky.data.exception.DinkyException;
-import org.dinky.data.model.Resources;
+import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.oss.OssTemplate;
-import org.dinky.service.resource.impl.HdfsResourceManager;
-import org.dinky.service.resource.impl.LocalResourceManager;
-import org.dinky.service.resource.impl.OssResourceManager;
+import org.dinky.resource.impl.HdfsResourceManager;
+import org.dinky.resource.impl.LocalResourceManager;
+import org.dinky.resource.impl.OssResourceManager;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -34,8 +34,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -50,13 +48,13 @@ public interface BaseResourceManager {
 
     void rename(String path, String newPath);
 
-    void putFile(String path, MultipartFile file);
+    void putFile(String path, InputStream fileStream);
 
     void putFile(String path, File file);
 
     String getFileContent(String path);
 
-    List<Resources> getFullDirectoryStructure(int rootId);
+    List<ResourcesVO> getFullDirectoryStructure(int rootId);
 
     InputStream readFile(String path);
 
