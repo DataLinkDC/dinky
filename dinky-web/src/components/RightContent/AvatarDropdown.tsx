@@ -128,7 +128,7 @@ const AvatarDropdown = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const [enableModelTip, setEnableModelTip] = useState<boolean>(
-    Boolean(getValueFromLocalStorage(ENABLE_MODEL_TIP))
+    getValueFromLocalStorage(ENABLE_MODEL_TIP) == 'true'
   );
 
   const loginOutHandler = useCallback(
