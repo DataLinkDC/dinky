@@ -43,18 +43,20 @@ public interface DinkyAssert {
             throw new BusException(Status.TASK_NOT_EXIST);
         }
     }
+
     static void check(Task task) {
         if (task == null) {
             throw new BusException(Status.TASK_NOT_EXIST);
         }
     }
 
-    static void checkNull(Object o,Status status){
+    static void checkNull(Object o, Status status) {
         if (o == null) {
             throw new BusException(status);
         }
     }
-    static void checkNull(Object o,String msg){
+
+    static void checkNull(Object o, String msg) {
         if (o == null) {
             throw new BusException(msg);
         }
