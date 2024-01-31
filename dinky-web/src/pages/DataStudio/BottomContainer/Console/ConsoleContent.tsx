@@ -31,7 +31,7 @@ import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { Key, useEffect, useRef, useState } from 'react';
-import {JobStatus} from "@/types/Studio/data";
+import {JobStatus} from "@/types/Studio/data.d";
 
 const { Text } = Typography;
 
