@@ -83,9 +83,10 @@ public interface BaseResourceManager {
                 final Configuration configuration = new Configuration();
                 Charset charset = Charset.defaultCharset();
                 String coreSite = instances.getResourcesHdfsCoreSite().getValue();
-                Opt.ofBlankAble(coreSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset), true));
+                Opt.ofBlankAble(coreSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset)));
                 String hdfsSite = instances.getResourcesHdfsHdfsSite().getValue();
-                Opt.ofBlankAble(hdfsSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset), true));
+                Opt.ofBlankAble(hdfsSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset)));
+                configuration.reloadConfiguration();
                 if (StrUtil.isEmpty(coreSite)) {
                     configuration.set(
                             "fs.defaultFS",
