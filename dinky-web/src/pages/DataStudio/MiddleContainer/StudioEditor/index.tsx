@@ -77,8 +77,8 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
       if (TASK_VAR_FILTER.includes(key)) {
         cache[key] = serverParams[key];
       } else if (key == 'configJson') {
-        var cacheCj = JSON.stringify(cache[key]);
-        var serverCj = JSON.stringify(serverParams[key]);
+        const cacheCj = JSON.stringify(cache[key]);
+        const serverCj = JSON.stringify(serverParams[key]);
         if (cacheCj != serverCj) {
           diff.push({ key: key, server: serverCj, cache: cacheCj });
         }
