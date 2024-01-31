@@ -100,7 +100,7 @@ const JobList = () => {
   }, []);
 
   return (
-    <ProCard boxShadow={true} >
+    <ProCard boxShadow={true}>
       <ProTable<Jobs.JobInstance>
         {...PROTABLE_OPTIONS_PUBLIC}
         search={false}
