@@ -60,7 +60,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     public void putFile(String path, InputStream fileStream) {
         try {
             FSDataOutputStream stream = getHdfs().create(new Path(getFilePath(path)), true);
-            stream.write(fileStream.readAllBytes());
+            stream.write(IoUtil.readBytes(fileStream));
             stream.flush();
             stream.close();
         } catch (IOException e) {
