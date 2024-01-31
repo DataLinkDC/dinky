@@ -200,17 +200,7 @@ public class ClusterInstanceController {
     @ApiOperation("Cluster Instance Heartbeat")
     @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_HEARTBEATS})
     public Result<Long> heartbeat() {
-        List<ClusterInstance> clusterInstances = clusterInstanceService.list();
-        ExecutorService executor = ThreadUtil.newExecutor(Math.min(clusterInstances.size(), 10));
-        List<CompletableFuture<Integer>> futures = clusterInstances.stream()
-                .map(c -> CompletableFuture.supplyAsync(
-                        () -> clusterInstanceService.registersCluster(c).getStatus(), executor))
-                .collect(Collectors.toList());
-        long aliveCount = futures.stream()
-                .map(CompletableFuture::join)
-                .filter(x -> x == 1)
-                .count();
-        return Result.succeed(aliveCount, Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
+        return Result.succeed(clusterInstanceService.heartbeat(), Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
     }
 
     /**
