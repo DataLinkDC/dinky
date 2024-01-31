@@ -199,7 +199,7 @@ public enum PackagedProgramUtils {
                         Thread.currentThread().getContextClassLoader());
                 return pyClass.getProtectionDomain().getCodeSource().getLocation();
             } else {
-                Files.walkFileTree(FileSystems.getDefault().getPath(flinkOptPath), new SimpleFileVisitor<>() {
+                Files.walkFileTree(FileSystems.getDefault().getPath(flinkOptPath), new SimpleFileVisitor<Path>() {
                     @Override
                     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                         FileVisitResult result = super.visitFile(file, attrs);
