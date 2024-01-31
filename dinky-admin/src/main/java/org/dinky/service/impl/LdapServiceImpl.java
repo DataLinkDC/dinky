@@ -19,10 +19,12 @@
 
 package org.dinky.service.impl;
 
+import org.apache.http.util.TextUtils;
 import org.dinky.context.LdapContext;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.LdapUserIdentification;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.rbac.User;
@@ -112,7 +114,9 @@ public class LdapServiceImpl implements LdapService {
     @Override
     public List<User> listUsers() {
         String filter = configuration.getLdapFilter().getValue();
-        Assert.notBlank(filter, Status.LDAP_FILTER_INCORRECT.getMessage());
+        if (TextUtils.isEmpty(filter)) {
+            throw new BusException(Status.LDAP_FILTER_INCORRECT.getMessage());
+        }
 
         LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
         List<User> result = ldapTemplate.search(

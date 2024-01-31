@@ -181,7 +181,7 @@ public class SystemConfiguration {
 
     private final Configuration<String> ldapFilter = key(Status.SYS_LDAP_SETTINGS_FILTER)
             .stringType()
-            .defaultValue("")
+            .defaultValue("(&(objectClass=inetOrgPerson))")
             .note(Status.SYS_LDAP_SETTINGS_FILTER_NOTE);
 
     private final Configuration<Boolean> ldapAutoload = key(Status.SYS_LDAP_SETTINGS_AUTOLOAD)

@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
@@ -76,7 +77,7 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
     @Override
     public FlinkClusterConfig getFlinkClusterCfg(Integer id) {
         ClusterConfiguration cfg = this.getClusterConfigById(id);
-        Assert.notNull(cfg, "The clusterConfiguration not exists!");
+        DinkyAssert.checkNull(cfg, "The clusterConfiguration not exists!");
         return FlinkClusterConfig.create(cfg.getType(), cfg.getConfigJson());
     }
 
