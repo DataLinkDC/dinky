@@ -35,6 +35,7 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -281,4 +282,11 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link LineageResult} object representing the found task lineage.
      */
     LineageResult getTaskLineage(Integer id);
+
+    /**
+     * Build the job submit config with the given task
+     * @param task
+     * @return
+     */
+    JobConfig buildJobSubmitConfig(TaskDTO task);
 }
