@@ -203,7 +203,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobResult;
     }
 
-    // Submit and export task
+    @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_BUILD_CONFIG)
     public JobConfig buildJobSubmitConfig(TaskDTO task) {
         if (Asserts.isNull(task.getType())) {
