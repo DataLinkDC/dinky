@@ -195,12 +195,8 @@ public class ClusterInstanceController {
     @Log(title = "Cluster Instance Heartbeat", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Heartbeat")
     @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_HEARTBEATS})
-    public Result<Void> heartbeat() {
-        List<ClusterInstance> clusterInstances = clusterInstanceService.list();
-        for (ClusterInstance clusterInstance : clusterInstances) {
-            clusterInstanceService.registersCluster(clusterInstance);
-        }
-        return Result.succeed(Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
+    public Result<Long> heartbeat() {
+        return Result.succeed(clusterInstanceService.heartbeat(), Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
     }
 
     /**
