@@ -20,6 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.annotations.ProcessStep;
@@ -174,7 +175,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         log.info("Start check and config task, task:{}", task.getName());
 
-        Assert.notNull(task, Status.TASK_NOT_EXIST.getMessage());
+        DinkyAssert.check(task);
 
         if (StringUtils.isNotBlank(submitDto.getSavePointPath())) {
             task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
@@ -359,10 +360,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         TaskDTO task = this.getTaskInfoById(id);
         boolean useSavepoint = !TextUtils.isEmpty(savePointPath);
 
-        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
+        DinkyAssert.check(task);
         if (!Dialect.isCommonSql(task.getDialect()) && Asserts.isNotNull(task.getJobInstanceId())) {
             JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-            Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
+            DinkyAssert.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST);
             String status = jobInstance.getStatus();
             if (!JobStatus.isDone(status)) {
                 log.info("JobInstance [{}] status is [{}], stop it now", jobInstance.getName(), status);
@@ -409,9 +410,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return true;
         }
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-        Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
+        DinkyAssert.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
         ClusterInstance clusterInstance = clusterInstanceService.getById(jobInstance.getClusterId());
-        Assert.notNull(clusterInstance, Status.CLUSTER_NOT_EXIST.getMessage());
+        DinkyAssert.checkNull(clusterInstance, Status.CLUSTER_NOT_EXIST.getMessage());
 
         JobManager jobManager;
         try {
@@ -446,7 +447,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public SavePointResult savepointTaskJob(TaskDTO task, SavePointType savePointType) {
         JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
-        Assert.notNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
+        DinkyAssert.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMessage());
 
         JobManager jobManager = JobManager.build(buildJobConfig(task));
         String jobId = jobInstance.getJid();
@@ -490,7 +491,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public String exportSql(Integer id) {
         TaskDTO task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMessage());
+        DinkyAssert.check(task);
         if (Dialect.isCommonSql(task.getDialect())) {
             return task.getStatement();
         }
@@ -514,7 +515,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public TaskDTO getTaskInfoById(Integer id) {
         Task mTask = this.getById(id);
-        Assert.notNull(mTask, Status.TASK_NOT_EXIST.getMessage());
+        DinkyAssert.check(mTask);
         TaskDTO taskDTO = new TaskDTO();
         BeanUtil.copyProperties(mTask, taskDTO);
 
