@@ -17,11 +17,11 @@
  *
  */
 
-package org.dinky.service.resource.impl;
+package org.dinky.resource.impl;
 
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.Resources;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.data.model.ResourcesVO;
+import org.dinky.resource.BaseResourceManager;
 
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -31,8 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -59,10 +57,10 @@ public class HdfsResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public void putFile(String path, MultipartFile file) {
+    public void putFile(String path, InputStream fileStream) {
         try {
             FSDataOutputStream stream = getHdfs().create(new Path(getFilePath(path)), true);
-            stream.write(file.getBytes());
+            stream.write(IoUtil.readBytes(fileStream));
             stream.flush();
             stream.close();
         } catch (IOException e) {
@@ -88,7 +86,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public List<Resources> getFullDirectoryStructure(int rootId) {
+    public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         throw new RuntimeException("Sync HDFS Not implemented!");
     }
 

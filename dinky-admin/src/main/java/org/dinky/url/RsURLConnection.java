@@ -20,7 +20,7 @@
 package org.dinky.url;
 
 import org.dinky.data.exception.BusException;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.resource.BaseResourceManager;
 
 import java.io.InputStream;
 import java.net.URL;
