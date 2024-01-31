@@ -115,7 +115,7 @@ public class LdapServiceImpl implements LdapService {
     public List<User> listUsers() {
         String filter = configuration.getLdapFilter().getValue();
         if (TextUtils.isEmpty(filter)) {
-            throw new BusException(Status.LDAP_FILTER_INCORRECT.getMessage());
+            throw new BusException(Status.LDAP_FILTER_INCORRECT);
         }
 
         LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
