@@ -22,6 +22,7 @@ import { SseData } from '@/models/Sse';
 import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { JobStatus } from '@/types/Studio/data.d';
 import { parseMilliSecondStr } from '@/utils/function';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
@@ -31,7 +32,6 @@ import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { Key, useEffect, useRef, useState } from 'react';
-import {JobStatus} from "@/types/Studio/data.d";
 
 const { Text } = Typography;
 
