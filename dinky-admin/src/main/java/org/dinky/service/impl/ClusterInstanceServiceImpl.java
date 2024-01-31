@@ -19,8 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.thread.ThreadUtil;
-import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
@@ -62,6 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -288,10 +287,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                 .map(c -> CompletableFuture.supplyAsync(
                         () -> this.registersCluster(c).getStatus(), executor))
                 .collect(Collectors.toList());
-        return futures.stream()
-                .map(CompletableFuture::join)
-                .filter(x -> x == 1)
-                .count();
+        return futures.stream().map(CompletableFuture::join).filter(x -> x == 1).count();
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {
