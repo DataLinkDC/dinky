@@ -93,7 +93,7 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
         autoFocus
         onClick={() => submitForm()}
       >
-        {l('button.finish')}
+        {l('button.save')}
       </Button>
     ];
   };
