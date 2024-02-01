@@ -19,14 +19,17 @@
 
 package org.dinky.url;
 
-import com.google.auto.service.AutoService;
-import lombok.extern.slf4j.Slf4j;
+import org.dinky.data.model.SystemConfiguration;
+
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.FileSystemFactory;
-import org.dinky.data.model.SystemConfiguration;
 
 import java.io.IOException;
 import java.net.URI;
+
+import com.google.auto.service.AutoService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @AutoService(FileSystemFactory.class)
 @Slf4j
