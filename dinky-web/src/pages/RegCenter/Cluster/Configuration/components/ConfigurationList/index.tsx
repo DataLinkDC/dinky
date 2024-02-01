@@ -303,6 +303,7 @@ export default () => {
         onClose={handleCancel}
         value={{}}
         onSubmit={handleSubmit}
+        onHeartBeat={handleCheckHeartBeat}
       />
       {/*modify*/}
       {clusterConfigState.editOpen && (
@@ -311,6 +312,7 @@ export default () => {
           onClose={handleCancel}
           value={clusterConfigState.value}
           onSubmit={handleSubmit}
+          onHeartBeat={handleCheckHeartBeat}
         />
       )}
     </>

@@ -17,24 +17,27 @@
  *
  */
 
-import { FormContextValue } from '@/components/Context/FormContext';
-import { STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
+import {FormContextValue} from '@/components/Context/FormContext';
+import {STUDIO_MODEL_ASYNC} from '@/pages/DataStudio/model';
 import ConfigurationForm from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm';
-import { Cluster } from '@/types/RegCenter/data';
-import { l } from '@/utils/intl';
-import { ModalForm } from '@ant-design/pro-components';
-import { connect } from '@umijs/max';
-import { Button, Form } from 'antd';
-import React, { useEffect } from 'react';
+import {Cluster} from '@/types/RegCenter/data';
+import {l} from '@/utils/intl';
+import {ModalForm} from '@ant-design/pro-components';
+import {connect} from '@umijs/max';
+import {Button, Form} from 'antd';
+import React, {useEffect} from 'react';
+import {handleTest} from "@/pages/RegCenter/DataSource/service";
+import {LoadingBtn} from "@/components/CallBackButton/LoadingBtn";
 
 type ConfigurationModalProps = {
   visible: boolean;
   onClose: () => void;
   value: Partial<Cluster.Config>;
   onSubmit: (values: Partial<Cluster.Config>) => void;
+  onHeartBeat: (values: Partial<Cluster.Config>) => void;
 };
 const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) => {
-  const { visible, onClose, onSubmit, value, dispatch } = props;
+  const {visible, onClose, onSubmit, value, onHeartBeat, dispatch} = props;
 
   /**
    * init form
@@ -83,6 +86,14 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
   };
 
   /**
+   * handle test connect
+   * */
+  const handleTestConnect = async () => {
+    const fieldsValue = await form.validateFields();
+    await onHeartBeat(fieldsValue);
+  };
+
+  /**
    * render footer
    * @returns {[JSX.Element, JSX.Element]}
    */
@@ -91,6 +102,16 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
+      <LoadingBtn
+        key={'test'}
+        props={{
+          size:'middle',
+          type: 'primary',
+          style: {background: '#52c41a'}
+        }}
+        click={handleTestConnect}
+        title={l('button.test.connection')}
+      />,
       <Button
         key={'finish'}
         loading={submitting}
@@ -99,7 +120,7 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
         autoFocus
         onClick={() => submitForm()}
       >
-        {l('button.finish')}
+        {l('button.save')}
       </Button>
     ];
   };
@@ -118,11 +139,11 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
           }
         }}
         title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
-        submitter={{ render: () => [...renderFooter()] }}
+        submitter={{render: () => [...renderFooter()]}}
         initialValues={value}
         form={form}
       >
-        <ConfigurationForm form={form} value={value} />
+        <ConfigurationForm form={form} value={value}/>
       </ModalForm>
     </>
   );
