@@ -19,18 +19,14 @@
 
 package org.dinky.url;
 
-import org.dinky.data.model.SystemConfiguration;
-
+import com.google.auto.service.AutoService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.FileSystemFactory;
-import org.apache.flink.core.fs.local.LocalFileSystem;
+import org.dinky.data.model.SystemConfiguration;
 
 import java.io.IOException;
 import java.net.URI;
-
-import com.google.auto.service.AutoService;
-
-import lombok.extern.slf4j.Slf4j;
 
 @AutoService(FileSystemFactory.class)
 @Slf4j
@@ -45,7 +41,7 @@ public class ResourceFileSystemFactory implements FileSystemFactory {
         Boolean enable = SystemConfiguration.getInstances().getResourcesEnable().getValue();
         if (enable == null || !enable) {
             log.warn("rs protocol startup failed, not initialized");
-            return LocalFileSystem.getSharedInstance();
+            return null;
         }
         return ResourceFileSystem.getSharedInstance();
     }
