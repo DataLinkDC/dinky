@@ -179,17 +179,11 @@ public class Submitter {
                 String usrlib = flinkHome + "/usrlib";
                 FileUtils.forceMkdir(new File(usrlib));
                 String depZip = flinkHome + "/dep.zip";
-
-                boolean exists = downloadFile(httpJar, depZip);
-                if (exists) {
-                    String depPath = flinkHome + "/dep";
+                String depPath = flinkHome + "/dep";
+                downloadFile(httpJar, depZip);
+                if (FileUtil.exist(depPath)) {
                     ZipUtils.unzip(depZip, depPath);
-                    log.info(
-                            "download dep success, include :{}",
-                            Arrays.stream(FileUtil.file(depPath).listFiles())
-                                    .map(File::getName)
-                                    .collect(Collectors.joining(",\n")));
-
+                    log.info("download dep success, include :{}", String.join(",", FileUtil.listFileNames(depPath)));
                     // move all jar
                     if (FileUtil.isDirectory(depPath + "/jar/")) {
                         FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
