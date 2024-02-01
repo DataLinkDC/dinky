@@ -36,7 +36,7 @@ export default () => {
     <SlowlyAppear>
       <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
         <DevopContext.Provider value={{ statusFilter, setStatusFilter }}>
-          <Space direction='vertical' size={16}>
+          <Space direction='vertical' size={24}>
             <JobOverview />
             <JobList />
           </Space>

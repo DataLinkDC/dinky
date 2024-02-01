@@ -214,6 +214,8 @@ export default {
   'devops.jobinfo.remap.cluster.title': '集群实例映射信息',
   'devops.jobinfo.remap.cluster.title.help': ' (注意：此操作会同步修改集群实例配置)',
   'devops.jobinfo.remap.job.title': 'Job映射信息',
+  'devops.joblist.clear.filter': '取消选择',
+  'devops.joblist.clear.filtertips': '清除选择的任务,并不是清除其他得筛选条件',
 
   'devops.joblist.detail': '详情',
   'devops.joblist.history': '历史',

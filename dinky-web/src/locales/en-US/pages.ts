@@ -227,7 +227,8 @@ export default {
   'devops.jobinfo.remap.cluster.title.help':
     '(Note: This operation will modify the configuration of the cluster instance simultaneously.)',
   'devops.jobinfo.remap.job.title': 'Job mapping information',
-
+  'devops.joblist.clear.filter': 'Cancel Selected',
+  'devops.joblist.clear.filtertips': 'Clear selected tasks, but not clear other filter conditions',
   'devops.joblist.detail': 'Job Detail',
   'devops.joblist.history': 'History',
   'devops.joblist.joblist': 'Job List',
