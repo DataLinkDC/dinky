@@ -19,6 +19,12 @@
 
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
+import {
+  buildProjectTree,
+  generateList,
+  getParentKey
+} from '@/pages/DataStudio/LeftContainer/Project/function';
+import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { DevopContext } from '@/pages/DevOps';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { getJobDuration } from '@/pages/DevOps/function';
@@ -28,20 +34,17 @@ import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
-import {ClearOutlined, ClockCircleTwoTone, EyeTwoTone, RedoOutlined} from '@ant-design/icons';
+import { SplitPane } from '@andrewray/react-multi-split-pane';
+import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
+import { ClearOutlined, ClockCircleTwoTone, EyeTwoTone, RedoOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProCard, ProTable } from '@ant-design/pro-components';
-import {Button, Empty, Radio, Table, Tree} from 'antd';
-import React, {Key, useContext, useEffect, useRef, useState} from 'react';
+import { Button, Empty, Radio, Table, Tree } from 'antd';
+import Search from 'antd/es/input/Search';
+import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
-import {SplitPane} from "@andrewray/react-multi-split-pane";
-import {Pane} from "@andrewray/react-multi-split-pane/dist/lib/Pane";
-import Search from "antd/es/input/Search";
-import {getTaskData} from "@/pages/DataStudio/LeftContainer/Project/service";
-import {buildProjectTree, generateList, getParentKey} from "@/pages/DataStudio/LeftContainer/Project/function";
 
-const {DirectoryTree} = Tree;
-
+const { DirectoryTree } = Tree;
 
 const JobList = () => {
   const refObject = useRef<HTMLDivElement>(null);
@@ -56,7 +59,7 @@ const JobList = () => {
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [selectedKey, setSelectedKey] = useState<Key[]>([]);
 
-  console.log(statusFilter)
+  console.log(statusFilter);
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
       title: l('global.table.jobname'),
@@ -113,15 +116,15 @@ const JobList = () => {
 
   // 重置选中的 key 和 taskId | reset the selected key and taskId
   const resetValue = () => {
-    setSelectedKey([])
-    setTaskId(undefined)
+    setSelectedKey([]);
+    setTaskId(undefined);
     tableRef.current?.reload();
-  }
+  };
 
   //  监听 statusFilter 的变化，如果为 undefined 则重置选中的 key 和 taskId | listen for changes in statusFilter, if it is undefined, reset the selected key and taskId
   useEffect(() => {
     if (statusFilter === undefined) {
-      resetValue()
+      resetValue();
     }
   }, [statusFilter]);
 
@@ -141,7 +144,7 @@ const JobList = () => {
   }, []);
 
   const onChangeSearch = (e: any) => {
-    let {value} = e.target;
+    let { value } = e.target;
     if (!value) {
       setSearchValueValue(value);
       return;
@@ -163,22 +166,31 @@ const JobList = () => {
 
   function onNodeClick(info: any) {
     const {
-      node: {isLeaf, name, type, parentId, path, key, taskId, fullInfo}
+      node: { isLeaf, name, type, parentId, path, key, taskId, fullInfo }
     } = info;
-    if (isLeaf) { // 如果是 leaf 节点 则设置选中的 key 和 taskId | if it is a leaf node, set the selected key and taskId
+    if (isLeaf) {
+      // 如果是 leaf 节点 则设置选中的 key 和 taskId | if it is a leaf node, set the selected key and taskId
       setSelectedKey([key]);
       setTaskId(taskId);
-    } else { // 如果不是 leaf 节点 则设置选中的 key 和 taskId 为 undefined | if it is not a leaf node, set the selected key and taskId to undefined
+    } else {
+      // 如果不是 leaf 节点 则设置选中的 key 和 taskId 为 undefined | if it is not a leaf node, set the selected key and taskId to undefined
       setTaskId(undefined);
       setSelectedKey([]);
     }
   }
 
-
-
   return (
-    <ProCard boxShadow ghost size={'small'}
-             bodyStyle={{height: parent.innerHeight - 215, marginTop: -30, overflow: 'auto', width: '99vw'}}>
+    <ProCard
+      boxShadow
+      ghost
+      size={'small'}
+      bodyStyle={{
+        height: parent.innerHeight - 215,
+        marginTop: -30,
+        overflow: 'auto',
+        width: '99vw'
+      }}
+    >
       <SplitPane
         split={'vertical'}
         defaultSizes={[100, 500]}
@@ -193,13 +205,22 @@ const JobList = () => {
           split={'horizontal'}
         >
           <Search
-            style={{margin: '8px 0px'}}
+            style={{ margin: '8px 0px' }}
             placeholder={l('global.search.text')}
             onChange={onChangeSearch}
-            allowClear={true} addonAfter={
-            // 如果选中的 key 长度大于 0 则显示清除按钮 | if the length of the selected key is greater than 0, the clear button is displayed
-            selectedKey.length > 0 && <Button title={l('devops.joblist.clear.filtertips')} icon={<ClearOutlined />} onClick={() => resetValue() } >{l('devops.joblist.clear.filter')}</Button>
-          }
+            allowClear={true}
+            addonAfter={
+              // 如果选中的 key 长度大于 0 则显示清除按钮 | if the length of the selected key is greater than 0, the clear button is displayed
+              selectedKey.length > 0 && (
+                <Button
+                  title={l('devops.joblist.clear.filtertips')}
+                  icon={<ClearOutlined />}
+                  onClick={() => resetValue()}
+                >
+                  {l('devops.joblist.clear.filter')}
+                </Button>
+              )
+            }
           />
 
           {data.length ? (
@@ -215,9 +236,7 @@ const JobList = () => {
               autoExpandParent={autoExpandParent}
             />
           ) : (
-            <Empty
-              className={'code-content-empty'}
-            />
+            <Empty className={'code-content-empty'} />
           )}
         </Pane>
 
@@ -231,18 +250,27 @@ const JobList = () => {
           <ProTable<Jobs.JobInstance>
             {...PROTABLE_OPTIONS_PUBLIC}
             search={false}
-            tableStyle={{height: parent.innerHeight - 210}}
+            tableStyle={{ height: parent.innerHeight - 210 }}
             loading={{ delay: 1000 }}
             rowKey={(record) => record.jid}
             columns={jobListColumns}
-            params={{ isHistory: false, status: statusFilter, step: stepFilter, name: taskFilter, taskId: taskId }}
+            params={{
+              isHistory: false,
+              status: statusFilter,
+              step: stepFilter,
+              name: taskFilter,
+              taskId: taskId
+            }}
             actionRef={tableRef}
             toolbar={{
               settings: false,
               search: { onSearch: (value: string) => setTaskFilter(value) },
               filter: (
                 <>
-                  <Radio.Group defaultValue={undefined} onChange={(e) => setStepFilter(e.target.value)}>
+                  <Radio.Group
+                    defaultValue={undefined}
+                    onChange={(e) => setStepFilter(e.target.value)}
+                  >
                     <Radio.Button value={undefined} defaultChecked={true}>
                       {l('global.table.lifecycle.all')}
                     </Radio.Button>
@@ -255,7 +283,9 @@ const JobList = () => {
                   </Radio.Group>
                 </>
               ),
-              actions: [<Button icon={<RedoOutlined />} onClick={() => tableRef.current?.reload()} />]
+              actions: [
+                <Button icon={<RedoOutlined />} onClick={() => tableRef.current?.reload()} />
+              ]
             }}
             request={async (params, sorter, filter: any) =>
               queryList(API_CONSTANTS.JOB_INSTANCE, {
@@ -265,7 +295,9 @@ const JobList = () => {
               })
             }
             expandable={{
-              expandedRowRender: (record) => <JobHistoryList taskId={record.taskId} key={record.jid} />,
+              expandedRowRender: (record) => (
+                <JobHistoryList taskId={record.taskId} key={record.jid} />
+              ),
               expandIcon: ({ expanded, onExpand, record }) => (
                 <Button
                   className={'options-button'}
