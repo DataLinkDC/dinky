@@ -128,10 +128,10 @@ export const PRO_LIST_CARD_OPTIONS = {
  */
 export const PROTABLE_OPTIONS_PUBLIC: any = {
   pagination: {
-    defaultPageSize: 12,
+    defaultPageSize: 10,
     hideOnSinglePage: true,
     showQuickJumper: false,
-    showSizeChanger: false,
+    showSizeChanger: true,
     position: ['bottomCenter']
   },
   ghost: false,

@@ -26,6 +26,7 @@ import static org.dinky.utils.SplitUtil.isSplit;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.TableType;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
@@ -207,6 +208,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (Exception e) {
             log.error("ListSchemas failed", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -282,7 +284,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                 }
             }
         } catch (SQLException e) {
-            log.error("ListTables Failed", e);
+            log.error("ListTables error:", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -377,6 +380,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (SQLException e) {
             log.error("ListColumns error", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -455,6 +459,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (Exception e) {
             log.error("GetCreateTableSql Failed", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -767,6 +772,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (SQLException e) {
             log.error("GetSplitSchemaList failed", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
