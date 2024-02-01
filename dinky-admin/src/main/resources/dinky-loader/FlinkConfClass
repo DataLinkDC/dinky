@@ -28,4 +28,5 @@ org.apache.flink.configuration.RestartStrategyOptions
 org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions
 org.apache.flink.yarn.configuration.YarnConfigOptions
 org.apache.flink.kubernetes.configuration.KubernetesConfigOptions
+org.apache.flink.python.PythonOptions
 org.dinky.constant.CustomerConfigureOptions
