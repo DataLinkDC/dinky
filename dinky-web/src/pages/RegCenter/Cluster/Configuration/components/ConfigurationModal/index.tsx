@@ -17,17 +17,16 @@
  *
  */
 
-import {FormContextValue} from '@/components/Context/FormContext';
-import {STUDIO_MODEL_ASYNC} from '@/pages/DataStudio/model';
+import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
+import { FormContextValue } from '@/components/Context/FormContext';
+import { STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import ConfigurationForm from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm';
-import {Cluster} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
-import {ModalForm} from '@ant-design/pro-components';
-import {connect} from '@umijs/max';
-import {Button, Form} from 'antd';
-import React, {useEffect} from 'react';
-import {handleTest} from "@/pages/RegCenter/DataSource/service";
-import {LoadingBtn} from "@/components/CallBackButton/LoadingBtn";
+import { Cluster } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
+import { connect } from '@umijs/max';
+import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
 
 type ConfigurationModalProps = {
   visible: boolean;
@@ -37,7 +36,7 @@ type ConfigurationModalProps = {
   onHeartBeat: (values: Partial<Cluster.Config>) => void;
 };
 const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) => {
-  const {visible, onClose, onSubmit, value, onHeartBeat, dispatch} = props;
+  const { visible, onClose, onSubmit, value, onHeartBeat, dispatch } = props;
 
   /**
    * init form
@@ -105,9 +104,9 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
       <LoadingBtn
         key={'test'}
         props={{
-          size:'middle',
+          size: 'middle',
           type: 'primary',
-          style: {background: '#52c41a'}
+          style: { background: '#52c41a' }
         }}
         click={handleTestConnect}
         title={l('button.test.connection')}
@@ -139,11 +138,11 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
           }
         }}
         title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
-        submitter={{render: () => [...renderFooter()]}}
+        submitter={{ render: () => [...renderFooter()] }}
         initialValues={value}
         form={form}
       >
-        <ConfigurationForm form={form} value={value}/>
+        <ConfigurationForm form={form} value={value} />
       </ModalForm>
     </>
   );
