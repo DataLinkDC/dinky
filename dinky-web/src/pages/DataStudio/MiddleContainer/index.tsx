@@ -27,10 +27,7 @@ import {
   isDataStudioTabsItemType,
   isMetadataTabsItemType
 } from '@/pages/DataStudio/function';
-import {
-  getBottomSelectKeyFromNodeClickJobType,
-  getRightSelectKeyFromNodeClickJobType
-} from '@/pages/DataStudio/LeftContainer/Project/function';
+import { getRightSelectKeyFromNodeClickJobType } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
