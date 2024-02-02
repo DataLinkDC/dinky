@@ -63,6 +63,7 @@ export default {
   'button.collapse-all': 'Collapse All',
   'button.position': 'Position',
   'button.test': 'Test',
+  'button.test.connection': 'Test Connection',
   'button.clear': 'Clear',
   'button.copy': 'Copy',
   'button.refreshData': 'Refresh Data',
