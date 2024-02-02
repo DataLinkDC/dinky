@@ -22,8 +22,6 @@ package org.dinky.app.flinksql;
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
-import org.dinky.app.resource.BaseResourceManager;
-import org.dinky.app.url.RsURLStreamHandlerFactory;
 import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
@@ -37,10 +35,12 @@ import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.parser.SqlType;
+import org.dinky.resource.BaseResourceManager;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
+import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.ZipUtils;
 
@@ -179,17 +179,11 @@ public class Submitter {
                 String usrlib = flinkHome + "/usrlib";
                 FileUtils.forceMkdir(new File(usrlib));
                 String depZip = flinkHome + "/dep.zip";
-
-                boolean exists = downloadFile(httpJar, depZip);
-                if (exists) {
-                    String depPath = flinkHome + "/dep";
+                String depPath = flinkHome + "/dep";
+                downloadFile(httpJar, depZip);
+                if (FileUtil.exist(depPath)) {
                     ZipUtils.unzip(depZip, depPath);
-                    log.info(
-                            "download dep success, include :{}",
-                            Arrays.stream(FileUtil.file(depPath).listFiles())
-                                    .map(File::getName)
-                                    .collect(Collectors.joining(",\n")));
-
+                    log.info("download dep success, include :{}", String.join(",", FileUtil.listFileNames(depPath)));
                     // move all jar
                     if (FileUtil.isDirectory(depPath + "/jar/")) {
                         FileUtil.listFileNames(depPath + "/jar").forEach(f -> {

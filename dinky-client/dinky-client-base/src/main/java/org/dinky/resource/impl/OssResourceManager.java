@@ -17,13 +17,13 @@
  *
  */
 
-package org.dinky.service.resource.impl;
+package org.dinky.resource.impl;
 
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
-import org.dinky.data.model.Resources;
+import org.dinky.data.model.ResourcesVO;
 import org.dinky.oss.OssTemplate;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -63,9 +61,9 @@ public class OssResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public void putFile(String path, MultipartFile file) {
+    public void putFile(String path, InputStream fileStream) {
         try {
-            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFilePath(path), file.getInputStream());
+            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFilePath(path), fileStream);
         } catch (Exception e) {
             throw new DinkyException(e);
         }
@@ -87,12 +85,12 @@ public class OssResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public List<Resources> getFullDirectoryStructure(int rootId) {
+    public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
 
         List<S3ObjectSummary> listBucketObjects =
                 getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
-        Map<Integer, Resources> resourcesMap = new HashMap<>();
+        Map<Integer, ResourcesVO> resourcesMap = new HashMap<>();
 
         for (S3ObjectSummary obj : listBucketObjects) {
             obj.setKey(obj.getKey().replace(basePath, ""));
@@ -105,7 +103,7 @@ public class OssResourceManager implements BaseResourceManager {
                 String s = split[i];
                 int pid = parent.isEmpty() ? rootId : parent.hashCode();
                 parent = parent + "/" + s;
-                Resources.ResourcesBuilder builder = Resources.builder()
+                ResourcesVO.ResourcesVOBuilder builder = ResourcesVO.builder()
                         .id(parent.hashCode())
                         .pid(pid)
                         .fullName(parent)

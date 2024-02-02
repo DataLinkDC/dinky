@@ -63,7 +63,7 @@
         <easy.rules.version>4.1.0</easy.rules.version>
         <fastjson2.version>2.0.41</fastjson2.version>
         <flink.version>1.18.0</flink.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.1.3-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
         <hamcrest.version>1.3</hamcrest.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
@@ -671,7 +671,11 @@
                 <artifactId>spring-boot-starter-data-ldap</artifactId>
                 <version>${spring.ldap.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>1.1.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

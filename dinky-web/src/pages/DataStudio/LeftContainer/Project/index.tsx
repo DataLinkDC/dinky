@@ -143,10 +143,7 @@ const Project: React.FC = (props: connect) => {
         payload: getRightSelectKeyFromNodeClickJobType(type)
       });
       const bottomKey = getBottomSelectKeyFromNodeClickJobType(type);
-      dispatch({
-        type: STUDIO_MODEL.updateSelectBottomKey,
-        payload: bottomKey
-      });
+
       if (bottomKey === LeftBottomKey.TOOLS_KEY) {
         dispatch({
           type: STUDIO_MODEL.updateSelectBottomSubKey,

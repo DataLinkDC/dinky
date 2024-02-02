@@ -1927,6 +1927,7 @@ insert into dinky_sys_menu values (153, 150, '查询', '/registration/datasource
 insert into dinky_sys_menu values (154, 150, '生成 SQL', '/registration/datasource/detail/gensql', null, 'registration:datasource:detail:gensql', 'ConsoleSqlOutlined', 'F', 0, 152, '2024-01-18 21:52:06', '2024-01-18 22:10:29', null);
 insert into dinky_sys_menu values (155, 150, ' 控制台', '/registration/datasource/detail/console', null, 'registration:datasource:detail:console', 'ConsoleSqlOutlined', 'F', 0, 153, '2024-01-18 21:52:47', '2024-01-18 22:10:37', null);
 insert into dinky_sys_menu values (156, 150, ' 刷新', '/registration/datasource/detail/refresh', null, 'registration:datasource:detail:refresh', 'ReloadOutlined', 'F', 0, 154, '2024-01-18 22:13:47', '2024-01-18 22:13:47', null);
+insert into dinky_sys_menu values (157, 6, '类加载器 Jars', '/settings/classloaderjars', './SettingCenter/ClassLoaderJars', 'settings:classloaderjars', 'CodeSandboxOutlined', 'C', 0, 155, '2024-01-29 16:51:51', '2024-01-29 16:51:51', null);
 
 COMMIT;
 

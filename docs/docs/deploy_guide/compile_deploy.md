@@ -6,9 +6,11 @@ title: 编译部署
 ---
 
 :::tip 提示
-如果你只想部署 Dinky，可以跳过本章节，直接查看[常规部署](./normal_deploy)章节
+1. 如果你只想部署 Dinky，可以跳过本章节，直接查看[常规部署](./normal_deploy)章节
 
-如果你想对 Dinky 做二次开发，参考[本地调试](../developer_guide/local_debug)章节,从而搭建开发环境。开发完成之后，再参考本章节，进行编译。
+2. 如果你想对 Dinky 做二次开发，参考[本地调试](../developer_guide/local_debug)章节,从而搭建开发环境。开发完成之后，再参考本章节，进行编译。
+
+3. 自 Dinky v1.0.0 版本开始，Dinky 在打包时仅支持单个版本的打包方式,即: 你只能选择一个 Flink 版本进行打包,而不能同时打包多个版本。
 :::
 
 
@@ -45,17 +47,14 @@ Clone 完成后, 等待 IDEA 自动下载依赖(前提 IDEA 已经正确配置�
 请注意: 有关于各个 Profile 的详细介绍,请查看 [Profile 说明](../developer_guide/local_debug#Profile-说明)
 :::
 
-- 全版本 Profile
 
-![localdebug_package_all_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/localdebug_package_all_profile.png)
+- 打包 Profile
 
-- 单版本 Profile
+> 注意: 需要勾选 web,否则无法打包前端资源
 
 ![locadenug_single_package_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/locadenug_single_package_profile.png)
 
-- 非全版本 Profile 多选
 
-![localdebug_not_all_profile_package](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/localdebug_not_all_profile_package.png)
 
 
 :::danger 注意
@@ -94,14 +93,9 @@ git clone https://github.com/DataLinkDC/dinky.git
 ```bash
 cd /opt/dinky-source-code
 
-# 全版本 Profile, 注意 scala 支持 2.11 和 2.12, 请根据实际情况进行选择,jdk 支持 8/11,请根据实际情况进行选择
-mvn  -DskipTests=true clean package -P prod,flink-all,jdk11,scala-2.12,aliyun,!dev,!flink-single-version,!jdk-1.8
+# 编译打包 Profile, 注意 scala 支持 2.11 和 2.12, 请根据实际情况进行选择,jdk 支持 8/11,请根据实际情况进行选择,不选jdk11默认使用系统内的jdk8
+mvn clean package -DskipTests=true -Pprod,jdk11,flink-single-version,scala-2.12,aliyun,flink-1.16,web
 
-# 单个版本 Profile, 注意 scala 支持 2.11 和 2.12, 请根据实际情况进行选择,jdk 支持 8/11,请根据实际情况进行选择
-mvn clean package -DskipTests=true -P prod,jdk11,flink-single-version,scala-2.12,aliyun,flink-1.16,!dev,!jdk-1.8
-
-#  非全版本 Profile 多选,注意 scala 支持 2.11 和 2.12, 请根据实际情况进行选择,jdk 支持 8/11,请根据实际情况进行选择
-mvn -DskipTests=true clean package -P flink-1.18,flink-1.17,prod,jdk11,flink-single-version,scala-2.12,aliyun,!dev,!jdk-1.8
 ```
 
 :::danger 注意

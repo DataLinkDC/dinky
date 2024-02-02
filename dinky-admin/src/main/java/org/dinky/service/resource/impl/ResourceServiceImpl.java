@@ -19,17 +19,19 @@
 
 package org.dinky.service.resource.impl;
 
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.ResourcesMapper;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
 import org.dinky.utils.URLUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -71,6 +73,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         List<Resources> resourcesList =
                 getBaseResourceManager().getFullDirectoryStructure(rootResource.getId()).stream()
                         .filter(x -> x.getPid() != -1)
+                        .map(Resources::of)
                         .peek(x -> {
                             // Restore the existing information. If the remotmap is not available,
                             // it means that the configuration is out of sync and no processing will be done.
@@ -137,7 +140,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     public void rename(Integer id, String fileName, String desc) {
         Resources byId = getById(id);
         String sourceFullName = byId.getFullName();
-        Assert.notNull(byId, () -> new BusException("resource is not exists!"));
+        DinkyAssert.checkNull(byId, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
         long count = count(new LambdaQueryWrapper<Resources>()
                 .eq(Resources::getPid, byId.getPid())
                 .eq(Resources::getFileName, fileName)
@@ -216,7 +219,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public String getContentByResourceId(Integer id) {
         Resources resources = getById(id);
-        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        DinkyAssert.checkNull(resources, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
         Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
         return getBaseResourceManager().getFileContent(resources.getFullName());
     }
@@ -224,7 +227,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Override
     public File getFile(Integer id) {
         Resources resources = getById(id);
-        Assert.notNull(resources, () -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST));
+        DinkyAssert.checkNull(resources, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
         Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
         return URLUtils.toFile("rs://" + resources.getFullName());
     }
@@ -293,7 +296,19 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         }
         long size = file.getSize();
         String fileName = file.getOriginalFilename();
-        upload(pid, desc, (fullName) -> getBaseResourceManager().putFile(fullName, file), fileName, pResource, size);
+        upload(
+                pid,
+                desc,
+                (fullName) -> {
+                    try {
+                        getBaseResourceManager().putFile(fullName, file.getInputStream());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                },
+                fileName,
+                pResource,
+                size);
     }
 
     @Transactional(rollbackFor = Exception.class)

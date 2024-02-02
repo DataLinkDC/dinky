@@ -19,6 +19,8 @@
 
 package org.dinky.assertion;
 
+import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
@@ -28,7 +30,7 @@ import org.dinky.data.model.Task;
  *
  * @since 2021/5/30 11:13
  */
-public interface Assert {
+public interface DinkyAssert {
 
     static void check(ClusterInstance clusterInstance) {
         if (clusterInstance.getId() == null) {
@@ -36,9 +38,27 @@ public interface Assert {
         }
     }
 
+    static void check(TaskDTO task) {
+        if (task == null) {
+            throw new BusException(Status.TASK_NOT_EXIST);
+        }
+    }
+
     static void check(Task task) {
         if (task == null) {
-            throw new BusException("作业不存在");
+            throw new BusException(Status.TASK_NOT_EXIST);
+        }
+    }
+
+    static void checkNull(Object o, Status status) {
+        if (o == null) {
+            throw new BusException(status);
+        }
+    }
+
+    static void checkNull(Object o, String msg) {
+        if (o == null) {
+            throw new BusException(msg);
         }
     }
 

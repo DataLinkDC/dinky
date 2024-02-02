@@ -63,6 +63,7 @@ export default {
   'button.collapse-all': '全部折叠',
   'button.position': '定位',
   'button.test': '测试',
+  'button.test.connection': '测试连接',
   'button.clear': '清除',
   'button.copy': '复制',
   'button.refreshData': '刷新数据',

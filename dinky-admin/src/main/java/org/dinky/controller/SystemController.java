@@ -26,6 +26,7 @@ import org.dinky.data.result.Result;
 import org.dinky.service.SystemService;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +44,7 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "System Controller")
 @RequestMapping("/api/system")
 @RequiredArgsConstructor
-public class SystemInfoController {
+public class SystemController {
 
     private final SystemService systemService;
 
@@ -82,5 +83,11 @@ public class SystemInfoController {
     @ApiImplicitParam(name = "path", value = "File Path", required = true, dataType = "String")
     public Result<String> readFile(@RequestParam String path) {
         return Result.data(systemService.readFile(path));
+    }
+
+    @GetMapping("/queryAllClassLoaderJarFiles")
+    @ApiOperation("Query All ClassLoader Jar Files")
+    public Result<Map<String, List<String>>> queryAllClassLoaderJarFiles() {
+        return Result.succeed(systemService.queryAllClassLoaderJarFiles());
     }
 }

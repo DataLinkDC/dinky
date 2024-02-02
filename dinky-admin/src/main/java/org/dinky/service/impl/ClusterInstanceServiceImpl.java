@@ -19,8 +19,8 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.data.dto.ClusterInstanceDTO;
@@ -48,6 +48,9 @@ import org.dinky.utils.URLUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -57,6 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -84,14 +88,14 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
         // TODO 这里判空逻辑有问题，clusterInstance有可能为null
-        Assert.check(clusterInstance);
+        DinkyAssert.check(clusterInstance);
         FlinkClusterInfo info =
                 FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
         }
-        Assert.checkHost(host);
+        DinkyAssert.checkHost(host);
         if (!host.equals(clusterInstance.getJobManagerHost())) {
             clusterInstance.setJobManagerHost(host);
             updateById(clusterInstance);
@@ -273,6 +277,17 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         return !taskService
                 .list(new LambdaQueryWrapper<Task>().eq(Task::getClusterId, id))
                 .isEmpty();
+    }
+
+    @Override
+    public Long heartbeat() {
+        List<ClusterInstance> clusterInstances = this.list();
+        ExecutorService executor = ThreadUtil.newExecutor(Math.min(clusterInstances.size(), 10));
+        List<CompletableFuture<Integer>> futures = clusterInstances.stream()
+                .map(c -> CompletableFuture.supplyAsync(
+                        () -> this.registersCluster(c).getStatus(), executor))
+                .collect(Collectors.toList());
+        return futures.stream().map(CompletableFuture::join).filter(x -> x == 1).count();
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {

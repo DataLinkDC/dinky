@@ -17,16 +17,12 @@
  *
  */
 
-package org.dinky.app.url;
+import { queryDataByParams } from '@/services/BusinessCrud';
 
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-
-public class RsURLStreamHandler extends URLStreamHandler {
-
-    @Override
-    protected URLConnection openConnection(URL u) {
-        return new RsURLConnection(u);
-    }
-}
+export const queryClassLoaderJars = async () => {
+  return (
+    (await queryDataByParams<Record<string, string[]>>(
+      '/api/system/queryAllClassLoaderJarFiles'
+    )) ?? {}
+  );
+};

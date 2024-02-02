@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -146,4 +147,8 @@ public class Resources extends Model<Resources> {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "Updater", required = true, dataType = "Integer", example = "updater")
     private Integer updater;
+
+    public static Resources of(ResourcesVO resourcesVO) {
+        return BeanUtil.toBean(resourcesVO, Resources.class);
+    }
 }

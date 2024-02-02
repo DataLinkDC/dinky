@@ -138,4 +138,10 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
      * @return {@link Boolean} true: has relationship, false: no relationship
      */
     boolean hasRelationShip(Integer id);
+
+    /**
+     * heartbeat
+     * @return {@link Long}
+     */
+    Long heartbeat();
 }

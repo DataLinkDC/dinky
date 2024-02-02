@@ -8,6 +8,7 @@ title: 本地调试
 
 :::tip
 前置知识:
+
 - Flink, Java, Maven, Node, React, Ant Design Pro
 - MySQL/PostgreSQL/H2
 - IntelliJ IDEA
@@ -90,33 +91,34 @@ npm run dev
 
 由于目前 Dinky 各个模块未发布到 Maven 中央仓库，所以需要先进行 Install 编译。从而在本地仓库中生成相应的依赖。
 
-如果你是第一次编译 Dinky，那么请勾选以下 Maven Profile,然后双击下图中的`生命周期 -> Install`进行编译。如果在 Install/Package 过程中报错代码格式化问题,请参考 [代码格式化](contribution/code_format)章节
+如果你是第一次编译 Dinky，那么请勾选以下 Maven Profile,然后双击下图中的`生命周期 -> Install`进行编译。如果在
+Install/Package 过程中报错代码格式化问题,请参考 [代码格式化](contribution/code_format)章节
 :::
 
 ![localdebug_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/localdebug_profile.png)
 
 ### Profile 说明
 
-|    Profile    |                                                            说明                                                             |
-|:-------------:|:-------------------------------------------------------------------------------------------------------------------------:|
-|      dev      |                                        开发环境/本地调试，默认不选中,此功能主要用于本地调试或者二次开发,用于加载相关依赖                                         |
-|    aliyun     |                                                          加速依赖下载                                                           |
-|     fast      |                    主要用于跳过代码检查和代码格式化<br/>注意:如果 JDK 环境为 1.8/8 需要勾选此 profile,否则会报错<br/>如果 JDK 环境为 11 无需勾选                    |
-|  flink-1.14   |                       用于指定 Flink 版本为 1.14,dev 下只能单选,prod 下可以多选,如需单独勾选此版本，需要勾选 flink-single-version                        |
-|  flink-1.15   |                       用于指定 Flink 版本为 1.15,dev 下只能单选,prod 下可以多选,如需单独勾选此版本，需要勾选 flink-single-version                        |
-|  flink-1.16   |                       用于指定 Flink 版本为 1.16,dev 下只能单选,prod 下可以多选,如需单独勾选此版本，需要勾选 flink-single-version                        |
-|  flink-1.17   |                       用于指定 Flink 版本为 1.17,dev 下只能单选,prod 下可以多选,如需单独勾选此版本，需要勾选 flink-single-version                        |
-|  flink-1.18   |                       用于指定 Flink 版本为 1.18,dev 下只能单选,prod 下可以多选,如需单独勾选此版本，需要勾选 flink-single-version                        |
-|    jdk 11     |                                             用于指定 JDK 版本为 11,前提是本地已经安装了 JDK 11                                             |            
-|      mac      |                                                     用于适配在 mac 系统上进行调试                                                     |            
-| maven-central |                                                    用于指定 maven 仓库为中央仓库                                                     |  
-|     prod      |                                生产环境，默认选中,此功能主要用于编译打包,此 profile 会将部分依赖排除掉,不会打进最终 tar.gz 包内                                 |
-|  scala-2.11   |                                                 用于指定 Scala 版本为 2.11,只能单选                                                  |
-|  scala-2.12   |                                                 用于指定 Scala 版本为 2.12,只能单选                                                  |
-|      web      | 默认情况下不勾选,同样会进行打包,此种方式适用于前后端不分离场景<br/>如需前后端分离部署,请勾选此 profile ,会将前端编译产物打包进最终的 tar.gz 包内,目录为 html ,分离后如需 Nginx 代理,请在配置文件自行配置 |
-
+|    Profile    |                                         说明                                         |
+|:-------------:|:----------------------------------------------------------------------------------:|
+|      dev      |                     开发环境/本地调试，默认不选中,此功能主要用于本地调试或者二次开发,用于加载相关依赖                     |
+|    aliyun     |                                       加速依赖下载                                       |
+|     fast      | 主要用于跳过代码检查和代码格式化<br/>注意:如果 JDK 环境为 jdk8 需要勾选此 profile,否则会报错<br/>如果 JDK 环境为 11 无需勾选 |
+|  flink-1.14   |                 用于指定 Flink 版本为 1.14,只能单选,需要勾选 flink-single-version                 |
+|  flink-1.15   |                 用于指定 Flink 版本为 1.15,只能单选,需要勾选 flink-single-version                 |
+|  flink-1.16   |                 用于指定 Flink 版本为 1.16,只能单选,需要勾选 flink-single-version                 |
+|  flink-1.17   |                 用于指定 Flink 版本为 1.17,只能单选,需要勾选 flink-single-version                 |
+|  flink-1.18   |                 用于指定 Flink 版本为 1.18,只能单选,需要勾选 flink-single-version                 |
+|    jdk 11     |            用于指定 JDK 版本为 11,前提是本地已经安装了 JDK 11,如果没有安装 jdk11,则默认使用本地的 jdk8            |            
+|      mac      |                                 用于适配在 mac 系统上进行调试                                  |            
+| maven-central |                                 用于指定 maven 仓库为中央仓库                                 |  
+|     prod      |             生产环境，默认选中,此功能主要用于编译打包,此 profile 会将部分依赖排除掉,不会打进最终 tar.gz 包内             |
+|  scala-2.11   |                              用于指定 Scala 版本为 2.11,只能单选                              |
+|  scala-2.12   |                              用于指定 Scala 版本为 2.12,只能单选                              |
+|      web      |                                    打包前端资源,需要勾选                                     |
 
 :::warning 注意
+
 - 其他差异化配置为自己的 Maven 的 settings.xml 文件中的 profile 配置,请忽略
 - 如果无JDK11环境, 默认使用JDK8,如果需要使用JDK11,请在IDEA中配置JDK11环境
 - 注意 Profile 之间的冲突,如 flink-1.14 和 flink-1.15 不能同时勾选,否则会报错
@@ -137,17 +139,7 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 ### 打包部署 Profile
 
-#### 全版本 Profile
-
-![localdebug_package_all_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/localdebug_package_all_profile.png)
-
-#### 单版本 Profile
-
 ![locadenug_single_package_profile](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/locadenug_single_package_profile.png)
-
-### 非全版本 Profile 多选
-
-![localdebug_not_all_profile_package](http://pic.dinky.org.cn/dinky/docs/zh-CN/developer_guide/local_debug/localdebug_not_all_profile_package.png)
 
 ## Dinky 本地开发环境搭建
 
@@ -155,14 +147,15 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 开发不同的代码需要不同的分支
 
-- 如果要基于二进制包进行开发，需要切换到对应的分支代码，如 `0.7` 分支；
+- 如果要基于二进制包进行开发，需要切换到对应的分支代码，如 `realease-1.0.0` 分支；
 - 如果想要开发新代码，切换到dev分支即可；
 
 下面说明在启动前如何修改相应的代码，为本地启动做准备。修改
 
 ### 修改配置文件
 
-> 以 MySQL 为例, 如果使用 PostgreSQL/H2 请自行修改,注意: 使用 H2 数据库时无需修改如下配置,直接进行 [启动后端服务](#启动后端服务)
+> 以 MySQL 为例, 如果使用 PostgreSQL/H2 请自行修改,注意: 使用 H2
+> 数据库时无需修改如下配置,直接进行 [启动后端服务](#启动后端服务)
 
 - 修改 dinky-admin/src/main/resources/application-mysql.yml 文件,配置相应的数据库连接信息
 
@@ -213,7 +206,6 @@ spring:
 
 注意: 默认用户名/密码为 admin/admin
 :::
-
 
 :::tip 说明
 以上内容是 Dinky 在 IDEA 本地环境搭建步骤，并简单介绍了如何在本地配置/启动 Dinky。在了解上述步骤后，可以动手改造 Dinky。

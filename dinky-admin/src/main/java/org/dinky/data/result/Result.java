@@ -203,6 +203,10 @@ public class Result<T> implements Serializable {
         return of(null, CodeEnum.AUTHORIZE_ERROR.getCode(), status.getMessage());
     }
 
+    public static <T> Result<T> authorizeFailed(Status status, Object... args) {
+        return of(null, CodeEnum.AUTHORIZE_ERROR.getCode(), MessageFormat.format(status.getMessage(), args));
+    }
+
     public static <T> Result<T> authorizeFailed(String msg) {
         return of(null, CodeEnum.AUTHORIZE_ERROR.getCode(), msg);
     }
