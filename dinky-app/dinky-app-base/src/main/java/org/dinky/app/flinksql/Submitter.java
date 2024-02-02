@@ -111,6 +111,7 @@ public class Submitter {
                 .type(appTask.getType())
                 .checkpoint(appTask.getCheckPoint())
                 .parallelism(appTask.getParallelism())
+                .useSqlFragment(appTask.getFragment())
                 .useStatementSet(appTask.getStatementSet())
                 .useBatchModel(appTask.getBatchModel())
                 .savePointPath(appTask.getSavePointPath())
