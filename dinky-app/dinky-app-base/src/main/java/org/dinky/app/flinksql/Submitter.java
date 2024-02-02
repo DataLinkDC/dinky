@@ -111,6 +111,7 @@ public class Submitter {
                 .type(appTask.getType())
                 .checkpoint(appTask.getCheckPoint())
                 .parallelism(appTask.getParallelism())
+                .useSqlFragment(appTask.getFragment())
                 .useStatementSet(appTask.getStatementSet())
                 .useBatchModel(appTask.getBatchModel())
                 .savePointPath(appTask.getSavePointPath())
@@ -126,8 +127,7 @@ public class Submitter {
         loadDep(appTask.getType(), config.getTaskId(), executorConfig);
         log.info("The job configuration is as follows: {}", executorConfig);
 
-        String[] statements =
-                SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
+        String[] statements = SqlUtil.getStatements(sql);
         Optional<JobClient> jobClient = Optional.empty();
         try {
             if (Dialect.FLINK_JAR == appTask.getDialect()) {
@@ -157,7 +157,8 @@ public class Submitter {
             }
         }
         // build Database golbal varibals
-        if (appTask.getFragment()) {
+        Boolean fragment = appTask.getFragment();
+        if (fragment != null && fragment) {
             log.info("Global env is enable, load database flink config env.");
             sb.append(DBUtil.getDbSourceSQLStatement()).append("\n");
         }
