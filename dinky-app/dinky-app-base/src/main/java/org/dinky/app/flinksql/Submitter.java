@@ -127,7 +127,7 @@ public class Submitter {
         loadDep(appTask.getType(), config.getTaskId(), executorConfig);
         log.info("The job configuration is as follows: {}", executorConfig);
 
-        String[] statements = SqlUtil.getStatements(sql);
+        String[] statements = SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
         Optional<JobClient> jobClient = Optional.empty();
         try {
             if (Dialect.FLINK_JAR == appTask.getDialect()) {
