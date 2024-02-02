@@ -4,6 +4,7 @@
 # Dinky application port
 server:
   port: 8888
+  shutdown: graceful
 
 spring:
   # Dinky application name
@@ -17,6 +18,8 @@ spring:
     # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
     active: ${DB_ACTIVE:h2} #[h2,mysql,pgsql]
     include: jmx
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
 
   # mvc config
   mvc:
