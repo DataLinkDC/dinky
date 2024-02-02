@@ -43,7 +43,6 @@ import { Button, Empty, Radio, Table, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
-import {debounce} from "lodash";
 
 const { DirectoryTree } = Tree;
 
@@ -203,7 +202,7 @@ const JobList = () => {
           split={'horizontal'}
         >
           <Search
-            style={{ margin: '8px 0px',padding: '0 10px' }}
+            style={{ margin: '8px 0px', padding: '0 10px' }}
             placeholder={l('global.search.text')}
             onChange={onChangeSearch}
             allowClear={true}
