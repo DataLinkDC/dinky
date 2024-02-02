@@ -37,9 +37,9 @@ jobs:
           actions: 'create-comment'
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello, this issue is about UDF, so I assign it to @gaoyan1998 and @zackyoungh. If you have any questions, you can comment and reply.
+            Hello @${{ github.event.issue.user.login }}, this issue is about UDF, so I assign it to @gaoyan1998 and @zackyoungh. If you have any questions, you can comment and reply.
             
-            你好, 这个 issue 是关于 UDF 的，所以我把它分配给了 @gaoyan1998 和 @zackyoungh。如有任何问题，可以评论回复。
+            你好 @${{ github.event.issue.user.login }}, 这个 issue 是关于 UDF 的，所以我把它分配给了 @gaoyan1998 和 @zackyoungh。如有任何问题，可以评论回复。
 
   assign-k8s-problem-to-developer:
     runs-on: ubuntu-latest
@@ -58,9 +58,9 @@ jobs:
           actions: 'create-comment'
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello, this issue is about K8S, so I assign it to @gaoyan1998 and @zackyoungh. If you have any questions, you can comment and reply.
+            Hello @${{ github.event.issue.user.login }}, this issue is about K8S, so I assign it to @gaoyan1998 and @zackyoungh. If you have any questions, you can comment and reply.
             
-            你好, 这个 issue 是关于 K8S 的，所以我把它分配给了 @gaoyan1998 和 @zackyoungh。如有任何问题，可以评论回复。
+            你好 @${{ github.event.issue.user.login }}, 这个 issue 是关于 K8S 的，所以我把它分配给了 @gaoyan1998 和 @zackyoungh。如有任何问题，可以评论回复。
 
   assign-web-problem-to-developer:
     runs-on: ubuntu-latest
@@ -79,9 +79,9 @@ jobs:
           actions: 'create-comment'
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello, this issue is about web, so I assign it to @Zzm0809. If you have any questions, you can comment and reply.
+            Hello @${{ github.event.issue.user.login }}, this issue is about web, so I assign it to @Zzm0809. If you have any questions, you can comment and reply.
             
-            你好, 这个 issue 是关于 web 的，所以我把它分配给了 @Zzm0809。如有任何问题，可以评论回复。
+            你好 @${{ github.event.issue.user.login }}, 这个 issue 是关于 web 的，所以我把它分配给了 @Zzm0809。如有任何问题，可以评论回复。
 
   assign-cdc-problem-to-developer:
     runs-on: ubuntu-latest
@@ -100,6 +100,6 @@ jobs:
           actions: 'create-comment'
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Hello, this issue is about CDC/CDCSOURCE, so I assign it to @aiwenmo. If you have any questions, you can comment and reply.
+            Hello @${{ github.event.issue.user.login }}, this issue is about CDC/CDCSOURCE, so I assign it to @aiwenmo. If you have any questions, you can comment and reply.
             
-            你好, 这个 issue 是关于 CDC/CDCSOURCE 的，所以我把它分配给了 @aiwenmo。如有任何问题，可以评论回复。
+            你好 @${{ github.event.issue.user.login }}, 这个 issue 是关于 CDC/CDCSOURCE 的，所以我把它分配给了 @aiwenmo。如有任何问题，可以评论回复。
