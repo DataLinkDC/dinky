@@ -59,7 +59,6 @@ const JobList = () => {
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [selectedKey, setSelectedKey] = useState<Key[]>([]);
 
-  console.log(statusFilter);
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
       title: l('global.table.jobname'),
@@ -182,11 +181,9 @@ const JobList = () => {
   return (
     <ProCard
       boxShadow
-      ghost
       size={'small'}
       bodyStyle={{
-        height: parent.innerHeight - 215,
-        marginTop: -30,
+        height: parent.innerHeight - 235,
         overflow: 'auto',
         width: '99vw'
       }}
@@ -205,7 +202,7 @@ const JobList = () => {
           split={'horizontal'}
         >
           <Search
-            style={{ margin: '8px 0px' }}
+            style={{ margin: '8px 0px', padding: '0 10px' }}
             placeholder={l('global.search.text')}
             onChange={onChangeSearch}
             allowClear={true}
@@ -225,6 +222,7 @@ const JobList = () => {
 
           {data.length ? (
             <DirectoryTree
+              style={{ padding: '0 10px' }}
               className={'treeList'}
               onSelect={(_, info) => onNodeClick(info)}
               // onRightClick={onRightClick}
@@ -250,7 +248,7 @@ const JobList = () => {
           <ProTable<Jobs.JobInstance>
             {...PROTABLE_OPTIONS_PUBLIC}
             search={false}
-            tableStyle={{ height: parent.innerHeight - 210 }}
+            tableStyle={{ height: parent.innerHeight - 245 }}
             loading={{ delay: 1000 }}
             rowKey={(record) => record.jid}
             columns={jobListColumns}
@@ -308,6 +306,7 @@ const JobList = () => {
                 />
               )
             }}
+            scroll={{ y: parent.innerHeight - 245 - 150 }}
           />
         </Pane>
       </SplitPane>
