@@ -157,8 +157,7 @@ public class Submitter {
             }
         }
         // build Database golbal varibals
-        Boolean fragment = appTask.getFragment();
-        if (fragment != null && fragment) {
+        if (appTask.getFragment()) {
             log.info("Global env is enable, load database flink config env.");
             sb.append(DBUtil.getDbSourceSQLStatement()).append("\n");
         }
