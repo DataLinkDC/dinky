@@ -39,10 +39,21 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ResourceFileSystem extends FileSystem {
-    private static final BaseResourceManager BASE_RESOURCE_MANAGER = BaseResourceManager.getInstance();
+    private final BaseResourceManager BASE_RESOURCE_MANAGER;
 
     public static final URI URI_SCHEMA = URI.create("rs:/");
-    private static final ResourceFileSystem INSTANCE = new ResourceFileSystem();
+    private static ResourceFileSystem INSTANCE;
+
+    public static synchronized ResourceFileSystem getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ResourceFileSystem();
+        }
+        return INSTANCE;
+    }
+
+    public ResourceFileSystem() {
+        this.BASE_RESOURCE_MANAGER = BaseResourceManager.getInstance();
+    }
 
     @Override
     public Path getWorkingDirectory() {
