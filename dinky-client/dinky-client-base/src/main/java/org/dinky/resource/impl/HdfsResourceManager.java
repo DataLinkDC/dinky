@@ -102,13 +102,7 @@ public class HdfsResourceManager implements BaseResourceManager {
         List<ResourcesVO> resList = new ArrayList<>();
 
         for (FileStatus file : filePathsList) {
-
             Path parentPath = file.getPath().getParent();
-            /*if (parentPath.toString().equals(basePath)) {
-                // 跳过根目录 | skip root directory
-                continue;
-            }*/
-
             String parent = "";
             if (parentPath != null) {
                 parent = parentPath.toString().replace(basePath, "");

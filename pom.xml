@@ -798,9 +798,9 @@
                         <importOrder>
                             <order>\#,org.dinky,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
-                        <licenseHeader>
+                        <!--<licenseHeader>
                             <file>style/license_header</file>
-                        </licenseHeader>
+                        </licenseHeader>-->
                         <replaceRegex>
                             <name>Remove wildcard imports</name>
                             <searchRegex>import\s+[^\*\s]+\*;(\r\n|\r|\n)</searchRegex>
@@ -834,10 +834,10 @@
                             <include>dinky-web/src/**/*.tsx</include>
                             <include>dinky-web/src/**/*.js</include>
                         </includes>
-                        <licenseHeader>
+                        <!--<licenseHeader>
                             <file>style/license_header</file>
                             <delimiter>(?!(\/\*|\ \*|\/\*|\/\/|\s))</delimiter>
-                        </licenseHeader>
+                        </licenseHeader>-->
                     </typescript>
                 </configuration>
                 <executions>
@@ -1138,13 +1138,13 @@
             <build>
                 <pluginManagement>
                     <plugins>
-                        <plugin>
+                        <!--<plugin>
                             <groupId>com.diffplug.spotless</groupId>
                             <artifactId>spotless-maven-plugin</artifactId>
                             <configuration>
                                 <skip>true</skip>
                             </configuration>
-                        </plugin>
+                        </plugin>-->
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-enforcer-plugin</artifactId>

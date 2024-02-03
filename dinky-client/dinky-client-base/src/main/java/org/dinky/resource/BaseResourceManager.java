@@ -110,8 +110,11 @@ public interface BaseResourceManager {
 
     default String getBasePath() {
         String basePath = instances.getResourcesUploadBasePath().getValue();
-        if (!basePath.endsWith("/")) {
+        /*if (!basePath.endsWith("/")) {
             basePath += "/";
+        }*/
+        if (basePath.endsWith("/")) {
+            basePath = basePath.replaceAll("/$", "");
         }
         return basePath;
     }
