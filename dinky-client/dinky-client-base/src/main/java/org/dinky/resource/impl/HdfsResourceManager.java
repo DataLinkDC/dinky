@@ -19,6 +19,7 @@
 
 package org.dinky.resource.impl;
 
+import org.apache.hadoop.fs.FileStatus;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.resource.BaseResourceManager;
@@ -30,10 +31,12 @@ import org.apache.hadoop.fs.Path;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import org.springframework.util.ObjectUtils;
 
 public class HdfsResourceManager implements BaseResourceManager {
     FileSystem hdfs;
@@ -87,7 +90,45 @@ public class HdfsResourceManager implements BaseResourceManager {
 
     @Override
     public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
-        throw new RuntimeException("Sync HDFS Not implemented!");
+        String basePath = getBasePath();
+        if(!basePath.toUpperCase().contains("hdfs://") && !getHdfs().getUri().getHost().isEmpty()) {
+            basePath = getHdfs().getUri().toString() + basePath;
+        }
+        checkHdfsFile(basePath);
+
+        List<FileStatus> filePathsList = new ArrayList<>();
+        listAllHdfsFilePaths(basePath, filePathsList);
+
+        List<ResourcesVO> resList = new ArrayList<>();
+
+        for (FileStatus file : filePathsList) {
+
+            Path parentPath = file.getPath().getParent();
+            /*if (parentPath.toString().equals(basePath)) {
+                // 跳过根目录 | skip root directory
+                continue;
+            }*/
+
+            String parent = "";
+            if (parentPath != null) {
+                parent = parentPath.toString().replace(basePath, "");
+            }
+            int pid = parent.isEmpty() ? rootId : parent.hashCode();
+            String self = file.getPath().toString().replace(basePath, "");
+
+            ResourcesVO resources = ResourcesVO.builder()
+                    .id(self.hashCode())
+                    .pid(pid)
+                    .fullName(self)
+                    .fileName(file.getPath().getName())
+                    .isDirectory(file.isDirectory())
+                    .type(0)
+                    .size(file.getBlockSize())
+                    .build();
+
+            resList.add(resources);
+        }
+        return resList;
     }
 
     @Override
@@ -109,4 +150,38 @@ public class HdfsResourceManager implements BaseResourceManager {
     public synchronized void setHdfs(FileSystem hdfs) {
         this.hdfs = hdfs;
     }
+
+    public void checkHdfsFile(String path){
+        try {
+            getHdfs().exists(new Path(path));
+        } catch (IOException e) {
+            throw BusException.valueOf("hdfs.dir.or.file.not.exist", e);
+        }
+    }
+
+    public FileStatus[] listHdfsFilePaths(String path) {
+        try {
+            return getHdfs().listStatus(new Path(path));
+        } catch (IOException e) {
+            throw BusException.valueOf("file.path.visit.failed", e);
+        }
+    }
+
+    public void listAllHdfsFilePaths(String path, List<FileStatus> fileStatusList) {
+
+        FileStatus[] paths = listHdfsFilePaths(path);
+
+        if (ObjectUtils.isEmpty(paths) || paths.length == 0) {
+            return;
+        }
+
+        for (FileStatus file : paths) {
+            fileStatusList.add(file);
+            if(file.isDirectory()) {
+                listAllHdfsFilePaths(file.getPath().toString(), fileStatusList);
+            }
+        }
+
+    }
+
 }
