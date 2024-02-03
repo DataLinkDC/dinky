@@ -19,7 +19,6 @@
 
 package org.dinky.configure;
 
-import cn.dev33.satoken.router.SaRouter;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
@@ -35,6 +34,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import cn.dev33.satoken.exception.StopMatchException;
 import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 
 /**
@@ -75,18 +75,17 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(localeChangeInterceptor());
         // 注册Sa-Token的路由拦截器
         registry.addInterceptor(new SaInterceptor(handler -> {
-                    SaRouter.match("/openapi/**",r -> {
+                    SaRouter.match("/openapi/**", r -> {
                         if (!StpUtil.isLogin()) {
-                            StpUtil.switchTo( BaseConstant.ADMIN_ID);
+                            StpUtil.switchTo(BaseConstant.ADMIN_ID);
                         }
                     });
                     if (!StpUtil.isLogin()) {
                         throw new StopMatchException();
                     }
                 }))
-                .addPathPatterns("/api/**","/openapi/**")
-                .excludePathPatterns(
-                        "/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
+                .addPathPatterns("/api/**", "/openapi/**")
+                .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
 
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
