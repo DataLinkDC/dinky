@@ -19,6 +19,7 @@
 
 package org.dinky.configure;
 
+import cn.dev33.satoken.router.SaRouter;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
@@ -74,14 +75,18 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(localeChangeInterceptor());
         // 注册Sa-Token的路由拦截器
         registry.addInterceptor(new SaInterceptor(handler -> {
-                    boolean login = StpUtil.isLogin();
-                    if (!login) {
+                    SaRouter.match("/openapi/**",r -> {
+                        if (!StpUtil.isLogin()) {
+                            StpUtil.switchTo( BaseConstant.ADMIN_ID);
+                        }
+                    });
+                    if (!StpUtil.isLogin()) {
                         throw new StopMatchException();
                     }
                 }))
-                .addPathPatterns("/api/**")
+                .addPathPatterns("/api/**","/openapi/**")
                 .excludePathPatterns(
-                        "/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**", "/openapi/**");
+                        "/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
 
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
