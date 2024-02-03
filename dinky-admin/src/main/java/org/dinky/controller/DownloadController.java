@@ -20,8 +20,6 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.annotations.Log;
-import org.dinky.data.enums.BusinessType;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
@@ -61,7 +59,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DownloadController {
 
     @GetMapping("downloadDepJar/{taskId}")
-    @Log(title = "Download UDF Jar", businessType = BusinessType.DOWNLOAD)
     @ApiOperation("Download UDF Jar")
     public void downloadJavaUDF(@PathVariable Integer taskId, HttpServletResponse resp) {
         if (Asserts.isNull(taskId)) {
@@ -108,7 +105,6 @@ public class DownloadController {
      * @param resp    resp
      */
     @GetMapping("downloadAppJar/{version}")
-    @Log(title = "Download App Jar", businessType = BusinessType.DOWNLOAD)
     @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
         List<File> files = FileUtil.loopFiles(
@@ -119,7 +115,6 @@ public class DownloadController {
     }
 
     @GetMapping("downloadFromRs")
-    @Log(title = "Download From Resource", businessType = BusinessType.DOWNLOAD)
     @ApiOperation("Download From Resource")
     public void downloadJavaUDF(String path, HttpServletResponse resp) {
         InputStream inputStream = BaseResourceManager.getInstance().readFile(path);
