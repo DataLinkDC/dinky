@@ -37,6 +37,7 @@ import java.util.List;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 
 public class HdfsResourceManager implements BaseResourceManager {
     FileSystem hdfs;
@@ -90,7 +91,7 @@ public class HdfsResourceManager implements BaseResourceManager {
 
     @Override
     public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
-        String basePath = getBasePath();
+        String basePath = new Path(getBasePath()).toUri().getPath();
         checkHdfsFile(basePath);
 
         List<FileStatus> filePathsList = new ArrayList<>();
@@ -106,17 +107,13 @@ public class HdfsResourceManager implements BaseResourceManager {
             int parentId = 1;
 
             // Determine whether it is the root directory
-            if (!parentPath
-                    .toUri()
-                    .getPath()
-                    .equals(new Path(instances.getResourcesUploadBasePath().getValue())
-                            .toUri()
-                            .getPath())) {
+
+            if (!parentPath.toUri().getPath().equals(basePath)) {
                 String path = parentPath.toString().replace(basePath, "");
                 parentId = path.isEmpty() ? rootId : path.hashCode();
             }
 
-            String self = file.getPath().toString().replace(basePath, "");
+            String self = StrUtil.replaceFirst(file.getPath().toUri().getPath(), basePath, "");
 
             ResourcesVO resources = ResourcesVO.builder()
                     .id(self.hashCode())
