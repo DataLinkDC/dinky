@@ -34,10 +34,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.util.ObjectUtils;
-
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ArrayUtil;
 
 public class HdfsResourceManager implements BaseResourceManager {
     FileSystem hdfs;
@@ -92,10 +91,6 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
-        if (!basePath.toUpperCase().contains("hdfs://")
-                && !getHdfs().getUri().getHost().isEmpty()) {
-            basePath = getHdfs().getUri().toString() + basePath;
-        }
         checkHdfsFile(basePath);
 
         List<FileStatus> filePathsList = new ArrayList<>();
@@ -105,16 +100,27 @@ public class HdfsResourceManager implements BaseResourceManager {
 
         for (FileStatus file : filePathsList) {
             Path parentPath = file.getPath().getParent();
-            String parent = "";
-            if (parentPath != null) {
-                parent = parentPath.toString().replace(basePath, "");
+            if (parentPath == null) {
+                continue;
             }
-            int pid = parent.isEmpty() ? rootId : parent.hashCode();
+            int parentId = 1;
+
+            // Determine whether it is the root directory
+            if (!parentPath
+                    .toUri()
+                    .getPath()
+                    .equals(new Path(instances.getResourcesUploadBasePath().getValue())
+                            .toUri()
+                            .getPath())) {
+                String path = parentPath.toString().replace(basePath, "");
+                parentId = path.isEmpty() ? rootId : path.hashCode();
+            }
+
             String self = file.getPath().toString().replace(basePath, "");
 
             ResourcesVO resources = ResourcesVO.builder()
                     .id(self.hashCode())
-                    .pid(pid)
+                    .pid(parentId)
                     .fullName(self)
                     .fileName(file.getPath().getName())
                     .isDirectory(file.isDirectory())
@@ -167,7 +173,7 @@ public class HdfsResourceManager implements BaseResourceManager {
 
         FileStatus[] paths = listHdfsFilePaths(path);
 
-        if (ObjectUtils.isEmpty(paths) || paths.length == 0) {
+        if (ArrayUtil.isEmpty(paths)) {
             return;
         }
 
