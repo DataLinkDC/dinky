@@ -798,9 +798,9 @@
                         <importOrder>
                             <order>\#,org.dinky,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
-                        <!--<licenseHeader>
+                        <licenseHeader>
                             <file>style/license_header</file>
-                        </licenseHeader>-->
+                        </licenseHeader>
                         <replaceRegex>
                             <name>Remove wildcard imports</name>
                             <searchRegex>import\s+[^\*\s]+\*;(\r\n|\r|\n)</searchRegex>
