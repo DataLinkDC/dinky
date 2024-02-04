@@ -198,6 +198,12 @@ public interface TaskService extends ISuperService<Task> {
     List<Task> getAllUDF();
 
     /**
+     * Get a list of all release user-defined functions (UDFs) in the system.
+     * @return A list of {@link Task} objects representing the release UDFs.
+     */
+    List<Task> getReleaseUDF();
+
+    /**
      * Get the API address of the given task.
      *
      * @return A string containing the API address of the task.
