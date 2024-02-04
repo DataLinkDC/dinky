@@ -38,6 +38,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 
 public class OssResourceManager implements BaseResourceManager {
     OssTemplate ossTemplate;
@@ -87,6 +88,11 @@ public class OssResourceManager implements BaseResourceManager {
     @Override
     public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
+        if (StrUtil.isNotBlank(basePath)) {
+            if (basePath.charAt(0) == '/') {
+                basePath = basePath.substring(1);
+            }
+        }
 
         List<S3ObjectSummary> listBucketObjects =
                 getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);

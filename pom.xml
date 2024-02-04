@@ -50,7 +50,7 @@
 
     <properties>
         <assertj.version>3.21.0</assertj.version>
-        <aws-java-sdk-s3.version>1.12.589</aws-java-sdk-s3.version>
+        <aws-java-sdk-s3.version>1.12.645</aws-java-sdk-s3.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <commons-email>1.5</commons-email>
