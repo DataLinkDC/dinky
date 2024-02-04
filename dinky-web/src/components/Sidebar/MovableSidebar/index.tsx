@@ -78,7 +78,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
           ...style,
           display: visible ? 'block' : 'none',
           borderRadius: 5,
-          backgroundColor: token.colorBgBase,
+          backgroundColor: token.colorBgBase
         }}
         onResize={onResize}
         onResizeStop={onResizeStop}
