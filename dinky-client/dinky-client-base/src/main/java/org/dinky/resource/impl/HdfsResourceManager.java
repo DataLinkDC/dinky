@@ -107,9 +107,9 @@ public class HdfsResourceManager implements BaseResourceManager {
             int parentId = 1;
 
             // Determine whether it is the root directory
-
-            if (!parentPath.toUri().getPath().equals(basePath)) {
-                String path = parentPath.toString().replace(basePath, "");
+            final String parentSimplePath = parentPath.toUri().getPath();
+            if (!parentSimplePath.equals(basePath)) {
+                String path = parentSimplePath.replace(basePath, "");
                 parentId = path.isEmpty() ? rootId : path.hashCode();
             }
 
