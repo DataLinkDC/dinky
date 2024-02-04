@@ -92,6 +92,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                     .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
                     .build();
             Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, 1, true);
+            program.close();
             Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
             return (StreamGraph) pipeline;
         } catch (Exception e) {
