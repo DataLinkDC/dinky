@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -89,7 +90,8 @@ public class LocalResourceManager implements BaseResourceManager {
 
     @Override
     public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
-        String basePath = getBasePath();
+        String basePath = FileUtil.file(getBasePath()).getPath();
+
         try (Stream<Path> paths = Files.walk(Paths.get(basePath))) {
             return paths.map(path -> {
                         if (path.compareTo(Paths.get(basePath)) == 0) {
@@ -97,16 +99,18 @@ public class LocalResourceManager implements BaseResourceManager {
                             return null;
                         }
                         Path parentPath = path.getParent();
-                        String parent = "";
-                        if (parentPath != null) {
-                            parent = parentPath.toString().replace(basePath, "");
+                        String self = StrUtil.replaceFirst(path.toString(), basePath, "");
+                        int parentId = 1;
+
+                        // Determine whether it is the root directory
+                        if (!parentPath.toUri().getPath().equals(basePath)) {
+                            String parent = parentPath.toString().replace(basePath, "");
+                            parentId = parent.isEmpty() ? rootId : parent.hashCode();
                         }
-                        String self = path.toString().replace(basePath, "");
-                        int pid = parent.isEmpty() ? rootId : parent.hashCode();
                         File file = new File(path.toString());
                         return ResourcesVO.builder()
                                 .id(self.hashCode())
-                                .pid(pid)
+                                .pid(parentId)
                                 .fullName(self)
                                 .fileName(file.getName())
                                 .isDirectory(file.isDirectory())
