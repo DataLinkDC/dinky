@@ -19,12 +19,12 @@
 
 package org.dinky.resource.impl;
 
-import org.apache.hadoop.fs.FileStatus;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.resource.BaseResourceManager;
 
 import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -34,9 +34,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.util.ObjectUtils;
+
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import org.springframework.util.ObjectUtils;
 
 public class HdfsResourceManager implements BaseResourceManager {
     FileSystem hdfs;
@@ -91,7 +92,8 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
-        if(!basePath.toUpperCase().contains("hdfs://") && !getHdfs().getUri().getHost().isEmpty()) {
+        if (!basePath.toUpperCase().contains("hdfs://")
+                && !getHdfs().getUri().getHost().isEmpty()) {
             basePath = getHdfs().getUri().toString() + basePath;
         }
         checkHdfsFile(basePath);
@@ -145,7 +147,7 @@ public class HdfsResourceManager implements BaseResourceManager {
         this.hdfs = hdfs;
     }
 
-    public void checkHdfsFile(String path){
+    public void checkHdfsFile(String path) {
         try {
             getHdfs().exists(new Path(path));
         } catch (IOException e) {
@@ -171,11 +173,9 @@ public class HdfsResourceManager implements BaseResourceManager {
 
         for (FileStatus file : paths) {
             fileStatusList.add(file);
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 listAllHdfsFilePaths(file.getPath().toString(), fileStatusList);
             }
         }
-
     }
-
 }
