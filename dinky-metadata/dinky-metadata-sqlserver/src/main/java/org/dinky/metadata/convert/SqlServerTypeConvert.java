@@ -50,7 +50,7 @@ public class SqlServerTypeConvert extends AbstractJdbcTypeConvert {
         register("datetime", ColumnType.TIMESTAMP);
         register("date", ColumnType.LOCAL_DATE);
         register("time", ColumnType.LOCALTIME);
-        register("timestamp", ColumnType.BYTES);
+        register("timestamp", ColumnType.STRING);
         register("binary", ColumnType.BYTES);
         register("varbinary", ColumnType.BYTES);
         register("image", ColumnType.BYTES);
