@@ -554,9 +554,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (lifeCycle == JobLifeCycle.PUBLISH) {
             Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
             task.setVersionId(taskVersionId);
-            UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task.buildTask()));
+            if (Dialect.isUDF(task.getDialect())) {
+                UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task.buildTask()));
+            }
         } else {
-            UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+            if (Dialect.isUDF(task.getDialect()) && Asserts.isNotNull(task.getConfigJson()) && Asserts.isNotNull(task.getConfigJson().getUdfConfig())){
+                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+            }
         }
         boolean saved = saveOrUpdate(task.buildTask());
         if (saved && Asserts.isNotNull(task.getJobInstanceId())) {
