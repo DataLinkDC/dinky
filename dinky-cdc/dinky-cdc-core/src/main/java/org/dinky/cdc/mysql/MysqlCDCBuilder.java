@@ -75,6 +75,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         String distributionFactorUpper = source.get("chunk-key.even-distribution.factor.lower-bound");
         String scanNewlyAddedTableEnabled = source.get("scan.newly-added-table.enabled");
         String schemaChanges = source.get("schema.changes");
+        String scanStartupSpecificOffsetFile = source.get("scan.startup.specific-offset.file");
+        String scanStartupSpecificOffsetPos = source.get("scan.startup.specific-offset.pos");
+        String scanStartupSpecificOffsetGtidSet = source.get("scan.startup.specific-offset.gtid-set");
+        String scanStartupTimestampMillis = source.get("scan.startup.timestamp-millis");
 
         // 为部分转换添加默认值
         Properties debeziumProperties = new Properties();
@@ -125,8 +129,29 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
                 case "initial":
                     sourceBuilder.startupOptions(StartupOptions.initial());
                     break;
+                case "earliest-offset":
+                    sourceBuilder.startupOptions(StartupOptions.earliest());
+                    break;
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
+                    break;
+                case "specific-offset":
+                    if (Asserts.isAllNotNullString(scanStartupSpecificOffsetFile, scanStartupSpecificOffsetPos)) {
+                        sourceBuilder.startupOptions(StartupOptions.specificOffset(
+                                scanStartupSpecificOffsetFile, Long.valueOf(scanStartupSpecificOffsetPos)));
+                    } else if (Asserts.isNotNullString(scanStartupSpecificOffsetGtidSet)) {
+                        sourceBuilder.startupOptions(StartupOptions.specificOffset(scanStartupSpecificOffsetGtidSet));
+                    } else {
+                        throw new RuntimeException("No specific offset parameter specified.");
+                    }
+                    break;
+                case "timestamp":
+                    if (Asserts.isNotNullString(scanStartupTimestampMillis)) {
+                        sourceBuilder.startupOptions(
+                                StartupOptions.timestamp(Long.valueOf(scanStartupTimestampMillis)));
+                    } else {
+                        throw new RuntimeException("No timestamp parameter specified.");
+                    }
                     break;
                 default:
             }
