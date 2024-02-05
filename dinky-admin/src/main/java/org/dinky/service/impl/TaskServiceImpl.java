@@ -558,7 +558,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task.buildTask()));
             }
         } else {
-            if (Dialect.isUDF(task.getDialect()) && Asserts.isNotNull(task.getConfigJson()) && Asserts.isNotNull(task.getConfigJson().getUdfConfig())){
+            if (Dialect.isUDF(task.getDialect())
+                    && Asserts.isNotNull(task.getConfigJson())
+                    && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
                 UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
             }
         }

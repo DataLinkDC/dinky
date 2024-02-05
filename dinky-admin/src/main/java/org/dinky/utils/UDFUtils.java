@@ -20,11 +20,9 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.config.Dialect;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
 import org.dinky.function.data.model.UDF;
-import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -32,15 +30,15 @@ import org.apache.flink.table.catalog.FunctionLanguage;
 public class UDFUtils extends UDFUtil {
 
     public static UDF taskToUDF(Task task) {
-        if (Asserts.isNotNull(task.getConfigJson()) && Asserts.isNotNull(task.getConfigJson().getUdfConfig())){
+        if (Asserts.isNotNull(task.getConfigJson())
+                && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
             return UDF.builder()
                     .className(task.getConfigJson().getUdfConfig().getClassName())
                     .code(task.getStatement())
                     .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                     .build();
-        }else {
+        } else {
             throw new BusException("udf `class` config is null,please check your udf task config");
         }
-
     }
 }
