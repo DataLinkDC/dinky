@@ -84,6 +84,11 @@ const ConsoleContent = (props: ConsoleProps) => {
       return data;
     });
     setSelectNode((prevState: any) => {
+      // prevState和data.lastUpdateStep可能会有空值
+      if (prevState == undefined || data.lastUpdateStep==undefined){
+        return data
+      }
+
       if (prevState && prevState.key == data.lastUpdateStep.key) {
         //更新当前节点
         return data.lastUpdateStep;
