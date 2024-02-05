@@ -143,6 +143,9 @@ public class TaskSaveDTO {
     @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
 
+    @ApiModelProperty(value = "Step", dataType = "Integer", example = "1", notes = "Step for the task")
+    private Integer step;
+
     public Task toTaskEntity() {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
