@@ -19,7 +19,9 @@
 
 package org.dinky.metadata.driver;
 
-import static org.dinky.utils.SplitUtil.*;
+import static org.dinky.utils.SplitUtil.contains;
+import static org.dinky.utils.SplitUtil.getReValue;
+import static org.dinky.utils.SplitUtil.isSplit;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
