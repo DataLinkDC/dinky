@@ -19,12 +19,8 @@
 
 package org.dinky.metadata.driver;
 
-import cn.hutool.core.text.CharSequenceUtil;
-import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.druid.sql.ast.SQLStatement;
-import lombok.extern.slf4j.Slf4j;
+import static org.dinky.utils.SplitUtil.*;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.TableType;
@@ -42,15 +38,36 @@ import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.TextUtil;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.dinky.utils.SplitUtil.*;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
 
+import cn.hutool.core.text.CharSequenceUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AbstractJdbcDriver
@@ -126,9 +143,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                 Class.forName(getDriverClass());
                 DruidPooledConnection connection = createDataSource().getConnection();
                 conn.set(connection);
-            } catch (
-                    ClassNotFoundException |
-                    SQLException e) {
+            } catch (ClassNotFoundException | SQLException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -279,7 +294,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
     public Table getTable(String schemaName, String tableName) {
         try {
             DatabaseMetaData metaData = conn.get().getMetaData();
-            ResultSet tables = metaData.getTables(schemaName, null, tableName, new String[]{"TABLE"});
+            ResultSet tables = metaData.getTables(schemaName, null, tableName, new String[] {"TABLE"});
             while (tables.next()) {
                 String tableComment = tables.getString("REMARKS");
                 List<Column> columns = listColumns(schemaName, tableName);
@@ -824,8 +839,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                                 tableInfo.setUpdateTime(
                                         SimpleDateFormat.getDateInstance().parse(updateTime));
                             }
-                        } catch (
-                                ParseException ignored) {
+                        } catch (ParseException ignored) {
                             log.warn("set date fail");
                         }
                         TableType tableType = TableType.type(
@@ -839,8 +853,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                                     + getReValue(x.get(dbQuery.tableName()), splitConfig);
                             List<String> schemaTableNameList = mapList.stream()
                                     .filter(y -> (getReValue(y.get(dbQuery.schemaName()), splitConfig)
-                                            + "."
-                                            + getReValue(y.get(dbQuery.tableName()), splitConfig))
+                                                    + "."
+                                                    + getReValue(y.get(dbQuery.tableName()), splitConfig))
                                             .equals(currentSchemaName))
                                     .map(y -> y.get(dbQuery.schemaName()) + "." + y.get(dbQuery.tableName()))
                                     .collect(Collectors.toList());
