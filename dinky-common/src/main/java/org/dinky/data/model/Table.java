@@ -19,8 +19,6 @@
 
 package org.dinky.data.model;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.TableType;
 import org.dinky.utils.SqlUtil;
@@ -34,6 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Table
@@ -67,8 +68,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     private List<Column> columns;
 
-    public Table() {
-    }
+    public Table() {}
 
     public Table(List<Column> columns, String databaseName, String tableName, String tableComment) throws SQLException {
         this.name = tableName;
@@ -156,14 +156,12 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
         return String.format("DROP TABLE IF EXISTS %s;\n%s", name, createSql);
     }
 
-
     @Override
     public Object clone() {
         Table table = null;
         try {
             table = (Table) super.clone();
-        } catch (
-                CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
         return table;
