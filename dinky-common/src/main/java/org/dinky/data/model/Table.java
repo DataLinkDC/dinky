@@ -21,12 +21,17 @@ package org.dinky.data.model;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.TableType;
+import org.dinky.data.model.Doris.DorisType;
+import org.dinky.data.model.Doris.DorisTypeConverters;
+import org.dinky.data.model.Doris.MysqlDorisTypeConverters;
 import org.dinky.utils.SqlUtil;
 
 import java.beans.Transient;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +62,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     private Long rows;
     private Date createTime;
     private Date updateTime;
+    private List<String> primaryKeys;
     /**
      * 表类型
      */
@@ -68,13 +74,36 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     private List<Column> columns;
 
+    private Map<String, Column> columnMap;
+
+    private DorisTypeConverters converters;
+
     public Table() {}
 
-    public Table(List<Column> columns, String databaseName, String tableName, String tableComment) throws SQLException {
+    public Table(
+            List<Column> columns,
+            String databaseName,
+            String tableName,
+            String tableComment,
+            ArrayList<String> primaryKeys,
+            String DriverType)
+            throws SQLException {
         this.name = tableName;
         this.schema = databaseName;
         this.comment = tableComment;
         this.columns = columns;
+        this.primaryKeys = primaryKeys;
+        this.columnMap = new HashMap<>();
+        switch (DriverType) {
+            case "MySql":
+                this.converters = new MysqlDorisTypeConverters();
+        }
+        this.columns.forEach(item -> {
+            if (this.converters != null) {
+                item.setType(converters.toDorisType(item.getType(), item.getLength(), item.getScale()));
+            }
+            this.columnMap.put(item.getName(), item);
+        });
     }
 
     public Table(String name, String schema, List<Column> columns) {
@@ -154,6 +183,84 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     public String getFlinkTableSql(String catalogName, String flinkConfig) {
         String createSql = getFlinkDDL(getFlinkTableWith(flinkConfig), name);
         return String.format("DROP TABLE IF EXISTS %s;\n%s", name, createSql);
+    }
+
+    public static String identifier(String name) {
+        return "`" + name + "`";
+    }
+
+    private static List<String> identifier(List<String> name) {
+        List<String> result = name.stream().map(m -> identifier(m)).collect(Collectors.toList());
+        return result;
+    }
+
+    @Transient
+    public String getDorisTableDDL() {
+        StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS ");
+        sb.append(identifier(schema)).append(".").append(identifier(name)).append("(");
+
+        // append keys
+        for (String key : primaryKeys) {
+            buildColumn(sb, columnMap.get(key), true);
+        }
+        // append values
+        for (String key : columnMap.keySet()) {
+            if (primaryKeys.contains(key)) {
+                continue;
+            }
+            buildColumn(sb, columnMap.get(key), false);
+        }
+        sb = sb.deleteCharAt(sb.length() - 1);
+        sb.append(" ) ");
+        // append table comment
+        sb.append(" COMMENT '").append(quoteComment(comment)).append("' ");
+        // append distribute key
+        sb.append(" DISTRIBUTED BY HASH(")
+                .append(String.join(",", identifier(buildDistributeKeys())))
+                .append(")");
+        sb.append(" BUCKETS AUTO ");
+        return sb.toString();
+    }
+
+    private static void buildColumn(StringBuilder sql, Column field, boolean isKey) {
+        String fieldType = field.getType();
+        if (isKey && DorisType.STRING.equals(fieldType)) {
+            fieldType = String.format("%s(%s)", DorisType.VARCHAR, 65533);
+        }
+        sql.append(identifier(field.getName())).append(" ").append(fieldType);
+
+        if (field.getDefaultValue() != null) {
+            sql.append(" DEFAULT " + quoteDefaultValue(field.getDefaultValue()));
+        }
+        sql.append(" COMMENT '").append(quoteComment(field.getComment())).append("',");
+    }
+
+    public static String quoteDefaultValue(String defaultValue) {
+        // DEFAULT current_timestamp not need quote
+        if (defaultValue.equalsIgnoreCase("current_timestamp")) {
+            return defaultValue;
+        }
+        return "'" + defaultValue + "'";
+    }
+
+    public static String quoteComment(String comment) {
+        if (comment == null) {
+            return "";
+        } else {
+            return comment.replaceAll("'", "\\\\'");
+        }
+    }
+
+    private List<String> buildDistributeKeys() {
+        if (!this.primaryKeys.isEmpty()) {
+            return primaryKeys;
+        }
+        if (!this.columnMap.isEmpty()) {
+            Map.Entry<String, Column> firstField =
+                    this.columnMap.entrySet().iterator().next();
+            return Collections.singletonList(firstField.getKey());
+        }
+        return new ArrayList<>();
     }
 
     @Override

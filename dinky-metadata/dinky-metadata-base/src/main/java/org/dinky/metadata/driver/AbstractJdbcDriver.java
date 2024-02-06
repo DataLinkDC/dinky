@@ -298,7 +298,14 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             while (tables.next()) {
                 String tableComment = tables.getString("REMARKS");
                 List<Column> columns = listColumns(schemaName, tableName);
-                return new Table(columns, schemaName, tableName, tableComment);
+                ArrayList<String> primaryKeys = new ArrayList<>();
+                ResultSet rs = metaData.getPrimaryKeys(schemaName, null, tableName);
+                while (rs.next()) {
+                    String fieldName = rs.getString("COLUMN_NAME");
+                    primaryKeys.add(fieldName);
+                }
+
+                return new Table(columns, schemaName, tableName, tableComment, primaryKeys, getType());
             }
         } catch (SQLException e) {
             log.error("GetTable error:", e);
