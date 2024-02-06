@@ -50,7 +50,7 @@
 
     <properties>
         <assertj.version>3.21.0</assertj.version>
-        <aws-java-sdk-s3.version>1.12.589</aws-java-sdk-s3.version>
+        <aws-java-sdk-s3.version>1.12.645</aws-java-sdk-s3.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <commons-email>1.5</commons-email>
@@ -62,13 +62,13 @@
         <druid-starter>1.2.8</druid-starter>
         <easy.rules.version>4.1.0</easy.rules.version>
         <fastjson2.version>2.0.41</fastjson2.version>
-        <flink.version>1.18.0</flink.version>
+        <flink.version>1.18.1</flink.version>
         <guava.version>32.1.3-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
         <hamcrest.version>1.3</hamcrest.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <hutool.version>5.8.24</hutool.version>
+        <hutool.version>5.8.25</hutool.version>
         <jackson.version>2.14.1</jackson.version>
         <jakarta.ws.rs-api.version>2.1.6</jakarta.ws.rs-api.version>
         <jasypt.version>1.9.3</jasypt.version>
