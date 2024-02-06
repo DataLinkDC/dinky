@@ -220,7 +220,7 @@ public class SystemInit implements ApplicationRunner {
     }
 
     public void registerUDF() {
-        List<Task> allUDF = taskService.getAllUDF();
+        List<Task> allUDF = taskService.getReleaseUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }

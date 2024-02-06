@@ -554,6 +554,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (lifeCycle == JobLifeCycle.PUBLISH) {
             Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
             task.setVersionId(taskVersionId);
+            if (Dialect.isUDF(task.getDialect())) {
+                UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task.buildTask()));
+            }
+        } else {
+            if (Dialect.isUDF(task.getDialect())
+                    && Asserts.isNotNull(task.getConfigJson())
+                    && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
+                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+            }
         }
         boolean saved = saveOrUpdate(task.buildTask());
         if (saved && Asserts.isNotNull(task.getJobInstanceId())) {
@@ -613,7 +622,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
             }
             task.getConfigJson().getUdfConfig().setClassName(className);
-            UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
+            if (task.getStep().equals(JobLifeCycle.PUBLISH.getValue())) {
+                UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
+            } else {
+                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+            }
         }
 
         return this.saveOrUpdate(task);
@@ -689,6 +702,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
                 .eq("enabled", 1)
                 .isNotNull("save_point_path"));
+    }
+
+    @Override
+    public List<Task> getReleaseUDF() {
+        return list(new LambdaQueryWrapper<Task>()
+                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
+                .eq(Task::getEnabled, 1)
+                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue())
+                .isNotNull(Task::getSavePointPath));
     }
 
     @Override
