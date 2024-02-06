@@ -286,6 +286,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                 return new Table(columns, schemaName, tableName, tableComment);
             }
         } catch (SQLException e) {
+            log.error("GetTable error:", e);
             throw new RuntimeException(e);
         }
         return null;
