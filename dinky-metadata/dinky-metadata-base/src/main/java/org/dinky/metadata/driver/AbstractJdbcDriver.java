@@ -51,6 +51,7 @@ import java.util.stream.Stream;
 
 import static org.dinky.utils.SplitUtil.*;
 
+
 /**
  * AbstractJdbcDriver
  *
@@ -60,9 +61,8 @@ import static org.dinky.utils.SplitUtil.*;
 public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConfig> {
 
     protected ThreadLocal<Connection> conn = new ThreadLocal<>();
-
-    private DruidDataSource dataSource;
     protected String validationQuery = "select 1";
+    private DruidDataSource dataSource;
 
     abstract String getDriverClass();
 
