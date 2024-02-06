@@ -129,7 +129,7 @@ const ConsoleContent = (props: ConsoleProps) => {
         {node.status === JobStatus.FINISHED && (
           <CheckOutlined style={{ color: 'green', fontWeight: 'bold' }} />
         )}
-        {node.status == 'FAILED' && (
+        {node.status == JobStatus.FAILED && (
           <CloseCircleFilled style={{ color: 'red', fontWeight: 'bold' }} />
         )}
         <Text>{node.title}</Text>
