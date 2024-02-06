@@ -85,27 +85,23 @@ const ConsoleContent = (props: ConsoleProps) => {
       return data;
     });
     setSelectNode((prevState: any) => {
-        // prevState和data.lastUpdateStep可能会有空值
-        if (prevState == undefined || data.lastUpdateStep == undefined) {
-          return data
-        }
-
-        if (prevState && prevState.key == data.lastUpdateStep.key) {
-          if (prevState && data?.lastUpdateStep && prevState.key === data.lastUpdateStep.key) {
-            //更新当前节点
-            return data.lastUpdateStep;
-          } else if (!prevState || prevState.key === data.key) {
-            //未选择节点状态下选择根节点
-            return data;
-          }
-          return prevState;
-        }
+      // prevState和data.lastUpdateStep可能会有空值
+      if (prevState == undefined || data.lastUpdateStep==undefined){
+        return data
       }
-    )
-  }
 
-
-
+      if (prevState && prevState.key == data.lastUpdateStep.key) {
+      if (prevState && data?.lastUpdateStep && prevState.key === data.lastUpdateStep.key) {
+        //更新当前节点
+        return data.lastUpdateStep;
+      } else if (!prevState || prevState.key === data.key) {
+        //未选择节点状态下选择根节点
+        return data;
+      }
+      return prevState;
+    }
+    });
+  };
 
   useRequest(
     { url: API_CONSTANTS.PROCESS_LOG, params: { processName: process } },
@@ -129,7 +125,7 @@ const ConsoleContent = (props: ConsoleProps) => {
         {node.status === JobStatus.FINISHED && (
           <CheckOutlined style={{ color: 'green', fontWeight: 'bold' }} />
         )}
-        {node.status == JobStatus.FAILED && (
+        {node.status === JobStatus.FAILED && (
           <CloseCircleFilled style={{ color: 'red', fontWeight: 'bold' }} />
         )}
         <Text>{node.title}</Text>
