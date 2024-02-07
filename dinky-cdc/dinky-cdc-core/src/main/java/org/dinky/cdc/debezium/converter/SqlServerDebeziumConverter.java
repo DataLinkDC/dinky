@@ -19,11 +19,13 @@
 
 package org.dinky.cdc.debezium.converter;
 
-import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
-import io.debezium.spi.converter.RelationalColumn;
 import org.dinky.cdc.debezium.DebeziumCustomConverter;
 
 import java.time.ZoneOffset;
+
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
+
+import io.debezium.spi.converter.RelationalColumn;
 
 /**
  * @author <a href="mailto:kindbgen@gmail.com">Kindbgen<a/>
@@ -32,7 +34,8 @@ import java.time.ZoneOffset;
  */
 public class SqlServerDebeziumConverter extends DebeziumCustomConverter {
     @Override
-    public void converterFor(RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
+    public void converterFor(
+            RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
         // 获取字段类型
         String columnType = relationalColumn.typeName().toUpperCase();
         this.registerConverter(columnType, converterRegistration);
@@ -62,7 +65,8 @@ public class SqlServerDebeziumConverter extends DebeziumCustomConverter {
                     } else if (value instanceof java.sql.Time) {
                         return timeFormatter.format(((java.sql.Time) value).toLocalTime());
                     } else if (value instanceof java.sql.Timestamp) {
-                        return timeFormatter.format(((java.sql.Timestamp) value).toLocalDateTime().toLocalTime());
+                        return timeFormatter.format(
+                                ((java.sql.Timestamp) value).toLocalDateTime().toLocalTime());
                     } else if (value instanceof java.time.LocalDateTime) {
                         return datetimeFormatter.format((java.time.LocalDateTime) value);
                     } else {
@@ -81,7 +85,10 @@ public class SqlServerDebeziumConverter extends DebeziumCustomConverter {
                         return datetimeFormatter.format(((java.sql.Timestamp) value).toLocalDateTime());
                     } else if (value instanceof microsoft.sql.DateTimeOffset) {
                         microsoft.sql.DateTimeOffset dateTimeOffset = (microsoft.sql.DateTimeOffset) value;
-                        return datetimeFormatter.format(dateTimeOffset.getOffsetDateTime().withOffsetSameInstant(ZoneOffset.UTC).toLocalDateTime());
+                        return datetimeFormatter.format(dateTimeOffset
+                                .getOffsetDateTime()
+                                .withOffsetSameInstant(ZoneOffset.UTC)
+                                .toLocalDateTime());
                     } else if (value instanceof java.time.LocalDateTime) {
                         return datetimeFormatter.format((java.time.LocalDateTime) value);
                     } else {
@@ -94,5 +101,4 @@ public class SqlServerDebeziumConverter extends DebeziumCustomConverter {
                 break;
         }
     }
-
 }

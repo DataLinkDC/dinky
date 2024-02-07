@@ -45,7 +45,8 @@ public enum DataBaseType {
         return type;
     }
 
-    private static final Map<String, DataBaseType> MAP = Arrays.stream(values()).collect(Collectors.toMap(DataBaseType::getType, Function.identity()));
+    private static final Map<String, DataBaseType> MAP =
+            Arrays.stream(values()).collect(Collectors.toMap(DataBaseType::getType, Function.identity()));
 
     public static DataBaseType get(String type) {
         return MAP.get(type);

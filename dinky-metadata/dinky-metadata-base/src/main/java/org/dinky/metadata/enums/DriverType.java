@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
  * @since 2024/2/6
  */
 public enum DriverType {
-
     MYSQL("MySQL"),
     ORACLE("Oracle"),
     POSTGRESQL("PostgreSql"),
@@ -53,7 +52,8 @@ public enum DriverType {
         return value;
     }
 
-    private static final Map<String, DriverType> MAP = Arrays.stream(values()).collect(Collectors.toMap(DriverType::getValue, Function.identity()));
+    private static final Map<String, DriverType> MAP =
+            Arrays.stream(values()).collect(Collectors.toMap(DriverType::getValue, Function.identity()));
 
     public static DriverType get(String value) {
         return MAP.get(value);

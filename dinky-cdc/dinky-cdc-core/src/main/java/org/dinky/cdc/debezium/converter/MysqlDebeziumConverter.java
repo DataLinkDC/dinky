@@ -19,12 +19,14 @@
 
 package org.dinky.cdc.debezium.converter;
 
-import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
-import io.debezium.spi.converter.RelationalColumn;
 import org.dinky.cdc.debezium.DebeziumCustomConverter;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
+
+import io.debezium.spi.converter.RelationalColumn;
 
 /**
  * @author <a href="mailto:kindbgen@gmail.com">Kindbgen<a/>
@@ -34,7 +36,8 @@ import java.time.ZoneOffset;
 public class MysqlDebeziumConverter extends DebeziumCustomConverter {
 
     @Override
-    public void converterFor(RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
+    public void converterFor(
+            RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
         // 获取字段类型
         String columnType = relationalColumn.typeName().toUpperCase();
         this.registerConverter(columnType, converterRegistration);
@@ -63,9 +66,7 @@ public class MysqlDebeziumConverter extends DebeziumCustomConverter {
                         return null;
                     } else if (value instanceof java.time.Duration) {
                         return timeFormatter.format(
-                                java.time.LocalTime.
-                                        ofNanoOfDay(((java.time.Duration) value)
-                                                .toNanos()));
+                                java.time.LocalTime.ofNanoOfDay(((java.time.Duration) value).toNanos()));
                     } else if (value instanceof java.time.LocalDateTime) {
                         return datetimeFormatter.format((java.time.LocalDateTime) value);
                     } else {
@@ -81,7 +82,9 @@ public class MysqlDebeziumConverter extends DebeziumCustomConverter {
                     } else if (value instanceof java.time.LocalDateTime) {
                         return datetimeFormatter.format((java.time.LocalDateTime) value);
                     } else if (value instanceof java.time.ZonedDateTime) {
-                        return datetimeFormatter.format(((java.time.ZonedDateTime) value).withZoneSameInstant(zoneId).toLocalDateTime());
+                        return datetimeFormatter.format(((java.time.ZonedDateTime) value)
+                                .withZoneSameInstant(zoneId)
+                                .toLocalDateTime());
                     } else if (value instanceof java.sql.Timestamp) {
                         return datetimeFormatter.format(((java.sql.Timestamp) value).toLocalDateTime());
                     } else if (value instanceof String) {

@@ -19,9 +19,11 @@
 
 package org.dinky.cdc.debezium.converter;
 
-import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
-import io.debezium.spi.converter.RelationalColumn;
 import org.dinky.cdc.debezium.DebeziumCustomConverter;
+
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
+
+import io.debezium.spi.converter.RelationalColumn;
 
 /**
  * @author <a href="mailto:kindbgen@gmail.com">Kindbgen<a/>
@@ -30,7 +32,8 @@ import org.dinky.cdc.debezium.DebeziumCustomConverter;
  */
 public class PostgresDebeziumConverter extends DebeziumCustomConverter {
     @Override
-    public void converterFor(RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
+    public void converterFor(
+            RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
         // 获取字段类型
         String columnType = relationalColumn.typeName().toUpperCase();
         this.registerConverter(columnType, converterRegistration);
@@ -84,5 +87,4 @@ public class PostgresDebeziumConverter extends DebeziumCustomConverter {
                 break;
         }
     }
-
 }

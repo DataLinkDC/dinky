@@ -19,16 +19,18 @@
 
 package org.dinky.cdc.debezium;
 
-import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
-import io.debezium.spi.converter.CustomConverter;
-import io.debezium.spi.converter.RelationalColumn;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
+
+import io.debezium.spi.converter.CustomConverter;
+import io.debezium.spi.converter.RelationalColumn;
 
 /**
  * 处理 Debezium 源库 时间转换的问题
@@ -63,7 +65,6 @@ public class DebeziumCustomConverter implements CustomConverter<SchemaBuilder, R
     // 获取默认时区
     protected final ZoneId zoneId = ZoneOffset.systemDefault();
 
-
     @Override
     public void configure(Properties properties) {
         // 必填参数：database.type。获取数据库的类型，暂时支持mysql、sqlserver、oracle、postgresql
@@ -95,7 +96,8 @@ public class DebeziumCustomConverter implements CustomConverter<SchemaBuilder, R
     }
 
     @Override
-    public void converterFor(RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
+    public void converterFor(
+            RelationalColumn relationalColumn, ConverterRegistration<SchemaBuilder> converterRegistration) {
         schemaBuilder = null;
     }
 

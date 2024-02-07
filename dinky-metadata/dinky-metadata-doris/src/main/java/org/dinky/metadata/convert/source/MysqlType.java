@@ -60,8 +60,7 @@ public class MysqlType {
     private static final String DOUBLE_UNSIGNED_ZEROFILL = "DOUBLE UNSIGNED ZEROFILL";
     private static final String DOUBLE_PRECISION = "DOUBLE PRECISION";
     private static final String DOUBLE_PRECISION_UNSIGNED = "DOUBLE PRECISION UNSIGNED";
-    private static final String DOUBLE_PRECISION_UNSIGNED_ZEROFILL =
-            "DOUBLE PRECISION UNSIGNED ZEROFILL";
+    private static final String DOUBLE_PRECISION_UNSIGNED_ZEROFILL = "DOUBLE PRECISION UNSIGNED ZEROFILL";
     private static final String NUMERIC = "NUMERIC";
     private static final String NUMERIC_UNSIGNED = "NUMERIC UNSIGNED";
     private static final String NUMERIC_UNSIGNED_ZEROFILL = "NUMERIC UNSIGNED ZEROFILL";
@@ -144,10 +143,7 @@ public class MysqlType {
             case DECIMAL_UNSIGNED_ZEROFILL:
                 return length != null && length <= 38
                         ? String.format(
-                        "%s(%s,%s)",
-                        DorisType.DECIMAL_V3,
-                        length,
-                        scale != null && scale >= 0 ? scale : 0)
+                                "%s(%s,%s)", DorisType.DECIMAL_V3, length, scale != null && scale >= 0 ? scale : 0)
                         : DorisType.STRING;
             case DATE:
                 return DorisType.DATE_V2;
@@ -155,9 +151,7 @@ public class MysqlType {
             case TIMESTAMP:
                 // default precision is 0
                 // see https://dev.mysql.com/doc/refman/8.0/en/date-and-time-type-syntax.html
-                if (length == null
-                        || length <= 0
-                        || length == ZERO_PRECISION_TIMESTAMP_COLUMN_SIZE) {
+                if (length == null || length <= 0 || length == ZERO_PRECISION_TIMESTAMP_COLUMN_SIZE) {
                     return String.format("%s(%s)", DorisType.DATETIME_V2, 0);
                 } else if (length > ZERO_PRECISION_TIMESTAMP_COLUMN_SIZE + 1) {
                     // Timestamp with a fraction of seconds.
@@ -174,20 +168,15 @@ public class MysqlType {
                     // For Debezium JSON data, the timestamp/datetime length ranges from 0 to 9.
                     return String.format(
                             "%s(%s)",
-                            DorisType.DATETIME_V2,
-                            Math.min(length, DorisConstant.MAX_SUPPORTED_DATE_TIME_PRECISION));
+                            DorisType.DATETIME_V2, Math.min(length, DorisConstant.MAX_SUPPORTED_DATE_TIME_PRECISION));
                 } else {
                     throw new UnsupportedOperationException(
-                            "Unsupported length: "
-                                    + length
-                                    + " for MySQL TIMESTAMP/DATETIME types");
+                            "Unsupported length: " + length + " for MySQL TIMESTAMP/DATETIME types");
                 }
             case CHAR:
             case VARCHAR:
                 Asserts.checkNotNull(length, "VARCHAR length is null");
-                return length * 3 > 65533
-                        ? DorisType.STRING
-                        : String.format("%s(%s)", DorisType.VARCHAR, length * 3);
+                return length * 3 > 65533 ? DorisType.STRING : String.format("%s(%s)", DorisType.VARCHAR, length * 3);
             case TINYTEXT:
             case TEXT:
             case MEDIUMTEXT:

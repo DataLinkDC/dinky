@@ -120,5 +120,4 @@ public class Asserts {
     public static boolean isContainsString(String str1, String str2) {
         return !isNullString(str1) && str1.contains(str2);
     }
-
 }

@@ -86,10 +86,7 @@ public class PostgresType {
             case NUMERIC:
                 return precision != null && precision > 0 && precision <= 38
                         ? String.format(
-                        "%s(%s,%s)",
-                        DorisType.DECIMAL_V3,
-                        precision,
-                        scale != null && scale >= 0 ? scale : 0)
+                                "%s(%s,%s)", DorisType.DECIMAL_V3, precision, scale != null && scale >= 0 ? scale : 0)
                         : DorisType.STRING;
             case FLOAT4:
                 return DorisType.FLOAT;
@@ -97,8 +94,7 @@ public class PostgresType {
                 return DorisType.DOUBLE;
             case TIMESTAMP:
             case TIMESTAMPTZ:
-                return String.format(
-                        "%s(%s)", DorisType.DATETIME_V2, Math.min(scale == null ? 0 : scale, 6));
+                return String.format("%s(%s)", DorisType.DATETIME_V2, Math.min(scale == null ? 0 : scale, 6));
             case DATE:
                 return DorisType.DATE_V2;
             case BOOL:
@@ -154,8 +150,7 @@ public class PostgresType {
                     return String.format("%s<%s>", DorisType.ARRAY, DorisType.DATETIME_V2);
                 **/
             default:
-                throw new UnsupportedOperationException(
-                        "Unsupported Postgres Type: " + postgresType);
+                throw new UnsupportedOperationException("Unsupported Postgres Type: " + postgresType);
         }
     }
 }

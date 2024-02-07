@@ -79,18 +79,14 @@ public class SqlServerType {
             case NUMERIC:
                 return precision != null && precision > 0 && precision <= 38
                         ? String.format(
-                        "%s(%s,%s)",
-                        DorisType.DECIMAL_V3,
-                        precision,
-                        scale != null && scale >= 0 ? scale : 0)
+                                "%s(%s,%s)", DorisType.DECIMAL_V3, precision, scale != null && scale >= 0 ? scale : 0)
                         : DorisType.STRING;
             case DATE:
                 return DorisType.DATE_V2;
             case DATETIME:
             case DATETIME2:
             case SMALLDATETIME:
-                return String.format(
-                        "%s(%s)", DorisType.DATETIME_V2, Math.min(scale == null ? 0 : scale, 6));
+                return String.format("%s(%s)", DorisType.DATETIME_V2, Math.min(scale == null ? 0 : scale, 6));
             case CHAR:
             case VARCHAR:
             case NCHAR:
@@ -108,8 +104,7 @@ public class SqlServerType {
             case VARBINARY:
                 return DorisType.STRING;
             default:
-                throw new UnsupportedOperationException(
-                        "Unsupported SqlServer Type: " + sqlServerType);
+                throw new UnsupportedOperationException("Unsupported SqlServer Type: " + sqlServerType);
         }
     }
 }

@@ -170,9 +170,8 @@ public class DorisDriver extends AbstractJdbcDriver {
         // 默认开启light_schema_change
         String propertiesStr = "\n PROPERTIES ( \"light_schema_change\" = \"true\" )";
 
-        String commentStr = Asserts.isNullString(table.getComment())
-                ? ""
-                : String.format("\n COMMENT '%s'", table.getComment());
+        String commentStr =
+                Asserts.isNullString(table.getComment()) ? "" : String.format("\n COMMENT '%s'", table.getComment());
 
         return MessageFormat.format(
                 "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}\n) ENGINE=OLAP{3}{4}{5}{6}",
@@ -185,7 +184,7 @@ public class DorisDriver extends AbstractJdbcDriver {
                 propertiesStr);
     }
 
-        private String generateColumnSql(Column column, String driverType) {
+    private String generateColumnSql(Column column, String driverType) {
         String columnType = column.getType();
         int length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
         int scale = Asserts.isNull(column.getScale()) ? 0 : column.getScale();
@@ -234,5 +233,4 @@ public class DorisDriver extends AbstractJdbcDriver {
         }
         return "'" + defaultValue + "'";
     }
-
 }

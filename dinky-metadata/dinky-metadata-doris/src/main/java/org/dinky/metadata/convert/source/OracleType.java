@@ -76,10 +76,7 @@ public class OracleType {
                 }
                 return precision != null && precision <= 38
                         ? String.format(
-                        "%s(%s,%s)",
-                        DorisType.DECIMAL_V3,
-                        precision,
-                        scale != null && scale >= 0 ? scale : 0)
+                                "%s(%s,%s)", DorisType.DECIMAL_V3, precision, scale != null && scale >= 0 ? scale : 0)
                         : DorisType.STRING;
             case FLOAT:
                 return DorisType.DOUBLE;
