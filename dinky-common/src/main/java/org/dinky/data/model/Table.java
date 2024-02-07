@@ -21,6 +21,7 @@ package org.dinky.data.model;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.TableType;
+import org.dinky.data.model.Doris.DefaultDorisTypeConverters;
 import org.dinky.data.model.Doris.DorisType;
 import org.dinky.data.model.Doris.DorisTypeConverters;
 import org.dinky.data.model.Doris.MysqlDorisTypeConverters;
@@ -95,11 +96,17 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
         this.primaryKeys = primaryKeys;
         this.columnMap = new HashMap<>();
         switch (DriverType) {
-            case "MySql":
+            case "Mysql":
                 this.converters = new MysqlDorisTypeConverters();
+                break;
+            default:
+                this.converters = new DefaultDorisTypeConverters();
         }
         this.columns.forEach(item -> {
-            if (this.converters != null) {
+            if (this.converters instanceof DefaultDorisTypeConverters) {
+                item.setType(
+                        converters.toDorisType(item.getJavaType().getJavaType(), item.getLength(), item.getScale()));
+            } else {
                 item.setType(converters.toDorisType(item.getType(), item.getLength(), item.getScale()));
             }
             this.columnMap.put(item.getName(), item);
