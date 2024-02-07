@@ -63,6 +63,9 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     private List<Column> columns;
 
+    /** 驱动类型, @see org.dinky.metadata.enums.DriverType */
+    private String driverType;
+
     public Table() {}
 
     public Table(String name, String schema, List<Column> columns) {

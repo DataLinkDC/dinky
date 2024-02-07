@@ -29,6 +29,7 @@ import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.config.DriverConfig;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.JsonUtils;
 
@@ -110,25 +111,25 @@ public interface Driver extends AutoCloseable {
 
     static Driver build(String connector, String url, String username, String password) {
         String type = null;
-        if (Asserts.isEqualsIgnoreCase(connector, "doris")) {
-            type = "Doris";
+        if (Asserts.isContainsString(connector, "doris")) {
+            type = DriverType.DORIS.getValue();
         } else if (Asserts.isEqualsIgnoreCase(connector, "starrocks")) {
-            type = "StarRocks";
+            type = DriverType.STARROCKS.getValue();
         } else if (Asserts.isEqualsIgnoreCase(connector, "clickhouse")) {
-            type = "ClickHouse";
+            type = DriverType.CLICKHOUSE.getValue();
         } else if (Asserts.isEqualsIgnoreCase(connector, "jdbc")) {
             if (url.startsWith("jdbc:mysql")) {
-                type = "MySQL";
+                type = DriverType.MYSQL.getValue();
             } else if (url.startsWith("jdbc:postgresql")) {
-                type = "PostgreSql";
+                type = DriverType.POSTGRESQL.getValue();
             } else if (url.startsWith("jdbc:oracle")) {
-                type = "Oracle";
+                type = DriverType.ORACLE.getValue();
             } else if (url.startsWith("jdbc:sqlserver")) {
-                type = "SQLServer";
+                type = DriverType.SQLSERVER.getValue();
             } else if (url.startsWith("jdbc:phoenix")) {
-                type = "Phoenix";
+                type = DriverType.PHOENIX.getValue();
             } else if (url.startsWith("jdbc:pivotal")) {
-                type = "Greenplum";
+                type = DriverType.GREENPLUM.getValue();
             }
         }
 

@@ -28,6 +28,7 @@ import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.PrestoConstant;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.PrestoTypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.PrestoQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -335,7 +336,7 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
 
     @Override
     public String getType() {
-        return "Presto";
+        return DriverType.PRESTO.getValue();
     }
 
     @Override

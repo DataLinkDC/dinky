@@ -26,6 +26,7 @@ import org.dinky.data.model.Table;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.OracleTypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.OracleQuery;
 
@@ -66,7 +67,7 @@ public class OracleDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "Oracle";
+        return DriverType.ORACLE.getValue();
     }
 
     @Override

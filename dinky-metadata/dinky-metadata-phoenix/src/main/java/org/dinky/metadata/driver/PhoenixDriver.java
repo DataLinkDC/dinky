@@ -26,6 +26,7 @@ import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.PhoenixConstant;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.PhoenixTypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.PhoenixQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -57,7 +58,7 @@ public class PhoenixDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "Phoenix";
+        return DriverType.PHOENIX.getValue();
     }
 
     /** sql拼接，目前还未实现limit方法 */
