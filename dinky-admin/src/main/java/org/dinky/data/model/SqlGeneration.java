@@ -42,6 +42,12 @@ public class SqlGeneration {
             notes = "Flink SQL statement for creating a table or view")
     private String flinkSqlCreate;
 
+    @ApiModelProperty(
+            value = "Doris SQL Create Statement",
+            dataType = "String",
+            notes = "Doris SQL statement for creating a table")
+    private String dorisSqlCreate;
+
     @ApiModelProperty(value = "SQL Select Statement", dataType = "String", notes = "SQL SELECT statement")
     private String sqlSelect;
 

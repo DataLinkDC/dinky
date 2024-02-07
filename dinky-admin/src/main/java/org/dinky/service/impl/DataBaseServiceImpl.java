@@ -231,6 +231,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         Table table = driver.getTable(schemaName, tableName);
         SqlGeneration sqlGeneration = new SqlGeneration();
         sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate()));
+        sqlGeneration.setDorisSqlCreate(table.getDorisTableDDL());
         sqlGeneration.setSqlSelect(driver.getSqlSelect(table));
         sqlGeneration.setSqlCreate(driver.getCreateTableSql(table));
         driver.close();

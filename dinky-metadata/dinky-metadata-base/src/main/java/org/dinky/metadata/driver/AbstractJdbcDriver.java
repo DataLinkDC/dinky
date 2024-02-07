@@ -41,6 +41,7 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.TextUtil;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -79,9 +80,8 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConfig> {
 
     protected ThreadLocal<Connection> conn = new ThreadLocal<>();
-
-    private DruidDataSource dataSource;
     protected String validationQuery = "select 1";
+    private DruidDataSource dataSource;
 
     abstract String getDriverClass();
 
@@ -290,6 +290,30 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             close(preparedStatement, results);
         }
         return tableList;
+    }
+
+    @Override
+    public Table getTable(String schemaName, String tableName) {
+        try {
+            DatabaseMetaData metaData = conn.get().getMetaData();
+            ResultSet tables = metaData.getTables(schemaName, null, tableName, new String[] {"TABLE"});
+            while (tables.next()) {
+                String tableComment = tables.getString("REMARKS");
+                List<Column> columns = listColumns(schemaName, tableName);
+                ArrayList<String> primaryKeys = new ArrayList<>();
+                ResultSet rs = metaData.getPrimaryKeys(schemaName, null, tableName);
+                while (rs.next()) {
+                    String fieldName = rs.getString("COLUMN_NAME");
+                    primaryKeys.add(fieldName);
+                }
+
+                return new Table(columns, schemaName, tableName, tableComment, primaryKeys, getType());
+            }
+        } catch (SQLException e) {
+            log.error("GetTable error:", e);
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     @Override
@@ -516,8 +540,11 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
     }
 
     /**
-     * 标准sql where与order语法都是相同的 不同数据库limit语句不一样，需要单独交由driver去处理，例如oracle 通过{@query(String sql,
-     * Integer limit)}去截断返回数据，但是在大量数据情况下会导致数据库负载过高。
+     * 标准sql where与order语法都是相同的
+     * 不同数据库limit语句不一样，需要单独交由driver去处理，例如oracle
+     * 通过{@query(String sql,
+     * Integer
+     * limit)}去截断返回数据，但是在大量数据情况下会导致数据库负载过高。
      */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
@@ -614,7 +641,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
 
     /**
      * 如果执行多条语句返回最后一条语句执行结果
-     *
      */
     @Override
     public JdbcSelectResult executeSql(String sql, Integer limit) {
