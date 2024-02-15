@@ -303,8 +303,8 @@ public enum Status {
     RESOURCE_FILE_DELETE_FAILED(9037, "file.delete.failed"),
     RESOURCE_FILE_READ_FAILED(9038, "file.read.failed"),
     RESOURCE_OSS_CONFIGURATION_ERROR(9039, "resource.oss.configuration.error"),
-    RESOURCE_ROOT_DIR_NOT_EXIST(9039, "resource.root.dir.not.exist"),
-    RESOURCE_FOLDER_EXISTS(9040, "resource.folder.exists"),
+    RESOURCE_ROOT_DIR_NOT_EXIST(9040, "resource.root.dir.not.exist"),
+    RESOURCE_FOLDER_EXISTS(9041, "resource.folder.exists"),
 
     /**
      * global exception
