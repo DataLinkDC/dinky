@@ -296,6 +296,15 @@ public enum Status {
      */
     ROOT_DIR_NOT_ALLOW_DELETE(9031, "resource.root.dir.not.allow.delete"),
     RESOURCE_DIR_OR_FILE_NOT_EXIST(9032, "resource.dir.or.file.not.exist"),
+    RESOURCE_FILE_PATH_VISIT_FAILED(9033, "file.path.visit.failed"),
+    RESOURCE_HDFS_CONFIGURATION_ERROR(9034, "resource.hdfs.configuration.error"),
+    RESOURCE_FILE_UPLOAD_FAILED(9035, "file.upload.failed"),
+    RESOURCE_FILE_RENAME_FAILED(9036, "file.rename.failed"),
+    RESOURCE_FILE_DELETE_FAILED(9037, "file.delete.failed"),
+    RESOURCE_FILE_READ_FAILED(9038, "file.read.failed"),
+    RESOURCE_OSS_CONFIGURATION_ERROR(9039, "resource.oss.configuration.error"),
+    RESOURCE_ROOT_DIR_NOT_EXIST(9040, "resource.root.dir.not.exist"),
+    RESOURCE_FOLDER_EXISTS(9041, "resource.folder.exists"),
 
     /**
      * global exception

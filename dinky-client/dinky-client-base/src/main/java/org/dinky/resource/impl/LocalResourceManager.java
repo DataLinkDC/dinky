@@ -19,6 +19,7 @@
 
 package org.dinky.resource.impl;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.resource.BaseResourceManager;
@@ -51,8 +52,7 @@ public class LocalResourceManager implements BaseResourceManager {
                 throw new BusException("remove file failed,reason unknown");
             }
         } catch (IORuntimeException e) {
-            log.error("remove file failed", e);
-            throw new BusException(e.getMessage());
+            throw new BusException(Status.RESOURCE_FILE_DELETE_FAILED, e);
         }
     }
 
@@ -62,8 +62,7 @@ public class LocalResourceManager implements BaseResourceManager {
             String newName = FileUtil.getName(newPath);
             FileUtil.rename(new File(getFilePath(path)), newName, true);
         } catch (Exception e) {
-            log.error("rename file failed", e);
-            throw new BusException(e.getMessage());
+            throw new BusException(Status.RESOURCE_FILE_RENAME_FAILED, e);
         }
     }
 
@@ -72,8 +71,7 @@ public class LocalResourceManager implements BaseResourceManager {
         try {
             FileUtil.writeFromStream(fileStream, getFilePath(path));
         } catch (Exception e) {
-            log.error("putFile file failed", e);
-            throw new BusException(e.getMessage());
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -121,7 +119,7 @@ public class LocalResourceManager implements BaseResourceManager {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusException(Status.RESOURCE_FILE_PATH_VISIT_FAILED, e);
         }
     }
 
