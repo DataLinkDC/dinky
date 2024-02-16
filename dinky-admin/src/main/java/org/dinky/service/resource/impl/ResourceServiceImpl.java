@@ -64,7 +64,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     public boolean syncRemoteDirectoryStructure() {
         Resources rootResource = getOne(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, -1));
         if (rootResource == null) {
-            throw new BusException("root directory is not exists!! please check database");
+            throw new BusException(Status.RESOURCE_ROOT_DIR_NOT_EXIST);
         }
         List<Resources> local = list();
         Map<Integer, Resources> localMap =
@@ -96,7 +96,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         long count = count(
                 new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
         if (count > 0) {
-            throw new BusException("folder is exists!");
+            throw new BusException(Status.RESOURCE_FOLDER_EXISTS);
         }
         String path = "/" + fileName;
         Resources resources = new Resources();
@@ -145,7 +145,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 .eq(Resources::getPid, byId.getPid())
                 .eq(Resources::getFileName, fileName)
                 .ne(Resources::getId, id));
-        Assert.isFalse(count > 0, () -> new BusException("folder is exists!"));
+        Assert.isFalse(count > 0, () -> new BusException(Status.RESOURCE_FOLDER_EXISTS));
         List<String> split = StrUtil.split(sourceFullName, "/");
         split.remove(split.size() - 1);
         split.add(fileName);
@@ -254,6 +254,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * @param pResource    pResource
      * @param size         size
      */
+    @Transactional(rollbackFor = Exception.class)
     private void upload(
             Integer pid, String desc, Consumer<String> uploadAction, String fileName, Resources pResource, long size) {
         Resources currentUploadResource = getOne(
