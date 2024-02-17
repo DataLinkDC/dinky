@@ -66,10 +66,7 @@ public class SystemConfiguration {
             .booleanType()
             .defaultValue(true)
             .note(Status.SYS_FLINK_SETTINGS_USERESTAPI_NOTE);
-    private final Configuration<String> sqlSeparator = key(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR)
-            .stringType()
-            .defaultValue(";\\n")
-            .note(Status.SYS_FLINK_SETTINGS_SQLSEPARATOR_NOTE);
+
     private final Configuration<Integer> jobIdWait = key(Status.SYS_FLINK_SETTINGS_JOBIDWAIT)
             .intType()
             .defaultValue(30)
