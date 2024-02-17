@@ -58,7 +58,7 @@ public class SqlUtilTest {
         String sql = "set 'state.savepoints.dir' = 'hdfs://namenode:9000/tmp/checkpoint'; --ddd\n"
                 + "set 'state.checkpoints.dir' = 'hdfs://namenode:9000/tmp/checkpoint'; --dd \n"
                 + "create table abc ;\n";
-        String[] statements = SqlUtil.getStatements(sql,";\\s*(?:\\n|--.*)");
+        String[] statements = SqlUtil.getStatements(sql, ";\\s*(?:\\n|--.*)");
         Assertions.assertThat(statements.length).isEqualTo(3);
     }
 }
