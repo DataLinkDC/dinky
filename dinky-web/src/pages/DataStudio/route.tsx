@@ -202,7 +202,7 @@ export const LeftBottomSide: TabProp[] = [
       type === TabsPageType.project &&
       !isSql(subType ?? '') &&
       subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
+      // subType?.toLowerCase() !== DIALECT.FLINKJAR &&
       subType?.toLowerCase() !== DIALECT.SCALA &&
       subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
       subType?.toLowerCase() !== DIALECT.JAVA
