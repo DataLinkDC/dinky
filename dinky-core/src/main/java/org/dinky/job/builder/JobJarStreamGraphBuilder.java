@@ -60,7 +60,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
 
     public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
         DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
-        String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
+        String[] statements = SqlUtil.getStatements(statement);
         ExecuteJarOperation executeJarOperation = null;
         for (String sql : statements) {
             String sqlStatement = executor.pretreatStatement(sql);
@@ -83,7 +83,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
     }
 
     public List<String> getUris(String statement) {
-        String[] statements = SqlUtil.getStatements(statement, sqlSeparator);
+        String[] statements = SqlUtil.getStatements(statement);
         List<String> uriList = new ArrayList<>();
         for (String sql : statements) {
             String sqlStatement = executor.pretreatStatement(sql);
