@@ -337,10 +337,6 @@ public class SystemConfiguration {
         return useRestAPI.getValue();
     }
 
-    public String getSqlSeparator() {
-        return sqlSeparator.getValue();
-    }
-
     public int getJobIdWait() {
         return jobIdWait.getValue();
     }
