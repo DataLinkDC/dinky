@@ -26,6 +26,7 @@ import org.dinky.data.model.Table;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.MySqlTypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.MySqlQuery;
 import org.dinky.utils.TextUtil;
@@ -58,7 +59,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "MySql";
+        return DriverType.MYSQL.getValue();
     }
 
     @Override
