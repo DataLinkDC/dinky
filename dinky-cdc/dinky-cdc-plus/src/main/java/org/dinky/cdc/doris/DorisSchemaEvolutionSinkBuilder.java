@@ -32,8 +32,7 @@ import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
 import org.apache.doris.flink.sink.DorisSink;
-import org.apache.doris.flink.sink.writer.JsonDebeziumSchemaSerializer;
-import org.apache.doris.flink.sink.writer.serializer.DorisRecordSerializer;
+import org.apache.doris.flink.sink.writer.serializer.JsonDebeziumSchemaSerializer;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -151,8 +150,8 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
                         getSinkSchemaName(table),
                         getSinkTableName(table)));
             } else {
-                executionBuilder.setLabelPrefix(String.format(
-                        "dinky-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table), UUID.randomUUID()));
+                // flink-cdc-pipeline-connector-doris 3.0.0 以上版本内部已经拼接了 SchemaName + SinkTableName，并且约定 TableLabel 正则表达式如下 --> regex: ^[-_A-Za-z0-9]{1,128}$
+                executionBuilder.setLabelPrefix("dinky");
             }
 
             if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
@@ -161,11 +160,18 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
 
             executionBuilder.setStreamLoadProp(properties).setDeletable(true);
 
+            JsonDebeziumSchemaSerializer.Builder jsonDebeziumSchemaSerializerBuilder = JsonDebeziumSchemaSerializer.builder();
+
+            // use new schema change
+            if (sink.containsKey(DorisSinkOptions.SINK_USE_NEW_SCHEMA_CHANGE.key())) {
+                jsonDebeziumSchemaSerializerBuilder.setNewSchemaChange(Boolean.valueOf(sink.get(DorisSinkOptions.SINK_USE_NEW_SCHEMA_CHANGE.key())));
+            }
+
             DorisSink.Builder<String> builder = DorisSink.builder();
             builder.setDorisReadOptions(DorisReadOptions.builder().build())
                     .setDorisExecutionOptions(executionBuilder.build())
                     .setDorisOptions(dorisOptions)
-                    .setSerializer((DorisRecordSerializer<String>) JsonDebeziumSchemaSerializer.builder()
+                    .setSerializer(jsonDebeziumSchemaSerializerBuilder
                             .setDorisOptions(dorisOptions)
                             .build());
 

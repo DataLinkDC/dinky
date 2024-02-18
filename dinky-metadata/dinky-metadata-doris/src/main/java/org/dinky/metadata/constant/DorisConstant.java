@@ -38,4 +38,15 @@ public interface DorisConstant {
             + " TABLE_SCHEMA = '%s'  ";
     /** 查询指定schema.table下的所有列信息 */
     String QUERY_COLUMNS_BY_TABLE_AND_SCHEMA = "  show full columns from `%s`.`%s` ";
+
+    /** Max size of char type of Doris. */
+    int MAX_CHAR_SIZE = 255;
+
+    /** Max size of varchar type of Doris. */
+    int MAX_VARCHAR_SIZE = 65533;
+    /* Max precision of datetime type of Doris. */
+    int MAX_SUPPORTED_DATE_TIME_PRECISION = 6;
+
+    /* Max precision of timestamp type. */
+    int MAX_TIMESTAMP_PRECISION = 9;
 }

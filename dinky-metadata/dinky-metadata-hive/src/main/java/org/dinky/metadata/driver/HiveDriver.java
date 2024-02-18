@@ -27,6 +27,7 @@ import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.HiveConstant;
 import org.dinky.metadata.convert.HiveTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.HiveQuery;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -299,7 +300,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
 
     @Override
     public String getType() {
-        return "Hive";
+        return DriverType.HIVE.getValue();
     }
 
     @Override

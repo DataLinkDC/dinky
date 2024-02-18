@@ -123,6 +123,14 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-cdc/dinky-cdc-plus/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-cdc-plus-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-metadata/dinky-metadata-clickhouse/target
             </directory>
             <outputDirectory>lib</outputDirectory>

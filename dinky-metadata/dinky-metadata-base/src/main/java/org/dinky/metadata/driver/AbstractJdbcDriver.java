@@ -254,6 +254,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                 String tableName = results.getString(dbQuery.tableName());
                 if (Asserts.isNotNullString(tableName)) {
                     Table tableInfo = new Table();
+                    tableInfo.setDriverType(getType());
                     tableInfo.setName(tableName);
                     if (columnList.contains(dbQuery.tableComment())) {
                         tableInfo.setComment(results.getString(dbQuery.tableComment()));
@@ -806,6 +807,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     .stream()
                     .map(x -> {
                         Table tableInfo = new Table();
+                        tableInfo.setDriverType(getType());
                         tableInfo.setName(getReValue(x.get(dbQuery.tableName()), splitConfig));
                         tableInfo.setComment(x.get(dbQuery.tableComment()));
                         tableInfo.setSchema(getReValue(x.get(dbQuery.schemaName()), splitConfig));

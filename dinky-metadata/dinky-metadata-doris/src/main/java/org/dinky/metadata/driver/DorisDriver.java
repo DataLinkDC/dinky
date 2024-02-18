@@ -19,19 +19,29 @@
 
 package org.dinky.metadata.driver;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.Table;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.DorisTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.source.MysqlType;
+import org.dinky.metadata.convert.source.OracleType;
+import org.dinky.metadata.convert.source.PostgresType;
+import org.dinky.metadata.convert.source.SqlServerType;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.DorisQuery;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +66,7 @@ public class DorisDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "Doris";
+        return DriverType.DORIS.getValue();
     }
 
     @Override
@@ -121,5 +131,106 @@ public class DorisDriver extends AbstractJdbcDriver {
         map.put("TEXT", "STRING");
         map.put("DATETIME", "TIMESTAMP");
         return map;
+    }
+
+    @Override
+    public String generateCreateTableSql(Table table) {
+        String genTableSql = genTable(table);
+        log.info("Auto generateCreateTableSql {}", genTableSql);
+        return genTableSql;
+    }
+
+    @Override
+    public String getCreateTableSql(Table table) {
+        return genTable(table);
+    }
+
+    private String genTable(Table table) {
+        String columnStrs = table.getColumns().stream()
+                .map(column -> {
+                    return generateColumnSql(column, table.getDriverType());
+                })
+                .collect(Collectors.joining(",\n"));
+
+        List<String> columnKeys = table.getColumns().stream()
+                .filter(Column::isKeyFlag)
+                .map(Column::getName)
+                .map(t -> String.format("`%s`", t))
+                .collect(Collectors.toList());
+
+        String primaryKeyStr = columnKeys.isEmpty()
+                ? ""
+                : columnKeys.stream().collect(Collectors.joining(",", "\n UNIQUE KEY (", ")"));
+
+        // 默认开启 BUCKETS AUTO
+        String distributeKeyStr = columnKeys.isEmpty()
+                ? ""
+                : columnKeys.stream().collect(Collectors.joining(",", "\n DISTRIBUTED BY HASH (", ") BUCKETS AUTO"));
+
+        // 默认开启light_schema_change
+        String propertiesStr = "\n PROPERTIES ( \"light_schema_change\" = \"true\" )";
+
+        String commentStr =
+                Asserts.isNullString(table.getComment()) ? "" : String.format("\n COMMENT '%s'", table.getComment());
+
+        return MessageFormat.format(
+                "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}\n) ENGINE=OLAP{3}{4}{5}{6}",
+                table.getSchema(),
+                table.getName(),
+                columnStrs,
+                primaryKeyStr,
+                commentStr,
+                distributeKeyStr,
+                propertiesStr);
+    }
+
+    private String generateColumnSql(Column column, String driverType) {
+        String columnType = column.getType();
+        int length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
+        int scale = Asserts.isNull(column.getScale()) ? 0 : column.getScale();
+        DriverType sourceConnector = DriverType.get(driverType);
+        switch (sourceConnector) {
+            case MYSQL:
+                columnType = MysqlType.toDorisType(column.getType(), length, scale);
+                break;
+            case ORACLE:
+                columnType = OracleType.toDorisType(column.getType(), length, scale);
+                break;
+            case POSTGRESQL:
+                columnType = PostgresType.toDorisType(column.getType(), length, scale);
+                break;
+            case SQLSERVER:
+                columnType = SqlServerType.toDorisType(column.getType(), length, scale);
+                break;
+            default:
+                String errMsg = "Not support " + driverType + " schema change.";
+                throw new UnsupportedOperationException(errMsg);
+        }
+
+        String dv = column.getDefaultValue();
+        String defaultValue = Asserts.isNotNull(dv)
+                ? String.format(" DEFAULT %s", quoteDefaultValue(dv))
+                : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
+
+        return String.format(
+                "  `%s`  %s%s%s%s",
+                column.getName(),
+                columnType,
+                defaultValue,
+                column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
+                Asserts.isNotNullString(column.getComment())
+                        ? String.format(" COMMENT '%s'", column.getComment())
+                        : "");
+    }
+
+    private String quoteDefaultValue(String defaultValue) {
+        // DEFAULT current_timestamp not need quote
+        if (defaultValue.toLowerCase().contains("current_timestamp")) {
+            return "CURRENT_TIMESTAMP";
+        }
+        if (defaultValue.isEmpty()) {
+            return "''";
+        }
+        return "'" + defaultValue + "'";
     }
 }

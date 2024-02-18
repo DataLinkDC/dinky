@@ -19,6 +19,7 @@
 
 package org.dinky.resource.impl;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.resource.BaseResourceManager;
@@ -47,7 +48,7 @@ public class HdfsResourceManager implements BaseResourceManager {
         try {
             getHdfs().delete(new Path(getFilePath(path)), true);
         } catch (IOException e) {
-            throw BusException.valueOf("file.delete.failed", e);
+            throw new BusException(Status.RESOURCE_FILE_DELETE_FAILED, e);
         }
     }
 
@@ -56,7 +57,7 @@ public class HdfsResourceManager implements BaseResourceManager {
         try {
             getHdfs().rename(new Path(getFilePath(path)), new Path(getFilePath(newPath)));
         } catch (IOException e) {
-            throw BusException.valueOf("file.rename.failed", e);
+            throw new BusException(Status.RESOURCE_FILE_RENAME_FAILED, e);
         }
     }
 
@@ -68,7 +69,7 @@ public class HdfsResourceManager implements BaseResourceManager {
             stream.flush();
             stream.close();
         } catch (IOException e) {
-            throw BusException.valueOf("file.upload.failed", e);
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -80,7 +81,7 @@ public class HdfsResourceManager implements BaseResourceManager {
             stream.flush();
             stream.close();
         } catch (IOException e) {
-            throw BusException.valueOf("file.upload.failed", e);
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -122,7 +123,7 @@ public class HdfsResourceManager implements BaseResourceManager {
                     .fileName(file.getPath().getName())
                     .isDirectory(file.isDirectory())
                     .type(0)
-                    .size(file.getBlockSize())
+                    .size(file.getLen())
                     .build();
 
             resList.add(resources);
@@ -135,13 +136,13 @@ public class HdfsResourceManager implements BaseResourceManager {
         try {
             return getHdfs().open(new Path(getFilePath(path)));
         } catch (IOException e) {
-            throw BusException.valueOf("file.read.failed", e);
+            throw new BusException(Status.RESOURCE_FILE_READ_FAILED, e);
         }
     }
 
     public FileSystem getHdfs() {
         if (hdfs == null && instances.getResourcesEnable().getValue()) {
-            throw BusException.valueOf("Resource configuration error, HDFS is not enabled");
+            throw new BusException(Status.RESOURCE_HDFS_CONFIGURATION_ERROR);
         }
         return hdfs;
     }
@@ -154,7 +155,7 @@ public class HdfsResourceManager implements BaseResourceManager {
         try {
             getHdfs().exists(new Path(path));
         } catch (IOException e) {
-            throw BusException.valueOf("hdfs.dir.or.file.not.exist", e);
+            throw new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST, e);
         }
     }
 
@@ -162,7 +163,7 @@ public class HdfsResourceManager implements BaseResourceManager {
         try {
             return getHdfs().listStatus(new Path(path));
         } catch (IOException e) {
-            throw BusException.valueOf("file.path.visit.failed", e);
+            throw new BusException(Status.RESOURCE_FILE_PATH_VISIT_FAILED, e);
         }
     }
 

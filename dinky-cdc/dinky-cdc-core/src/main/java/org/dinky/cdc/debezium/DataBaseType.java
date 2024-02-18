@@ -17,19 +17,38 @@
  *
  */
 
-package org.dinky.constant;
+package org.dinky.cdc.debezium;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
- * FlinkSQLConstant
- *
- * @since 2021/5/25 15:51
+ * @author <a href="mailto:kindbgen@gmail.com">Kindbgen<a/>
+ * @description 数据库类型
+ * @date 2024/2/6
  */
-public class FlinkSQLConstant {
-    private FlinkSQLConstant() {}
+public enum DataBaseType {
+    MYSQL("mysql"),
+    SQLSERVER("sqlserver"),
+    ORACLE("oracle"),
+    POSTGRESQL("postgresql");
 
-    /** 分隔符 */
-    public static final String SEPARATOR = ";\\n";
+    private String type;
 
-    /** The define identifier of FlinkSQL Variable */
-    public static final String VARIABLES = ":=";
+    DataBaseType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    private static final Map<String, DataBaseType> MAP =
+            Arrays.stream(values()).collect(Collectors.toMap(DataBaseType::getType, Function.identity()));
+
+    public static DataBaseType get(String type) {
+        return MAP.get(type);
+    }
 }

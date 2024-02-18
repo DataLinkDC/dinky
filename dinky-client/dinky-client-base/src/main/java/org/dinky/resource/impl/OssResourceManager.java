@@ -19,8 +19,8 @@
 
 package org.dinky.resource.impl;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.oss.OssTemplate;
 import org.dinky.resource.BaseResourceManager;
@@ -66,7 +66,7 @@ public class OssResourceManager implements BaseResourceManager {
         try {
             getOssTemplate().putObject(getOssTemplate().getBucketName(), getFilePath(path), fileStream);
         } catch (Exception e) {
-            throw new DinkyException(e);
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -76,7 +76,7 @@ public class OssResourceManager implements BaseResourceManager {
             getOssTemplate()
                     .putObject(getOssTemplate().getBucketName(), getFilePath(path), FileUtil.getInputStream(file));
         } catch (Exception e) {
-            throw new DinkyException(e);
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -136,7 +136,7 @@ public class OssResourceManager implements BaseResourceManager {
 
     public OssTemplate getOssTemplate() {
         if (ossTemplate == null && instances.getResourcesEnable().getValue()) {
-            throw BusException.valueOf("Resource configuration error, OSS is not enabled");
+            throw new BusException(Status.RESOURCE_OSS_CONFIGURATION_ERROR);
         }
         return ossTemplate;
     }
