@@ -7,7 +7,7 @@ JAR_NAME="dinky-admin"
 APP_HOME="$(cd `dirname $0`; pwd)"
 
 # Use FLINK_HOME:
-CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${APP_HOME}/extends/*:${APP_HOME}/plugins/*:${APP_HOME}/customJar/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/*:${APP_HOME}/extends/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/extends/flink${FLINK_VERSION}/*"
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${APP_HOME}/extends/*:${APP_HOME}/plugins/*:${APP_HOME}/customJar/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/*:${APP_HOME}/extends/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/extends/flink${FLINK_VERSION}/*:$FLINK_HOME/lib/*"
 PID_FILE="dinky.pid"
 
 # JMX path
