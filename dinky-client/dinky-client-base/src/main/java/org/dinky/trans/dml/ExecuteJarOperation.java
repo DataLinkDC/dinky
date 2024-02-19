@@ -91,7 +91,8 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                     .setSavepointRestoreSettings(savepointRestoreSettings)
                     .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
                     .build();
-            Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, tEnv.getStreamExecutionEnvironment().getParallelism(), true);
+            Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(
+                    program, configuration, tEnv.getStreamExecutionEnvironment().getParallelism(), true);
             program.close();
             Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
             return (StreamGraph) pipeline;
