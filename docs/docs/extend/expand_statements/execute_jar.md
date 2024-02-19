@@ -14,6 +14,8 @@ title: EXECUTE JAR
 
 如果使用 `Checkpoint` 或 `Savepoint` ,请在右边作业，选择 `Savepoint策略`，其次检查点 跳过 请使用 execution.savepoint.ignore-unclaimed-state: true 参数控制
 
+
+此flink sql jar任务支持 `set` 和 `add customjar` 联动使用
 :::
 
 ## 语法结构
@@ -41,7 +43,7 @@ EXECUTE JAR WITH (
 
 1. 以上示例中, uri 的值为 rs:/jar/flink/demo/SocketWindowWordCount.jar, 该值为资源中心中的资源路径,
    请确保资源中心中存在该资源,请忽略资源中心 Root 节点(该节点为虚拟节点)
-2. 如果要读取S3，HDFS，LCOAL等存储上面的文件均可通过rs协议进行桥接使用,请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
+2. 如果要读取S3，HDFS，LOCAL等存储上面的文件均可通过rs协议进行桥接使用,请参考 [资源管理](../../user_guide/register_center/resource) 中 rs 协议使用方式
 :::
 
 ## PyFlink 任务提交:
