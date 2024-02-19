@@ -23,8 +23,7 @@ title: EXECUTE JAR
 EXECUTE JAR WITH (
 'uri'='<jar_path>.jar', -- 该参数 必填
 'main-class'='<main_class>', -- 该参数 必填
-'args'='<args>', -- 主类入参 该参数可选 
-'parallelism'='<parallelism>', -- 任务并行度 该参数可选
+'args'='<args>' -- 主类入参 该参数可选 
 );
 
 ```
@@ -35,8 +34,7 @@ EXECUTE JAR WITH (
 EXECUTE JAR WITH (
 'uri'='rs:/jar/flink/demo/SocketWindowWordCount.jar',
 'main-class'='org.apache.flink.streaming.examples.socket',
-'args'=' --hostname localhost ',
-'parallelism'=''
+'args'=' --hostname localhost '
 );
 ```
 :::warning 注意
