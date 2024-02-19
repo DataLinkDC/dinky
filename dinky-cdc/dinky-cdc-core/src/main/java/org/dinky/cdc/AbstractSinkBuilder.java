@@ -131,7 +131,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected SingleOutputStreamOperator<Map> deserialize(DataStreamSource<String> dataStreamSource) {
-        return dataStreamSource.map((MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class));
+        return dataStreamSource
+                .map((MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class))
+                .returns(Map.class);
     }
 
     protected SingleOutputStreamOperator<Map> shunt(
@@ -156,7 +158,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        return filterOperator.flatMap(sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
+        return filterOperator
+                .flatMap(sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName))
+                .returns(RowData.class);
     }
 
     @SuppressWarnings("rawtypes")
