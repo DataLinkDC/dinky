@@ -38,6 +38,7 @@ import org.apache.flink.table.api.TableResult;
 import java.io.File;
 import java.util.Optional;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
@@ -91,7 +92,10 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                     .setSavepointRestoreSettings(savepointRestoreSettings)
                     .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
                     .build();
-            Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, 1, true);
+            int parallelism = StrUtil.isNumeric(submitParam.getParallelism())
+                    ? Convert.toInt(submitParam.getParallelism())
+                    : tEnv.getStreamExecutionEnvironment().getParallelism();
+            Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, parallelism, true);
             program.close();
             Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
             return (StreamGraph) pipeline;
