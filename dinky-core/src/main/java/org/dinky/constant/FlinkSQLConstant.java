@@ -28,7 +28,7 @@ public class FlinkSQLConstant {
     private FlinkSQLConstant() {}
 
     /** 分隔符 */
-    public static final String SEPARATOR = ";\\n";
+    public static final String SEPARATOR = ";\n";
 
     /** The define identifier of FlinkSQL Variable */
     public static final String VARIABLES = ":=";
