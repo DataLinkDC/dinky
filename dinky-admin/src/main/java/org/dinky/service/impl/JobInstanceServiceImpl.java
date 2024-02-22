@@ -170,7 +170,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 ClusterConfiguration clusterConfig =
                         clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
-                jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+                if (clusterConfig != null) {
+                    jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+                }
             }
         }
 

@@ -344,5 +344,42 @@
                 </dependency>
             </dependencies>
         </profile>
+
+        <profile>
+            <id>flink-1.15</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-cdc-plus</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>flink-1.16</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-cdc-plus</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>flink-1.17</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-cdc-plus</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>flink-1.18</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-cdc-plus</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 </project>

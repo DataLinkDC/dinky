@@ -129,7 +129,7 @@ export const showBadge = (type: string) => {
  */
 
 export const buildProjectTree = (
-  data: Catalogue[],
+  data: Catalogue[] = [],
   searchValue: string = '',
   path: string[] = []
 ): any =>

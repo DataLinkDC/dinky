@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.app.url;
+package org.dinky.url;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
@@ -27,12 +27,12 @@ public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {
-        if ("rs".equals(protocol)) {
+        if (ResourceFileSystem.URI_SCHEMA.getScheme().equals(protocol)) {
             return new RsURLStreamHandler();
         }
         try {
             Class.forName("org.apache.hadoop.fs.FsUrlStreamHandlerFactory");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             return null;
         }
         String name = PREFIX + "." + protocol + ".Handler";

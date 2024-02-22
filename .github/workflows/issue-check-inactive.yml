@@ -35,9 +35,9 @@ jobs:
           inactive-day: 30
           inactive-label: 'Invalid'
           body: |
-            Hello, this issue has not been active for more than 30 days. This issue will be closed in 7 days if there is no response. If you have any questions, you can comment and reply.
+            Hello @${{ github.event.issue.user.login }}, this issue has not been active for more than 30 days. This issue will be closed in 7 days if there is no response. If you have any questions, you can comment and reply.
             
-            你好, 这个 issue 30 天内没有活跃，7 天后将关闭，如需回复，可以评论回复。
+            你好 @${{ github.event.issue.user.login }}, 这个 issue 30 天内没有活跃，7 天后将关闭，如需回复，可以评论回复。
 
       - name: Add inactive labels
         if: ${{ success() }} # 代表上边的 check-inactive 成功执行 才会执行本步骤

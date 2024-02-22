@@ -17,11 +17,12 @@
  *
  */
 
-package org.dinky.service.resource.impl;
+package org.dinky.resource.impl;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.Resources;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.data.model.ResourcesVO;
+import org.dinky.resource.BaseResourceManager;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -35,11 +36,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -52,8 +52,7 @@ public class LocalResourceManager implements BaseResourceManager {
                 throw new BusException("remove file failed,reason unknown");
             }
         } catch (IORuntimeException e) {
-            log.error("remove file failed", e);
-            throw new BusException(e.getMessage());
+            throw new BusException(Status.RESOURCE_FILE_DELETE_FAILED, e);
         }
     }
 
@@ -63,18 +62,16 @@ public class LocalResourceManager implements BaseResourceManager {
             String newName = FileUtil.getName(newPath);
             FileUtil.rename(new File(getFilePath(path)), newName, true);
         } catch (Exception e) {
-            log.error("rename file failed", e);
-            throw new BusException(e.getMessage());
+            throw new BusException(Status.RESOURCE_FILE_RENAME_FAILED, e);
         }
     }
 
     @Override
-    public void putFile(String path, MultipartFile file) {
+    public void putFile(String path, InputStream fileStream) {
         try {
-            FileUtil.writeFromStream(file.getInputStream(), getFilePath(path));
-        } catch (IOException e) {
-            log.error("putFile file failed", e);
-            throw new BusException(e.getMessage());
+            FileUtil.writeFromStream(fileStream, getFilePath(path));
+        } catch (Exception e) {
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -90,8 +87,9 @@ public class LocalResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public List<Resources> getFullDirectoryStructure(int rootId) {
-        String basePath = getBasePath();
+    public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
+        String basePath = FileUtil.file(getBasePath()).getPath();
+
         try (Stream<Path> paths = Files.walk(Paths.get(basePath))) {
             return paths.map(path -> {
                         if (path.compareTo(Paths.get(basePath)) == 0) {
@@ -99,16 +97,18 @@ public class LocalResourceManager implements BaseResourceManager {
                             return null;
                         }
                         Path parentPath = path.getParent();
-                        String parent = "";
-                        if (parentPath != null) {
-                            parent = parentPath.toString().replace(basePath, "");
+                        String self = StrUtil.replaceFirst(path.toString(), basePath, "");
+                        int parentId = 1;
+
+                        // Determine whether it is the root directory
+                        if (!parentPath.toUri().getPath().equals(basePath)) {
+                            String parent = parentPath.toString().replace(basePath, "");
+                            parentId = parent.isEmpty() ? rootId : parent.hashCode();
                         }
-                        String self = path.toString().replace(basePath, "");
-                        int pid = parent.isEmpty() ? rootId : parent.hashCode();
                         File file = new File(path.toString());
-                        return Resources.builder()
+                        return ResourcesVO.builder()
                                 .id(self.hashCode())
-                                .pid(pid)
+                                .pid(parentId)
                                 .fullName(self)
                                 .fileName(file.getName())
                                 .isDirectory(file.isDirectory())
@@ -119,7 +119,7 @@ public class LocalResourceManager implements BaseResourceManager {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusException(Status.RESOURCE_FILE_PATH_VISIT_FAILED, e);
         }
     }
 

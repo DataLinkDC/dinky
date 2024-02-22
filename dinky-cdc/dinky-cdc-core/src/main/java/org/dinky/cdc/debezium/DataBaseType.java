@@ -17,34 +17,38 @@
  *
  */
 
-package org.dinky.app.url;
+package org.dinky.cdc.debezium;
 
-import org.dinky.app.resource.BaseResourceManager;
-import org.dinky.data.exception.BusException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
+/**
+ * @author <a href="mailto:kindbgen@gmail.com">Kindbgen<a/>
+ * @description 数据库类型
+ * @date 2024/2/6
+ */
+public enum DataBaseType {
+    MYSQL("mysql"),
+    SQLSERVER("sqlserver"),
+    ORACLE("oracle"),
+    POSTGRESQL("postgresql");
 
-public class RsURLConnection extends URLConnection {
-    private InputStream inputStream;
+    private String type;
 
-    @Override
-    public void connect() {
-        BaseResourceManager instance = BaseResourceManager.getInstance();
-        if (instance == null) {
-            throw BusException.valueOf("ResourceManager is disabled");
-        }
-        inputStream = instance.readFile(getURL().getPath());
+    DataBaseType(String type) {
+        this.type = type;
     }
 
-    @Override
-    public InputStream getInputStream() {
-        connect();
-        return inputStream;
+    public String getType() {
+        return type;
     }
 
-    public RsURLConnection(URL url) {
-        super(url);
+    private static final Map<String, DataBaseType> MAP =
+            Arrays.stream(values()).collect(Collectors.toMap(DataBaseType::getType, Function.identity()));
+
+    public static DataBaseType get(String type) {
+        return MAP.get(type);
     }
 }

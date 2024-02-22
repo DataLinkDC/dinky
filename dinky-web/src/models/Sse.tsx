@@ -50,6 +50,7 @@ export default () => {
       .catch((e) => ErrorMessage(e));
   };
   const reconnectSse = () => {
+    uuidRef.current = uuidv4();
     const sseUrl = '/api/sse/connect?sessionKey=' + uuidRef.current;
     eventSource?.close();
     setEventSource(new EventSource(sseUrl));

@@ -17,13 +17,13 @@
  *
  */
 
-package org.dinky.service.resource.impl;
+package org.dinky.resource.impl;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.exception.DinkyException;
-import org.dinky.data.model.Resources;
+import org.dinky.data.model.ResourcesVO;
 import org.dinky.oss.OssTemplate;
-import org.dinky.service.resource.BaseResourceManager;
+import org.dinky.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -32,14 +32,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 
 public class OssResourceManager implements BaseResourceManager {
     OssTemplate ossTemplate;
@@ -63,11 +62,11 @@ public class OssResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public void putFile(String path, MultipartFile file) {
+    public void putFile(String path, InputStream fileStream) {
         try {
-            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFilePath(path), file.getInputStream());
+            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFilePath(path), fileStream);
         } catch (Exception e) {
-            throw new DinkyException(e);
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -77,7 +76,7 @@ public class OssResourceManager implements BaseResourceManager {
             getOssTemplate()
                     .putObject(getOssTemplate().getBucketName(), getFilePath(path), FileUtil.getInputStream(file));
         } catch (Exception e) {
-            throw new DinkyException(e);
+            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -87,12 +86,17 @@ public class OssResourceManager implements BaseResourceManager {
     }
 
     @Override
-    public List<Resources> getFullDirectoryStructure(int rootId) {
+    public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
+        if (StrUtil.isNotBlank(basePath)) {
+            if (basePath.charAt(0) == '/') {
+                basePath = basePath.substring(1);
+            }
+        }
 
         List<S3ObjectSummary> listBucketObjects =
                 getOssTemplate().listBucketObjects(getOssTemplate().getBucketName(), basePath);
-        Map<Integer, Resources> resourcesMap = new HashMap<>();
+        Map<Integer, ResourcesVO> resourcesMap = new HashMap<>();
 
         for (S3ObjectSummary obj : listBucketObjects) {
             obj.setKey(obj.getKey().replace(basePath, ""));
@@ -105,7 +109,7 @@ public class OssResourceManager implements BaseResourceManager {
                 String s = split[i];
                 int pid = parent.isEmpty() ? rootId : parent.hashCode();
                 parent = parent + "/" + s;
-                Resources.ResourcesBuilder builder = Resources.builder()
+                ResourcesVO.ResourcesVOBuilder builder = ResourcesVO.builder()
                         .id(parent.hashCode())
                         .pid(pid)
                         .fullName(parent)
@@ -132,7 +136,7 @@ public class OssResourceManager implements BaseResourceManager {
 
     public OssTemplate getOssTemplate() {
         if (ossTemplate == null && instances.getResourcesEnable().getValue()) {
-            throw BusException.valueOf("Resource configuration error, OSS is not enabled");
+            throw new BusException(Status.RESOURCE_OSS_CONFIGURATION_ERROR);
         }
         return ossTemplate;
     }

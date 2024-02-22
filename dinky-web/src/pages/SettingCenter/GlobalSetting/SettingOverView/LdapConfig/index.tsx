@@ -47,12 +47,10 @@ export const LdapConfig = ({ data, onSave, auth }: LdapConfigProps) => {
     setLoading(false);
   };
 
-  const onSaveHandler = (data: BaseConfigProperties) => {
+  const onSaveHandler = async (data: BaseConfigProperties) => {
     setLoading(true);
-    onSave(data);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    await onSave(data);
+    setLoading(false);
   };
 
   /**

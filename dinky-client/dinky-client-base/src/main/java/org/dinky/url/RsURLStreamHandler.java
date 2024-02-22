@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.app.url;
+package org.dinky.url;
 
 import java.net.URL;
 import java.net.URLConnection;

@@ -17,32 +17,35 @@
  *
  */
 
-package org.dinky.app.resource.impl;
+package org.dinky.url;
 
-import org.dinky.app.resource.BaseResourceManager;
-import org.dinky.data.exception.BusException;
-import org.dinky.oss.OssTemplate;
+import org.dinky.data.model.SystemConfiguration;
 
-import java.io.InputStream;
+import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.core.fs.FileSystemFactory;
 
-public class OssResourceManager implements BaseResourceManager {
-    OssTemplate ossTemplate;
+import java.io.IOException;
+import java.net.URI;
+
+import com.google.auto.service.AutoService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@AutoService(FileSystemFactory.class)
+@Slf4j
+public class ResourceFileSystemFactory implements FileSystemFactory {
+    @Override
+    public String getScheme() {
+        return ResourceFileSystem.URI_SCHEMA.getScheme();
+    }
 
     @Override
-    public InputStream readFile(String path) {
-        return getOssTemplate()
-                .getObject(getOssTemplate().getBucketName(), getFilePath(path))
-                .getObjectContent();
-    }
-
-    public OssTemplate getOssTemplate() {
-        if (ossTemplate == null && instances.getResourcesEnable().getValue()) {
-            throw BusException.valueOf("Resource configuration error, OSS is not enabled");
+    public FileSystem create(URI fsUri) throws IOException {
+        Boolean enable = SystemConfiguration.getInstances().getResourcesEnable().getValue();
+        if (enable == null || !enable) {
+            log.warn("rs protocol startup failed, not initialized");
+            return null;
         }
-        return ossTemplate;
-    }
-
-    public void setOssTemplate(OssTemplate ossTemplate) {
-        this.ossTemplate = ossTemplate;
+        return ResourceFileSystem.getSharedInstance();
     }
 }
