@@ -2,7 +2,6 @@
   "name": "dinky-web",
   "version": "1.0.0",
   "description": "Dinky is an out of the box one-stop real-time computing platform dedicated to the construction and practice of Unified Batch & Streaming and Unified Data Lake & Data Warehouse. Based on Apache Flink, Dinky provides the ability to connect many big data frameworks including OLAP and Data Lake.",
-  "homepage": ".",
   "license": "Apache License 2.0",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
