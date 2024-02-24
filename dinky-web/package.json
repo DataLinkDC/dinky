@@ -5,7 +5,7 @@
   "license": "Apache License 2.0",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
-    "build": "max build",
+    "build": "max build:prod",
     "dev": " npm run start:dev ",
     "postinstall": "max setup",
     "lint": "npm run lint:js && npm run lint:prettier && npm run tsc",
