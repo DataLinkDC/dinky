@@ -40,6 +40,8 @@ docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:
 
 :::tip 说明
 如果 `docker image` 需要加速，请把 `dinkydocker` 替换成 `registry.cn-hangzhou.aliyuncs.com/dinky`
+
+默认用户名/密码: admin/dinky123!@# ,如需修改,请使用默认用户名/密码登录后,在`认证中心`->`用户`中修改
 :::
 
 ### 环境变量
