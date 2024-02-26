@@ -65,7 +65,7 @@ const queryUserInfo = async () => {
     const currentUser: API.CurrentUser = {
       user: {
         ...user,
-        avatar: user.avatar ?? '/icons/user_avatar.png'
+        avatar: user.avatar ?? './icons/user_avatar.png'
       },
       roleList: roleList,
       tenantList: tenantList,
