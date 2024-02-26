@@ -185,7 +185,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 export const request = {
   ...errorConfig,
   // 修改为相对请求路径, 避免请求路径出现错误 会自动拼接为完整请求路径
-  baseURL: API_CONSTANTS.BASE_URL,
+  baseURL: API_CONSTANTS.BASE_URL
 };
 
 // 这个是redux-persist 的配置
