@@ -147,9 +147,7 @@ public class DorisDriver extends AbstractJdbcDriver {
 
     private String genTable(Table table) {
         String columnStrs = table.getColumns().stream()
-                .map(column -> {
-                    return generateColumnSql(column, table.getDriverType());
-                })
+                .map(column -> generateColumnSql(column, table.getDriverType()))
                 .collect(Collectors.joining(",\n"));
 
         List<String> columnKeys = table.getColumns().stream()
@@ -193,6 +191,9 @@ public class DorisDriver extends AbstractJdbcDriver {
             case MYSQL:
                 columnType = MysqlType.toDorisType(column.getType(), length, scale);
                 break;
+            case DORIS:
+                columnType = new DorisTypeConvert().convertToDB(column);
+                break;
             case ORACLE:
                 columnType = OracleType.toDorisType(column.getType(), length, scale);
                 break;
@@ -203,7 +204,7 @@ public class DorisDriver extends AbstractJdbcDriver {
                 columnType = SqlServerType.toDorisType(column.getType(), length, scale);
                 break;
             default:
-                String errMsg = "Not support " + driverType + " schema change.";
+                String errMsg = "Not support " + driverType + " to Doris column type conversion.";
                 throw new UnsupportedOperationException(errMsg);
         }
 
