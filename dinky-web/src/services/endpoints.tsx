@@ -28,7 +28,7 @@
  */
 export enum API_CONSTANTS {
   BASE_URL = '.',
-  GET_SERVICE_VERSION =  '/api/version',
+  GET_SERVICE_VERSION = '/api/version',
 
   // --- user ---
   // login path
