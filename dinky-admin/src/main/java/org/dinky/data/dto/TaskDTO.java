@@ -91,7 +91,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "true",
             notes = "Flag indicating whether to use batch processing")
-    private boolean batchModel = false;
+    private boolean batchModel;
 
     @ApiModelProperty(
             value = "ClusterInstance ID",
