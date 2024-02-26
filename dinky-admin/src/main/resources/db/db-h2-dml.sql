@@ -7,7 +7,7 @@ VALUES ( 1, 'DefaultTenant', 0, 'DefaultTenant', '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 
 INSERT INTO `dinky_user`
-VALUES ( 1, 'admin', 1, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001'
+VALUES ( 1, 'admin', 1, 'f4b3a484ee745b98d64cd69c429b2aa2', 'Admin', 'Dinky-001'
        , null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 
