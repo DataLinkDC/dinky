@@ -24,6 +24,7 @@ import routes from './routes';
 
 const { REACT_APP_ENV = 'dev' } = process.env;
 
+// @ts-ignore
 export default defineConfig({
   /**
    * tags router：
@@ -44,6 +45,7 @@ export default defineConfig({
    */
   hash: true,
   esbuildMinifyIIFE: true,
+  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   history: {
     type: 'hash'
   },
@@ -86,6 +88,7 @@ export default defineConfig({
    * @doc 代理介绍 https://umijs.org/docs/guides/proxy
    * @doc 代理配置 https://umijs.org/docs/api/config#proxy
    */
+  // @ts-ignore
   proxy: proxy[REACT_APP_ENV as keyof typeof proxy],
   /**
    * @name 快速热更新配置
@@ -166,7 +169,7 @@ export default defineConfig({
    */
   headScripts: [
     // 解决首次加载时白屏的问题
-    { src: '/scripts/loading.js', async: true }
+    { src: './scripts/loading.js', async: true }
   ],
   //================ pro 插件配置 =================
   presets: ['umi-presets-pro'],
