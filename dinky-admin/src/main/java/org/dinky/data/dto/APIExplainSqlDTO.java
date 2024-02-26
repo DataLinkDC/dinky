@@ -59,7 +59,7 @@ public class APIExplainSqlDTO extends AbstractStatementDTO {
         return JobConfig.builder()
                 .type(GatewayType.LOCAL.getLongValue())
                 .useRemote(false)
-                .fragment(getFragment())
+                .fragment(isFragment())
                 .statementSet(useStatementSet)
                 .parallelism(parallelism)
                 .configJson(configuration)

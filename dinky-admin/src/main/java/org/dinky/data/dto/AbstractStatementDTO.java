@@ -42,7 +42,7 @@ public class AbstractStatementDTO {
     private Integer envId;
 
     @ApiModelProperty(value = "Fragment Flag", dataType = "boolean", example = "false", notes = "是否为片段")
-    private Boolean fragment = false;
+    private boolean fragment = false;
 
     @ApiModelProperty(
             value = "Variables",
