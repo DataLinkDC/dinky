@@ -80,13 +80,6 @@ public class TaskDTO extends AbstractStatementDTO {
     private Integer parallelism;
 
     @ApiModelProperty(
-            value = "Fragment",
-            dataType = "Boolean",
-            example = "true",
-            notes = "Fragment option for the task")
-    private Boolean fragment;
-
-    @ApiModelProperty(
             value = "Use Statement Set",
             dataType = "boolean",
             example = "false",
@@ -98,7 +91,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "true",
             notes = "Flag indicating whether to use batch processing")
-    private boolean batchModel;
+    private boolean batchModel = false;
 
     @ApiModelProperty(
             value = "ClusterInstance ID",
@@ -161,8 +154,6 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
     private Boolean enabled;
 
-    @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
-    private String statement;
 
     @ApiModelProperty(value = "ClusterInstance Name", dataType = "String", notes = "Name of the associated cluster")
     private String clusterName;
