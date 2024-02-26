@@ -17,15 +17,6 @@
  *
  */
 
-// ------------------ 以下为接口请求路径常量定义 ------------------------------------
-/**
- * Note: 定义接口请求路径常量, 用于统一管理接口请求路径, 必须使用相对请求路径 , 避免以 / 开头的请求路径, 以免影响接口请求
- *
- * 在使用时 import { API_CONSTANTS } from '@/services/endpoints'; 然后使用 API_CONSTANTS.GET_SERVICE_VERSION 这样的方式使用
- *
- * 在请求时 会使用 定义的 baseUrl 配置 + 定义的接口请求路径, 为最终的请求路径.发送至后端服务端
- *
- */
 export enum API_CONSTANTS {
   BASE_URL = '.',
   GET_SERVICE_VERSION = '/api/version',
