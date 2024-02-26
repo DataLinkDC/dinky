@@ -41,7 +41,7 @@ import { API } from './services/data';
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
 
-const whiteList = ['/user', '/user/login'];
+const whiteList = ['/user', loginPath];
 
 let extraRoutes: SysMenu[] = [];
 let rendered = false;
