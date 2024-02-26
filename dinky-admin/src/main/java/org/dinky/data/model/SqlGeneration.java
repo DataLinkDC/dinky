@@ -40,11 +40,11 @@ public class SqlGeneration {
             value = "Flink SQL Create Statement",
             dataType = "String",
             notes = "Flink SQL statement for creating a table or view")
-    private String flinkSqlCreate;
+    private String flinkSqlCreate = "";
 
     @ApiModelProperty(value = "SQL Select Statement", dataType = "String", notes = "SQL SELECT statement")
-    private String sqlSelect;
+    private String sqlSelect = "";
 
     @ApiModelProperty(value = "SQL Create Statement", dataType = "String", notes = "SQL statement for creating a table")
-    private String sqlCreate;
+    private String sqlCreate = "";
 }
