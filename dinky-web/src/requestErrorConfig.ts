@@ -74,8 +74,6 @@ const handleBizError = (result: ResponseStructure) => {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const errorConfig: RequestConfig = {
-  // 修改为相对请求路径, 避免请求路径出现错误 会自动拼接为完整请求路径
-  baseURL: API_CONSTANTS.BASE_URL,
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
     // 错误抛出

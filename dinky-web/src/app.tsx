@@ -183,7 +183,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request = {
-  ...errorConfig
+  ...errorConfig,
+  // 修改为相对请求路径, 避免请求路径出现错误 会自动拼接为完整请求路径
+  baseURL: API_CONSTANTS.BASE_URL,
 };
 
 // 这个是redux-persist 的配置
