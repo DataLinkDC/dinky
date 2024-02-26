@@ -52,7 +52,6 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
     flinkSqlCreate: '',
     sqlSelect: '',
     sqlCreate: ''
-
   });
   const [activeKey, setActiveKey] = React.useState<string>('flinkddl');
 
@@ -109,7 +108,7 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
     },
     {
       key: 'sqlddl',
-      label: renderLabel(genSQL?.sqlCreate ??  '', 'SQL DDL'),
+      label: renderLabel(genSQL?.sqlCreate ?? '', 'SQL DDL'),
       disabled: tagDisabled,
       children: renderContent(genSQL?.sqlCreate ?? '')
     }
