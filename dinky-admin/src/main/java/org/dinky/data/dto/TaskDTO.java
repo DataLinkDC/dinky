@@ -154,7 +154,6 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
     private Boolean enabled;
 
-
     @ApiModelProperty(value = "ClusterInstance Name", dataType = "String", notes = "Name of the associated cluster")
     private String clusterName;
 
