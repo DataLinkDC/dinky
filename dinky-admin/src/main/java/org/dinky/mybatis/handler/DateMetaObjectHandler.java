@@ -60,16 +60,13 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
 
         Object createTime = getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
         Object updateTime = getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
-        Object name = getFieldValByName(mybatisPlusFillProperties.getName(), metaObject);
         if (createTime == null) {
             setFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), LocalDateTime.now(), metaObject);
         }
         if (updateTime == null) {
             setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
         }
-        if (name == null) {
-            setFieldValByName(mybatisPlusFillProperties.getName(), name, metaObject);
-        }
+
         try {
             if (SpringMVCUtil.isWeb() && StpUtil.isLogin()) {
                 int loginIdAsInt = StpUtil.getLoginIdAsInt();
