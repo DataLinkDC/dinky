@@ -1651,7 +1651,7 @@ CREATE TABLE `dinky_git_project` (
                                    `operator` int(11) DEFAULT NULL COMMENT 'operator',
                                    PRIMARY KEY (`id`) USING BTREE,
                                    KEY `tenant_id` (`tenant_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='git project' ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of dinky_git_project
@@ -1678,7 +1678,7 @@ CREATE TABLE `dinky_metrics` (
                                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='metrics layout';
 
 -- ----------------------------
 -- Table structure for dinky_resources
@@ -1686,13 +1686,13 @@ CREATE TABLE `dinky_metrics` (
 DROP TABLE IF EXISTS dinky_resources;
 CREATE TABLE `dinky_resources` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
-                                   `file_name` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'file name',
-                                   `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+                                   `file_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'file name',
+                                   `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
                                    `user_id` int(11) DEFAULT NULL COMMENT 'user id',
                                    `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
                                    `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
                                    `pid` int(11) DEFAULT NULL,
-                                   `full_name` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+                                   `full_name` text COLLATE utf8mb4_general_ci DEFAULT NULL,
                                    `is_directory` tinyint(4) DEFAULT NULL,
                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
@@ -1700,7 +1700,7 @@ CREATE TABLE `dinky_resources` (
                                    `updater` int(11) DEFAULT NULL COMMENT 'updater',
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- ----------------------------
 -- Records of dinky_resources
 -- ----------------------------
@@ -1770,7 +1770,7 @@ create table `dinky_sys_menu` (
                                   `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
                                   `note` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
                                   primary key (`id`) using btree
-) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci;
+) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci comment='system menu' row_format=dynamic;
 
 -- ----------------------------
 -- Records of dinky_sys_menu
@@ -1942,7 +1942,7 @@ CREATE TABLE `dinky_sys_role_menu` (
                                        `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
                                        PRIMARY KEY (`id`) USING BTREE,
                                        UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='role menu';
 
 -- ----------------------------
 -- Table structure dinky_sys_alert
@@ -1958,7 +1958,7 @@ CREATE TABLE `dinky_alert_template` (
                                         `creator` int(11) DEFAULT NULL COMMENT 'create user id',
                                         `updater` int(11) DEFAULT NULL COMMENT 'update user id',
                                         PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='alert template';
 
 
 
@@ -1978,7 +1978,7 @@ CREATE TABLE `dinky_alert_rules` (
                                      `updater` int(11) DEFAULT NULL COMMENT 'update user id',
                                      PRIMARY KEY (`id`),
                                      UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='alert rule';
 
 
 
@@ -2020,7 +2020,7 @@ CREATE TABLE `dinky_udf_manage` (
                                     `updater` int(11) DEFAULT NULL COMMENT 'update user id',
                                     PRIMARY KEY (`id`) USING BTREE,
                                     KEY `name,resources_id` (`name`,`resources_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='udf';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='udf';
 
 -- ----------------------------
 -- Table structure dinky_sys_token
@@ -2043,6 +2043,6 @@ CREATE TABLE `dinky_sys_token` (
    PRIMARY KEY (`id`),
    UNIQUE KEY `token_value` (`token_value`) USING BTREE,
    KEY `source` (`source`) USING HASH
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC collate = utf8mb4_general_ci COMMENT='token management';
 
 SET FOREIGN_KEY_CHECKS = 1;
