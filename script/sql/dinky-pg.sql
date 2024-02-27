@@ -3418,7 +3418,7 @@ CREATE TABLE "public"."dinky_resources"
     "type"         int2,
     "size"         int8,
     "pid"          int4,
-    "full_name"    varchar(128) COLLATE "pg_catalog"."default",
+    "full_name"    text COLLATE "pg_catalog"."default",
     "is_directory" int2,
     "create_time"  timestamp(6) NOT null,
     "update_time"  timestamp(6) NOT null,

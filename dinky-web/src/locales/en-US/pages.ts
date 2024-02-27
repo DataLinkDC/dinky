@@ -975,6 +975,8 @@ export default {
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
+  'rc.resource.copy': 'Copy as: {fillValue}',
+
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',
   'rc.template.create': 'Create UDF Template',
