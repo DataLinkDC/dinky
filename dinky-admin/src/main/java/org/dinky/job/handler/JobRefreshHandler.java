@@ -228,7 +228,7 @@ public class JobRefreshHandler {
                     .config(jobConfigInfo)
                     .build();
         } catch (Exception e) {
-            log.error("Connect {} failed,{}", jobManagerHost, e.getMessage());
+            log.warn("Connect {} failed,{}", jobManagerHost, e.getMessage());
             return builder.id(id).error(true).errorMsg(e.getMessage()).build();
         }
     }

@@ -130,6 +130,9 @@ public class FlinkStatementUtil {
         if (config.getSink().get("connector").equals("hudi") && (type.equals("TIMESTAMP"))) {
             return "TIMESTAMP(3)";
         }
+        if (config.getSink().get("connector").equals("doris") && (type.equals("TIME"))) {
+            return "STRING";
+        }
         return type;
     }
 

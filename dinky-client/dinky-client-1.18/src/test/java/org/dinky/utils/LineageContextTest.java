@@ -22,12 +22,11 @@ package org.dinky.utils;
 import static org.junit.Assert.assertEquals;
 
 import org.dinky.data.model.LineageRel;
+import org.dinky.executor.CustomTableEnvironmentImpl;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
-import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +42,7 @@ import org.junit.Test;
  */
 public class LineageContextTest {
 
-    private static TableEnvironmentImpl tableEnv;
+    private static CustomTableEnvironmentImpl tableEnv;
     private static LineageContext context;
 
     @BeforeClass
@@ -52,8 +51,7 @@ public class LineageContextTest {
 
         EnvironmentSettings settings =
                 EnvironmentSettings.newInstance().inStreamingMode().build();
-        tableEnv = (TableEnvironmentImpl) StreamTableEnvironment.create(env, settings);
-
+        tableEnv = CustomTableEnvironmentImpl.create(env, settings);
         context = new LineageContext(tableEnv);
     }
 
@@ -80,7 +78,7 @@ public class LineageContextTest {
 
     @Test
     public void testGetLineage() {
-        List<LineageRel> actualList = context.getLineage("INSERT INTO TT select a||c A ,b||c B from ST");
+        List<LineageRel> actualList = context.analyzeLineage("INSERT INTO TT select a||c A ,b||c B from ST");
         String[][] expectedArray = {
             {"ST", "a", "TT", "A", "||(a, c)"},
             {"ST", "c", "TT", "A", "||(a, c)"},
