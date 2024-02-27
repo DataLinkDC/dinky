@@ -723,14 +723,14 @@ INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, desc
                                          enabled, create_time, update_time, creator, updater)
 VALUES (20, 'Module', 'SQL_TEMPLATE', 'FlinkSql', 'create.table.hudi', '创建hudi表', e'CREATE TABLE hudi_table
 (
-    `goods_order_id`  bigint COMMENT ''自增主键id'',
-    `goods_order_uid` string COMMENT ''订单uid'',
-    `customer_uid`    string COMMENT ''客户uid'',
-    `customer_name`   string COMMENT ''客户name'',
-    `create_time`     timestamp(3) COMMENT ''创建时间'',
-    `update_time`     timestamp(3) COMMENT ''更新时间'',
-    `create_by`       string COMMENT ''创建人uid（唯一标识）'',
-    `update_by`       string COMMENT ''更新人uid（唯一标识）'',
+    `goods_order_id`  bigint COMMENT ''id'',
+    `goods_order_uid` string COMMENT ''goods order id'',
+    `customer_uid`    string COMMENT ''customer id'',
+    `customer_name`   string COMMENT ''customer name'',
+    `create_time`     timestamp(3) COMMENT ''create_time'',
+    `update_time`     timestamp(3) COMMENT ''update time'',
+    `create_by`       string COMMENT ''create user uid'',
+    `update_by`       string COMMENT ''update user uid'',
     PRIMARY KEY (goods_order_id) NOT ENFORCED
 ) COMMENT ''hudi_table''
 WITH (
@@ -2454,24 +2454,24 @@ COMMENT
 COMMENT
     ON COLUMN dinky_job_history.tenant_id IS 'tenant id';
 COMMENT
-    ON COLUMN dinky_job_history.job_json IS '作业信息 json';
+    ON COLUMN dinky_job_history.job_json IS 'dinky job  json';
 COMMENT
-    ON COLUMN dinky_job_history.exceptions_json IS '错误信息 json';
+    ON COLUMN dinky_job_history.exceptions_json IS 'exception json ';
 COMMENT
-    ON COLUMN dinky_job_history.checkpoints_json IS '检查点 json';
+    ON COLUMN dinky_job_history.checkpoints_json IS 'checkpoint json';
 COMMENT
-    ON COLUMN dinky_job_history.checkpoints_config_json IS '检查点配置 json';
+    ON COLUMN dinky_job_history.checkpoints_config_json IS 'checkpoints config json ';
 COMMENT
-    ON COLUMN dinky_job_history.config_json IS '配置';
+    ON COLUMN dinky_job_history.config_json IS 'config json';
 COMMENT
-    ON COLUMN dinky_job_history.cluster_json IS '集群实例配置';
+    ON COLUMN dinky_job_history.cluster_json IS 'cluster json';
 COMMENT
-    ON COLUMN dinky_job_history.cluster_configuration_json IS '集群配置';
+    ON COLUMN dinky_job_history.cluster_configuration_json IS 'cluster configuration json';
 COMMENT
-    ON COLUMN dinky_job_history.update_time IS '更新时间';
+    ON COLUMN dinky_job_history.update_time IS 'update_time';
 -- 为表添加注释
 COMMENT
-    ON TABLE dinky_job_history IS '作业历史详情';
+    ON TABLE dinky_job_history IS 'dinky_job_history';
 
 CREATE TRIGGER updatetime_dinky_job_history
     BEFORE UPDATE
@@ -2519,39 +2519,39 @@ CREATE INDEX job_instance_task_id_idx1 ON dinky_job_instance (task_id);
 COMMENT
     ON COLUMN dinky_job_instance.id IS 'id';
 COMMENT
-    ON COLUMN dinky_job_instance.name IS '工作实例名称';
+    ON COLUMN dinky_job_instance.name IS 'job instance name';
 COMMENT
-    ON COLUMN dinky_job_instance.tenant_id IS '租户id';
+    ON COLUMN dinky_job_instance.tenant_id IS 'tenant id';
 COMMENT
-    ON COLUMN dinky_job_instance.task_id IS '任务ID';
+    ON COLUMN dinky_job_instance.task_id IS 'task id ';
 COMMENT
-    ON COLUMN dinky_job_instance.step IS '工作生命周期';
+    ON COLUMN dinky_job_instance.step IS 'job history step';';
 COMMENT
-    ON COLUMN dinky_job_instance.cluster_id IS '集群ID';
+    ON COLUMN dinky_job_instance.cluster_id IS 'cluster id';
 COMMENT
     ON COLUMN dinky_job_instance.jid IS 'Flink JobId';
 COMMENT
-    ON COLUMN dinky_job_instance.status IS '工作实例状态';
+    ON COLUMN dinky_job_instance.status IS 'job instance status';';
 COMMENT
-    ON COLUMN dinky_job_instance.history_id IS '执行历史ID';
+    ON COLUMN dinky_job_instance.history_id IS 'history id';
 COMMENT
-    ON COLUMN dinky_job_instance.create_time IS '创建时间';
+    ON COLUMN dinky_job_instance.create_time IS 'create_time';
 COMMENT
-    ON COLUMN dinky_job_instance.update_time IS '更新时间';
+    ON COLUMN dinky_job_instance.create_time IS 'create_time';
 COMMENT
-    ON COLUMN dinky_job_instance.finish_time IS '完成时间';
+    ON COLUMN dinky_job_instance.finish_time IS 'finish_time';
 COMMENT
-    ON COLUMN dinky_job_instance.duration IS '工作持续时间';
+    ON COLUMN dinky_job_instance.duration IS 'job duration';
 COMMENT
-    ON COLUMN dinky_job_instance.error IS '错误日志';
+    ON COLUMN dinky_job_instance.error IS 'error log';
 COMMENT
-    ON COLUMN dinky_job_instance.failed_restart_count IS '失败重启次数';
+    ON COLUMN dinky_job_instance.failed_restart_count IS 'failed restart count';
 COMMENT
-    ON COLUMN dinky_job_instance.creator IS '创建者';
+    ON COLUMN dinky_job_instance.creator IS 'creator';
 COMMENT
-    ON COLUMN dinky_job_instance.updater IS '更新者';
+    ON COLUMN dinky_job_instance.updater IS 'updater';
 COMMENT
-    ON COLUMN dinky_job_instance.operator IS '操作者用户ID';
+    ON COLUMN dinky_job_instance.operator IS 'operator uid';
 
 -- 为表添加注释
 COMMENT
@@ -2589,23 +2589,23 @@ CREATE UNIQUE INDEX role_un_idx1 ON dinky_role (role_code);
 COMMENT
     ON COLUMN dinky_role.id IS 'ID';
 COMMENT
-    ON COLUMN dinky_role.tenant_id IS '租户id';
+    ON COLUMN dinky_role.tenant_id IS 'tenant id';
 COMMENT
-    ON COLUMN dinky_role.role_code IS '角色编码';
+    ON COLUMN dinky_role.role_code IS 'role code';
 COMMENT
-    ON COLUMN dinky_role.role_name IS '角色名称';
+    ON COLUMN dinky_role.role_name IS 'role name';
 COMMENT
-    ON COLUMN dinky_role.is_delete IS '是否删除';
+    ON COLUMN dinky_role.is_delete IS 'is delete';
 COMMENT
-    ON COLUMN dinky_role.note IS '备注';
+    ON COLUMN dinky_role.note IS 'note';
 COMMENT
-    ON COLUMN dinky_role.create_time IS '创建时间';
+    ON COLUMN dinky_role.create_time IS 'create_time';
 COMMENT
-    ON COLUMN dinky_role.update_time IS '更新时间';
+    ON COLUMN dinky_role.update_time IS 'update_time';
 
 -- 为表添加注释
 COMMENT
-    ON TABLE dinky_role IS '角色';
+    ON TABLE dinky_role IS 'dinky_role';
 
 -- 创建触发器以在每次更新记录时设置update_time
 CREATE TRIGGER set_update_time_dinky_role
@@ -2645,23 +2645,23 @@ CREATE TABLE dinky_savepoints
 COMMENT
     ON COLUMN dinky_savepoints.id IS 'ID';
 COMMENT
-    ON COLUMN dinky_savepoints.task_id IS '任务ID';
+    ON COLUMN dinky_savepoints.task_id IS 'task id';
 COMMENT
-    ON COLUMN dinky_savepoints.tenant_id IS '租户id';
+    ON COLUMN dinky_savepoints.tenant_id IS 'tenant id';
 COMMENT
-    ON COLUMN dinky_savepoints.name IS '任务名称';
+    ON COLUMN dinky_savepoints.name IS 'task name';
 COMMENT
-    ON COLUMN dinky_savepoints.type IS '保存点类型';
+    ON COLUMN dinky_savepoints.type IS 'savepoint type';
 COMMENT
-    ON COLUMN dinky_savepoints.path IS '保存点路径';
+    ON COLUMN dinky_savepoints.path IS 'savepoint path';
 COMMENT
-    ON COLUMN dinky_savepoints.create_time IS '创建时间';
+    ON COLUMN dinky_savepoints.create_time IS 'create_time';
 COMMENT
-    ON COLUMN dinky_savepoints.creator IS '创建者';
+    ON COLUMN dinky_savepoints.creator IS 'creator';
 
 -- 为表添加注释
 COMMENT
-    ON TABLE dinky_savepoints IS '作业保存点管理';
+    ON TABLE dinky_savepoints IS 'dinky_savepoints';
 
 -- Table structure for dinky_sys_config
 DROP TABLE IF EXISTS dinky_sys_config;
@@ -3355,7 +3355,7 @@ CREATE TABLE metadata_function
     create_time       timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );
 COMMENT ON TABLE metadata_function IS 'UDF informations';
-COMMENT ON COLUMN metadata_function.id IS '主键';
+COMMENT ON COLUMN metadata_function.id IS 'id';
 COMMENT ON COLUMN metadata_function.function_name IS 'function name';
 COMMENT ON COLUMN metadata_function.class_name IS 'class name';
 COMMENT ON COLUMN metadata_function.database_id IS 'database id';
