@@ -12,7 +12,7 @@ title: Dinky 集成 DolphinScheduler
 
 ## 前置要求
 
-- DolphinScheduler 1.3.0+
+- DolphinScheduler 3.1.0+
 - Dinky 1.0.0+
 - Docker 19.03+
 
