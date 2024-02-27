@@ -76,7 +76,7 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
                 setFillFieldValue(metaObject, loginIdAsInt);
             }
         } catch (Exception e) {
-            log.debug(
+            log.warn(
                     "Ignore set creater filed, because userId cant't get, Please check if your account is logged in normally or if it has been taken offline",
                     e);
         }
