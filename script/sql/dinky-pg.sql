@@ -143,7 +143,7 @@ CREATE TABLE dinky_alert_instance
     name        VARCHAR(50)        NOT NULL,
     tenant_id   INT                NOT NULL DEFAULT 1,
     type        VARCHAR(50),
-    params      JSON,
+    params      TEXT,
     enabled     SMALLINT                    DEFAULT 1,
     create_time TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_time TIMESTAMP          NOT NULL DEFAULT CURRENT_TIMESTAMP,
