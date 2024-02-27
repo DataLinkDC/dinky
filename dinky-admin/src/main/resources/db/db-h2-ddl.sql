@@ -34,7 +34,7 @@ CREATE TABLE `dinky_alert_instance` (
                                       `name` varchar(50) NOT null COMMENT 'alert instance name',
                                       `tenant_id` int(11) NOT null DEFAULT 1 COMMENT 'tenant id',
                                       `type` varchar(50) null DEFAULT null COMMENT 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email',
-                                      `params` json null COMMENT 'configuration',
+                                      `params` longtext null  COMMENT 'configuration',
                                       `enabled` tinyint(4) null DEFAULT 1 COMMENT 'is enable',
                                       `create_time` datetime(0) null DEFAULT null COMMENT 'create time',
                                       `update_time` datetime(0) null DEFAULT null COMMENT 'update time',
@@ -163,9 +163,7 @@ CREATE TABLE `dinky_history` (
                                `config_json` text null COMMENT 'config json',
                                `start_time` datetime(0) null DEFAULT null COMMENT 'job start time',
                                `end_time` datetime(0) null DEFAULT null COMMENT 'job end time',
-                               `task_id` int(11) null DEFAULT null COMMENT 'task ID',
-                               INDEX task_index1(`task_id`),
-                               INDEX cluster_index2(`cluster_id`)
+                               `task_id` int(11) null DEFAULT null COMMENT 'task ID'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
@@ -200,8 +198,7 @@ CREATE TABLE `dinky_job_instance` (
                                     `failed_restart_count` int(11) null DEFAULT null COMMENT 'failed restart count',
                                    `creator` int(11) null DEFAULT null COMMENT 'creator',
                                    `updater` int(11)  null DEFAULT null COMMENT 'updater',
-                                   `operator` int(11)  null DEFAULT null COMMENT 'operator',
-                                    INDEX job_instance_task_id_idx13(`task_id`)
+                                   `operator` int(11)  null DEFAULT null COMMENT 'operator'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 
