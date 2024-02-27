@@ -83,7 +83,7 @@ export default {
   'menu.settings.classloaderjars': 'ClassLoader Jars',
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
-  'menu.settings.alertrulelist': 'Alert Rules',
+  'menu.settings.alertrule': 'Alert Rules',
   'menu.metrics': 'Metrics',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',

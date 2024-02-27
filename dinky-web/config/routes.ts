@@ -271,8 +271,8 @@ export default [
       //   component: './SettingCenter/Process'
       // },
       {
-        path: '/settings/alertrulelist',
-        name: 'alertrulelist',
+        path: '/settings/alertrule',
+        name: 'alertrule',
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/AlertRule'
       },
