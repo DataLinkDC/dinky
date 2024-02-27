@@ -1449,7 +1449,7 @@ CREATE TABLE `dinky_user` (
 -- ----------------------------
 INSERT INTO dinky_user
     (id, username, user_type, password, nickname, worknum, avatar, mobile, enabled, super_admin_flag, is_delete, create_time, update_time)
-VALUES (1, 'admin', 0, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001', null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2023-07-28 23:22:52');
+VALUES (1, 'admin', 0, 'f4b3a484ee745b98d64cd69c429b2aa2', 'Admin', 'Dinky-001', null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2023-07-28 23:22:52');
 
 -- ----------------------------
 -- Table structure for dinky_user_role

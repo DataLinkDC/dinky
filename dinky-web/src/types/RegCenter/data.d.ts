@@ -267,9 +267,9 @@ declare namespace DataSources {
    * table columns info
    */
   export type SqlGeneration = {
-    flinkSqlCreate: string;
-    sqlSelect: string;
-    sqlCreate: string;
+    flinkSqlCreate: string | '';
+    sqlSelect: string | '';
+    sqlCreate: string | '';
   };
 }
 
