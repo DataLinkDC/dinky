@@ -2374,7 +2374,7 @@ CREATE TABLE dinky_history
     statement                TEXT               NULL,
     error                    TEXT               NULL,
     result                   TEXT               NULL,
-    config_json              JSON               NULL,
+    config_json              TEXT               NULL,
     start_time               TIMESTAMP          NULL,
     end_time                 TIMESTAMP          NULL,
     task_id                  INT                NULL
@@ -2438,13 +2438,13 @@ CREATE TABLE dinky_job_history
 (
     id                         SERIAL PRIMARY KEY NOT NULL,
     tenant_id                  INT                NOT NULL DEFAULT 1,
-    job_json                   JSON               NULL,
-    exceptions_json            JSON               NULL,
-    checkpoints_json           JSON               NULL,
-    checkpoints_config_json    JSON               NULL,
-    config_json                JSON               NULL,
-    cluster_json               JSON               NULL,
-    cluster_configuration_json JSON               NULL,
+    job_json                   TEXT               NULL,
+    exceptions_json            TEXT               NULL,
+    checkpoints_json           TEXT               NULL,
+    checkpoints_config_json    TEXT               NULL,
+    config_json                TEXT               NULL,
+    cluster_json               TEXT               NULL,
+    cluster_configuration_json TEXT               NULL,
     update_time                TIMESTAMP          NULL
 );
 
