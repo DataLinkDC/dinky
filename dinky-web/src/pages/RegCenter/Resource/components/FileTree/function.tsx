@@ -25,7 +25,7 @@ import { Typography } from 'antd';
 
 const buildTitleLabel = (showCopy = false,item: ResourceInfo) => {
 
-  const fillValue = `add customjar 'rs:${item.fullName}';`;
+  const fillValue = `ADD FILE 'rs:${item.fullName}';`;
 
   return (
     <>
