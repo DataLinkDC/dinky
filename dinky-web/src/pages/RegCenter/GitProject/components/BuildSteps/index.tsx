@@ -75,7 +75,9 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     }
     // 这里不要代理。sse使用代理会变成同步
     // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
-    const eventSource = getSseData(API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + '?id=' + values.id);
+    const eventSource = getSseData(
+      API_CONSTANTS.BASE_URL + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + '?id=' + values.id
+    );
 
     let stepArray: BuildStepsState[] = []; // 步骤数组
     let globalCurrentStep: number = 0;
