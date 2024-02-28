@@ -22,6 +22,7 @@ import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal'
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { getSseData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
@@ -59,7 +60,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
 
   useEffect(() => {
-    const eventSource = getSseData('/api/monitor/getJvmInfo');
+    const eventSource = getSseData(API_CONSTANTS.BASE_URL + API_CONSTANTS.GET_JVM_INFO);
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data).data;
       setMemDetailInfo(

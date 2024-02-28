@@ -19,13 +19,14 @@
 
 import { StudioMetaStoreParam } from '@/pages/DataStudio/LeftContainer/Catalog/data';
 import { postAll } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
-  return (await postAll('/api/studio/getMSSchemaInfo', params)).data;
+  return (await postAll(API_CONSTANTS.STUDIO_GET_MSSCHEMA_INFO, params)).data;
 }
 export async function getMSCatalogs(params: StudioMetaStoreParam) {
-  return (await postAll('/api/studio/getMSCatalogs', params)).data;
+  return (await postAll(API_CONSTANTS.STUDIO_GET_MSCATALOGS, params)).data;
 }
 export async function getMSColumns(params: StudioMetaStoreParam) {
-  return (await postAll('/api/studio/getMSColumns', params)).data;
+  return (await postAll(API_CONSTANTS.STUDIO_GET_MSCOLUMNS, params)).data;
 }
