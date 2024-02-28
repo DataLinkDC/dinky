@@ -20,6 +20,7 @@
 import { postAll } from '@/services/api';
 import { ErrorMessage } from '@/utils/messages';
 import { useEffect, useRef, useState } from 'react';
+// @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
 
 const session_invalid_label = 'SESSION_INVALID';
@@ -51,7 +52,7 @@ export default () => {
   };
   const reconnectSse = () => {
     uuidRef.current = uuidv4();
-    const sseUrl = '/api/sse/connect?sessionKey=' + uuidRef.current;
+    const sseUrl = 'api/sse/connect?sessionKey=' + uuidRef.current;
     eventSource?.close();
     setEventSource(new EventSource(sseUrl));
   };

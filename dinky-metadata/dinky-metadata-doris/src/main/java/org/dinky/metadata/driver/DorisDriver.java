@@ -147,9 +147,7 @@ public class DorisDriver extends AbstractJdbcDriver {
 
     private String genTable(Table table) {
         String columnStrs = table.getColumns().stream()
-                .map(column -> {
-                    return generateColumnSql(column, table.getDriverType());
-                })
+                .map(column -> generateColumnSql(column, table.getDriverType()))
                 .collect(Collectors.joining(",\n"));
 
         List<String> columnKeys = table.getColumns().stream()
@@ -171,7 +169,7 @@ public class DorisDriver extends AbstractJdbcDriver {
         String propertiesStr = "\n PROPERTIES ( \"light_schema_change\" = \"true\" )";
 
         String commentStr =
-                Asserts.isNullString(table.getComment()) ? "" : String.format("\n COMMENT '%s'", table.getComment());
+                Asserts.isNullString(table.getComment()) ? "" : String.format("\n COMMENT \"%s\"", table.getComment());
 
         return MessageFormat.format(
                 "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}\n) ENGINE=OLAP{3}{4}{5}{6}",
@@ -193,6 +191,9 @@ public class DorisDriver extends AbstractJdbcDriver {
             case MYSQL:
                 columnType = MysqlType.toDorisType(column.getType(), length, scale);
                 break;
+            case DORIS:
+                columnType = new DorisTypeConvert().convertToDB(column);
+                break;
             case ORACLE:
                 columnType = OracleType.toDorisType(column.getType(), length, scale);
                 break;
@@ -203,7 +204,7 @@ public class DorisDriver extends AbstractJdbcDriver {
                 columnType = SqlServerType.toDorisType(column.getType(), length, scale);
                 break;
             default:
-                String errMsg = "Not support " + driverType + " schema change.";
+                String errMsg = "Not support " + driverType + " to Doris column type conversion.";
                 throw new UnsupportedOperationException(errMsg);
         }
 
@@ -213,11 +214,10 @@ public class DorisDriver extends AbstractJdbcDriver {
                 : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
 
         return String.format(
-                "  `%s`  %s%s%s%s",
+                "  `%s`  %s%s%s",
                 column.getName(),
                 columnType,
                 defaultValue,
-                column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
                 Asserts.isNotNullString(column.getComment())
                         ? String.format(" COMMENT '%s'", column.getComment())
                         : "");

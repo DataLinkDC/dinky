@@ -106,7 +106,7 @@ CREATE TABLE `dinky_git_project` (
                                      `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                      PRIMARY KEY (`id`) USING BTREE,
                                      KEY `tenant_id` (`tenant_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='git project';
 
 
 ALTER TABLE dinky_role_select_permissions RENAME TO dinky_row_permissions;
@@ -131,7 +131,7 @@ CREATE TABLE `dinky_metrics` (
                                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC collate = utf8mb4_general_ci COMMENT='metrics layout';
 
 
 -- ----------------------------
@@ -139,19 +139,19 @@ CREATE TABLE `dinky_metrics` (
 -- ----------------------------
 CREATE TABLE `dinky_resources` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
-                                   `file_name` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'file name',
-                                   `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+                                   `file_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'file name',
+                                   `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
                                    `user_id` int(11) DEFAULT NULL COMMENT 'user id',
                                    `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
                                    `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
                                    `pid` int(11) DEFAULT NULL,
-                                   `full_name` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+                                   `full_name` text COLLATE utf8mb4_general_ci DEFAULT NULL,
                                    `is_directory` tinyint(4) DEFAULT NULL,
                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='resource table';
 
 
 ALTER TABLE dinky_database modify password varchar(512) null comment 'password';
@@ -245,54 +245,56 @@ CREATE TABLE `dinky_sys_role_menu` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+CREATE TABLE if not exists `dinky_alert_template` (
+                                        `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                        `name` varchar(20) CHARACTER SET ucs2 COLLATE ucs2_general_ci DEFAULT NULL COMMENT 'template name',
+                                        `template_content` text COLLATE utf8mb4_general_ci COMMENT 'template content',
+                                        `enabled` tinyint DEFAULT '1' COMMENT 'is enable',
+                                        `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                        `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                        `creator` int(11) DEFAULT NULL COMMENT 'create user id',
+                                        `updater` int(11) DEFAULT NULL COMMENT 'update user id',
+                                        PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='alert template';
 
-create table if not exists dinky_alert_template
-(
-    id               int auto_increment
-        primary key  COMMENT 'id',
-    name             varchar(20)    unicode    COMMENT 'template name',
-    template_content text              null COMMENT 'template content',
-    enabled          tinyint default 1 null COMMENT 'is enable',
-    create_time      datetime          null COMMENT 'create time',
-    update_time      datetime          null COMMENT 'update time'
-);
-
-create table if not exists dinky_alert_rules
-(
-    id                 int auto_increment
-        primary key comment 'id',
-    name               varchar(40)  unique     not null comment 'rule name',
-    rule               text              null comment 'specify rule',
-    template_id        int               null comment 'template id',
-    rule_type          varchar(10)       null comment 'alert rule type',
-    trigger_conditions varchar(20)       null comment 'trigger conditions',
-    description        text              null comment 'description',
-    enabled            tinyint default 1 null comment 'is enable',
-    create_time        datetime          null comment 'create time',
-    update_time        datetime          null comment 'update time'
-);
+CREATE TABLE if not exists `dinky_alert_rules` (
+                                     `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                     `name` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'rule name',
+                                     `rule` text COLLATE utf8mb4_general_ci COMMENT 'specify rule',
+                                     `template_id` int DEFAULT NULL COMMENT 'template id',
+                                     `rule_type` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'alert rule type',
+                                     `trigger_conditions` varchar(20) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'trigger conditions',
+                                     `description` text COLLATE utf8mb4_general_ci COMMENT 'description',
+                                     `enabled` tinyint DEFAULT 1 COMMENT 'is enable',
+                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                     `creator` int(11) DEFAULT NULL COMMENT 'create user id',
+                                     `updater` int(11) DEFAULT NULL COMMENT 'update user id',
+                                     PRIMARY KEY (`id`),
+                                     UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='alert rule';
 
 -- ----------------------------
 -- Table structure dinky_sys_token
 -- ----------------------------
-CREATE TABLE `dinky_sys_token` (
-   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
-   `token_value` varchar(255) NOT NULL COMMENT 'token value',
-   `user_id` bigint(20) NOT NULL COMMENT 'user id',
-   `role_id` bigint(20) NOT NULL COMMENT 'role id',
-   `tenant_id` bigint(20) NOT NULL COMMENT 'tenant id',
-   `expire_type` tinyint(4) NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
-   `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
-   `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
-   `create_time` datetime NOT NULL COMMENT 'create time',
-   `update_time` datetime NOT NULL COMMENT 'modify time',
-   `creator` bigint(20) DEFAULT NULL COMMENT '创建人',
-   `updator` bigint(20) DEFAULT NULL COMMENT '修改人',
-   `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
-   PRIMARY KEY (`id`),
-   UNIQUE KEY `token_value` (`token_value`) USING BTREE,
-   KEY `source` (`source`) USING HASH
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
+CREATE TABLE if not exists `dinky_sys_token` (
+                                   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                   `token_value` varchar(255) NOT NULL COMMENT 'token value',
+                                   `user_id` bigint(20) NOT NULL COMMENT 'user id',
+                                   `role_id` bigint(20) NOT NULL COMMENT 'role id',
+                                   `tenant_id` bigint(20) NOT NULL COMMENT 'tenant id',
+                                   `expire_type` tinyint(4) NOT NULL COMMENT '1: never expire, 2: expire after a period of time, 3: expire at a certain time',
+                                   `expire_start_time` datetime DEFAULT NULL COMMENT 'expire start time ,when expire_type = 3 , it is the start time of the period',
+                                   `expire_end_time` datetime DEFAULT NULL COMMENT 'expire end time ,when expire_type = 2,3 , it is the end time of the period',
+                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                   `source` tinyint(2) DEFAULT NULL COMMENT '1:login 2:custom',
+                                   `creator` int(20) DEFAULT NULL COMMENT '创建人',
+                                   `updater` int(20) DEFAULT NULL COMMENT '修改人',
+                                   PRIMARY KEY (`id`),
+                                   UNIQUE KEY `token_value` (`token_value`) USING BTREE,
+                                   KEY `source` (`source`) USING HASH
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC collate = utf8mb4_general_ci COMMENT='token management';
 
 CREATE TABLE `dinky_udf_manage` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,

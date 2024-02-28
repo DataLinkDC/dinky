@@ -7,7 +7,7 @@ VALUES ( 1, 'DefaultTenant', 0, 'DefaultTenant', '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 
 INSERT INTO `dinky_user`
-VALUES ( 1, 'admin', 1, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001'
+VALUES ( 1, 'admin', 1, 'f4b3a484ee745b98d64cd69c429b2aa2', 'Admin', 'Dinky-001'
        , null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 
@@ -39,13 +39,13 @@ INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `typ
 VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '', 1);
 
 
-insert into dinky_sys_menu values (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52', '2023-09-25 18:26:45', null);
+-- insert into dinky_sys_menu values (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52', '2023-09-25 18:26:45', null);
 insert into dinky_sys_menu values (2, -1, '运维中心', '/devops', null, 'devops', 'ControlOutlined', 'M', 0, 20, '2023-08-11 14:06:52', '2023-09-26 14:53:34', null);
 insert into dinky_sys_menu values (3, -1, '注册中心', '/registration', null, 'registration', 'AppstoreOutlined', 'M', 0, 23, '2023-08-11 14:06:52', '2023-09-26 14:54:03', null);
 insert into dinky_sys_menu values (4, -1, '认证中心', '/auth', null, 'auth', 'SafetyCertificateOutlined', 'M', 0, 79, '2023-08-11 14:06:52', '2023-09-26 15:08:42', null);
 insert into dinky_sys_menu values (5, -1, '数据开发', '/datastudio', './DataStudio', 'datastudio', 'CodeOutlined', 'C', 0, 4, '2023-08-11 14:06:52', '2023-09-26 14:49:12', null);
 insert into dinky_sys_menu values (6, -1, '配置中心', '/settings', null, 'settings', 'SettingOutlined', 'M', 0, 115, '2023-08-11 14:06:53', '2023-09-26 15:16:03', null);
-insert into dinky_sys_menu values (7, -1, '关于', '/about', './Other/About', 'about', 'SmileOutlined', 'C', 0, 143, '2023-08-11 14:06:53', '2023-09-26 15:21:21', null);
+-- insert into dinky_sys_menu values (7, -1, '关于', '/about', './Other/About', 'about', 'SmileOutlined', 'C', 0, 143, '2023-08-11 14:06:53', '2023-09-26 15:21:21', null);
 insert into dinky_sys_menu values (8, -1, '监控', '/metrics', './Metrics', 'metrics', 'DashboardOutlined', 'C', 0, 140, '2023-08-11 14:06:53', '2023-09-26 15:20:49', null);
 insert into dinky_sys_menu values (9, 3, '集群', '/registration/cluster', null, 'registration:cluster', 'GoldOutlined', 'M', 0, 24, '2023-08-11 14:06:54', '2023-09-26 14:54:19', null);
 insert into dinky_sys_menu values (10, 3, '数据源', '/registration/datasource', '', 'registration:datasource', 'DatabaseOutlined', 'M', 0, 37, '2023-08-11 14:06:54', '2024-01-18 21:38:56', null);
@@ -70,8 +70,8 @@ insert into dinky_sys_menu values (28, 9, 'Flink 实例', '/registration/cluster
 insert into dinky_sys_menu values (29, 12, '告警组', '/registration/alert/group', './RegCenter/Alert/AlertGroup', 'registration:alert:group', 'AlertOutlined', 'C', 0, 48, '2023-08-11 14:06:55', '2023-09-26 15:02:23', null);
 insert into dinky_sys_menu values (30, 9, '集群配置', '/registration/cluster/config', './RegCenter/Cluster/Configuration', 'registration:cluster:config', 'SettingOutlined', 'C', 0, 31, '2023-08-11 14:06:55', '2023-09-26 14:57:57', null);
 insert into dinky_sys_menu values (31, 12, '告警实例', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', 'registration:alert:instance', 'AlertFilled', 'C', 0, 44, '2023-08-11 14:06:55', '2023-09-26 15:01:42', null);
-insert into dinky_sys_menu values (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'home:jobOverView', 'AntCloudOutlined', 'F', 0, 2, '2023-08-15 16:52:59', '2023-09-26 14:48:50', null);
-insert into dinky_sys_menu values (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'home:devOverView', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47', '2023-09-26 14:49:00', null);
+-- insert into dinky_sys_menu values (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'home:jobOverView', 'AntCloudOutlined', 'F', 0, 2, '2023-08-15 16:52:59', '2023-09-26 14:48:50', null);
+-- insert into dinky_sys_menu values (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'home:devOverView', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47', '2023-09-26 14:49:00', null);
 insert into dinky_sys_menu values (34, 5, '项目列表', '/datastudio/left/project', null, 'datastudio:left:project', 'ConsoleSqlOutlined', 'F', 0, 5, '2023-09-01 18:00:39', '2023-09-26 14:49:31', null);
 insert into dinky_sys_menu values (35, 5, '数据源', '/datastudio/left/datasource', null, 'datastudio:left:datasource', 'TableOutlined', 'F', 0, 7, '2023-09-01 18:01:09', '2023-09-26 14:49:42', null);
 insert into dinky_sys_menu values (36, 5, 'Catalog', '/datastudio/left/catalog', null, 'datastudio:left:catalog', 'DatabaseOutlined', 'F', 0, 6, '2023-09-01 18:01:30', '2024-01-18 22:29:41', null);

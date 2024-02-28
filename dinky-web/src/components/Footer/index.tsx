@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
   return (
     <DefaultFooter
       style={{
-        background: 'url(/icons/footer-bg.svg) 100% 100% no-repeat',
+        background: 'url(./icons/footer-bg.svg) 100% 100% no-repeat',
         backgroundSize: 'cover',
         bottom: 0
       }}

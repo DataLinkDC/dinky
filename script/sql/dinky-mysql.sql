@@ -1449,7 +1449,7 @@ CREATE TABLE `dinky_user` (
 -- ----------------------------
 INSERT INTO dinky_user
     (id, username, user_type, password, nickname, worknum, avatar, mobile, enabled, super_admin_flag, is_delete, create_time, update_time)
-VALUES (1, 'admin', 0, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001', null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2023-07-28 23:22:52');
+VALUES (1, 'admin', 0, 'f4b3a484ee745b98d64cd69c429b2aa2', 'Admin', 'Dinky-001', null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2023-07-28 23:22:52');
 
 -- ----------------------------
 -- Table structure for dinky_user_role
@@ -1651,7 +1651,7 @@ CREATE TABLE `dinky_git_project` (
                                    `operator` int(11) DEFAULT NULL COMMENT 'operator',
                                    PRIMARY KEY (`id`) USING BTREE,
                                    KEY `tenant_id` (`tenant_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='git project' ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of dinky_git_project
@@ -1678,7 +1678,7 @@ CREATE TABLE `dinky_metrics` (
                                  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='metrics layout';
 
 -- ----------------------------
 -- Table structure for dinky_resources
@@ -1686,13 +1686,13 @@ CREATE TABLE `dinky_metrics` (
 DROP TABLE IF EXISTS dinky_resources;
 CREATE TABLE `dinky_resources` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
-                                   `file_name` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'file name',
-                                   `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+                                   `file_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'file name',
+                                   `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
                                    `user_id` int(11) DEFAULT NULL COMMENT 'user id',
                                    `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
                                    `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
                                    `pid` int(11) DEFAULT NULL,
-                                   `full_name` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+                                   `full_name` text COLLATE utf8mb4_general_ci DEFAULT NULL,
                                    `is_directory` tinyint(4) DEFAULT NULL,
                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
@@ -1700,7 +1700,7 @@ CREATE TABLE `dinky_resources` (
                                    `updater` int(11) DEFAULT NULL COMMENT 'updater',
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- ----------------------------
 -- Records of dinky_resources
 -- ----------------------------
@@ -1770,19 +1770,19 @@ create table `dinky_sys_menu` (
                                   `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
                                   `note` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
                                   primary key (`id`) using btree
-) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci;
+) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci comment='system menu' row_format=dynamic;
 
 -- ----------------------------
 -- Records of dinky_sys_menu
 -- ----------------------------
 BEGIN;
-insert into dinky_sys_menu values (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52', '2023-09-25 18:26:45', null);
+-- insert into dinky_sys_menu values (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52', '2023-09-25 18:26:45', null);
 insert into dinky_sys_menu values (2, -1, '运维中心', '/devops', null, 'devops', 'ControlOutlined', 'M', 0, 20, '2023-08-11 14:06:52', '2023-09-26 14:53:34', null);
 insert into dinky_sys_menu values (3, -1, '注册中心', '/registration', null, 'registration', 'AppstoreOutlined', 'M', 0, 23, '2023-08-11 14:06:52', '2023-09-26 14:54:03', null);
 insert into dinky_sys_menu values (4, -1, '认证中心', '/auth', null, 'auth', 'SafetyCertificateOutlined', 'M', 0, 79, '2023-08-11 14:06:52', '2023-09-26 15:08:42', null);
 insert into dinky_sys_menu values (5, -1, '数据开发', '/datastudio', './DataStudio', 'datastudio', 'CodeOutlined', 'C', 0, 4, '2023-08-11 14:06:52', '2023-09-26 14:49:12', null);
 insert into dinky_sys_menu values (6, -1, '配置中心', '/settings', null, 'settings', 'SettingOutlined', 'M', 0, 115, '2023-08-11 14:06:53', '2023-09-26 15:16:03', null);
-insert into dinky_sys_menu values (7, -1, '关于', '/about', './Other/About', 'about', 'SmileOutlined', 'C', 0, 143, '2023-08-11 14:06:53', '2023-09-26 15:21:21', null);
+-- insert into dinky_sys_menu values (7, -1, '关于', '/about', './Other/About', 'about', 'SmileOutlined', 'C', 0, 143, '2023-08-11 14:06:53', '2023-09-26 15:21:21', null);
 insert into dinky_sys_menu values (8, -1, '监控', '/metrics', './Metrics', 'metrics', 'DashboardOutlined', 'C', 0, 140, '2023-08-11 14:06:53', '2023-09-26 15:20:49', null);
 insert into dinky_sys_menu values (9, 3, '集群', '/registration/cluster', null, 'registration:cluster', 'GoldOutlined', 'M', 0, 24, '2023-08-11 14:06:54', '2023-09-26 14:54:19', null);
 insert into dinky_sys_menu values (10, 3, '数据源', '/registration/datasource', '', 'registration:datasource', 'DatabaseOutlined', 'M', 0, 37, '2023-08-11 14:06:54', '2024-01-18 21:38:56', null);
@@ -1807,8 +1807,8 @@ insert into dinky_sys_menu values (28, 9, 'Flink 实例', '/registration/cluster
 insert into dinky_sys_menu values (29, 12, '告警组', '/registration/alert/group', './RegCenter/Alert/AlertGroup', 'registration:alert:group', 'AlertOutlined', 'C', 0, 48, '2023-08-11 14:06:55', '2023-09-26 15:02:23', null);
 insert into dinky_sys_menu values (30, 9, '集群配置', '/registration/cluster/config', './RegCenter/Cluster/Configuration', 'registration:cluster:config', 'SettingOutlined', 'C', 0, 31, '2023-08-11 14:06:55', '2023-09-26 14:57:57', null);
 insert into dinky_sys_menu values (31, 12, '告警实例', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', 'registration:alert:instance', 'AlertFilled', 'C', 0, 44, '2023-08-11 14:06:55', '2023-09-26 15:01:42', null);
-insert into dinky_sys_menu values (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'home:jobOverView', 'AntCloudOutlined', 'F', 0, 2, '2023-08-15 16:52:59', '2023-09-26 14:48:50', null);
-insert into dinky_sys_menu values (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'home:devOverView', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47', '2023-09-26 14:49:00', null);
+-- insert into dinky_sys_menu values (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'home:jobOverView', 'AntCloudOutlined', 'F', 0, 2, '2023-08-15 16:52:59', '2023-09-26 14:48:50', null);
+-- insert into dinky_sys_menu values (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'home:devOverView', 'AimOutlined', 'F', 0, 3, '2023-08-15 16:54:47', '2023-09-26 14:49:00', null);
 insert into dinky_sys_menu values (34, 5, '项目列表', '/datastudio/left/project', null, 'datastudio:left:project', 'ConsoleSqlOutlined', 'F', 0, 5, '2023-09-01 18:00:39', '2023-09-26 14:49:31', null);
 insert into dinky_sys_menu values (35, 5, '数据源', '/datastudio/left/datasource', null, 'datastudio:left:datasource', 'TableOutlined', 'F', 0, 7, '2023-09-01 18:01:09', '2023-09-26 14:49:42', null);
 insert into dinky_sys_menu values (36, 5, 'Catalog', '/datastudio/left/catalog', null, 'datastudio:left:catalog', 'DatabaseOutlined', 'F', 0, 6, '2023-09-01 18:01:30', '2024-01-18 22:29:41', null);
@@ -1942,7 +1942,7 @@ CREATE TABLE `dinky_sys_role_menu` (
                                        `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
                                        PRIMARY KEY (`id`) USING BTREE,
                                        UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='role menu';
 
 -- ----------------------------
 -- Table structure dinky_sys_alert
@@ -1958,7 +1958,7 @@ CREATE TABLE `dinky_alert_template` (
                                         `creator` int(11) DEFAULT NULL COMMENT 'create user id',
                                         `updater` int(11) DEFAULT NULL COMMENT 'update user id',
                                         PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='alert template';
 
 
 
@@ -1978,7 +1978,7 @@ CREATE TABLE `dinky_alert_rules` (
                                      `updater` int(11) DEFAULT NULL COMMENT 'update user id',
                                      PRIMARY KEY (`id`),
                                      UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='alert rule';
 
 
 
@@ -2020,7 +2020,7 @@ CREATE TABLE `dinky_udf_manage` (
                                     `updater` int(11) DEFAULT NULL COMMENT 'update user id',
                                     PRIMARY KEY (`id`) USING BTREE,
                                     KEY `name,resources_id` (`name`,`resources_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='udf';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='udf';
 
 -- ----------------------------
 -- Table structure dinky_sys_token
@@ -2043,6 +2043,6 @@ CREATE TABLE `dinky_sys_token` (
    PRIMARY KEY (`id`),
    UNIQUE KEY `token_value` (`token_value`) USING BTREE,
    KEY `source` (`source`) USING HASH
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COMMENT='token management';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC collate = utf8mb4_general_ci COMMENT='token management';
 
 SET FOREIGN_KEY_CHECKS = 1;

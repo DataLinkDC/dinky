@@ -934,6 +934,7 @@ export default {
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
+  'rc.resource.copy': '复制为: {fillValue}',
 
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',

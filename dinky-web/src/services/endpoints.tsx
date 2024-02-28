@@ -18,6 +18,7 @@
  */
 
 export enum API_CONSTANTS {
+  BASE_URL = '.',
   GET_SERVICE_VERSION = '/api/version',
 
   // --- user ---
@@ -236,12 +237,12 @@ export enum API_CONSTANTS {
   REFRESH_JOB_DETAIL = '/api/jobInstance/refreshJobInfoDetail',
   READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',
   GET_JOB_VERSION = '/api/task/version',
-  GET_JOBMANAGER_LOG = 'api/jobInstance/getJobManagerLog',
-  GET_JOBMANAGER_STDOUT = 'api/jobInstance/getJobManagerStdOut',
-  GET_JOBMANAGER_THREAD_DUMP = 'api/jobInstance/getJobManagerThreadDump',
-  GET_TASKMANAGER_LIST = 'api/jobInstance/getTaskManagerList',
-  GET_TASKMANAGER_LOG = 'api/jobInstance/getTaskManagerLog',
-  GET_JOB_METRICS_ITEMS = 'api/jobInstance/getJobMetricsItems',
+  GET_JOBMANAGER_LOG = '/api/jobInstance/getJobManagerLog',
+  GET_JOBMANAGER_STDOUT = '/api/jobInstance/getJobManagerStdOut',
+  GET_JOBMANAGER_THREAD_DUMP = '/api/jobInstance/getJobManagerThreadDump',
+  GET_TASKMANAGER_LIST = '/api/jobInstance/getTaskManagerList',
+  GET_TASKMANAGER_LOG = '/api/jobInstance/getTaskManagerLog',
+  GET_JOB_METRICS_ITEMS = '/api/jobInstance/getJobMetricsItems',
   CANCEL_JOB = '/api/task/cancel',
   // /api/studio/getLineage
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',
@@ -263,7 +264,7 @@ export enum API_CONSTANTS {
   LDAP_IMPORT_USERS = '/api/ldap/importUsers',
 
   // -- home
-  GET_STATUS_COUNT = 'api/jobInstance/getStatusCount',
+  GET_STATUS_COUNT = '/api/jobInstance/getStatusCount',
   GET_RESOURCE_OVERVIEW = '/api/home/getResourceOverview',
   GET_JOB_STATUS_OVERVIEW = '/api/home/getJobStatusOverview',
   GET_JOB_TYPE_OVERVIEW = '/api/home/getJobTypeOverview',

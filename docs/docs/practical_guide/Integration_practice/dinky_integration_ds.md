@@ -12,7 +12,7 @@ title: Dinky 集成 DolphinScheduler
 
 ## 前置要求
 
-- DolphinScheduler 1.3.0+
+- DolphinScheduler 3.2.1+
 - Dinky 1.0.0+
 - Docker 19.03+
 
@@ -21,7 +21,7 @@ title: Dinky 集成 DolphinScheduler
 
 ### 启动 DolphinScheduler
 ```bash
-export DOLPHINSCHEDULER_VERSION=3.1.5
+export DOLPHINSCHEDULER_VERSION=3.2.1
 
 docker run --name dolphinscheduler-standalone-server -p 12345:12345 -p 25333:25333 -d apache/dolphinscheduler-standalone-server:"${DOLPHINSCHEDULER_VERSION}"
 ```

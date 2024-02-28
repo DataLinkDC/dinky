@@ -45,7 +45,6 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.sql.FlinkQuery;
 import org.dinky.utils.FlinkTableMetadataUtil;
 import org.dinky.utils.RunTimeUtil;
 
@@ -74,6 +73,7 @@ public class StudioServiceImpl implements StudioService {
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
     private final Cache<String, JobManager> jobManagerCache = CacheUtil.newTimedCache(1000 * 60 * 2);
+    private final String DEFAULT_CATALOG = "default_catalog";
 
     private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
         String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
@@ -142,7 +142,7 @@ public class StudioServiceImpl implements StudioService {
         if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
             DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
             if (!Asserts.isNull(dataBase)) {
-                Catalog defaultCatalog = Catalog.build(FlinkQuery.defaultCatalog());
+                Catalog defaultCatalog = Catalog.build(DEFAULT_CATALOG);
                 Driver driver = Driver.build(dataBase.getDriverConfig());
                 defaultCatalog.setSchemas(driver.listSchemas());
                 catalogs.add(defaultCatalog);

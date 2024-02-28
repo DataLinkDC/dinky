@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
+import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.app.AppParamConfig;
@@ -284,7 +285,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public String buildEnvSql(AbstractStatementDTO task) {
         log.info("Start initialize FlinkSQLEnv:");
         String sql = CommonConstant.LineSep;
-        if (task.getFragment()) {
+        if (task.isFragment()) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
                 sql += flinkWithSql + CommonConstant.LineSep;
@@ -644,8 +645,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Transactional(rollbackFor = Exception.class)
     public Task initDefaultFlinkSQLEnv(Integer tenantId) {
         TenantContextHolder.set(tenantId);
-        String separator = SystemConfiguration.getInstances().getSqlSeparator();
-        separator = separator.replace("\\r", "\r").replace("\\n", "\n");
         String name = "DefaultCatalog";
 
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
@@ -658,7 +657,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         + "'password' = '%s',\n"
                         + "    'url' = '%s'\n"
                         + ")%suse catalog my_catalog%s",
-                dsProperties.getUsername(), dsProperties.getPassword(), dsProperties.getUrl(), separator, separator);
+                dsProperties.getUsername(),
+                dsProperties.getPassword(),
+                dsProperties.getUrl(),
+                FlinkSQLConstant.SEPARATOR,
+                FlinkSQLConstant.SEPARATOR);
 
         if (null != defaultFlinkSQLEnvTask) {
             defaultFlinkSQLEnvTask.setStatement(sql);

@@ -21,11 +21,22 @@ import { TagAlignCenter } from '@/components/StyledComponents';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { parseByteStr, renderIcon } from '@/utils/function';
 import { l } from '@/utils/intl';
+import { Typography } from 'antd';
 
-const buildTitleLabel = (item: ResourceInfo) => {
+const buildTitleLabel = (showCopy = false, item: ResourceInfo) => {
+  const fillValue = `ADD FILE 'rs:${item.fullName}';`;
+
   return (
     <>
-      {item.fileName}
+      {!item.isDirectory && showCopy ? (
+        <Typography.Text
+          copyable={{ text: fillValue, tooltips: l('rc.resource.copy', '', { fillValue }) }}
+        >
+          {item.fileName}
+        </Typography.Text>
+      ) : (
+        item.fileName
+      )}
       {!item.isDirectory && (
         <span style={{ color: 'gray' }}>
           {' '}
@@ -79,9 +90,10 @@ function filterEmpty(
 }
 
 export const buildResourceTreeData = (
-  data: ResourceInfo[],
+  data: ResourceInfo[] = [],
   isFilterEmptyChildren = false,
-  filterSuffixList: string[] = []
+  filterSuffixList: string[] = [],
+  showCopy: boolean = false
 ): any =>
   data
     .filter((item: ResourceInfo) => filterEmpty(isFilterEmptyChildren, item, filterSuffixList))
@@ -90,13 +102,15 @@ export const buildResourceTreeData = (
         isLeaf: !item.isDirectory,
         name: item.fileName,
         parentId: item.pid,
-        label: item.fullName + '/' + item.fileName,
+        label: item.fileName,
         icon: <TagAlignCenter>{renderIcon(item.fileName, '.', item.isDirectory)}</TagAlignCenter>,
         path: item.fullName,
-        title: buildTitleLabel(item),
+        title: buildTitleLabel(showCopy, item),
         fullInfo: item,
         key: item.id,
         id: item.id,
-        children: item.children && buildResourceTreeData(item.children, isFilterEmptyChildren)
+        children:
+          item.children &&
+          buildResourceTreeData(item.children, isFilterEmptyChildren, filterSuffixList, showCopy)
       };
     });

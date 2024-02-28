@@ -41,7 +41,7 @@ import { API } from './services/data';
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
 
-const whiteList = ['/user', '/user/login'];
+const whiteList = ['/user', loginPath];
 
 let extraRoutes: SysMenu[] = [];
 let rendered = false;
@@ -65,7 +65,7 @@ const queryUserInfo = async () => {
     const currentUser: API.CurrentUser = {
       user: {
         ...user,
-        avatar: user.avatar ?? '/icons/user_avatar.png'
+        avatar: user.avatar ?? './icons/user_avatar.png'
       },
       roleList: roleList,
       tenantList: tenantList,
@@ -183,7 +183,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request = {
-  ...errorConfig
+  ...errorConfig,
+  // 修改为相对请求路径, 避免请求路径出现错误 会自动拼接为完整请求路径
+  baseURL: API_CONSTANTS.BASE_URL
 };
 
 // 这个是redux-persist 的配置
