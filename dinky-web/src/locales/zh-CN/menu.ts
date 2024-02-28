@@ -83,7 +83,7 @@ export default {
   'menu.settings.classloaderjars': '类加载器 Jars',
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
-  'menu.settings.alertrulelist': '告警策略',
+  'menu.settings.alertrule': '告警策略',
   'menu.metrics': '监控',
   'menu.about': '关于',
   'menu.version': '版本：{version}',
