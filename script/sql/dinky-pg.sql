@@ -3721,12 +3721,12 @@ values (4, -1, '认证中心', '/auth', null, 'auth', 'SafetyCertificateOutlined
 insert into dinky_sys_menu
 values (5, -1, '数据开发', '/datastudio', './DataStudio', 'datastudio', 'CodeOutlined', 'C', 0, 4,
         '2023-08-11 14:06:52', '2023-09-26 14:49:12', null);
-insert into dinky_sys_menu
-values (6, -1, '配置中心', '/settings', null, 'settings', 'SettingOutlined', 'M', 0, 115, '2023-08-11 14:06:53',
-        '2023-09-26 15:16:03', null);
-insert into dinky_sys_menu
-values (7, -1, '关于', '/about', './Other/About', 'about', 'SmileOutlined', 'C', 0, 143, '2023-08-11 14:06:53',
-        '2023-09-26 15:21:21', null);
+-- insert into dinky_sys_menu
+-- values (6, -1, '配置中心', '/settings', null, 'settings', 'SettingOutlined', 'M', 0, 115, '2023-08-11 14:06:53',
+--         '2023-09-26 15:16:03', null);
+-- insert into dinky_sys_menu
+-- values (7, -1, '关于', '/about', './Other/About', 'about', 'SmileOutlined', 'C', 0, 143, '2023-08-11 14:06:53',
+--         '2023-09-26 15:21:21', null);
 insert into dinky_sys_menu
 values (8, -1, '监控', '/metrics', './Metrics', 'metrics', 'DashboardOutlined', 'C', 0, 140, '2023-08-11 14:06:53',
         '2023-09-26 15:20:49', null);
@@ -3798,15 +3798,16 @@ insert into dinky_sys_menu
 values (30, 9, '集群配置', '/registration/cluster/config', './RegCenter/Cluster/Configuration',
         'registration:cluster:config', 'SettingOutlined', 'C', 0, 31, '2023-08-11 14:06:55', '2023-09-26 14:57:57',
         null);
-insert into dinky_sys_menu
-values (31, 12, '告警实例', '/registration/alert/instance', './RegCenter/Alert/AlertInstance',
-        'registration:alert:instance', 'AlertFilled', 'C', 0, 44, '2023-08-11 14:06:55', '2023-09-26 15:01:42', null);
-insert into dinky_sys_menu
-values (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'home:jobOverView', 'AntCloudOutlined', 'F', 0, 2,
-        '2023-08-15 16:52:59', '2023-09-26 14:48:50', null);
-insert into dinky_sys_menu
-values (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'home:devOverView', 'AimOutlined', 'F', 0, 3,
-        '2023-08-15 16:54:47', '2023-09-26 14:49:00', null);
+--
+-- insert into dinky_sys_menu
+-- values (31, 12, '告警实例', '/registration/alert/instance', './RegCenter/Alert/AlertInstance',
+--         'registration:alert:instance', 'AlertFilled', 'C', 0, 44, '2023-08-11 14:06:55', '2023-09-26 15:01:42', null);
+-- insert into dinky_sys_menu
+-- values (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'home:jobOverView', 'AntCloudOutlined', 'F', 0, 2,
+--         '2023-08-15 16:52:59', '2023-09-26 14:48:50', null);
+-- insert into dinky_sys_menu
+-- values (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'home:devOverView', 'AimOutlined', 'F', 0, 3,
+--         '2023-08-15 16:54:47', '2023-09-26 14:49:00', null);
 insert into dinky_sys_menu
 values (34, 5, '项目列表', '/datastudio/left/project', null, 'datastudio:left:project', 'ConsoleSqlOutlined', 'F', 0, 5,
         '2023-09-01 18:00:39', '2023-09-26 14:49:31', null);
