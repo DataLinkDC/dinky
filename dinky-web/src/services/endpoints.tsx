@@ -21,7 +21,6 @@ export enum API_CONSTANTS {
   BASE_URL = '.',
   GET_SERVICE_VERSION = '/api/version',
 
-
   /** ------------------------------------------------- auth center ------------------------------------ */
   // ------------------------------------ user ------------------------------------
   LOGIN_PATH = '/user/login',
@@ -79,7 +78,7 @@ export enum API_CONSTANTS {
   GLOBAL_VARIABLE_DELETE = '/api/fragment/delete',
   GLOBAL_VARIABLE_ENABLE = '/api/fragment/enable',
 
- /** ------------------------------------ register center ------------------------------------ */
+  /** ------------------------------------ register center ------------------------------------ */
 
   // ------------------------------------ cluster instance ------------------------------------
   CLUSTER_INSTANCE = '/api/cluster',
@@ -149,8 +148,6 @@ export enum API_CONSTANTS {
   GIT_PROJECT_BUILD = '/api/git/build',
   GIT_PROJECT_BUILD_STEP_LOGS = '/api/git/build-step-logs',
 
-
-
   // ------------------------------------ resource ------------------------------------
   RESOURCE_SHOW_TREE = '/api/resource/getResourcesTreeData',
   RESOURCE_GET_CONTENT_BY_ID = '/api/resource/getContentByResourceId',
@@ -159,7 +156,6 @@ export enum API_CONSTANTS {
   RESOURCE_RENAME = '/api/resource/rename',
   RESOURCE_UPLOAD = '/api/resource/uploadFile',
   RESOURCE_SYNC_DATA = '/api/resource/syncRemoteDirectory',
-
 
   // ------------------------------------ udf manage ------------------------------------
   UDF_LIST = '/api/udf/list',
@@ -189,7 +185,6 @@ export enum API_CONSTANTS {
   PROCESS_LIST = '/api/process/listAllProcess',
   PROCESS_LOG = '/api/process/getProcess',
 
-
   /** ------------------------------------------------ Devops center  ------------------------------------ */
   // ------------------------------------ devops job  ------------------------------------
   JOB_INSTANCE = '/api/jobInstance',
@@ -206,7 +201,6 @@ export enum API_CONSTANTS {
   GET_JOB_METRICS_ITEMS = '/api/jobInstance/getJobMetricsItems',
   JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   GET_STATUS_COUNT = '/api/jobInstance/getStatusCount',
-
 
   // ------------------------------------ devops studio  ------------------------------------
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',
@@ -247,11 +241,9 @@ export enum API_CONSTANTS {
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
   GET_JVM_INFO = '/api/monitor/getJvmInfo',
 
-
   // ------------------------------------ flink ------------------------------------
   FLINK_PROXY = '/api/flink',
   FLINK_TABLE_DATA = '/api/subscribe/print',
-
 
   // ------------------------------------ catalogue ------------------------------------
   DELETE_CATALOGUE_BY_ID_URL = '/api/catalogue/deleteCatalogueById',
@@ -284,12 +276,10 @@ export enum API_CONSTANTS {
   SCHEDULER_QUERY_TASK_DEFINITION = '/api/scheduler/queryTaskDefinition',
   SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION = '/api/scheduler/createOrUpdateTaskDefinition',
 
-
   // ------------------------------------ flink conf about ------------------------------------
   READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',
   FLINK_CONF_CONFIG_OPTIONS = '/api/flinkConf/configOptions',
 
   // ------------------------------------ suggestion ------------------------------------
-  SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions',
-
+  SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions'
 }

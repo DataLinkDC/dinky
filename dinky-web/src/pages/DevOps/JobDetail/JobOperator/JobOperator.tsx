@@ -21,11 +21,11 @@ import { cancelTask, savePointTask } from '@/pages/DataStudio/HeaderContainer/se
 import { isStatusDone } from '@/pages/DevOps/function';
 import EditJobInstanceForm from '@/pages/DevOps/JobDetail/JobOperator/components/EditJobInstanceForm';
 import RestartForm from '@/pages/DevOps/JobDetail/JobOperator/components/RestartForm';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { EllipsisOutlined, RedoOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const operatorType = {
   CANCEL_JOB: 'canceljob',

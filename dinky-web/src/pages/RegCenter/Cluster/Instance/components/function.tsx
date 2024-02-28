@@ -18,11 +18,11 @@
  */
 
 import { RUN_MODE } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { Typography } from 'antd';
 import { RuleObject } from 'rc-field-form/es/interface';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const { Text, Paragraph, Link } = Typography;
 

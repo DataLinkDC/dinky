@@ -127,9 +127,12 @@ const HeaderContainer = (props: connect) => {
       DolphinTaskMinInfo[]
     >(API_CONSTANTS.SCHEDULER_QUERY_UPSTREAM_TASKS, { dinkyTaskId });
     const dolphinTaskDefinition: DolphinTaskDefinition | undefined =
-      await queryDataByParams<DolphinTaskDefinition>(API_CONSTANTS.SCHEDULER_QUERY_TASK_DEFINITION, {
-        dinkyTaskId
-      });
+      await queryDataByParams<DolphinTaskDefinition>(
+        API_CONSTANTS.SCHEDULER_QUERY_TASK_DEFINITION,
+        {
+          dinkyTaskId
+        }
+      );
     setPushDolphinState((prevState) => ({
       ...prevState,
       buttonLoading: true,

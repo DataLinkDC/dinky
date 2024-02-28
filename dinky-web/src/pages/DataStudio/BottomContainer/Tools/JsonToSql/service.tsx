@@ -18,7 +18,7 @@
  */
 
 import { postAll } from '@/services/api';
-import {API_CONSTANTS} from "@/services/endpoints";
+import { API_CONSTANTS } from '@/services/endpoints';
 
 export async function jsonToSql(params: any) {
   return (await postAll(API_CONSTANTS.JSON_TO_FLINK_SQL, params)).data;
