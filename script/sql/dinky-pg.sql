@@ -2525,13 +2525,13 @@ COMMENT
 COMMENT
     ON COLUMN dinky_job_instance.task_id IS 'task id ';
 COMMENT
-    ON COLUMN dinky_job_instance.step IS 'job history step';';
+    ON COLUMN dinky_job_instance.step IS 'job history step';
 COMMENT
     ON COLUMN dinky_job_instance.cluster_id IS 'cluster id';
 COMMENT
     ON COLUMN dinky_job_instance.jid IS 'Flink JobId';
 COMMENT
-    ON COLUMN dinky_job_instance.status IS 'job instance status';';
+    ON COLUMN dinky_job_instance.status IS 'job instance status';
 COMMENT
     ON COLUMN dinky_job_instance.history_id IS 'history id';
 COMMENT
@@ -2862,113 +2862,29 @@ EXECUTE FUNCTION trigger_set_timestamp();
 INSERT INTO dinky_udf_template (id, name, code_type, function_type, template_code, enabled, create_time, update_time,
                                 creator, updater)
 VALUES (1, 'java_udf', 'Java', 'UDF',
-        $$${(package=='''')?string('''',''package ''+package+'';'')} import org.apache.flink.table.functions.ScalarFunction;
-
-public class
-${className}
-extends
-ScalarFunction
-{
-public
-String
-eval
-(
-String
-s
-)
-{
-return
-null;
-}
-}$$, true, '2022-10-19 09:17:37', '2022-10-25 17:45:57', null, null),
+        $$${(package=='''')?string('''',''package ''+package+'';'')}
+         import org.apache.flink.table.functions.ScalarFunction;
+           public class  ${className} extends ScalarFunction {
+                public String  eval  (  String  s  ) {
+                    return  null;
+                }
+            }
+$$, true, '2022-10-19 09:17:37', '2022-10-25 17:45:57', null, null),
        (2, 'java_udtf', 'Java', 'UDTF', $$
-${(package=='''')?string('''',''package ''+package+'';'')}
+        ${(package=='''')?string('''',''package ''+package+'';'')}
 
-import
-org
-.
-apache
-.
-flink
-.
-table
-.
-functions
-.
-ScalarFunction;
+        import org.apache.flink.table.functions.ScalarFunction;
 
-@
-FunctionHint
-(
-output
-=
-@
-DataTypeHint
-(
-"ROW<word STRING, length INT>"
-)
-)
-public
-static
-class
-${className}
-extends
-TableFunction
-<
-Row
->
-{
+        @FunctionHint(output = @DataTypeHint("ROW<word STRING, length INT>"))
+        public static class ${className} extends TableFunction<Row> {
 
-public
-void
-eval
-(
-String
-str
-)
-{
-for
-(
-String
-s
-:
-str
-.
-split
-(
-" "
-)
-)
-{
-//
-use
-collect
-(
-.
-.
-.
-)
-to
-emit
-a
-row
-collect
-(
-Row
-.
-of
-(
-s,
-s
-.
-length
-(
-)
-)
-);
-}
-}
-}
+          public void eval(String str) {
+            for (String s : str.split(" ")) {
+              // use collect(...) to emit a row
+              collect(Row.of(s, s.length()));
+            }
+          }
+        }
 $$,
         true,
         '2022-10-19 09:22:58',
@@ -2981,58 +2897,14 @@ $$,
         'UDF',
         $$
 ${(package=='''')?string('''',''package ''+package+'';'')}
+import org.apache.flink.table.api._
+import org.apache.flink.table.functions.ScalarFunction
 
-import
-org
-.
-apache
-.
-flink
-.
-table
-.
-api
-.
-_
-import
-org
-.
-apache
-.
-flink
-.
-table
-.
-functions
-.
-ScalarFunction
-
-//
-定义可参数化的函数逻辑
-class
-${className}
-extends
-ScalarFunction
-{
-def
-eval
-(
-s
-:
-String,
-begin
-:
-Integer,
-end
-:
-Integer
-)
-:
-String
-=
-{
-"this is scala"
-}
+// 定义可参数化的函数逻辑
+class ${className} extends ScalarFunction {
+  def eval(s: String, begin: Integer, end: Integer): String = {
+    "this is scala"
+  }
 }
 $$,
         true,
@@ -3044,65 +2916,18 @@ $$,
         'python_udf_1',
         'Python',
         'UDF',
-        $$from
-pyflink
-.
-table
-import
-ScalarFunction,
-DataTypes
-from
-pyflink
-.
-table
-.
-udf
-import
-udf
+        $$from pyflink.table import ScalarFunction, DataTypes
+from pyflink.table.udf import udf
 
-class
-${className}
-(
-ScalarFunction
-)
-:
-def
-__init__
-(
-self
-)
-:
-pass
+class ${className}(ScalarFunction):
+    def __init__(self):
+        pass
 
-def
-eval
-(
-self,
-variable
-)
-:
-return
-str
-(
-variable
-)
+    def eval(self, variable):
+        return str(variable)
 
 
-${attr!''f''}
-=
-udf
-(
-${className}
-(
-),
-result_type
-=
-DataTypes
-.
-STRING
-(
-)
-)
+${attr!'f'} = udf(${className}(), result_type=DataTypes.STRING())
 $$,
         true,
         '2022-10-25 09:23:07',
@@ -3113,42 +2938,12 @@ $$,
         'python_udf_2',
         'Python',
         'UDF',
-        $$from
-pyflink
-.
-table
-import
-DataTypes
-from
-pyflink
-.
-table
-.
-udf
-import
-udf
+        $$from pyflink.table import DataTypes
+from pyflink.table.udf import udf
 
-@
-udf
-(
-result_type
-=
-DataTypes
-.
-STRING
-(
-)
-)
-def
-${className}
-(
-variable1
-:
-str
-)
-:
-return
-''''
+@udf(result_type=DataTypes.STRING())
+def ${className}(variable1:str):
+  return ''
 $$,
         true,
         '2022-10-25 09:25:13',
@@ -3721,9 +3516,9 @@ values (4, -1, '认证中心', '/auth', null, 'auth', 'SafetyCertificateOutlined
 insert into dinky_sys_menu
 values (5, -1, '数据开发', '/datastudio', './DataStudio', 'datastudio', 'CodeOutlined', 'C', 0, 4,
         '2023-08-11 14:06:52', '2023-09-26 14:49:12', null);
--- insert into dinky_sys_menu
--- values (6, -1, '配置中心', '/settings', null, 'settings', 'SettingOutlined', 'M', 0, 115, '2023-08-11 14:06:53',
---         '2023-09-26 15:16:03', null);
+insert into dinky_sys_menu
+values (6, -1, '配置中心', '/settings', null, 'settings', 'SettingOutlined', 'M', 0, 115, '2023-08-11 14:06:53',
+        '2023-09-26 15:16:03', null);
 -- insert into dinky_sys_menu
 -- values (7, -1, '关于', '/about', './Other/About', 'about', 'SmileOutlined', 'C', 0, 143, '2023-08-11 14:06:53',
 --         '2023-09-26 15:21:21', null);
@@ -3798,10 +3593,10 @@ insert into dinky_sys_menu
 values (30, 9, '集群配置', '/registration/cluster/config', './RegCenter/Cluster/Configuration',
         'registration:cluster:config', 'SettingOutlined', 'C', 0, 31, '2023-08-11 14:06:55', '2023-09-26 14:57:57',
         null);
---
--- insert into dinky_sys_menu
--- values (31, 12, '告警实例', '/registration/alert/instance', './RegCenter/Alert/AlertInstance',
---         'registration:alert:instance', 'AlertFilled', 'C', 0, 44, '2023-08-11 14:06:55', '2023-09-26 15:01:42', null);
+
+insert into dinky_sys_menu
+values (31, 12, '告警实例', '/registration/alert/instance', './RegCenter/Alert/AlertInstance',
+        'registration:alert:instance', 'AlertFilled', 'C', 0, 44, '2023-08-11 14:06:55', '2023-09-26 15:01:42', null);
 -- insert into dinky_sys_menu
 -- values (32, 1, '作业监控', '/home/jobOverView', 'JobOverView', 'home:jobOverView', 'AntCloudOutlined', 'F', 0, 2,
 --         '2023-08-15 16:52:59', '2023-09-26 14:48:50', null);
