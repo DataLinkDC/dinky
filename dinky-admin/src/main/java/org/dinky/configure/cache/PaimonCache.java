@@ -37,6 +37,7 @@ import com.alibaba.fastjson2.JSONWriter;
 
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUtil;
 
 public class PaimonCache extends AbstractValueAdaptingCache {
     private static final Class<CacheData> clazz = CacheData.class;
@@ -45,7 +46,7 @@ public class PaimonCache extends AbstractValueAdaptingCache {
     /**
      * TIMEOUT CACHE
      */
-    private final cn.hutool.cache.Cache<Object, Object> cache = new TimedCache<>(1000 * 60 * 30);
+    private final cn.hutool.cache.Cache<Object, Object> cache = new TimedCache<>(1000 * 60 * 10);
 
     public PaimonCache(String cacheName) {
         super(true);
@@ -98,6 +99,7 @@ public class PaimonCache extends AbstractValueAdaptingCache {
         cache.put(strKey, value);
         PaimonUtil.createOrGetTable(TABLE_NAME, clazz);
         CacheData cacheData = CacheData.builder()
+                .cacheTime(DateUtil.format(DateUtil.date(), "yyyy-MM-dd HH:mm"))
                 .cacheName(cacheName)
                 .key(strKey)
                 .data(serialize(value))
