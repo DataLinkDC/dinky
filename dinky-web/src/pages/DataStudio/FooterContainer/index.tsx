@@ -22,11 +22,11 @@ import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal'
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { getSseData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 export type FooterContainerProps = {
   token: GlobalToken;

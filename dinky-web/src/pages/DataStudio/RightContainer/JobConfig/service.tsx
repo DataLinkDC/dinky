@@ -18,7 +18,7 @@
  */
 
 import { getDataByParams, queryDataByParams } from '@/services/BusinessCrud';
-import {API_CONSTANTS} from "@/services/endpoints";
+import { API_CONSTANTS } from '@/services/endpoints';
 
 export function getSessionData() {
   return queryDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_SESSION);

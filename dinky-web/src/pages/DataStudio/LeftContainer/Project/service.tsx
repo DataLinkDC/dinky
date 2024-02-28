@@ -20,7 +20,7 @@
 import { TaskDataType } from '@/pages/DataStudio/model';
 import { postAll, putDataJson } from '@/services/api';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import {API_CONSTANTS} from "@/services/endpoints";
+import { API_CONSTANTS } from '@/services/endpoints';
 
 export async function getTaskData() {
   return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA)).data;
