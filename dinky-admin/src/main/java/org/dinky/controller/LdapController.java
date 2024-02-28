@@ -120,7 +120,7 @@ public class LdapController {
     @ApiImplicitParam(name = "loginDTO", value = "Login information", required = true, dataType = "LoginDTO")
     public Result<User> login(@RequestBody LoginDTO loginDTO) {
         try {
-            return Result.succeed(ldapService.authenticate(loginDTO),Status.LDAP_LOGIN_TEST_SUCCESS);
+            return Result.succeed(ldapService.authenticate(loginDTO), Status.LDAP_LOGIN_TEST_SUCCESS);
         } catch (AuthException e) {
             return Result.failed(e.getStatus());
         } catch (NamingException e) {
