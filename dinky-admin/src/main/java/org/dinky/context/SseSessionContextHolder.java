@@ -67,10 +67,8 @@ public class SseSessionContextHolder {
      */
     public static SseEmitter connectSession(String sessionKey) {
         log.debug("New session wants to connect: {}", sessionKey);
-        if (exists(sessionKey)) {
-            log.warn("Session key already exists: {}", sessionKey);
-            closeSse(sessionKey);
-        }
+        log.warn("Session key already exists: {}，replace it", sessionKey);
+
         SseEmitter sseEmitter = new SseEmitter(60 * 1000L * 10);
         sseEmitter.onError(err -> onError(sessionKey, err));
         sseEmitter.onTimeout(() -> onTimeout(sessionKey));
