@@ -125,9 +125,9 @@ const HeaderContainer = (props: connect) => {
     const dinkyTaskId = currentData?.id;
     const dolphinTaskList: DolphinTaskMinInfo[] | undefined = await queryDataByParams<
       DolphinTaskMinInfo[]
-    >('/api/scheduler/queryUpstreamTasks', { dinkyTaskId });
+    >(API_CONSTANTS.SCHEDULER_QUERY_UPSTREAM_TASKS, { dinkyTaskId });
     const dolphinTaskDefinition: DolphinTaskDefinition | undefined =
-      await queryDataByParams<DolphinTaskDefinition>('/api/scheduler/queryTaskDefinition', {
+      await queryDataByParams<DolphinTaskDefinition>(API_CONSTANTS.SCHEDULER_QUERY_TASK_DEFINITION, {
         dinkyTaskId
       });
     setPushDolphinState((prevState) => ({
@@ -154,7 +154,7 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handleSave = async () => {
-    const saved = await handlePutDataJson('/api/task', currentData);
+    const saved = await handlePutDataJson(API_CONSTANTS.TASK, currentData);
     saveTabs({ ...props.tabs });
     if (currentTab) currentTab.isModified = false;
     return saved;
@@ -505,7 +505,7 @@ const HeaderContainer = (props: connect) => {
   const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
     setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
     await handleOption(
-      '/api/scheduler/createOrUpdateTaskDefinition',
+      API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
       `推送任务[${currentData?.name}]至 DolphinScheduler`,
       value
     );

@@ -25,6 +25,7 @@ import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { EllipsisOutlined, RedoOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const operatorType = {
   CANCEL_JOB: 'canceljob',
@@ -39,7 +40,7 @@ export type OperatorType = {
 };
 const JobOperator = (props: OperatorType) => {
   const { jobDetail, refesh } = props;
-  const webUri = `/api/flink/${jobDetail?.clusterInstance?.jobManagerHost}/#/job/running/${jobDetail?.instance?.jid}/overview`;
+  const webUri = `${API_CONSTANTS.BASE_URL}/api/flink/${jobDetail?.clusterInstance?.jobManagerHost}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
     Modal.confirm({

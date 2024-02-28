@@ -21,19 +21,19 @@ import { handleGetOption, handleOption } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 
 export async function explainSql(title: string, params: any) {
-  return handleOption('/api/task/explainSql', title, params);
+  return handleOption(API_CONSTANTS.EXPLAIN_SQL, title, params);
 }
 
 export async function getJobPlan(title: string, params: any) {
-  return handleOption('/api/task/getJobPlan', title, params);
+  return handleOption(API_CONSTANTS.GET_JOB_PLAN, title, params);
 }
 
 export async function debugTask(title: string, params: any) {
-  return handleOption('/api/task/debugTask', title, params);
+  return handleOption(API_CONSTANTS.DEBUG_TASK, title, params);
 }
 
 export async function executeSql(title: string, id: number) {
-  return handleGetOption('/api/task/submitTask', title, { id });
+  return handleGetOption(API_CONSTANTS.SUBMIT_TASK, title, { id });
 }
 
 export function cancelTask(
@@ -53,5 +53,5 @@ export function savePointTask(title: string, taskId: number, savePointType: stri
 }
 
 export function changeTaskLife(title = '', id: number, life: number) {
-  return handleGetOption('api/task/changeTaskLife', title, { taskId: id, lifeCycle: life });
+  return handleGetOption(API_CONSTANTS.CHANGE_TASK_LIFE, title, { taskId: id, lifeCycle: life });
 }

@@ -26,6 +26,7 @@ import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 export type FooterContainerProps = {
   token: GlobalToken;
@@ -59,7 +60,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
 
   useEffect(() => {
-    const eventSource = getSseData('/api/monitor/getJvmInfo');
+    const eventSource = getSseData(API_CONSTANTS.BASE_URL + API_CONSTANTS.GET_JVM_INFO);
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data).data;
       setMemDetailInfo(
