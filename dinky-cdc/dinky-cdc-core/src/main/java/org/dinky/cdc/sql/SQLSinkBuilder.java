@@ -38,12 +38,11 @@ import org.apache.flink.types.Row;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import cn.hutool.core.collection.CollUtil;
 
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -58,7 +57,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
     @Override
     protected void initTypeConverterList() {
-        typeConverterList = CollUtil.newArrayList(
+        typeConverterList = Arrays.asList(
                 this::convertDateType,
                 this::convertTimestampType,
                 this::convertFloatType,
