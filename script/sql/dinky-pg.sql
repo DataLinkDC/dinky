@@ -2365,7 +2365,7 @@ CREATE TABLE dinky_history
     cluster_id               INT                NOT NULL DEFAULT 0,
     cluster_configuration_id INT                NULL,
     session                  VARCHAR(255)       NULL,
-    job_id                   VARCHAR(50)        NULL,
+    job_id                   VARCHAR(255)        NULL,
     job_name                 VARCHAR(255)       NULL,
     job_manager_address      VARCHAR(255)       NULL,
     status                   INT                NOT NULL DEFAULT 0,
