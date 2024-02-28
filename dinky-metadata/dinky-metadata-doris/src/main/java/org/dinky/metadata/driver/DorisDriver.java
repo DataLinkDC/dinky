@@ -169,7 +169,7 @@ public class DorisDriver extends AbstractJdbcDriver {
         String propertiesStr = "\n PROPERTIES ( \"light_schema_change\" = \"true\" )";
 
         String commentStr =
-                Asserts.isNullString(table.getComment()) ? "" : String.format("\n COMMENT '%s'", table.getComment());
+                Asserts.isNullString(table.getComment()) ? "" : String.format("\n COMMENT \"%s\"", table.getComment());
 
         return MessageFormat.format(
                 "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}\n) ENGINE=OLAP{3}{4}{5}{6}",
@@ -214,11 +214,10 @@ public class DorisDriver extends AbstractJdbcDriver {
                 : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
 
         return String.format(
-                "  `%s`  %s%s%s%s",
+                "  `%s`  %s%s%s",
                 column.getName(),
                 columnType,
                 defaultValue,
-                column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
                 Asserts.isNotNullString(column.getComment())
                         ? String.format(" COMMENT '%s'", column.getComment())
                         : "");
