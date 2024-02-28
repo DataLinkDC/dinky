@@ -3501,9 +3501,9 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Records of dinky_sys_menu
 -- ----------------------------
 BEGIN;
-insert into dinky_sys_menu
-values (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52',
-        '2023-09-25 18:26:45', null);
+-- insert into dinky_sys_menu
+-- values (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52',
+--         '2023-09-25 18:26:45', null);
 insert into dinky_sys_menu
 values (2, -1, '运维中心', '/devops', null, 'devops', 'ControlOutlined', 'M', 0, 20, '2023-08-11 14:06:52',
         '2023-09-26 14:53:34', null);
