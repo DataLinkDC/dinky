@@ -49,7 +49,7 @@ export const CLUSTER_INSTANCE_TYPE = (hiddenOptions: string[] = []): DefaultOpti
     },
     {
       value: ClusterType.KUBERNETES_OPERATOR,
-      label: 'Kubernetes Application Operator',
+      label: 'Kubernetes Operator',
       key: ClusterType.KUBERNETES_OPERATOR
     },
     {
