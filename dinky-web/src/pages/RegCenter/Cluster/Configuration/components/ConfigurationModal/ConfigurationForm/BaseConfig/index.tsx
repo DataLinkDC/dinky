@@ -17,7 +17,7 @@
  *
  */
 
-import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
+import { ClusterType, CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
 import {
   ProFormDigit,
@@ -38,7 +38,11 @@ const BaseConfig: React.FC = () => {
           name='type'
           label={l('rc.cc.type')}
           width='md'
-          options={CLUSTER_CONFIG_TYPE}
+          options={CLUSTER_CONFIG_TYPE([
+            ClusterType.KUBERNETES_OPERATOR,
+            ClusterType.KUBERNETES_APPLICATION,
+            ClusterType.YARN
+          ])}
           rules={[{ required: true, message: l('rc.cc.typePlaceholder') }]}
           placeholder={l('rc.cc.typePlaceholder')}
         />

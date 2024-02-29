@@ -23,7 +23,7 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import useHookRequest from '@/hooks/useHookRequest';
-import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
+import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import { getData } from '@/services/api';
@@ -237,7 +237,7 @@ export default () => {
                 disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT)}
               />
               <Tag color='cyan'>
-                {CLUSTER_INSTANCE_TYPE().find((record) => item.type === record.value)?.label}
+                {CLUSTER_TYPE_OPTIONS.find((record) => item.type === record.value)?.label}
               </Tag>
               <Tag
                 icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}

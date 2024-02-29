@@ -17,13 +17,69 @@
  *
  */
 
+import { DefaultOptionType } from 'rc-select/es/Select';
+
 export enum ClusterType {
   STANDALONE = 'standalone',
   YARN = 'yarn-application',
   YARN_SESSION = 'yarn-session',
   KUBERNETES_SESSION = 'kubernetes-session',
-  KUBERNETES_NATIVE = 'kubernetes-application',
+  KUBERNETES_APPLICATION = 'kubernetes-application',
   KUBERNETES_OPERATOR = 'kubernetes-application-operator',
   YARN_APPLICATION = 'yarn-application',
   LOCAL = 'local'
 }
+
+export const CLUSTER_TYPE_OPTIONS: DefaultOptionType[] = [
+  {
+    value: ClusterType.STANDALONE,
+    label: 'Standalone',
+    key: ClusterType.STANDALONE
+  },
+  {
+    value: ClusterType.YARN_SESSION,
+    label: 'Yarn Session',
+    key: ClusterType.YARN_SESSION
+  },
+  {
+    value: ClusterType.KUBERNETES_SESSION,
+    label: 'Kubernetes Session',
+    key: ClusterType.KUBERNETES_SESSION
+  },
+  {
+    value: ClusterType.KUBERNETES_APPLICATION,
+    label: 'Kubernetes Application',
+    key: ClusterType.KUBERNETES_APPLICATION
+  },
+  {
+    value: ClusterType.KUBERNETES_OPERATOR,
+    label: 'Kubernetes Operator',
+    key: ClusterType.KUBERNETES_OPERATOR
+  },
+  {
+    value: ClusterType.YARN_APPLICATION,
+    label: 'Yarn Application',
+    key: ClusterType.YARN_APPLICATION
+  },
+  {
+    value: ClusterType.LOCAL,
+    label: 'Local',
+    key: ClusterType.LOCAL
+  }
+];
+
+/**
+ * Cluster instance type
+ */
+export const CLUSTER_INSTANCE_TYPE = (hiddenOptions: string[] = []): DefaultOptionType[] => {
+  return CLUSTER_TYPE_OPTIONS.filter((item) => !hiddenOptions.includes(item.value as string));
+};
+
+/**
+ * Cluster config type
+ * @param renderOptions
+ * @constructor
+ */
+export const CLUSTER_CONFIG_TYPE = (renderOptions: string[] = []): DefaultOptionType[] => {
+  return CLUSTER_TYPE_OPTIONS.filter((item) => renderOptions.includes(item.value as string));
+};
