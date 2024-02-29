@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import cn.hutool.core.net.url.UrlPath;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
