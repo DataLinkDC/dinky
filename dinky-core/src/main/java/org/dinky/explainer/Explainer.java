@@ -121,7 +121,7 @@ public class Explainer {
                 (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
                                 jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
-            }else if (operationType.equals(SqlType.ADD_FILE)) {
+            } else if (operationType.equals(SqlType.ADD_FILE)) {
                 AddFileSqlParseStrategy.getAllFilePath(statement)
                         .forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
                 (executor.getDinkyClassLoader())
@@ -295,8 +295,8 @@ public class Explainer {
                 } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
 
                     List<URL> allFileByAdd = jobManager.getAllFileSet();
-                    StreamGraph streamGraph =
-                            new ExecuteJarOperation(item.getValue()).explain(executor.getCustomTableEnvironment(), allFileByAdd);
+                    StreamGraph streamGraph = new ExecuteJarOperation(item.getValue())
+                            .explain(executor.getCustomTableEnvironment(), allFileByAdd);
                     sqlExplainResult.setExplain(streamGraph.getStreamingPlanAsJSON());
                 } else {
                     executor.executeSql(item.getValue());

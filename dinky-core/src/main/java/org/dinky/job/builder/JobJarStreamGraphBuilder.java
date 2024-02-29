@@ -39,14 +39,10 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import cn.hutool.core.lang.Assert;
-import org.dinky.utils.URLUtils;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * JobJarStreamGraphBuilder
@@ -62,8 +58,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
     }
 
     @Override
-    public void run() throws Exception {
-    }
+    public void run() throws Exception {}
 
     public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
         DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);

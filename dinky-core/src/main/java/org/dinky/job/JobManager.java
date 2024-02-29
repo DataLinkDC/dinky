@@ -19,7 +19,6 @@
 
 package org.dinky.job;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
@@ -94,6 +93,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -114,8 +114,7 @@ public class JobManager {
     private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
     private Job job;
 
-    public JobManager() {
-    }
+    public JobManager() {}
 
     public JobParam getJobParam() {
         return jobParam;
@@ -495,12 +494,12 @@ public class JobManager {
                             + YarnConfigOptions.PROVIDED_LIB_DIRS.key()
                             + " = "
                             + Collections.singletonList(
-                            config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
+                                    config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
                             + ";\r\n");
                 }
                 if (Asserts.isNotNull(config.getGatewayConfig())
                         && Asserts.isNotNullString(
-                        config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                                config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set "
                             + YarnConfigOptions.APPLICATION_NAME.key()
                             + " = "
@@ -515,7 +514,9 @@ public class JobManager {
     }
 
     public List<URL> getAllFileSet() {
-        return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet()) ?
-                Collections.emptyList() : Arrays.asList(URLUtils.getURLs(getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
+        return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet())
+                ? Collections.emptyList()
+                : Arrays.asList(URLUtils.getURLs(
+                        getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
     }
 }

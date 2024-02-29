@@ -19,14 +19,12 @@
 
 package org.dinky.trans.parse;
 
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.planner.parse.AbstractRegexParseStrategy;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.trans.ddl.AddFilerOperation;
-import org.dinky.trans.ddl.AddJarOperation;
 import org.dinky.utils.URLUtils;
+
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.planner.parse.AbstractRegexParseStrategy;
 
 import java.io.File;
 import java.util.HashSet;
@@ -35,6 +33,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * @since 0.7.0
