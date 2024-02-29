@@ -18,21 +18,22 @@
  */
 
 import { getDataByParams, queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 export function getSessionData() {
-  return queryDataByParams('api/cluster/listSessionEnable');
+  return queryDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_SESSION);
 }
 export function getEnvData() {
-  return queryDataByParams('/api/task/listFlinkSQLEnv');
+  return queryDataByParams(API_CONSTANTS.LIST_FLINK_SQL_ENV);
 }
 export function getClusterConfigurationData() {
-  return queryDataByParams('/api/clusterConfiguration/listEnabledAll');
+  return queryDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_LIST_ENABLE_ALL);
 }
 
 export function getFlinkConfigs() {
-  return queryDataByParams('/api/flinkConf/configOptions');
+  return queryDataByParams(API_CONSTANTS.FLINK_CONF_CONFIG_OPTIONS);
 }
 
 export function querySuggessionData(params: any) {
-  return getDataByParams('/api/suggestion/queryAllSuggestions', params);
+  return getDataByParams(API_CONSTANTS.SUGGESTION_QUERY_ALL_SUGGESTIONS, params);
 }

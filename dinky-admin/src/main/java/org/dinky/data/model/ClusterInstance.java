@@ -21,8 +21,6 @@ package org.dinky.data.model;
 
 import org.dinky.mybatis.model.SuperEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
@@ -46,7 +44,6 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
     @ApiModelProperty(value = "name", required = true, dataType = "String", example = "test")
     private Integer tenantId;
 
-    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(
             value = "alias",
             required = true,

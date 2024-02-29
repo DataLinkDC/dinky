@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -135,6 +136,10 @@ public class FlinkCDCConfig {
     }
 
     private boolean isSkip(String key) {
+        if (key.equals("url")) {
+            return !(sink.containsKey("connector")
+                    && Arrays.asList("jdbc", "clickhouse").contains(sink.get("connector")));
+        }
         switch (key) {
             case SINK_DB:
             case AUTO_CREATE:

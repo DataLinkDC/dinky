@@ -361,12 +361,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': 'Check',
-  'pages.datastudio.editor.debug': 'Preview',
+  'pages.datastudio.editor.debug': 'Search',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
   'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',
-  'pages.datastudio.editor.exec.success': 'Execution succeeded',
-  'pages.datastudio.editor.debug.success': 'Debug succeeded',
+  'pages.datastudio.editor.exec.success': 'Submit succeeded',
+  'pages.datastudio.editor.debug.success': 'Search succeeded',
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
   'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
@@ -975,6 +975,8 @@ export default {
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
+  'rc.resource.copy': 'Copy as: {fillValue}',
+
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',
   'rc.template.create': 'Create UDF Template',
@@ -1098,6 +1100,8 @@ export default {
   'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
   'sys.ldap.settings.testLogin': 'Test Login',
   'sys.ldap.settings.loadUser': 'Load User',
+  'sys.ldap.settings.keyword':
+    'You can enter your username/nickname for search, support fuzzy queries, enter keywords and press enter to complete the search',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
   /**
    *

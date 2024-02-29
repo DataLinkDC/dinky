@@ -18,6 +18,7 @@
  */
 
 import { RUN_MODE } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { Typography } from 'antd';
@@ -62,7 +63,7 @@ export const renderWebUiRedirect = (record: Cluster.Instance) => {
   ) {
     return (
       <Link
-        href={`/api/flink/${record.jobManagerHost}/#/overview`}
+        href={`${API_CONSTANTS.BASE_URL}/api/flink/${record.jobManagerHost}/#/overview`}
         key={`${record.id}_webui`}
         target='_blank'
       >

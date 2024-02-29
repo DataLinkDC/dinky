@@ -131,9 +131,9 @@ Dinky 需要具备内置的 Flink 环境，该 Flink 环境的实现需要用户
 
 :::warning 注意事项
 1. Dinky 并没有内置的 mysql/postgres 数据库驱动，需要用户自己上传 mysql-connector-java-xxx.jar/postgresql-xxx.jar 等jdbc 驱动到 lib 下/extends 下
-2. Dinky 当前版本的 yarn 的 per-job 与 application 执行模式依赖 flink-shaded-hadoop ，如果你的 Hadoop 版本为 2+ 或 3+，需要额外添加 flink-shaded-hadoop-uber-3 包，请手动删除该包内部的 javax.servlet 等冲突内容。
+2. Dinky 当前版本的 yarn 的 per-job 与 application 执行模式依赖 flink-shaded-hadoop ，需要额外添加 flink-shaded-hadoop-uber 包，如果您使用的是`flink-shaded-hadoop-uber-3`请手动删除该包内部的 javax.servlet 等冲突内容。
 当然如果你的 Hadoop 为 3+ 也可以自行编译对于版本的 dinky-client-hadoop.jar 以替代 uber 包，
-3. Dinky所有监控相关功能目前强依赖hadoop，即使你不需要任何hadoop功能，也需要上传hadoop相关依赖，否则会导致监控功能无法正常使用，建议添加`flink-shaded-hadoop`
+3. Dinky所有监控相关功能目前强依赖hadoop，即使你不需要任何hadoop功能，也需要上传flink-shaded-hadoop-uber，否则会导致监控功能无法正常使用
 :::
 
 将 flink-shaded-hadoop 上传到到 plugins 文件目录下，使用 flink-shaded-hadoop-3 地址如下：
@@ -141,8 +141,6 @@ Dinky 需要具备内置的 Flink 环境，该 Flink 环境的实现需要用户
 ```
 https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?repo=cloudera-repos
 ```
-
-dinky默认不包含mysql，postgres等数据库驱动，请自行下载相关依赖到lib或extends目录下
 
 如果是 CDH 及 HDP 使用开源 flink-shaded 对 Dinky 目前没有影响，其他用到的依赖取决于 CDH 或者 HDP 与开源版本的兼容性，需要自行根据兼容性添加依赖即可正常使用 Dinky 的所有功能。
 
@@ -200,31 +198,26 @@ dinky默认不包含mysql，postgres等数据库驱动，请自行下载相关�
 ```
 对应 `Flink` 版本的依赖，放在Dinky 安装目录下 extends/flink${FLINK_VERSION} 下，例如：
 ```shell
-clickhouse-jdbc-0.2.6.jar
 flink-cep-1.16.1.jar
 flink-connector-files-1.16.1.jar
 flink-connector-jdbc-1.16.1.jar
 flink-csv-1.16.1.jar
 flink-dist-1.16.1.jar
-flink-doris-connector-1.16-1.3.0.jar
 flink-json-1.16.1.jar
 flink-scala_2.12-1.16.1.jar
 flink-shaded-hadoop-2-uber-2.7.5-8.0.jar
 flink-shaded-zookeeper-3.5.9.jar
-flink-sql-connector-hbase-1.4-1.16.1.jar
-flink-sql-connector-kafka-1.16.1.jar
-flink-sql-connector-mysql-cdc-2.4.1.jar
-flink-sql-connector-oracle-cdc-2.4.1.jar
 flink-table-api-java-uber-1.16.1.jar
-flink-table-planner_2.12-1.16.1.jar        !!!特别注意,flink自带lib里的planner是带loader的,比如:flink-table-planner-loader-1.16.1.jar, 此处需要一个不带loader的jar, 可前往flink根下的opt目录中找到
+# !!!特别注意,flink自带lib里的planner是带loader的,比如:flink-table-planner-loader-1.16.1.jar,
+# 需要删除带loader的jar包，换一个不带loader的jar, 可前往flink根下的opt目录中找到
+# 对于standalone，hdfs，k8s等集群上的flink集群同样要做此操作
+flink-table-planner_2.12-1.16.1.jar
+
 flink-table-runtime-1.16.1.jar
 log4j-1.2-api-2.17.1.jar
 log4j-api-2.17.1.jar
 log4j-core-2.17.1.jar
 log4j-slf4j-impl-2.17.1.jar
-mssql-jdbc-8.2.2.jre8.jar
-mysql-connector-java-8.0.13.jar
-orai18n-19.7.0.0.jar
 ```
 :::tip
 1.0.0 之前的版本 Flink 相关依赖是放在 plugins 目录下，1.0.0 及之后是放在 extends 目录下。（目前做了 plugins 目录的兼容，即放在 plugins 下也会生效）

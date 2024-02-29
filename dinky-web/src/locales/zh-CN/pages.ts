@@ -348,12 +348,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': '检查',
-  'pages.datastudio.editor.debug': '预览',
+  'pages.datastudio.editor.debug': '查询',
   'pages.datastudio.editor.exec': '运行',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.debug.error': '任务【{jobName}】调试失败',
-  'pages.datastudio.editor.debug.success': '调试成功',
-  'pages.datastudio.editor.exec.success': '执行成功',
+  'pages.datastudio.editor.debug.success': '查询成功',
+  'pages.datastudio.editor.exec.success': '提交成功',
   'pages.datastudio.editor.execute.warn':
     '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
   'pages.datastudio.editor.explan': '获取当前的 FlinkSql 的执行图',
@@ -934,6 +934,7 @@ export default {
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
+  'rc.resource.copy': '复制为: {fillValue}',
 
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',
@@ -1057,6 +1058,7 @@ export default {
   'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
   'sys.ldap.settings.testLogin': '测试登录',
   'sys.ldap.settings.loadUser': '导入用户',
+  'sys.ldap.settings.keyword': '可输入用户名/昵称进行搜索,支持模糊查询,输入关键词后回车即可',
   'sys.ldap.settings.loadable': '是否可以导入',
   /**
    *

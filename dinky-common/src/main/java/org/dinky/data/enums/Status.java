@@ -260,6 +260,8 @@ public enum Status {
 
     LDAP_LOGIN_FORBID(18007, "ldap.login.forbid"),
 
+    LDAP_LOGIN_TEST_SUCCESS(18008, "ldap.login.test.success"),
+
     /**
      * datastudio about
      */

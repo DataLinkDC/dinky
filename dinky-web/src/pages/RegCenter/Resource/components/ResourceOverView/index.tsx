@@ -248,15 +248,15 @@ const ResourceOverView: React.FC = () => {
       <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
         <SplitPane
           split={'vertical'}
-          defaultSizes={[150, 500]}
-          minSize={150}
+          defaultSizes={[200, 500]}
+          minSize={200}
           className={'split-pane'}
         >
           <Pane
             className={'split-pane'}
             forwardRef={refObject}
-            minSize={100}
-            size={100}
+            minSize={200}
+            size={200}
             split={'horizontal'}
           >
             <ProCard
