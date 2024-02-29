@@ -1174,7 +1174,7 @@ CREATE TABLE `dinky_history`  (
                                 `cluster_id` int(11) NOT NULL DEFAULT 0 COMMENT 'cluster ID',
                                 `cluster_configuration_id` int(11) NULL DEFAULT NULL COMMENT 'cluster configuration id',
                                 `session` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'session',
-                                `job_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Job ID',
+                                `job_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Job ID',
                                 `job_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Job Name',
                                 `job_manager_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'JJobManager Address',
                                 `status` int(11) NOT NULL DEFAULT 0 COMMENT 'status',
