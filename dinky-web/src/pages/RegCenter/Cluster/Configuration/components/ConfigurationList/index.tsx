@@ -27,6 +27,7 @@ import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
+import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -46,7 +47,6 @@ import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@a
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import {CLUSTER_TYPE_OPTIONS} from "@/pages/RegCenter/Cluster/constants";
 
 export default () => {
   /**

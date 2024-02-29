@@ -17,7 +17,7 @@
  *
  */
 
-import {CLUSTER_INSTANCE_TYPE} from '@/pages/RegCenter/Cluster/constants';
+import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/constants';
 import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';

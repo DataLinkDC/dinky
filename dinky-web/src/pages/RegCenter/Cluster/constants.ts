@@ -17,7 +17,7 @@
  *
  */
 
-import {DefaultOptionType} from "rc-select/es/Select";
+import { DefaultOptionType } from 'rc-select/es/Select';
 
 export enum ClusterType {
   STANDALONE = 'standalone',
@@ -29,8 +29,6 @@ export enum ClusterType {
   YARN_APPLICATION = 'yarn-application',
   LOCAL = 'local'
 }
-
-
 
 export const CLUSTER_TYPE_OPTIONS: DefaultOptionType[] = [
   {
@@ -70,8 +68,6 @@ export const CLUSTER_TYPE_OPTIONS: DefaultOptionType[] = [
   }
 ];
 
-
-
 /**
  * Cluster instance type
  */
@@ -87,5 +83,3 @@ export const CLUSTER_INSTANCE_TYPE = (hiddenOptions: string[] = []): DefaultOpti
 export const CLUSTER_CONFIG_TYPE = (renderOptions: string[] = []): DefaultOptionType[] => {
   return CLUSTER_TYPE_OPTIONS.filter((item) => renderOptions.includes(item.value as string));
 };
-
-

@@ -23,6 +23,7 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import useHookRequest from '@/hooks/useHookRequest';
+import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import { getData } from '@/services/api';
@@ -64,7 +65,6 @@ import {
   Typography
 } from 'antd';
 import { useState } from 'react';
-import {CLUSTER_TYPE_OPTIONS} from "@/pages/RegCenter/Cluster/constants";
 
 const { Text, Paragraph, Link } = Typography;
 
