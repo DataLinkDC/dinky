@@ -65,7 +65,7 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
             label={l('rc.ci.type')}
             width='sm'
             disabled={values && values.autoRegisters}
-            options={CLUSTER_INSTANCE_TYPE([ClusterType.YARN_APPLICATION])}
+            options={CLUSTER_INSTANCE_TYPE([ClusterType.YARN_APPLICATION,ClusterType.KUBERNETES_OPERATOR,ClusterType.KUBERNETES_NATIVE])}
             rules={[{ required: true, message: l('rc.ci.typePlaceholder') }]}
             placeholder={l('rc.ci.typePlaceholder')}
           />

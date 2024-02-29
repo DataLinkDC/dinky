@@ -43,6 +43,16 @@ export const CLUSTER_INSTANCE_TYPE = (hiddenOptions: string[] = []): DefaultOpti
       key: ClusterType.KUBERNETES_SESSION
     },
     {
+      value: ClusterType.KUBERNETES_NATIVE,
+      label: 'Kubernetes Application',
+      key: ClusterType.KUBERNETES_NATIVE
+    },
+    {
+      value: ClusterType.KUBERNETES_OPERATOR,
+      label: 'Kubernetes Application Operator',
+      key: ClusterType.KUBERNETES_OPERATOR
+    },
+    {
       value: ClusterType.YARN_APPLICATION,
       label: 'Yarn Application',
       key: ClusterType.YARN_APPLICATION
