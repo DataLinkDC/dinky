@@ -29,7 +29,6 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.options.JobAlertRuleOptions;
-import org.dinky.job.JobConfig;
 import org.dinky.utils.TimeUtil;
 
 import java.time.LocalDateTime;
