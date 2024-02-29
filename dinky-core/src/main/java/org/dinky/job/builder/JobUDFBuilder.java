@@ -107,7 +107,7 @@ public class JobUDFBuilder extends JobBuilder {
             UDFUtil.addConfigurationClsAndJars(
                     jobManager.getExecutor().getCustomTableEnvironment(),
                     jarList,
-                    CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
+                    CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
         } catch (Exception e) {
             throw new RuntimeException("add configuration failed: ", e);
         }
