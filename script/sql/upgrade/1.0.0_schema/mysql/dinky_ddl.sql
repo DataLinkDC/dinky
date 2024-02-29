@@ -443,5 +443,9 @@ alter table dinky_database
 alter table dinky_database
     drop column password;
 
+alter table dinky_history
+    modify job_id varchar(255) null comment 'Job ID';
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;
