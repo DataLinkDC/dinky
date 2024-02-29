@@ -36,6 +36,9 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import cn.hutool.core.convert.Convert;
@@ -63,15 +66,19 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     }
 
     public StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
-        JarSubmitParam submitParam = JarSubmitParam.build(statement);
-        return getStreamGraph(submitParam, tEnv);
+        return getStreamGraph(tEnv, Collections.emptyList());
     }
 
-    public static StreamGraph getStreamGraph(JarSubmitParam submitParam, CustomTableEnvironment tEnv) {
+    public StreamGraph getStreamGraph(CustomTableEnvironment tEnv, List<URL> classpaths) {
+        JarSubmitParam submitParam = JarSubmitParam.build(statement);
+        return getStreamGraph(submitParam, tEnv, classpaths);
+    }
+
+    public static StreamGraph getStreamGraph(JarSubmitParam submitParam, CustomTableEnvironment tEnv, List<URL> classpaths) {
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
                 : SavepointRestoreSettings.forPath(
-                        submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
+                submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
             Configuration configuration = tEnv.getConfig().getConfiguration();
@@ -85,12 +92,14 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                         + Opt.ofBlankAble(submitParam.getArgs()).orElse(""));
                 file = null;
             }
+
             program = PackagedProgram.newBuilder()
                     .setJarFile(file)
                     .setEntryPointClassName(submitParam.getMainClass())
                     .setConfiguration(configuration)
                     .setSavepointRestoreSettings(savepointRestoreSettings)
                     .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
+                    .setUserClassPaths(classpaths)
                     .build();
             int parallelism = StrUtil.isNumeric(submitParam.getParallelism())
                     ? Convert.toInt(submitParam.getParallelism())
@@ -113,10 +122,15 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return getStreamGraph(tEnv);
     }
 
+    public StreamGraph explain(CustomTableEnvironment tEnv, List<URL> classpaths) {
+        return getStreamGraph(tEnv, classpaths);
+    }
+
     @Setter
     @Getter
     public static class JarSubmitParam {
-        protected JarSubmitParam() {}
+        protected JarSubmitParam() {
+        }
 
         private String uri;
         private String mainClass;

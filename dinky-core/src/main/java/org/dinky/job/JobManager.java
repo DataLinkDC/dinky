@@ -19,6 +19,7 @@
 
 package org.dinky.job;
 
+import cn.hutool.core.collection.CollUtil;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
@@ -57,6 +58,7 @@ import org.dinky.job.builder.JobTransBuilder;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.JsonUtils;
@@ -81,8 +83,10 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +114,8 @@ public class JobManager {
     private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
     private Job job;
 
-    public JobManager() {}
+    public JobManager() {
+    }
 
     public JobParam getJobParam() {
         return jobParam;
@@ -374,6 +379,9 @@ public class JobManager {
                 } else if (operationType.equals(SqlType.ADD) || operationType.equals(SqlType.ADD_JAR)) {
                     Set<File> allFilePath = AddJarSqlParseStrategy.getAllFilePath(item);
                     getExecutor().getDinkyClassLoader().addURLs(allFilePath);
+                } else if (operationType.equals(SqlType.ADD_FILE)) {
+                    Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(item);
+                    getExecutor().getDinkyClassLoader().addURLs(allFilePath);
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
@@ -487,12 +495,12 @@ public class JobManager {
                             + YarnConfigOptions.PROVIDED_LIB_DIRS.key()
                             + " = "
                             + Collections.singletonList(
-                                    config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
+                            config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
                             + ";\r\n");
                 }
                 if (Asserts.isNotNull(config.getGatewayConfig())
                         && Asserts.isNotNullString(
-                                config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                        config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set "
                             + YarnConfigOptions.APPLICATION_NAME.key()
                             + " = "
@@ -504,5 +512,10 @@ public class JobManager {
         }
         sb.append(statement);
         return sb.toString();
+    }
+
+    public List<URL> getAllFileSet() {
+        return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet()) ?
+                Collections.emptyList() : Arrays.asList(URLUtils.getURLs(getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
     }
 }

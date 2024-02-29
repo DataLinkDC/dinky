@@ -70,15 +70,7 @@ public class JobUDFBuilder extends JobBuilder {
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
         List<File> jarFiles =
-                new ArrayList<>(jobManager.getUdfPathContextHolder().getUdfFile());
-
-        Set<File> otherPluginsFiles = jobManager.getUdfPathContextHolder().getOtherPluginsFiles();
-        jarFiles.addAll(otherPluginsFiles);
-
-        List<File> udfJars = Arrays.stream(UDFUtil.initJavaUDF(udfList, runMode, taskId))
-                .map(File::new)
-                .collect(Collectors.toList());
-        jarFiles.addAll(udfJars);
+                new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
 
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
                 .map(File::getAbsolutePath)
