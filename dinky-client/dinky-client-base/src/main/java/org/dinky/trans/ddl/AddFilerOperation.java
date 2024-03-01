@@ -17,23 +17,34 @@
  *
  */
 
-import { getDataByParams, queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
+package org.dinky.trans.ddl;
 
-export function getSessionData() {
-  return queryDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_SESSION);
-}
-export function getEnvData() {
-  return queryDataByParams(API_CONSTANTS.LIST_FLINK_SQL_ENV);
-}
-export function getClusterConfigurationData() {
-  return queryDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_LIST_ENABLE_ALL);
-}
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.ExtendOperation;
 
-export function getFlinkConfigs() {
-  return queryDataByParams(API_CONSTANTS.FLINK_CONF_CONFIG_OPTIONS);
-}
+import org.apache.flink.table.api.TableResult;
 
-export function querySuggessionData(params: any) {
-  return getDataByParams(API_CONSTANTS.SUGGESTION_QUERY_ALL_SUGGESTIONS, params);
+import java.util.Optional;
+
+/**
+ * @since 0.7.0
+ */
+public class AddFilerOperation extends AbstractOperation implements ExtendOperation {
+
+    public AddFilerOperation(String statement) {
+        super(statement);
+    }
+
+    public AddFilerOperation() {}
+
+    @Override
+    public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
+        return Optional.of(TABLE_RESULT_OK);
+    }
+
+    @Override
+    public String asSummaryString() {
+        return statement;
+    }
 }

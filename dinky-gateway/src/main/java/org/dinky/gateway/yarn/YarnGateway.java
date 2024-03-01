@@ -312,7 +312,7 @@ public abstract class YarnGateway extends AbstractGateway {
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
             yarnClusterDescriptor.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
         }
-        Set<File> otherPluginsFiles = udfPathContextHolder.getOtherPluginsFiles();
+        Set<File> otherPluginsFiles = udfPathContextHolder.getAllFileSet();
 
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
             yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));

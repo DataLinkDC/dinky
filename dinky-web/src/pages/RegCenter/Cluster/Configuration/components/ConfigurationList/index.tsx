@@ -27,7 +27,7 @@ import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
-import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
+import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -237,7 +237,7 @@ export default () => {
           disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_CONFIG_EDIT)}
         />
         <Tag color='cyan'>
-          {CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)?.label}
+          {CLUSTER_TYPE_OPTIONS.find((record) => item.type === record.value)?.label}
         </Tag>
         <Tag
           icon={item.isAvailable ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}

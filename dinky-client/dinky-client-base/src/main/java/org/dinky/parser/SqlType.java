@@ -59,6 +59,7 @@ public enum SqlType {
 
     ADD_JAR("ADD_JAR", "^ADD\\s+JAR\\s+\\S+"),
     ADD("ADD", "^ADD\\s+CUSTOMJAR\\s+\\S+"),
+    ADD_FILE("ADD_FILE", "^ADD\\s+FILE\\s+\\S+"),
 
     PRINT("PRINT", "^PRINT.*"),
 

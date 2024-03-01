@@ -74,7 +74,7 @@ public class LdapController {
     @Log(title = "Test connection to LDAP server", businessType = BusinessType.TEST)
     public Result<Integer> testConnection() {
         List<User> users = ldapService.listUsers();
-        if (users.size() > 0) {
+        if (!users.isEmpty()) {
             return Result.succeed(users.size());
         } else {
             return Result.failed(Status.LDAP_NO_USER_FOUND);
@@ -120,7 +120,7 @@ public class LdapController {
     @ApiImplicitParam(name = "loginDTO", value = "Login information", required = true, dataType = "LoginDTO")
     public Result<User> login(@RequestBody LoginDTO loginDTO) {
         try {
-            return Result.succeed(ldapService.authenticate(loginDTO));
+            return Result.succeed(ldapService.authenticate(loginDTO), Status.LDAP_LOGIN_TEST_SUCCESS);
         } catch (AuthException e) {
             return Result.failed(e.getStatus());
         } catch (NamingException e) {
