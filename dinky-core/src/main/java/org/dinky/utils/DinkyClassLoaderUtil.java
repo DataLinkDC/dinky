@@ -64,7 +64,6 @@ public class DinkyClassLoaderUtil {
             }
         }
 
-        dinkyClassLoader.addURLs(
-                CollUtil.addAll(udfPathContextHolder.getUdfFile(), udfPathContextHolder.getOtherPluginsFiles()));
+        dinkyClassLoader.addURLs(udfPathContextHolder.getAllFileSet());
     }
 }

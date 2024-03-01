@@ -255,7 +255,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      * @param size         size
      */
     @Transactional(rollbackFor = Exception.class)
-    private void upload(
+    public void upload(
             Integer pid, String desc, Consumer<String> uploadAction, String fileName, Resources pResource, long size) {
         Resources currentUploadResource = getOne(
                 new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
@@ -272,7 +272,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
             resources.setIsDirectory(false);
             resources.setType(0);
             String prefixPath = pResource == null ? "" : pResource.getFullName();
-            fullName = prefixPath + "/" + fileName;
+            fullName = StrUtil.removePrefix(prefixPath + "/" + fileName, StrUtil.SLASH);
 
             resources.setFullName(fullName);
             resources.setSize(size);
