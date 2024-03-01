@@ -57,6 +57,7 @@ import org.dinky.job.builder.JobTransBuilder;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.JsonUtils;
@@ -81,8 +82,10 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +93,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -374,6 +378,9 @@ public class JobManager {
                 } else if (operationType.equals(SqlType.ADD) || operationType.equals(SqlType.ADD_JAR)) {
                     Set<File> allFilePath = AddJarSqlParseStrategy.getAllFilePath(item);
                     getExecutor().getDinkyClassLoader().addURLs(allFilePath);
+                } else if (operationType.equals(SqlType.ADD_FILE)) {
+                    Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(item);
+                    getExecutor().getDinkyClassLoader().addURLs(allFilePath);
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
@@ -504,5 +511,12 @@ public class JobManager {
         }
         sb.append(statement);
         return sb.toString();
+    }
+
+    public List<URL> getAllFileSet() {
+        return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet())
+                ? Collections.emptyList()
+                : Arrays.asList(URLUtils.getURLs(
+                        getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
     }
 }
