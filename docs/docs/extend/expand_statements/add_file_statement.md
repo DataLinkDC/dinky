@@ -53,7 +53,7 @@ ADD FILE 'rs:/file.properties'
 :::tip 提示
 
 1. 如果使用 rs 协议访问, 请注意路径,不要带上 Root 节点
-2. 推荐使用 rs 协议访问, 以便于在 Flink 全模式任务中使用
+2. 推荐使用 rs 协议访问, 以便于在 Flink 中支持除 k8s 模式之外的所有模式提交。
 3. 此功能可以覆盖 ADD CUSTOMJAR 功能, 可自由选择使用
 
 :::

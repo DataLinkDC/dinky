@@ -9,7 +9,7 @@ title: ADD CUSTOMJAR
 
 在某些场景下，用户需要将自定义 jar 添加到 classpath，以便于在 SQL 中使用自定义 jar 中的函数。但是 Flink 原生的 ADD JAR 语法 无法在所有 Flink 版本中通用, 因此我们在 Flink SQL 中添加了 ADD CUSTOMJAR 语法，用于将用户 jar 添加到 classpath。
 
-以达到在 Dinky 支持的所有 Flink 版本都可使用, 且不影响原生 ADD JAR 语法的目的。同时支持全模式提交。
+以达到在 Dinky 支持的所有 Flink 版本都可使用, 且不影响原生 ADD JAR 语法的目的。同时支持除 k8s 模式之外的所有模式提交。
 
 
 :::
@@ -45,6 +45,6 @@ ADD CUSTOMJAR 'rs:/app.jar'
 :::tip 提示
 
 1. 如果使用 rs 协议访问, 请注意路径,不要带上 Root 节点
-2. 推荐使用 rs 协议访问, 以便于在 Flink 全模式任务中使用
+2. 推荐使用 rs 协议访问, 以便于在 Flink 中支持除 k8s 模式之外的所有模式提交。
 
 :::
