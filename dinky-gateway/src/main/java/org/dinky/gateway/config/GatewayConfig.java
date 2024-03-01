@@ -19,7 +19,7 @@
 
 package org.dinky.gateway.config;
 
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 

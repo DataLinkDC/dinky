@@ -38,6 +38,14 @@ export enum JOB_STATUS {
   UNKNOWN = 'UNKNOWN'
 }
 
+export enum JOB_SUBMIT_STATUS {
+  INITIALIZE = 'INITIALIZE',
+  RUNNING = 'RUNNING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+  CANCEL = 'CANCEL'
+}
+
 export enum BackPressureStatus {
   OK = 'ok',
   HIGH = 'high'

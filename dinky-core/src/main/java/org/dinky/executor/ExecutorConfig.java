@@ -20,7 +20,7 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.enums.GatewayType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

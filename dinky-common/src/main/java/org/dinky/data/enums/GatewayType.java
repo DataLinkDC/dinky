@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.gateway.enums;
+package org.dinky.data.enums;
 
 import org.dinky.assertion.Asserts;
 
@@ -115,6 +115,16 @@ public enum GatewayType {
     public boolean isApplicationMode() {
         switch (this) {
             case YARN_APPLICATION:
+            case KUBERNETES_APPLICATION:
+            case KUBERNETES_APPLICATION_OPERATOR:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isKubernetesApplicationMode() {
+        switch (this) {
             case KUBERNETES_APPLICATION:
             case KUBERNETES_APPLICATION_OPERATOR:
                 return true;
