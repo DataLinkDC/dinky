@@ -2223,12 +2223,6 @@ VALUES ( 233, 'Reference', 'SQL_TEMPLATE', 'FlinkCDC', 'EXECUTE CDCSOURCE mysql2
 INSERT INTO dinky_flink_document ( id, category, type, subtype, name
                                  , description, fill_value, version, like_num, enabled
                                  , create_time, update_time, creator, updater)
-VALUES ( 234, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'ADD JAR'
-       , 'ADD JAR', 'ADD JAR ${1:}; -- str path ', 'All Versions', 0, 1
-       , '2023-10-31 16:19:52', '2023-12-28 00:02:02', NULL, NULL);
-INSERT INTO dinky_flink_document ( id, category, type, subtype, name
-                                 , description, fill_value, version, like_num, enabled
-                                 , create_time, update_time, creator, updater)
 VALUES ( 235, 'Function', 'Other', 'Other', 'SHOW FRAGMENTS'
        , 'SHOW FRAGMENTS', 'SHOW FRAGMENTS;', 'All Versions', 0, 1
        , '2023-10-31 16:20:30', '2023-12-28 09:57:55', NULL, NULL);
@@ -2465,13 +2459,11 @@ WITH
     ''sink.auto-create'' = ''true'',
   );', 'All Versions', 0, 1
        , '2023-12-27 16:53:37', '2023-12-28 12:05:20', 1, 1);
-INSERT INTO dinky_flink_document ( id, category, type, subtype, name
-                                 , description, fill_value, version, like_num, enabled
-                                 , create_time, update_time, creator, updater)
-VALUES ( 248, 'Reference', 'FUN_UDF', 'OTHER_FUNCTION', 'add-customjar'
-       , 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
-add CUSTOMJAR ''${1:}'';', 'All Versions', 0, 1
-       , '2023-12-28 10:50:17', '2023-12-28 15:49:40', 1, 1);
+insert into dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) values (248, 'Variable', 'FUN_UDF', 'OTHER_FUNCTION', 'ADD-CUSTOMJAR', 'add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式', '-- add CUSTOMJAR 为 Dinky 扩展语法 功能实现和 add jar 类似 , 推荐使用此方式
+ADD CUSTOMJAR ''${1:}'';', 'All Versions', 0, 1, '2023-12-28 10:50:17', '2024-03-01 17:15:44', 1, 1);
+insert into dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num, enabled, create_time, update_time, creator, updater) values (249, 'Variable', 'FUN_UDF', 'OTHER_FUNCTION', 'ADD-FILE', 'ADD FILE 为 Dinky 扩展语法 可以向环境中添加依赖jar(与ADD CUSTOMJAR 一致) 还可以添加其他类型的文件
+', '-- ADD FILE 为 Dinky 扩展语法 可以向环境中添加依赖jar(与add customjar 一致) 还可以添加其他类型的文件
+ADD FILE ''${1:}''; -- str path ', 'All Versions', 0, 1, '2024-03-01 17:13:05', '2024-03-01 17:15:55', 1, 1);
 
 
 

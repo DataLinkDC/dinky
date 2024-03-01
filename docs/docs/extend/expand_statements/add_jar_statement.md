@@ -28,7 +28,7 @@ add CUSTOMJAR 可以选择性的识别添加到服务器，做到环境隔离
 
 ## 实战场景
 
-> 在 Dinky v1.0.0 版本中，我们支持了`资源管理`,同时扩展了 rs 协议, 使得用户可以通过 rs 协议调用该 jar , 有关 `资源管理rs 协议`的使用请参考 [资源管理](../../user_guide/register_center/resource)。
+> 在 Dinky v1.0.0 版本中，支持了`资源管理`,同时扩展了 rs 协议, 使得用户可以通过 rs 协议调用该 jar , 有关 `资源管理rs 协议`的使用请参考 [资源管理](../../user_guide/register_center/resource)。
 
 > 如果使用 rs 协议访问, 请参考 [资源管理](../../user_guide/register_center/resource) 中的使用方式, 以下示例中,我们使用 rs 协议访问资源中心中的 jar 资源
 
