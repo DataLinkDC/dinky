@@ -107,8 +107,8 @@ public class FlinkAppUtil {
     private static void sendHook(int taskId, String jobId, int reTryCount) {
         String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
         try {
-            String url = StrFormatter.format(
-                    "http://{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
+            String url =
+                    StrFormatter.format("{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
             String resultStr = HttpUtil.get(url);
             // TODO 这里应该使用Result实体类，但是Result.class不在comm里，迁移改动太大，暂时不搞
             String code = JsonUtils.parseObject(resultStr).get("code").toString();

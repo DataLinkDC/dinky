@@ -29,6 +29,7 @@ import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
@@ -172,9 +173,9 @@ public class Submitter {
             return;
         }
 
-        if ("kubernetes-application".equals(type)) {
+        if (GatewayType.get(type).isKubernetesApplicationMode()) {
             try {
-                String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;
+                String httpJar = dinkyAddr + "/download/downloadDepJar/" + taskId;
                 log.info("下载依赖 http-url为：{}", httpJar);
                 String flinkHome = System.getenv("FLINK_HOME");
                 String usrlib = flinkHome + "/usrlib";
@@ -214,7 +215,6 @@ public class Submitter {
                     }
                 }
             } catch (IOException e) {
-                log.error("");
                 throw new RuntimeException(e);
             }
         }
