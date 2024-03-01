@@ -151,7 +151,7 @@ CREATE TABLE `dinky_history` (
                                `cluster_id` int(11) NOT null DEFAULT 0 COMMENT 'cluster ID',
                                `cluster_configuration_id` int(11) null DEFAULT null COMMENT 'cluster configuration id',
                                `session` varchar(255) null DEFAULT null COMMENT 'session',
-                               `job_id` varchar(50) null DEFAULT null COMMENT 'Job ID',
+                               `job_id` varchar(255) null DEFAULT null COMMENT 'Job ID',
                                `job_name` varchar(255) null DEFAULT null COMMENT 'Job Name',
                                `job_manager_address` varchar(255) null DEFAULT null COMMENT 'JJobManager Address',
                                `batch_model` boolean null DEFAULT false COMMENT 'is batch model',
