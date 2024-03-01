@@ -20,6 +20,7 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
@@ -28,7 +29,6 @@ import org.dinky.executor.Executor;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
