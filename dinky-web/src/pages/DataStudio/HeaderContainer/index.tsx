@@ -46,7 +46,7 @@ import {
   TaskDataType,
   VIEW
 } from '@/pages/DataStudio/model';
-import {JOB_LIFE_CYCLE, JOB_STATUS, JOB_SUBMIT_STATUS} from '@/pages/DevOps/constants';
+import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';

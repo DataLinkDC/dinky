@@ -17,7 +17,7 @@
  *
  */
 
-import {JOB_STATUS, JOB_SUBMIT_STATUS} from '@/pages/DevOps/constants';
+import { JOB_STATUS, JOB_SUBMIT_STATUS } from '@/pages/DevOps/constants';
 import { Jobs } from '@/types/DevOps/data';
 import { parseMilliSecondStr } from '@/utils/function';
 
