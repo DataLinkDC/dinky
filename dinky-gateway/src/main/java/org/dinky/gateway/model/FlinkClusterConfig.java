@@ -19,11 +19,11 @@
 
 package org.dinky.gateway.model;
 
+import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.K8sConfig;
-import org.dinky.gateway.enums.GatewayType;
 
 import java.util.Optional;
 

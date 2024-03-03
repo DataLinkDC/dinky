@@ -46,7 +46,7 @@ import {
   TaskDataType,
   VIEW
 } from '@/pages/DataStudio/model';
-import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
+import {JOB_LIFE_CYCLE, JOB_STATUS, JOB_SUBMIT_STATUS} from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
@@ -231,13 +231,9 @@ const HeaderContainer = (props: connect) => {
       currentData.status = JOB_STATUS.FINISHED;
       if (currentTab) currentTab.console.results = res.data.results;
     } else {
+      currentData.status = res.data.status;
       if (currentTab) currentTab.console.result = res.data.result;
     }
-    // Common sql task is synchronized, so it needs to automatically update the status to finished.
-    if (isSql(currentData.dialect)) {
-      currentData.status = JOB_STATUS.FINISHED;
-    }
-    if (currentTab) currentTab.console.result = res.data.result;
     saveTabs({ ...props.tabs });
   };
 

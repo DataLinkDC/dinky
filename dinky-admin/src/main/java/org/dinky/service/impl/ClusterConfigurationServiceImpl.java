@@ -21,12 +21,12 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.ClusterConfigurationDTO;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.job.JobManager;
