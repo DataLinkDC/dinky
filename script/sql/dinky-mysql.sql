@@ -1694,7 +1694,7 @@ CREATE TABLE `dinky_resources` (
                                    `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
                                    `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
                                    `pid` int(11) DEFAULT NULL,
-                                   `full_name` text COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                   `full_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
                                    `is_directory` tinyint(4) DEFAULT NULL,
                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
