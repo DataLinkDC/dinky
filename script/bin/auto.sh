@@ -1,5 +1,11 @@
 #!/bin/bash
 
+FLINK_VERSION=${2}
+
+if [ -z "${FLINK_VERSION}" ]; then
+  echo "please specify the flink version, for example: sh auto.sh start 1.16"
+  exit 1
+fi
 
 APP_HOME="$(cd `dirname $0`; pwd)"
 
