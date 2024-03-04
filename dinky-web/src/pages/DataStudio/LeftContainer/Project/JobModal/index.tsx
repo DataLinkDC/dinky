@@ -22,7 +22,7 @@ import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import { isFlinkJob, isUDF } from '@/pages/DataStudio/LeftContainer/Project/function';
 import TemplateSelect from '@/pages/DataStudio/LeftContainer/Project/JobModal/components/TemplateSelect';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import {DIALECT, RUN_MODE} from '@/services/constants';
+import { DIALECT, RUN_MODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
