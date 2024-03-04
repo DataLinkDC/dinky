@@ -1,13 +1,22 @@
 #!/bin/bash
 
-FLINK_VERSION=${2:-1.16}
+FLINK_VERSION=${2}
 
-JAR_NAME="dinky-admin"
+if [ -z "${FLINK_VERSION}" ]; then
+  echo "please specify the flink version, for example: sh auto.sh start 1.16"
+  exit 1
+fi
 
 APP_HOME="$(cd `dirname $0`; pwd)"
 
+EXTENDS_HOME="${APP_HOME}/extends"
+
+JAR_NAME="dinky-admin"
+
+
+
 # Use FLINK_HOME:
-CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${APP_HOME}/extends/*:${APP_HOME}/plugins/*:${APP_HOME}/customJar/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/*:${APP_HOME}/extends/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/extends/flink${FLINK_VERSION}/*:$FLINK_HOME/lib/*"
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
 PID_FILE="dinky.pid"
 
 # JMX path
@@ -44,7 +53,7 @@ updatePid() {
 start() {
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
+    nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
     echo $! >"${PID_PATH}"/${PID_FILE}
     echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"
@@ -57,7 +66,6 @@ startOnPending() {
   updatePid
   if [ -z "$pid" ]; then
     java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky
-    echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
@@ -67,7 +75,7 @@ startOnPending() {
 startWithJmx() {
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky &
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
 #    echo $! >"${PID_PATH}"/${PID_FILE}
     updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................
@@ -81,7 +89,7 @@ stop() {
   updatePid
   pid=$(cat "${PID_PATH}"/${PID_FILE})
   if [ -z $pid ]; then
-    echo "Dinky pid is not exist in ${PID_PATH}/${PID_FILE}"
+    echo "Dinky pid is not exist in ${PID_PATH}/${PID_FILE} ,skip stop."
   else
     kill -9 $pid
     sleep 1
