@@ -1,13 +1,32 @@
 #!/bin/bash
 
-FLINK_VERSION=${2:-1.16}
-
-JAR_NAME="dinky-admin"
 
 APP_HOME="$(cd `dirname $0`; pwd)"
 
+EXTENDS_HOME="${APP_HOME}/extends"
+
+# 暂时使用自动扫描版本拿到第一个, 目前每个版本的 extends 下只有一个 flink版本
+AUTO_SCAN_FLINK_VERSION=$(ls -A | sed 's/flink//g' | grep -E "^[0-9]+(\.[0-9]+)?$" | head -1)
+
+if [ -z "$AUTO_SCAN_FLINK_VERSION" ]; then
+  echo "No flink version found in ${EXTENDS_HOME} directory, please check it."
+  exit 1
+fi
+
+FLINK_VERSION=${2:-$AUTO_SCAN_FLINK_VERSION}
+
+# 检测当前输入的flink版本是否存在
+if [ ! -d "${EXTENDS_HOME}/flink${FLINK_VERSION}" ]; then
+  echo "flink${FLINK_VERSION} is not exist in ${EXTENDS_HOME} directory, please check it."
+  exit 1
+fi
+
+JAR_NAME="dinky-admin"
+
+
+
 # Use FLINK_HOME:
-CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${APP_HOME}/extends/*:${APP_HOME}/plugins/*:${APP_HOME}/customJar/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/plugins/flink${FLINK_VERSION}/*:${APP_HOME}/extends/flink${FLINK_VERSION}/dinky/*:${APP_HOME}/extends/flink${FLINK_VERSION}/*:$FLINK_HOME/lib/*"
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
 PID_FILE="dinky.pid"
 
 # JMX path
@@ -44,7 +63,7 @@ updatePid() {
 start() {
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
+    nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null
     echo $! >"${PID_PATH}"/${PID_FILE}
     echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"
@@ -57,7 +76,6 @@ startOnPending() {
   updatePid
   if [ -z "$pid" ]; then
     java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky
-    echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
@@ -67,7 +85,7 @@ startOnPending() {
 startWithJmx() {
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky &
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null
 #    echo $! >"${PID_PATH}"/${PID_FILE}
     updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................
@@ -81,7 +99,7 @@ stop() {
   updatePid
   pid=$(cat "${PID_PATH}"/${PID_FILE})
   if [ -z $pid ]; then
-    echo "Dinky pid is not exist in ${PID_PATH}/${PID_FILE}"
+    echo "Dinky pid is not exist in ${PID_PATH}/${PID_FILE} ,skip stop."
   else
     kill -9 $pid
     sleep 1
