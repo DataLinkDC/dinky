@@ -222,6 +222,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 task.setAlertGroupId(-1); // -1 is disabled
             }
         }
+        if (!Opt.ofNullable(task.getStep()).isPresent()) {
+            task.setStep(JobLifeCycle.DEVELOP.getValue());
+        }
         return task;
     }
 
