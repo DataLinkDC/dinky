@@ -19,6 +19,7 @@
 
 package org.dinky.url;
 
+import org.apache.flink.api.common.io.InputStreamFSInputWrapper;
 import org.dinky.resource.BaseResourceManager;
 
 import org.apache.flink.core.fs.BlockLocation;
@@ -91,7 +92,7 @@ public class ResourceFileSystem extends FileSystem {
 
     @Override
     public FSDataInputStream open(Path f) throws IOException {
-        return new LocalDataInputStream(getFile(f));
+        return new InputStreamFSInputWrapper(BASE_RESOURCE_MANAGER.readFile(f.getPath()));
     }
 
     @Override
@@ -142,6 +143,6 @@ public class ResourceFileSystem extends FileSystem {
     }
 
     public static ResourceFileSystem getSharedInstance() {
-        return INSTANCE;
+        return getInstance();
     }
 }

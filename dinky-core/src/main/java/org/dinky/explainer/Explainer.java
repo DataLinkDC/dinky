@@ -210,7 +210,7 @@ public class Explainer {
                 String error = StrFormatter.format(
                         "Exception in executing FlinkSQL:\n{}\n{}",
                         SqlUtil.addLineNumber(item.getValue()),
-                        e.getMessage());
+                        LogUtil.getError(e));
                 resultBuilder
                         .error(error)
                         .explainTrue(false)
