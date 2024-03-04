@@ -120,7 +120,7 @@ public class Explainer {
             if (operationType.equals(SqlType.SET) && SetSqlParseStrategy.INSTANCE.match(statement)) {
                 CustomSetOperation customSetOperation = new CustomSetOperation(statement);
                 customSetOperation.execute(this.executor.getCustomTableEnvironment());
-            }else if (operationType.equals(SqlType.ADD)) {
+            } else if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement)
                         .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
                 (executor.getDinkyClassLoader())
