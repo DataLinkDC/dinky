@@ -5,22 +5,6 @@ APP_HOME="$(cd `dirname $0`; pwd)"
 
 EXTENDS_HOME="${APP_HOME}/extends"
 
-# 暂时使用自动扫描版本拿到第一个, 目前每个版本的 extends 下只有一个 flink版本
-AUTO_SCAN_FLINK_VERSION=$(ls -A | sed 's/flink//g' | grep -E "^[0-9]+(\.[0-9]+)?$" | head -1)
-
-if [ -z "$AUTO_SCAN_FLINK_VERSION" ]; then
-  echo "No flink version found in ${EXTENDS_HOME} directory, please check it."
-  exit 1
-fi
-
-FLINK_VERSION=${2:-$AUTO_SCAN_FLINK_VERSION}
-
-# 检测当前输入的flink版本是否存在
-if [ ! -d "${EXTENDS_HOME}/flink${FLINK_VERSION}" ]; then
-  echo "flink${FLINK_VERSION} is not exist in ${EXTENDS_HOME} directory, please check it."
-  exit 1
-fi
-
 JAR_NAME="dinky-admin"
 
 
