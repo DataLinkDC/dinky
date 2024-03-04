@@ -30,6 +30,8 @@ function HomepageHeader() {
     const {siteConfig} = useDocusaurusContext();
     return (
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
+            {/*统计 pv*/}
+            <script src= "https://hm.baidu.com/hm.js?7f2b5e6f354b8ae1cdec43ba108936f7" async />
             <div className={clsx("container")}>
                 <div className={clsx("desc", styles.box_container)}>
                     <div className={clsx("desc_left", styles.box,styles.descLeft)}>

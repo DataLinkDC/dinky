@@ -3345,7 +3345,7 @@ CREATE TABLE dinky_resources
     type         SMALLINT,
     size         BIGINT,
     pid          INT,
-    full_name    VARCHAR(128),
+    full_name    VARCHAR(255),
     is_directory SMALLINT,
     create_time  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_time  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
