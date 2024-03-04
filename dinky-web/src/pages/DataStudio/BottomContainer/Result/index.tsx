@@ -146,7 +146,7 @@ const Result = (props: any) => {
           if (historyData) {
             const historyId = historyData.id;
             const tableData = await handleGetOption(
-              'api/studio/getJobData',
+              API_CONSTANTS.GET_JOB_DATA,
               l('global.getdata.tips'),
               {
                 jobId: historyId
@@ -193,7 +193,7 @@ const Result = (props: any) => {
   const renderFlinkSQLContent = () => {
     return (
       <>
-        {current.jobInstanceId ? (
+        {current?.jobInstanceId ? (
           <>
             <Space>
               <Button
