@@ -46,7 +46,7 @@ const Catalog: React.FC = (props: connect) => {
   if (!currentData) {
     return <Empty description={l('pages.datastudio.catalog.selectDatasource')} />;
   }
-  const dialect = currentData?.dialect.toLowerCase() ?? '';
+  const dialect = currentData?.dialect?.toLowerCase() ?? '';
   const fragment = currentData?.fragment ?? true;
   let envId: number | undefined;
   let databaseId: number | undefined;
