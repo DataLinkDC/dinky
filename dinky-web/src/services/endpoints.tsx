@@ -201,6 +201,7 @@ export enum API_CONSTANTS {
   GET_JOB_METRICS_ITEMS = '/api/jobInstance/getJobMetricsItems',
   JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   GET_STATUS_COUNT = '/api/jobInstance/getStatusCount',
+  GET_JOB_DATA = '/api/studio/getJobData',
 
   // ------------------------------------ devops studio  ------------------------------------
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',
