@@ -87,16 +87,18 @@ const config = {
                     lastVersion: 'current',
                     versions: {
                         current: {
-                            label: '1.0.0',
+                            label: '1.0',
                             path: '/next',
                         },
                         0.6: {
                             label: '0.6',
                             path: '/0.6',
+                            banner: 'unmaintained',
                         },
                         0.7: {
                             label: '0.7',
                             path: '/0.7',
+                            banner: 'unmaintained',
                         },
                     },
                     sidebarPath: require.resolve('./sidebars.js'),
