@@ -207,9 +207,9 @@ export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
 }
 
 export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {
-  return isFlinkJob(jobType) || isSql(jobType)
-    ? LeftBottomKey.CONSOLE_KEY
-    : isUDF(jobType) || jobType.toLowerCase() === DIALECT.FLINKSQLENV
-    ? LeftBottomKey.TOOLS_KEY
-    : LeftBottomKey.TOOLS_KEY;
+  if (isFlinkJob(jobType) || isSql(jobType)) {
+    return LeftBottomKey.CONSOLE_KEY;
+  } else {
+    return LeftBottomKey.TOOLS_KEY;
+  }
 }
