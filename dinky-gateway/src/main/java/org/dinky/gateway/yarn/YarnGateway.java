@@ -38,6 +38,7 @@ import org.dinky.utils.FlinkJsonUtil;
 
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
@@ -82,8 +83,6 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
-
-    public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
 
     protected YarnConfiguration yarnConfiguration;
@@ -121,14 +120,16 @@ public abstract class YarnGateway extends AbstractGateway {
         }
 
         if (Asserts.isNotNullString(clusterConfig.getHadoopConfigPath())) {
-            configuration.setString(HADOOP_CONFIG, clusterConfig.getHadoopConfigPath());
+            configuration.setString(
+                    ConfigConstants.PATH_HADOOP_CONFIG,
+                    FileUtil.file(clusterConfig.getHadoopConfigPath()).getAbsolutePath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
             try {
                 SecurityUtils.install(new SecurityConfiguration(configuration));
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-                logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
+                logger.info("安全认证结束，用户和认证方式:{}", currentUser.toString());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
