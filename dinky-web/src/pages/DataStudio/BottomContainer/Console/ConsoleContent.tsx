@@ -183,6 +183,7 @@ const ConsoleContent = (props: ConsoleProps) => {
             language={'javalog'}
             lineNumbers={'off'}
             enableMiniMap
+            enableAutoScroll
             showFloatButton
           />
         </Pane>
