@@ -148,8 +148,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
         // 获取当前光标行的文本
         const lineText = model.getLineContent(position.lineNumber) ?? '';
-        context.triggerKind =
-          monacoIns.languages.CompletionTriggerKind.TriggerCharacter;
+        context.triggerKind = monacoIns.languages.CompletionTriggerKind.TriggerCharacter;
         // 设置以当前光标行的文本为触发字符
         context.triggerCharacter = lineText;
         return suggestions;
