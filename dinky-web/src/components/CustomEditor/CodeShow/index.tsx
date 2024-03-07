@@ -81,7 +81,6 @@ const CodeShow = (props: CodeShowFormProps) => {
 
   const { ScrollType } = editor;
 
-
   const [loading, setLoading] = useState<boolean>(false);
   const [stopping, setStopping] = useState<boolean>(false);
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
