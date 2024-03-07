@@ -53,6 +53,7 @@ export type CodeEditFormProps = {
   autoWrap?: string;
   editorDidMount?: (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => void;
   enableSuggestions?: boolean;
+  enableSuggestionPreview?: boolean;
   monacoRef?: any;
 };
 
@@ -80,6 +81,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     readOnly = false, // is readOnly
     lineNumbers, // show lineNumbers
     enableSuggestions = false, // enable suggestions
+    enableSuggestionPreview = false, // enable suggestion preview
     suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
     editorDidMount,
@@ -144,8 +146,11 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
           };
         });
 
-        context.triggerKind =
-          monacoIns.languages.CompletionTriggerKind.TriggerForIncompleteCompletions;
+        // 获取当前光标行的文本
+        const lineText = model.getLineContent(position.lineNumber) ?? '';
+        context.triggerKind = monacoIns.languages.CompletionTriggerKind.TriggerCharacter;
+        // 设置以当前光标行的文本为触发字符
+        context.triggerCharacter = lineText;
         return suggestions;
       },
       resolveCompletionItem: (item: CompletionItem) => {
@@ -249,7 +254,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     suggest: {
       quickSuggestions: enableSuggestions,
       showStatusBar: true,
-      preview: true,
+      preview: enableSuggestionPreview,
       previewMode: 'subword',
       showInlineDetails: true,
       showMethods: true,
