@@ -214,3 +214,18 @@ Q4: 为什么在 IDEA 中启动 Dinky 后，Profile 也加载了,我用到了一
 > A4-1: Dinky 只加载了 Dinky 在开发中过程中用到的相关 Flink 依赖以及 Flink 的基本环境依赖.如报此类错误,请检查你的 pom.xml 文件,是否包含了 connector 所依赖的 jar 包
 
 > A4-2: 如上述问题未解决,请检查你的 `dinky-flink` 模块下的与你Flink 版本一致的 `pom.xml` 文件,是否包含了 connector 所依赖的 jar 包
+
+## SQL开发FAQ
+Q1：ADD JAR语法如何支持s3路径？
+由于dinky代码检查阶段无相应flink-conf.yaml配置，导致无法获取正确ak，sk，所以在sql层面做了语法增强，支持在sql内进行s3配置，如下：
+```sql
+SET 's3.access-key'='xxx';
+SET 's3.secret-key'='xxx';
+SET 's3.endpoint'='xxx';
+
+ADD JAR 's3://xxxx/udf.jar';
+
+create temporary function ip2int as 'com.sopei.udf.Ip2Int';
+
+select ip2int('192.168.1.1')as ip;
+``` 
