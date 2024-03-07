@@ -209,7 +209,7 @@ export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
 export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {
   if (isFlinkJob(jobType) || isSql(jobType)) {
     return LeftBottomKey.CONSOLE_KEY;
-  }else{
+  } else {
     return LeftBottomKey.TOOLS_KEY;
   }
 }
