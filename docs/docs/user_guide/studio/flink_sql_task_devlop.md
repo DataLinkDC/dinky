@@ -167,7 +167,7 @@ EXECUTE JAR WITH (
 
 ```
 
-**样例代码**
+**样例代码1**
 
 ```sql
 set 'execution.checkpointing.interval'='21 s';
@@ -198,3 +198,4 @@ EXECUTE JAR WITH (
 :::warning 注意
 1. 注意填写main-class，不能为空
 2. 注意args中的空格填写
+:::
