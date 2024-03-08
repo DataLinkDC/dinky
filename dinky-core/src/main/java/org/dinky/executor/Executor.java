@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import cn.hutool.core.lang.Dict;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -100,6 +101,9 @@ public abstract class Executor {
         return variableManager;
     }
 
+    public VariableManager getVariableManager( Dict context) {
+        return new VariableManager(context);
+    }
     public boolean isUseSqlFragment() {
         return executorConfig.isUseSqlFragment();
     }

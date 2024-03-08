@@ -19,6 +19,9 @@
 
 package org.dinky.data.model;
 
+import cn.hutool.core.lang.Dict;
+import org.dinky.context.EngineContextHolder;
+import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.Status;
 import org.dinky.data.properties.OssProperties;
 
@@ -123,6 +126,13 @@ public class SystemConfiguration {
             .intType()
             .defaultValue(30)
             .note(Status.SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE);
+
+    // the default value is the same as the default value of the expressionVariable
+    private final Configuration<String>  expressionVariable = key(Status.SYS_ENV_SETTINGS_EXPRESSION_VARIABLE)
+            .stringType()
+            .defaultValue(CommonConstant.DEFAULT_EXPRESSION_VARIABLES)
+            .note(Status.SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE);
+
 
     private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
             .booleanType()
@@ -314,6 +324,16 @@ public class SystemConfiguration {
         });
         CONFIGURATION_LIST.stream().peek(Configuration::runParameterCheck).forEach(Configuration::runChangeEvent);
     }
+
+    public Dict initExpressionVariableList(Map<String, String> configMap) {
+        CONFIGURATION_LIST.forEach(item -> {
+            if (item.getKey().equals(expressionVariable.getKey())) {
+                EngineContextHolder.loadExpressionVariableClass(configMap.get(item.getKey()));
+            }
+        });
+        return EngineContextHolder.getEngineContext();
+    }
+
 
     public Map<String, List<Configuration<?>>> getAllConfiguration() {
         Map<String, List<Configuration<?>>> data = new TreeMap<>();

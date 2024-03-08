@@ -101,6 +101,7 @@ public class SystemInit implements ApplicationRunner {
         initResources();
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
+        sysConfigService.initExpressionVariables();
 
         for (Tenant tenant : tenants) {
             taskService.initDefaultFlinkSQLEnv(tenant.getId());
