@@ -37,6 +37,11 @@ public final class CommonConstant {
 
     public static final Pattern GLOBAL_VARIABLE_PATTERN = Pattern.compile("\\$\\{(.+?)}");
 
-    public static final  String DEFAULT_EXPRESSION_VARIABLES = String.join(",", Arrays.asList("cn.hutool.core.date.DateUtil", "cn.hutool.core.util.IdUtil", "cn.hutool.core.util.RandomUtil", "cn.hutool.core.util.StrUtil"));
-
+    public static final String DEFAULT_EXPRESSION_VARIABLES = String.join(
+            ",",
+            Arrays.asList(
+                    "cn.hutool.core.date.DateUtil",
+                    "cn.hutool.core.util.IdUtil",
+                    "cn.hutool.core.util.RandomUtil",
+                    "cn.hutool.core.util.StrUtil"));
 }

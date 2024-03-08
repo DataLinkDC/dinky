@@ -19,7 +19,6 @@
 
 package org.dinky.data.model;
 
-import cn.hutool.core.lang.Dict;
 import org.dinky.context.EngineContextHolder;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.Status;
@@ -34,6 +33,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -128,11 +128,10 @@ public class SystemConfiguration {
             .note(Status.SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE);
 
     // the default value is the same as the default value of the expressionVariable
-    private final Configuration<String>  expressionVariable = key(Status.SYS_ENV_SETTINGS_EXPRESSION_VARIABLE)
+    private final Configuration<String> expressionVariable = key(Status.SYS_ENV_SETTINGS_EXPRESSION_VARIABLE)
             .stringType()
             .defaultValue(CommonConstant.DEFAULT_EXPRESSION_VARIABLES)
             .note(Status.SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE);
-
 
     private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
             .booleanType()
@@ -333,7 +332,6 @@ public class SystemConfiguration {
         });
         return EngineContextHolder.getEngineContext();
     }
-
 
     public Map<String, List<Configuration<?>>> getAllConfiguration() {
         Map<String, List<Configuration<?>>> data = new TreeMap<>();

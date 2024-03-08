@@ -19,20 +19,21 @@
 
 package org.dinky.context;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.StrUtil;
+import org.dinky.utils.StringUtil;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.dinky.utils.StringUtil;
 
 /**
  * The EngineContextHolder
  */
-
 @Slf4j
 public class EngineContextHolder {
     private static final Dict ENGINE_CONTEXT = Dict.create();
@@ -47,7 +48,10 @@ public class EngineContextHolder {
             log.warn("The variable is empty, please check the configuration.");
             return Collections.emptyList();
         }
-        return Arrays.stream(variables.split(",")).map(String::trim).filter(s -> !s.isEmpty()).collect(Collectors.toList());
+        return Arrays.stream(variables.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 
     /**
@@ -79,5 +83,4 @@ public class EngineContextHolder {
     public static Dict getEngineContext() {
         return ENGINE_CONTEXT;
     }
-
 }
