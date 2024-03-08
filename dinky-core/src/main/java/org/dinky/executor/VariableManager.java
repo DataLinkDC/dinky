@@ -19,33 +19,30 @@
 
 package org.dinky.executor;
 
-import static java.lang.String.format;
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
-
-import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.context.EngineContextHolder;
-import org.dinky.data.constant.CommonConstant;
-import org.dinky.data.exception.DinkyException;
-
-import org.apache.flink.table.api.DataTypes;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.catalog.exceptions.CatalogException;
-import org.apache.flink.types.Row;
-import org.apache.flink.util.StringUtils;
-
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.expression.engine.jexl.JexlEngine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-
-import cn.hutool.core.lang.Dict;
-import cn.hutool.extra.expression.engine.jexl.JexlEngine;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.exceptions.CatalogException;
+import org.apache.flink.types.Row;
+import org.apache.flink.util.StringUtils;
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.context.EngineContextHolder;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.exception.DinkyException;
+import static java.lang.String.format;
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
 
 /**
  * Flink Sql Variable Manager
@@ -60,7 +57,6 @@ public final class VariableManager {
 
     public static final JexlEngine ENGINE = new JexlEngine();
 
-    private Dict ENGINE_CONTEXT = Dict.create();
 
     public VariableManager() {
         variables = new HashMap<>();
@@ -68,8 +64,8 @@ public final class VariableManager {
 
     public VariableManager(Dict context) {
         variables = new HashMap<>();
-        this.ENGINE_CONTEXT = context;
     }
+
 
     /**
      * Get names of sql variables loaded.
@@ -141,15 +137,23 @@ public final class VariableManager {
                 return variables.get(variableName);
             }
             // load expression variable class
-
-            if (EngineContextHolder.getEngineContext() != null) {
-                ENGINE_CONTEXT = EngineContextHolder.getEngineContext();
+            if (parseAndMatchExpressionVariable(variableName)) {
+                return ENGINE.eval(variableName, EngineContextHolder.getEngineContext(), null);
             }
-            // use jexl to parse variable value
-            return ENGINE.eval(variableName, ENGINE_CONTEXT, null);
+            return null;
         } catch (Exception e) {
             throw new DinkyException(format("The variable name or jexl key of sql %s does not exist.", variableName));
         }
+    }
+
+
+    public boolean parseAndMatchExpressionVariable(String variableName) {
+        checkArgument(
+                !StringUtils.isNullOrWhitespaceOnly(variableName),
+                "sql variable name or jexl key cannot be null or empty.");
+        // key 格式是 dateUtil.getVariable("key") 按照这个格式解析 出 dateUtil
+        String substring = variableName.substring(0, variableName.indexOf("."));
+        return StrUtil.isNotBlank(EngineContextHolder.getEngineContext().getStr(substring));
     }
 
     /**

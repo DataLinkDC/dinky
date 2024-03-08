@@ -101,9 +101,6 @@ public abstract class Executor {
         return variableManager;
     }
 
-    public VariableManager getVariableManager(Dict context) {
-        return new VariableManager(context);
-    }
 
     public boolean isUseSqlFragment() {
         return executorConfig.isUseSqlFragment();

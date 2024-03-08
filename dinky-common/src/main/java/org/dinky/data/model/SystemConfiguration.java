@@ -324,13 +324,12 @@ public class SystemConfiguration {
         CONFIGURATION_LIST.stream().peek(Configuration::runParameterCheck).forEach(Configuration::runChangeEvent);
     }
 
-    public Dict initExpressionVariableList(Map<String, String> configMap) {
+    public void initExpressionVariableList(Map<String, String> configMap) {
         CONFIGURATION_LIST.forEach(item -> {
             if (item.getKey().equals(expressionVariable.getKey())) {
                 EngineContextHolder.loadExpressionVariableClass(configMap.get(item.getKey()));
             }
         });
-        return EngineContextHolder.getEngineContext();
     }
 
     public Map<String, List<Configuration<?>>> getAllConfiguration() {

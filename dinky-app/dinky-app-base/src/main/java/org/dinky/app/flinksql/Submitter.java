@@ -95,15 +95,13 @@ public class Submitter {
     private static final Logger log = LoggerFactory.getLogger(Submitter.class);
     public static Executor executor = null;
 
-    private static Dict variable = Dict.create();
-
     private static void initSystemConfiguration() throws SQLException {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         List<SysConfig> sysConfigList = DBUtil.getSysConfigList();
         Map<String, String> configMap =
                 CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
         systemConfiguration.initSetConfiguration(configMap);
-        variable = systemConfiguration.initExpressionVariableList(configMap);
+        systemConfiguration.initExpressionVariableList(configMap);
     }
 
     public static void submit(AppParamConfig config) throws SQLException {
@@ -136,20 +134,6 @@ public class Submitter {
         log.info("The job configuration is as follows: {}", executorConfig);
 
         String[] statements = SqlUtil.getStatements(sql);
-        if (appTask.getFragment()) {
-            log.info("The task is enable fragment (Global Variable), replace the global variable");
-            for (int index = 0; index < statements.length; index++) {
-                String currentStatement = statements[index];
-                Matcher matcher = CommonConstant.GLOBAL_VARIABLE_PATTERN.matcher(currentStatement);
-                // 如果有全局变量，需要替换
-                if (StringUtils.isNotBlank(currentStatement) && matcher.find()) {
-                    String replaceVariable =
-                            executor.getVariableManager(variable).replaceVariable(currentStatement);
-                    statements[index] = replaceVariable;
-                }
-            }
-        }
-
         Optional<JobClient> jobClient = Optional.empty();
         try {
             if (Dialect.FLINK_JAR == appTask.getDialect()) {
