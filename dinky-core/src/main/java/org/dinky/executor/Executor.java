@@ -19,7 +19,6 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.lang.Dict;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -61,6 +60,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -101,9 +101,10 @@ public abstract class Executor {
         return variableManager;
     }
 
-    public VariableManager getVariableManager( Dict context) {
+    public VariableManager getVariableManager(Dict context) {
         return new VariableManager(context);
     }
+
     public boolean isUseSqlFragment() {
         return executorConfig.isUseSqlFragment();
     }

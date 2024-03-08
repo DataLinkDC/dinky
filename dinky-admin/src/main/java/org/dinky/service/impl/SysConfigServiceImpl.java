@@ -19,8 +19,6 @@
 
 package org.dinky.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.context.EngineContextHolder;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SysConfig;
@@ -36,11 +34,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SysConfigServiceImpl
@@ -50,7 +49,6 @@ import cn.hutool.core.convert.Convert;
 @Service
 @Slf4j
 public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
-
 
     @Override
     public Map<String, List<Configuration<?>>> getAll() {
@@ -104,7 +102,8 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
     public void initExpressionVariables() {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         // to initialize expression variable class and load it into the engine context
-        EngineContextHolder.loadExpressionVariableClass(systemConfiguration.getExpressionVariable().getValue());
+        EngineContextHolder.loadExpressionVariableClass(
+                systemConfiguration.getExpressionVariable().getValue());
     }
 
     @Override
@@ -117,7 +116,8 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
         config.updateById();
         // if the expression variable is modified, reinitialize the expression variable
         if (key.equals(systemConfiguration.getExpressionVariable().getKey())) {
-            log.info("The expression variable is modified, reinitialize the expression variable to the engine context.");
+            log.info(
+                    "The expression variable is modified, reinitialize the expression variable to the engine context.");
             initExpressionVariables();
         }
     }
