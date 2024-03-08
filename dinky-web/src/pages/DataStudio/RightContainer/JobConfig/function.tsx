@@ -18,6 +18,7 @@
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { RUN_MODE } from '@/services/constants';
 import { Alert, ALERT_TYPE, Cluster } from '@/types/RegCenter/data.d';
@@ -147,7 +148,12 @@ export const buildClusterConfigOptions = (
 export const buildEnvOptions = (env: TaskInfo[] = []) => {
   const envList: DefaultOptionType[] = [
     {
-      label: l('button.disable'),
+      label: (
+        <Space>
+          <Badge status='error' />
+          {l('button.disable')}
+        </Space>
+      ),
       value: -1,
       key: -1
     }
@@ -156,9 +162,12 @@ export const buildEnvOptions = (env: TaskInfo[] = []) => {
   for (const item of env) {
     const tag = (
       <TagAlignLeft>
-        {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
-        {item.fragment ? <PaperClipOutlined /> : undefined}
-        {item.name}
+        <Space size={'small'}>
+          {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
+          {getTabIcon(item.dialect, 20)}
+          {item.name}
+          {item.fragment ? <PaperClipOutlined /> : undefined}
+        </Space>
       </TagAlignLeft>
     );
 
