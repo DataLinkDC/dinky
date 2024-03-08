@@ -36,7 +36,7 @@ export const gotoRedirectUrl = () => {
 
 export const redirectToLogin = () => {
   //TODO: 弹出确认框
-  window.location.href = '/login';
+  window.location.href = '/user/login';
 };
 
 export const initSomeThing = () => {
