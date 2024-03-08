@@ -60,7 +60,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -100,7 +99,6 @@ public abstract class Executor {
     public VariableManager getVariableManager() {
         return variableManager;
     }
-
 
     public boolean isUseSqlFragment() {
         return executorConfig.isUseSqlFragment();

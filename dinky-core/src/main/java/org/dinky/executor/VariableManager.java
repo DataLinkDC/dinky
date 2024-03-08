@@ -19,30 +19,34 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.expression.engine.jexl.JexlEngine;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import lombok.extern.slf4j.Slf4j;
+import static java.lang.String.format;
+import static org.apache.flink.util.Preconditions.checkArgument;
+import static org.apache.flink.util.Preconditions.checkNotNull;
+
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.context.EngineContextHolder;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.exception.DinkyException;
+
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.exceptions.CatalogException;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.StringUtils;
-import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.context.EngineContextHolder;
-import org.dinky.data.constant.CommonConstant;
-import org.dinky.data.exception.DinkyException;
-import static java.lang.String.format;
-import static org.apache.flink.util.Preconditions.checkArgument;
-import static org.apache.flink.util.Preconditions.checkNotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.expression.engine.jexl.JexlEngine;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Flink Sql Variable Manager
@@ -57,7 +61,6 @@ public final class VariableManager {
 
     public static final JexlEngine ENGINE = new JexlEngine();
 
-
     public VariableManager() {
         variables = new HashMap<>();
     }
@@ -65,7 +68,6 @@ public final class VariableManager {
     public VariableManager(Dict context) {
         variables = new HashMap<>();
     }
-
 
     /**
      * Get names of sql variables loaded.
@@ -145,7 +147,6 @@ public final class VariableManager {
             throw new DinkyException(format("The variable name or jexl key of sql %s does not exist.", variableName));
         }
     }
-
 
     public boolean parseAndMatchExpressionVariable(String variableName) {
         checkArgument(

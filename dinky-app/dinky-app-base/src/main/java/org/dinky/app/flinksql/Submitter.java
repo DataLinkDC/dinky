@@ -29,7 +29,6 @@ import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
-import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
@@ -72,7 +71,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -80,7 +78,6 @@ import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpUtil;
