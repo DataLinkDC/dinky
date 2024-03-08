@@ -26,6 +26,8 @@ import { l } from '@/utils/intl';
 import { PaperClipOutlined } from '@ant-design/icons';
 import { Badge, Space, Tag } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
+import {FlinkSQLEnvSvg} from "@/components/Icons/CodeLanguageIcon";
+import {getTabIcon} from "@/pages/DataStudio/MiddleContainer/function";
 
 /**
  * build job run model
@@ -147,7 +149,7 @@ export const buildClusterConfigOptions = (
 export const buildEnvOptions = (env: TaskInfo[] = []) => {
   const envList: DefaultOptionType[] = [
     {
-      label: l('button.disable'),
+      label: <Space><Badge status='error' />{l('button.disable')}</Space>,
       value: -1,
       key: -1
     }
@@ -156,9 +158,11 @@ export const buildEnvOptions = (env: TaskInfo[] = []) => {
   for (const item of env) {
     const tag = (
       <TagAlignLeft>
+        <Space size={'small'}>
         {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
-        {item.fragment ? <PaperClipOutlined /> : undefined}
-        {item.name}
+          {getTabIcon(item.dialect, 20) }{item.name}
+          {item.fragment ? <PaperClipOutlined /> : undefined}
+        </Space>
       </TagAlignLeft>
     );
 
