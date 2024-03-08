@@ -336,7 +336,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // Debug mode need execute
         task.setStatementSet(false);
         // mode check
-        GatewayType.get(task.getType());
         if (GatewayType.get(task.getType()).isDeployCluster()){
             throw new BusException(Status.MODE_IS_NOT_ALLOW_SELECT.getMessage());
         }
