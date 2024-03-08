@@ -352,6 +352,8 @@ public enum Status {
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE(1172, "sys.env.settings.maxRetainDays.note"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT(1173, "sys.env.settings.maxRetainCount"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE(1174, "sys.env.settings.maxRetainCount.note"),
+    SYS_ENV_SETTINGS_EXPRESSION_VARIABLE(1175, "sys.env.settings.expressionVariable"),
+    SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE(1176, "sys.env.settings.expressionVariable.note"),
 
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE(118, "sys.dolphinscheduler.settings.enable"),
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE(119, "sys.dolphinscheduler.settings.enable.note"),

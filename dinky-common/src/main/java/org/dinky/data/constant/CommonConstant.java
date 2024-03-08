@@ -19,6 +19,9 @@
 
 package org.dinky.data.constant;
 
+import java.util.Arrays;
+import java.util.regex.Pattern;
+
 /**
  * CommonConstant
  *
@@ -31,4 +34,14 @@ public final class CommonConstant {
 
     public static final String DINKY_APP_MAIN_CLASS = "org.dinky.app.MainApp";
     public static final String LineSep = System.getProperty("line.separator");
+
+    public static final Pattern GLOBAL_VARIABLE_PATTERN = Pattern.compile("\\$\\{(.+?)}");
+
+    public static final String DEFAULT_EXPRESSION_VARIABLES = String.join(
+            ",",
+            Arrays.asList(
+                    "cn.hutool.core.date.DateUtil",
+                    "cn.hutool.core.util.IdUtil",
+                    "cn.hutool.core.util.RandomUtil",
+                    "cn.hutool.core.util.StrUtil"));
 }

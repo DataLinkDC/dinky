@@ -346,9 +346,9 @@ public abstract class YarnGateway extends AbstractGateway {
             ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
             if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
                 String log = getYarnContainerLog(applicationReport);
-                throw new RuntimeException(
-                        "Yarn application state is not running, please check yarn cluster status. Log content:\n"
-                                + log);
+                throw new RuntimeException(String.format(
+                        "Yarn application state is not running, please check yarn cluster status. Web URL is: %s , Log content: %s",
+                        webUrl, log));
             }
             // 睡眠1秒，防止flink因为依赖或其他问题导致任务秒挂
             Thread.sleep(1000);
@@ -364,8 +364,9 @@ public abstract class YarnGateway extends AbstractGateway {
             } catch (Exception e) {
                 Thread.sleep(1000);
                 String log = getYarnContainerLog(applicationReport);
-                logger.error("Yarn application state is not running, please check yarn cluster status. Log content:\n"
-                        + log);
+                logger.error(
+                        "Yarn application state is not running, please check yarn cluster status. Log content: {}",
+                        log);
             }
             if (!jobDetailsList.isEmpty()) {
                 break;
