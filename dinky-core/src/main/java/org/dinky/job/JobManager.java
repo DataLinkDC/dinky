@@ -109,7 +109,6 @@ public class JobManager {
     private boolean useStatementSet = false;
     private boolean useRestAPI = false;
     private GatewayType runMode = GatewayType.LOCAL;
-
     private JobParam jobParam = null;
     private String currentSql = "";
     private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
