@@ -98,6 +98,7 @@ public class Submitter {
         Map<String, String> configMap =
                 CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
         systemConfiguration.initSetConfiguration(configMap);
+        systemConfiguration.initExpressionVariableList(configMap);
     }
 
     public static void submit(AppParamConfig config) throws SQLException {
