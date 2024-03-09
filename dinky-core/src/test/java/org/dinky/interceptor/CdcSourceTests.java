@@ -24,6 +24,7 @@ import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 
+import org.dinky.executor.LocalStreamExecutor;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -50,7 +51,7 @@ public class CdcSourceTests {
                 .toString();
 
         ExecutorConfig executorConfig = ExecutorConfig.DEFAULT;
-        Executor executor = ExecutorFactory.buildLocalExecutor(executorConfig, DinkyClassLoader.build());
+        Executor executor = new LocalStreamExecutor(executorConfig, DinkyClassLoader.build());
         executor.executeSql(statement);
         executor.execute("");
     }

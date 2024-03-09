@@ -54,6 +54,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpSession;
+
 @Slf4j
 @RestController
 @Api(tags = "Monitor Controller")
@@ -126,7 +128,8 @@ public class MonitorController {
 
     @GetMapping("/getJvmInfo")
     @ApiOperation("Get Jvm Data Display")
-    public SseEmitter getJvmInfo() {
+    public SseEmitter getJvmInfo(HttpSession session) {
+        String seesionID = session.getId();
         return monitorService.sendJvmInfo();
     }
 

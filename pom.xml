@@ -46,6 +46,7 @@
         <module>dinky-app</module>
         <module>dinky-admin</module>
         <module>dinky-assembly</module>
+<!--        <module>dinky-executor-server</module>-->
     </modules>
 
     <properties>
