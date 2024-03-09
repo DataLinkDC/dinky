@@ -238,7 +238,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected List<Operation> createInsertOperations(
             CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
-        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
+        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName, config);
         logger.info(cdcSqlInsert);
 
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
