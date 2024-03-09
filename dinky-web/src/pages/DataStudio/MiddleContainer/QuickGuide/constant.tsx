@@ -28,12 +28,12 @@ export const QUICK_GUIDE = [
   {
     key: 'clusterConfiguration',
     label: l('datastudio.middle.qg.clusterConfiguration'),
-    link: '/registration/cluster/configuration'
+    link: '/registration/cluster/config'
   },
   {
     key: 'database',
     label: l('datastudio.middle.qg.database'),
-    link: '/registration/database'
+    link: '/registration/datasource/list'
   },
   {
     key: 'alertInstance',
@@ -44,6 +44,26 @@ export const QUICK_GUIDE = [
     key: 'alertGroup',
     label: l('datastudio.middle.qg.alertGroup'),
     link: '/registration/alert/group'
+  },
+  {
+    key: 'alertRule',
+    label: l('datastudio.middle.qg.alertRule'),
+    link: '/settings/alertrule'
+  },
+  {
+    key: 'alertTemplate',
+    label: l('datastudio.middle.qg.alertTemplate'),
+    link: '/registration/alert/template'
+  },
+  {
+    key: 'rootLog',
+    label: l('datastudio.middle.qg.rootLog'),
+    link: '/settings/systemlog'
+  },
+  {
+    key: 'globalsetting',
+    label: l('datastudio.middle.qg.globalsetting'),
+    link: '/settings/globalsetting'
   },
   {
     key: 'fragment',
@@ -58,7 +78,7 @@ export const QUICK_GUIDE = [
   {
     key: 'gitprojects',
     label: l('datastudio.middle.qg.gitprojects'),
-    link: '/registration/gitprojects'
+    link: '/registration/gitproject'
   },
   {
     key: 'udf',
@@ -69,5 +89,10 @@ export const QUICK_GUIDE = [
     key: 'resource',
     label: l('datastudio.middle.qg.resource'),
     link: '/registration/resource'
+  },
+  {
+    key: 'accountCenter',
+    label: l('datastudio.middle.qg.accountCenter'),
+    link: '/account/center'
   }
 ];
