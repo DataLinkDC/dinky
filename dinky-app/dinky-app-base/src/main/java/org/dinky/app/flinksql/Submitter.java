@@ -161,8 +161,11 @@ public class Submitter {
         }
         // build Database golbal varibals
         if (appTask.getFragment()) {
-            log.info("Global env is enable, load database flink config env.");
+            log.info("Global env is enable, load database flink config env and global variables.");
+            // append database flink config env
             sb.append(DBUtil.getDbSourceSQLStatement()).append("\n");
+            // append global variables
+            sb.append(DBUtil.getGlobalVariablesStatement()).append("\n");
         }
         sb.append(appTask.getStatement());
         return sb.toString();

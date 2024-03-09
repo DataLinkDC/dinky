@@ -21,6 +21,7 @@ package org.dinky.app.db;
 
 import org.dinky.app.model.SysConfig;
 import org.dinky.data.app.AppDatabase;
+import org.dinky.data.app.AppGlobalVariable;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
 
@@ -68,6 +69,25 @@ public class DBUtil {
         }
         return sb.toString();
     }
+
+    /**
+     * Get the global variables statement获取全局变量
+     * @return the global variables statement
+     * @throws SQLException if a database access error occurs
+     */
+    public static String getGlobalVariablesStatement() throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        Entity option = Entity.create("dinky_fragment").set("enabled", true);
+        List<AppGlobalVariable> entities = db.find(option, AppGlobalVariable.class);
+        for (AppGlobalVariable entity : entities) {
+            sb.append(entity.getName())
+                    .append(":=")
+                    .append(entity.getFragmentValue())
+                    .append("\n;\n");
+        }
+        return sb.toString();
+    }
+
 
     public static List<SysConfig> getSysConfigList() throws SQLException {
         Entity option = Entity.create("dinky_sys_config");
