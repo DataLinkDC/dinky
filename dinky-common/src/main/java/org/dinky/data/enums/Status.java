@@ -232,6 +232,7 @@ public enum Status {
     GIT_BRANCH_NOT_FOUND(16003, "git.branch.not.found"),
     GIT_BUILDING(16004, "git.building"),
     GIT_BUILD_SUCCESS(16005, "git.build.success"),
+    GIT_MAVEN_HOME_NOT_SET(16006, "git.maven.home.not.set"),
 
     /**
      * dolphin scheduler
