@@ -21,6 +21,7 @@ package org.dinky.app.db;
 
 import org.dinky.app.model.SysConfig;
 import org.dinky.data.app.AppDatabase;
+import org.dinky.data.app.AppGlobalVariable;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
 
@@ -28,6 +29,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
@@ -61,9 +63,31 @@ public class DBUtil {
         Entity option = Entity.create("dinky_database").set("enabled", true);
         List<AppDatabase> entities = db.find(option, AppDatabase.class);
         for (AppDatabase entity : entities) {
+            // Filter out items with empty FlinkConfiguration, as this item is optional in the front-end form and does
+            // not need to be generated when it is empty
+            if (StrUtil.isNotBlank(entity.getFlinkConfig())) {
+                sb.append(entity.getName())
+                        .append(":=")
+                        .append(entity.getFlinkConfig())
+                        .append("\n;\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Get the global variables statement获取全局变量
+     * @return the global variables statement
+     * @throws SQLException if a database access error occurs
+     */
+    public static String getGlobalVariablesStatement() throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        Entity option = Entity.create("dinky_fragment").set("enabled", true);
+        List<AppGlobalVariable> entities = db.find(option, AppGlobalVariable.class);
+        for (AppGlobalVariable entity : entities) {
             sb.append(entity.getName())
                     .append(":=")
-                    .append(entity.getFlinkConfig())
+                    .append(entity.getFragmentValue())
                     .append("\n;\n");
         }
         return sb.toString();
