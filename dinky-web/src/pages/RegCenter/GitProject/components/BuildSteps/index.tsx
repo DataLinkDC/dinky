@@ -17,21 +17,18 @@
  *
  */
 
-import { AutoSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps';
-import {
-  JavaSteps,
-  PythonSteps
-} from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
-import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
-import { renderStatus } from '@/pages/RegCenter/GitProject/function';
-import { getSseData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { GitProject } from '@/types/RegCenter/data.d';
-import { InitGitBuildStepsState } from '@/types/RegCenter/init.d';
-import { GitBuildStepsState } from '@/types/RegCenter/state.d';
-import { l } from '@/utils/intl';
-import { Button, Modal } from 'antd';
-import React, { useEffect, useState } from 'react';
+import {AutoSteps} from '@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps';
+import {JavaSteps, PythonSteps} from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
+import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
+import {renderStatus} from '@/pages/RegCenter/GitProject/function';
+import {getSseData} from '@/services/api';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {GitProject} from '@/types/RegCenter/data.d';
+import {InitGitBuildStepsState} from '@/types/RegCenter/init.d';
+import {GitBuildStepsState} from '@/types/RegCenter/state.d';
+import {l} from '@/utils/intl';
+import {Button, Modal} from 'antd';
+import React, {useEffect, useState} from 'react';
 
 /**
  * props
@@ -49,7 +46,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
   /**
    * extract props
    */
-  const { onOk: handleModalVisible, onReTry, showLog = false, onRebuild, title, values } = props;
+  const {onOk: handleModalVisible, onReTry, showLog = false, onRebuild, title, values} = props;
   // todo: refactor this
   const [buildStepState, setBuildStepState] = useState<GitBuildStepsState>(InitGitBuildStepsState);
 
@@ -94,7 +91,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
         // type  // 1是总状态  2是log  3是部分状态
         // status // 0是失败 1是进行中 2 完成
         let result = JSON.parse(e.data);
-        const { currentStep, type, data, status } = result;
+        const {currentStep, type, data, status} = result;
         lastStep = currentStep;
 
         if (type === 0) {
@@ -239,7 +236,14 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    * render
    */
   return (
-    <Modal title={title} width={'85%'} open={true} maskClosable={false} footer={footerButtons}>
+    <Modal
+      title={title}
+      width={'85%'}
+      open={true}
+      maskClosable={false}
+      destroyOnClose centered closable={false}
+      onCancel={() => handleCancel()}
+      footer={footerButtons}>
       <AutoSteps
         steps={steps}
         percent={percent}
