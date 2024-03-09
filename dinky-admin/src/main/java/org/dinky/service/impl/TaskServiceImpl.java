@@ -335,6 +335,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         task.setUseResult(true);
         // Debug mode need execute
         task.setStatementSet(false);
+        // mode check
+        if (GatewayType.get(task.getType()).isDeployCluster()) {
+            throw new BusException(Status.MODE_IS_NOT_ALLOW_SELECT.getMessage());
+        }
+
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         JobResult jobResult;
