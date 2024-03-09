@@ -103,7 +103,7 @@ const TemplateModal: React.FC<TemplateModalProps> = (props) => {
         title={values.id ? l('rc.template.modify') : l('rc.template.create')}
         open={visible}
         form={form}
-        modalProps={{onCancel: handleCancel}}
+        modalProps={{ onCancel: handleCancel }}
         submitter={{ render: () => [...renderFooter()] }}
         initialValues={values}
       >

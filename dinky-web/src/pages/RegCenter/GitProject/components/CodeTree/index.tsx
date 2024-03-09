@@ -41,10 +41,12 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
           overflow: 'auto'
         }
       }}
-      centered closable={false}
+      centered
+      closable={false}
       open={modalVisible}
       onCancel={() => onCancel()}
-      destroyOnClose  maskClosable={false}
+      destroyOnClose
+      maskClosable={false}
       cancelText={l('button.close')}
       okButtonProps={{ style: { display: 'none' } }}
     >
