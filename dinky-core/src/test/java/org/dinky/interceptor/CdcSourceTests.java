@@ -22,9 +22,8 @@ package org.dinky.interceptor;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
-import org.dinky.executor.ExecutorFactory;
-
 import org.dinky.executor.LocalStreamExecutor;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
