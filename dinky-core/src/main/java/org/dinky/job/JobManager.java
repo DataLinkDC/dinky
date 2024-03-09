@@ -28,6 +28,7 @@ import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.ProcessStepType;
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ErrorResult;
@@ -108,7 +109,6 @@ public class JobManager {
     private boolean useStatementSet = false;
     private boolean useRestAPI = false;
     private GatewayType runMode = GatewayType.LOCAL;
-
     private JobParam jobParam = null;
     private String currentSql = "";
     private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
@@ -350,8 +350,12 @@ public class JobManager {
                 success();
             }
         } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("Only insert statement is supported now")) {
+                throw new BusException(Status.OPERATE_NOT_SUPPORT_QUERY.getMessage());
+            }
             String error = StrFormatter.format(
-                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), e.getMessage());
+                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), errorMessage);
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
