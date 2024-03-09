@@ -239,7 +239,17 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    * render
    */
   return (
-    <Modal title={title} width={'85%'} open={true} maskClosable={false} footer={footerButtons}>
+    <Modal
+      title={title}
+      width={'85%'}
+      open={true}
+      maskClosable={false}
+      destroyOnClose
+      centered
+      closable={false}
+      onCancel={() => handleCancel()}
+      footer={footerButtons}
+    >
       <AutoSteps
         steps={steps}
         percent={percent}
