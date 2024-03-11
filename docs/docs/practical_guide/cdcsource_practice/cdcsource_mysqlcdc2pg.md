@@ -16,9 +16,9 @@ title: MySQLCDC 整库到 PostgreSQL
 ## 示例
 
 注意事项:
-- 该示例是将 mysql 整库同步到 Doris 表，且写入名为 ods 的库，目标表名前缀取 `test__` 并转小写。
+- 该示例是将 mysql 整库同步到 PostgreSQL 表，且写入名为 ods 的库，目标表名前缀取 `test__` 并转小写。
 - 该示例参数中的 `#{tableName}` 为占位符，实际执行时会替换为实际表名，如 `ods_products`、`ods_orders` 等。
-- 该示例 sink 中的各个参数均可根据实际情况进行调整，请按照 Doris 连接器官方文档进行配置。并请遵守整库同步的规范.
+- 该示例 sink 中的各个参数均可根据实际情况进行调整，请按照 PostgreSQL 连接器官方文档进行配置。并请遵守整库同步的规范.
 
 ```sql showLineNumbers
 EXECUTE CDCSOURCE cdc_postgresql WITH (
