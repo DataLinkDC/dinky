@@ -33,6 +33,9 @@ import org.dinky.data.model.Task;
 public interface DinkyAssert {
 
     static void check(ClusterInstance clusterInstance) {
+        if (clusterInstance == null) {
+            throw new BusException(Status.CLUSTER_NOT_EXIST);
+        }
         if (clusterInstance.getId() == null) {
             throw new BusException("Flink 集群【" + clusterInstance.getId() + "】不存在");
         }
