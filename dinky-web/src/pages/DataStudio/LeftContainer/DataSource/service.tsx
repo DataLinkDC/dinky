@@ -18,13 +18,14 @@
  */
 
 import { handleGetOption, queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 
 /*--- 刷新 元数据表 ---*/
 export async function showDataSourceTable(id: number) {
   try {
     const result = await handleGetOption(
-      'api/database/getSchemasAndTables',
+      API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES,
       l('pages.metadata.DataSearch'),
       { id: id }
     );
@@ -37,8 +38,8 @@ export async function showDataSourceTable(id: number) {
 
 /*--- 清理 元数据表缓存 ---*/
 export function clearDataSourceTable(id: number) {
-  return queryDataByParams('api/database/unCacheSchemasAndTables', { id: id });
+  return queryDataByParams(API_CONSTANTS.DATASOURCE_UN_CACHE_SCHEMA_TABLES, { id: id });
 }
 export function getDataSourceList() {
-  return queryDataByParams('api/database/listEnabledAll');
+  return queryDataByParams(API_CONSTANTS.DATASOURCE_LIST_ENABLE_ALL);
 }
