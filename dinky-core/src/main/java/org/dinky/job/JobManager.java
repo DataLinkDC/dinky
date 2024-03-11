@@ -111,7 +111,6 @@ public class JobManager {
 
     private JobParam jobParam = null;
     private String currentSql = "";
-    private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
     private Job job;
 
     public JobManager() {}
@@ -170,7 +169,7 @@ public class JobManager {
 
     // return dinkyclassloader
     public DinkyClassLoader getDinkyClassLoader() {
-        return dinkyClassLoader.get();
+        return executor.getDinkyClassLoader();
     }
 
     // return udfPathContextHolder
@@ -216,7 +215,7 @@ public class JobManager {
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         executorConfig = config.getExecutorSetting();
         executorConfig.setPlan(isPlanMode);
-        executor = ExecutorFactory.buildExecutor(executorConfig, getDinkyClassLoader());
+        executor = ExecutorFactory.buildExecutor(executorConfig);
     }
 
     private boolean ready() {

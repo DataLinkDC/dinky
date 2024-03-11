@@ -31,7 +31,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class AppStreamExecutor extends Executor {
 
-    public AppStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
+    public AppStreamExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
@@ -39,7 +39,7 @@ public class AppStreamExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.getExecutionEnvironment();
         }
-        init(classLoader);
+        init();
     }
 
     @Override

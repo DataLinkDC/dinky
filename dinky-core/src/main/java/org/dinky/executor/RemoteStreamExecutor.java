@@ -31,7 +31,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class RemoteStreamExecutor extends Executor {
 
-    public RemoteStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
+    public RemoteStreamExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
@@ -41,7 +41,7 @@ public class RemoteStreamExecutor extends Executor {
             this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
                     executorConfig.getHost(), executorConfig.getPort(), executorConfig.getJarFiles());
         }
-        init(classLoader);
+        init();
     }
 
     @Override

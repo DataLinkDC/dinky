@@ -38,7 +38,7 @@ import cn.hutool.core.io.FileUtil;
  */
 public class LocalBatchExecutor extends Executor {
 
-    public LocalBatchExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
+    public LocalBatchExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig
@@ -58,7 +58,7 @@ public class LocalBatchExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
-        init(classLoader);
+        init();
     }
 
     @Override

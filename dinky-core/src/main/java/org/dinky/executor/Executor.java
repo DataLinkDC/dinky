@@ -46,6 +46,7 @@ import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ public abstract class Executor {
     // The config of Dinky executor.
     protected ExecutorConfig executorConfig;
 
-    protected DinkyClassLoader dinkyClassLoader;
+    protected WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
 
     // Flink configuration, such as set rest.port = 8086
     protected Map<String, String> setConfig = new HashMap<>();
@@ -93,7 +94,7 @@ public abstract class Executor {
 
     // return dinkyClassLoader
     public DinkyClassLoader getDinkyClassLoader() {
-        return dinkyClassLoader;
+        return dinkyClassLoader.get();
     }
 
     public VariableManager getVariableManager() {
@@ -150,14 +151,13 @@ public abstract class Executor {
         }
     }
 
-    protected void init(DinkyClassLoader classLoader) {
-        initClassloader(classLoader);
-        this.dinkyClassLoader = classLoader;
+    protected void init() {
+        initClassloader(getDinkyClassLoader());
         if (executorConfig.isValidParallelism()) {
             environment.setParallelism(executorConfig.getParallelism());
         }
 
-        tableEnvironment = createCustomTableEnvironment(classLoader);
+        tableEnvironment = createCustomTableEnvironment(getDinkyClassLoader());
         CustomTableEnvironmentContext.set(tableEnvironment);
 
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
@@ -210,7 +210,7 @@ public abstract class Executor {
 
     public void initUDF(String... udfFilePath) {
         List<File> jarFiles = DinkyClassLoader.getJarFiles(udfFilePath, null);
-        dinkyClassLoader.addURLs(jarFiles);
+        getDinkyClassLoader().addURLs(jarFiles);
     }
 
     public void initPyUDF(String executable, String... udfPyFilePath) {

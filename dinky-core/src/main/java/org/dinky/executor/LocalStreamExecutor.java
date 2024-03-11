@@ -41,7 +41,7 @@ import cn.hutool.core.lang.Opt;
  */
 public class LocalStreamExecutor extends Executor {
 
-    public LocalStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
+    public LocalStreamExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig
@@ -64,7 +64,7 @@ public class LocalStreamExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
-        init(classLoader);
+        init();
     }
 
     @Override

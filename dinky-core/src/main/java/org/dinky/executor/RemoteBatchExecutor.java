@@ -31,7 +31,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class RemoteBatchExecutor extends Executor {
 
-    public RemoteBatchExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
+    public RemoteBatchExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
@@ -41,7 +41,7 @@ public class RemoteBatchExecutor extends Executor {
             this.environment = StreamExecutionEnvironment.createRemoteEnvironment(
                     executorConfig.getHost(), executorConfig.getPort(), executorConfig.getJarFiles());
         }
-        init(classLoader);
+        init();
     }
 
     @Override

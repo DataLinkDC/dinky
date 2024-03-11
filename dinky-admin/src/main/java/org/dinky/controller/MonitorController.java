@@ -34,8 +34,6 @@ import org.dinky.service.MonitorService;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -128,8 +126,7 @@ public class MonitorController {
 
     @GetMapping("/getJvmInfo")
     @ApiOperation("Get Jvm Data Display")
-    public SseEmitter getJvmInfo(HttpSession session) {
-        String seesionID = session.getId();
+    public SseEmitter getJvmInfo() {
         return monitorService.sendJvmInfo();
     }
 

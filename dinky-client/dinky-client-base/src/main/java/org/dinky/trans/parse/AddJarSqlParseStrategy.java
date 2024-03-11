@@ -42,7 +42,7 @@ import cn.hutool.core.util.StrUtil;
  */
 public class AddJarSqlParseStrategy extends AbstractRegexParseStrategy {
 
-    private static final String ADD_JAR = "(add\\s+(customjar|file))\\s+'(.*.jar)'";
+    private static final String ADD_JAR = "(add\\s+customjar)\\s+'(.*.jar)'";
     private static final Pattern ADD_JAR_PATTERN = Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
     public static final AddJarSqlParseStrategy INSTANCE = new AddJarSqlParseStrategy();
 
