@@ -1,6 +1,7 @@
 package org.dinky.flink;
 
 import org.dinky.classloader.DinkyClassLoader;
+import org.dinky.executor.ExecutorConfig;
 
 import java.lang.ref.WeakReference;
 
@@ -11,8 +12,9 @@ public class LocalExecutorService implements DinkyExecutor {
         dinkyClassLoader =  new WeakReference<>(DinkyClassLoader.build());
     }
 
+
     @Override
-    public void init() {
+    public void init(ExecutorConfig executorConfig) {
 
     }
 }
