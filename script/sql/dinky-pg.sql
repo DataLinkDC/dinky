@@ -3937,7 +3937,7 @@ values (150, 10, '数据源详情', '/registration/datasource/detail', './RegCen
         '2024-01-18 21:43:35', null);
 insert into dinky_sys_menu
 values (151, 150, '数据源详情列表树', '/registration/datasource/detail/tree', null,
-        'registration:datasource:detail:tree', 'ControlOutlined', 'C', 0, 149, '2024-01-18 21:50:06',
+        'registration:datasource:detail:tree', 'ControlOutlined', 'F', 0, 149, '2024-01-18 21:50:06',
         '2024-01-18 21:50:06', null);
 insert into dinky_sys_menu
 values (152, 150, '描述', '/registration/datasource/detail/desc', null, 'registration:datasource:detail:desc',
