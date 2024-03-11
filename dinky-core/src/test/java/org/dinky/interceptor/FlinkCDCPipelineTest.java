@@ -19,7 +19,6 @@
 
 package org.dinky.interceptor;
 
-import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.LocalStreamExecutor;
@@ -60,7 +59,7 @@ public class FlinkCDCPipelineTest {
                 .toString();
 
         ExecutorConfig executorConfig = ExecutorConfig.DEFAULT;
-        Executor executor = new LocalStreamExecutor(executorConfig, DinkyClassLoader.build());
+        Executor executor = new LocalStreamExecutor(executorConfig);
         executor.executeSql(statement);
         executor.execute("");
     }

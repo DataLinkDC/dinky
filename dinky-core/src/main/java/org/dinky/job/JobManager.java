@@ -81,7 +81,6 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

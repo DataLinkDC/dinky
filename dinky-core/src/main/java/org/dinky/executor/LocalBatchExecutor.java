@@ -19,8 +19,6 @@
 
 package org.dinky.executor;
 
-import org.dinky.classloader.DinkyClassLoader;
-
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.RestOptions;
@@ -36,7 +34,7 @@ import cn.hutool.core.io.FileUtil;
  *
  * @since 2022/2/4 0:04
  */
-public class LocalBatchExecutor extends Executor {
+public class LocalBatchExecutor extends AbstractExecutor {
 
     public LocalBatchExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;

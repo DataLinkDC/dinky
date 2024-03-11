@@ -19,10 +19,6 @@
 
 package org.dinky.executor;
 
-import org.dinky.classloader.DinkyClassLoader;
-
-import java.lang.ref.WeakReference;
-
 /**
  * ExecutorFactory
  *

@@ -19,8 +19,6 @@
 
 package org.dinky.executor;
 
-import org.dinky.classloader.DinkyClassLoader;
-
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -29,7 +27,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  *
  * @since 2022/2/7 22:10
  */
-public class RemoteBatchExecutor extends Executor {
+public class RemoteBatchExecutor extends AbstractExecutor {
 
     public RemoteBatchExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
