@@ -71,7 +71,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2021/11/17
  */
 @Slf4j
-public abstract class AbstractExecutor implements Executor{
+public abstract class AbstractExecutor implements Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractExecutor.class);
 
