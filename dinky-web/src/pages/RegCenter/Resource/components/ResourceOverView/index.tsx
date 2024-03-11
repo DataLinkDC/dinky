@@ -53,7 +53,7 @@ const ResourceOverView: React.FC = () => {
   const refObject = useRef<HTMLDivElement>(null);
 
   const [uploadValue] = useState({
-    url: API_CONSTANTS.RESOURCE_UPLOAD,
+    url: API_CONSTANTS.BASE_URL + API_CONSTANTS.RESOURCE_UPLOAD,
     pid: '',
     description: ''
   });
