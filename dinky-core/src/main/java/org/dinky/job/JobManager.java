@@ -233,7 +233,7 @@ public class JobManager {
         CustomTableEnvironmentContext.clear();
         RowLevelPermissionsContext.clear();
         try {
-            getExecutor().getDinkyClassLoader().close();
+            executor.getDinkyClassLoader().close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -373,13 +373,16 @@ public class JobManager {
                 SqlType operationType = Operations.getOperationType(newStatement);
                 if (SqlType.INSERT == operationType || SqlType.SELECT == operationType) {
                     continue;
-                } else if (operationType.equals(SqlType.ADD) || operationType.equals(SqlType.ADD_JAR)) {
+                }
+
+                if (operationType.equals(SqlType.ADD) || operationType.equals(SqlType.ADD_JAR)) {
                     Set<File> allFilePath = AddJarSqlParseStrategy.getAllFilePath(item);
-                    getExecutor().getDinkyClassLoader().addURLs(allFilePath);
+                    executor.getDinkyClassLoader().addURLs(allFilePath);
                 } else if (operationType.equals(SqlType.ADD_FILE)) {
                     Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(item);
-                    getExecutor().getDinkyClassLoader().addURLs(allFilePath);
+                    executor.getDinkyClassLoader().addURLs(allFilePath);
                 }
+
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
                 result = ResultBuilder.build(
