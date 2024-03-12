@@ -385,8 +385,11 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     protected String getYarnContainerLog(ApplicationReport applicationReport) throws YarnException, IOException {
-        String logUrl = yarnClient
-                .getContainers(applicationReport.getCurrentApplicationAttemptId()).stream().findFirst().orElseThrow( () -> new BusException("No container found for application. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster "))
+        String logUrl = yarnClient.getContainers(applicationReport.getCurrentApplicationAttemptId()).stream()
+                .findFirst()
+                .orElseThrow(
+                        () -> new BusException(
+                                "No container found for application. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster "))
                 .getLogUrl();
         String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
         String log = ReUtil.getGroup1(HTML_TAG_REGEX, content);
