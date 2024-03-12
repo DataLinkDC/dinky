@@ -3572,9 +3572,9 @@ values (24, 6, '全局设置', '/settings/globalsetting', './SettingCenter/Globa
 insert into dinky_sys_menu
 values (25, 6, '系统日志', '/settings/systemlog', './SettingCenter/SystemLogs', 'settings:systemlog',
         'InfoCircleOutlined', 'C', 0, 131, '2023-08-11 14:06:55', '2023-09-26 15:18:53', null);
-insert into dinky_sys_menu
-values (26, 6, '进程', '/settings/process', './SettingCenter/Process', 'settings:process', 'ReconciliationOutlined',
-        'C', 0, 135, '2023-08-11 14:06:55', '2023-09-26 15:19:35', null);
+-- insert into dinky_sys_menu
+-- values (26, 6, '进程', '/settings/process', './SettingCenter/Process', 'settings:process', 'ReconciliationOutlined',
+--         'C', 0, 135, '2023-08-11 14:06:55', '2023-09-26 15:19:35', null);
 insert into dinky_sys_menu
 values (27, 4, '行权限', '/auth/rowpermissions', './AuthCenter/RowPermissions', 'auth:rowpermissions',
         'SafetyCertificateOutlined', 'C', 0, 100, '2023-08-11 14:06:55', '2023-09-26 15:12:46', null);
@@ -3633,7 +3633,7 @@ insert into dinky_sys_menu
 values (45, 5, '血缘', '/datastudio/bottom/lineage', null, 'datastudio:bottom:lineage', 'PushpinOutlined', 'F', 0, 15,
         '2023-09-01 18:07:15', '2023-09-26 14:52:00', null);
 insert into dinky_sys_menu
-values (46, 5, '表数据监控', '/datastudio/bottom/process', null, 'datastudio:bottom:process', 'TableOutlined', 'F', 0,
+values (46, 5, '表数据监控', '/datastudio/bottom/table-data', null, 'datastudio:bottom:table-data','TableOutlined', 'F', 0,
         16, '2023-09-01 18:07:55', '2023-09-26 14:52:38', null);
 insert into dinky_sys_menu
 values (47, 5, '小工具', '/datastudio/bottom/tool', null, 'datastudio:bottom:tool', 'ToolOutlined', 'F', 0, 17,
