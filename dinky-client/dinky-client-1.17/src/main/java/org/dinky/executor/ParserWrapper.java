@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import org.dinky.utils.LogUtil;
+
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.catalog.UnresolvedIdentifier;
 import org.apache.flink.table.expressions.ResolvedExpression;
@@ -29,7 +31,6 @@ import org.apache.flink.table.types.logical.RowType;
 import java.util.List;
 
 import javax.annotation.Nullable;
-import org.dinky.utils.LogUtil;
 
 public class ParserWrapper implements ExtendedParser {
 
@@ -48,7 +49,8 @@ public class ParserWrapper implements ExtendedParser {
         try {
             return customParser.getParser().parse(statement);
         } catch (Exception e) {
-            throw new RuntimeException(String.format("Failed to parse statement: %s , reason: %s", statement , LogUtil.getError(e)), e);
+            throw new RuntimeException(
+                    String.format("Failed to parse statement: %s , reason: %s", statement, LogUtil.getError(e)), e);
         }
     }
 
