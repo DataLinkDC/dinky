@@ -99,6 +99,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
                 break;
             }
         }
+
         return uriList;
     }
 }
