@@ -74,6 +74,11 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return getStreamGraph(submitParam, tEnv, classpaths);
     }
 
+    public static StreamGraph getStreamGraph(CustomTableEnvironment tEnv, List<URL> classpaths, String statement) {
+        JarSubmitParam submitParam = JarSubmitParam.build(statement);
+        return getStreamGraph(submitParam, tEnv, classpaths);
+    }
+
     public static StreamGraph getStreamGraph(
             JarSubmitParam submitParam, CustomTableEnvironment tEnv, List<URL> classpaths) {
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
