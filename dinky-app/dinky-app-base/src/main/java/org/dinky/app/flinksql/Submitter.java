@@ -276,13 +276,13 @@ public class Submitter {
             if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
                 File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
                 Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
-                if (GatewayType.KUBERNETES_APPLICATION.getLongValue().equals(type)) {
+                if (GatewayType.get(type).isKubernetesApplicationMode()) {
                     executor.addJar(info);
                 }
             } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD_FILE) {
                 File[] info = AddFileSqlParseStrategy.getInfo(sqlStatement);
                 Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addFile);
-                if (GatewayType.KUBERNETES_APPLICATION.getLongValue().equals(type)) {
+                if (GatewayType.get(type).isKubernetesApplicationMode()) {
                     executor.addJar(info);
                 }
             }
