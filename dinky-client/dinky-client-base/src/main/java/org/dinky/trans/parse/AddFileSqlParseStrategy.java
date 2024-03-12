@@ -20,7 +20,7 @@
 package org.dinky.trans.parse;
 
 import org.dinky.data.exception.DinkyException;
-import org.dinky.trans.ddl.AddFilerOperation;
+import org.dinky.trans.ddl.AddFileOperation;
 import org.dinky.utils.URLUtils;
 
 import org.apache.flink.table.operations.Operation;
@@ -86,7 +86,7 @@ public class AddFileSqlParseStrategy extends AbstractRegexParseStrategy {
 
     @Override
     public Operation convert(String statement) {
-        return new AddFilerOperation(statement);
+        return new AddFileOperation(statement);
     }
 
     @Override
