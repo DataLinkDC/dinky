@@ -30,13 +30,13 @@ import java.util.Optional;
 /**
  * @since 0.7.0
  */
-public class AddFilerOperation extends AbstractOperation implements ExtendOperation {
+public class AddFileOperation extends AbstractOperation implements ExtendOperation {
 
-    public AddFilerOperation(String statement) {
+    public AddFileOperation(String statement) {
         super(statement);
     }
 
-    public AddFilerOperation() {}
+    public AddFileOperation() {}
 
     @Override
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {

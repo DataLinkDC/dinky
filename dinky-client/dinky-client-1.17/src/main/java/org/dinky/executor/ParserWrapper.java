@@ -29,6 +29,7 @@ import org.apache.flink.table.types.logical.RowType;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import org.dinky.utils.LogUtil;
 
 public class ParserWrapper implements ExtendedParser {
 
@@ -44,8 +45,11 @@ public class ParserWrapper implements ExtendedParser {
         if (result != null) {
             return result;
         }
-
-        return customParser.getParser().parse(statement);
+        try {
+            return customParser.getParser().parse(statement);
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Failed to parse statement: %s , reason: %s", statement , LogUtil.getError(e)), e);
+        }
     }
 
     @Override
