@@ -35,6 +35,7 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.FlinkJsonUtil;
+import org.dinky.utils.ThreadUtil;
 
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
@@ -58,6 +59,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.service.Service;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
+import org.apache.hadoop.yarn.api.records.ContainerReport;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.YarnClient;
@@ -384,13 +386,20 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     protected String getYarnContainerLog(ApplicationReport applicationReport) throws YarnException, IOException {
-        String logUrl = yarnClient
-                .getContainers(applicationReport.getCurrentApplicationAttemptId())
-                .get(0)
-                .getLogUrl();
-        String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
-        String log = ReUtil.getGroup1(HTML_TAG_REGEX, content);
-        logger.info("\n\nHistory log url is: {}\n\n ", logUrl);
-        return log;
+        // Wait for up to 2.5 s. If the history log is not found yet, a prompt message will be returned.
+        int counts = 5;
+        while (yarnClient
+                        .getContainers(applicationReport.getCurrentApplicationAttemptId())
+                        .isEmpty()
+                && counts-- > 0) {
+            ThreadUtil.sleep(500);
+        }
+        List<ContainerReport> containers = yarnClient.getContainers(applicationReport.getCurrentApplicationAttemptId());
+        if (CollUtil.isNotEmpty(containers)) {
+            String logUrl = containers.get(0).getLogUrl();
+            String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
+            return ReUtil.getGroup1(HTML_TAG_REGEX, content);
+        }
+        return "No history log found yet. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster or please go to yarn interface to view the log.";
     }
 }
