@@ -85,7 +85,7 @@ sink，也可以使用 FlinkSQL 无需修改代码直接扩展新的 sink。
 # 将下面 Dinky根目录下 整库同步依赖包放置 $FLINK_HOME/lib下
 lib/dinky-client-base-${version}.jar
 lib/dinky-common-${version}.jar
-extends/flink${flink-version}/dinky-client-${version}.jar
+extends/flink${flink-version}/dinky/dinky-client-${version}.jar
 ```
 
 ### Application 模式提交
