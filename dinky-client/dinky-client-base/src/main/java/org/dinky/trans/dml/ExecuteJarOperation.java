@@ -19,13 +19,13 @@
 
 package org.dinky.trans.dml;
 
-import org.apache.commons.lang.StringUtils;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.URLUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.client.program.PackagedProgram;
 import org.apache.flink.client.program.PackagedProgramUtils;
@@ -34,11 +34,12 @@ import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
