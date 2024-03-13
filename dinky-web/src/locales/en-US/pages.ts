@@ -809,7 +809,7 @@ export default {
   'rc.ci.jma': 'JobManager Address',
   'rc.ci.jmha': 'JobManager HA Address',
   'rc.ci.jmha.tips':
-    'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example',
+    'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081',
   'rc.ci.jmha.validate.port': 'Does not meet the rules! Port number range [0-65535]',
   'rc.ci.jmha.validate.slash': 'Does not comply with the rules! Cannot contain /',
   'rc.ci.jmhaPlaceholder': 'Please enter the JobManager HA address!',
