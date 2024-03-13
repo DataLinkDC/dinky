@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.yarn;
 
+import org.apache.hadoop.yarn.api.records.ContainerReport;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
@@ -82,6 +83,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
+import org.dinky.utils.ThreadUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
@@ -385,12 +387,21 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     protected String getYarnContainerLog(ApplicationReport applicationReport) throws YarnException, IOException {
-        String logUrl = yarnClient
-                .getContainers(applicationReport.getCurrentApplicationAttemptId()).stream().findFirst().orElseThrow( () -> new BusException("No container found for application. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster "))
-                .getLogUrl();
-        String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
-        String log = ReUtil.getGroup1(HTML_TAG_REGEX, content);
-        logger.info("\n\nHistory log url is: {}\n\n ", logUrl);
-        return log;
+        // Wait for up to 2.5 s. If the history log is not found yet, a prompt message will be returned.
+        int counts = 5;
+        while (yarnClient.getContainers(applicationReport.getCurrentApplicationAttemptId()).isEmpty() && counts-- > 0) {
+            ThreadUtil.sleep(500);
+        }
+        List<ContainerReport> containers = yarnClient
+                .getContainers(applicationReport.getCurrentApplicationAttemptId());
+        if (CollUtil.isNotEmpty(containers)) {
+            String logUrl = containers
+                    .get(0)
+                    .getLogUrl();
+            String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
+            return ReUtil.getGroup1(HTML_TAG_REGEX, content);
+        }
+        return "No history log found yet. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster or please go to yarn interface to view the log.";
     }
+
 }
