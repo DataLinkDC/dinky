@@ -8,11 +8,11 @@ title: 作业实例状态
 
 **当前实例**
 
-![current_instance](http://www.aiwenmo.com/dinky/docs/administrator_guide/devops_center/job_manage/job_instance_status/current_instance.png)
+![current_instance](http://pic.dinky.org.cn/dinky/docs/administrator_guide/devops_center/job_manage/job_instance_status/current_instance.png)
 
 **历史实例**
 
-![history_instance](http://www.aiwenmo.com/dinky/docs/administrator_guide/devops_center/job_manage/job_instance_status/history_instance.png)
+![history_instance](http://pic.dinky.org.cn/dinky/docs/administrator_guide/devops_center/job_manage/job_instance_status/history_instance.png)
 
 ## 实例状态
 
@@ -68,7 +68,7 @@ title: 作业实例状态
 
 3.根据需要单击以下按钮，修改作业状态
 
-![Modify_instance](http://www.aiwenmo.com/dinky/docs/administrator_guide/devops_center/job_manage/job_instance_status/Modify_instance.png)
+![Modify_instance](http://pic.dinky.org.cn/dinky/docs/administrator_guide/devops_center/job_manage/job_instance_status/Modify_instance.png)
 
 其中，每个按钮含义如下表所示
 

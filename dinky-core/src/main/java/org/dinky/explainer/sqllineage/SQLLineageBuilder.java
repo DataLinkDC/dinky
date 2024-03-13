@@ -24,8 +24,8 @@ import org.dinky.data.model.Column;
 import org.dinky.explainer.lineage.LineageRelation;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.lineage.LineageTable;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -19,81 +19,100 @@
 
 package org.dinky.alert.sms;
 
-import static java.util.Objects.requireNonNull;
-
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.sms.config.SmsConfigLoader;
-import org.dinky.alert.sms.enums.ManuFacturers;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.dromara.sms4j.api.SmsBlend;
-import org.dromara.sms4j.api.universal.SupplierConfig;
-import org.dromara.sms4j.provider.base.BaseProviderFactory;
-import org.dromara.sms4j.provider.enumerate.SupplierType;
+import org.dromara.sms4j.api.entity.SmsResponse;
+import org.dromara.sms4j.comm.constant.SupplierConstant;
+import org.dromara.sms4j.provider.config.BaseConfig;
+import org.dromara.sms4j.provider.factory.BaseProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.hutool.json.JSONUtil;
-
-/** SmsSender todo: https://wind.kim/doc/start/springboot.html */
+/**
+ * SmsSender
+ * <p>
+ *    SMS sending service, use SMS4J <<a href="https://sms4j.com/doc3/supplierConfig.html">sms4j</a>> implement, currently only implements Aliyun and Tencent Cloud SMS alert
+ */
 public class SmsSender {
     private static final Logger logger = LoggerFactory.getLogger(SmsSender.class);
-    private static SupplierConfig configLoader = null;
-    private static BaseProviderFactory providerFactory = null;
+    private final Optional<BaseConfig> supplierConfigLoader;
+    private final BaseProviderFactory baseProviderFactory;
+    private final SmsBlend smsSendFactory;
+    private final List<String> phoneNumbers;
 
-    private static SmsBlend smsSendFactory = null;
-
-    /** manufacturers of sms */
-    private Integer manufacturers;
-
-    SmsSender(String config) {
-        int manufacturersId = Integer.parseInt(JSONUtil.parseObj(config).getStr(SmsConstants.MANU_FACTURERS));
-        this.manufacturers = manufacturersId;
-        requireNonNull(manufacturers, "manufacturers is null");
-        configLoader = SmsConfigLoader.getConfigLoader(config, manufacturers);
-        providerFactory = getSmsTpye(manufacturersId).getProviderFactory();
-
-        logger.info("you choose {} manufacturers", ManuFacturers.getManuFacturers(manufacturersId));
+    SmsSender(Map<String, Object> config) {
+        this.supplierConfigLoader = Optional.of(SmsConfigLoader.getConfigSupplierConfig(config));
+        this.baseProviderFactory = SmsConfigLoader.getBaseProviderFactory(
+                supplierConfigLoader.get().getSupplier());
+        this.smsSendFactory = baseProviderFactory.createSms(supplierConfigLoader.get());
+        this.phoneNumbers = SmsConfigLoader.getPhoneNumberList(config);
     }
 
-    public synchronized AlertResult send(String title, String content) {
-        providerFactory.refresh(configLoader);
-        smsSendFactory = providerFactory.createSms(configLoader);
-        AlertResult alertResult = new AlertResult();
-        logger.info("send sms, title: {}, content: {}", title, content);
-        // todo: 1. support multi sms manufacturers send
-        // 使用自定义模板群发短信 || use custom template mass texting
-        smsSendFactory.massTexting(Arrays.asList("17722226666"), "110", new LinkedHashMap<>());
-        // todo: 2. validate sms send result
-        return alertResult;
-    }
-
-    public static SupplierType getSmsTpye(Integer manufacturersType) {
-
-        switch (manufacturersType) {
-            case 1:
-                return SupplierType.ALIBABA;
-            case 2:
-                return SupplierType.HUAWEI;
-            case 3:
-                return SupplierType.YUNPIAN;
-            case 4:
-                return SupplierType.TENCENT;
-            case 5:
-                return SupplierType.UNI_SMS;
-            case 6:
-                return SupplierType.JD_CLOUD;
-            case 7:
-                return SupplierType.CLOOPEN;
-            case 8:
-                return SupplierType.EMAY;
-            case 9:
-                return SupplierType.CTYUN;
-            default:
-                throw new IllegalArgumentException(
-                        "Unsupported manufacturers type: " + ManuFacturers.getManuFacturers(manufacturersType));
+    /**
+     * Sends the specified content via SMS and returns the result.
+     *
+     * @param  content    the content to be sent
+     * @return            the result of the SMS send operation
+     */
+    public synchronized AlertResult send(String content) {
+        SmsResponse smsResponse;
+        if (supplierConfigLoader.isPresent() && supplierConfigLoader.get().getTemplateId() != null) {
+            String templateId = supplierConfigLoader.get().getTemplateId();
+            smsResponse = smsSendFactory.massTexting(phoneNumbers, templateId, buildPlatFormVariableOfContent(content));
+        } else {
+            throw new RuntimeException("sms templateId is null");
         }
+        return validateSendResult(smsResponse);
+    }
+
+    /**
+     * Builds a platform variable of the content for an SMS alert template.
+     * <p>
+     *     zh-CN:因为不同的厂商有不同的模板变量，所以这里需要根据不同的厂商来构建不同的模板变量
+     *     en-US:Because different manufacturers have different template variables, so here you need to build different template variables according to different manufacturers
+     *
+     * @param  content  the content of the alert template
+     * @return          a LinkedHashMap containing the platform variable for the content
+     */
+    private LinkedHashMap<String, String> buildPlatFormVariableOfContent(String content) {
+        LinkedHashMap<String, String> smsParams = new LinkedHashMap<>();
+        String templateVariableKey = "";
+        switch (baseProviderFactory.getSupplier()) {
+            case SupplierConstant.ALIBABA:
+                templateVariableKey = SmsConstants.ALIYUNM_SMS_TEMPLATE_VARIABLES;
+                break;
+            case SupplierConstant.TENCENT:
+                templateVariableKey = SmsConstants.TENCENT_SMS_TEMPLATE_VARIABLES_1;
+                break;
+        }
+
+        smsParams.put(templateVariableKey, content);
+        return smsParams;
+    }
+
+    private AlertResult validateSendResult(SmsResponse smsResponse) {
+        AlertResult alertResult = new AlertResult();
+        if (smsResponse.isSuccess()) {
+            logger.info(
+                    "sms send success, phoneNumbers: {}, message: {}",
+                    phoneNumbers,
+                    smsResponse.getData().toString());
+            alertResult.setSuccess(true);
+            alertResult.setMessage("sms send success");
+        } else {
+            String errorMsg = String.format(
+                    "sms send fail, reason: %s", smsResponse.getData().toString());
+            alertResult.setSuccess(false);
+            alertResult.setMessage(errorMsg);
+            logger.error(errorMsg);
+        }
+        return alertResult;
     }
 }

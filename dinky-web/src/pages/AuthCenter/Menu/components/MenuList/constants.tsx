@@ -20,6 +20,7 @@
 import { BackIcon } from '@/components/Icons/CustomIcons';
 import { TagAlignLeft } from '@/components/StyledComponents';
 import { IconRender } from '@/pages/AuthCenter/Menu/function';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import * as Icons from '@ant-design/icons';
 import { DeleteTwoTone, PlusCircleTwoTone } from '@ant-design/icons';
@@ -63,13 +64,13 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     icon: <PlusCircleTwoTone />,
     label: l('right.menu.addSub'),
     disabled: isDisabled,
-    path: '/auth/menu/addSub'
+    path: PermissionConstants.AUTH_MENU_ADD_SUB
   },
   {
     key: 'delete',
     icon: <DeleteTwoTone twoToneColor={'red'} />,
     label: l('button.delete'),
-    path: '/auth/menu/delete'
+    path: PermissionConstants.AUTH_MENU_DELETE
   },
   {
     key: 'cancel',

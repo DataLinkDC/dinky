@@ -48,7 +48,11 @@ const CodeShowProps = {
 
 const GenSQL: React.FC<GenSQLProps> = (props) => {
   const { queryParams, tagDisabled } = props;
-  const [genSQL, setGenSQL] = useState<Partial<DataSources.SqlGeneration>>({});
+  const [genSQL, setGenSQL] = useState<DataSources.SqlGeneration>({
+    flinkSqlCreate: '',
+    sqlSelect: '',
+    sqlCreate: ''
+  });
   const [activeKey, setActiveKey] = React.useState<string>('flinkddl');
 
   const queryDDL = useCallback(async () => {
@@ -92,21 +96,21 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
   const tabList = [
     {
       key: 'flinkddl',
-      label: renderLabel(genSQL.flinkSqlCreate || '', 'Flink DDL'),
+      label: renderLabel(genSQL?.flinkSqlCreate ?? '', 'Flink DDL'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.flinkSqlCreate)
+      children: renderContent(genSQL?.flinkSqlCreate ?? '')
     },
     {
       key: 'select',
-      label: renderLabel(genSQL.sqlSelect || '', 'Select'),
+      label: renderLabel(genSQL?.sqlSelect ?? '', 'Select'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.sqlSelect)
+      children: renderContent(genSQL?.sqlSelect ?? '')
     },
     {
       key: 'sqlddl',
-      label: renderLabel(genSQL.sqlCreate || '', 'SQL DDL'),
+      label: renderLabel(genSQL?.sqlCreate ?? '', 'SQL DDL'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.sqlCreate)
+      children: renderContent(genSQL?.sqlCreate ?? '')
     }
   ];
 
@@ -124,7 +128,7 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
    */
   return (
     <>
-      {genSQL.flinkSqlCreate || genSQL.sqlSelect || genSQL.sqlCreate ? (
+      {genSQL?.flinkSqlCreate || genSQL?.sqlSelect || genSQL?.sqlCreate ? (
         <ProCard tabs={{ ...restTabProps }} />
       ) : (
         <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />

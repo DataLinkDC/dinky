@@ -20,7 +20,6 @@
 package org.dinky.service;
 
 import org.dinky.data.dto.AbstractStatementDTO;
-import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSubmitDto;
@@ -36,6 +35,7 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -75,19 +75,21 @@ public interface TaskService extends ISuperService<Task> {
     /**
      * Debug the given task and return the job result.
      *
-     * @param debugDTO The param of preview task.
+     * @param task The param of preview task.
      * @return A {@link JobResult} object representing the result of the submitted task.
      * @throws ExcuteException If there is an error debugging the task.
      */
-    JobResult debugTask(DebugDTO debugDTO) throws Exception;
+    JobResult debugTask(TaskDTO task) throws Exception;
 
     /**
-     * Restart the given task and return the job result.
-     *
+     * This class implements the TaskService interface and provides functionality to restart a task.
+     * It checks if the task exists and if it is not a common SQL dialect. If the job instance is not done,
+     * it cancels the job and triggers a savepoint if necessary.
+     * It then waits for the job to complete and submits the task again with the savepoint path.
      * @param id The ID of the task to restart.
-     * @param savePointPath The path of the save point for the job execution.
-     * @return A {@link JobResult} object representing the result of the restarted task.
-     * @throws ExcuteException If there is an error restarting the task.
+     * @param savePointPath The savepoint path to use for restarting the task.
+     * @return A JobResult object containing the status of the job.
+     * @throws Exception If there is an error while restarting the task.
      */
     JobResult restartTask(Integer id, String savePointPath) throws Exception;
 
@@ -115,7 +117,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param task The {@link TaskDTO} object representing the task to cancel.
      * @return true if the task job is successfully cancelled, false otherwise.
      */
-    boolean cancelTaskJob(TaskDTO task);
+    boolean cancelTaskJob(TaskDTO task, boolean withSavePoint, boolean forceCancel);
 
     /**
      * Get the stream graph of the given task job.
@@ -194,6 +196,12 @@ public interface TaskService extends ISuperService<Task> {
      * @return A list of {@link Task} objects representing the UDFs.
      */
     List<Task> getAllUDF();
+
+    /**
+     * Get a list of all release user-defined functions (UDFs) in the system.
+     * @return A list of {@link Task} objects representing the release UDFs.
+     */
+    List<Task> getReleaseUDF();
 
     /**
      * Get the API address of the given task.
@@ -280,4 +288,11 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link LineageResult} object representing the found task lineage.
      */
     LineageResult getTaskLineage(Integer id);
+
+    /**
+     * Build the job submit config with the given task
+     * @param task
+     * @return
+     */
+    JobConfig buildJobSubmitConfig(TaskDTO task);
 }

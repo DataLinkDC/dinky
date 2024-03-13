@@ -18,6 +18,7 @@
  */
 
 export default {
+  'button.add': '添加',
   'button.check': '检查',
   'button.graph': 'DAG',
   'button.create': '新建',
@@ -62,6 +63,7 @@ export default {
   'button.collapse-all': '全部折叠',
   'button.position': '定位',
   'button.test': '测试',
+  'button.test.connection': '测试连接',
   'button.clear': '清除',
   'button.copy': '复制',
   'button.refreshData': '刷新数据',
@@ -78,6 +80,7 @@ export default {
   'button.backTop': '返回顶部',
   'button.backBottom': '去底部',
   'button.downScroll': '向下滚动',
+  'button.wrap': '换行',
   'button.upScroll': '向上滚动',
   'button.stopRefresh': '停止自动刷新',
   'button.startRefresh': '开始自动刷新(5s/次)',

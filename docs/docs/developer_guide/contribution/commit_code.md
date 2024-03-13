@@ -1,5 +1,6 @@
 ---
-sidebar_position: 6
+sidebar_position: 3
+position: 3
 id: commit_code
 title: 提交代码须知
 ---
@@ -8,29 +9,23 @@ title: 提交代码须知
 
 # 提交代码
 
-* 首先从远端仓库 *https://github.com/DataLinkDC/dlink.git*  fork 一份代码到自己的仓库中
+* 首先从远端仓库 *https://github.com/DataLinkDC/dinky.git*  fork 一份代码到自己的仓库中
 
-* 远端仓库中目前有三个分支：
-
-    * master 正常交付分支
-      发布稳定版本以后，将稳定版本分支的代码合并到 master 上。
-
-    * dev 日常开发分支
-      日常 dev 开发分支，新提交的代码都可以 pull request 到这个分支上。
-
-    * 0.6.0 发布版本分支
-      发布版本分支，后续会有 1.0... 等版本分支。
+* 远端仓库中分支：
+    * dev 日常开发分支: 日常 dev 开发分支，新提交的代码都可以 pull request 到这个分支上。
+    * 0.7.x 发布版本分支: 0.7.x 发布版本分支,目前仅接受 bugfix
+    * 1.x.x 发布版本分支
 
 * 把自己仓库 clone 到本地
 
   ```sh
-  git clone https://github.com/DataLinkDC/dlink.git
+  git clone https://github.com/DataLinkDC/dinky.git
   ```
 
 * 添加远端仓库地址，命名为 upstream
 
   ```sh
-  git remote add upstream https://github.com/DataLinkDC/dlink.git
+  git remote add upstream https://github.com/DataLinkDC/dinky.git
   ```
 
 

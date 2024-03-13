@@ -24,36 +24,29 @@ import { Monaco } from '@monaco-editor/react';
 
 /**
  * 避免重复加载语言, 通过获取到 language 的 id 来判断是否已经加载过
- * @param monaco
+ * @param monacoLanguages
  * @param language
  */
-function canLoadLanguage(monaco: Monaco | undefined, language: string) {
-  return !monaco?.languages?.getEncodedLanguageId(language);
+function canLoadLanguage(monacoLanguages: Monaco['languages'] | undefined, language: string) {
+  return !monacoLanguages?.getEncodedLanguageId(language);
 }
 
 /**
- * 加载自定义语言 (不带自动补全)
- * @param monaco
+ * 加载自定义语言
+ * @param monacoLanguages
+ * @param monacoEditor
  * @param registerCompletion 是否注册自动补全 (默认不注册)
  * @constructor
  */
 export function LoadCustomEditorLanguage(
-  monaco?: Monaco | undefined,
+  monacoLanguages?: Monaco['languages'] | undefined,
+  monacoEditor?: Monaco['editor'] | undefined,
   registerCompletion: boolean = false
 ) {
-  if (canLoadLanguage(monaco, CustomEditorLanguage.FlinkSQL)) {
-    FlinkSQLLanguage(monaco, registerCompletion);
+  if (canLoadLanguage(monacoLanguages, CustomEditorLanguage.FlinkSQL)) {
+    FlinkSQLLanguage(monacoLanguages, monacoEditor, registerCompletion);
   }
-  if (canLoadLanguage(monaco, CustomEditorLanguage.JavaLog)) {
-    LogLanguage(monaco);
+  if (canLoadLanguage(monacoLanguages, CustomEditorLanguage.JavaLog)) {
+    LogLanguage(monacoLanguages);
   }
-}
-
-/**
- * 加载自定义语言 (带自动补全)
- * @param monaco
- * @constructor
- */
-export function LoadCustomEditorLanguageWithCompletion(monaco?: Monaco | undefined) {
-  LoadCustomEditorLanguage(monaco, true);
 }

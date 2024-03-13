@@ -18,30 +18,7 @@
  */
 
 import { FormConfig } from '@/pages/RegCenter/Cluster/Configuration/components/data';
-import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
-import { DefaultOptionType } from 'rc-select/es/Select';
-
-/**
- * Cluster config type
- */
-export const CLUSTER_CONFIG_TYPE: DefaultOptionType[] = [
-  {
-    value: ClusterType.YARN,
-    label: 'Flink On Yarn',
-    key: ClusterType.YARN
-  },
-  {
-    value: ClusterType.KUBERNETES_NATIVE,
-    label: 'Kubernetes Native',
-    key: ClusterType.KUBERNETES_NATIVE
-  },
-  {
-    value: ClusterType.KUBERNETES_OPERATOR,
-    label: 'Kubernetes Operator',
-    key: ClusterType.KUBERNETES_OPERATOR
-  }
-];
 
 export const FLINK_CONFIG_LIST: FormConfig[] = [
   {
@@ -82,70 +59,27 @@ export const FLINK_CONFIG_LIST: FormConfig[] = [
   }
 ];
 
-export const DOCKER_CONFIG_LIST: FormConfig[] = [
-  {
-    name: 'dinky.remote.addr',
-    label: l('rc.cc.docker.dinky.addr'),
-    placeholder: l('rc.cc.docker.dinky.addrHelp'),
-    tooltip: l('rc.cc.docker.dinky.addrHelp'),
-    defaultValue: '127.0.0.1:8888'
-  },
-  {
-    name: 'docker.instance',
-    label: l('rc.cc.docker.instance'),
-    placeholder: l('rc.cc.docker.instanceHelp'),
-    tooltip: l('rc.cc.docker.instanceHelp')
-  },
-  {
-    name: 'docker.registry.url',
-    label: l('rc.cc.docker.url'),
-    placeholder: l('rc.cc.docker.urlHelp'),
-    tooltip: l('rc.cc.docker.urlHelp')
-  },
-  {
-    name: 'docker.registry.username',
-    label: l('rc.cc.docker.username'),
-    placeholder: l('rc.cc.docker.usernameHelp'),
-    tooltip: l('rc.cc.docker.usernameHelp')
-  },
-  {
-    name: 'docker.registry.password',
-    label: l('rc.cc.docker.password'),
-    placeholder: l('rc.cc.docker.passwordHelp'),
-    tooltip: l('rc.cc.docker.passwordHelp')
-  },
-  {
-    name: 'docker.image.tag',
-    label: l('rc.cc.docker.tag'),
-    placeholder: l('rc.cc.docker.tagHelp'),
-    tooltip: l('rc.cc.docker.tagHelp')
-  },
-  {
-    name: 'docker.image.dockerfile',
-    label: l('rc.cc.docker.file'),
-    placeholder: l('rc.cc.docker.fileHelp'),
-    tooltip: l('rc.cc.docker.fileHelp')
-  }
-];
-
 export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
   {
     name: 'kubernetes.namespace',
     label: l('rc.cc.k8s.namespace'),
     placeholder: l('rc.cc.k8s.namespaceHelp'),
-    tooltip: l('rc.cc.k8s.namespaceHelp')
+    tooltip: l('rc.cc.k8s.namespaceHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.service.account',
     label: l('rc.cc.k8s.account'),
     placeholder: l('rc.cc.k8s.accountHelp'),
-    tooltip: l('rc.cc.k8s.accountHelp')
+    tooltip: l('rc.cc.k8s.accountHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.container.image',
     label: l('rc.cc.k8s.image'),
     placeholder: l('rc.cc.k8s.imageHelp'),
-    tooltip: l('rc.cc.k8s.imageHelp')
+    tooltip: l('rc.cc.k8s.imageHelp'),
+    rules: [{ required: true }]
   },
   {
     name: 'kubernetes.jobmanager.cpu',
@@ -158,11 +92,5 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
     label: l('rc.cc.k8s.tmCpu'),
     placeholder: l('rc.cc.k8s.tmCpuHelp'),
     tooltip: l('rc.cc.k8s.tmCpuHelp')
-  },
-  {
-    name: 'kubernetes.config.file',
-    label: l('rc.cc.k8s.configFile'),
-    placeholder: l('rc.cc.k8s.configFileHelp'),
-    tooltip: l('rc.cc.k8s.configFileHelp')
   }
 ];

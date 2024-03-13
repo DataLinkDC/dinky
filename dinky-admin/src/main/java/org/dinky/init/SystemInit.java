@@ -19,11 +19,8 @@
 
 package org.dinky.init;
 
-import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.pool.ScheduleThreadPool;
 import org.dinky.daemon.task.DaemonTask;
@@ -34,14 +31,12 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.rbac.Tenant;
-import org.dinky.data.properties.OssProperties;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
-import org.dinky.job.DynamicResizeFlinkJobPoolTask;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.SystemMetricsTask;
-import org.dinky.oss.OssTemplate;
+import org.dinky.resource.BaseResourceManager;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -50,14 +45,11 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
-import org.dinky.service.resource.impl.HdfsResourceManager;
-import org.dinky.service.resource.impl.OssResourceManager;
 import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.UDFUtils;
 
 import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
-import org.apache.hadoop.fs.FileSystem;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +68,6 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -110,6 +101,7 @@ public class SystemInit implements ApplicationRunner {
         initResources();
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
+        sysConfigService.initExpressionVariables();
 
         for (Tenant tenant : tenants) {
             taskService.initDefaultFlinkSQLEnv(tenant.getId());
@@ -133,50 +125,18 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesOssEndpoint(),
                         systemConfiguration.getResourcesHdfsUser(),
                         systemConfiguration.getResourcesHdfsDefaultFS(),
+                        systemConfiguration.getResourcesHdfsCoreSite(),
+                        systemConfiguration.getResourcesHdfsHdfsSite(),
                         systemConfiguration.getResourcesOssAccessKey(),
-                        systemConfiguration.getResourcesOssRegion())
+                        systemConfiguration.getResourcesOssRegion(),
+                        systemConfiguration.getResourcesPathStyleAccess())
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
-                        switch (systemConfiguration.getResourcesModel().getValue()) {
-                            case OSS:
-                                OssProperties ossProperties = new OssProperties();
-                                ossProperties.setAccessKey(systemConfiguration
-                                        .getResourcesOssAccessKey()
-                                        .getValue());
-                                ossProperties.setSecretKey(systemConfiguration
-                                        .getResourcesOssSecretKey()
-                                        .getValue());
-                                ossProperties.setEndpoint(systemConfiguration
-                                        .getResourcesOssEndpoint()
-                                        .getValue());
-                                ossProperties.setBucketName(systemConfiguration
-                                        .getResourcesOssBucketName()
-                                        .getValue());
-                                ossProperties.setRegion(systemConfiguration
-                                        .getResourcesOssRegion()
-                                        .getValue());
-                                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
-                                break;
-                            case HDFS:
-                                final org.apache.hadoop.conf.Configuration configuration =
-                                        new org.apache.hadoop.conf.Configuration();
-                                configuration.set(
-                                        "fs.defaultFS",
-                                        systemConfiguration
-                                                .getResourcesHdfsDefaultFS()
-                                                .getValue());
-                                try {
-                                    FileSystem fileSystem = FileSystem.get(
-                                            getDefaultUri(configuration),
-                                            configuration,
-                                            systemConfiguration
-                                                    .getResourcesHdfsUser()
-                                                    .getValue());
-                                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
-                                } catch (Exception e) {
-                                    throw new DinkyException(e);
-                                }
+                        try {
+                            BaseResourceManager.initResourceManager();
+                        } catch (Exception e) {
+                            log.error("Init resource error: ", e);
                         }
                     }
                 }));
@@ -201,14 +161,11 @@ public class SystemInit implements ApplicationRunner {
         };
         metricsListener.accept(metricsSysEnable);
         metricsListener.accept(sysGatherTiming);
+        metricsSysEnable.runChangeEvent();
 
         // Init clear job history task
         DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
         schedule.addSchedule(clearJobHistoryTask, new PeriodicTrigger(1, TimeUnit.HOURS));
-
-        // Init flink job dynamic pool task
-        DaemonTask flinkJobPoolTask = DaemonTask.build(new DaemonTaskConfig(DynamicResizeFlinkJobPoolTask.TYPE));
-        schedule.addSchedule(flinkJobPoolTask, new PeriodicTrigger(FlinkTaskConstant.POLLING_GAP));
 
         // Add flink running job task to flink job thread pool
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
@@ -224,33 +181,31 @@ public class SystemInit implements ApplicationRunner {
      * init DolphinScheduler
      */
     private void initDolphinScheduler() {
-        systemConfiguration
-                .getAllConfiguration()
-                .get("dolphinscheduler")
-                .forEach(c -> c.addParameterCheck(v -> {
-                    if (Boolean.TRUE.equals(
-                            systemConfiguration.getDolphinschedulerEnable().getValue())) {
-                        if (StrUtil.isEmpty(Convert.toStr(v))) {
-                            sysConfigService.updateSysConfigByKv(
-                                    systemConfiguration
-                                            .getDolphinschedulerEnable()
-                                            .getKey(),
-                                    "false");
-                            throw new DinkyException("Before starting DolphinScheduler"
-                                    + " docking, please fill in the"
-                                    + " relevant configuration");
-                        }
-                        try {
-                            project = projectClient.getDinkyProject();
-                            if (Asserts.isNull(project)) {
-                                project = projectClient.createDinkyProject();
-                            }
-                        } catch (Exception e) {
-                            log.error("Error in DolphinScheduler: ", e);
-                            throw new DinkyException(e);
-                        }
-                    }
-                }));
+        List<Configuration<?>> configurationList =
+                systemConfiguration.getAllConfiguration().get("dolphinscheduler");
+        configurationList.forEach(c -> c.addParameterCheck(this::aboutDolphinSchedulerInitOperation));
+        // init call for once
+        aboutDolphinSchedulerInitOperation("init");
+    }
+
+    private void aboutDolphinSchedulerInitOperation(Object v) {
+        if (Boolean.TRUE.equals(systemConfiguration.getDolphinschedulerEnable().getValue())) {
+            if (StrUtil.isEmpty(Convert.toStr(v))) {
+                sysConfigService.updateSysConfigByKv(
+                        systemConfiguration.getDolphinschedulerEnable().getKey(), "false");
+                throw new DinkyException("Before starting DolphinScheduler"
+                        + " docking, please fill in the"
+                        + " relevant configuration");
+            }
+            try {
+                project = projectClient.getDinkyProject();
+                if (project == null) {
+                    project = projectClient.createDinkyProject();
+                }
+            } catch (Exception e) {
+                log.warn("Get or create DolphinScheduler project failed, please check the config of DolphinScheduler!");
+            }
+        }
     }
 
     /**
@@ -266,7 +221,7 @@ public class SystemInit implements ApplicationRunner {
     }
 
     public void registerUDF() {
-        List<Task> allUDF = taskService.getAllUDF();
+        List<Task> allUDF = taskService.getReleaseUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }

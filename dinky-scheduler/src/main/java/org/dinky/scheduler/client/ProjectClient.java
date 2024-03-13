@@ -35,8 +35,11 @@ import org.springframework.stereotype.Component;
 
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 
-/** 项目 */
+/**
+ * 项目
+ */
 @Component
 public class ProjectClient {
 
@@ -55,8 +58,7 @@ public class ProjectClient {
                         .getDolphinschedulerProjectName()
                         .getValue());
         map.put("description", "自动创建");
-
-        String content = HttpRequest.post(SystemConfiguration.getInstances()
+        HttpResponse httpResponse = HttpRequest.post(SystemConfiguration.getInstances()
                                 .getDolphinschedulerUrl()
                                 .getValue()
                         + "/projects")
@@ -67,8 +69,13 @@ public class ProjectClient {
                                 .getValue())
                 .form(map)
                 .timeout(5000)
-                .execute()
-                .body();
+                .execute();
+        if (httpResponse.getStatus() != 200) {
+            SystemConfiguration.getInstances().getDolphinschedulerEnable().setValue(false);
+            logger.error("DolphInScheduler connection failed, Reason: {}", httpResponse.getStatus());
+            return null;
+        }
+        String content = httpResponse.body();
         return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Project>>() {}));
     }
 
@@ -79,7 +86,7 @@ public class ProjectClient {
      */
     public Project getDinkyProject() {
 
-        String content = HttpRequest.get(SystemConfiguration.getInstances()
+        HttpResponse httpResponse = HttpRequest.get(SystemConfiguration.getInstances()
                                 .getDolphinschedulerUrl()
                                 .getValue()
                         + "/projects")
@@ -92,9 +99,14 @@ public class ProjectClient {
                         .getDolphinschedulerProjectName()
                         .getValue()))
                 .timeout(5000)
-                .execute()
-                .body();
+                .execute();
 
+        if (httpResponse.getStatus() != 200) {
+            SystemConfiguration.getInstances().getDolphinschedulerEnable().setValue(false);
+            logger.error("DolphInScheduler connection failed, Reason: {}", httpResponse.getStatus());
+            return null;
+        }
+        String content = httpResponse.body();
         try {
             return MyJSONUtil.toPageBeanAndFindByName(
                     content,

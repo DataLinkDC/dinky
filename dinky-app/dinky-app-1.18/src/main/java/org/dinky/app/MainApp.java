@@ -48,13 +48,8 @@ public class MainApp {
         String config = parameters.get(AppParamConstant.config);
         config = isEncrypt ? new String(Base64.getDecoder().decode(config)) : config;
         AppParamConfig appConfig = JsonUtils.toJavaBean(config, AppParamConfig.class);
-        try {
-            log.info("dinky app is Ready to run, config is {}", appConfig);
-            DBUtil.init(appConfig);
-            Submitter.submit(appConfig);
-        } catch (Exception e) {
-            log.error("exectue app failed with config: {}", appConfig);
-            throw e;
-        }
+        log.info("dinky app is Ready to run, config is {}", appConfig);
+        DBUtil.init(appConfig);
+        Submitter.submit(appConfig);
     }
 }

@@ -26,9 +26,10 @@ import React from 'react';
 interface EnvConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
-export const EnvConfig = ({ data, onSave }: EnvConfigProps) => {
+export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -39,10 +40,10 @@ export const EnvConfig = ({ data, onSave }: EnvConfigProps) => {
 
   return (
     <>
-      {/*tooltip={l('sys.setting.dinky.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
+        auth={auth}
         tag={
           <>
             <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>

@@ -33,7 +33,6 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
-import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.explainer.lineage.LineageBuilder;
@@ -42,12 +41,10 @@ import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.sql.FlinkQuery;
 import org.dinky.utils.FlinkTableMetadataUtil;
 import org.dinky.utils.RunTimeUtil;
 
@@ -76,6 +73,7 @@ public class StudioServiceImpl implements StudioService {
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
     private final Cache<String, JobManager> jobManagerCache = CacheUtil.newTimedCache(1000 * 60 * 2);
+    private final String DEFAULT_CATALOG = "default_catalog";
 
     private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
         String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
@@ -85,11 +83,6 @@ public class StudioServiceImpl implements StudioService {
         IResult jobResult = jobManager.executeDDL(studioMetaStoreDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return jobResult;
-    }
-
-    @Override
-    public JdbcSelectResult getCommonSqlData(Integer taskId) {
-        return (JdbcSelectResult) ResultPool.getCommonSqlCache(taskId);
     }
 
     @Override
@@ -108,7 +101,7 @@ public class StudioServiceImpl implements StudioService {
     public LineageResult getLineage(StudioLineageDTO studioCADTO) {
         // TODO 添加ProcessStep
         if (Asserts.isNotNullString(studioCADTO.getDialect())
-                && !Dialect.FLINK_SQL.equalsVal(studioCADTO.getDialect())) {
+                && !Dialect.FLINK_SQL.isDialect(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
                 log.error("Job's data source not selected!");
                 return null;
@@ -118,7 +111,7 @@ public class StudioServiceImpl implements StudioService {
                 log.error("Job's data source does not exist!");
                 return null;
             }
-            if (Dialect.DORIS.equalsVal(studioCADTO.getDialect())) {
+            if (Dialect.DORIS.isDialect(studioCADTO.getDialect())) {
                 return SQLLineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
                 return SQLLineageBuilder.getSqlLineage(
@@ -149,7 +142,7 @@ public class StudioServiceImpl implements StudioService {
         if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
             DataBase dataBase = dataBaseService.getById(studioMetaStoreDTO.getDatabaseId());
             if (!Asserts.isNull(dataBase)) {
-                Catalog defaultCatalog = Catalog.build(FlinkQuery.defaultCatalog());
+                Catalog defaultCatalog = Catalog.build(DEFAULT_CATALOG);
                 Driver driver = Driver.build(dataBase.getDriverConfig());
                 defaultCatalog.setSchemas(driver.listSchemas());
                 catalogs.add(defaultCatalog);

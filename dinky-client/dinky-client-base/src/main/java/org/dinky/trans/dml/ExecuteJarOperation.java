@@ -36,9 +36,14 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
+import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,12 +65,17 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return Optional.of(TABLE_RESULT_OK);
     }
 
-    protected StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
-        JarSubmitParam submitParam = JarSubmitParam.build(statement);
-        return getStreamGraph(submitParam, tEnv);
+    public StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
+        return getStreamGraph(tEnv, Collections.emptyList());
     }
 
-    public static StreamGraph getStreamGraph(JarSubmitParam submitParam, CustomTableEnvironment tEnv) {
+    public StreamGraph getStreamGraph(CustomTableEnvironment tEnv, List<URL> classpaths) {
+        JarSubmitParam submitParam = JarSubmitParam.build(statement);
+        return getStreamGraph(submitParam, tEnv, classpaths);
+    }
+
+    public static StreamGraph getStreamGraph(
+            JarSubmitParam submitParam, CustomTableEnvironment tEnv, List<URL> classpaths) {
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
                 : SavepointRestoreSettings.forPath(
@@ -73,16 +83,30 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         PackagedProgram program;
         try {
             Configuration configuration = tEnv.getConfig().getConfiguration();
-            File file = URLUtils.toFile(submitParam.getUri());
+            File file =
+                    Opt.ofBlankAble(submitParam.getUri()).map(URLUtils::toFile).orElse(null);
+            if (!PackagedProgramUtils.isPython(submitParam.getMainClass())) {
+                tEnv.addJar(file);
+            } else {
+                // python submit
+                submitParam.setArgs("--python " + file.getAbsolutePath() + " "
+                        + Opt.ofBlankAble(submitParam.getArgs()).orElse(""));
+                file = null;
+            }
+
             program = PackagedProgram.newBuilder()
                     .setJarFile(file)
                     .setEntryPointClassName(submitParam.getMainClass())
                     .setConfiguration(configuration)
                     .setSavepointRestoreSettings(savepointRestoreSettings)
                     .setArguments(RunTimeUtil.handleCmds(submitParam.getArgs()))
+                    .setUserClassPaths(classpaths)
                     .build();
-            tEnv.addJar(file);
-            Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, 1, true);
+            int parallelism = StrUtil.isNumeric(submitParam.getParallelism())
+                    ? Convert.toInt(submitParam.getParallelism())
+                    : tEnv.getStreamExecutionEnvironment().getParallelism();
+            Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, parallelism, true);
+            program.close();
             Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
             return (StreamGraph) pipeline;
         } catch (Exception e) {
@@ -97,6 +121,10 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
 
     public StreamGraph explain(CustomTableEnvironment tEnv) {
         return getStreamGraph(tEnv);
+    }
+
+    public StreamGraph explain(CustomTableEnvironment tEnv, List<URL> classpaths) {
+        return getStreamGraph(tEnv, classpaths);
     }
 
     @Setter

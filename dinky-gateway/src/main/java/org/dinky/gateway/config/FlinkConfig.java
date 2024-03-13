@@ -22,6 +22,7 @@ package org.dinky.gateway.config;
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.model.CustomConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,21 +93,19 @@ public class FlinkConfig {
 
     @ApiModelProperty(
             value = "Additional configuration properties",
-            dataType = "Map",
-            example = "{\"key1\":\"value1\",\"key2\":\"value2\"}",
-            notes = "Additional configuration properties for the job")
-    private Map<String, String> configuration = new HashMap<>();
+            dataType = "List",
+            example = "[{\"name\":\"key1\",\"value\":\"value1\"}, {\"name\":\"key2\",\"value\":\"value2\"}]",
+            notes = "Additional configuration properties for the job on web page")
+    private List<CustomConfig> flinkConfigList = new ArrayList<>();
 
     @ApiModelProperty(
-            value = "List of Flink configuration properties",
-            dataType = "List<Map<String, String>>",
-            example = "[{\"key\":\"value\"},{\"key2\":\"value2\"}]",
-            notes = "List of Flink configuration properties")
-    private List<Map<String, String>> flinkConfigList = new ArrayList<>();
+            value = "Additional configuration properties",
+            dataType = "Map",
+            example = "{\"key1\":\"value1\",\"key2\":\"value2\"}",
+            notes = "Fixed configuration properties for the job on web page")
+    private Map<String, String> configuration = new HashMap<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();
-
-    public static final String DEFAULT_SAVEPOINT_PREFIX = "hdfs:///flink/savepoints/";
 
     public FlinkConfig() {}
 

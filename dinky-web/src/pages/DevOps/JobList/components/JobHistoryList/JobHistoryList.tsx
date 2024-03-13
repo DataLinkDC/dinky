@@ -18,10 +18,10 @@
  */
 
 import StatusTag from '@/components/JobTags/StatusTag';
+import { getJobDuration } from '@/pages/DevOps/function';
 import { queryList } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { Jobs } from '@/types/DevOps/data';
-import { parseSecondStr } from '@/utils/function';
+import { Jobs } from '@/types/DevOps/data.d';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
@@ -46,14 +46,19 @@ const JobHistoryList = (props: HistoryProps) => {
       valueType: 'dateTime'
     },
     {
-      title: l('global.table.endTime'),
-      dataIndex: 'finishTime',
-      valueType: 'dateTime'
+      title: l('global.table.finishTime'),
+      render(_, row: Jobs.JobInstance) {
+        // 判断finishTime 是否 小于 1970-01-02 如果是则返回 '-' 否则返回 finishTime
+        return !row.finishTime || new Date(row.finishTime) <= new Date('1970-01-02')
+          ? '-'
+          : row.finishTime;
+      }
     },
     {
       title: l('global.table.jobid'),
       dataIndex: 'jid',
-      key: 'jid'
+      key: 'jid',
+      copyable: true
     },
     {
       title: l('global.table.status'),
@@ -62,7 +67,7 @@ const JobHistoryList = (props: HistoryProps) => {
     },
     {
       title: l('global.table.useTime'),
-      render: (_: any, row: { duration: number }) => parseSecondStr(row.duration)
+      render: (_: any, row: Jobs.JobInstance) => getJobDuration(row)
     },
     {
       title: l('global.table.operate'),
@@ -89,7 +94,7 @@ const JobHistoryList = (props: HistoryProps) => {
         columns={jobListColumns}
         actionRef={actionRef}
         request={(params) =>
-          queryList(API_CONSTANTS.GET_JOB_LIST, {
+          queryList(API_CONSTANTS.JOB_INSTANCE, {
             ...params,
             filter: { task_id: [taskId] }
           })

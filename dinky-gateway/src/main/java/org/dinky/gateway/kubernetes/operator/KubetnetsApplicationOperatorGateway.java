@@ -20,7 +20,8 @@
 package org.dinky.gateway.kubernetes.operator;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
@@ -50,7 +51,7 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
     }
 
     @Override
-    public GatewayResult submitJar() {
+    public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         // TODO 改为ProcessStep注释
         logger.info("start submit flink jar use {}", getType());
 

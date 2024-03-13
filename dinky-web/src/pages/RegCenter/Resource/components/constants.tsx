@@ -17,6 +17,7 @@
  *
  */
 
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import {
   DeleteOutlined,
@@ -36,13 +37,13 @@ export const RIGHT_CONTEXT_FILE_MENU = [
     key: 'delete',
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
-    path: '/registration/resource/delete'
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
     key: 'rename',
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
-    path: '/registration/resource/rename'
+    path: PermissionConstants.REGISTRATION_RESOURCE_RENAME
   }
 ];
 export const RIGHT_CONTEXT_FOLDER_MENU = [
@@ -50,24 +51,24 @@ export const RIGHT_CONTEXT_FOLDER_MENU = [
     key: 'createFolder',
     icon: <PlusCircleOutlined />,
     label: l('right.menu.createFolder'),
-    path: '/registration/resource/addFolder'
+    path: PermissionConstants.REGISTRATION_RESOURCE_ADD_FOLDER
   },
   {
     key: 'upload',
     icon: <UploadOutlined />,
     label: l('button.upload'),
-    path: '/registration/resource/upload'
+    path: PermissionConstants.REGISTRATION_RESOURCE_UPLOAD
   },
   {
     key: 'delete',
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
-    path: '/registration/resource/delete'
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
     key: 'rename',
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
-    path: '/registration/resource/rename'
+    path: PermissionConstants.REGISTRATION_RESOURCE_RENAME
   }
 ];

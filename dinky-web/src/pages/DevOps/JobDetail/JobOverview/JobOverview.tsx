@@ -17,7 +17,7 @@
  *
  */
 
-import FlinkDag from '@/components/FlinkDag';
+import FlinkDag from '@/components/Flink/FlinkDag';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import FlinkTable from '@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable';
 import JobDesc from '@/pages/DevOps/JobDetail/JobOverview/components/JobDesc';
@@ -25,7 +25,7 @@ import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Empty, Result } from 'antd';
 import { useState } from 'react';
-import { isStatusDone } from '../../function';
+import { isNotFinallyStatus } from '../../function';
 
 const JobConfigTab = (props: JobProps) => {
   const { jobDetail } = props;
@@ -34,7 +34,7 @@ const JobConfigTab = (props: JobProps) => {
 
   return (
     <>
-      {isStatusDone(jobDetail?.instance?.status as string) && !showHistory ? (
+      {isNotFinallyStatus(jobDetail?.instance?.status as string) && !showHistory ? (
         <Result
           status='warning'
           title={l('devops.jobinfo.unable.obtain.status')}
@@ -51,7 +51,7 @@ const JobConfigTab = (props: JobProps) => {
           }
         />
       ) : undefined}
-      {showHistory || !isStatusDone(jobDetail?.instance?.status as string) ? (
+      {showHistory || !isNotFinallyStatus(jobDetail?.instance?.status as string) ? (
         <>
           <JobDesc jobDetail={jobDetail} />
           <ProCard

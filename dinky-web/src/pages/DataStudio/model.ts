@@ -17,10 +17,15 @@
  *
  */
 
+import { LeftBottomKey, LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
+import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
+  getClusterConfigurationData,
+  getEnvData,
   getFlinkConfigs,
+  getSessionData,
   querySuggessionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
@@ -47,8 +52,8 @@ export const VIEW = {
   marginTop: 84,
   topHeight: 35.6,
   bottomHeight: 100,
-  rightMargin: 32,
-  leftMargin: 36,
+  rightMargin: 42,
+  leftMargin: 42,
   midMargin: 44,
   otherHeight: 0,
   paddingInline: 50
@@ -110,6 +115,7 @@ export type TaskType = {
 };
 
 export type ConsoleType = {
+  results: {}[];
   // eslint-disable-next-line @typescript-eslint/ban-types
   result: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -147,7 +153,8 @@ export enum TabsPageType {
 
 export enum TabsPageSubType {
   flinkSql = 'FlinkSql',
-  flinkJar = 'FlinkJar'
+  flinkJar = 'FlinkJar',
+  None = ''
 }
 
 export interface TabsItemType {
@@ -163,7 +170,6 @@ export interface TabsItemType {
   closable: boolean;
   path: string[];
   monacoInstance: React.RefObject<Monaco | undefined>;
-  editorInstance: React.RefObject<editor.IStandaloneCodeEditor | undefined>;
   console: ConsoleType;
   isModified: boolean;
 }
@@ -183,6 +189,7 @@ export interface DataStudioTabsItemType extends TabsItemType {
 export type TabsType = {
   activeKey: string;
   activeBreadcrumbTitle: string;
+  selectedStatement?: string;
   panes: TabsItemType[];
 };
 
@@ -224,19 +231,6 @@ export type Container = {
 
 export type BottomContainerContent = {
   console: string;
-};
-
-export type SessionType = {
-  session?: string;
-  sessionConfig?: {
-    type?: string;
-    clusterId?: number;
-    clusterName?: string;
-    address?: string;
-  };
-  createUser?: string;
-  createTime?: string;
-  connectors: ConnectorType[];
 };
 
 /**
@@ -301,6 +295,11 @@ export type ModelType = {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
     querySuggestions: Effect;
+    queryEnv: Effect;
+    queryDatabaseList: Effect;
+    queryTaskData: Effect;
+    querySessionData: Effect;
+    queryClusterConfigurationData: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -317,6 +316,7 @@ export type ModelType = {
     updateProjectExpandKey: Reducer<StateType>;
     updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
+    updateActiveBreadcrumbTitle: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     removeTag: Reducer<StateType>;
     addTab: Reducer<StateType>;
@@ -344,7 +344,7 @@ const Model: ModelType = {
     toolContentHeight: 0,
     centerContentHeight: 0,
     leftContainer: {
-      selectKey: 'menu.datastudio.project',
+      selectKey: LeftMenuKey.PROJECT_KEY,
       selectSubKey: {},
       height: '100%',
       width: 260
@@ -356,7 +356,7 @@ const Model: ModelType = {
       width: 260
     },
     bottomContainer: {
-      selectKey: 'menu.datastudio.console',
+      selectKey: LeftBottomKey.CONSOLE_KEY,
       selectSubKey: {},
       height: 180,
       width: '100%'
@@ -408,6 +408,13 @@ const Model: ModelType = {
         payload: response
       });
     },
+    *queryEnv({ payload }, { call, put }) {
+      const response: EnvType[] = yield call(getEnvData, payload);
+      yield put({
+        type: 'saveEnv',
+        payload: response
+      });
+    },
     *queryFlinkConfigOptions({ payload }, { call, put }) {
       const response: [] = yield call(getFlinkConfigs, payload);
       yield put({
@@ -419,6 +426,34 @@ const Model: ModelType = {
       const response: SuggestionInfo[] = yield call(querySuggessionData, payload);
       yield put({
         type: 'updateSuggestions',
+        payload: response
+      });
+    },
+    *queryDatabaseList({ payload }, { call, put }) {
+      const response: DataSources.DataSource[] = yield call(getDataSourceList, payload);
+      yield put({
+        type: 'saveDataBase',
+        payload: response
+      });
+    },
+    *queryTaskData({ payload }, { call, put }) {
+      const response: TaskType = yield call(getTaskData, payload);
+      yield put({
+        type: 'saveProject',
+        payload: response
+      });
+    },
+    *querySessionData({ payload }, { call, put }) {
+      const response: Cluster.Instance[] = yield call(getSessionData, payload);
+      yield put({
+        type: 'saveSession',
+        payload: response
+      });
+    },
+    *queryClusterConfigurationData({ payload }, { call, put }) {
+      const response: Cluster.Config[] = yield call(getClusterConfigurationData, payload);
+      yield put({
+        type: 'saveClusterConfiguration',
         payload: response
       });
     }
@@ -506,17 +541,12 @@ const Model: ModelType = {
       if (payload === '') {
         centerContentHeight = state.centerContentHeight + (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight + (state.bottomContainer.height as number);
-        console.log(2);
-      } else if (
-        state.bottomContainer.selectKey !== '' &&
-        payload !== state.bottomContainer.selectKey
-      ) {
+      } else if (state.bottomContainer.selectKey !== '') {
         centerContentHeight = state.centerContentHeight;
         toolContentHeight = state.toolContentHeight;
       } else {
         centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
-        console.log(3);
       }
 
       return {
@@ -673,6 +703,12 @@ const Model: ModelType = {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
             const nextPane = panes[(index + 1) % panes.length];
+            const height =
+              document.documentElement.clientHeight -
+              VIEW.headerHeight -
+              VIEW.headerNavHeight -
+              VIEW.footerHeight -
+              VIEW.otherHeight;
             return {
               ...state,
               tabs: {
@@ -686,7 +722,10 @@ const Model: ModelType = {
               footContainer: {
                 ...state.footContainer,
                 ...getFooterValue(panes, nextPane.key)
-              }
+              },
+              toolContentHeight:
+                panes.length < 2 ? height - VIEW.leftMargin : state.toolContentHeight,
+              centerContentHeight: panes.length < 2 ? height : state.toolContentHeight
             };
           }
         }
@@ -706,6 +745,15 @@ const Model: ModelType = {
         }
       };
     },
+    updateActiveBreadcrumbTitle(state, { payload }) {
+      return {
+        ...state,
+        tabs: {
+          ...state.tabs,
+          activeBreadcrumbTitle: payload
+        }
+      };
+    },
 
     /**
      * 添加tab 如果存在则不添加
@@ -719,7 +767,8 @@ const Model: ModelType = {
             ...state,
             tabs: {
               ...state.tabs,
-              activeKey: item.key
+              activeKey: item.key,
+              activeBreadcrumbTitle: [item.type, item.breadcrumbLabel, item.label].join('/')
             },
             footContainer: {
               ...state.footContainer,
@@ -768,12 +817,16 @@ const Model: ModelType = {
     closeOtherTabs(state, { payload }) {
       // 从 pans 中找到需要关闭的 tab
       const tabsItem = state.tabs.panes.find((pane) => pane.key === payload.key);
+      const breadcrumbLabel = tabsItem?.breadcrumbLabel?.split('/') ?? [];
       return {
         ...state,
         tabs: {
           panes: tabsItem ? [tabsItem] : [],
           activeKey: tabsItem?.key ?? '',
-          activeBreadcrumbTitle: tabsItem?.breadcrumbLabel ?? ''
+          activeBreadcrumbTitle:
+            breadcrumbLabel.length > 0
+              ? [tabsItem?.type, ...breadcrumbLabel, tabsItem?.label].join('/')
+              : ''
         }
       };
     },

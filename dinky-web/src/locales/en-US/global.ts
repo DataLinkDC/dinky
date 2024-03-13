@@ -18,6 +18,7 @@
  */
 
 export default {
+  'button.add': 'Add',
   'button.check': 'Check',
   'button.graph': 'DAG',
   'button.create': 'Create',
@@ -62,6 +63,7 @@ export default {
   'button.collapse-all': 'Collapse All',
   'button.position': 'Position',
   'button.test': 'Test',
+  'button.test.connection': 'Test Connection',
   'button.clear': 'Clear',
   'button.copy': 'Copy',
   'button.refreshData': 'Refresh Data',
@@ -78,6 +80,7 @@ export default {
   'button.backTop': 'Back Top',
   'button.backBottom': 'Back Bottom',
   'button.downScroll': 'Down Scroll',
+  'button.wrap': 'Wrap',
   'button.upScroll': 'Up Scroll',
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
@@ -112,10 +115,10 @@ export default {
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
 
-  'global.time.second': 'S ',
-  'global.time.minute': 'M ',
-  'global.time.hour': 'H ',
-  'global.time.day': 'D ',
+  'global.time.second': 's ',
+  'global.time.minute': 'm ',
+  'global.time.hour': 'h ',
+  'global.time.day': 'd ',
   'global.time.millisecond': 'ms ',
 
   'global.stay.tuned': 'Stay tuned',

@@ -25,6 +25,9 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.context.EngineContextHolder;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.exception.DinkyException;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.Table;
@@ -39,19 +42,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.expression.engine.jexl.JexlEngine;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Flink Sql Variable Manager
  *
  * @since 2021/6/7 22:06
  */
+@Slf4j
 public final class VariableManager {
     public static final String VARIABLE = "variable";
     static final String SHOW_VARIABLES = "SHOW VARIABLES";
@@ -59,21 +61,11 @@ public final class VariableManager {
 
     public static final JexlEngine ENGINE = new JexlEngine();
 
-    /**
-     * <p>
-     *      engine , key is variable name , value is class .
-     *      for example:
-     *          random -> RandomUtil -> about random operation
-     *          date -> DateUtil -> about date operation
-     *          id -> IdUtil  -> to generate random uuid
-     *          ...
-     */
-    public static final Dict ENGINE_CONTEXT = Dict.create()
-            .set("random", RandomUtil.class)
-            .set("date", DateUtil.class)
-            .set("id", IdUtil.class);
-
     public VariableManager() {
+        variables = new HashMap<>();
+    }
+
+    public VariableManager(Dict context) {
         variables = new HashMap<>();
     }
 
@@ -140,16 +132,29 @@ public final class VariableManager {
      */
     public Object getVariable(String variableName) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(variableName), "sql variableName name cannot be null or empty.");
+                !StringUtils.isNullOrWhitespaceOnly(variableName),
+                "sql variable name or jexl key cannot be null or empty.");
         try {
             if (variables.containsKey(variableName)) {
                 return variables.get(variableName);
             }
-            // use jexl to parse variable value
-            return ENGINE.eval(variableName, ENGINE_CONTEXT, null);
+            // load expression variable class
+            if (parseAndMatchExpressionVariable(variableName)) {
+                return ENGINE.eval(variableName, EngineContextHolder.getEngineContext(), null);
+            }
+            return null;
         } catch (Exception e) {
-            throw new CatalogException(format("The variable of sql %s does not exist.", variableName));
+            throw new DinkyException(format("The variable name or jexl key of sql %s does not exist.", variableName));
         }
+    }
+
+    public boolean parseAndMatchExpressionVariable(String variableName) {
+        checkArgument(
+                !StringUtils.isNullOrWhitespaceOnly(variableName),
+                "sql variable name or jexl key cannot be null or empty.");
+        // key 格式是 dateUtil.getVariable("key") 按照这个格式解析 出 dateUtil
+        String substring = variableName.substring(0, variableName.indexOf("."));
+        return StrUtil.isNotBlank(EngineContextHolder.getEngineContext().getStr(substring));
     }
 
     /**
@@ -231,9 +236,8 @@ public final class VariableManager {
      *
      * @param statement A sql will be replaced.
      */
-    private String replaceVariable(String statement) {
-        Pattern p = Pattern.compile("\\$\\{(.+?)}");
-        Matcher m = p.matcher(statement);
+    public String replaceVariable(String statement) {
+        Matcher m = CommonConstant.GLOBAL_VARIABLE_PATTERN.matcher(statement);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
             String key = m.group(1);

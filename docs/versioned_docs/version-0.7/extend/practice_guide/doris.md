@@ -168,18 +168,18 @@ left join student b on a.sid = b.sid
 ### 在 Dinky 中提交
 
 本示例采用了 yarn-session 的方式进行提交。
-http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide
-![dinky_submit](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/doris/dinky_submit.png)
+http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide
+![dinky_submit](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/doris/dinky_submit.png)
 
 ### 	FlinkWebUI
 
-![flink_webui](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/doris/flink_webui.png)
+![flink_webui](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/doris/flink_webui.png)
 
 上图可见，流任务已经成功被 Dinky 提交的远程集群了。
 
 ### Doris 查询
 
-![doris_query](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/doris/doris_query.png)
+![doris_query](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/doris/doris_query.png)
 
 上图可见，Doris 已经被写入了历史全量数据。
 
@@ -193,7 +193,7 @@ INSERT INTO `score` VALUES (9, 3, 'english', 100);
 
 Doris 成功被追加：
 
-![doris_show_data_change](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/doris/doris_show_data_change.png)
+![doris_show_data_change](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/doris/doris_show_data_change.png)
 
 ### 变动测试
 
@@ -205,4 +205,4 @@ update score set score = 100 where cid = 1
 
 Doris 成功被修改：
 
-![doris_show_data_change_again](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/doris/doris_show_data_change_again.png)
+![doris_show_data_change_again](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/practice_guide/doris/doris_show_data_change_again.png)

@@ -20,10 +20,10 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
-import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
@@ -44,7 +44,7 @@ public class YarnSessionGateway extends YarnGateway {
     }
 
     @Override
-    public GatewayResult deployCluster() {
+    public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
         if (Asserts.isNull(yarnClient)) {
             init();
         }
@@ -53,7 +53,7 @@ public class YarnSessionGateway extends YarnGateway {
                 createClusterSpecificationBuilder();
 
         YarnResult result = YarnResult.build(getType());
-        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
+        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deploySessionCluster(
                     clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
@@ -62,7 +62,7 @@ public class YarnSessionGateway extends YarnGateway {
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         } catch (Exception e) {
-            result.fail(LogUtil.getError(e));
+            throw new RuntimeException(e);
         }
         return result;
     }

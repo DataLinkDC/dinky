@@ -21,6 +21,7 @@ package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.job.JobConfig;
 
@@ -57,7 +58,7 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(
             value = "Run Mode",
             dataType = "String",
-            example = "BATCH",
+            example = "Local",
             notes = "The execution mode for the SQL query")
     private String type;
 
@@ -79,18 +80,11 @@ public class TaskDTO extends AbstractStatementDTO {
     private Integer parallelism;
 
     @ApiModelProperty(
-            value = "Fragment",
-            dataType = "Boolean",
-            example = "true",
-            notes = "Fragment option for the task")
-    private Boolean fragment;
-
-    @ApiModelProperty(
             value = "Use Statement Set",
             dataType = "boolean",
             example = "false",
             notes = "Flag indicating whether to use a statement set")
-    private boolean statementSet;
+    private boolean statementSet = true;
 
     @ApiModelProperty(
             value = "Batch Model",
@@ -127,6 +121,9 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "ID of the alert group associated with the task")
     private Integer alertGroupId;
 
+    @ApiModelProperty(value = "Alert Group", dataType = "AlertGroup", notes = "Alert group associated with the task")
+    private AlertGroup alertGroup;
+
     @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes for the task")
     private String note;
 
@@ -156,9 +153,6 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
     private Boolean enabled;
-
-    @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
-    private String statement;
 
     @ApiModelProperty(value = "ClusterInstance Name", dataType = "String", notes = "Name of the associated cluster")
     private String clusterName;
@@ -199,14 +193,14 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "false",
             notes = "Flagindicatingwhethertousechangelogs")
-    private boolean useChangeLog;
+    private boolean useChangeLog = false;
 
     @ApiModelProperty(
             value = "Use Auto Cancel",
             dataType = "boolean",
             example = "false",
             notes = "Flag indicating whether to use auto-canceling")
-    private boolean useAutoCancel;
+    private boolean useAutoCancel = true;
 
     @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")
     private String session;
@@ -219,7 +213,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "Integer",
             example = "100",
             notes = "The maximum number of rows to return")
-    private Integer maxRowNum;
+    private Integer maxRowNum = 100;
 
     public JobConfig getJobConfig() {
 

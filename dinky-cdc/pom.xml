@@ -24,12 +24,6 @@
 
     <profiles>
         <profile>
-            <id>flink-1.14</id>
-            <modules>
-                <module>dinky-cdc-plus</module>
-            </modules>
-        </profile>
-        <profile>
             <id>flink-1.15</id>
             <modules>
                 <module>dinky-cdc-plus</module>
@@ -43,6 +37,12 @@
         </profile>
         <profile>
             <id>flink-1.17</id>
+            <modules>
+                <module>dinky-cdc-plus</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>flink-1.18</id>
             <modules>
                 <module>dinky-cdc-plus</module>
             </modules>

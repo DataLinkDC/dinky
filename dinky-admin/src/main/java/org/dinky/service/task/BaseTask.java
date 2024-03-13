@@ -69,12 +69,16 @@ public abstract class BaseTask {
             SupportDialect annotation = clazz.getAnnotation(SupportDialect.class);
             if (annotation != null) {
                 for (Dialect dialect : annotation.value()) {
-                    if (dialect.getValue().equalsIgnoreCase(taskDTO.getDialect())) {
+                    if (dialect.isDialect(taskDTO.getDialect())) {
                         return (BaseTask) ReflectUtil.newInstance(clazz, taskDTO);
                     }
                 }
             }
         }
         throw new RuntimeException("Not support dialect: " + taskDTO.getDialect());
+    }
+
+    public JobResult StreamExecute() {
+        return null;
     }
 }

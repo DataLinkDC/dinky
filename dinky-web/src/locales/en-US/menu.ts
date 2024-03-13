@@ -37,6 +37,12 @@ export default {
   'menu.account.changePassword': 'Change Password',
   'menu.account.checkTenant': 'Switch Tenant',
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
+  'menu.account.closeGlobalMessage': 'Close developer mode',
+  'menu.account.openGlobalMessage': 'Turn on developer mode',
+  'menu.account.closeGlobalMessageTip':
+    'You have turned off the developer mode and will not receive all exception information returned by the background. You can only receive warning information.',
+  'menu.account.openGlobalMessageTip':
+    'Developer mode is turned on. You can receive all exception/warning information returned by the background. If you do not want to receive the exception stack, please turn off this function.',
 
   'menu.datastudio': 'Data Studio',
 
@@ -52,6 +58,8 @@ export default {
   'menu.registration.cluster.cluster-config': 'Cluster Config',
   'menu.registration.jar': 'Jar',
   'menu.registration.datasource': 'Data Source',
+  'menu.registration.datasource.list': 'Data Source List',
+  'menu.registration.datasource.detail': 'Data Source Detail',
   'menu.registration.alert': 'Alarm',
   'menu.registration.alert.instance': 'Alert Instance',
   'menu.registration.alert.group': 'Alert Group',
@@ -72,9 +80,10 @@ export default {
   'menu.settings': 'Setting Center',
   'menu.settings.globalsetting': 'Global Settings',
   'menu.settings.systemlog': 'System Log',
+  'menu.settings.classloaderjars': 'ClassLoader Jars',
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
-  'menu.settings.alertrulelist': 'Alert Rules',
+  'menu.settings.alertrule': 'Alert Rules',
   'menu.metrics': 'Metrics',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',

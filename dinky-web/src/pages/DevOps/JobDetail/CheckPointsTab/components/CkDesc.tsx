@@ -18,6 +18,8 @@
  */
 
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
+
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -30,8 +32,10 @@ import { Descriptions, Space, Tag } from 'antd';
 const CkDesc = (props: JobProps) => {
   const { jobDetail } = props;
 
-  const { counts, latest } = jobDetail?.jobDataDto?.checkpoints;
-  const { checkpointsConfigInfo } = jobDetail?.jobDataDto?.checkpointsConfig;
+  const counts = jobDetail?.jobDataDto?.checkpoints?.counts;
+  const latest = jobDetail?.jobDataDto?.checkpoints?.latest;
+  const checkpointsConfigInfo = jobDetail?.jobDataDto?.checkpointsConfig;
+
   return (
     <>
       <Descriptions bordered size='small' column={4}>
@@ -60,8 +64,10 @@ const CkDesc = (props: JobProps) => {
         </Descriptions.Item>
 
         <Descriptions.Item label='Latest Restored'>
-          <Tag color='cyan' title={'Latest Restored'}>
-            {latest?.restored?.external_path ?? 'None'}
+          <Tag color='green' title={'Latest Completed CheckPoint'}>
+            <EllipsisMiddle maxCount={30}>
+              {latest?.restored?.external_path ?? 'None'}
+            </EllipsisMiddle>
           </Tag>
         </Descriptions.Item>
 
@@ -69,25 +75,26 @@ const CkDesc = (props: JobProps) => {
           <Tag color='red' title={'Latest Failed CheckPoint'}>
             id: {latest?.failed?.id ?? 'None'}
           </Tag>
-          {/*<Tag color='red' title={'Latest Failed CheckPoint'}>*/}
-          {/*  {'Cause： ' + latest?.failed?.failure_message ?? 'None'}*/}
-          {/*</Tag>*/}
         </Descriptions.Item>
 
         <Descriptions.Item label='Latest Completed CheckPoint'>
           <Tag color='green' title={'Latest Completed CheckPoint'}>
-            {latest?.completed?.external_path ?? 'None'}
+            <EllipsisMiddle maxCount={30}>
+              {latest?.completed?.external_path ?? 'None'}
+            </EllipsisMiddle>
           </Tag>
         </Descriptions.Item>
 
         <Descriptions.Item label='Persist Checkpoints Externally Enabled'>
           <Tag color='blue' title={'Persist Checkpoints Externally Enabled'}>
-            {checkpointsConfigInfo?.externalization.enabled ? 'Enabled' : 'Disabled'}
+            {checkpointsConfigInfo?.externalization?.enabled ? 'Enabled' : 'Disabled'}
           </Tag>
         </Descriptions.Item>
         <Descriptions.Item label='Latest Savepoint'>
           <Tag color='purple' title={'Latest Savepoint'}>
-            {latest?.savepoint?.external_path ?? 'None'}
+            <EllipsisMiddle maxCount={30}>
+              {latest?.savepoint?.external_path ?? 'None'}
+            </EllipsisMiddle>
           </Tag>
         </Descriptions.Item>
 

@@ -24,63 +24,53 @@ import TaskDialectRadar from '@/pages/Home/DevOverView/TaskDialectRadar';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Badge } from 'antd';
-import RcResizeObserver from 'rc-resize-observer';
-import React, { useState } from 'react';
+import React from 'react';
 
 const noPadding = {
   paddingInline: '0',
   paddingBlock: '0',
-  height: parent.innerHeight / 2
+  height: '100%'
 };
 
 const DevOverView: React.FC = () => {
-  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
-
   return (
-    <RcResizeObserver
-      key='resize-observer'
-      onResize={(offset) => {
-        setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
-      }}
+    <ProCard
+      style={{ height: '100%' }}
+      title={
+        <>
+          <Badge status='processing' />
+          {l('home.develop')}
+        </>
+      }
+      headerBordered
+      bordered
+      size='small'
+      split={'vertical'}
+      bodyStyle={noPadding}
     >
-      <ProCard
-        style={{ height: '100%' }}
-        title={
-          <>
-            <Badge status='processing' />
-            {l('home.develop')}
-          </>
-        }
-        headerBordered
-        bordered
-        size='small'
-        split={split}
-        bodyStyle={noPadding}
-      >
-        <ProCard split='vertical' bodyStyle={noPadding} style={{ height: '100%' }}>
-          <ProCard
-            title={l('home.job.development')}
-            split='horizontal'
-            colSpan={'40%'}
-            bodyStyle={noPadding}
-          >
-            <ProCard>
-              <BatchStreamProportion />
-            </ProCard>
-            <ProCard>
-              <DevHeatmap />
-            </ProCard>
+      <ProCard split='vertical' bodyStyle={noPadding} style={{ height: '100%' }}>
+        <ProCard
+          title={l('home.job.development')}
+          split='horizontal'
+          colSpan={'40%'}
+          bodyStyle={noPadding}
+        >
+          <ProCard>
+            <BatchStreamProportion />
           </ProCard>
-
-          <ProCard title={l('home.job.onlineRate')} colSpan={'30%'} bodyStyle={noPadding}>
-            <TaskDialectRadar />
-          </ProCard>
-          <ProCard title={l('home.develop.re')} bodyStyle={noPadding}>
-            <ResourceView />
+          <ProCard>
+            <DevHeatmap />
           </ProCard>
         </ProCard>
+
+        <ProCard title={l('home.job.onlineRate')} colSpan={'30%'} bodyStyle={noPadding}>
+          <TaskDialectRadar />
+        </ProCard>
+        <ProCard title={l('home.develop.re')} bodyStyle={noPadding}>
+          <ResourceView />
+        </ProCard>
       </ProCard>
-    </RcResizeObserver>
+    </ProCard>
   );
 };
 

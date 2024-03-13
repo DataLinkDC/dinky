@@ -20,7 +20,7 @@
 import lodash from 'lodash';
 import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
-interface UseRequestOptionsProps<TData extends { data: any }, TParams extends any[]> {
+interface UseRequestOptionsProps<TData, TParams extends any[]> {
   /*
    * 手动开启
    */
@@ -56,17 +56,16 @@ interface UseRequestOptionsProps<TData extends { data: any }, TParams extends an
   /*
    * 请求成功回调
    */
-  onSuccess?: (res: TData) => void;
+  onSuccess?: (res: TData) => any;
 }
 
-function useHookRequest<TData extends { data: any }, TParams extends any[]>(
-  service: (...args: TParams) => Promise<TData>,
+function useHookRequest<TData, TParams extends any[]>(
+  service: (...args: TParams) => Promise<{ data: TData }>,
   options: UseRequestOptionsProps<TData, TParams>
 ) {
   const [data, setData] = useState<SetStateAction<TData>>();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>();
-  const status = useRef<boolean>(false);
   const pollingIntervalTimer = useRef<NodeJS.Timeout | null>();
 
   const {
@@ -83,21 +82,29 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
 
   useEffect(() => {
     !manual && ready && run(...defaultParams);
+    return () => cancel();
   }, [manual, ready, ...(Array.isArray(refreshDeps) ? refreshDeps : [])]);
 
   //  请求
-  const run = (...params: TParams) => {
+  const run = async (...params: TParams) => {
+    //定时刷新
+    if (pollingInterval && !pollingIntervalTimer.current) {
+      pollingIntervalTimer.current = setInterval(async () => {
+        await run(...params);
+      }, pollingInterval);
+    }
+
     if (debounceInterval) {
-      lodash.debounce(doRun, debounceInterval)(params);
+      await lodash.debounce(doRun, debounceInterval)(params);
     } else if (throttleInterval) {
-      lodash.throttle(doRun, throttleInterval)(params);
+      await lodash.throttle(doRun, throttleInterval)(params);
     } else {
-      doRun(params);
+      await doRun(params);
     }
   };
 
-  const refresh = () => {
-    run(...defaultParams);
+  const refresh = async () => {
+    await run(...defaultParams);
   };
 
   // useRequest业务逻辑
@@ -112,16 +119,9 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
       } else {
         setLoading(true);
       }
-      !status.current && (status.current = true);
-      //定时刷新
-      if (pollingInterval && status.current) {
-        pollingIntervalTimer.current = setTimeout(() => {
-          status.current && run(...defaultParams);
-        }, pollingInterval);
-      }
-      const res: TData = await service(...params);
+      const res: { data: any } = await service(...params);
       setData(res.data);
-      onSuccess && onSuccess(res.data);
+      onSuccess && setData(onSuccess(res.data));
     } catch (err) {
       err && setError(JSON.stringify(err));
     } finally {
@@ -132,9 +132,8 @@ function useHookRequest<TData extends { data: any }, TParams extends any[]>(
 
   const cancel = () => {
     if (pollingIntervalTimer.current) {
-      clearTimeout(pollingIntervalTimer.current);
+      clearInterval(pollingIntervalTimer.current);
       pollingIntervalTimer.current = null;
-      status.current && (status.current = false);
     }
   };
 

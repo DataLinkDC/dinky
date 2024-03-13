@@ -17,7 +17,7 @@
  *
  */
 
-export const EXTEND_SQL_KEYWORD: string[] = ['CDCSOURCE', 'EXECUTE', 'PRINT'];
+export const EXTEND_SQL_KEYWORD: string[] = ['CDCSOURCE', 'EXECUTE', 'PRINT', 'CUSTOMJAR'];
 
 export const FLINK_SQL_KEYWORD: string[] = [
   'ABS',

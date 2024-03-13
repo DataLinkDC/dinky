@@ -44,7 +44,7 @@ function HomepageHeader() {
                             <div className={styles.buttonLink}>
                             <Link
                                 className="button button--secondary button--lg"
-                                to="https://github.com/DataLinkDC/dlink">
+                                to="https://github.com/DataLinkDC/dinky">
                                 GitHub
                             </Link>
                             </div>
@@ -64,9 +64,19 @@ function HomepageHeader() {
                                    Quick Start
                                </Link>
                             </div>
+
+                            <div className={styles.buttonLink}>
+                                <Link
+                                    className="button button--secondary button--lg"
+                                    style={{backgroundColor: '#07f313'}}
+                                    to="http://demo.dinky.org.cn:32451/#/">
+                                    Demo 环境
+                                </Link>
+                            </div>
+
                             <div className={styles.buttonLink}>
                                <iframe style={{width:"100px",height:"30px"}}
-                                    src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dlink&amp;type=star&amp;count=true&amp;size=large"
+                                    src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dinky&amp;type=star&amp;count=true&amp;size=large"
                                     title="GitHub Stars"
                                 />
                             </div>
@@ -89,7 +99,7 @@ function Structure() {
     return (
         <div className={clsx("structure", styles.structure,styles.box_container)}>
             <div className={clsx("image", styles.box)}><img
-                src="http://www.aiwenmo.com/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
+                src="http://pic.dinky.org.cn/dinky/docs/zh-CN/concept_architecture/architecture/dinky.png"
                 alt="structure"/></div>
             <div className={clsx("text", styles.box,styles.structureText)}>
                 <div className={clsx("title", styles.box,styles.structureText)}>
@@ -105,13 +115,13 @@ function Structure() {
                     Dinky 是一个开箱即用的一站式实时计算平台,以 Apache Flink 为基础，连接 OLAP 和数据湖等众多框架,致力于流批一体和湖仓一体的建设与实践。
                 </div>
                 <br/>
-                {/*<a href={siteConfig.customFields.learningMore} target="_blank" className="action-button">
+                <a href={siteConfig.customFields.learningMore} target="_blank" className="action-button">
                     学习更多 →
                 </a>
                 &nbsp;&nbsp;
                 <a href={siteConfig.customFields.teaching} target="_blank" className="action-button">
                     尚硅谷教学 →
-                </a>*/}
+                </a>
             </div>
         </div>
     );

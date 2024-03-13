@@ -26,11 +26,6 @@ import { ModalFormProps } from '@ant-design/pro-form/es/layouts/ModalForm';
 export const TENANT_ID = 'tenantId';
 
 /**
- * the platform version
- */
-export const VERSION = '1.0.0-SNAPSHOT';
-
-/**
  * the platform language
  */
 export const STORY_LANGUAGE = 'language';
@@ -40,6 +35,8 @@ export const LANGUAGE_EN = 'en-US';
 
 export const DATE_FORMAT = 'YYYY-MM-DD';
 export const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
+export const ENABLE_MODEL_TIP = 'enableModelTip';
 
 /**
  * REQUEST METHOD CONSTANTS
@@ -96,7 +93,7 @@ export const FORM_LAYOUT_PUBLIC = {
  * the modal form layout of public
  */
 export const MODAL_FORM_STYLE: any = {
-  width: '50%',
+  width: '55%',
   style: {
     maxHeight: '70vh',
     overflowY: 'auto'
@@ -131,10 +128,10 @@ export const PRO_LIST_CARD_OPTIONS = {
  */
 export const PROTABLE_OPTIONS_PUBLIC: any = {
   pagination: {
-    defaultPageSize: 12,
+    defaultPageSize: 10,
     hideOnSinglePage: true,
     showQuickJumper: false,
-    showSizeChanger: false,
+    showSizeChanger: true,
     position: ['bottomCenter']
   },
   ghost: false,
@@ -154,7 +151,9 @@ export const PROTABLE_OPTIONS_PUBLIC: any = {
  */
 export const NORMAL_MODAL_OPTIONS = {
   width: '50%',
-  bodyStyle: { padding: '20px 10px 10px' },
+  styles: {
+    body: { padding: '20px 10px 10px' }
+  },
   destroyOnClose: true,
   maskClosable: false
 };

@@ -47,4 +47,17 @@ public class CascaderVO implements Serializable {
             notes = "List of child CascaderVO objects",
             dataType = "List<CascaderVO>")
     private List<CascaderVO> children;
+
+    public CascaderVO() {}
+
+    public CascaderVO(String label) {
+        this.label = label;
+        this.value = label;
+    }
+
+    public CascaderVO(String label, List<CascaderVO> children) {
+        this.label = label;
+        this.value = label;
+        this.children = children;
+    }
 }

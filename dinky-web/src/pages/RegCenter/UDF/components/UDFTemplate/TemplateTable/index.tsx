@@ -33,6 +33,7 @@ import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { UDFTemplate } from '@/types/RegCenter/data';
 import { InitTemplateState } from '@/types/RegCenter/init.d';
 import { TemplateState } from '@/types/RegCenter/state.d';
@@ -170,7 +171,7 @@ const TemplateTable: React.FC = () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
-            disabled={!HasAuthority('/registration/udf/template/edit')}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_UDF_TEMPLATE_EDIT)}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -198,10 +199,16 @@ const TemplateTable: React.FC = () => {
       hideInSearch: true,
       hideInDescriptions: true,
       render: (text: any, record: UDFTemplate) => [
-        <Authorized key={`${record.id}_edit`} path='/registration/udf/template/edit'>
+        <Authorized
+          key={`${record.id}_edit`}
+          path={PermissionConstants.REGISTRATION_UDF_TEMPLATE_EDIT}
+        >
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path='/registration/udf/template/delete'>
+        <Authorized
+          key={`${record.id}_delete`}
+          path={PermissionConstants.REGISTRATION_UDF_TEMPLATE_DELETE}
+        >
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
@@ -220,7 +227,7 @@ const TemplateTable: React.FC = () => {
         actionRef={actionRef}
         headerTitle={l('rc.udf.template.management')}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/udf/template/add'>
+          <Authorized key='create' path={PermissionConstants.REGISTRATION_UDF_TEMPLATE_ADD}>
             <CreateBtn
               key={'template'}
               onClick={() => setTemplateState((prevState) => ({ ...prevState, addedOpen: true }))}

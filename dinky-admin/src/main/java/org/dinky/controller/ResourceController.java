@@ -56,6 +56,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ResourceController {
     private final ResourcesService resourcesService;
 
+    @GetMapping("/syncRemoteDirectory")
+    @ApiOperation("Sync Remote Directory Structure")
+    @Log(title = "Sync Remote Directory Structure", businessType = BusinessType.INSERT)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_UPLOAD)
+    public Result<TreeNodeDTO> syncRemoteDirectoryStructure() {
+        if (resourcesService.syncRemoteDirectoryStructure()) {
+            return Result.succeed(Status.SUCCESS);
+        }
+        return Result.failed(Status.FAILED);
+    }
+
     @PostMapping("/createFolder")
     @ApiOperation("Create Folder")
     @Log(title = "Create Folder", businessType = BusinessType.INSERT)

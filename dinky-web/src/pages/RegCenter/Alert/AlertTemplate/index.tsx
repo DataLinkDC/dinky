@@ -17,29 +17,31 @@
  *
  */
 
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { Authorized } from '@/hooks/useAccess';
 import AlertTemplateForm from '@/pages/RegCenter/Alert/AlertTemplate/components/AlertTemplateForm';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Alert } from '@/types/RegCenter/data';
 import { InitAlertTemplateState } from '@/types/RegCenter/init.d';
 import { AlertTemplateState } from '@/types/RegCenter/state';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { PlusOutlined } from '@ant-design/icons';
+import { ProList } from '@ant-design/pro-components';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Card, List, Modal, Typography } from 'antd';
+import { Button, Card, List, Modal } from 'antd';
 import { useState } from 'react';
-const { Paragraph } = Typography;
+import Markdown from 'react-markdown';
 
 export default () => {
   const [alertTemplateState, setAlertTemplateState] =
     useState<AlertTemplateState>(InitAlertTemplateState);
 
   const { data, loading, run } = useRequest({ url: API_CONSTANTS.ALERT_TEMPLATE });
-  const nullData: Partial<Alert.AlertTemplate> = {};
 
   /**
    * edit click callback
@@ -100,11 +102,27 @@ export default () => {
    */
   const renderAlertTemplateActionButton = (item: Alert.AlertTemplate) => {
     return [
-      <Authorized key={item.id} path='/registration/alert/template/edit'>
+      <Authorized key={item.id} path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_EDIT}>
         <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />
       </Authorized>,
-      <Authorized key={item.id} path='/registration/alert/template/delete'>
+      <Authorized key={item.id} path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_DELETE}>
         <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />
+      </Authorized>
+    ];
+  };
+
+  const renderToolBar = () => {
+    return () => [
+      <Authorized key='create' path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_ADD}>
+        <CreateBtn
+          key={'CreateAlertTemplateBtn'}
+          onClick={() =>
+            setAlertTemplateState((prevState) => ({
+              ...prevState,
+              addedOpen: true
+            }))
+          }
+        />
       </Authorized>
     ];
   };
@@ -120,7 +138,11 @@ export default () => {
             <Card.Meta
               style={{ width: '100%', height: '15vh' }}
               title={<a>{item.name}</a>}
-              description={<Paragraph ellipsis={{ rows: 3 }}>{item.templateContent}</Paragraph>}
+              description={
+                <Markdown skipHtml={true} unwrapDisallowed>
+                  {item.templateContent}
+                </Markdown>
+              }
             />
           </Card>
         </List.Item>
@@ -129,7 +151,7 @@ export default () => {
 
     return (
       <List.Item>
-        <Authorized key={item.id} path='/registration/alert/template/add'>
+        <Authorized key={item.id} path={PermissionConstants.REGISTRATION_ALERT_TEMPLATE_ADD}>
           <Button
             type='dashed'
             style={{ height: '25vh', width: '100%' }}
@@ -145,13 +167,15 @@ export default () => {
   };
 
   return (
-    <PageContainer>
-      <List<Alert.AlertTemplate>
+    <PageContainer title={false}>
+      <ProList<Alert.AlertTemplate>
+        headerTitle={l('menu.registration.alert.template')}
         rowKey='id'
         loading={loading}
         grid={{ gutter: 16, xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 4 }}
-        dataSource={[nullData, ...(data ?? [])]}
+        dataSource={data ?? []}
         renderItem={(item) => renderTemplateCard(item)}
+        toolBarRender={renderToolBar()}
       />
 
       <AlertTemplateForm

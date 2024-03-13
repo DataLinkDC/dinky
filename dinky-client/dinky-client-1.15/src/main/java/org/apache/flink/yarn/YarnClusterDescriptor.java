@@ -28,6 +28,8 @@ import static org.apache.flink.util.Preconditions.checkArgument;
 import static org.apache.flink.util.Preconditions.checkNotNull;
 import static org.apache.flink.yarn.YarnConfigKeys.LOCAL_RESOURCE_DESCRIPTOR_SEPARATOR;
 
+import org.dinky.utils.ClassPathUtils;
+
 import org.apache.flink.annotation.VisibleForTesting;
 import org.apache.flink.api.common.cache.DistributedCache;
 import org.apache.flink.api.java.tuple.Tuple2;
@@ -132,6 +134,7 @@ import org.slf4j.LoggerFactory;
 
 /** The descriptor with deployment information for deploying a Flink cluster on Yarn. */
 public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
+
     private static final Logger LOG = LoggerFactory.getLogger(YarnClusterDescriptor.class);
     public static final String pathSeparator = ":";
 
@@ -878,7 +881,8 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         }
 
         // normalize classpath by sorting
-        Collections.sort(systemClassPaths);
+        ClassPathUtils.sort(systemClassPaths);
+
         Collections.sort(userClassPaths);
 
         // classpath assembler

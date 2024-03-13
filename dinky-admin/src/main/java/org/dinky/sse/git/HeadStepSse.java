@@ -19,6 +19,7 @@
 
 package org.dinky.sse.git;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.GitProject;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.MavenUtil;
@@ -67,7 +68,7 @@ public class HeadStepSse extends StepSse {
         String mavenHome = MavenUtil.getMavenHome();
 
         if (StrUtil.isBlank(mavenHome)) {
-            addFileMsg("Please set the environment variable:MAVEN_HOME");
+            addFileMsg(Status.GIT_MAVEN_HOME_NOT_SET.getMessage());
             setFinish(false);
         }
         String mavenVersionMsg = MavenUtil.getMavenVersion();

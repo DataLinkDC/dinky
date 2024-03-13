@@ -26,10 +26,13 @@ import org.dinky.data.flink.checkpoint.CheckPointOverView;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.options.JobAlertRuleOptions;
-import org.dinky.job.JobConfig;
 import org.dinky.utils.TimeUtil;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -144,12 +147,15 @@ public class JobAlertData {
                 jobInstance.getTaskId());
     }
 
+    private static String getTime(LocalDateTime time) {
+        return time == null ? "" : TimeUtil.convertTimeToString(time);
+    }
+
     public static JobAlertData buildData(JobInfoDetail jobInfoDetail) {
         JobAlertDataBuilder builder = JobAlertData.builder();
         builder.alertTime(TimeUtil.nowStr());
 
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
-        JobConfig job = jobInfoDetail.getHistory().getConfigJson();
         ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
         CheckPointOverView checkpoints = jobDataDto.getCheckpoints();
         FlinkJobExceptionsDetail exceptions = jobDataDto.getExceptions();
@@ -163,12 +169,14 @@ public class JobAlertData {
                 .taskUrl(buildTaskUrl(jobInstance))
                 .jobName(jobInstance.getName())
                 .jobId(jobInstance.getJid())
-                .duration(jobInstance.getDuration())
-                .jobStartTime(TimeUtil.convertTimeToString(jobInstance.getCreateTime()))
-                .jobEndTime(TimeUtil.convertTimeToString(jobInstance.getFinishTime()));
-        if (job != null) {
-            builder.batchModel(job.isBatchModel());
+                .duration(Optional.ofNullable(jobInstance.getDuration()).orElse(0L))
+                .jobStartTime(getTime(jobInstance.getCreateTime()))
+                .jobEndTime(getTime(jobInstance.getFinishTime()));
+        History jobHis = jobInfoDetail.getHistory();
+        if (jobHis != null && jobHis.getConfigJson() != null) {
+            builder.batchModel(jobHis.getConfigJson().isBatchModel());
         }
+
         if (clusterInstance != null) {
             builder.clusterName(clusterInstance.getName())
                     .clusterType(clusterInstance.getType())
@@ -177,15 +185,21 @@ public class JobAlertData {
 
         if (jobDataDto.isError()) {
             builder.errorMsg(jobDataDto.getErrorMsg());
-        } else if (exceptions != null && ExceptionRule.isException(id, exceptions)) {
+        } else if (exceptions != null && ExceptionRule.isException(exceptions)) {
             // The error message is too long to send an alarm,
             // and only the first line of abnormal information is used
-            builder.isException(true).errorMsg(exceptions.getRootException().split("\n")[0]);
+            String err = Optional.ofNullable(exceptions.getRootException())
+                    .orElse("dinky didn't get any ERROR!")
+                    .split("\n")[0];
+            if (err.length() > 100) {
+                err = err.substring(0, 100) + "...";
+            }
+            builder.isException(true).errorMsg(err);
         }
 
         if (checkpoints != null) {
-            builder.checkpointCostTime(CheckpointsRule.checkpointTime(id, checkpoints))
-                    .isCheckpointFailed(CheckpointsRule.checkFailed(id, checkpoints));
+            builder.checkpointCostTime(CheckpointsRule.checkpointTime(checkpoints))
+                    .isCheckpointFailed(CheckpointsRule.checkFailed(checkpoints));
             if (checkpoints.getCounts() != null) {
                 builder.checkpointFailedCount(checkpoints.getCounts().getNumberFailedCheckpoints())
                         .checkpointCompleteCount(checkpoints.getCounts().getNumberCompletedCheckpoints());

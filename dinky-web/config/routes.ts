@@ -42,15 +42,21 @@ export default [
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/redirect'
   },
   {
-    path: '/home',
-    name: 'home',
-    icon: 'HomeOutlined',
-    footerRender: false,
-    component: './Home'
+    path: '/redirect',
+    component: './Other/Redirect',
+    layout: false,
+    hideInMenu: true
   },
+  // {
+  //   path: '/home',
+  //   name: 'home',
+  //   icon: 'HomeOutlined',
+  //   footerRender: false,
+  //   component: './Home'
+  // },
   {
     path: '/datastudio',
     name: 'datastudio',
@@ -113,10 +119,22 @@ export default [
         path: '/registration/datasource',
         name: 'datasource',
         icon: 'DatabaseOutlined',
-        component: './RegCenter/DataSource',
         routes: [
           {
-            path: '/registration/datasource/detail/:id'
+            path: '/registration/datasource',
+            redirect: '/registration/datasource/list'
+          },
+          {
+            path: '/registration/datasource/list',
+            name: 'list',
+            hideInMenu: true,
+            component: './RegCenter/DataSource'
+          },
+          {
+            path: '/registration/datasource/detail',
+            name: 'detail',
+            hideInMenu: true,
+            component: './RegCenter/DataSource/components/DataSourceDetail'
           }
         ]
       },
@@ -246,17 +264,23 @@ export default [
         icon: 'InfoCircleOutlined',
         component: './SettingCenter/SystemLogs'
       },
+      // {
+      //   path: '/settings/process',
+      //   name: 'process',
+      //   icon: 'ReconciliationOutlined',
+      //   component: './SettingCenter/Process'
+      // },
       {
-        path: '/settings/process',
-        name: 'process',
-        icon: 'ReconciliationOutlined',
-        component: './SettingCenter/Process'
-      },
-      {
-        path: '/settings/alertrulelist',
-        name: 'alertrulelist',
+        path: '/settings/alertrule',
+        name: 'alertrule',
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/AlertRule'
+      },
+      {
+        path: '/settings/classloaderjars',
+        name: 'classloaderjars',
+        icon: 'CodepenOutlined',
+        component: './SettingCenter/ClassLoaderJars'
       }
     ]
   },
@@ -267,13 +291,13 @@ export default [
     footerRender: false,
     component: './Metrics'
   },
-  {
-    path: '/about',
-    name: 'about',
-    icon: 'SmileOutlined',
-    footerRender: false,
-    component: './Other/About'
-  },
+  // {
+  //   path: '/about',
+  //   name: 'about',
+  //   icon: 'SmileOutlined',
+  //   footerRender: false,
+  //   component: './Other/About'
+  // },
   {
     path: '/account/center',
     footerRender: false,

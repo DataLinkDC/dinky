@@ -42,7 +42,7 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <finalName>${project.parent.artifactId}-release-${project.version}</finalName>
+                            <finalName>${project.parent.artifactId}-release-${dinky.flink.version}-${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
                                 <descriptor>src/main/assembly/package.xml</descriptor>

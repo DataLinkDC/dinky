@@ -28,6 +28,7 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -35,6 +36,7 @@ import org.dinky.metadata.result.JdbcSelectResult;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -102,7 +104,7 @@ class AbstractDriverTest {
                         + " FROM SchemaOrigin.TableNameOrigin;\n"));
     }
 
-    private static class SubAbstractDriver extends AbstractDriver {
+    private static class SubAbstractDriver extends AbstractDriver<AbstractJdbcConfig> {
         @Override
         public IDBQuery getDBQuery() {
             return null;
@@ -110,6 +112,11 @@ class AbstractDriverTest {
 
         @Override
         public ITypeConvert getTypeConvert() {
+            return null;
+        }
+
+        @Override
+        public <T> Driver buildDriverConfig(String name, String type, T config) {
             return null;
         }
 
@@ -243,6 +250,11 @@ class AbstractDriverTest {
 
         @Override
         public Map<String, String> getFlinkColumnTypeConversion() {
+            return null;
+        }
+
+        @Override
+        public Stream<JdbcSelectResult> StreamExecuteSql(String statement, Integer maxRowNum) {
             return null;
         }
     }

@@ -114,7 +114,8 @@ public class PrintTableServiceImpl implements PrintTableService {
         private static DatagramSocket getDatagramSocket(int port) {
             InetAddress host = null;
             try {
-                host = InetAddress.getLocalHost();
+                host = InetAddress.getByName("0.0.0.0");
+                log.info("PrintTableListener:DatagramSocket init success, host: {}, port: {}", host, port);
                 return new DatagramSocket(port, host);
             } catch (SocketException | UnknownHostException e) {
                 log.error(

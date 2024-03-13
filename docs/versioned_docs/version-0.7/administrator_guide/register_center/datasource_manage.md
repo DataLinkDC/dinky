@@ -5,15 +5,15 @@ title: 数据源管理
 ---
 ## 数据源管理列表
 
-![database_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/datasource_manage/database_manager_list.png)
+![database_manager_list](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/datasource_manage/database_manager_list.png)
 
 ## 创建数据源
 
 当用户使用 Dinky 做为数据开发工具时，用户首先需要进入 **注册中心 > 数据源管理**，点击 **新建** 即可。
 
-![create_database_jdbc](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/datasource_manage/create_database_jdbc.png)
+![create_database_jdbc](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/datasource_manage/create_database_jdbc.png)
 
-![create_database_jdbc_mysql](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/datasource_manage/create_database_jdbc_mysql.png)
+![create_database_jdbc_mysql](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/datasource_manage/create_database_jdbc_mysql.png)
 
 **名称：** 输入英文唯一标识
 

@@ -19,6 +19,7 @@
 
 package org.dinky.daemon.entity;
 
+import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.task.DaemonTask;
 
 import lombok.Data;
@@ -55,7 +56,7 @@ public class TaskWorker implements Runnable {
                 try {
                     boolean done = daemonTask.dealTask();
                     if (done) {
-                        queue.removeByTask(daemonTask);
+                        FlinkJobThreadPool.getInstance().removeByTaskConfig(daemonTask.getConfig());
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);

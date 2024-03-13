@@ -19,50 +19,48 @@
 
 package org.dinky.app.flinksql;
 
-import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
-
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
-import org.dinky.app.resource.impl.HdfsResourceManager;
-import org.dinky.app.resource.impl.OssResourceManager;
-import org.dinky.app.url.RsURLStreamHandlerFactory;
 import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
-import org.dinky.data.exception.DinkyException;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.properties.OssProperties;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.interceptor.FlinkInterceptor;
-import org.dinky.oss.OssTemplate;
 import org.dinky.parser.SqlType;
+import org.dinky.resource.BaseResourceManager;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
+import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.configuration.ReadableConfig;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.python.PythonOptions;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.SQLException;
@@ -72,6 +70,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -79,9 +78,9 @@ import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
+import cn.hutool.http.HttpUtil;
 import lombok.SneakyThrows;
 
 /**
@@ -91,6 +90,7 @@ import lombok.SneakyThrows;
  */
 public class Submitter {
     private static final Logger log = LoggerFactory.getLogger(Submitter.class);
+    public static Executor executor = null;
 
     private static void initSystemConfiguration() throws SQLException {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
@@ -98,45 +98,12 @@ public class Submitter {
         Map<String, String> configMap =
                 CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
         systemConfiguration.initSetConfiguration(configMap);
-    }
-
-    private static void initResource() throws SQLException {
-        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-        switch (systemConfiguration.getResourcesModel().getValue()) {
-            case OSS:
-                OssProperties ossProperties = new OssProperties();
-                ossProperties.setAccessKey(
-                        systemConfiguration.getResourcesOssAccessKey().getValue());
-                ossProperties.setSecretKey(
-                        systemConfiguration.getResourcesOssSecretKey().getValue());
-                ossProperties.setEndpoint(
-                        systemConfiguration.getResourcesOssEndpoint().getValue());
-                ossProperties.setBucketName(
-                        systemConfiguration.getResourcesOssBucketName().getValue());
-                ossProperties.setRegion(
-                        systemConfiguration.getResourcesOssRegion().getValue());
-                Singleton.get(OssResourceManager.class).setOssTemplate(new OssTemplate(ossProperties));
-                break;
-            case HDFS:
-                final Configuration configuration = new Configuration();
-                configuration.set(
-                        "fs.defaultFS",
-                        systemConfiguration.getResourcesHdfsDefaultFS().getValue());
-                try {
-                    FileSystem fileSystem = FileSystem.get(
-                            getDefaultUri(configuration),
-                            configuration,
-                            systemConfiguration.getResourcesHdfsUser().getValue());
-                    Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
-                } catch (Exception e) {
-                    throw new DinkyException(e);
-                }
-        }
+        systemConfiguration.initExpressionVariableList(configMap);
     }
 
     public static void submit(AppParamConfig config) throws SQLException {
         initSystemConfiguration();
-        initResource();
+        BaseResourceManager.initResourceManager();
         URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
         log.info("{} Start Submit Job:{}", LocalDateTime.now(), config.getTaskId());
 
@@ -147,6 +114,7 @@ public class Submitter {
                 .type(appTask.getType())
                 .checkpoint(appTask.getCheckPoint())
                 .parallelism(appTask.getParallelism())
+                .useSqlFragment(appTask.getFragment())
                 .useStatementSet(appTask.getStatementSet())
                 .useBatchModel(appTask.getBatchModel())
                 .savePointPath(appTask.getSavePointPath())
@@ -155,22 +123,29 @@ public class Submitter {
                 // .config(JsonUtils.toMap(appTask.getConfigJson()))
                 .build();
 
-        Executor executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
-
-        log.info("Start Monitor Job");
-        FlinkAppUtil.monitorFlinkTask(config.getTaskId());
+        executor = ExecutorFactory.buildAppStreamExecutor(
+                executorConfig, new WeakReference<>(DinkyClassLoader.build()).get());
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
-        // loadDep(appTask.getType(),
-        // config.getTaskId(),DBUtil.getSysConfig(Status.SYS_ENV_SETTINGS_DINKYADDR.getKey()), executorConfig);
+        loadDep(appTask.getType(), config.getTaskId(), executorConfig);
         log.info("The job configuration is as follows: {}", executorConfig);
 
-        String[] statements =
-                SqlUtil.getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
-        if (Dialect.FLINK_JAR == appTask.getDialect()) {
-            executeJarJob(appTask.getType(), executor, statements);
-        } else {
-            executeJob(executor, statements);
+        String[] statements = SqlUtil.getStatements(sql);
+        Optional<JobClient> jobClient = Optional.empty();
+        try {
+            if (Dialect.FLINK_JAR == appTask.getDialect()) {
+                jobClient = executeJarJob(appTask.getType(), executor, statements);
+            } else {
+                jobClient = executeJob(executor, statements);
+            }
+        } finally {
+            log.info("Start Monitor Job");
+            if (jobClient.isPresent()) {
+                FlinkAppUtil.monitorFlinkTask(jobClient.get(), config.getTaskId());
+            } else {
+                log.error("jobClient is empty, can not  monitor job");
+                // FlinkAppUtil.monitorFlinkTask(Submitter.executor, config.getTaskId());
+            }
         }
     }
 
@@ -186,69 +161,72 @@ public class Submitter {
         }
         // build Database golbal varibals
         if (appTask.getFragment()) {
-            log.info("Global env is enable, load database flink config env.");
+            log.info("Global env is enable, load database flink config env and global variables.");
+            // append database flink config env
             sb.append(DBUtil.getDbSourceSQLStatement()).append("\n");
+            // append global variables
+            sb.append(DBUtil.getGlobalVariablesStatement()).append("\n");
         }
         sb.append(appTask.getStatement());
         return sb.toString();
     }
 
-    private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorConfig executorConfig) {
+    private static void loadDep(String type, Integer taskId, ExecutorConfig executorConfig) {
+        String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
         if (StringUtils.isBlank(dinkyAddr)) {
             return;
         }
 
-        if ("kubernetes-application".equals(type)) {
+        if (GatewayType.get(type).isKubernetesApplicationMode()) {
             try {
-                String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;
+                String httpJar = dinkyAddr + "/download/downloadDepJar/" + taskId;
                 log.info("下载依赖 http-url为：{}", httpJar);
                 String flinkHome = System.getenv("FLINK_HOME");
                 String usrlib = flinkHome + "/usrlib";
                 FileUtils.forceMkdir(new File(usrlib));
                 String depZip = flinkHome + "/dep.zip";
-
-                boolean exists = downloadFile(httpJar, depZip);
-                if (exists) {
-                    String depPath = flinkHome + "/dep";
+                String depPath = flinkHome + "/dep";
+                downloadFile(httpJar, depZip);
+                if (FileUtil.exist(depPath)) {
                     ZipUtils.unzip(depZip, depPath);
+                    log.info("download dep success, include :{}", String.join(",", FileUtil.listFileNames(depPath)));
                     // move all jar
-                    FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
-                        FileUtil.moveContent(
-                                FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
-                    });
-                    URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
-                            .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
-                            .toArray(URL[]::new);
-                    URL[] pyUrls = FileUtil.listFileNames(depPath + "/py/").stream()
-                            .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
-                            .toArray(URL[]::new);
-
-                    addURLs(jarUrls);
-                    executorConfig
-                            .getConfig()
-                            .put(
-                                    PipelineOptions.JARS.key(),
-                                    Arrays.stream(jarUrls).map(URL::toString).collect(Collectors.joining(";")));
-                    if (ArrayUtil.isNotEmpty(pyUrls)) {
-                        executorConfig
-                                .getConfig()
-                                .put(
-                                        PythonOptions.PYTHON_FILES.key(),
-                                        Arrays.stream(jarUrls)
-                                                .map(URL::toString)
-                                                .collect(Collectors.joining(",")));
+                    if (FileUtil.isDirectory(depPath + "/jar/")) {
+                        FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
+                            FileUtil.move(FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
+                        });
+                        if (FileUtil.isDirectory(usrlib)) {
+                            URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
+                                    .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
+                                    .toArray(URL[]::new);
+                            addURLs(jarUrls);
+                            executor.getCustomTableEnvironment()
+                                    .addJar(FileUtil.file(usrlib).listFiles());
+                        }
+                    }
+                    if (FileUtil.isDirectory(depPath + "/py/")) {
+                        URL[] pyUrls = FileUtil.listFileNames(depPath + "/py/").stream()
+                                .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
+                                .toArray(URL[]::new);
+                        if (ArrayUtil.isNotEmpty(pyUrls)) {
+                            executor.getCustomTableEnvironment()
+                                    .addConfiguration(
+                                            PythonOptions.PYTHON_FILES,
+                                            Arrays.stream(pyUrls)
+                                                    .map(URL::toString)
+                                                    .collect(Collectors.joining(",")));
+                        }
                     }
                 }
             } catch (IOException e) {
-                log.error("");
                 throw new RuntimeException(e);
             }
         }
-        executorConfig.getConfig().put("python.files", "./python_udf.zip");
     }
 
     private static void addURLs(URL[] jarUrls) {
-        URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+        Thread.currentThread().setContextClassLoader(new DinkyClassLoader(new URL[] {}));
+        URLClassLoader urlClassLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
         try {
             Method add = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             add.setAccessible(true);
@@ -262,43 +240,58 @@ public class Submitter {
 
     public static boolean downloadFile(String url, String path) throws IOException {
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            // 设置超时间为3秒
-            conn.setConnectTimeout(3 * 1000);
-            // 获取输入流
-            try (InputStream inputStream = conn.getInputStream()) {
-                // 获取输出流
-                try (FileOutputStream outputStream = new FileOutputStream(path)) {
-                    // 每次下载1024位
-                    byte[] b = new byte[1024];
-                    int len = -1;
-                    while ((len = inputStream.read(b)) != -1) {
-                        outputStream.write(b, 0, len);
-                    }
-                    return true;
-                }
-            }
+            HttpUtil.downloadFile(url, path);
+            return true;
         } catch (Exception e) {
+            log.error("download failed, Reason:", e);
             return false;
         }
     }
 
     @SneakyThrows
-    public static void executeJarJob(String type, Executor executor, String[] statements) {
-        for (int i = 0; i < statements.length; i++) {
-            String sqlStatement = executor.pretreatStatement(statements[i]);
+    public static Optional<JobClient> executeJarJob(String type, Executor executor, String[] statements) {
+        Optional<JobClient> jobClient = Optional.empty();
+
+        for (String statement : statements) {
+            String sqlStatement = executor.pretreatStatement(statement);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
-                executeJarOperation.execute(executor.getCustomTableEnvironment());
+                StreamGraph streamGraph = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
+                ReadableConfig configuration =
+                        executor.getStreamExecutionEnvironment().getConfiguration();
+                streamGraph
+                        .getExecutionConfig()
+                        .configure(configuration, Thread.currentThread().getContextClassLoader());
+                streamGraph.getCheckpointConfig().configure(configuration);
+                streamGraph.setJobName(executor.getExecutorConfig().getJobName());
+                String savePointPath = executor.getExecutorConfig().getSavePointPath();
+                if (Asserts.isNotNullString(savePointPath)) {
+                    streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                            savePointPath, configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+                }
+                JobClient client = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                jobClient = Optional.of(client);
                 break;
-            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD
-                    && "kubernetes-application".equals(type)) {
-                executor.addJar(AddJarSqlParseStrategy.getInfo(sqlStatement));
+            }
+            if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
+                File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
+                Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
+                if (GatewayType.get(type).isKubernetesApplicationMode()) {
+                    executor.addJar(info);
+                }
+            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD_FILE) {
+                File[] info = AddFileSqlParseStrategy.getInfo(sqlStatement);
+                Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addFile);
+                if (GatewayType.get(type).isKubernetesApplicationMode()) {
+                    executor.addJar(info);
+                }
             }
         }
+        return jobClient;
     }
 
-    public static void executeJob(Executor executor, String[] statements) {
+    public static Optional<JobClient> executeJob(Executor executor, String[] statements) {
+        Optional<JobClient> jobClient = Optional.empty();
 
         ExecutorConfig executorConfig = executor.getExecutorConfig();
         List<StatementParam> ddl = new ArrayList<>();
@@ -314,6 +307,11 @@ public class Submitter {
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
                 trans.add(new StatementParam(statement, operationType));
+                if (!executorConfig.isUseStatementSet()) {
+                    break;
+                }
+            } else if (operationType.equals(SqlType.EXECUTE)) {
+                execute.add(new StatementParam(statement, operationType));
                 if (!executorConfig.isUseStatementSet()) {
                     break;
                 }
@@ -337,12 +335,15 @@ public class Submitter {
                     }
                 }
                 log.info("Executing FlinkSQL statement set: {}", String.join(FlinkSQLConstant.SEPARATOR, inserts));
-                executor.executeStatementSet(inserts);
+                TableResult tableResult = executor.executeStatementSet(inserts);
+                jobClient = tableResult.getJobClient();
                 log.info("Execution succeeded.");
             } else {
+                // UseStatementSet defaults to true, where the logic is never executed
                 StatementParam item = trans.get(0);
                 log.info("Executing FlinkSQL: {}", item.getValue());
-                executor.executeSql(item.getValue());
+                TableResult tableResult = executor.executeSql(item.getValue());
+                jobClient = tableResult.getJobClient();
                 log.info("Execution succeeded.");
             }
         }
@@ -357,14 +358,18 @@ public class Submitter {
                 }
             }
 
-            log.info("正在执行 FlinkSQL 语句集： {}", String.join(FlinkSQLConstant.SEPARATOR, executes));
+            log.info(
+                    "The FlinkSQL statement set is being executed： {}",
+                    String.join(FlinkSQLConstant.SEPARATOR, executes));
             try {
-                executor.execute(executorConfig.getJobName());
-                log.info("执行成功");
+                JobClient client = executor.executeAsync(executorConfig.getJobName());
+                jobClient = Optional.of(client);
+                log.info("The execution was successful");
             } catch (Exception e) {
-                log.error("执行失败, {}", e.getMessage(), e);
+                log.error("Execution failed, {}", e.getMessage(), e);
             }
         }
-        log.info("{}任务提交成功", LocalDateTime.now());
+        log.info("{} The task is successfully submitted", LocalDateTime.now());
+        return jobClient;
     }
 }

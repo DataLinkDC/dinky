@@ -16,9 +16,9 @@
 
     <properties>
         <commons.version>1.3.1</commons.version>
-        <flink.guava.version>17.0</flink.guava.version>
-        <flink.version>1.17.1</flink.version>
-        <flinkcdc.version>2.3.0</flinkcdc.version>
+        <flink.shaded.version>16.1</flink.shaded.version>
+        <flink.version>1.17.2</flink.version>
+        <flinkcdc.version>3.0.1</flinkcdc.version>
     </properties>
 
     <dependencies>
@@ -38,6 +38,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-statebackend-rocksdb -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-statebackend-rocksdb</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-jdbc</artifactId>
@@ -77,7 +84,7 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-shaded-guava</artifactId>
-            <version>31.1-jre-${flink.guava.version}</version>
+            <version>30.1.1-jre-${flink.shaded.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ververica</groupId>
@@ -100,6 +107,26 @@
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-cdc-cli</artifactId>
+            <version>${flinkcdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-cdc-pipeline-connector-mysql</artifactId>
+            <version>${flinkcdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-cdc-pipeline-connector-doris</artifactId>
+            <version>${flinkcdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-cdc-pipeline-connector-starrocks</artifactId>
+            <version>${flinkcdc.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -110,8 +137,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.doris</groupId>
-            <artifactId>flink-doris-connector-1.16</artifactId>
-            <version>1.3.0</version>
+            <artifactId>flink-doris-connector-1.17</artifactId>
+            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -123,5 +150,11 @@
             <artifactId>flink-state-processor-api</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-s3-fs-presto</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

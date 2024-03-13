@@ -21,7 +21,7 @@ package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
 
-public class SqlServerTypeConvert extends AbstractTypeConvert {
+public class SqlServerTypeConvert extends AbstractJdbcTypeConvert {
 
     public SqlServerTypeConvert() {
         this.convertMap.clear();
@@ -50,7 +50,7 @@ public class SqlServerTypeConvert extends AbstractTypeConvert {
         register("datetime", ColumnType.TIMESTAMP);
         register("date", ColumnType.LOCAL_DATE);
         register("time", ColumnType.LOCALTIME);
-        register("timestamp", ColumnType.BYTES);
+        register("timestamp", ColumnType.STRING);
         register("binary", ColumnType.BYTES);
         register("varbinary", ColumnType.BYTES);
         register("image", ColumnType.BYTES);

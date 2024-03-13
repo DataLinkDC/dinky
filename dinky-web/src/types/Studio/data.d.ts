@@ -18,6 +18,8 @@
  */
 
 import { List } from 'antd';
+import { ButtonProps } from 'antd/es/button/button';
+import React from 'react';
 
 export type Catalogue = {
   id: number;
@@ -31,7 +33,7 @@ export type Catalogue = {
   updateTime: Date;
   children: Catalogue[];
   configJson: TaskExtConfig;
-  task: Task;
+  task: TaskInfo;
 };
 
 export type TaskUdfConfig = {
@@ -50,7 +52,7 @@ export type TaskExtConfig = {
   customConfig: List<Map<string, object>>;
 };
 
-export type Task = {
+export type TaskInfo = {
   id: number;
   name: string;
   dialect: string;
@@ -66,8 +68,8 @@ export type Task = {
   clusterId: number;
   clusterConfigurationId: number;
   databaseId: number;
-  jarId: number;
   envId: number;
+  enabled: boolean;
   alertGroupId: number;
   note: string;
   step: number;
@@ -78,7 +80,6 @@ export type Task = {
   savePoints: SavePoint[];
   configJson: TaskExtConfig;
   path: string;
-  jarName: string;
   clusterConfigurationName: string;
   databaseName: string;
   envName: string;
@@ -124,6 +125,7 @@ export type AppConfig = {
 export type K8sConfig = {
   configuration: Map<string, string>;
   dockerConfig: Map<string, string>;
+  kubeConfig: string;
   podTemplate: string;
   jmPodTemplate: string;
   tmPodTemplate: string;
@@ -227,3 +229,95 @@ export enum JobStatus {
   RECONNECTING = 'RECONNECTING',
   UNKNOWN = 'UNKNOWN'
 }
+
+/**
+ * DolphinTaskMinInfo
+ */
+export interface DolphinTaskMinInfo {
+  id: number;
+  taskName: string;
+  taskCode: number;
+  taskVersion: number;
+  taskType: string;
+  taskCreateTime: Date;
+  taskUpdateTime: Date;
+  processDefinitionCode: number;
+  processDefinitionVersion: number;
+  processDefinitionName: string;
+  processReleaseState: string;
+  upstreamTaskMap: Map<number, string>;
+  upstreamTaskCode: number;
+  upstreamTaskName: string;
+}
+
+export interface TaskParamProperty {
+  prop: string;
+  direct: string;
+  type: string;
+  value: string;
+}
+
+export interface DolphinTaskDefinition {
+  id: number;
+  code: number;
+  name: string;
+  version: number;
+  description: string;
+  projectCode: number;
+  userId: number;
+  taskType: string;
+  taskParams: Map<string, string>;
+  taskParamList: TaskParamProperty[];
+  taskParamMap: Map<string, string>;
+  flag: string; // 0 no 1 yes
+  isCache: string; // 0 no 1 yes
+  taskPriority: string; // 0 highest 1 high 2 medium 3 low 4 lowest
+  userName: string;
+  projectName: string;
+  workerGroup: string;
+  environmentCode: number;
+  failRetryTimes: number;
+  failRetryInterval: number;
+  timeoutFlag: string; // 0 close 1 open
+  timeoutNotifyStrategy: string; // 0 warning 1 failure 2 warning and failure
+  timeout: number;
+  delayTime: number;
+  resourceIds: string;
+  createTime: Date;
+  updateTime: Date;
+  modifyBy: string;
+  taskGroupId: number;
+  taskGroupPriority: number;
+  cpuQuota: number;
+  memoryMax: number;
+  taskExecuteType: number; // 0 batch 1 stream
+  processDefinitionCode: number;
+  processDefinitionVersion: number;
+  processDefinitionName: string;
+  upstreamTaskMap: Map<number, string>;
+}
+
+export interface PushDolphinParams {
+  taskId: number | string;
+  upstreamCodes: string[];
+  taskPriority: string;
+  failRetryTimes: number;
+  failRetryInterval: number;
+  delayTime: number;
+  timeout: number;
+  timeoutFlag: boolean | string;
+  flag: boolean | string;
+  isCache: boolean | string;
+  timeoutNotifyStrategy: string[] | string;
+  description: string;
+}
+
+export type ButtonRoute = {
+  icon?: React.ReactNode;
+  title?: string;
+  click?: () => any;
+  hotKey?: (e: KeyboardEvent) => boolean;
+  hotKeyDesc?: string;
+  isShow?: boolean;
+  props?: ButtonProps;
+};

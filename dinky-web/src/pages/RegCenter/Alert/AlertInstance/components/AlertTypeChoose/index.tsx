@@ -22,7 +22,6 @@ import React, { useEffect } from 'react';
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import InstanceForm from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm';
-import { buildJSONData, getJSONData } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
@@ -37,6 +36,7 @@ type UpdateFormProps = {
   onTest: (values: Partial<Alert.AlertInstance>) => void;
   modalVisible: boolean;
   values: Partial<Alert.AlertInstance>;
+  loading: boolean;
 };
 
 const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
@@ -48,7 +48,8 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     onCancel: handleCancelVisible,
     onTest: handleTest,
     modalVisible,
-    values
+    values,
+    loading
   } = props;
 
   /**
@@ -78,19 +79,17 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
-    form.setFieldsValue(getJSONData(values));
+    form.setFieldsValue(values);
   }, [modalVisible, values, form]);
 
   const testSend = async () => {
     const validateFields = await form.validateFields();
-    const data = buildJSONData(values, validateFields);
-    await handleTest(data);
+    handleTest({ ...values, ...validateFields });
   };
 
   const submit = async () => {
     const validateFields = await form.validateFields();
-    const data = buildJSONData(values, validateFields);
-    await handleSubmit(data);
+    handleSubmit({ ...values, ...validateFields });
     handleCancel();
   };
 
@@ -99,10 +98,17 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
       <Button key={'AlertCancel'} onClick={handleCancel}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'AlertTest'} type='primary' onClick={testSend}>
+      <Button key={'AlertTest'} type='primary' loading={loading} onClick={testSend}>
         {l('button.test')}
       </Button>,
-      <Button key={'AlertFinish'} type='primary' onClick={submit}>
+      <Button
+        key={'AlertFinish'}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        loading={loading}
+        onClick={submit}
+      >
         {l('button.finish')}
       </Button>
     ];
@@ -110,13 +116,15 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
 
   return (
     <>
-      <ModalForm
+      <ModalForm<Alert.AlertInstance>
         {...NORMAL_MODAL_OPTIONS}
         title={values?.id ? l('rc.ai.modify') : l('rc.ai.create')}
         open={modalVisible}
         form={form}
+        initialValues={values}
         modalProps={{ onCancel: handleCancel, ...NORMAL_MODAL_OPTIONS }}
         submitter={{ render: () => [...renderFooter()] }}
+        syncToInitialValues
       >
         <InstanceForm form={form} values={values} />
       </ModalForm>

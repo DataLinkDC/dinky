@@ -33,8 +33,6 @@ type StatementInfoProps = {
 export const StatementInfo: React.FC<StatementInfoProps> = (props) => {
   const { row } = props;
 
-  console.log(row?.statement);
-
   return (
     <>
       <ProDescriptions

@@ -19,20 +19,19 @@
 
 package org.dinky.app.util;
 
-import org.dinky.context.CustomTableEnvironmentContext;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.Executor;
 import org.dinky.utils.JsonUtils;
 
-import org.apache.flink.api.common.JobExecutionResult;
-import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.client.deployment.StandaloneClusterId;
 import org.apache.flink.client.program.rest.RestClusterClient;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.core.execution.JobListener;
-import org.apache.flink.runtime.client.JobCancellationException;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.runtime.client.JobStatusMessage;
+
+import java.util.Collection;
 
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.http.HttpUtil;
@@ -46,37 +45,55 @@ public class FlinkAppUtil {
      * This method creates a Flink REST client and continuously checks the status of the task until it is completed.
      * If the task is completed, it sends a hook notification and stops monitoring.
      */
-    public static void monitorFlinkTask(int taskId) {
-        StreamExecutionEnvironment streamExecutionEnvironment =
-                CustomTableEnvironmentContext.get().getStreamExecutionEnvironment();
-        streamExecutionEnvironment.registerJobListener(new JobListener() {
-            @Override
-            public void onJobSubmitted(JobClient jobClient, Throwable throwable) {
-                jobClient.getJobExecutionResult().thenAccept(jobExecutionResult -> finshedHook(jobClient, taskId));
-                jobClient.getJobStatus().thenAccept(job -> {
-                    if (job == JobStatus.FINISHED) {
-                        finshedHook(jobClient, taskId);
+    public static void monitorFlinkTask(Executor executor, int taskId) {
+        boolean isRun = true;
+        int reTryCount = 0;
+        try (RestClusterClient<StandaloneClusterId> client = createClient(executor)) {
+            while (isRun) {
+                Collection<JobStatusMessage> jobs = client.listJobs().get();
+                if (jobs.isEmpty()) {
+                    log.error("No Flink task found, try again in 5 seconds.....");
+                    reTryCount++;
+                    if (reTryCount > 10) {
+                        isRun = false;
+                        log.error("No Flink task found, please check the Flink cluster status.");
                     }
-                });
-            }
-
-            @Override
-            public void onJobExecuted(JobExecutionResult jobExecutionResult, Throwable throwable) {
-                if (throwable instanceof JobCancellationException) {
-                    // todo cancel task
-                } else {
-                    // other exception
                 }
+                for (JobStatusMessage job : jobs) {
+                    if (JobStatus.isDone(job.getJobState().toString())) {
+                        sendHook(taskId, job.getJobId().toHexString(), 0);
+                        log.info("hook {} finished.", job.getJobName());
+                        // There should be only one in application mode, so stop monitoring here
+                        isRun = false;
+                    }
+                }
+                Thread.sleep(5000);
             }
-        });
+        } catch (Exception e) {
+            // If an exception is thrown, it will cause the k8s pod to trigger a restart,
+            // resulting in an inability to exit normally
+            log.error("hook failed:", e);
+        }
     }
 
-    private static void finshedHook(JobClient jobClient, int taskId) {
+    public static void monitorFlinkTask(JobClient jobClient, int taskId) {
+        boolean isRun = true;
+        String jobId = jobClient.getJobID().toHexString();
         try {
-            sendHook(taskId, jobClient.getJobID().toHexString(), 0);
-            log.info("hook finished.");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            while (isRun) {
+                String jobStatus = jobClient.getJobStatus().get().toString();
+                JobStatus status = JobStatus.get(jobStatus);
+                if (status.isDone()) {
+                    sendHook(taskId, jobId, 0);
+                    log.info("refesh job status finished, status is {}", status);
+                    isRun = false;
+                }
+                Thread.sleep(5000);
+            }
+        } catch (Exception e) {
+            // If an exception is thrown, it will cause the k8s pod to trigger a restart,
+            // resulting in an inability to exit normally
+            log.error("refesh status failed:", e);
         }
     }
 
@@ -87,24 +104,29 @@ public class FlinkAppUtil {
      * If sending the request fails, it will be retried up to 30 times with a 1-second interval between each retry.
      * If the retry limit is exceeded, an exception is thrown.
      */
-    private static void sendHook(int taskId, String jobId, int reTryCount) throws InterruptedException {
+    private static void sendHook(int taskId, String jobId, int reTryCount) {
+        String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
         try {
-            String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
             String url =
                     StrFormatter.format("{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
             String resultStr = HttpUtil.get(url);
             // TODO 这里应该使用Result实体类，但是Result.class不在comm里，迁移改动太大，暂时不搞
             String code = JsonUtils.parseObject(resultStr).get("code").toString();
             if (!"0".equals(code)) {
-                throw new RuntimeException("Hook Job Done result failed: " + resultStr);
+                throw new RuntimeException(
+                        StrFormatter.format("Send Hook Job Done result failed,url:{},err:{} ", url, resultStr));
             }
         } catch (Exception e) {
             if (reTryCount < 30) {
                 log.error("send hook failed,retry later taskId:{},jobId:{},{}", taskId, jobId, e.getMessage());
-                Thread.sleep(1000);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
                 sendHook(taskId, jobId, reTryCount + 1);
             } else {
-                throw new RuntimeException("Hook Job Done failed, The retry limit is exceeded: " + e.getMessage());
+                log.error("Hook Job Done failed to {}, The retry limit is exceeded: {}", dinkyAddr, e.getMessage());
             }
         }
     }
@@ -115,10 +137,8 @@ public class FlinkAppUtil {
      * @return
      * @throws Exception
      */
-    private static RestClusterClient<StandaloneClusterId> createClient() throws Exception {
-        ReadableConfig config = CustomTableEnvironmentContext.get()
-                .getStreamExecutionEnvironment()
-                .getConfiguration();
+    private static RestClusterClient<StandaloneClusterId> createClient(Executor executor) throws Exception {
+        ReadableConfig config = executor.getStreamExecutionEnvironment().getConfiguration();
         Configuration configuration = new Configuration((Configuration) config);
 
         return new RestClusterClient<>(configuration, StandaloneClusterId.getInstance());

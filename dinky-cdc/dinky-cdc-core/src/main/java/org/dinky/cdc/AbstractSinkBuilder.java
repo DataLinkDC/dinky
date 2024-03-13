@@ -40,7 +40,6 @@ import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
-import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.BigIntType;
@@ -132,7 +131,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected SingleOutputStreamOperator<Map> deserialize(DataStreamSource<String> dataStreamSource) {
-        return dataStreamSource.map((MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class));
+        return dataStreamSource
+                .map((MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class))
+                .returns(Map.class);
     }
 
     protected SingleOutputStreamOperator<Map> shunt(
@@ -147,8 +148,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected DataStream<Map> shunt(SingleOutputStreamOperator<Map> processOperator, Table table, OutputTag<Map> tag) {
-
-        return processOperator.getSideOutput(tag);
+        processOperator.forward();
+        return processOperator.getSideOutput(tag).forward();
     }
 
     @SuppressWarnings("rawtypes")
@@ -157,7 +158,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        return filterOperator.flatMap(sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
+        return filterOperator
+                .flatMap(sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName))
+                .returns(RowData.class);
     }
 
     @SuppressWarnings("rawtypes")
@@ -175,7 +178,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                         break;
                     case "u":
                         rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
-                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, value);
                         break;
                     default:
                 }
@@ -212,7 +215,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     @SuppressWarnings("rawtypes")
-    public static Map getOriginRowData(RowKind rowKind, Map value) {
+    protected Map getOriginRowData(RowKind rowKind, Map value) {
         switch (rowKind) {
             case INSERT:
             case UPDATE_AFTER:
@@ -235,7 +238,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected List<Operation> createInsertOperations(
             CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
-        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
+        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName, config);
         logger.info(cdcSqlInsert);
 
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
@@ -337,7 +340,11 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 return new DateType();
             case LOCAL_DATETIME:
             case TIMESTAMP:
-                return new TimestampType();
+                if (column.getLength() != null) {
+                    return new TimestampType(column.getLength());
+                } else {
+                    return new TimestampType(3);
+                }
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
             default:
@@ -409,18 +416,28 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(TimestampData.fromLocalDateTime(Instant.ofEpochMilli(((Integer) value).longValue())
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
-                        .toLocalDateTime()));
+                        .toLocalDateTime());
+            } else if (value instanceof String) {
+                return Optional.of(
+                        Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
+            } else {
+                TimestampType logicalType1 = (TimestampType) logicalType;
+                if (logicalType1.getPrecision() == 3) {
+                    return Optional.of(Instant.ofEpochMilli((long) value)
+                            .atZone(sinkTimeZone)
+                            .toLocalDateTime());
+                } else if (logicalType1.getPrecision() > 3) {
+                    return Optional.of(
+                            Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                                    .atZone(sinkTimeZone)
+                                    .toLocalDateTime());
+                }
+                return Optional.of(Instant.ofEpochSecond(((long) value))
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime());
             }
-
-            if (value instanceof Long) {
-                return Optional.of(TimestampData.fromLocalDateTime(
-                        Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime()));
-            }
-
-            return Optional.of(TimestampData.fromLocalDateTime(
-                    Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime()));
         }
         return Optional.empty();
     }

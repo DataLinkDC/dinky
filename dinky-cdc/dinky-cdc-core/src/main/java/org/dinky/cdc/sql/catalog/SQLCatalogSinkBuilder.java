@@ -34,11 +34,10 @@ import org.apache.flink.types.Row;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import com.google.common.collect.Lists;
 
 public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -52,7 +51,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
 
     @Override
     protected void initTypeConverterList() {
-        typeConverterList = Lists.newArrayList(
+        typeConverterList = Arrays.asList(
                 this::convertDateType,
                 this::convertTimestampType,
                 this::convertDecimalType,
@@ -70,7 +69,8 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         String sinkTableName = catalogName + "." + sinkSchemaName + "." + tableName;
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
 
-        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream);
+        customTableEnvironment.createTemporaryView(
+                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
 
         createInsertOperations(customTableEnvironment, table, viewName, sinkTableName);

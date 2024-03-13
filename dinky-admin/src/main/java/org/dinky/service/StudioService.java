@@ -28,7 +28,6 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
 
@@ -42,8 +41,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 public interface StudioService {
 
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
-
-    JdbcSelectResult getCommonSqlData(Integer taskId);
 
     SelectResult getJobData(String jobId);
 

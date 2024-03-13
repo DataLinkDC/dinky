@@ -37,6 +37,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { InitTenantListState } from '@/types/AuthCenter/init.d';
 import { TenantListState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
@@ -152,7 +153,7 @@ const TenantProTable: React.FC = () => {
       title: l('tenant.TenantCode'),
       dataIndex: 'tenantCode',
       render: (text, record) => {
-        return HasAuthority('/auth/tenant/viewUser') ? (
+        return HasAuthority(PermissionConstants.AUTH_TENANT_VIEW_USER) ? (
           <a onClick={() => handleShowUser(record)}> {text} </a>
         ) : (
           <span> {text} </span>
@@ -182,17 +183,20 @@ const TenantProTable: React.FC = () => {
       width: '10%',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.Tenant) => [
-        <Authorized key={`${record.id}_edit_auth`} path='/auth/tenant/edit'>
+        <Authorized key={`${record.id}_edit_auth`} path={PermissionConstants.AUTH_TENANT_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_ass_auth`} path='/auth/tenant/assignUser'>
+        <Authorized
+          key={`${record.id}_ass_auth`}
+          path={PermissionConstants.AUTH_TENANT_ASSIGN_USER}
+        >
           <AssignBtn
             key={`${record.id}_ass`}
             onClick={() => handleAssignVisible(record)}
             title={l('tenant.AssignUser')}
           />
         </Authorized>,
-        <Authorized key={`${record.id}_delete_auth`} path='/auth/tenant/delete'>
+        <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.AUTH_TENANT_DELETE}>
           <>
             {record.id !== 1 && (
               <PopconfirmDeleteBtn
@@ -219,7 +223,7 @@ const TenantProTable: React.FC = () => {
         headerTitle={l('tenant.TenantManager')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <Authorized key={`CreateTenant_auth`} path='/auth/tenant/add'>
+          <Authorized key={`CreateTenant_auth`} path={PermissionConstants.AUTH_TENANT_ADD}>
             <CreateBtn
               key={'tenantTable'}
               onClick={() => setTenantState((prevState) => ({ ...prevState, addedOpen: true }))}

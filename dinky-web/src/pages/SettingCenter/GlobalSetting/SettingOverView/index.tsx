@@ -28,16 +28,19 @@ import {
   ResourceIcon
 } from '@/components/Icons/CustomIcons';
 import { TagAlignCenter } from '@/components/StyledComponents';
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { DSConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig';
 import { EnvConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/EnvConfig';
 import { FlinkConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig';
 import { LdapConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig';
 import { MavenConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig';
+import { MetricsConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig';
 import { ResourcesConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig';
 import { handleOption, queryDataByParams } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
@@ -47,6 +50,8 @@ const imgSize = 25;
 
 const SettingOverView = () => {
   const [activeKey, setActiveKey] = useState(SettingConfigKeyEnum.DINKY);
+
+  const access = useAccess();
 
   const [data, setData] = useState<Settings>({
     dolphinscheduler: [],
@@ -111,8 +116,14 @@ const SettingOverView = () => {
             {l('sys.setting.dinky')}
           </TagAlignCenter>
         ),
-        children: <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv} />,
-        path: '/settings/globalsetting/dinky'
+        children: (
+          <EnvConfig
+            auth={PermissionConstants.SETTING_GLOBAL_DINKY_EDIT}
+            onSave={handleSaveSubmit}
+            data={dinkyEnv}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_DINKY
       },
       {
         key: SettingConfigKeyEnum.FLINK,
@@ -122,8 +133,14 @@ const SettingOverView = () => {
             {l('sys.setting.flink')}
           </TagAlignCenter>
         ),
-        children: <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig} />,
-        path: '/settings/globalsetting/flink'
+        children: (
+          <FlinkConfig
+            auth={PermissionConstants.SETTING_GLOBAL_FLINK_EDIT}
+            onSave={handleSaveSubmit}
+            data={flinkConfig}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_FLINK
       },
       {
         key: SettingConfigKeyEnum.MAVEN,
@@ -133,8 +150,14 @@ const SettingOverView = () => {
             {l('sys.setting.maven')}
           </TagAlignCenter>
         ),
-        children: <MavenConfig onSave={handleSaveSubmit} data={mavenConfig} />,
-        path: '/settings/globalsetting/maven'
+        children: (
+          <MavenConfig
+            auth={PermissionConstants.SETTING_GLOBAL_MAVEN_EDIT}
+            onSave={handleSaveSubmit}
+            data={mavenConfig}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_MAVEN
       },
       {
         key: SettingConfigKeyEnum.DOLPHIN_SCHEDULER,
@@ -144,8 +167,14 @@ const SettingOverView = () => {
             {l('sys.setting.ds')}
           </TagAlignCenter>
         ),
-        children: <DSConfig onSave={handleSaveSubmit} data={dsConfig} />,
-        path: '/settings/globalsetting/ds'
+        children: (
+          <DSConfig
+            auth={PermissionConstants.SETTING_GLOBAL_DS_EDIT}
+            onSave={handleSaveSubmit}
+            data={dsConfig}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_DS
       },
       {
         key: SettingConfigKeyEnum.LDAP,
@@ -155,8 +184,14 @@ const SettingOverView = () => {
             {l('sys.setting.ldap')}
           </TagAlignCenter>
         ),
-        children: <LdapConfig onSave={handleSaveSubmit} data={ldapConfig} />,
-        path: '/settings/globalsetting/ldap'
+        children: (
+          <LdapConfig
+            auth={PermissionConstants.SETTING_GLOBAL_LDAP_EDIT}
+            onSave={handleSaveSubmit}
+            data={ldapConfig}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_LDAP
       },
       {
         key: SettingConfigKeyEnum.METRIC,
@@ -166,8 +201,14 @@ const SettingOverView = () => {
             {l('sys.setting.metrics')}
           </TagAlignCenter>
         ),
-        children: <DSConfig onSave={handleSaveSubmit} data={metricsConfig} />,
-        path: '/settings/globalsetting/metrics'
+        children: (
+          <MetricsConfig
+            auth={PermissionConstants.SETTING_GLOBAL_METRICS_EDIT}
+            onSave={handleSaveSubmit}
+            data={metricsConfig}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_METRICS
       },
       {
         key: SettingConfigKeyEnum.RESOURCE,
@@ -177,20 +218,17 @@ const SettingOverView = () => {
             {l('sys.setting.resource')}
           </TagAlignCenter>
         ),
-        children: <ResourcesConfig onSave={handleSaveSubmit} data={resourceConfig} />,
-        path: '/settings/globalsetting/resource'
+        children: (
+          <ResourcesConfig
+            auth={PermissionConstants.SETTING_GLOBAL_RESOURCE_EDIT}
+            onSave={handleSaveSubmit}
+            data={resourceConfig}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_RESOURCE
       }
     ];
   };
-
-  //
-  // useEffect(() => {
-  //
-  //   const filter = renderDataTag().filter(
-  //     (menu) => !!!menu.path || !!AuthorizedObject({path: menu.path, children: menu, access: {tags}}));
-  //   setTags(filter as []);
-  //   setActiveKey(filter[0]?.key ?? SettingConfigKeyEnum.DINKY);
-  // }, [activeKey])
 
   return (
     <FadeIn>
@@ -213,8 +251,10 @@ const SettingOverView = () => {
             },
             animated: true,
             onChange: (key: any) => setActiveKey(key),
-            // todo: 目前无法通过这种方式进行权限显示 多 Tag 的方式,待实现
-            items: renderDataTag()
+            items: renderDataTag().filter(
+              (menu) =>
+                !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+            )
           }}
         />
       </div>

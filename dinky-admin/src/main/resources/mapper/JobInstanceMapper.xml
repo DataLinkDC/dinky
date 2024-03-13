@@ -73,13 +73,12 @@
     </select>
 
     <select id="getJobStreamingOrBatchModelOverview" resultType="org.dinky.data.model.home.JobModelOverview">
-        select sum(IF(b.batch, 1, 0)) as batchJobCount,
-        sum(IF(b.batch, 0, 1)) as streamingJobCount
-        from (select json_extract(dh.config_json, '$.batchModel') as batch
-        from (select max(ji.id) as id from dinky_job_instance ji group by ji.task_id) as a
+        select sum(case when b.batch then 1 else 0 end ) as batchJobCount,
+               sum(case when b.batch then 0 else 1 end ) as streamingJobCount
+        from (select batch_model as batch
+                 from (select max(ji.id) as id from dinky_job_instance ji group by ji.task_id) as a
         left join dinky_job_instance dji on dji.id = a.id
-        left join dinky.dinky_history dh on dji.history_id = dh.id) b
-        group by b.batch
+        left join dinky_history dh on dji.history_id = dh.id) b
     </select>
 
     <select id="listJobInstanceActive" resultType="org.dinky.data.model.job.JobInstance">

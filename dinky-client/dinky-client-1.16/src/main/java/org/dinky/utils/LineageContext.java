@@ -19,7 +19,6 @@
 
 package org.dinky.utils;
 
-import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.data.model.FunctionResult;
 import org.dinky.data.model.LineageRel;
 import org.dinky.executor.CustomParser;
@@ -38,6 +37,7 @@ import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.ContextResolvedFunction;
 import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.catalog.UnresolvedIdentifier;
+import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.functions.FunctionIdentifier;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.SinkModifyOperation;
@@ -154,24 +154,22 @@ public class LineageContext {
      * @param singleSql the SQL statement to analyze
      * @return custom functions set
      */
-    public Set<FunctionResult> analyzeFunction(String singleSql) {
+    public Set<FunctionResult> analyzeFunction(CustomTableEnvironment customTableEnvironment, String singleSql) {
         LOG.info("Analyze function Sql: \n {}", singleSql);
-        CustomParser parser = null;
-        //            ((ExtendedParser) tableEnv.getParser()).getCustomParser();
 
-        if (CustomTableEnvironmentContext.get().getParser() instanceof ExtendedParser) {
-            ExtendedParser extendedParser =
-                    (ExtendedParser) CustomTableEnvironmentContext.get().getParser();
-            parser = extendedParser.getCustomParser();
+        CustomParser customParser = null;
+        Parser parser = customTableEnvironment.getParser();
+        if (parser instanceof ExtendedParser) {
+            customParser = ((ExtendedParser) parser).getCustomParser();
         } else {
             throw new RuntimeException("CustomParser is not set");
         }
 
         // parsing sql and return the abstract syntax tree
-        SqlNode sqlNode = parser.parseSql(singleSql);
+        SqlNode sqlNode = customParser.parseSql(singleSql);
 
         // validate the query
-        SqlNode validated = parser.validate(sqlNode);
+        SqlNode validated = customParser.validate(sqlNode);
 
         // look for all functions
         FunctionVisitor visitor = new FunctionVisitor();

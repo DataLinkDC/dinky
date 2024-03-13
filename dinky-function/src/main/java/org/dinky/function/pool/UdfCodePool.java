@@ -52,6 +52,10 @@ public class UdfCodePool {
         CODE_POOL.put(udf.getClassName(), udf);
     }
 
+    public static void remove(String className) {
+        CODE_POOL.remove(className);
+    }
+
     public static UDF getUDF(String className) {
         UDF udf = CODE_POOL.get(className);
         if (udf == null) {
@@ -63,5 +67,15 @@ public class UdfCodePool {
 
     public static String getGitPackage(String className) {
         return GIT_POOL.get(className);
+    }
+
+    // return CODE_POOL
+    public static Map<String, UDF> getUdfCodePool() {
+        return CODE_POOL;
+    }
+
+    // return GIT_POOL
+    public static Map<String, String> getGitPool() {
+        return GIT_POOL;
     }
 }

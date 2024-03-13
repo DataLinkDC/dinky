@@ -19,7 +19,11 @@
 
 import { Authorized } from '@/hooks/useAccess';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
-import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
+import {
+  PermissionConstants,
+  YES_OR_NO_ENUM,
+  YES_OR_NO_FILTERS_MAPPING
+} from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer } from 'antd';
@@ -78,7 +82,10 @@ const TenantUserList: React.FC<TenantUserListProps> = (props) => {
       width: '10%',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
-        <Authorized key={`${record.id}_set_tenant_m_auth`} path='/auth/tenant/modifyTenantManager'>
+        <Authorized
+          key={`${record.id}_set_tenant_m_auth`}
+          path={PermissionConstants.AUTH_TENANT_SET_USER_TO_TENANT_ADMIN}
+        >
           <Button
             type={'link'}
             key={`${record.id}_set_tenant_m`}

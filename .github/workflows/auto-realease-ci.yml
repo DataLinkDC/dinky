@@ -1,0 +1,123 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "Release Dinky"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: 'Dinky version'
+        required: true
+      prerelease:
+        type: boolean
+        description: 'Is this a pre-release?'
+        required: true
+      release_notes:
+        type: string
+        description: 'Release notes'
+        required: true
+
+jobs:
+  release:
+    name: ${{ inputs.prerelease == 'true' && 'Pre Release' || 'Release' }}
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          java-version: 8
+          distribution: 'adopt'
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+
+      - name: "Checkout Dinky"
+        uses: actions/checkout@v3
+
+
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.14 Pre Release/Release Artifact"
+        id: build_dinky1_14
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,scala-2.12,flink-single-version,flink-1.14,maven-central,web,fast \
+                 --no-snapshot-updates
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.15 Pre Release/Release Artifact"
+        id: build_dinky1_15
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,scala-2.12,flink-single-version,flink-1.15,maven-central,web,fast \
+                 --no-snapshot-updates
+
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.16 Pre Release/Release Artifact"
+        id: build_dinky1_16
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,scala-2.12,flink-single-version,flink-1.16,maven-central,web,fast \
+                 --no-snapshot-updates
+
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.17 Pre Release/Release Artifact"
+        id: build_dinky1_17
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,scala-2.12,flink-single-version,flink-1.17,maven-central,web,fast \
+                 --no-snapshot-updates
+
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.18 Pre Release/Release Artifact"
+        id: build_dinky1_18
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,scala-2.12,flink-single-version,flink-1.18,maven-central,web,fast \
+                 --no-snapshot-updates
+
+      - name: Automatic Upload Releases to GitHub Releases Page
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          draft: false
+          upload_url: https://github.com/DataLinkDC/dinky/releases
+          title: "Dinky ${{ inputs.version }} Release"
+          body: |
+            ${{ inputs.release_notes }}
+          files: |
+            ./build/dinky-release-*.tar.gz

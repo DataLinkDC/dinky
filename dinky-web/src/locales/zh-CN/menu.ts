@@ -37,6 +37,12 @@ export default {
   'menu.account.changePassword': '修改密码',
   'menu.account.checkTenant': '切换租户',
   'menu.account.checkTenantConfirm': '你确定切换租户【{tenantCode}】吗？',
+  'menu.account.closeGlobalMessage': '关闭开发者模式',
+  'menu.account.openGlobalMessage': '开启开发者模式',
+  'menu.account.closeGlobalMessageTip':
+    '你已关闭开发者模式,将不会接收到后台返回的所有异常信息,只能收到警告信息.',
+  'menu.account.openGlobalMessageTip':
+    '已开启开发者模式,你可以接收到后台返回的所有异常/警告信息,如果你不想接收异常堆栈,请关闭此功能.',
 
   'menu.datastudio': '数据开发',
 
@@ -52,6 +58,8 @@ export default {
   'menu.registration.cluster.cluster-config': '集群配置',
   'menu.registration.jar': 'Jar',
   'menu.registration.datasource': '数据源',
+  'menu.registration.datasource.list': '数据源列表',
+  'menu.registration.datasource.detail': '数据源详情',
   'menu.registration.alert': '告警',
   'menu.registration.alert.instance': '告警实例',
   'menu.registration.alert.group': '告警组',
@@ -72,9 +80,10 @@ export default {
   'menu.settings': '配置中心',
   'menu.settings.globalsetting': '全局配置',
   'menu.settings.systemlog': '系统日志',
+  'menu.settings.classloaderjars': '类加载器 Jars',
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
-  'menu.settings.alertrulelist': '告警策略',
+  'menu.settings.alertrule': '告警策略',
   'menu.metrics': '监控',
   'menu.about': '关于',
   'menu.version': '版本：{version}',

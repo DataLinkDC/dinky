@@ -65,7 +65,6 @@ public class ClusterInstanceController {
      *
      * @param clusterInstanceDTO {@link ClusterInstanceDTO} cluster instance
      * @return {@link Result}<{@link Void}>
-     * @throws Exception exception
      */
     @PutMapping
     @Log(title = "Insert Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
@@ -83,9 +82,10 @@ public class ClusterInstanceController {
                 PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD
             },
             mode = SaMode.OR)
-    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO)
-            throws Exception {
-        clusterInstanceDTO.setAutoRegisters(false);
+    public Result<Void> saveOrUpdateClusterInstance(@RequestBody ClusterInstanceDTO clusterInstanceDTO) {
+        if (clusterInstanceDTO.getAutoRegisters() == null) {
+            clusterInstanceDTO.setAutoRegisters(false);
+        }
         clusterInstanceService.registersCluster(clusterInstanceDTO);
         return Result.succeed(Status.SAVE_SUCCESS);
     }
@@ -195,26 +195,8 @@ public class ClusterInstanceController {
     @Log(title = "Cluster Instance Heartbeat", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Heartbeat")
     @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_HEARTBEATS})
-    public Result<Void> heartbeat() {
-        List<ClusterInstance> clusterInstances = clusterInstanceService.list();
-        for (ClusterInstance clusterInstance : clusterInstances) {
-            clusterInstanceService.registersCluster(clusterInstance);
-        }
-        return Result.succeed(Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
-    }
-
-    /**
-     * recycle cluster instances
-     *
-     * @return {@link Result}<{@link Integer}>
-     */
-    @DeleteMapping("/recycle")
-    @Log(title = "Cluster Instance Recycle", businessType = BusinessType.DELETE)
-    @ApiOperation("Cluster Instance Recycle")
-    @Transactional(rollbackFor = Exception.class)
-    @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_RECYCLE})
-    public Result<Integer> recycleCluster() {
-        return Result.succeed(clusterInstanceService.recycleCluster(), Status.CLUSTER_INSTANCE_RECYCLE_SUCCESS);
+    public Result<Long> heartbeat() {
+        return Result.succeed(clusterInstanceService.heartbeat(), Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
     }
 
     /**
@@ -223,7 +205,7 @@ public class ClusterInstanceController {
      * @param id {@link Integer} cluster instance id
      * @return {@link Result}<{@link Void}>
      */
-    @GetMapping("/killCluster")
+    @PutMapping("/killCluster")
     @Log(title = "Cluster Instance Kill", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Kill")
     @ApiImplicitParam(

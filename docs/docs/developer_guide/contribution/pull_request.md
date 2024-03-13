@@ -1,5 +1,6 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
+position: 2
 id: pull_request
 title: Pull Request 须知
 ---

@@ -17,6 +17,8 @@
  *
  */
 
+import { SMS_TYPE } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import {
   AlertGroupState,
   AlertInstanceState,
@@ -24,12 +26,14 @@ import {
   BuildStepsState,
   ClusterConfigState,
   ClusterInstanceState,
+  DataSourceState,
   DocumentState,
   GitProjectState,
   GlobalVarState,
   ResourceState,
   TemplateState
 } from '@/types/RegCenter/state';
+import { randomStr } from '@antfu/utils';
 
 /**
  * alert group state init
@@ -43,6 +47,85 @@ export const InitAlertGroupState: AlertGroupState = {
   value: {}
 };
 
+export const InitAlertInstanceParamsDingTalk: Alert.AlertInstanceParamsDingTalk = {
+  webhook: undefined,
+  keyword: undefined,
+  secret: undefined,
+  isEnableProxy: false,
+  isAtAll: false,
+  atMobiles: [''],
+  proxy: undefined,
+  port: undefined,
+  user: undefined,
+  password: undefined
+};
+export const InitAlertInstanceParamsFeiShu: Alert.AlertInstanceParamsFeiShu = {
+  webhook: undefined,
+  keyword: undefined,
+  secret: undefined,
+  isEnableProxy: false,
+  isAtAll: false,
+  users: [''],
+  proxy: undefined,
+  port: undefined,
+  user: undefined,
+  password: undefined
+};
+
+export const InitAlertInstanceParamsEmail: Alert.AlertInstanceParamsEmail = {
+  serverHost: undefined,
+  serverPort: undefined,
+  sender: undefined,
+  receivers: [''],
+  receiverCcs: [''],
+  enableSmtpAuth: false,
+  starttlsEnable: false,
+  sslEnable: false,
+  smtpSslTrust: undefined,
+  user: undefined,
+  password: undefined
+};
+
+export const InitAlertInstanceParamsWeChat: Alert.AlertInstanceParamsWeChat = {
+  sendType: 'wechat',
+  isAtAll: false,
+  webhook: undefined,
+  keyword: undefined,
+  users: undefined,
+  corpId: undefined,
+  secret: undefined,
+  agentId: undefined
+};
+
+export const InitAlertInstanceParamsSms: Alert.AlertInstanceParamsSms = {
+  suppliers: SMS_TYPE.ALIBABA,
+  accessKeyId: undefined,
+  sdkAppId: undefined,
+  accessKeySecret: undefined,
+  signature: undefined,
+  templateId: undefined,
+  configId: randomStr(32),
+  weight: 1,
+  retryInterval: 5,
+  maxRetries: 3,
+  phoneNumbers: ['']
+};
+
+export const InitAlertInstance: Alert.AlertInstance = {
+  id: undefined,
+  name: undefined,
+  type: ALERT_TYPE.DINGTALK,
+  params:
+    InitAlertInstanceParamsDingTalk ||
+    InitAlertInstanceParamsFeiShu ||
+    InitAlertInstanceParamsEmail ||
+    InitAlertInstanceParamsWeChat ||
+    InitAlertInstanceParamsSms,
+  enabled: true,
+  createTime: undefined,
+  updateTime: undefined
+};
+
 /**
  * alert instance state init
  * @type {{addedAlertInstanceOpen: boolean, alertInstanceList: any[], loading: boolean, editAlertInstanceOpen: boolean, value: {}}}
@@ -52,7 +135,7 @@ export const InitAlertInstanceState: AlertInstanceState = {
   loading: false,
   addedOpen: false,
   editOpen: false,
-  value: {}
+  value: InitAlertInstance
 };
 
 /**
@@ -168,4 +251,12 @@ export const InitTemplateState: TemplateState = {
   editOpen: false,
   value: {},
   drawerOpen: false
+};
+
+export const InitDataSourceState: DataSourceState = {
+  loading: false,
+  addedOpen: false,
+  editOpen: false,
+  value: {},
+  isDetailPage: false
 };

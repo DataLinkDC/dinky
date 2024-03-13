@@ -19,6 +19,8 @@
 
 package org.dinky.job.handler;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.service.ClusterInstanceService;
@@ -60,19 +62,45 @@ public class ClearJobHistoryHandler {
             if (jobInstance.getCount() > maxRetainCount) {
                 // Create a query wrapper to delete job instances older than the maximum retain days
                 QueryWrapper<JobInstance> deleteWrapper = new QueryWrapper<>();
+                // Don't delete the last instance, keep it
+                List<JobInstance> reservedInstances = jobInstanceService
+                        .lambdaQuery()
+                        .eq(JobInstance::getTaskId, jobInstance.getTaskId())
+                        .orderByDesc(JobInstance::getId)
+                        .last("limit " + maxRetainCount)
+                        .list();
                 deleteWrapper
                         .lambda()
                         .eq(JobInstance::getTaskId, jobInstance.getTaskId())
-                        .lt(JobInstance::getCreateTime, LocalDateTime.now().minusDays(maxRetainDays));
+                        .lt(JobInstance::getCreateTime, LocalDateTime.now().minusDays(maxRetainDays))
+                        .notIn(
+                                true,
+                                JobInstance::getId,
+                                reservedInstances.stream()
+                                        .map(JobInstance::getId)
+                                        .toArray());
+
                 // Retrieve the list of job instances to be deleted
                 List<JobInstance> deleteList = jobInstanceService.list(deleteWrapper);
                 List<Integer> historyDeleteIds =
                         deleteList.stream().map(JobInstance::getHistoryId).collect(Collectors.toList());
                 List<Integer> clusterDeleteIds =
                         deleteList.stream().map(JobInstance::getClusterId).collect(Collectors.toList());
-                clusterService.removeBatchByIds(clusterDeleteIds);
-                jobHistoryService.removeBatchByIds(historyDeleteIds);
-                jobInstanceService.remove(deleteWrapper);
+                if (Asserts.isNotNullCollection(deleteList)) {
+                    jobInstanceService.remove(deleteWrapper);
+                }
+                if (Asserts.isNotNullCollection(historyDeleteIds)) {
+                    jobHistoryService.removeBatchByIds(historyDeleteIds);
+                }
+                if (Asserts.isNotNullCollection(clusterDeleteIds)) {
+                    // Delete the cluster from the instance to be deleted, but filter the manually registered clusters
+                    QueryWrapper<ClusterInstance> clusterDeleteWrapper = new QueryWrapper<>();
+                    clusterDeleteWrapper
+                            .lambda()
+                            .in(true, ClusterInstance::getId, clusterDeleteIds)
+                            .eq(ClusterInstance::getAutoRegisters, true);
+                    clusterService.remove(clusterDeleteWrapper);
+                }
             }
         }
     }
@@ -94,12 +122,22 @@ public class ClearJobHistoryHandler {
         for (History history : historyList) {
             // Check if the count exceeds the maximum retain count
             if (history.getCount() > maxRetainCount) {
+                List<History> reservedHistory = historyService
+                        .lambdaQuery()
+                        .eq(History::getTaskId, history.getTaskId())
+                        .orderByDesc(History::getId)
+                        .last("limit " + maxRetainCount)
+                        .list();
                 // Create a query wrapper to delete history records older than the maximum retain days
                 QueryWrapper<History> deleteWrapper = new QueryWrapper<>();
                 deleteWrapper
                         .lambda()
                         .eq(History::getTaskId, history.getTaskId())
-                        .lt(History::getStartTime, LocalDateTime.now().minusDays(maxRetainDays));
+                        .lt(History::getStartTime, LocalDateTime.now().minusDays(maxRetainDays))
+                        .notIn(
+                                true,
+                                History::getId,
+                                reservedHistory.stream().map(History::getId).toArray());
                 historyService.remove(deleteWrapper);
             }
         }

@@ -21,7 +21,7 @@ package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
 
-public class DorisTypeConvert extends AbstractTypeConvert {
+public class DorisTypeConvert extends AbstractJdbcTypeConvert {
 
     public DorisTypeConvert() {
         this.convertMap.clear();

@@ -20,13 +20,14 @@
 import { TaskDataType } from '@/pages/DataStudio/model';
 import { postAll, putDataJson } from '@/services/api';
 import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 export async function getTaskData() {
-  return (await postAll('/api/catalogue/getCatalogueTreeData')).data;
+  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA)).data;
 }
 export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
-  return queryDataByParams('/api/task', { id: id });
+  return queryDataByParams(API_CONSTANTS.TASK, { id: id });
 }
 export function putTask(params: any) {
-  return putDataJson('/api/task', params);
+  return putDataJson(API_CONSTANTS.TASK, params);
 }

@@ -51,6 +51,12 @@
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-jwt</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.hutool</groupId>
+                    <artifactId>hutool-jwt</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -130,7 +136,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>${scope.runtime}</scope>
         </dependency>
         <!-- postgresql -->
         <dependency>
@@ -142,6 +147,10 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dromara.sms4j</groupId>
+            <artifactId>sms4j-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -166,21 +175,29 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
+            <artifactId>dinky-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
             <artifactId>dinky-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.hutool</groupId>
+                    <artifactId>hutool-crypto</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.hutool</groupId>
+                    <artifactId>hutool-http</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>cn.hutool</groupId>
+                    <artifactId>hutool-json</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-daemon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-gateway</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>kubernetes-client</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
@@ -290,7 +307,7 @@
         <dependency>
             <groupId>io.prometheus.jmx</groupId>
             <artifactId>jmx_prometheus_javaagent</artifactId>
-            <version>0.16.1</version>
+            <version>0.20.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.yaml</groupId>
@@ -299,9 +316,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.paimon</groupId>
-            <artifactId>paimon-bundle</artifactId>
-            <version>0.5.0-incubating</version>
+            <groupId>io.github.datalinkdc</groupId>
+            <artifactId>dinky-shaded-paimon</artifactId>
+            <version>1.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -400,10 +417,10 @@
                 <configuration>
                     <classesDirectory>target/classes/</classesDirectory>
                     <excludes>
-                        <!--注意这玩意默认从编译结果目录开始算目录结构-->
                         <exclude>/application*.yml</exclude>
                         <exclude>/mybatis*.xml</exclude>
                         <exclude>/DinkyFlinkDockerfile</exclude>
+                        <exclude>/dinky-loader/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

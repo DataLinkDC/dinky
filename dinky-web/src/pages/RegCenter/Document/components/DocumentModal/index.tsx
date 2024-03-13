@@ -19,11 +19,12 @@
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import DocumentForm from '@/pages/RegCenter/Document/components/DocumentModal/DocumentForm';
-import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { MODAL_FORM_OPTIONS } from '@/services/constants';
 import { Document } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { Form, Modal } from 'antd';
-import React from 'react';
+import { ModalForm } from '@ant-design/pro-components';
+import { Form } from 'antd';
+import React, { useEffect } from 'react';
 
 type DocumentModalProps = {
   onCancel: (flag?: boolean) => void;
@@ -50,33 +51,45 @@ const DocumentModalForm: React.FC<DocumentModalProps> = (props) => {
    * init props
    */
   const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    if (modalVisible) form.resetFields();
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
   /**
    * handle cancel
    */
-  const handleCancel = () => {
+  const handleCancel = async () => {
     handleModalVisible();
     formContext.resetForm();
   };
   /**
    * submit form
    */
-  const submitForm = async () => {
-    const fieldsValue = await form.validateFields();
-    handleSubmit({ ...values, ...fieldsValue });
-    handleCancel();
+  const submitForm = async (formValue: Partial<Document>) => {
+    await form.validateFields();
+    handleSubmit({ ...values, ...formValue });
+    await handleCancel();
   };
 
   return (
-    <Modal
-      {...NORMAL_MODAL_OPTIONS}
+    <ModalForm<Partial<Document>>
+      {...MODAL_FORM_OPTIONS}
       title={values.id ? l('rc.doc.modify') : l('rc.doc.create')}
       open={modalVisible}
-      onOk={() => submitForm()}
-      onCancel={() => handleModalVisible()}
+      form={form}
+      initialValues={values}
+      modalProps={{
+        onCancel: handleCancel,
+        destroyOnClose: true
+      }}
+      onFinish={submitForm}
     >
       <DocumentForm values={values} form={form} />
-    </Modal>
+    </ModalForm>
   );
 };
 

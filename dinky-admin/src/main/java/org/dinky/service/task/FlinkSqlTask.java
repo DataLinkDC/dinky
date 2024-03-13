@@ -19,12 +19,15 @@
 
 package org.dinky.service.task;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
+import org.dinky.service.TaskService;
 import org.dinky.service.impl.TaskServiceImpl;
 import org.dinky.utils.JsonUtils;
 
@@ -42,6 +45,10 @@ public class FlinkSqlTask extends BaseTask {
 
     public FlinkSqlTask(TaskDTO task) {
         super(task);
+        // Default run mode is local.
+        if (Asserts.isNull(task.getType())) {
+            task.setType(GatewayType.LOCAL.getLongValue());
+        }
         this.jobManager = getJobManager();
     }
 
@@ -62,8 +69,8 @@ public class FlinkSqlTask extends BaseTask {
     }
 
     protected JobManager getJobManager() {
-        TaskServiceImpl taskService = SpringUtil.getBean(TaskServiceImpl.class);
-        return JobManager.build(taskService.buildJobConfig(task));
+        TaskService taskService = SpringUtil.getBean(TaskServiceImpl.class);
+        return JobManager.build(taskService.buildJobSubmitConfig(task));
     }
 
     @Override

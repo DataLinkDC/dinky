@@ -81,6 +81,14 @@ public interface DataBaseService extends ISuperService<DataBase> {
     List<DataBase> listEnabledAll();
 
     /**
+     * delete database by id (physical deletion)
+     *
+     * @param id {@link Integer} database id
+     * @return {@link Boolean} true: success false: fail
+     */
+    Boolean deleteDataSourceById(Integer id);
+
+    /**
      * get all database of schemas and tables
      *
      * @param id {@link Integer}
@@ -196,4 +204,13 @@ public interface DataBaseService extends ISuperService<DataBase> {
     JobResult executeCommonSql(SqlDTO sqlDTO);
 
     List<DataBase> selectListByKeyWord(String keyword);
+
+    JobResult StreamExecuteCommonSql(SqlDTO sqlDTO);
+
+    /**
+     * check datasource has relationship with other table
+     * @param id {@link Integer} alert group id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    boolean hasRelationShip(Integer id);
 }

@@ -23,7 +23,6 @@ import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobResult;
 import org.dinky.service.DataBaseService;
@@ -65,7 +64,15 @@ public class CommonSqlTask extends BaseTask {
         SqlDTO sqlDTO = SqlDTO.build(task.getStatement(), task.getDatabaseId(), null);
         DataBaseService dataBaseService = SpringUtil.getBean(DataBaseService.class);
         JobResult jobResult = dataBaseService.executeCommonSql(sqlDTO);
-        ResultPool.putCommonSqlCache(task.getId(), jobResult.getResult());
+        return jobResult;
+    }
+
+    @Override
+    public JobResult StreamExecute() {
+        log.info("Preparing to execute common sql...");
+        SqlDTO sqlDTO = SqlDTO.build(task.getStatement(), task.getDatabaseId(), null);
+        DataBaseService dataBaseService = SpringUtil.getBean(DataBaseService.class);
+        JobResult jobResult = dataBaseService.StreamExecuteCommonSql(sqlDTO);
         return jobResult;
     }
 

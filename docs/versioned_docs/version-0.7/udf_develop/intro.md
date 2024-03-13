@@ -23,13 +23,13 @@ Dinky 将持续打造 UDF 开发，将来规划与 git接轨，实现在线开�
 ## 使用方式
 
 1. 在 `数据开发` 里面创建作业 ， 然后选择 `Python` 、`Java` 、 `Scala`等即可
-   ![create_udf_work.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/create_udf_work.png)
+   ![create_udf_work.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/create_udf_work.png)
 2. udf 这边提供模板，方便快速创建，模板具体使用请看 [udf 模板介绍](./udf_template_intro)
-   ![create_udf_work2.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/create_udf_work2.png)
+   ![create_udf_work2.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/create_udf_work2.png)
 
 ---
 
 ## 操作演示
 
-![create_udf_work.gif](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/create_udf_work.gif)
+![create_udf_work.gif](http://pic.dinky.org.cn/dinky/docs/zh-CN/udf_develop/create_udf_work.gif)
  

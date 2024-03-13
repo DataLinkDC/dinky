@@ -18,26 +18,35 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
+import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import { getTabByTaskId } from '@/pages/DataStudio/function';
+import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import {
   FOLDER_RIGHT_MENU,
   JOB_RIGHT_MENU
 } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
+import {
+  getBottomSelectKeyFromNodeClickJobType,
+  getRightSelectKeyFromNodeClickJobType
+} from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
   DataStudioParams,
+  DataStudioTabsItemType,
   StateType,
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC
 } from '@/pages/DataStudio/model';
+import { LeftBottomMoreTabs } from '@/pages/DataStudio/route';
 import {
   handleAddOrUpdate,
   handleOption,
   handlePutDataByParams,
   handleRemoveById
 } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data.d';
 import { InitProjectState } from '@/types/Studio/init.d';
@@ -54,10 +63,12 @@ const Project: React.FC = (props: connect) => {
   const {
     dispatch,
     project: { expandKeys, selectKey },
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey },
+    tabs
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
+  const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
     setProjectState((prevState) => ({
@@ -126,16 +137,28 @@ const Project: React.FC = (props: connect) => {
     if (!isLeaf) {
       dispatch({ type: STUDIO_MODEL.updateProjectExpandKey, payload: [...expandKeys, key] });
       return;
+    } else {
+      dispatch({
+        type: STUDIO_MODEL.updateSelectRightKey,
+        payload: getRightSelectKeyFromNodeClickJobType(type)
+      });
+      const bottomKey = getBottomSelectKeyFromNodeClickJobType(type);
+      dispatch({ type: STUDIO_MODEL.updateSelectBottomKey, payload: bottomKey });
+      if (bottomKey === LeftBottomKey.TOOLS_KEY) {
+        dispatch({
+          type: STUDIO_MODEL.updateSelectBottomSubKey,
+          payload: LeftBottomMoreTabs[bottomKey][0].key
+        });
+      }
     }
 
-    path.pop();
     dispatch({
       type: STUDIO_MODEL.addTab,
       payload: {
         icon: type,
         id: parentId + name,
         treeKey: key,
-        breadcrumbLabel: path.join('/'),
+        breadcrumbLabel: path.slice(0, path.length - 1).join('/'),
         label: name,
         params: {
           taskId: taskId
@@ -184,7 +207,7 @@ const Project: React.FC = (props: connect) => {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
 
-    handleAddOrUpdate(
+    await handleAddOrUpdate(
       options.url,
       {
         ...values,
@@ -193,10 +216,10 @@ const Project: React.FC = (props: connect) => {
       },
       () => {},
       () => {
-        setProjectState((prevState) => ({
-          ...prevState
-        }));
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        if (values.type && values.type.toLowerCase() === DIALECT.FLINKSQLENV) {
+          dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
+        }
         if (projectState.isEdit) {
           const { id } = values;
           const currentTabs = getTabByTaskId(panes, id);
@@ -239,7 +262,6 @@ const Project: React.FC = (props: connect) => {
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
-        // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项 && 有一个 bug Dinky/src/pages/DataStudio/RightContainer/JobInfo/index.tsx:55 -> Cannot read properties of undefined (reading 'id')
       });
       return;
     }
@@ -256,9 +278,19 @@ const Project: React.FC = (props: connect) => {
       cancelText: l('button.cancel'),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
+          const currentTabs = getTabByTaskId(panes, key) as DataStudioTabsItemType;
           dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
-          dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+          const previousTabs = panes[panes.length > 1 ? panes.length - 1 : 0];
+          const { key: currentKey } = currentTabs;
+          if (currentKey === activeKey && panes.length >= 1) {
+            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: previousTabs?.key });
+          }
+          if (panes.length === 0) {
+            dispatch({ type: STUDIO_MODEL.updateTabsActiveKey, payload: '' });
+            dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
+          }
         });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
       }
     });
   };

@@ -17,52 +17,41 @@
  *
  */
 
-import { postAll } from '@/services/api';
 import { handleGetOption, handleOption } from '@/services/BusinessCrud';
-import { DIALECT } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 
-export async function explainSql(params: any) {
-  return postAll('/api/task/explainSql', params);
+export async function explainSql(title: string, params: any) {
+  return handleOption(API_CONSTANTS.EXPLAIN_SQL, title, params);
 }
 
 export async function getJobPlan(title: string, params: any) {
-  return handleOption('/api/task/getJobPlan', title, params);
+  return handleOption(API_CONSTANTS.GET_JOB_PLAN, title, params);
 }
 
 export async function debugTask(title: string, params: any) {
-  return postAll('/api/task/debugTask', params);
+  return handleOption(API_CONSTANTS.DEBUG_TASK, title, params);
 }
 
 export async function executeSql(title: string, id: number) {
-  return handleGetOption('/api/task/submitTask', title, { id });
+  return handleGetOption(API_CONSTANTS.SUBMIT_TASK, title, { id });
 }
 
-export function cancelTask(title: string, id: number) {
-  return handleGetOption('api/task/cancel', title, { id });
+export function cancelTask(
+  title: string,
+  id: number,
+  withSavePoint: boolean = true,
+  forceCancel: boolean = true
+) {
+  return handleGetOption(API_CONSTANTS.CANCEL_JOB, title, { id, withSavePoint, forceCancel });
+}
+
+export function restartTask(id: number, savePointPath: string, title: string) {
+  return handleGetOption(API_CONSTANTS.RESTART_TASK, title, { id, savePointPath });
+}
+export function savePointTask(title: string, taskId: number, savePointType: string) {
+  return handleGetOption(API_CONSTANTS.SAVEPOINT, title, { taskId, savePointType });
 }
 
 export function changeTaskLife(title = '', id: number, life: number) {
-  return handleGetOption('api/task/changeTaskLife', title, { taskId: id, lifeCycle: life });
+  return handleGetOption(API_CONSTANTS.CHANGE_TASK_LIFE, title, { taskId: id, lifeCycle: life });
 }
-
-export const isSql = (dialect: string) => {
-  if (!dialect) {
-    return false;
-  }
-  switch (dialect.toLowerCase()) {
-    case DIALECT.SQL:
-    case DIALECT.MYSQL:
-    case DIALECT.ORACLE:
-    case DIALECT.SQLSERVER:
-    case DIALECT.POSTGRESQL:
-    case DIALECT.CLICKHOUSE:
-    case DIALECT.PHOENIX:
-    case DIALECT.DORIS:
-    case DIALECT.HIVE:
-    case DIALECT.STARROCKS:
-    case DIALECT.PRESTO:
-      return true;
-    default:
-      return false;
-  }
-};

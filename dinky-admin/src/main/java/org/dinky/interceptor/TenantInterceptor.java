@@ -35,19 +35,23 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.Opt;
 import lombok.extern.slf4j.Slf4j;
 
-/** tenant interceptor */
+/**
+ * tenant interceptor
+ */
 @Slf4j
 public class TenantInterceptor implements AsyncHandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler)
             throws Exception {
         boolean isPass = false;
         Cookie[] cookies = request.getCookies();
@@ -55,13 +59,18 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
         if (Asserts.isNotNull(cookies)) {
             for (Cookie cookie : cookies) {
                 switch (cookie.getName()) {
-                    case "satoken":
+                    case "token":
                         token = Opt.ofBlankAble(cookie.getValue());
-                        if (SaManager.getSaTokenDao().get("satoken:login:token:" + token.get()) != null) {
+                        SaTokenDao saTokenDao = SaManager.getSaTokenDao();
+                        String keyTokenValue = StpUtil.getStpLogic().splicingKeyTokenValue(token.get());
+                        if (saTokenDao.get(keyTokenValue) != null) {
                             isPass = true;
                         }
                         break;
                     case "tenantId":
+                        if (!StpUtil.isLogin()) {
+                            return false;
+                        }
                         UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
                         if (Asserts.isNull(userInfo)) {
                             StpUtil.logout(StpUtil.getLoginIdAsInt());

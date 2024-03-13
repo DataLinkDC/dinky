@@ -22,7 +22,6 @@ package org.dinky.controller;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.annotations.ProcessId;
-import org.dinky.data.dto.DebugDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSaveDTO;
@@ -96,8 +95,8 @@ public class TaskController {
             dataType = "DebugDTO",
             paramType = "body")
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
-    public Result<JobResult> debugTask(@RequestBody DebugDTO debugDTO) throws Exception {
-        JobResult result = taskService.debugTask(debugDTO);
+    public Result<JobResult> debugTask(@RequestBody TaskDTO task) throws Exception {
+        JobResult result = taskService.debugTask(task);
         if (result.isSuccess()) {
             return Result.succeed(result, Status.DEBUG_SUCCESS);
         }
@@ -107,8 +106,11 @@ public class TaskController {
     @GetMapping("/cancel")
     @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
-    public Result<Void> cancel(@RequestParam Integer id) {
-        if (taskService.cancelTaskJob(taskService.getTaskInfoById(id))) {
+    public Result<Void> cancel(
+            @RequestParam Integer id,
+            @RequestParam(defaultValue = "false") boolean withSavePoint,
+            @RequestParam(defaultValue = "false") boolean forceCancel) {
+        if (taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint, forceCancel)) {
             return Result.succeed(Status.EXECUTE_SUCCESS);
         } else {
             return Result.failed(Status.EXECUTE_FAILED);
@@ -145,9 +147,9 @@ public class TaskController {
     public Result<Boolean> changeTaskLife(@RequestParam Integer taskId, @RequestParam Integer lifeCycle)
             throws SqlExplainExcepition {
         if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
-            return Result.succeed(Status.PUBLISH_SUCCESS);
+            return Result.succeed(lifeCycle == 2 ? Status.PUBLISH_SUCCESS : Status.OFFLINE_SUCCESS);
         } else {
-            return Result.failed(Status.PUBLISH_FAILED);
+            return Result.failed(lifeCycle == 2 ? Status.PUBLISH_FAILED : Status.OFFLINE_FAILED);
         }
     }
 

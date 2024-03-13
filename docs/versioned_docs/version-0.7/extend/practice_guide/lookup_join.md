@@ -14,7 +14,7 @@ title: lookup join
 
 订单流水表读取的是 kafka `order_water` 主题中的数据，数据内容如下
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_order_water_data.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_order_water_data.png)
 
 ### mysql 表 （dim.order_info）
 
@@ -31,7 +31,7 @@ CREATE TABLE `order_info` (
 
 **数据**
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_mysql_data1.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_mysql_data1.png)
 
 ### flink sql 语句
 
@@ -106,23 +106,23 @@ on a.id = b.id
 
 flink sql 任务运行之后，flink UI 界面显示为
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_flink_ui.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_flink_ui.png)
 
 最后查看写入 kafka 中的数据为
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_sink_kafka_data1.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_sink_kafka_data1.png)
 
 此时，修改 mysql 中的数据，修改之后为
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_mysql_data2.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_mysql_data2.png)
 
 再查看写入 kafka 中的数据为
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_sink_kafka_data2.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_sink_kafka_data2.png)
 
 **其他**
 
 如果 kafka 中的订单流数据中的某个订单 id 在维表 mysql 中找不到，而且 flink sql 任务中使用的是 left join 连接，
 则匹配不到的订单中的 user_name 和 product_count 字段将为空字符串，具体如下图所示
 
-![img.png](http://www.aiwenmo.com/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_sink_kafka_data3.png)
+![img.png](http://pic.dinky.org.cn/dinky/docs/zh-CN/sql_development_guide/example/kafka_lookup_join_mysql_sink_kafka_data3.png)

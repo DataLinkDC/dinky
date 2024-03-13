@@ -21,56 +21,58 @@ import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
-import { mapDispatchToProps } from '@/pages/DataStudio/function';
+import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
 import LeftContainer from '@/pages/DataStudio/LeftContainer';
-import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
-import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import { BtnProvider } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import { StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
-import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
-  getClusterConfigurationData,
-  getEnvData,
-  getSessionData
-} from '@/pages/DataStudio/RightContainer/JobConfig/service';
+  StateType,
+  TabsItemType,
+  TabsPageSubType,
+  TabsPageType,
+  VIEW
+} from '@/pages/DataStudio/model';
+import RightContainer from '@/pages/DataStudio/RightContainer';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
 import { PageContainer } from '@ant-design/pro-layout';
+import { connect, getDvaApp } from '@umijs/max';
+import { useAsyncEffect } from 'ahooks';
 import { Layout, Menu, theme } from 'antd';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
-import { connect, getDvaApp } from 'umi';
 
 const { Sider, Content } = Layout;
 
 const { useToken } = theme;
 
-const DataStudio = (props: any) => {
+const DataStudio: React.FC<connect> = (props: any) => {
   const {
     bottomContainer,
     leftContainer,
     rightContainer,
-    saveDataBase,
-    saveProject,
+    queryDatabaseList,
+    queryTaskData,
     updateToolContentHeight,
-    saveSession,
-    saveEnv,
+    updateBottomHeight,
+    querySessionData,
+    queryEnv,
     updateCenterContentHeight,
     updateSelectLeftKey,
     updateSelectRightKey,
     updateSelectBottomKey,
-    saveClusterConfiguration,
+    queryClusterConfigurationData,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
-    tabs
+    tabs: { panes, activeKey }
   } = props;
+  const isProject = isProjectTabs(panes, activeKey);
   const { token } = useToken();
   const themeValue = useThemeValue();
   const app = getDvaApp(); // 获取dva的实例
   const persist = app._store.persist;
-  const bottomHeight = bottomContainer.selectKey === '' ? 0 : bottomContainer.height;
-
   const { fullscreen } = useEditor();
 
   const getClientSize = () => ({
@@ -88,7 +90,12 @@ const DataStudio = (props: any) => {
 
   const onResize = () => {
     setSize(getClientSize());
-    const centerContentHeight = getClientSize().contentHeight - bottomHeight;
+    const newBottomHeight = !isProject
+      ? 0
+      : bottomContainer.selectKey === ''
+      ? 0
+      : bottomContainer.height;
+    const centerContentHeight = getClientSize().contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
   };
@@ -99,23 +106,26 @@ const DataStudio = (props: any) => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  const loadData = async () => {
-    Promise.all([
-      getDataSourceList(),
-      getTaskData(),
-      getSessionData(),
-      getEnvData(),
-      getClusterConfigurationData()
-    ]).then((res) => {
-      saveDataBase(res[0]);
-      saveProject(res[1]);
-      saveSession(res[2]);
-      saveEnv(res[3]);
-      saveClusterConfiguration(res[4]);
-    });
+  const loadData = () => {
+    queryDatabaseList();
+    queryTaskData();
+    querySessionData();
+    queryEnv();
+    queryClusterConfigurationData();
   };
 
   useEffect(() => {
+    const newBottomHeight = !isProject
+      ? 0
+      : bottomContainer.selectKey === ''
+      ? 0
+      : bottomContainer.height;
+    const centerContentHeight = size.contentHeight - newBottomHeight;
+    updateCenterContentHeight(centerContentHeight);
+    updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
+  }, [activeKey, panes]);
+
+  useAsyncEffect(async () => {
     loadData();
   }, []);
 
@@ -124,14 +134,33 @@ const DataStudio = (props: any) => {
   const LeftTopMenu = (
     <Menu
       mode='inline'
+      activeKey={leftContainer.selectKey}
       selectedKeys={[leftContainer.selectKey]}
-      items={LeftSide.filter((x) => AuthorizedObject({ path: x.auth, children: x, access })).map(
-        (x) => ({
+      items={LeftSide.filter((tab) => AuthorizedObject({ path: tab.auth, children: tab, access }))
+        .filter((tab) => {
+          if (!tab.isShow) {
+            return true;
+          }
+          if (parseInt(activeKey) < 0) {
+            return TabsPageType.None;
+          }
+          const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
+          const show = tab.isShow(
+            currentTab?.type ?? TabsPageType.None,
+            currentTab?.subType ?? TabsPageSubType.None
+          );
+          // 如果当前打开的菜单等于 状态存的菜单 且 菜单不显示状态下，先切换到项目key(因为项目key 不可能不显示) 在关闭这个
+          // if current open menu equal status menu and menu is not show status, first switch to project key(because project key is not show) and close this
+          if (tab.key === leftContainer.selectKey && !show && panes.length > 0) {
+            updateSelectLeftKey(LeftMenuKey.PROJECT_KEY);
+          }
+          return show;
+        })
+        .map((x) => ({
           key: x.key,
           label: x.label,
           icon: x.icon
-        })
-      )}
+        }))}
       style={{
         flexGrow: 1,
         borderBlockStart: `1px solid ${themeValue.borderColor}`,
@@ -145,13 +174,23 @@ const DataStudio = (props: any) => {
     <Menu
       mode='inline'
       selectedKeys={[bottomContainer.selectKey]}
-      items={LeftBottomSide.filter((x) =>
-        AuthorizedObject({ path: x.auth, children: x, access })
-      ).map((x) => ({
-        key: x.key,
-        label: x.label,
-        icon: x.icon
-      }))}
+      activeKey={bottomContainer.selectKey}
+      items={LeftBottomSide.filter((x) => AuthorizedObject({ path: x.auth, children: x, access }))
+        .filter((tab) => {
+          if (!tab.isShow) {
+            return true;
+          }
+          if (parseInt(activeKey) < 0) {
+            return TabsPageType.None;
+          }
+          const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
+          return tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType);
+        })
+        .map((x) => ({
+          key: x.key,
+          label: x.label,
+          icon: x.icon
+        }))}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -180,16 +219,17 @@ const DataStudio = (props: any) => {
         borderInlineStart: `1px solid ${themeValue.borderColor}`,
         borderBlockStart: `1px solid ${themeValue.borderColor}`
       }}
-      items={RightSide.filter((x) => AuthorizedObject({ path: x.auth, children: x, access }))
-        .filter((x) => {
-          if (!x.isShow) {
+      activeKey={rightContainer.selectKey}
+      items={RightSide.filter((tab) => AuthorizedObject({ path: tab.auth, children: tab, access }))
+        .filter((tab) => {
+          if (!tab.isShow) {
             return true;
           }
-          if (parseInt(tabs.activeKey) < 0) {
+          if (parseInt(activeKey) < 0) {
             return TabsPageType.None;
           }
-          const v = (tabs.panes as TabsItemType[]).find((item) => item.key === tabs.activeKey);
-          return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
+          const currentTab = (panes as TabsItemType[]).find((item) => item.key === activeKey);
+          return tab.isShow(currentTab?.type ?? TabsPageType.None, currentTab?.subType);
         })
         .map((x) => {
           return { key: x.key, label: x.label, icon: x.icon };
@@ -218,17 +258,19 @@ const DataStudio = (props: any) => {
             <Sider collapsed collapsedWidth={40}>
               <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 {LeftTopMenu}
-                {LeftBottomMenu}
+                {isProject && LeftBottomMenu}
               </div>
             </Sider>
 
             <Content style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
               <div style={{ display: 'flex' }}>
-                <LeftContainer
-                  size={size}
-                  leftContainer={leftContainer}
-                  rightContainer={rightContainer}
-                />
+                <BtnProvider>
+                  <LeftContainer
+                    size={size}
+                    leftContainer={leftContainer}
+                    rightContainer={rightContainer}
+                  />
+                </BtnProvider>
                 <Content
                   style={{
                     width:
@@ -237,9 +279,9 @@ const DataStudio = (props: any) => {
                 >
                   <MiddleContainer />
                 </Content>
-                <RightContainer size={size} bottomHeight={bottomHeight} />
+                <RightContainer size={size} bottomHeight={bottomContainer.height} />
               </div>
-              {<BottomContainer size={size} height={bottomHeight} />}
+              {isProject && <BottomContainer size={size} height={bottomContainer.height} />}
             </Content>
 
             <Sider collapsed collapsedWidth={40}>

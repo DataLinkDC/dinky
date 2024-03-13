@@ -17,13 +17,14 @@
  *
  */
 
+import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data.d';
 import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { Badge, Space } from 'antd';
-import { PresetStatusColorType } from 'antd/es/_util/colors';
 import { Key } from 'react';
 
 export const generateList = (data: any, list: any[]) => {
@@ -78,19 +79,19 @@ export const buildStepValue = (step: number) => {
       return {
         title: l('global.table.lifecycle.dev'),
         status: 'processing',
-        color: '#1890ff'
+        color: 'cyan'
       };
     case 2:
       return {
         title: l('global.table.lifecycle.online'),
         status: 'success',
-        color: '#52c41a'
+        color: 'purple'
       };
     default:
       return {
         title: l('global.table.lifecycle.dev'),
         status: 'default',
-        color: '#1890ff'
+        color: 'cyan'
       };
   }
 };
@@ -128,7 +129,7 @@ export const showBadge = (type: string) => {
  */
 
 export const buildProjectTree = (
-  data: Catalogue[],
+  data: Catalogue[] = [],
   searchValue: string = '',
   path: string[] = []
 ): any =>
@@ -142,7 +143,8 @@ export const buildProjectTree = (
           <>
             <Badge
               title={stepValue.title}
-              status={(stepValue.status as PresetStatusColorType) ?? 'default'}
+              color={stepValue.color}
+              // status={(stepValue.status as PresetStatusColorType) ?? 'default'}
             />
           </>
         );
@@ -185,5 +187,29 @@ export const buildProjectTree = (
     : [];
 
 export const isUDF = (jobType: string): boolean => {
-  return jobType === 'Scala' || jobType === 'Python' || jobType === 'Java';
+  return (
+    jobType.toLowerCase() === DIALECT.SCALA ||
+    jobType.toLowerCase() === DIALECT.PYTHON_LONG ||
+    jobType.toLowerCase() === DIALECT.JAVA
+  );
 };
+
+export const isFlinkJob = (jobType: string): boolean => {
+  return jobType.toLowerCase() === DIALECT.FLINK_SQL || jobType.toLowerCase() === DIALECT.FLINKJAR;
+};
+
+export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
+  return isFlinkJob(jobType)
+    ? RightMenuKey.JOB_CONFIG_KEY
+    : isSql(jobType)
+    ? RightMenuKey.PREVIEW_CONFIG_KEY
+    : RightMenuKey.JOB_INFO_KEY;
+}
+
+export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {
+  if (isFlinkJob(jobType) || isSql(jobType)) {
+    return LeftBottomKey.CONSOLE_KEY;
+  } else {
+    return LeftBottomKey.TOOLS_KEY;
+  }
+}

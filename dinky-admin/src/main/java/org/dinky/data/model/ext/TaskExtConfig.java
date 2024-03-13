@@ -20,6 +20,7 @@
 package org.dinky.data.model.ext;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.ext.ConfigItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -73,7 +74,9 @@ public class TaskExtConfig implements Serializable {
     @JsonIgnore
     public Map<String, String> getCustomConfigMaps() {
         return Asserts.isNotNullCollection(customConfig)
-                ? customConfig.stream().collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
+                ? customConfig.stream()
+                        .filter(item -> item.getKey() != null && item.getValue() != null)
+                        .collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
                 : new HashMap<>();
     }
 

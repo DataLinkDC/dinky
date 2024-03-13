@@ -23,9 +23,11 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.SqlServerConstant;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.SqlServerTypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.SqlServerQuery;
 
@@ -42,7 +44,7 @@ public class SqlServerDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new SqlServerTypeConvert();
     }
 
@@ -53,7 +55,7 @@ public class SqlServerDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "SqlServer";
+        return DriverType.SQLSERVER.getValue();
     }
 
     @Override

@@ -64,17 +64,17 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
     // if (selectsql == null || selectsql == '') {
     //   selectsql = current.value;
     // }
-    // let useSession = !!currentSession.session;
     let param = {
       ...current,
-      // useSession: useSession,
-      // session: currentSession.session,
       configJson: current?.config,
       taskId: current?.id
     };
     setResult(<Text>{l('pages.datastudio.explain.validate')}</Text>);
     setExplainData([]);
-    const result = explainSql(param);
+    const result = explainSql(
+      l('pages.datastudio.editor.checking', '', { jobName: current?.name }),
+      param
+    );
     result.then((res) => {
       const errorExplainData: [] = [];
       let errorCount: number = 0;
@@ -228,7 +228,7 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
           style={{ alignItems: 'inherit' }}
           code={explainInfo}
           language='java'
-          height='500px'
+          height='92vh'
         />
       </Drawer>
     </>

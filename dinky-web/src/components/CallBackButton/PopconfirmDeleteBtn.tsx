@@ -24,29 +24,36 @@ import React from 'react';
 
 type PopconfirmProps = {
   onClick: () => void;
-  description: string;
+  description: string | React.ReactNode;
   options?: any;
+  disabled?: boolean;
+  buttonIcon?: React.ReactNode;
+  title?: string | React.ReactNode;
 };
 
 export const PopconfirmDeleteBtn: React.FC<PopconfirmProps> = (props) => {
-  const { onClick, description, options } = props;
+  const { onClick, description, disabled = false, buttonIcon, title, options } = props;
 
   return (
     //外面包装一层onclick，阻止冒泡传递事件
     <span onClick={(e) => e.stopPropagation()}>
       <Popconfirm
         placement='topRight'
-        title={l('button.delete')}
+        title={title ?? l('button.delete')}
         description={<div className={'needWrap'}>{description} </div>}
         onConfirm={onClick}
+        disabled={disabled}
         okText={l('button.confirm')}
         cancelText={l('button.cancel')}
       >
         <Button
           {...options}
-          title={l('button.delete')}
+          title={title ?? l('button.delete')}
           key={'DeleteIcon'}
-          icon={<DangerDeleteIcon />}
+          disabled={disabled}
+          htmlType={'submit'}
+          autoFocus
+          icon={buttonIcon ?? <DangerDeleteIcon />}
         />
       </Popconfirm>
     </span>

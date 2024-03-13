@@ -22,7 +22,8 @@ package org.dinky.metadata.convert;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
-import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ import java.util.Optional;
  *
  * @since 2021/7/20 15:21
  */
-public class MySqlTypeConvert extends AbstractTypeConvert {
+public class MySqlTypeConvert extends AbstractJdbcTypeConvert {
 
     public MySqlTypeConvert() {
         this.convertMap.clear();
@@ -56,15 +57,16 @@ public class MySqlTypeConvert extends AbstractTypeConvert {
         register("int", ColumnType.INT, ColumnType.INTEGER);
     }
 
-    private static Optional<ColumnType> convertTinyint(Column column, DriverConfig driverConfig) {
+    private static Optional<ColumnType> convertTinyint(Column column, DriverConfig<AbstractJdbcConfig> driverConfig) {
         Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
         if (!length.equals(1)) {
             return Optional.empty();
         }
 
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        boolean tinyInt1isBit = Asserts.isNotNullString(driverConfig.getUrl())
-                && !driverConfig.getUrl().contains("tinyInt1isBit=false");
+        boolean tinyInt1isBit =
+                Asserts.isNotNullString(driverConfig.getConnectConfig().getUrl())
+                        && !driverConfig.getConnectConfig().getUrl().contains("tinyInt1isBit=false");
         if (tinyInt1isBit) {
             if (isNullable) {
                 return Optional.of(ColumnType.JAVA_LANG_BOOLEAN);
@@ -79,7 +81,7 @@ public class MySqlTypeConvert extends AbstractTypeConvert {
     }
 
     @Override
-    public ColumnType convert(Column column, DriverConfig driverConfig) {
+    public ColumnType convert(Column column, DriverConfig<AbstractJdbcConfig> driverConfig) {
         ColumnType columnType = ColumnType.STRING;
         if (Asserts.isNull(column)) {
             return columnType;
@@ -87,8 +89,9 @@ public class MySqlTypeConvert extends AbstractTypeConvert {
         Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
         String t = Asserts.isNull(column.getType()) ? "" : column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        boolean tinyInt1isBit = Asserts.isNotNullString(driverConfig.getUrl())
-                && !driverConfig.getUrl().contains("tinyInt1isBit=false");
+        boolean tinyInt1isBit =
+                Asserts.isNotNullString(driverConfig.getConnectConfig().getUrl())
+                        && !driverConfig.getConnectConfig().getUrl().contains("tinyInt1isBit=false");
         if (t.contains("numeric") || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("bigint")) {

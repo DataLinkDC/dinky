@@ -21,13 +21,14 @@ package org.dinky.job;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;
 
@@ -225,19 +226,27 @@ public class JobConfig {
 
         gatewayConfig = GatewayConfig.build(config);
         gatewayConfig.setTaskId(getTaskId());
+        gatewayConfig.setType(GatewayType.get(getType()));
     }
 
-    public void addGatewayConfig(Map<String, Object> config) {
+    public void addGatewayConfig(Map<String, String> config) {
         if (Asserts.isNull(gatewayConfig)) {
             gatewayConfig = new GatewayConfig();
         }
-        for (Map.Entry<String, Object> entry : config.entrySet()) {
-            gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), (String) entry.getValue());
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue());
         }
     }
 
+    public void addGatewayConfig(Configuration config) {
+        if (Asserts.isNull(gatewayConfig)) {
+            gatewayConfig = new GatewayConfig();
+        }
+        gatewayConfig.getFlinkConfig().getConfiguration().putAll(config.toMap());
+    }
+
     public boolean isUseRemote() {
-        return !GatewayType.LOCAL.equalsValue(type);
+        return useRemote || !GatewayType.LOCAL.equalsValue(type);
     }
 
     public void buildLocal() {

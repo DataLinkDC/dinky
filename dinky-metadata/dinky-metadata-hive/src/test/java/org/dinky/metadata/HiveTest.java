@@ -22,8 +22,9 @@ package org.dinky.metadata;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.Driver;
-import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.LinkedHashMap;
@@ -56,28 +57,32 @@ public class HiveTest {
     private static String url = "jdbc:hive2://" + IP + ":" + PORT + "/" + hiveDB;
 
     public Driver getDriver() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType(hive);
         config.setName(hive);
-        config.setIp(IP);
-        config.setPort(PORT);
-        config.setUsername(username);
-        config.setPassword(passwd);
-        config.setUrl(url);
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP)
+                .port(PORT)
+                .username(username)
+                .password(passwd)
+                .url(url)
+                .build());
         return Driver.build(config);
     }
 
     @Ignore
     @Test
     public void connectTest() {
-        DriverConfig config = new DriverConfig();
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType(hive);
         config.setName(hive);
-        config.setIp(IP);
-        config.setPort(PORT);
-        config.setUsername(username);
-        config.setPassword(passwd);
-        config.setUrl(url);
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP)
+                .port(PORT)
+                .username(username)
+                .password(passwd)
+                .url(url)
+                .build());
         String test = Driver.build(config).test();
         LOGGER.info(test);
         LOGGER.info("end...");
@@ -139,7 +144,6 @@ public class HiveTest {
 
     /**
      * @Author: zhumingye
-     *
      * @return:
      */
     @Ignore

@@ -23,24 +23,31 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import useHookRequest from '@/hooks/useHookRequest';
-import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/Instance/components/contants';
+import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import { getData } from '@/services/api';
 import {
   handleAddOrUpdate,
   handleOption,
+  handlePutDataByParams,
   handleRemoveById,
   updateDataByParam
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Cluster } from '@/types/RegCenter/data.d';
 import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
 import { ClusterInstanceState } from '@/types/RegCenter/state.d';
 import { l } from '@/utils/intl';
-import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
-import { ActionType, ProList } from '@ant-design/pro-components';
+import {
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  HeartTwoTone,
+  StopTwoTone
+} from '@ant-design/icons';
+import { ProList } from '@ant-design/pro-components';
 import {
   Badge,
   Button,
@@ -57,7 +64,7 @@ import {
   Tooltip,
   Typography
 } from 'antd';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 const { Text, Paragraph, Link } = Typography;
 
@@ -69,9 +76,8 @@ export default () => {
     useState<ClusterInstanceState>(InitClusterInstanceState);
   const [isAutoCreate, setIsAutoCreate] = useState<boolean>(false);
   const [searchKeyWord, setSearchKeyword] = useState<string>('');
-  const actionRef = useRef<ActionType>();
 
-  const { data, loading } = useHookRequest(getData, {
+  const { data, loading, refresh } = useHookRequest(getData, {
     refreshDeps: [searchKeyWord, isAutoCreate],
     defaultParams: [
       API_CONSTANTS.CLUSTER_INSTANCE_LIST,
@@ -88,7 +94,7 @@ export default () => {
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
-    actionRef.current?.reload?.();
+    await refresh();
   };
 
   /**
@@ -135,6 +141,11 @@ export default () => {
       handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id)
     );
   };
+  const handleKill = async (id: number) => {
+    await executeAndCallback(async () =>
+      handlePutDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_KILL, l('rc.ci.kill'), { id })
+    );
+  };
 
   /**
    * enable or disable
@@ -161,16 +172,36 @@ export default () => {
   const renderActionButton = (record: Cluster.Instance) => (
     <Space wrap direction={'vertical'} align={'center'}>
       <br />
-      <Authorized key={`${record.id}_edit_auth`} path='/registration/cluster/instance/edit'>
+      <Authorized
+        key={`${record.id}_edit_auth`}
+        path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT}
+      >
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
       </Authorized>
-      <Authorized key={`${record.id}_delete_auth`} path='/registration/cluster/instance/delete'>
+      <Authorized
+        key={`${record.id}_delete_auth`}
+        path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_DELETE}
+      >
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDelete(record.id)}
           description={l('rc.ci.deleteConfirm')}
         />
       </Authorized>
+      {record.autoRegisters && record.status === 1 && (
+        <Authorized
+          key={`${record.id}_kill_auth`}
+          path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_KILL}
+        >
+          <PopconfirmDeleteBtn
+            key={`${record.id}_kill`}
+            onClick={() => handleKill(record.id)}
+            buttonIcon={<StopTwoTone />}
+            title={l('rc.ci.kill')}
+            description={l('rc.ci.killConfirm')}
+          />
+        </Authorized>
+      )}
     </Space>
   );
 
@@ -203,10 +234,10 @@ export default () => {
               <EnableSwitchBtn
                 record={item}
                 onChange={() => handleChangeEnable(item)}
-                disabled={!HasAuthority('/registration/cluster/instance/edit')}
+                disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT)}
               />
               <Tag color='cyan'>
-                {CLUSTER_INSTANCE_TYPE.find((record) => item.type === record.value)?.label}
+                {CLUSTER_TYPE_OPTIONS.find((record) => item.type === record.value)?.label}
               </Tag>
               <Tag
                 icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
@@ -252,13 +283,16 @@ export default () => {
       unCheckedChildren={l('rc.ci.mr')}
       onChange={(v) => setIsAutoCreate(v)}
     />,
-    <Authorized key={`_add_auth`} path='/registration/cluster/instance/add'>
+    <Authorized key={`_add_auth`} path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD}>
       <CreateBtn
         key={`_add`}
         onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
       />
     </Authorized>,
-    <Authorized key={`_add_heartbeat`} path='/registration/cluster/instance/heartbeat'>
+    <Authorized
+      key={`_add_heartbeat`}
+      path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_HEARTBEATS}
+    >
       <Button
         key={`_add_heartbeat_btn`}
         type={'primary'}
@@ -267,7 +301,7 @@ export default () => {
       >
         {l('button.heartbeat')}
       </Button>
-    </Authorized>,
+    </Authorized>
   ];
 
   const renderListItem = (item: Cluster.Instance) => {
@@ -319,7 +353,6 @@ export default () => {
         {...(PRO_LIST_CARD_OPTIONS as any)}
         grid={{ gutter: 24, column: 4 }}
         pagination={{ size: 'small', defaultPageSize: 12, hideOnSinglePage: true }}
-        actionRef={actionRef}
         dataSource={data}
         loading={loading}
         itemLayout={'vertical'}

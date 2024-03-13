@@ -1,22 +1,20 @@
 ---
-sidebar_position: 2
+sidebar_position: 5
+position: 5
 id: document
 title: 文档贡献
 ---
-
-
-
 
 良好的使用文档对任何类型的软件都是至关重要的。欢迎任何可以改进 Dinky 文档的贡献。
 
 ### 获取文档项目
 
-Dinky 项目的文档维护在 [dinky-website](https://github.com/DataLinkDC/dinky-website) 。
+Dinky 项目的文档维护在 [dinky主仓库/docs 下](https://github.com/DataLinkDC/dinky/tree/dev/docs) 。
 
 首先你需要先将源项目 fork 到自己的 github 仓库中，然后将 fork 的文档克隆到本地计算机中。
 
 ```shell
-git clone https://github.com/<your-github-user-name>/dinky-website
+git clone https://github.com/<your-github-user-name>/dinky
 ```
 ### 文档环境
 

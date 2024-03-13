@@ -35,22 +35,13 @@
             <id>flink-1.14</id>
             <modules>
                 <module>dinky-connector-jdbc-1.14</module>
-                <module>dinky-connector-phoenix-1.14</module>
-                <module>dinky-connector-pulsar-1.14</module>
             </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.15</id>
-            <modules />
         </profile>
 
         <profile>
             <id>flink-all</id>
             <modules>
                 <module>dinky-connector-jdbc-1.14</module>
-                <module>dinky-connector-phoenix-1.14</module>
-                <module>dinky-connector-pulsar-1.14</module>
             </modules>
         </profile>
     </profiles>

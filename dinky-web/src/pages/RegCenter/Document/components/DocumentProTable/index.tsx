@@ -26,17 +26,15 @@ import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import DocumentDrawer from '@/pages/RegCenter/Document/components/DocumentDrawer';
 import DocumentModalForm from '@/pages/RegCenter/Document/components/DocumentModal';
 import {
-  DOCUMENT_CATEGORY,
   DOCUMENT_CATEGORY_ENUMS,
-  DOCUMENT_FUNCTION_ENUMS,
-  DOCUMENT_FUNCTION_TYPE,
-  DOCUMENT_SUBTYPE,
-  DOCUMENT_SUBTYPE_ENUMS
+  DOCUMENT_FUNCTION_TYPE_ENUMS,
+  DOCUMENT_TYPE_ENUMS
 } from '@/pages/RegCenter/Document/constans';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { Document } from '@/types/RegCenter/data.d';
 import { InitDocumentState } from '@/types/RegCenter/init.d';
 import { DocumentState } from '@/types/RegCenter/state.d';
@@ -112,28 +110,28 @@ const DocumentTableList: React.FC = () => {
       }
     },
     {
-      title: l('rc.doc.category'),
-      sorter: true,
-      dataIndex: 'category',
-      filterMultiple: false,
-      filters: DOCUMENT_CATEGORY,
-      valueEnum: DOCUMENT_CATEGORY_ENUMS
-    },
-    {
       title: l('rc.doc.functionType'),
       sorter: true,
       dataIndex: 'type',
-      filterMultiple: false,
-      filters: DOCUMENT_FUNCTION_TYPE,
-      valueEnum: DOCUMENT_FUNCTION_ENUMS
+      filterMultiple: true,
+      filters: true,
+      valueEnum: DOCUMENT_TYPE_ENUMS
     },
     {
       title: l('rc.doc.subFunctionType'),
       sorter: true,
       dataIndex: 'subtype',
-      filters: DOCUMENT_SUBTYPE,
-      filterMultiple: false,
-      valueEnum: DOCUMENT_SUBTYPE_ENUMS
+      filters: true,
+      filterMultiple: true,
+      valueEnum: DOCUMENT_FUNCTION_TYPE_ENUMS
+    },
+    {
+      title: l('rc.doc.category'),
+      sorter: true,
+      dataIndex: 'category',
+      filterMultiple: true,
+      filters: true,
+      valueEnum: DOCUMENT_CATEGORY_ENUMS
     },
     {
       title: l('rc.doc.description'),
@@ -173,7 +171,7 @@ const DocumentTableList: React.FC = () => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
-            disabled={!HasAuthority('/registration/document/edit')}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_DOCUMENT_EDIT)}
             record={record}
             onChange={() => handleChangeEnable(record)}
           />
@@ -203,10 +201,13 @@ const DocumentTableList: React.FC = () => {
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
-        <Authorized key={`${record.id}_edit`} path='/registration/document/edit'>
+        <Authorized key={`${record.id}_edit`} path={PermissionConstants.REGISTRATION_DOCUMENT_EDIT}>
           <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path='/registration/document/delete'>
+        <Authorized
+          key={`${record.id}_delete`}
+          path={PermissionConstants.REGISTRATION_DOCUMENT_DELETE}
+        >
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
@@ -226,7 +227,7 @@ const DocumentTableList: React.FC = () => {
         headerTitle={l('rc.doc.management')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/document/add'>
+          <Authorized key='create' path={PermissionConstants.REGISTRATION_DOCUMENT_ADD}>
             <CreateBtn
               key={'doctable'}
               onClick={() =>

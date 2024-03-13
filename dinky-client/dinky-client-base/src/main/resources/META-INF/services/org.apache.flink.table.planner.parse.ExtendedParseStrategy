@@ -1,0 +1,6 @@
+org.dinky.trans.parse.AddJarSqlParseStrategy
+org.dinky.trans.parse.AddFileSqlParseStrategy
+org.dinky.trans.parse.CreateAggTableSelectSqlParseStrategy
+org.dinky.trans.parse.CreateTemporalTableFunctionParseStrategy
+org.dinky.trans.parse.ExecuteJarParseStrategy
+org.dinky.trans.parse.SetSqlParseStrategy

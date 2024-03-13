@@ -22,7 +22,8 @@ package org.dinky.api;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.FlinkRestAPIConstant;
 import org.dinky.data.constant.NetConstant;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.enums.GatewayType;
+import org.dinky.data.exception.BusException;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
@@ -93,7 +94,7 @@ public class FlinkAPI {
     }
 
     /**
-     * get请求获取jobManger/TaskManager的日志 (结果为字符串并不是json格式)
+     * get请求获取jobManager/TaskManager的日志 (结果为字符串并不是json格式)
      *
      * @param route route
      * @return {@link String}
@@ -202,7 +203,7 @@ public class FlinkAPI {
                     break;
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
+                throw new BusException(e.getMessage());
             }
         }
 

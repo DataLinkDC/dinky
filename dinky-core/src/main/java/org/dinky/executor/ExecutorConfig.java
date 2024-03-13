@@ -20,7 +20,7 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.enums.GatewayType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,6 +89,13 @@ public class ExecutorConfig {
             example = "true",
             notes = "Flag indicating whether to use batch model")
     private boolean useBatchModel;
+
+    @ApiModelProperty(
+            value = "Whether to only build plans",
+            dataType = "boolean",
+            example = "true",
+            notes = "Build plan only")
+    private boolean isPlan;
 
     @ApiModelProperty(
             value = "Checkpoint interval",
@@ -261,6 +268,14 @@ public class ExecutorConfig {
 
     public boolean isValidJarFiles() {
         return Asserts.isNotNull(this.getJarFiles());
+    }
+
+    public boolean isPlan() {
+        return isPlan;
+    }
+
+    public void setPlan(boolean plan) {
+        isPlan = plan;
     }
 
     @Override

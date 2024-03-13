@@ -19,9 +19,10 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { SseData } from '@/models/Sse';
-import { DataStudioTabsItemType, StateType } from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { JobStatus } from '@/types/Studio/data.d';
 import { parseMilliSecondStr } from '@/utils/function';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
@@ -84,10 +85,10 @@ const ConsoleContent = (props: ConsoleProps) => {
       return data;
     });
     setSelectNode((prevState: any) => {
-      if (prevState && prevState.key == data.lastUpdateStep.key) {
+      if (prevState && data?.lastUpdateStep && prevState.key === data.lastUpdateStep.key) {
         //更新当前节点
         return data.lastUpdateStep;
-      } else if (!prevState || prevState.key == data.key) {
+      } else if (!prevState || prevState.key === data.key) {
         //未选择节点状态下选择根节点
         return data;
       }
@@ -113,11 +114,11 @@ const ConsoleContent = (props: ConsoleProps) => {
     const duration = node.time ? node.time : endDate.getTime() - startDate.getTime();
     return (
       <Space size={5}>
-        {node.status == 'RUNNING' && <LoadingOutlined />}
-        {node.status == 'FINISHED' && (
+        {node.status === JobStatus.RUNNING && <LoadingOutlined />}
+        {node.status === JobStatus.FINISHED && (
           <CheckOutlined style={{ color: 'green', fontWeight: 'bold' }} />
         )}
-        {node.status == 'FAILED' && (
+        {node.status === JobStatus.FAILED && (
           <CloseCircleFilled style={{ color: 'red', fontWeight: 'bold' }} />
         )}
         <Text>{node.title}</Text>
@@ -139,7 +140,7 @@ const ConsoleContent = (props: ConsoleProps) => {
   };
 
   return (
-    <div style={{ height: props.height - 53 }}>
+    <div style={{ height: props.height - VIEW.leftMargin }}>
       <SplitPane
         split={'vertical'}
         defaultSizes={[100, 500]}
@@ -178,10 +179,11 @@ const ConsoleContent = (props: ConsoleProps) => {
         >
           <CodeShow
             code={selectNode?.log ? selectNode.log : ''}
-            height={props.height - 53}
+            height={props.height - VIEW.leftMargin}
             language={'javalog'}
             lineNumbers={'off'}
             enableMiniMap
+            enableAutoScroll
             showFloatButton
           />
         </Pane>

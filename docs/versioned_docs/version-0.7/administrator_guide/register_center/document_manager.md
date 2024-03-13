@@ -7,19 +7,19 @@ title: 文档管理
 
 ## 文档管理列表
 
-![document_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/document_manager_list.png)
+![document_manager_list](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/document_manager_list.png)
 
 ## 查看文档描述
 
-![document_manager_list](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/document_show_desc.png)
+![document_manager_list](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/document_show_desc.png)
 
 ## 创建文档
 
-![create_document](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/create_document.png)
+![create_document](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/create_document.png)
 
 ## 维护文档
 
-![update_document](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/update_document.png)
+![update_document](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/update_document.png)
 
 **参数配置说明:**
 
@@ -34,4 +34,4 @@ title: 文档管理
 - **版本:** 文档版本 (必填) ;
 
 **填充值提示效果:**
-![show_hotkey_tips](http://www.aiwenmo.com/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/show_hotkey_tips.png)
+![show_hotkey_tips](http://pic.dinky.org.cn/dinky/docs/zh-CN/administrator_guide/register_center/document_manager/show_hotkey_tips.png)

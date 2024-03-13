@@ -20,7 +20,9 @@
 import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import { l } from '@/utils/intl';
 import {
+  CloudDownloadOutlined,
   DownCircleFilled,
+  EnterOutlined,
   StopFilled,
   SyncOutlined,
   UpCircleFilled,
@@ -46,6 +48,8 @@ type EditFloatBtnProps = {
   handleBackBottom?: () => void; // back to bottom callback
   handleUpScroll?: () => void; // up scroll callback
   handleDownScroll?: () => void; // down scroll callback
+  handleDownloadLog?: () => string; // download log callback
+  handleWrap?: () => void; // wrap callback
 };
 const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
   /**
@@ -62,7 +66,9 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
     handleBackTop,
     handleBackBottom,
     handleUpScroll,
-    handleDownScroll
+    handleDownScroll,
+    handleDownloadLog,
+    handleWrap
   } = props;
 
   /**
@@ -112,6 +118,16 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
           icon={<DownCircleFilled />}
           onClick={handleDownScroll}
           title={l('button.downScroll')}
+        />
+        <CircleBtn
+          icon={<CloudDownloadOutlined />}
+          href={handleDownloadLog ? handleDownloadLog() : '123 '}
+          title={'Download'}
+        />
+        <CircleBtn
+          icon={<EnterOutlined />}
+          onClick={() => handleWrap && handleWrap()}
+          title={l('button.wrap')}
         />
       </Space>
     </>

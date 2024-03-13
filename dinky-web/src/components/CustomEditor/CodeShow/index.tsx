@@ -18,7 +18,6 @@
  */
 
 import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
-import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
 import { Loading } from '@/pages/Other/Loading';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
@@ -28,8 +27,12 @@ import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
-import { Editor, Monaco } from '@monaco-editor/react';
+import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
+import { Editor, loader, Monaco } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 import { CSSProperties, useRef, useState } from 'react';
+
+loader.config({ monaco });
 
 export type CodeShowFormProps = {
   height?: string | number;
@@ -43,6 +46,7 @@ export type CodeShowFormProps = {
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
   fullScreenBtn?: boolean;
+  enableAutoScroll?: boolean;
   style?: CSSProperties;
 };
 
@@ -71,12 +75,11 @@ const CodeShow = (props: CodeShowFormProps) => {
     showFloatButton = false,
     refreshLogCallback,
     fullScreenBtn = false,
-    enableMiniMap = false
+    enableMiniMap = false,
+    enableAutoScroll = false
   } = props;
 
   const { ScrollType } = editor;
-
-  const [scrollBeyondLastLine] = useState<boolean>(options.scrollBeyondLastLine);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [stopping, setStopping] = useState<boolean>(false);
@@ -156,6 +159,18 @@ const CodeShow = (props: CodeShowFormProps) => {
   };
 
   /**
+   *  handle get downoad url
+   */
+  const handleDownloadLog = () => {
+    const blob = new Blob([code ?? 'not get content'], { type: 'text/plain' });
+    return URL.createObjectURL(blob);
+  };
+
+  const handleWrap = () => {
+    editorInstance?.current?.updateOptions({ wordWrap: 'on' });
+  };
+
+  /**
    *  editorDidMount
    * @param {editor.IStandaloneCodeEditor} editor
    * @param monaco {Monaco}
@@ -165,7 +180,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     monacoInstance.current = monaco;
     editor.layout();
     editor.focus();
-    if (scrollBeyondLastLine) {
+    if (enableAutoScroll) {
       editor.onDidChangeModelContent(() => {
         const lineCount = editor.getModel()?.getLineCount() as number;
         if (lineCount > 20) {
@@ -188,7 +203,9 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleBackTop,
     handleBackBottom,
     handleUpScroll,
-    handleDownScroll
+    handleDownScroll,
+    handleDownloadLog,
+    handleWrap
   };
 
   /**
@@ -208,18 +225,14 @@ const CodeShow = (props: CodeShowFormProps) => {
 
           {/* editor */}
           <Editor
-            beforeMount={(monaco) => {
-              // 挂载前加载语言 | before mount load language
-              LoadCustomEditorLanguage(monacoInstance.current);
-              monacoInstance.current = monaco;
-            }}
+            beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco)}
             width={width}
             height={height}
             loading={<Loading loading={loading} />}
             value={code ?? ''}
             language={language}
             options={{
-              scrollBeyondLastLine: false,
+              scrollBeyondLastLine: enableAutoScroll,
               readOnly: true,
               glyphMargin: false,
               wordWrap: autoWrap,
@@ -253,7 +266,9 @@ const CodeShow = (props: CodeShowFormProps) => {
               ...options
             }}
             onMount={editorDidMount}
-            theme={convertCodeEditTheme(editorInstance?.current)}
+            //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题
+            //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash
+            theme={convertCodeEditTheme()}
           />
         </Col>
         {showFloatButton && (

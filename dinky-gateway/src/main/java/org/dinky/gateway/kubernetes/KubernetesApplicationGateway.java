@@ -20,9 +20,10 @@
 package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.config.AppConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
@@ -74,7 +75,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      * @throws RuntimeException if an error occurs during submission.
      */
     @Override
-    public GatewayResult submitJar() {
+    public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         try {
             logger.info("Start submit k8s application.");
             ClusterClientProvider<String> clusterClient = deployApplication();
@@ -90,8 +91,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         } finally {
-            client.close();
-            kubernetesClient.close();
+            close();
         }
     }
 

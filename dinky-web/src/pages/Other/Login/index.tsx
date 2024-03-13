@@ -19,12 +19,12 @@
 
 import Footer from '@/components/Footer';
 import ChooseModal from '@/pages/Other/Login/ChooseModal';
-import { gotoRedirectUrl, redirectToLogin } from '@/pages/Other/Login/function';
+import { gotoRedirectUrl, initSomeThing, redirectToLogin } from '@/pages/Other/Login/function';
 import LangSwitch from '@/pages/Other/Login/LangSwitch';
 import { chooseTenantSubmit, login, queryDataByParams } from '@/services/BusinessCrud';
 import { API } from '@/services/data';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { SaTokenInfo, UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -32,7 +32,6 @@ import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { useModel } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
 
@@ -57,12 +56,10 @@ const Login: React.FC = () => {
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
     if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo
-        }));
-      });
+      setInitialState((s) => ({
+        ...s,
+        currentUser: userInfo
+      }));
     }
   };
 
@@ -70,7 +67,8 @@ const Login: React.FC = () => {
    * When the token is expired, redirect to login
    */
   useEffect(() => {
-    const expirationTime = JSON.parse(JSON.stringify(localStorageOfToken)).tokenTimeout ?? 0; // GET TOKEN TIMEOUT
+    const expirationTime =
+      (JSON.parse(JSON.stringify(localStorageOfToken)) as SaTokenInfo)?.tokenTimeout ?? 0; // GET TOKEN TIMEOUT
     let timeRemaining = 0;
     let timer: NodeJS.Timeout;
     if (expirationTime > 0) {
@@ -141,9 +139,15 @@ const Login: React.FC = () => {
       const result = await login({ ...values });
       if (result.code === 0) {
         // if login success then get token info and set it to local storage
-        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then((res) =>
-          setLocalStorageOfToken(JSON.stringify(res))
-        );
+        await queryDataByParams<SaTokenInfo>(API_CONSTANTS.TOKEN_INFO).then((res) => {
+          console.log(res);
+          if (res) {
+            setLocalStorageOfToken(JSON.stringify(res));
+          } else {
+            // 如果没有获取到token信息，直接跳转到登录页
+            redirectToLogin();
+          }
+        });
       }
       setInitialState((s) => ({ ...s, currentUser: result.data }));
       await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
@@ -178,7 +182,8 @@ const Login: React.FC = () => {
     await handleChooseTenant(result);
     handleTenantVisible(false);
   };
-
+  // 进入登录页初始化一些东西
+  initSomeThing();
   return (
     <div className={containerClassName}>
       <HelmetTitle />

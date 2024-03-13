@@ -18,7 +18,8 @@
  */
 
 import { InitContextMenuPosition } from '@/types/Public/state.d';
-import { ProjectState } from '@/types/Studio/state.d';
+import { PushDolphinParams } from '@/types/Studio/data';
+import { CateLogState, ProjectState } from '@/types/Studio/state.d';
 
 export const InitProjectState: ProjectState = {
   rightActiveKey: '',
@@ -35,4 +36,36 @@ export const InitProjectState: ProjectState = {
   isCreateTask: false,
   isCut: false,
   value: {}
+};
+
+export const InitPushDolphinParams: PushDolphinParams = {
+  taskId: '',
+  upstreamCodes: [],
+  taskPriority: 'MEDIUM',
+  failRetryTimes: 0,
+  failRetryInterval: 0,
+  delayTime: 0,
+  timeout: 30,
+  timeoutFlag: false,
+  flag: false,
+  isCache: false,
+  timeoutNotifyStrategy: ['WARN'],
+  description: ''
+};
+
+export const InitCateLogState: CateLogState = {
+  catalog: '',
+  catalogSelect: [],
+  databaseName: '',
+  databaseId: -1,
+  tableName: '',
+  dialect: '',
+  fragment: true,
+  envId: -1,
+  engine: 'Flink',
+  treeData: [],
+  modalVisit: false,
+  rowData: {},
+  loading: false,
+  columnData: []
 };

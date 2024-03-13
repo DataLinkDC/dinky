@@ -23,8 +23,10 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
+import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.MySqlTypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.MySqlQuery;
 import org.dinky.utils.TextUtil;
@@ -51,13 +53,13 @@ public class MySqlDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert getTypeConvert() {
+    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
         return new MySqlTypeConvert();
     }
 
     @Override
     public String getType() {
-        return "MySql";
+        return DriverType.MYSQL.getValue();
     }
 
     @Override
@@ -107,7 +109,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
                     final String dv = column.getDefaultValue();
                     String defaultValue = Asserts.isNotNull(dv)
-                            ? String.format(" DEFAULT %s", "".equals(dv) ? "\"\"" : dv)
+                            ? String.format(" DEFAULT '%s'", dv.isEmpty() ? "''" : dv)
                             : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
 
                     return String.format(
@@ -155,10 +157,10 @@ public class MySqlDriver extends AbstractJdbcDriver {
         StringBuilder optionBuilder = new StringBuilder()
                 .append(String.format("select * from `%s`.`%s`", queryData.getSchemaName(), queryData.getTableName()));
 
-        if (where != null && !where.equals("")) {
+        if (where != null && !where.isEmpty()) {
             optionBuilder.append(" where ").append(where);
         }
-        if (order != null && !order.equals("")) {
+        if (order != null && !order.isEmpty()) {
             optionBuilder.append(" order by ").append(order);
         }
 

@@ -26,7 +26,6 @@ import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ProcessEntity;
 import org.dinky.data.model.ProcessStepEntity;
 import org.dinky.utils.LogUtil;
@@ -94,20 +93,26 @@ public class ConsoleContextHolder {
      *
      * @param processName process name
      * @param stepPid     process step type
-     * @param log         messages
+     * @param logLine     messages
      * @throws BusException Throws an exception if the process does not exist
      */
-    public void appendLog(String processName, String stepPid, String log, boolean recordGlobal) {
+    public void appendLog(String processName, String stepPid, String logLine, boolean recordGlobal) {
         if (!logPross.containsKey(processName)) {
-            throw new BusException(StrFormatter.format("process {} does not exist", processName));
+            log.debug("Process {} does not exist, This log was abandoned", processName);
+            return;
         }
         ProcessEntity process = logPross.get(processName);
         if (recordGlobal) {
-            process.appendLog(log);
+            process.appendLog(logLine);
         }
         if (stepPid != null) {
             ProcessStepEntity stepNode = getStepNode(stepPid, getStepsMap(processName));
-            stepNode.appendLog(log);
+            if (stepNode != null) {
+                stepNode.appendLog(logLine);
+                process.setLastUpdateStep(stepNode);
+            } else {
+                log.error("process step not found {},{}", processName, stepPid);
+            }
             process.setLastUpdateStep(stepNode);
         }
         //   /TOPIC/PROCESS_CONSOLE/FlinkSubmit/12
@@ -171,7 +176,11 @@ public class ConsoleContextHolder {
             process.getChildren().add(processStepEntity);
         } else {
             ProcessStepEntity stepNode = getStepNode(parentStepPid, process.getChildren());
-            stepNode.getChildren().add(processStepEntity);
+            if (stepNode == null) {
+                log.error("registerProcessStep {} failed in {}", type.getDesc(), processName);
+            } else {
+                stepNode.getChildren().add(processStepEntity);
+            }
         }
         return processStepEntity;
     }
@@ -240,7 +249,8 @@ public class ConsoleContextHolder {
                 JSONObject.toJSONString(logPross),
                 stepPid,
                 MDC.get(ProcessAspect.PROCESS_NAME));
-        throw new DinkyException(errorStr);
+        log.debug(errorStr);
+        return null;
     }
 
     /**

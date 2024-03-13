@@ -24,7 +24,7 @@ import { Modal } from 'antd';
 import React from 'react';
 
 type CodeTreeProps = {
-  onCancel: (flag?: boolean) => void;
+  onCancel: () => void;
   modalVisible: boolean;
   values: Partial<GitProject>;
 };
@@ -41,9 +41,12 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
           overflow: 'auto'
         }
       }}
+      centered
+      closable={false}
       open={modalVisible}
-      maskClosable={false}
       onCancel={() => onCancel()}
+      destroyOnClose
+      maskClosable={false}
       cancelText={l('button.close')}
       okButtonProps={{ style: { display: 'none' } }}
     >

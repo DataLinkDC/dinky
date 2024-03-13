@@ -44,6 +44,14 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-admin/target/classes</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>**/dinky-loader/FlinkConfClass</include>
+                <include>**/dinky-loader/ExpressionVariableClass</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-admin/target/dinky-admin-${project.version}/lib</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
@@ -61,7 +69,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.14</outputDirectory>
+            <outputDirectory>extends/flink1.14/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.14-${project.version}.jar</include>
                 <include>dinky-client-1.14-${project.version}.jar</include>
@@ -70,7 +78,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.15</outputDirectory>
+            <outputDirectory>extends/flink1.15/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.15-${project.version}.jar</include>
                 <include>dinky-client-1.15-${project.version}.jar</include>
@@ -78,7 +86,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.16</outputDirectory>
+            <outputDirectory>extends/flink1.16/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.16-${project.version}.jar</include>
                 <include>dinky-client-1.16-${project.version}.jar</include>
@@ -86,7 +94,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.17</outputDirectory>
+            <outputDirectory>extends/flink1.17/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.17-${project.version}.jar</include>
                 <include>dinky-client-1.17-${project.version}.jar</include>
@@ -94,7 +102,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.18</outputDirectory>
+            <outputDirectory>extends/flink1.18/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.18-${project.version}.jar</include>
                 <include>dinky-client-1.18-${project.version}.jar</include>
@@ -102,7 +110,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins</outputDirectory>
+            <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dinky-client-base-${project.version}.jar</include>
             </includes>
@@ -112,6 +120,14 @@
             <outputDirectory>jar</outputDirectory>
             <includes>
                 <include>%regex[dinky-app-1.\d+-${project.version}-jar-with-dependencies.jar]</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dinky-cdc/dinky-cdc-plus/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-cdc-plus-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -210,6 +226,15 @@
                 <include>dinky-alert-email-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dinky-alert/dinky-alert-http/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-alert-http-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+
         <fileSet>
             <directory>${project.parent.basedir}/dinky-alert/dinky-alert-feishu/target
             </directory>

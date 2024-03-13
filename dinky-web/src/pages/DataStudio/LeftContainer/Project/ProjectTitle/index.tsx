@@ -18,9 +18,9 @@
  */
 
 import Title from '@/components/Front/Title';
+import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { StateType, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
-import { BtnRoute } from '@/pages/DataStudio/route';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
@@ -36,6 +36,7 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
   } = props;
 
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const btnDispatch = useTasksDispatch();
 
   const handleCancelCreate = async () => {
     handleModalVisible(false);
@@ -66,15 +67,21 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
     );
   };
 
-  const btn = BtnRoute['menu.datastudio.project'];
+  const currentTabName = 'menu.datastudio.project';
+  const btn = BtnRoute[currentTabName];
   btn[0].onClick = () => handleCreateClick();
+  btnDispatch({
+    type: 'change',
+    selectKey: currentTabName,
+    payload: btn
+  });
 
   /**
    * 渲染侧边栏标题
    * @returns {JSX.Element}
    */
   const renderTitle = () => {
-    if (selectKey && selectKey === 'menu.datastudio.project') {
+    if (selectKey && selectKey === currentTabName) {
       return (
         <Space>
           <Title>{l(selectKey)}</Title>

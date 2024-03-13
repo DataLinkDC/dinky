@@ -20,8 +20,8 @@
 export default {
   'app.response.response-error': 'ResponseError',
   'app.response.sucess': 'Success',
-  'app.response.error': 'Error',
+  'app.response.error': 'The operation was unsuccessful',
   'app.response.exception': 'Server exception',
-  'app.response.notlogin': 'Not Login',
+  'app.response.notlogin': 'Authentication failed',
   'app.response.notexist': 'you visit the page or interface does not exist'
 };

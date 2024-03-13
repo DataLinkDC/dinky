@@ -18,8 +18,8 @@
  */
 
 import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
-import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
-import { EnvironmentOutlined } from '@ant-design/icons';
+import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { DIALECT } from '@/services/constants';
 
 /**
  * @description: 生成面包屑
@@ -32,7 +32,7 @@ export const buildBreadcrumbItems = (breadcrumb: string) => {
     breadcrumbName: title
   }));
 
-  return [{ title: <EnvironmentOutlined /> }, ...activeBreadcrumbTitleList];
+  return activeBreadcrumbTitleList;
 };
 
 export const projectCommonShow = (type?: TabsPageType) => {
@@ -43,6 +43,34 @@ export const isOnline = (data: TaskDataType | undefined) => {
   return data ? JOB_LIFE_CYCLE.PUBLISH == data.step : false;
 };
 
-export const isRunning = (data: TaskDataType | undefined) => {
-  return data ? JOB_STATUS.RUNNING == data.status : false;
+export const isCanPushDolphin = (data: TaskDataType | undefined) => {
+  return data
+    ? JOB_LIFE_CYCLE.PUBLISH === data.step &&
+        data?.dialect?.toLowerCase() !== DIALECT.FLINKSQLENV &&
+        data?.dialect?.toLowerCase() !== DIALECT.SCALA &&
+        data?.dialect?.toLowerCase() !== DIALECT.JAVA &&
+        data?.dialect?.toLowerCase() !== DIALECT.PYTHON_LONG
+    : false;
+};
+
+export const isSql = (dialect: string) => {
+  if (!dialect) {
+    return false;
+  }
+  switch (dialect.toLowerCase()) {
+    case DIALECT.SQL:
+    case DIALECT.MYSQL:
+    case DIALECT.ORACLE:
+    case DIALECT.SQLSERVER:
+    case DIALECT.POSTGRESQL:
+    case DIALECT.CLICKHOUSE:
+    case DIALECT.PHOENIX:
+    case DIALECT.DORIS:
+    case DIALECT.HIVE:
+    case DIALECT.STARROCKS:
+    case DIALECT.PRESTO:
+      return true;
+    default:
+      return false;
+  }
 };

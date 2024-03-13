@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
@@ -31,6 +32,7 @@ public abstract class AbstractCustomTableEnvironment
         implements CustomTableEnvironment, DefaultTableEnvironmentInternal, DefaultStreamTableEnvironment {
 
     protected StreamTableEnvironment streamTableEnvironment;
+    protected ClassLoader userClassLoader;
 
     protected AbstractCustomTableEnvironment() {}
 
@@ -52,7 +54,14 @@ public abstract class AbstractCustomTableEnvironment
     }
 
     @Override
+    public ClassLoader getUserClassLoader() {
+        return userClassLoader;
+    }
+
+    @Override
     public Configuration getRootConfiguration() {
         return (Configuration) this.getConfig().getRootConfiguration();
     }
+
+    public abstract <T> void addConfiguration(ConfigOption<T> option, T value);
 }

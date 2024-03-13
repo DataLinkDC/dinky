@@ -17,16 +17,11 @@
  *
  */
 
+import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
 import { StateType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
-import {
-  ProCard,
-  ProFormGroup,
-  ProFormList,
-  ProFormSelect,
-  ProFormText
-} from '@ant-design/pro-components';
+import { ProCard, ProFormGroup, ProFormList, ProFormText } from '@ant-design/pro-components';
 import { Col, Divider, Row, Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
@@ -54,7 +49,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           </ProFormGroup>
           <Divider>{l('rc.cc.hadoop.defineConfig')}</Divider>
           <ProFormList
-            name={['config', 'hadoopConfigList']}
+            name={['config', 'clusterConfig', 'hadoopConfigList']}
             copyIconProps={false}
             deleteIconProps={{
               tooltipText: l('rc.cc.deleteConfig')
@@ -104,7 +99,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
 
           <Divider>{l('rc.cc.flink.defineConfig')}</Divider>
           <ProFormList
-            name={['config', 'flinkConfigList']}
+            name={['config', 'flinkConfig', 'flinkConfigList']}
             copyIconProps={false}
             deleteIconProps={{
               tooltipText: l('rc.cc.deleteConfig')
@@ -116,7 +111,7 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
           >
             <ProFormGroup key='flinkGroup' style={{ display: 'flex', width: '100%' }}>
               <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
-                <ProFormSelect
+                <FlinkOptionsSelect
                   name='name'
                   width={'md'}
                   mode={'single'}

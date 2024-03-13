@@ -19,23 +19,22 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.MetricsType;
-import org.dinky.data.metrics.Jvm;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Metrics;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
-import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,9 +42,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -88,19 +85,11 @@ public class MonitorController {
         @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long"),
         @ApiImplicitParam(name = "taskIds", value = "Task Ids", required = true, dataType = "String")
     })
-    public Result<List<MetricsVO>> getFlinkData(@RequestParam Long startTime, Long endTime, String taskIds) {
-        JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
-        ObjectNode para = nodeFactory.objectNode();
-        para.put("isHistory", false);
-        para.put("taskId", taskIds);
-        ProTableResult<JobInstanceVo> jobInstanceProTableResult = jobInstanceService.listJobInstances(para);
-        List<String> jids = jobInstanceProTableResult.getData().stream()
-                .map(JobInstanceVo::getJid)
-                .collect(Collectors.toList());
+    public Result<List<MetricsVO>> getFlinkData(@RequestParam Long startTime, Long endTime, String flinkJobIds) {
         return Result.succeed(monitorService.getData(
                 DateUtil.date(startTime),
                 DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime())),
-                jids));
+                Arrays.asList(flinkJobIds.split(","))));
     }
 
     @PutMapping("/saveFlinkMetrics/{layout}")
@@ -124,7 +113,7 @@ public class MonitorController {
 
     @GetMapping("/getMetricsLayout")
     @ApiOperation("Get Metrics Layout to Display")
-    public Result<Map<String, List<Metrics>>> getMetricsLayout() {
+    public Result<List<MetricsLayoutVo>> getMetricsLayout() {
         return Result.succeed(monitorService.getMetricsLayout());
     }
 
@@ -137,7 +126,17 @@ public class MonitorController {
 
     @GetMapping("/getJvmInfo")
     @ApiOperation("Get Jvm Data Display")
-    public Result<Jvm> getJvmInfo() {
-        return Result.succeed(Jvm.of());
+    public SseEmitter getJvmInfo() {
+        return monitorService.sendJvmInfo();
+    }
+
+    @DeleteMapping("/deleteMetricsLayout")
+    @ApiOperation("Delete Metrics Layout")
+    @ApiImplicitParam(name = "taskId", value = "taskId", required = true, dataType = "Integer")
+    public Result<Void> deleteMetricsLayout(@RequestParam("id") Integer taskId) {
+        if (monitorService.deleteMetricsLayout(taskId)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
     }
 }

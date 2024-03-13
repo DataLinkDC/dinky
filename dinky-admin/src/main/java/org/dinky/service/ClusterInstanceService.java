@@ -22,6 +22,7 @@ package org.dinky.service;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.model.ClusterInstance;
+import org.dinky.job.JobConfig;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -49,26 +50,10 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
     /**
      * build environment address
      *
-     * @param useRemote {@link Boolean} use remote or local
-     * @param id {@link Integer} cluster id
+     * @param config {@link JobConfig} the config of job
      * @return {@link String} eg: host1:8081
      */
-    String buildEnvironmentAddress(boolean useRemote, Integer id);
-
-    /**
-     * build remote environment address by cluster id
-     *
-     * @param id {@link Integer} cluster id
-     * @return {@link String} eg: host1:8081
-     */
-    String buildRemoteEnvironmentAddress(Integer id);
-
-    /**
-     * build local environment address
-     *
-     * @return {@link String} eg: host1:8081
-     */
-    String buildLocalEnvironmentAddress();
+    String buildEnvironmentAddress(JobConfig config);
 
     /**
      * list enabled cluster instances
@@ -146,4 +131,17 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
     ClusterInstance deploySessionCluster(Integer id);
 
     List<ClusterInstance> selectListByKeyWord(String searchKeyWord, boolean isAutoCreate);
+
+    /**
+     * check cluster instance has relationship
+     * @param id {@link Integer} alert template id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    boolean hasRelationShip(Integer id);
+
+    /**
+     * heartbeat
+     * @return {@link Long}
+     */
+    Long heartbeat();
 }

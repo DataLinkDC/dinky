@@ -20,23 +20,27 @@
 package org.dinky.function.util;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
-import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.compiler.CustomStringScalaCompiler;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -45,6 +49,7 @@ import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +60,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,10 +81,12 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.template.TemplateConfig;
 import cn.hutool.extra.template.TemplateEngine;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
+import cn.hutool.json.JSONUtil;
 
 /**
  * UDFUtil
@@ -88,7 +96,7 @@ import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 public class UDFUtil {
 
     public static final String FUNCTION_SQL_REGEX =
-            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s+)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
+            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s*)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
     public static final Pattern PATTERN = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
 
     public static final String SESSION = "SESSION";
@@ -111,7 +119,7 @@ public class UDFUtil {
      */
     protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
 
-    public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
+    public static final String PYTHON_UDF_ATTR = "(\\S+)\\s*=\\s*ud(?:f|tf|af|taf)";
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
     public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
     public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
@@ -296,7 +304,7 @@ public class UDFUtil {
         return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(pattern, statement, 0));
     }
 
-    public static UDF toUDF(String statement) {
+    public static UDF toUDF(String statement, DinkyClassLoader classLoader) {
         if (isUdfStatement(PATTERN, statement)) {
             List<String> groups = CollUtil.removeEmpty(ReUtil.getAllGroups(PATTERN, statement));
             String udfName = groups.get(1);
@@ -308,10 +316,11 @@ public class UDFUtil {
                 return null;
             }
 
+            FlinkUdfPathContextHolder udfPathContextHolder = classLoader.getUdfPathContextHolder();
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
                 try {
-                    FlinkUdfPathContextHolder.addUdfPath(FileUtil.file(DinkyClassLoaderContextHolder.get()
+                    udfPathContextHolder.addUdfPath(FileUtil.file(classLoader
                             .loadClass(className)
                             .getProtectionDomain()
                             .getCodeSource()
@@ -335,14 +344,35 @@ public class UDFUtil {
             String gitPackage = UdfCodePool.getGitPackage(className);
 
             if (StrUtil.isNotBlank(gitPackage) && FileUtil.exist(gitPackage)) {
-                if (FileUtil.getSuffix(gitPackage).equals("jar")) {
-                    FlinkUdfPathContextHolder.addUdfPath(new File(gitPackage));
+                if ("jar".equals(FileUtil.getSuffix(gitPackage))) {
+                    udfPathContextHolder.addUdfPath(new File(gitPackage));
                 } else {
-                    FlinkUdfPathContextHolder.addPyUdfPath(new File(gitPackage));
+                    udfPathContextHolder.addPyUdfPath(new File(gitPackage));
                 }
             }
         }
         return null;
+    }
+
+    // create FlinkUdfPathContextHolder from UdfCodePool
+    public static FlinkUdfPathContextHolder createFlinkUdfPathContextHolder() {
+        FlinkUdfPathContextHolder udfPathContextHolder = new FlinkUdfPathContextHolder();
+        UdfCodePool.getUdfCodePool().values().forEach(udf -> {
+            if (udf.getFunctionLanguage() == FunctionLanguage.PYTHON) {
+                udfPathContextHolder.addPyUdfPath(new File(udf.getCode()));
+            } else {
+                udfPathContextHolder.addUdfPath(new File(udf.getCode()));
+            }
+        });
+
+        UdfCodePool.getGitPool().values().forEach(gitPackage -> {
+            if ("jar".equals(FileUtil.getSuffix(gitPackage))) {
+                udfPathContextHolder.addUdfPath(URLUtils.toFile(gitPackage));
+            } else {
+                udfPathContextHolder.addPyUdfPath(URLUtils.toFile(gitPackage));
+            }
+        });
+        return udfPathContextHolder;
     }
 
     public static List<Class<?>> getUdfClassByJar(File jarPath) {
@@ -420,5 +450,27 @@ public class UDFUtil {
         } catch (Exception e) {
             throw new DinkyException(e);
         }
+    }
+
+    public static void addConfigurationClsAndJars(
+            CustomTableEnvironment customTableEnvironment, List<URL> jarList, List<URL> classpaths) {
+        customTableEnvironment.addConfiguration(
+                PipelineOptions.CLASSPATHS,
+                classpaths.stream().map(URL::toString).collect(Collectors.toList()));
+        customTableEnvironment.addConfiguration(
+                PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
+    }
+
+    public static void writeManifest(
+            Integer taskId, List<URL> jarPaths, FlinkUdfPathContextHolder udfPathContextHolder) {
+        FlinkUdfManifest flinkUdfManifest = new FlinkUdfManifest();
+        flinkUdfManifest.setJars(jarPaths);
+        flinkUdfManifest.setPythonFiles(udfPathContextHolder.getPyUdfFile().stream()
+                .map(URLUtil::getURL)
+                .collect(Collectors.toList()));
+
+        FileUtil.writeUtf8String(
+                JSONUtil.toJsonStr(flinkUdfManifest),
+                PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
     }
 }

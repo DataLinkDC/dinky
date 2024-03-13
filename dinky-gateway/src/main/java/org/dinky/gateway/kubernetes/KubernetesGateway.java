@@ -30,6 +30,7 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.ConfigOption;
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -39,27 +40,32 @@ import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.kubeclient.Fabric8FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
+import org.apache.flink.python.PythonOptions;
 import org.apache.http.util.TextUtils;
 
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.UUID;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
+import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 
 /**
  * KubernetesGateway
- *
  */
 public abstract class KubernetesGateway extends AbstractGateway {
 
     protected FlinkKubeClient client;
     protected KubernetesClient kubernetesClient;
+    protected String flinkConfigPath;
+    protected FlinkConfig flinkConfig;
+    protected K8sConfig k8sConfig;
+    protected String tmpConfDir;
 
     public KubernetesGateway() {}
 
@@ -69,10 +75,12 @@ public abstract class KubernetesGateway extends AbstractGateway {
     }
 
     private void initConfig() {
-        String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
-        FlinkConfig flinkConfig = config.getFlinkConfig();
-        K8sConfig k8sConfig = config.getKubernetesConfig();
+        tmpConfDir = String.format("%s/tmp/kubernets/%s", System.getProperty("user.dir"), UUID.randomUUID());
+        flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
+        flinkConfig = config.getFlinkConfig();
+        k8sConfig = config.getKubernetesConfig();
 
+        configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
         try {
             addConfigParas(
                     GlobalConfiguration.loadConfiguration(flinkConfigPath).toMap());
@@ -91,34 +99,32 @@ public abstract class KubernetesGateway extends AbstractGateway {
         preparPodTemplate(k8sConfig.getPodTemplate(), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
         preparPodTemplate(k8sConfig.getJmPodTemplate(), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
         preparPodTemplate(k8sConfig.getTmPodTemplate(), KubernetesConfigOptions.TASK_MANAGER_POD_TEMPLATE);
+        preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE);
 
         if (getType().isApplicationMode()) {
+            // remove python file
+            configuration.removeConfig(PythonOptions.PYTHON_FILES);
             resetCheckpointInApplicationMode(flinkConfig.getJobName());
         }
     }
 
     private void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
-        if (TextUtil.isEmpty(podTemplate)) {
-            return;
+        if (!TextUtil.isEmpty(podTemplate)) {
+            String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
+            if (FileUtil.exist(filePath)) {
+                Assert.isTrue(FileUtil.del(filePath));
+            }
+            FileUtil.writeUtf8String(podTemplate, filePath);
+            addConfigParas(option, filePath);
         }
-        String filePath = String.format(
-                "%s/tmp/Kubernets/%s.yaml",
-                System.getProperty("user.dir"), config.getFlinkConfig().getJobName());
-        if (FileUtil.exist(filePath)) {
-            Assert.isTrue(FileUtil.del(filePath));
-        }
-        FileUtil.writeUtf8String(podTemplate, filePath);
-        addConfigParas(option, filePath);
     }
 
     private void initKubeClient() {
         client = FlinkKubeClientFactory.getInstance().fromConfiguration(configuration, "client");
-        String kubeFile = configuration.getString(KubernetesConfigOptions.KUBE_CONFIG_FILE);
-        if (TextUtils.isEmpty(kubeFile)) {
+        if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
             kubernetesClient = new DefaultKubernetesClient();
         } else {
-            String kubeStr = FileUtil.readString(kubeFile, StandardCharsets.UTF_8);
-            kubernetesClient = DefaultKubernetesClient.fromConfig(kubeStr);
+            kubernetesClient = new DefaultKubernetesClient(Config.fromKubeconfig(k8sConfig.getKubeConfig()));
         }
     }
 
@@ -166,6 +172,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
     public TestResult test() {
         try {
             initConfig();
+            // Test mode no jobName, use uuid .
+            addConfigParas(KubernetesConfigOptions.CLUSTER_ID, UUID.randomUUID().toString());
             initKubeClient();
             if (client instanceof Fabric8FlinkKubeClient) {
                 Object internalClient = ReflectUtil.getFieldValue(client, "internalClient");
@@ -181,6 +189,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
             logger.error(Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e);
             return TestResult.fail(
                     StrFormatter.format("{}:{}", Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e.getMessage()));
+        } finally {
+            close();
         }
     }
 
@@ -204,5 +214,15 @@ public abstract class KubernetesGateway extends AbstractGateway {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    public void close() {
+        if (client != null) {
+            client.close();
+        }
+        if (kubernetesClient != null) {
+            kubernetesClient.close();
+        }
+        FileUtil.del(tmpConfDir);
     }
 }

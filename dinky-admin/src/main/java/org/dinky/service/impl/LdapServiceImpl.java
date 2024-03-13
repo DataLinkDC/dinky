@@ -23,13 +23,17 @@ import org.dinky.context.LdapContext;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.LdapUserIdentification;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.rbac.User;
 import org.dinky.service.LdapService;
 
+import org.apache.http.util.TextUtils;
+
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.naming.directory.Attributes;
@@ -38,7 +42,6 @@ import org.springframework.ldap.AuthenticationException;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -72,7 +75,7 @@ public class LdapServiceImpl implements LdapService {
         if (result.size() == 0) {
             log.info(String.format(
                     "No results found for search, base: '%s'; filter: '%s'", configuration.getLdapBaseDn(), filter));
-            throw new AuthException(Status.USER_NOT_EXIST);
+            throw new AuthException(Status.USER_NOT_EXIST, loginDTO.getUsername());
         } else if (result.size() > 1) {
             log.error(String.format(
                     "IncorrectResultSize, base: '%s'; filter: '%s'", configuration.getLdapBaseDn(), filter));
@@ -87,10 +90,10 @@ public class LdapServiceImpl implements LdapService {
                 // Build the User with cast
                 User user = new User();
                 user.setUsername(loginDTO.getUsername());
-                user.setNickname(attributes
-                        .get(configuration.getLdapCastNickname().getValue())
-                        .get()
-                        .toString());
+                Optional.of(attributes
+                                .get(configuration.getLdapCastNickname().getValue())
+                                .get())
+                        .ifPresent(obj -> user.setNickname(obj.toString()));
                 return user;
             } catch (Exception e) {
                 if (e instanceof AuthenticationException) {
@@ -111,7 +114,9 @@ public class LdapServiceImpl implements LdapService {
     @Override
     public List<User> listUsers() {
         String filter = configuration.getLdapFilter().getValue();
-        Assert.notBlank(filter, Status.LDAP_FILTER_INCORRECT.getMessage());
+        if (TextUtils.isEmpty(filter)) {
+            throw new BusException(Status.LDAP_FILTER_INCORRECT);
+        }
 
         LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
         List<User> result = ldapTemplate.search(

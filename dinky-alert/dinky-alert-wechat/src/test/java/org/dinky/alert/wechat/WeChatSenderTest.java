@@ -19,6 +19,7 @@
 
 package org.dinky.alert.wechat;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
@@ -35,18 +36,7 @@ import org.junit.Test;
 @Ignore
 public class WeChatSenderTest {
 
-    private static final Map<String, String> weChatConfig = new HashMap<>();
-
-    String contentTest =
-            "> The Dinky platform has detected an abnormality in your task. Please go to the Dinky Task page to check the task status.\n"
-                    + "- **Job Name : <font color='#0000FF'>Test Job</font>**\n"
-                    + "- **Job Status : <font color='#FF0000'>FAILED</font>**\n"
-                    + "- **Alert Time : 2023-01-01  12:00:00**\n"
-                    + "- **Start Time : 2023-01-01  12:00:00**\n"
-                    + "- **End Time : 2023-01-01  12:00:00**\n"
-                    + "> **<font color='#FF0000'>The test exception, your job exception will pass here</font>**\n"
-                    + "\n"
-                    + "> Dinky Team  [Go toTask Web](https://github.com/DataLinkDC/dinky)";
+    private static final Map<String, Object> weChatConfig = new HashMap<>();
 
     /** init WeChatConfig */
     @Before
@@ -74,7 +64,8 @@ public class WeChatSenderTest {
         alertConfig.setParam(weChatConfig);
         weChatAlert.setConfig(alertConfig);
 
-        AlertResult alertResult = weChatAlert.send("WeChat Alert Hook", contentTest);
+        AlertResult alertResult =
+                weChatAlert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
@@ -90,7 +81,8 @@ public class WeChatSenderTest {
         alertConfig.setParam(weChatConfig);
         weChatAlert.setConfig(alertConfig);
 
-        AlertResult alertResult = weChatAlert.send("WeChat Alert App", contentTest);
+        AlertResult alertResult =
+                weChatAlert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 }

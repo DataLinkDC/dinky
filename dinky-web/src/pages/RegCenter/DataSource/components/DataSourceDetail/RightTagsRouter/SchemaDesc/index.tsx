@@ -17,7 +17,6 @@
  *
  */
 
-import { Height80VHDiv } from '@/components/StyledComponents';
 import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import { DataSources } from '@/types/RegCenter/data';
@@ -26,24 +25,21 @@ import { Empty } from 'antd';
 import React from 'react';
 
 type SchemaDescProps = {
-  tableInfo: Partial<DataSources.Table>;
-  tableColumns: Partial<DataSources.Column[]>;
+  tableInfo?: Partial<DataSources.Table>;
+  tableColumns?: Partial<DataSources.Column[]>;
 };
 
 const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
   const { tableInfo, tableColumns } = props;
 
   return (
-    <Height80VHDiv>
-      {!(Object.keys(tableInfo).length === 0 && tableColumns.length === 0) ? (
-        <>
-          <TableInfo tableInfo={tableInfo} />
-          <ColumnInfo columnInfo={tableColumns} />
-        </>
-      ) : (
+    <>
+      {tableInfo && <TableInfo tableInfo={tableInfo} />}
+      {tableColumns && <ColumnInfo columnInfo={tableColumns} />}
+      {!tableInfo && !tableColumns && (
         <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
       )}
-    </Height80VHDiv>
+    </>
   );
 };
 

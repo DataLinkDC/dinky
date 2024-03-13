@@ -27,7 +27,12 @@ import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
 import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
 import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
-import { handleOption, handleRemoveById, queryDataByParams } from '@/services/BusinessCrud';
+import {
+  handleGetOption,
+  handleOption,
+  handleRemoveById,
+  queryDataByParams
+} from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { InitResourceState } from '@/types/RegCenter/init.d';
@@ -48,7 +53,7 @@ const ResourceOverView: React.FC = () => {
   const refObject = useRef<HTMLDivElement>(null);
 
   const [uploadValue] = useState({
-    url: API_CONSTANTS.RESOURCE_UPLOAD,
+    url: API_CONSTANTS.BASE_URL + API_CONSTANTS.RESOURCE_UPLOAD,
     pid: '',
     description: ''
   });
@@ -167,7 +172,6 @@ const ResourceOverView: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
-    console.log('node', node);
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],
@@ -179,6 +183,11 @@ const ResourceOverView: React.FC = () => {
         top: event.clientY + 20
       }
     }));
+  };
+
+  const handleSync = async () => {
+    await handleGetOption(API_CONSTANTS.RESOURCE_SYNC_DATA, l('rc.resource.sync'), {});
+    await refreshTree();
   };
 
   /**
@@ -236,26 +245,32 @@ const ResourceOverView: React.FC = () => {
    */
   return (
     <>
-      <ProCard size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
+      <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
         <SplitPane
           split={'vertical'}
-          defaultSizes={[100, 500]}
-          minSize={150}
+          defaultSizes={[200, 500]}
+          minSize={200}
           className={'split-pane'}
         >
           <Pane
             className={'split-pane'}
             forwardRef={refObject}
-            minSize={100}
-            size={100}
+            minSize={200}
+            size={200}
             split={'horizontal'}
           >
-            <ProCard ghost hoverable bodyStyle={{ height: parent.innerHeight }} colSpan={'18%'}>
+            <ProCard
+              hoverable
+              boxShadow
+              bodyStyle={{ height: parent.innerHeight - 80 }}
+              colSpan={'18%'}
+            >
               <FileTree
                 selectedKeys={resourceState.selectedKeys}
                 treeData={resourceState.treeData}
                 onRightClick={handleRightClick}
                 onNodeClick={(info: any) => handleNodeClick(info)}
+                onSync={handleSync}
               />
               <RightContextMenu
                 contextMenuPosition={resourceState.contextMenuPosition}
@@ -276,7 +291,7 @@ const ResourceOverView: React.FC = () => {
             size={100}
             split={'horizontal'}
           >
-            <ProCard ghost hoverable bodyStyle={{ height: parent.innerHeight }}>
+            <ProCard hoverable bodyStyle={{ height: parent.innerHeight }}>
               <FileShow
                 onChange={handleContentChange}
                 code={resourceState.content}

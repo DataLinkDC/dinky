@@ -17,6 +17,7 @@
  *
  */
 
+import { Authorized } from '@/hooks/useAccess';
 import {
   RuleType,
   TriggerType
@@ -45,7 +46,9 @@ import {
   ProFormTextArea
 } from '@ant-design/pro-components';
 import { ProFormDependency } from '@ant-design/pro-form';
-import { Button, Divider, Form, Space } from 'antd';
+import { Button, Divider, Form, Space, Typography } from 'antd';
+
+const { Link } = Typography;
 
 type AlertRuleFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -72,12 +75,32 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
     return handleSubmit({ ...fieldsValue, rule: JSON.stringify(fieldsValue.rule) });
   };
 
+  const renderTemplateDropDown = (item: any) => {
+    return (
+      <>
+        {item}
+        <Authorized key='create' path='/registration/alert/template/add'>
+          <>
+            <Divider style={{ margin: '8px 0' }} />
+            <Link href={'#/registration/alert/template'}>+ {l('rc.alert.template.new')}</Link>
+          </>
+        </Authorized>
+      </>
+    );
+  };
+
   const renderFooter = () => {
     return [
       <Button key={'RuleCancel'} onClick={() => handleModalVisible(false)}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'RuleFinish'} type='primary' onClick={() => submit()}>
+      <Button
+        key={'RuleFinish'}
+        type='primary'
+        htmlType={'submit'}
+        autoFocus
+        onClick={() => submit()}
+      >
         {l('button.finish')}
       </Button>
     ];
@@ -97,6 +120,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
     >
       <ProFormGroup>
         <ProFormText name='id' hidden={true} />
+        <ProFormText name='ruleType' hidden={true} />
         <ProFormText
           disabled={isSystem}
           rules={[{ required: true }]}
@@ -113,6 +137,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
           request={async () => getAlertTemplate()}
           placeholder={l('sys.alert.rule.template')}
           rules={[{ required: true, message: l('sys.alert.rule.template') }]}
+          fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item) }}
         />
       </ProFormGroup>
 
@@ -171,6 +196,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
                   disabled={isSystem}
                   name='ruleOperator'
                   mode={'single'}
+                  width={'sm'}
                   options={getOperatorOptions(ruleKey.ruleKey)}
                 />
               )}

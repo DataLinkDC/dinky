@@ -66,7 +66,7 @@ export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
       return DIALECT.SQL;
     case DIALECT.PYTHON:
     case DIALECT.PYTHON_LONG:
-      return DIALECT.PYTHON;
+      return DIALECT.PYTHON_LONG;
     case DIALECT.SCALA:
       return DIALECT.SCALA;
     case DIALECT.JAVA:

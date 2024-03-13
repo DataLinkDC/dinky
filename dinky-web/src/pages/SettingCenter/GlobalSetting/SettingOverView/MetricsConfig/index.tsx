@@ -20,16 +20,16 @@
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
-import { ProCard } from '@ant-design/pro-components';
 import { Tag } from 'antd';
 import React from 'react';
 
 interface MetricsConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
-export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
+export const MetricsConfig = ({ data, onSave, auth }: MetricsConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -39,26 +39,18 @@ export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
   };
   return (
     <>
-      <ProCard
-        title={l('sys.setting.metrics')}
-        tooltip={l('sys.setting.metrics.tooltip')}
-        size='small'
-        headerBordered
-        ghost
-        collapsible
-        defaultCollapsed={false}
-      >
-        <GeneralConfig
-          loading={loading}
-          onSave={onSaveHandler}
-          tag={
-            <>
-              <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>
-            </>
-          }
-          data={data}
-        />
-      </ProCard>
+      <GeneralConfig
+        loading={loading}
+        onSave={onSaveHandler}
+        auth={auth}
+        tag={
+          <>
+            <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>
+            <Tag color={'processing'}>{l('sys.setting.tag.core')}</Tag>
+          </>
+        }
+        data={data}
+      />
     </>
   );
 };

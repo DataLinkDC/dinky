@@ -23,15 +23,16 @@ import {
   isDataStudioTabsItemType,
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import { StateType } from '@/pages/DataStudio/model';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
+import { StateType, TaskDataType } from '@/pages/DataStudio/model';
 import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
+import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SearchOutlined } from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Input, InputRef, Space, Table } from 'antd';
+import { Button, Empty, Input, InputRef, Space, Table, Tabs } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
@@ -43,14 +44,16 @@ type Data = {
   columns?: string[];
   rowData?: object[];
 };
+type DataList = Data[];
 const Result = (props: any) => {
   const {
     tabs: { panes, activeKey }
   } = props;
   const [data, setData] = useState<Data>({});
+  const [dataList, setDataList] = useState<DataList>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const currentTabs = getCurrentTab(panes, activeKey);
-  const current = getCurrentData(panes, activeKey) ?? {};
+  const current = getCurrentData(panes, activeKey) as TaskDataType;
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -129,29 +132,26 @@ const Result = (props: any) => {
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
+    } else if (consoleData.results && !isRefresh) {
+      setDataList(consoleData.results);
     } else {
-      if (isSql(current.dialect)) {
-        // common sql
-        const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
-          taskId: params.taskId
-        });
-        if (res.data) {
-          consoleData.result = res.data;
-          setData(res.data);
-        }
-      } else {
+      if (current?.dialect && current?.dialect?.toLowerCase() == DIALECT.FLINK_SQL) {
         // flink sql
         // to do: get job data by history id list, not flink jid
-        if (current.id) {
+        if (current?.id) {
           const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
             id: current.id
           });
           const historyData = res.data;
-          if (historyData && '2' == historyData.status) {
+          if (historyData) {
             const historyId = historyData.id;
-            const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
-              jobId: historyId
-            });
+            const tableData = await handleGetOption(
+              API_CONSTANTS.GET_JOB_DATA,
+              l('global.getdata.tips'),
+              {
+                jobId: historyId
+              }
+            );
             const data = tableData.data;
             if (data.success) {
               consoleData.result = data;
@@ -169,10 +169,11 @@ const Result = (props: any) => {
 
   useEffect(() => {
     setData({});
+    setDataList([]);
     loadData();
-  }, [currentTabs, currentTabs?.console.result]);
+  }, [currentTabs?.console?.result, currentTabs?.console?.results]);
 
-  const getColumns = (columns: string[]) => {
+  const getColumns = (columns: string[] = []) => {
     return columns?.map((item) => {
       return {
         title: item,
@@ -192,7 +193,7 @@ const Result = (props: any) => {
   const renderFlinkSQLContent = () => {
     return (
       <>
-        {current.jobInstanceId ? (
+        {current?.jobInstanceId ? (
           <>
             <Space>
               <Button
@@ -235,11 +236,29 @@ const Result = (props: any) => {
         <Table
           columns={getColumns(data.columns)}
           size='small'
+          scroll={{ x: 'max-content' }}
           dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}
           loading={loading}
         />
+      ) : dataList.length > 0 ? (
+        <Tabs defaultActiveKey='0'>
+          {dataList.map((data, index) => {
+            return (
+              <Tabs.TabPane key={index} tab={`Table ${index + 1}`}>
+                <Table
+                  columns={getColumns(data.columns)}
+                  size='small'
+                  dataSource={data.rowData?.map((item: any, index: number) => {
+                    return { ...item, key: index };
+                  })}
+                  loading={loading}
+                />
+              </Tabs.TabPane>
+            );
+          })}
+        </Tabs>
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}

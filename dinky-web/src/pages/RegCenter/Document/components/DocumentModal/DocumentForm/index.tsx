@@ -18,18 +18,19 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
+import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import {
-  DOCUMENT_CATEGORY,
-  DOCUMENT_FUNCTION_TYPE,
-  DOCUMENT_SUBTYPE,
+  DOCUMENT_CATEGORY_ENUMS,
+  DOCUMENT_FUNCTION_TYPE_ENUMS,
+  DOCUMENT_TYPE_ENUMS,
   VERSIONS
 } from '@/pages/RegCenter/Document/constans';
-import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
 import { Document } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import {
-  ProForm,
+  ProFormGroup,
   ProFormItem,
+  ProFormSegmented,
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
@@ -57,33 +58,24 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
    * status
    */
   const [codeFillValue, setCodeFillValue] = useState<string>(values.fillValue || '');
+  const { FLINK_OPTIONS, SQL_TEMPLATE, FUN_UDF, OTHER } = DOCUMENT_TYPE_ENUMS;
 
-  const [categoryList] = useState<DefaultOptionType[]>(
-    DOCUMENT_CATEGORY.map((item) => ({ label: item.text, value: item.value }))
+  const [CATEGORY_LIST] = useState<DefaultOptionType[]>(
+    Object.values(DOCUMENT_CATEGORY_ENUMS).map((item) => ({ label: item.text, value: item.value }))
   );
 
-  const [typeList] = useState<DefaultOptionType[]>(
-    DOCUMENT_FUNCTION_TYPE.map((item) => ({
+  const [FUNCTION_TYPES] = useState<DefaultOptionType[]>(
+    Object.values(DOCUMENT_FUNCTION_TYPE_ENUMS).map((item) => ({
       label: item.text,
       value: item.value
     }))
   );
 
-  const [subTypeList] = useState<DefaultOptionType[]>(
-    DOCUMENT_SUBTYPE.map((item) => ({ label: item.text, value: item.value }))
-  );
-
-  const [versionOptions] = useState<DefaultOptionType[]>(
+  const [VERSION_OPTIONS] = useState<DefaultOptionType[]>(
     VERSIONS.map((item) => ({ label: item.text, value: item.value }))
   );
 
-  /**
-   * code editor change callback
-   * @param value
-   */
-  const handleFillValueChange = (value: string) => {
-    setCodeFillValue(value);
-  };
+  const [documentType, setDocumentType] = useState<string>('');
 
   /**
    * form
@@ -92,39 +84,56 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
   const documentFormRender = () => {
     return (
       <>
-        <ProFormText
-          name='name'
-          label={l('rc.doc.name')}
-          placeholder={l('rc.doc.namePlaceholder')}
-          rules={[{ required: true, message: l('rc.doc.namePlaceholder') }]}
-        />
+        <ProFormGroup>
+          <ProFormSegmented
+            name='type'
+            label={l('rc.doc.functionType')}
+            initialValue={SQL_TEMPLATE.value}
+            rules={[{ required: true, message: l('rc.doc.typePlaceholder') }]}
+            valueEnum={DOCUMENT_TYPE_ENUMS}
+            fieldProps={{ onChange: (value) => setDocumentType(value as string) }}
+          />
 
-        <ProFormSelect
-          name='category'
-          label={l('rc.doc.category')}
-          rules={[{ required: true, message: l('rc.doc.categoryPlaceholder') }]}
-          options={categoryList}
-        />
+          <ProFormText
+            name='name'
+            width={'md'}
+            label={l('rc.doc.name')}
+            placeholder={l('rc.doc.namePlaceholder')}
+            rules={[{ required: true, message: l('rc.doc.namePlaceholder') }]}
+          />
 
-        <ProFormSelect
-          name='type'
-          label={l('rc.doc.functionType')}
-          rules={[{ required: true, message: l('rc.doc.typePlaceholder') }]}
-          options={typeList}
-        />
+          <ProFormSwitch
+            name='enabled'
+            label={l('global.table.isEnable')}
+            checkedChildren={l('button.enable')}
+            unCheckedChildren={l('button.disable')}
+          />
+        </ProFormGroup>
 
-        <ProFormSelect
-          name='subtype'
-          label={l('rc.doc.subFunctionType')}
-          rules={[{ required: true, message: l('rc.doc.subTypePlaceholder') }]}
-          options={subTypeList}
-        />
+        <ProFormGroup>
+          <ProFormSelect
+            name='subtype'
+            width={'sm'}
+            label={l('rc.doc.subFunctionType')}
+            rules={[{ required: true, message: l('rc.doc.subTypePlaceholder') }]}
+            options={documentType == FUN_UDF.value ? FUNCTION_TYPES : JOB_TYPE}
+          />
 
-        <ProFormTextArea
-          name='description'
-          label={l('rc.doc.description')}
-          placeholder={l('rc.doc.descriptionPlaceholder')}
-        />
+          <ProFormSelect
+            name='category'
+            width={'sm'}
+            label={l('rc.doc.category')}
+            rules={[{ required: true, message: l('rc.doc.categoryPlaceholder') }]}
+            options={CATEGORY_LIST}
+          />
+          <ProFormSelect
+            name='version'
+            width={'sm'}
+            label={l('rc.doc.version')}
+            rules={[{ required: true, message: l('rc.doc.versionPlaceholder') }]}
+            options={VERSION_OPTIONS}
+          />
+        </ProFormGroup>
 
         <ProFormItem
           name='fillValue'
@@ -133,7 +142,6 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           rules={[{ required: true, message: l('rc.doc.fillValueHelp') }]}
         >
           <CodeEdit
-            onChange={handleFillValueChange}
             code={codeFillValue}
             language={'sql'}
             enableSuggestions={false}
@@ -141,35 +149,15 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           />
         </ProFormItem>
 
-        <ProFormSelect
-          name='version'
-          label={l('rc.doc.version')}
-          rules={[{ required: true, message: l('rc.doc.versionPlaceholder') }]}
-          options={versionOptions}
-        />
-
-        <ProFormSwitch
-          name='enabled'
-          label={l('global.table.isEnable')}
-          checkedChildren={l('button.enable')}
-          unCheckedChildren={l('button.disable')}
+        <ProFormTextArea
+          name='description'
+          label={l('rc.doc.description')}
+          placeholder={l('rc.doc.descriptionPlaceholder')}
         />
       </>
     );
   };
 
-  return (
-    <>
-      <ProForm
-        {...FORM_LAYOUT_PUBLIC}
-        form={form}
-        submitter={false}
-        layout={'horizontal'}
-        initialValues={values}
-      >
-        {documentFormRender()}
-      </ProForm>
-    </>
-  );
+  return <>{documentFormRender()}</>;
 };
 export default DocumentForm;

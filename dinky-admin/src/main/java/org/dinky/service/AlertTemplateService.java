@@ -22,4 +22,19 @@ package org.dinky.service;
 import org.dinky.data.model.alert.AlertTemplate;
 import org.dinky.mybatis.service.ISuperService;
 
-public interface AlertTemplateService extends ISuperService<AlertTemplate> {}
+public interface AlertTemplateService extends ISuperService<AlertTemplate> {
+
+    /**
+     * check alert template has relationship
+     * @param id {@link Integer} alert template id
+     * @return {@link Boolean} true: has relationship, false: no relationship
+     */
+    boolean hasRelationShip(Integer id);
+
+    /**
+     * remove alert template by id
+     * @param id {@link Integer} alert template id
+     * @return {@link Boolean} true: success, false: fail
+     */
+    boolean removeAlertTemplateById(Integer id);
+}

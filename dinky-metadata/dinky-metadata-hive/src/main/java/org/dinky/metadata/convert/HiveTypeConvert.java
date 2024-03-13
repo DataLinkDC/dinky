@@ -21,7 +21,7 @@ package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
 
-public class HiveTypeConvert extends AbstractTypeConvert {
+public class HiveTypeConvert extends AbstractJdbcTypeConvert {
 
     public HiveTypeConvert() {
         this.convertMap.clear();

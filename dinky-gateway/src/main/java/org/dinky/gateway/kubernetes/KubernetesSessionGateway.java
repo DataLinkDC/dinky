@@ -20,15 +20,18 @@
 package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
-import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
+
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * KubernetesSessionGateway
@@ -43,8 +46,10 @@ public class KubernetesSessionGateway extends KubernetesGateway {
     }
 
     @Override
-    public GatewayResult deployCluster() {
+    public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
         if (Asserts.isNull(client)) {
+            String clusterId = StrFormatter.format("dinky-flink-session-{}", System.currentTimeMillis());
+            addConfigParas(KubernetesConfigOptions.CLUSTER_ID, clusterId);
             init();
         }
 
@@ -61,7 +66,7 @@ public class KubernetesSessionGateway extends KubernetesGateway {
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         } catch (Exception e) {
-            result.fail(LogUtil.getError(e));
+            throw new RuntimeException(e);
         }
         return result;
     }

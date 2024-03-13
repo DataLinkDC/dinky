@@ -31,6 +31,7 @@ import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.enums.UserType;
 import org.dinky.data.exception.AuthException;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.SysToken;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.rbac.Menu;
@@ -59,6 +60,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -73,6 +75,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * UserServiceImpl
@@ -81,6 +84,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
 
     private static final String DEFAULT_PASSWORD = "123456";
@@ -104,6 +108,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final MenuService menuService;
     private final TokenService tokenService;
     private final TokenMapper tokenMapper;
+
+    private final ReentrantLock lock = new ReentrantLock();
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -137,7 +143,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO) {
         User user = getById(modifyPasswordDTO.getId());
         if (Asserts.isNull(user)) {
-            return Result.failed(Status.USER_NOT_EXIST);
+            return Result.authorizeFailed(Status.USER_NOT_EXIST, modifyPasswordDTO.getUsername());
         }
         if (!Asserts.isEquals(SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
             return Result.failed(Status.USER_OLD_PASSWORD_INCORRECT);
@@ -152,6 +158,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public Boolean removeUser(Integer id) {
+        User user = getById(id);
+        if (user.getSuperAdminFlag()) {
+            throw new BusException(Status.USER_SUPERADMIN_CANNOT_DELETE);
+        }
         return baseMapper.deleteById(id) > 0;
     }
 
@@ -172,19 +182,19 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
         } catch (AuthException e) {
             // Handle authentication exceptions and return the corresponding error status
-            return Result.failed(e.getStatus() + e.getMessage());
+            return Result.authorizeFailed(e.getStatus());
         }
 
         // Check if the user is enabled
         if (!user.getEnabled()) {
             loginLogService.saveLoginLog(user, Status.USER_DISABLED_BY_ADMIN);
-            return Result.failed(Status.USER_DISABLED_BY_ADMIN);
+            return Result.authorizeFailed(Status.USER_DISABLED_BY_ADMIN);
         }
 
         UserDTO userInfo = refreshUserInfo(user);
         if (Asserts.isNullCollection(userInfo.getTenantList())) {
             loginLogService.saveLoginLog(user, Status.USER_NOT_BINDING_TENANT);
-            return Result.failed(Status.USER_NOT_BINDING_TENANT);
+            return Result.authorizeFailed(Status.USER_NOT_BINDING_TENANT);
         }
 
         // Perform login using StpUtil (Assuming it handles the session management)
@@ -194,13 +204,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         // save login log record
         loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
 
-        insertToken(userInfo);
+        upsertToken(userInfo);
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
     }
 
-    private void insertToken(UserDTO userInfo) {
+    private void upsertToken(UserDTO userInfo) {
         Integer userId = userInfo.getUser().getId();
         SysToken sysToken = new SysToken();
         String tokenValue = StpUtil.getTokenValueByLoginId(userId);
@@ -216,7 +226,22 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         sysToken.setCreator(userId);
         sysToken.setUpdater(userId);
         sysToken.setSource(SysToken.Source.LOGIN);
-        tokenMapper.insert(sysToken);
+
+        try {
+            lock.lock();
+            SysToken lastSysToken =
+                    tokenMapper.selectOne(new LambdaQueryWrapper<SysToken>().eq(SysToken::getTokenValue, tokenValue));
+            if (Asserts.isNull(lastSysToken)) {
+                tokenMapper.insert(sysToken);
+            } else {
+                sysToken.setId(lastSysToken.getId());
+                tokenMapper.updateById(sysToken);
+            }
+        } catch (Exception e) {
+            log.error("update token info failed", e);
+        } finally {
+            lock.unlock();
+        }
     }
 
     private User localLogin(LoginDTO loginDTO) throws AuthException {
@@ -224,7 +249,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
             // User doesn't exist
-            throw new AuthException(Status.USER_NOT_EXIST);
+            throw new AuthException(Status.USER_NOT_EXIST, loginDTO.getUsername());
         }
 
         String userPassword = user.getPassword();
@@ -253,7 +278,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             // User doesn't exist locally
             // Check if LDAP user autoload is enabled
             if (!SystemConfiguration.getInstances().getLdapAutoload().getValue()) {
-                loginLogService.saveLoginLog(userFromLocal, Status.USER_NAME_PASSWD_ERROR);
                 throw new AuthException(Status.LDAP_USER_AUTOLOAD_FORBAID);
             }
 
@@ -262,7 +286,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     SystemConfiguration.getInstances().getLdapDefaultTeant().getValue();
             Tenant tenant = tenantService.getTenantByTenantCode(defaultTeantCode);
             if (Asserts.isNull(tenant)) {
-                loginLogService.saveLoginLog(userFromLocal, Status.LDAP_DEFAULT_TENANT_NOFOUND);
                 throw new AuthException(Status.LDAP_DEFAULT_TENANT_NOFOUND);
             }
 
@@ -443,8 +466,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 userTenantService.list(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
         userTenants.forEach(userTenant -> {
             User user = getById(userTenant.getUserId());
-            user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
-            userList.add(user);
+            if (!Asserts.isNull(user)) {
+                user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+                userList.add(user);
+            } else {
+                log.error(
+                        "Unable to obtain user information, the user may have been deleted, please contact the administrator to verify, userId:[{}]",
+                        userTenant.getUserId());
+            }
         });
         return userList;
     }

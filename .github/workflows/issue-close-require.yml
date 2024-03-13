@@ -1,0 +1,87 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Issue Close Require
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  issue-close-require:
+    permissions:
+      issues: write  # for actions-cool/issues-helper to update issues
+      pull-requests: write  # for actions-cool/issues-helper to update PRs
+    runs-on: ubuntu-latest
+    steps:
+      - name: need reproduce
+        uses: actions-cool/issues-helper@v3
+        if: >- 
+          github.event.issue.number != 66 || 
+          github.event.issue.number != 884
+        with:
+          actions: 'close-issues'
+          labels: 'Need Reproduce'
+          inactive-day: 10
+          body: |
+            Hi @${{ github.event.issue.user.login }}, Because this issue was marked as requiring detailed reproduction steps, no response was received for 10 days. The issue is now closed. If you have any questions, please comment and reply.
+            
+            Hi @${{ github.event.issue.user.login }}, 由于该 issue 被标记为需要提供详细复现步骤，却 10 天未收到回应。现关闭 issue，若有任何问题，可评论回复。
+
+      - name: duplicate issue
+        uses: actions-cool/issues-helper@v3
+        if: >-
+          github.event.issue.number != 66 || 
+          github.event.issue.number != 884
+        with:
+          actions: 'close-issues'
+          labels: 'Duplicate'
+          inactive-day: 3
+          body: |
+            Hi @${{ github.event.issue.user.login }}, Since this issue was marked as a duplicate issue, no response was received for 3 days. The issue is now closed. If you have any questions, please comment and reply
+            
+            Hi @${{ github.event.issue.user.login }}, 由于该 issue 被标记为重复问题，却 3 天未收到回应。现关闭 issue，若有任何问题，可评论回复。
+
+      - name: Fixed issue
+        uses: actions-cool/issues-helper@v3
+        if: >-
+          github.event.issue.number != 66 || 
+          github.event.issue.number != 884
+        with:
+          actions: 'close-issues'
+          labels: 'Fixed'
+          inactive-day: 2
+          body: |
+            Hi @${{ github.event.issue.user.login }}, Since this issue was marked as fixed, no response has been received for 2 days. The issue is now closed. If you have any questions, please comment and reply.
+            
+            Hi @${{ github.event.issue.user.login }}, 由于该 issue 被标记为已修复，却 2 天未收到回应。现关闭 issue，若有任何问题，可评论回复。
+
+
+      - name: More Information Required
+        uses: actions-cool/issues-helper@v3
+        if: >-
+          github.event.issue.number != 66 || 
+          github.event.issue.number != 884
+        with:
+          actions: 'close-issues'
+          labels: 'More Information Required'
+          inactive-day: 7
+          body: |
+            Hi @${{ github.event.issue.user.login }}, Since this issue was marked as requiring more information, no response was received for 7 days. The issue is now closed. If you have any questions, please comment and reply.
+            
+            Hi @${{ github.event.issue.user.login }}, 由于该 issue 被标记为需要更多信息，却 7 天未收到回应。现关闭 issue，若有任何问题，可评论回复。

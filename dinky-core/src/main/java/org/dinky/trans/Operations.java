@@ -23,6 +23,7 @@ import org.dinky.parser.SqlType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 
 import org.reflections.Reflections;
@@ -65,8 +66,15 @@ public class Operations {
                             | NoSuchMethodException e) {
                         log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
                         throw new RuntimeException(e);
+                    } catch (NoClassDefFoundError e) {
+                        log.warn(
+                                "getAllOperations error,  If you do not have this class, please add the corresponding dependency. Operation: {}.{}",
+                                t,
+                                e.getMessage());
+                        return null;
                     }
                 })
+                .filter(Objects::nonNull)
                 .toArray(Operation[]::new);
     }
 

@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.flink.config.FlinkConfigOption;
 import org.dinky.data.model.Document;
 import org.dinky.data.model.FragmentVariable;
 import org.dinky.data.vo.suggestion.SuggestionLabelVO;
@@ -26,13 +27,16 @@ import org.dinky.data.vo.suggestion.SuggestionVO;
 import org.dinky.service.DocumentService;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SuggestionService;
+import org.dinky.utils.FlinkConfigOptionsUtils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import cn.hutool.core.text.StrFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,9 +67,8 @@ public class SuggestionServiceImpl implements SuggestionService {
         if (enableSchemaSuggestion) {
             buildSchemaSuggestions(new HashSet<>(), suggestionVOS);
         }
-        // 4. 自定义关键词提示
-        buildCustomSuggestions(new HashSet<>(), suggestionVOS);
-
+        // flink config提示
+        buildFlinkConfSuggestions(suggestionVOS);
         return suggestionVOS;
     }
 
@@ -106,18 +109,6 @@ public class SuggestionServiceImpl implements SuggestionService {
     }
 
     /**
-     * build custom suggestions
-     *
-     * @param customKeyWordList custom keyword list
-     * @param suggestionVOS     suggestion list
-     */
-    private static void buildCustomSuggestions(Set<Object> customKeyWordList, Set<SuggestionVO> suggestionVOS) {
-        // todo: 自定义关键词提示,
-        //      1. 此处自定义是属于 dinky 内部自定义语法关键词提示, 如果有片段, 将片段的建议列表加入到文档中进行提示
-        //      2. 可以加入 yml 语法的关键词提示 , 因为在集群配置中会有 yml 的配置文件写法 , 获取方式待定
-    }
-
-    /**
      * build document suggestions
      *
      * @param documentList  document list
@@ -142,6 +133,25 @@ public class SuggestionServiceImpl implements SuggestionService {
                             .build();
                 })
                 .forEach(suggestionVOS::add);
+    }
+
+    private static void buildFlinkConfSuggestions(Set<SuggestionVO> suggestionVOS) {
+        for (String name : FlinkConfigOptionsUtils.getConfigOptionsClass()) {
+            List<FlinkConfigOption> flinkConfigOptions = FlinkConfigOptionsUtils.loadOptionsByClassName(name);
+            flinkConfigOptions.stream()
+                    .map(conf -> {
+                        SuggestionLabelVO suggestionLabelVO = SuggestionLabelVO.builder()
+                                .label("set " + conf.getKey())
+                                .build();
+                        return SuggestionVO.builder()
+                                .key(conf.getKey() + "_flink_conf")
+                                .insertText(StrFormatter.format("set '{}'='{}'", conf.getKey(), conf.getDefaultValue()))
+                                .kind(4)
+                                .label(suggestionLabelVO)
+                                .build();
+                    })
+                    .forEach(suggestionVOS::add);
+        }
     }
 
     /**

@@ -18,12 +18,14 @@
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { RUN_MODE } from '@/services/constants';
 import { Alert, ALERT_TYPE, Cluster } from '@/types/RegCenter/data.d';
+import { TaskInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import { PaperClipOutlined } from '@ant-design/icons';
-import { Badge, Tag } from 'antd';
+import { Badge, Space, Tag } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
 /**
@@ -72,15 +74,25 @@ export const buildRunModelOptions = () => {
 /**
  * build cluster options
  */
-export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
+export const buildClusterOptions = (
+  selectedRunMode: string,
+  sessionCluster: Cluster.Instance[] = []
+) => {
   const sessionClusterOptions: DefaultOptionType[] = [];
+  // filter session cluster options, and need to filter auto register cluster and status is normal(1)
+  sessionCluster = sessionCluster.filter(
+    (item) =>
+      item.type === selectedRunMode &&
+      item.status === 1 &&
+      (!item.autoRegisters || item.clusterConfigurationId)
+  );
 
   for (const item of sessionCluster) {
     const tag = (
-      <TagAlignLeft>
+      <Space size={'small'}>
         <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>
         {item.name}
-      </TagAlignLeft>
+      </Space>
     );
     sessionClusterOptions.push({
       label: tag,
@@ -94,16 +106,31 @@ export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
 /**
  *  build cluster config options
  */
-export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cluster.Config[]) => {
+export const buildClusterConfigOptions = (
+  selectedRunMode: string,
+  clusterConfiguration: Cluster.Config[] = []
+) => {
+  // if run mode is yarn-application or yarn per-job, need to filter yarn application and yarn per-job
+  if ([RUN_MODE.YARN_APPLICATION, RUN_MODE.YARN_PER_JOB].includes(selectedRunMode)) {
+    clusterConfiguration = clusterConfiguration.filter(
+      (item) =>
+        [RUN_MODE.YARN_APPLICATION, RUN_MODE.YARN_PER_JOB].includes(item.type) && item.isAvailable
+    );
+  } else {
+    // the other run mode, need to filter run mode
+    clusterConfiguration = clusterConfiguration.filter(
+      (item) => item.type === selectedRunMode && item.isAvailable
+    );
+  }
+
   const clusterConfigOptions: DefaultOptionType[] = [];
   for (const item of clusterConfiguration) {
-    if (current.type.search(item.type.toLowerCase()) === -1) {
-      continue;
-    }
     const tag = (
       <TagAlignLeft>
-        <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>
-        {item.name}
+        <Space size={'small'}>
+          <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>
+          {item.name}
+        </Space>
       </TagAlignLeft>
     );
     clusterConfigOptions.push({
@@ -118,10 +145,15 @@ export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cl
 /**
  * build env options
  */
-export const buildEnvOptions = (env: any[], isDisabled: boolean) => {
+export const buildEnvOptions = (env: TaskInfo[] = []) => {
   const envList: DefaultOptionType[] = [
     {
-      label: l('button.disable'),
+      label: (
+        <Space>
+          <Badge status='error' />
+          {l('button.disable')}
+        </Space>
+      ),
       value: -1,
       key: -1
     }
@@ -130,9 +162,12 @@ export const buildEnvOptions = (env: any[], isDisabled: boolean) => {
   for (const item of env) {
     const tag = (
       <TagAlignLeft>
-        {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
-        {item.fragment ? <PaperClipOutlined /> : undefined}
-        {item.name}
+        <Space size={'small'}>
+          {item.enabled ? <Badge status='success' /> : <Badge status='error' />}
+          {getTabIcon(item.dialect, 20)}
+          {item.name}
+          {item.fragment ? <PaperClipOutlined /> : undefined}
+        </Space>
       </TagAlignLeft>
     );
 
@@ -140,7 +175,7 @@ export const buildEnvOptions = (env: any[], isDisabled: boolean) => {
       label: tag,
       value: item.id,
       key: item.id,
-      disabled: !item.enabled || !isDisabled
+      disabled: !item.enabled
     });
   }
   return envList;
@@ -149,7 +184,7 @@ export const buildEnvOptions = (env: any[], isDisabled: boolean) => {
 /**
  * build job alert groups
  */
-export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
+export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[] = []) => {
   const alertGroupOptions: DefaultOptionType[] = [
     {
       label: (
@@ -162,7 +197,7 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
       key: -1
     }
   ];
-  for (const item of alertGroups) {
+  alertGroups.forEach((item) => {
     alertGroupOptions.push({
       label: (
         <TagAlignLeft>
@@ -173,15 +208,30 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
       value: item.id,
       key: item.id
     });
-  }
+  });
   return alertGroupOptions;
 };
 
 /**
  * 计算右侧 proform list 组件宽度
- * @returns {number}
+ * @param width
  */
 export const calculatorWidth = (width: number) => {
   const resultWidth = width - 50; // 50 为右侧 proform list 组件的 删除按钮宽度
   return resultWidth > 0 ? resultWidth / 2 : 300;
+};
+
+export const isCanRenderClusterInstance = (selectRunMode: string) => {
+  return [RUN_MODE.YARN_SESSION, RUN_MODE.KUBERNETES_SESSION, RUN_MODE.STANDALONE].includes(
+    selectRunMode
+  );
+};
+
+export const isCanRenderClusterConfiguration = (selectRunMode: string) => {
+  return [
+    RUN_MODE.YARN_APPLICATION,
+    RUN_MODE.YARN_PER_JOB,
+    RUN_MODE.KUBERNETES_APPLICATION,
+    RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
+  ].includes(selectRunMode);
 };

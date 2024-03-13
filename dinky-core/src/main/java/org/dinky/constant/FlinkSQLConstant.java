@@ -24,16 +24,12 @@ package org.dinky.constant;
  *
  * @since 2021/5/25 15:51
  */
-public interface FlinkSQLConstant {
+public class FlinkSQLConstant {
+    private FlinkSQLConstant() {}
+
     /** 分隔符 */
-    String SEPARATOR = ";\n";
-    /** DDL 类型 */
-    String DDL = "DDL";
-    /** DML 类型 */
-    String DML = "DML";
-    /** DATASTREAM 类型 */
-    String DATASTREAM = "DATASTREAM";
+    public static final String SEPARATOR = ";\n";
 
     /** The define identifier of FlinkSQL Variable */
-    String VARIABLES = ":=";
+    public static final String VARIABLES = ":=";
 }

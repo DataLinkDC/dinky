@@ -17,10 +17,9 @@
  *
  */
 
-import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
+import { recoveryCheckPoint } from '@/pages/DevOps/JobDetail/CheckPointsTab/components/functions';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
 import { parseByteStr, parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import {
@@ -30,7 +29,7 @@ import {
   SyncOutlined
 } from '@ant-design/icons';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Button, message, Modal, Tag } from 'antd';
+import { Button, Tag } from 'antd';
 import { useRef } from 'react';
 
 export type CheckPointsDetailInfo = {
@@ -50,38 +49,6 @@ const CheckpointTable = (props: JobProps) => {
   const actionRef = useRef<ActionType>();
 
   const checkpoints = jobDetail?.jobDataDto?.checkpoints;
-
-  // const restartFromCheckpoint = useRequest((id: number, isOnLine: boolean, savePointPath: string) => (
-  //     {
-  //       url: API_CONSTANTS.RESTART_TASK_FROM_CHECKPOINT,
-  //       params: {id: id, isOnLine: isOnLine, savePointPath: savePointPath}
-  //     }
-  //   ),
-  //   {manual: true});
-
-  function recoveryCheckPoint(row: CheckPointsDetailInfo) {
-    Modal.confirm({
-      title: l('devops.jobinfo.ck.recovery'),
-      content: l('devops.jobinfo.ck.recoveryConfirm', '', {
-        path: row.external_path
-      }),
-      okText: l('button.confirm'),
-      cancelText: l('button.cancel'),
-      onOk: async () => {
-        const param = {
-          id: jobDetail?.instance?.taskId,
-          isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE,
-          savePointPath: row.external_path
-        };
-        const result = await getData(API_CONSTANTS.RESTART_TASK_FROM_CHECKPOINT, param);
-        if (result.code == 0) {
-          message.success(l('devops.jobinfo.ck.recovery.success'));
-        } else {
-          message.error(l('devops.jobinfo.ck.recovery.failed'));
-        }
-      }
-    });
-  }
 
   const columns: ProColumns<CheckPointsDetailInfo>[] = [
     {
@@ -137,7 +104,8 @@ const CheckpointTable = (props: JobProps) => {
       title: l('devops.jobinfo.ck.external_path'),
       align: 'center',
       copyable: true,
-      dataIndex: 'external_path'
+      dataIndex: 'external_path',
+      render: (_, entity) => <EllipsisMiddle maxCount={60} children={entity.external_path} />
     },
     {
       title: l('devops.jobinfo.ck.latest_ack_timestamp'),
@@ -163,7 +131,11 @@ const CheckpointTable = (props: JobProps) => {
         return (
           <>
             {entity.status === 'COMPLETED' ? (
-              <Button onClick={() => recoveryCheckPoint(entity)}>
+              <Button
+                onClick={() =>
+                  recoveryCheckPoint(jobDetail?.instance?.taskId, entity.external_path)
+                }
+              >
                 {l('devops.jobinfo.ck.recovery.recoveryTo')}
               </Button>
             ) : undefined}
@@ -176,7 +148,7 @@ const CheckpointTable = (props: JobProps) => {
   return (
     <ProTable<CheckPointsDetailInfo>
       columns={columns}
-      style={{ width: '100%' }}
+      style={{ width: '100%', height: 'calc(100vh - 450px)' }}
       dataSource={checkpoints?.history}
       onDataSourceChange={() => actionRef.current?.reload()}
       actionRef={actionRef}
