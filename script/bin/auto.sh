@@ -10,12 +10,20 @@ EXTENDS_HOME="${APP_HOME}/extends"
 JAR_NAME="dinky-admin"
 
 
-# Check whether the flink version is specified
-assertIsInputVersion() {
+if [ -z "${FLINK_VERSION}" ]; then
   # Obtain the Flink version under EXTENDSHOME, only perform recognition and do not perform any other operations, for prompt purposes
   FLINK_VERSION_SCAN=$(ls ${EXTENDS_HOME} | grep flink | awk -F 'flink' '{print $2}')
+  # If FLINK_VERSION-SCAN is not empty, assign FLINK_VERSION-SCAN to FLINK_VERSION
+  if [ -n "${FLINK_VERSION_SCAN}" ]; then
+    FLINK_VERSION=${FLINK_VERSION_SCAN}
+  fi
+fi
+
+# Check whether the flink version is specified
+assertIsInputVersion() {
+  # If FLINK_VERSION is still empty, prompt the user to enter the Flink version
   if [ -z "${FLINK_VERSION}" ]; then
-    echo "please specify the flink version, for example: sh auto.sh start ${FLINK_VERSION_SCAN}"
+    echo "The flink version is not specified and the flink version cannot be found under the extends directory. Please specify the flink version."
     exit 1
   fi
 }
