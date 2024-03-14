@@ -67,8 +67,7 @@ public class JobUDFBuilder extends JobBuilder {
             taskId = -RandomUtil.randomInt(0, 1000);
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
-        List<File> jarFiles =
-                new ArrayList<>(executor.getUdfPathContextHolder().getAllFileSet());
+        List<File> jarFiles = new ArrayList<>(executor.getUdfPathContextHolder().getAllFileSet());
 
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
                 .map(File::getAbsolutePath)

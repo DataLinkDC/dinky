@@ -27,9 +27,8 @@ import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.job.builder.JobJarStreamGraphBuilder;
-import org.dinky.utils.JsonUtils;
 import org.dinky.utils.KerberosUtil;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
@@ -57,7 +56,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dinky.utils.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,14 +273,12 @@ public abstract class AbstractExecutor implements Executor {
         return getStreamGraphJsonNode(streamGraph);
     }
 
-
-
     @Override
     public List<URL> getAllFileSet() {
         return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet())
                 ? Collections.emptyList()
                 : Arrays.asList(URLUtils.getURLs(
-                getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
+                        getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
     }
 
     @Override
