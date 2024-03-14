@@ -2,10 +2,6 @@
 
 FLINK_VERSION=${2}
 
-if [ -z "${FLINK_VERSION}" ]; then
-  echo "please specify the flink version, for example: sh auto.sh start 1.16"
-  exit 1
-fi
 
 APP_HOME="$(cd `dirname $0`; pwd)"
 
@@ -14,6 +10,15 @@ EXTENDS_HOME="${APP_HOME}/extends"
 JAR_NAME="dinky-admin"
 
 
+# Check whether the flink version is specified
+assertIsInputVersion() {
+  # Obtain the Flink version under EXTENDSHOME, only perform recognition and do not perform any other operations, for prompt purposes
+  FLINK_VERSION_SCAN=$(ls ${EXTENDS_HOME} | grep flink | awk -F 'flink' '{print $2}')
+  if [ -z "${FLINK_VERSION}" ]; then
+    echo "please specify the flink version, for example: sh auto.sh start ${FLINK_VERSION_SCAN}"
+    exit 1
+  fi
+}
 
 # Use FLINK_HOME:
 CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
@@ -51,6 +56,7 @@ updatePid() {
 }
 
 start() {
+  assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
@@ -63,6 +69,7 @@ start() {
 }
 
 startOnPending() {
+  assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
     java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky
@@ -73,6 +80,7 @@ startOnPending() {
 }
 
 startWithJmx() {
+  assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
@@ -114,6 +122,7 @@ status() {
 
 restart() {
   echo ""
+  assertIsInputVersion
   stop
   start
   echo "........................................Restart Successfully........................................"
@@ -121,6 +130,7 @@ restart() {
 
 restartWithJmx() {
   echo ""
+  assertIsInputVersion
   stop
   startWithJmx
   echo "........................................Restart with Jmx Successfully........................................"
