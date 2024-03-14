@@ -17,7 +17,7 @@ title: 1.0.1 release
 
 :::warning 提示
 - 1.0.1 是一个 BUG 修复版本,无数据库升级变更,可以直接升级
-- 关于 SCALA 版本: 发版使用 Scala-2.12 , 如你的环境必须使用 Scala-2.11, 请自行编译,请参考 [编译部署](../docs/deploy_guide/compile_deploy) , 将 profile 的 scala-2.12 改为 scala-2.11
+- 关于 SCALA 版本: 发版使用 Scala-2.12 , 如你的环境必须使用 Scala-2.11, 请自行编译,请参考 [编译部署](../docs/next/deploy_guide/compile_deploy) , 将 profile 的 scala-2.12 改为 scala-2.11
 :::
 
 
@@ -32,7 +32,7 @@ title: 1.0.1 release
 - 修复创建任务时作业类型渲染异常
 - 修复数据开发中查看 Catalog 时页面崩溃的问题
 - 修复 `add jar` 和 s3 一起使用时的参数配置问题
-- 修复一些 ``rs`` 自愿协议的问题
+- 修复一些 ``rs`` 资源协议的问题
 - 修复数据开发中快捷导航中的路由错误跳转问题
 - 修复当选择 UDF 任务类型时, 控制台没有关闭的问题
 - 修复 `decimal` 数据类型超过 38 时位数的问题(超过 38 位将转为 string)
