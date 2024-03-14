@@ -53,6 +53,7 @@ import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.model.home.JobModelOverview;
 import org.dinky.data.model.home.JobTypeOverView;
 import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
@@ -521,9 +522,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public TaskDTO getTaskInfoById(Integer id) {
         Task mTask = this.getById(id);
+        String creatorName = userService.getById(mTask.getCreator()).getUsername();
+        String operatorName = userService.getById(mTask.getOperator()).getUsername();
         DinkyAssert.check(mTask);
         TaskDTO taskDTO = new TaskDTO();
         BeanUtil.copyProperties(mTask, taskDTO);
+        taskDTO.setCreatorName(creatorName);
+        taskDTO.setOperatorName(operatorName);
 
         if (taskDTO.getClusterId() != null) {
             ClusterInstance clusterInstance = clusterInstanceService.getById(taskDTO.getClusterId());

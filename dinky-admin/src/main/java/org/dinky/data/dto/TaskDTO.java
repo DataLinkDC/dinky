@@ -215,6 +215,11 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "The maximum number of rows to return")
     private Integer maxRowNum = 100;
 
+    @ApiModelProperty(value = "Create user Name", dataType = "String", example = "zhang san", notes = "The name of the create user")
+    private String creatorName;
+    @ApiModelProperty(value = "Operator user Name", dataType = "String", example = "zhang san", notes = "The name of the operator user")
+    private String operatorName;
+
     public JobConfig getJobConfig() {
 
         Map<String, String> parsedConfig =
