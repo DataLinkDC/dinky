@@ -2,10 +2,6 @@
 
 FLINK_VERSION=${2}
 
-if [ -z "${FLINK_VERSION}" ]; then
-  echo "please specify the flink version, for example: sh auto.sh start 1.16"
-  exit 1
-fi
 
 APP_HOME="$(cd `dirname $0`; pwd)"
 
@@ -14,6 +10,23 @@ EXTENDS_HOME="${APP_HOME}/extends"
 JAR_NAME="dinky-admin"
 
 
+if [ -z "${FLINK_VERSION}" ]; then
+  # Obtain the Flink version under EXTENDSHOME, only perform recognition and do not perform any other operations, for prompt purposes
+  FLINK_VERSION_SCAN=$(ls ${EXTENDS_HOME} | grep flink | awk -F 'flink' '{print $2}')
+  # If FLINK_VERSION-SCAN is not empty, assign FLINK_VERSION-SCAN to FLINK_VERSION
+  if [ -n "${FLINK_VERSION_SCAN}" ]; then
+    FLINK_VERSION=${FLINK_VERSION_SCAN}
+  fi
+fi
+
+# Check whether the flink version is specified
+assertIsInputVersion() {
+  # If FLINK_VERSION is still empty, prompt the user to enter the Flink version
+  if [ -z "${FLINK_VERSION}" ]; then
+    echo "The flink version is not specified and the flink version cannot be found under the extends directory. Please specify the flink version."
+    exit 1
+  fi
+}
 
 # Use FLINK_HOME:
 CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
@@ -51,6 +64,7 @@ updatePid() {
 }
 
 start() {
+  assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
@@ -63,6 +77,7 @@ start() {
 }
 
 startOnPending() {
+  assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
     java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky
@@ -73,6 +88,7 @@ startOnPending() {
 }
 
 startWithJmx() {
+  assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
@@ -114,6 +130,7 @@ status() {
 
 restart() {
   echo ""
+  assertIsInputVersion
   stop
   start
   echo "........................................Restart Successfully........................................"
@@ -121,6 +138,7 @@ restart() {
 
 restartWithJmx() {
   echo ""
+  assertIsInputVersion
   stop
   startWithJmx
   echo "........................................Restart with Jmx Successfully........................................"
