@@ -141,7 +141,8 @@ public class JobManager {
         executor = ExecutorFactory.buildExecutor(executorConfig);
     }
 
-    private boolean ready() {
+    private boolean ready(String statement) {
+        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         return handler.init(job);
     }
 
@@ -172,8 +173,7 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
-        ready();
+        ready(statement);
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
         Configuration configuration =
@@ -188,12 +188,7 @@ public class JobManager {
                 JobClient jobClient = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
                 if (Asserts.isNotNull(jobClient)) {
                     job.setJobId(jobClient.getJobID().toHexString());
-                    job.setJids(new ArrayList<String>() {
-
-                        {
-                            add(job.getJobId());
-                        }
-                    });
+                    job.setJids(Collections.singletonList(job.getJobId()));
                     job.setStatus(Job.JobStatus.SUCCESS);
                     success();
                 } else {
@@ -249,8 +244,7 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
-        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
-        ready();
+        ready(statement);
 
         DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
         jobParam =
