@@ -20,7 +20,6 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
@@ -85,10 +84,10 @@ public class Explainer {
     }
 
     public Explainer initialize(JobConfig config, String statement) {
-        DinkyClassLoaderUtil.initClassLoader(config, jobManager.getDinkyClassLoader());
+        DinkyClassLoaderUtil.initClassLoader(config, executor.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
-        List<UDF> udfs = parseUDFFromStatements(statements);
-        jobManager.setJobParam(new JobParam(udfs));
+        JobParam jobParam = pretreatStatements(statements);
+        jobManager.setJobParam(jobParam);
         try {
             JobUDFBuilder.build(jobManager).run();
         } catch (Exception e) {
@@ -152,7 +151,7 @@ public class Explainer {
                             PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
-                UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
+                UDF udf = UDFUtil.toUDF(statement, executor.getDinkyClassLoader());
                 if (Asserts.isNotNull(udf)) {
                     udfList.add(udf);
                 }
@@ -161,20 +160,6 @@ public class Explainer {
             }
         }
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
-    }
-
-    public List<UDF> parseUDFFromStatements(String[] statements) {
-        List<UDF> udfList = new ArrayList<>();
-        for (String statement : statements) {
-            if (statement.isEmpty()) {
-                continue;
-            }
-            UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
-            if (Asserts.isNotNull(udf)) {
-                udfList.add(udf);
-            }
-        }
-        return udfList;
     }
 
     public ExplainResult explainSql(String statement) {
@@ -330,17 +315,7 @@ public class Explainer {
     }
 
     public List<LineageRel> getLineage(String statement) {
-        JobConfig jobConfig = JobConfig.builder()
-                .type(GatewayType.LOCAL.getLongValue())
-                .useRemote(false)
-                .fragment(true)
-                .statementSet(useStatementSet)
-                .parallelism(1)
-                .configJson(executor.getTableConfig().getConfiguration().toMap())
-                .build();
-        jobManager.setConfig(jobConfig);
-        jobManager.setExecutor(executor);
-        this.initialize(jobConfig, statement);
+        initialize(jobManager.getConfig(), statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();
         for (String item : SqlUtil.getStatements(statement)) {

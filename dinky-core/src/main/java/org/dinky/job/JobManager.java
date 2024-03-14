@@ -31,7 +31,6 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
@@ -84,7 +83,6 @@ import org.dinky.utils.URLUtils;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -467,16 +465,8 @@ public class JobManager {
         isPlanMode = planMode;
     }
 
-    public boolean isPlanMode() {
-        return isPlanMode;
-    }
-
     public boolean isUseStatementSet() {
         return useStatementSet;
-    }
-
-    public boolean isUseRestAPI() {
-        return useRestAPI;
     }
 
     public boolean isUseGateway() {
