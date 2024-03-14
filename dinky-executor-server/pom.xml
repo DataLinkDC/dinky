@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>dinky-executor-server</artifactId>

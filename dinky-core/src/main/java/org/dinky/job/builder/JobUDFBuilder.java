@@ -68,7 +68,7 @@ public class JobUDFBuilder extends JobBuilder {
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
         List<File> jarFiles =
-                new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
+                new ArrayList<>(executor.getUdfPathContextHolder().getAllFileSet());
 
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
                 .map(File::getAbsolutePath)
@@ -87,12 +87,12 @@ public class JobUDFBuilder extends JobBuilder {
         if (ArrayUtil.isNotEmpty(pyPaths)) {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {
-                    jobManager.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
+                    executor.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
                 }
             }
         }
 
-        Set<File> pyUdfFile = jobManager.getUdfPathContextHolder().getPyUdfFile();
+        Set<File> pyUdfFile = executor.getUdfPathContextHolder().getPyUdfFile();
         executor.initPyUDF(
                 SystemConfiguration.getInstances().getPythonHome(),
                 pyUdfFile.stream().map(File::getAbsolutePath).toArray(String[]::new));
@@ -103,7 +103,7 @@ public class JobUDFBuilder extends JobBuilder {
         try {
             List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
             // 3.Write the required files for UDF
-            UDFUtil.writeManifest(taskId, jarList, jobManager.getUdfPathContextHolder());
+            UDFUtil.writeManifest(taskId, jarList, executor.getUdfPathContextHolder());
             UDFUtil.addConfigurationClsAndJars(
                     jobManager.getExecutor().getCustomTableEnvironment(),
                     jarList,

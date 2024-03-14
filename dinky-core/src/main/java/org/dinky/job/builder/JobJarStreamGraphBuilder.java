@@ -76,16 +76,16 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
                 customSetOperation.execute(this.executor.getCustomTableEnvironment());
             } else if (operationType.equals(SqlType.ADD)) {
                 Set<File> files = AddJarSqlParseStrategy.getAllFilePath(sqlStatement);
-                files.forEach(executor::addJar);
-                files.forEach(jobManager.getUdfPathContextHolder()::addOtherPlugins);
+                executor.addJar(files.toArray(new File[0]));
+                files.forEach(executor.getUdfPathContextHolder()::addOtherPlugins);
             } else if (operationType.equals(SqlType.ADD_FILE)) {
                 Set<File> files = AddFileSqlParseStrategy.getAllFilePath(sqlStatement);
-                files.forEach(executor::addJar);
-                files.forEach(jobManager.getUdfPathContextHolder()::addFile);
+                executor.addJar(files.toArray(new File[0]));
+                files.forEach(executor.getUdfPathContextHolder()::addFile);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
-        List<URL> urLs = jobManager.getAllFileSet();
+        List<URL> urLs = executor.getAllFileSet();
         return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
     }
 

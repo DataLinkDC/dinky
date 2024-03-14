@@ -22,10 +22,13 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
+import org.dinky.job.builder.JobJarStreamGraphBuilder;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.KerberosUtil;
 
 import org.apache.flink.api.common.ExecutionConfig;
@@ -49,10 +52,12 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dinky.utils.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -268,6 +273,21 @@ public abstract class AbstractExecutor implements Executor {
     public ObjectNode getStreamGraph(List<String> statements) {
         StreamGraph streamGraph = tableEnvironment.getStreamGraphFromInserts(statements);
         return getStreamGraphJsonNode(streamGraph);
+    }
+
+
+
+    @Override
+    public List<URL> getAllFileSet() {
+        return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet())
+                ? Collections.emptyList()
+                : Arrays.asList(URLUtils.getURLs(
+                getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
+    }
+
+    @Override
+    public FlinkUdfPathContextHolder getUdfPathContextHolder() {
+        return getDinkyClassLoader().getUdfPathContextHolder();
     }
 
     private ObjectNode getStreamGraphJsonNode(StreamGraph streamGraph) {

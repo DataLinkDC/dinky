@@ -122,16 +122,16 @@ public class Explainer {
                 customSetOperation.execute(this.executor.getCustomTableEnvironment());
             } else if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement)
-                        .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
+                        .forEach(t -> executor.getUdfPathContextHolder().addOtherPlugins(t));
                 (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
-                                jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
+                                executor.getUdfPathContextHolder().getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_FILE)) {
                 AddFileSqlParseStrategy.getAllFilePath(statement)
-                        .forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
+                        .forEach(t -> executor.getUdfPathContextHolder().addFile(t));
                 (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
-                                jobManager.getUdfPathContextHolder().getFiles()));
+                                executor.getUdfPathContextHolder().getFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
                 FileSystem.initialize(combinationConfig, null);
@@ -299,7 +299,7 @@ public class Explainer {
                     sqlExplainResult = new SqlExplainResult();
                 } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
 
-                    List<URL> allFileByAdd = jobManager.getAllFileSet();
+                    List<URL> allFileByAdd = executor.getAllFileSet();
                     StreamGraph streamGraph = new ExecuteJarOperation(item.getValue())
                             .explain(executor.getCustomTableEnvironment(), allFileByAdd);
                     sqlExplainResult.setExplain(streamGraph.getStreamingPlanAsJSON());

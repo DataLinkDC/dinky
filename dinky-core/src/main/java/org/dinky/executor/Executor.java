@@ -20,6 +20,7 @@
 package org.dinky.executor;
 
 import org.dinky.classloader.DinkyClassLoader;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 
@@ -35,6 +36,7 @@ import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +83,10 @@ public interface Executor {
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
     ObjectNode getStreamGraph(List<String> statements);
+
+    List<URL> getAllFileSet();
+
+    FlinkUdfPathContextHolder getUdfPathContextHolder();
 
     StreamGraph getStreamGraph();
 
