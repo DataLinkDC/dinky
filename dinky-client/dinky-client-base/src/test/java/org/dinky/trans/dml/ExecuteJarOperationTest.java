@@ -16,23 +16,45 @@
  *  limitations under the License.
  *
  */
+
 package org.dinky.trans.dml;
-
-import com.google.common.collect.Lists;
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.Lists;
+
 class ExecuteJarOperationTest {
 
-    public static final List<String> RESULT1 = Lists.newArrayList("merge_into","--warehouse","hdfs:///tmp/paimon","--database","default","--table","T","--source_table","S","--on","T.id = S.order_id","--merge_actions","matched-upsert,matched-delete","--matched_upsert_condition","T.price > 100","--matched_upsert_set","mark = 'important'","--matched_delete_condition","T.price < 10");
+    public static final List<String> RESULT1 = Lists.newArrayList(
+            "merge_into",
+            "--warehouse",
+            "hdfs:///tmp/paimon",
+            "--database",
+            "default",
+            "--table",
+            "T",
+            "--source_table",
+            "S",
+            "--on",
+            "T.id = S.order_id",
+            "--merge_actions",
+            "matched-upsert,matched-delete",
+            "--matched_upsert_condition",
+            "T.price > 100",
+            "--matched_upsert_set",
+            "mark = 'important'",
+            "--matched_delete_condition",
+            "T.price < 10");
+
     @Test
     void extractArgs() {
-        List<String> args1 = ExecuteJarOperation.extractArgs("merge_into --warehouse hdfs:///tmp/paimon --database default --table T --source_table S --on \"T.id = S.order_id\" --merge_actions matched-upsert,matched-delete --matched_upsert_condition \"T.price > 100\" --matched_upsert_set \"mark = 'important'\"  --matched_delete_condition \"T.price < 10\"");
-        Assert.assertArrayEquals(args1.toArray(new String[0]),RESULT1.toArray(new String[0]));
-
+        List<String> args1 = ExecuteJarOperation.extractArgs(
+                "merge_into --warehouse hdfs:///tmp/paimon --database default --table T --source_table S --on \"T.id = S.order_id\" --merge_actions matched-upsert,matched-delete --matched_upsert_condition \"T.price > 100\" --matched_upsert_set \"mark = 'important'\"  --matched_delete_condition \"T.price < 10\"");
+        Assert.assertArrayEquals(args1.toArray(new String[0]), RESULT1.toArray(new String[0]));
     }
 }
