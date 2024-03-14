@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import org.apache.flink.core.fs.FileSystem;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -27,8 +28,10 @@ import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
+import org.dinky.job.JobParam;
+import org.dinky.job.StatementParam;
+import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.utils.KerberosUtil;
-import org.dinky.utils.URLUtils;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
@@ -55,7 +58,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.dinky.utils.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,22 +216,6 @@ public abstract class AbstractExecutor implements Executor {
     }
 
     @Override
-    public TableResult executeSql(String statement) {
-        statement = pretreatStatement(statement);
-        FlinkInterceptorResult flinkInterceptorResult = pretreatExecute(statement);
-        if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
-            return flinkInterceptorResult.getTableResult();
-        }
-
-        if (flinkInterceptorResult.isNoExecute()) {
-            return CustomTableResultImpl.TABLE_RESULT_OK;
-        }
-
-        KerberosUtil.authenticate(setConfig);
-        return tableEnvironment.executeSql(statement);
-    }
-
-    @Override
     public void initUDF(String... udfFilePath) {
         List<File> jarFiles = DinkyClassLoader.getJarFiles(udfFilePath, null);
         getDinkyClassLoader().addURLs(jarFiles);
@@ -259,6 +248,22 @@ public abstract class AbstractExecutor implements Executor {
     }
 
     @Override
+    public TableResult executeSql(String statement) {
+        statement = pretreatStatement(statement);
+        FlinkInterceptorResult flinkInterceptorResult = pretreatExecute(statement);
+        if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
+            return flinkInterceptorResult.getTableResult();
+        }
+
+        if (flinkInterceptorResult.isNoExecute()) {
+            return CustomTableResultImpl.TABLE_RESULT_OK;
+        }
+
+        KerberosUtil.authenticate(setConfig);
+        return tableEnvironment.executeSql(statement);
+    }
+
+    @Override
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
         if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
@@ -267,18 +272,30 @@ public abstract class AbstractExecutor implements Executor {
         return null;
     }
 
+
+    @Override
+    public String getJarStreamingPlanStringJson(String parameter) {
+        List<URL> allFileByAdd = getAllFileSet();
+        StreamGraph streamGraph = new ExecuteJarOperation(parameter)
+                .explain(getCustomTableEnvironment(), allFileByAdd);
+        return streamGraph.getStreamingPlanAsJSON();
+    }
+
+
     @Override
     public ObjectNode getStreamGraph(List<String> statements) {
         StreamGraph streamGraph = tableEnvironment.getStreamGraphFromInserts(statements);
         return getStreamGraphJsonNode(streamGraph);
     }
 
+
+
     @Override
     public List<URL> getAllFileSet() {
         return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet())
                 ? Collections.emptyList()
                 : Arrays.asList(URLUtils.getURLs(
-                        getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
+                getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
     }
 
     @Override
@@ -343,7 +360,45 @@ public abstract class AbstractExecutor implements Executor {
     }
 
     @Override
+    public JobPlanInfo getJobPlanInfo(JobParam jobParam) {
+        jobParam.getDdl().forEach(statementParam -> executeSql(statementParam.getValue()));
+
+        if (!jobParam.getTrans().isEmpty()) {
+            return getJobPlanInfo(jobParam.getTransStatement());
+        }
+
+        if (!jobParam.getExecute().isEmpty()) {
+            List<String> dataStreamPlans =
+                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
+            return getJobPlanInfoFromDataStream(dataStreamPlans);
+        }
+        throw new RuntimeException("Creating job plan fails because this job doesn't contain an insert statement.");
+    }
+
+    @Override
+    public String getJobPlanJson(JobParam jobParam){
+        return getJobPlanInfo(jobParam).getJsonPlan();
+    }
+
+    @Override
     public List<LineageRel> getLineage(String statement) {
         return tableEnvironment.getLineage(statement);
+    }
+
+    @Override
+    public void initializeFileSystem(){
+        Configuration combinationConfig = getCombinationConfig();
+        FileSystem.initialize(combinationConfig, null);
+    }
+
+
+    private Configuration getCombinationConfig() {
+        CustomTableEnvironment cte = getCustomTableEnvironment();
+        Configuration rootConfig = cte.getRootConfiguration();
+        Configuration config = cte.getConfig().getConfiguration();
+        Configuration combinationConfig = new Configuration();
+        combinationConfig.addAll(rootConfig);
+        combinationConfig.addAll(config);
+        return combinationConfig;
     }
 }

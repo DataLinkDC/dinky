@@ -19,6 +19,23 @@
 
 package org.dinky.job;
 
+import cn.hutool.core.text.StrFormatter;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.configuration.DeploymentOptions;
+import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
@@ -64,20 +81,6 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.configuration.DeploymentOptions;
-import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
-import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.yarn.configuration.YarnConfigOptions;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -86,11 +89,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.hutool.core.text.StrFormatter;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JobManager {
@@ -333,10 +331,10 @@ public class JobManager {
     }
 
     public String getJobPlanJson(String statement) {
-        return Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement)
-                .getJobPlanInfo(statement)
-                .getJsonPlan();
+        Explainer explainer = Explainer.build(executor, useStatementSet, this)
+                .initialize(config, statement);
+        JobParam jobParam = explainer.pretreatStatements(SqlUtil.getStatements(statement));
+        return executor.getJobPlanJson(jobParam);
     }
 
     public boolean cancelNormal(String jobId) {

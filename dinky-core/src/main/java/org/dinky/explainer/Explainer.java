@@ -24,7 +24,6 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
@@ -38,7 +37,6 @@ import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.ddl.CustomSetOperation;
-import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
@@ -49,12 +47,6 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,8 +125,7 @@ public class Explainer {
                         .addURLs(URLUtils.getURLs(
                                 executor.getUdfPathContextHolder().getFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
-                Configuration combinationConfig = getCombinationConfig();
-                FileSystem.initialize(combinationConfig, null);
+                executor.initializeFileSystem();
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             } else if (operationType.equals(SqlType.INSERT)
@@ -170,16 +161,6 @@ public class Explainer {
             }
         }
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
-    }
-
-    private Configuration getCombinationConfig() {
-        CustomTableEnvironment cte = executor.getCustomTableEnvironment();
-        Configuration rootConfig = cte.getRootConfiguration();
-        Configuration config = cte.getConfig().getConfiguration();
-        Configuration combinationConfig = new Configuration();
-        combinationConfig.addAll(rootConfig);
-        combinationConfig.addAll(config);
-        return combinationConfig;
     }
 
     public List<UDF> parseUDFFromStatements(String[] statements) {
@@ -290,6 +271,7 @@ public class Explainer {
                 }
             }
         }
+
         for (StatementParam item : jobParam.getExecute()) {
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
 
@@ -298,11 +280,7 @@ public class Explainer {
                 if (Asserts.isNull(sqlExplainResult)) {
                     sqlExplainResult = new SqlExplainResult();
                 } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
-
-                    List<URL> allFileByAdd = executor.getAllFileSet();
-                    StreamGraph streamGraph = new ExecuteJarOperation(item.getValue())
-                            .explain(executor.getCustomTableEnvironment(), allFileByAdd);
-                    sqlExplainResult.setExplain(streamGraph.getStreamingPlanAsJSON());
+                    sqlExplainResult.setExplain(executor.getJarStreamingPlanStringJson(item.getValue()));
                 } else {
                     executor.executeSql(item.getValue());
                 }
@@ -349,22 +327,6 @@ public class Explainer {
             return executor.getStreamGraphFromDataStream(dataStreamPlans);
         }
         return mapper.createObjectNode();
-    }
-
-    public JobPlanInfo getJobPlanInfo(String statement) {
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
-        jobParam.getDdl().forEach(statementParam -> executor.executeSql(statementParam.getValue()));
-
-        if (!jobParam.getTrans().isEmpty()) {
-            return executor.getJobPlanInfo(jobParam.getTransStatement());
-        }
-
-        if (!jobParam.getExecute().isEmpty()) {
-            List<String> dataStreamPlans =
-                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
-            return executor.getJobPlanInfoFromDataStream(dataStreamPlans);
-        }
-        throw new RuntimeException("Creating job plan fails because this job doesn't contain an insert statement.");
     }
 
     public List<LineageRel> getLineage(String statement) {

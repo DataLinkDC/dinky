@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.dinky.job.JobParam;
 
 public interface Executor {
     // return dinkyClassLoader
@@ -82,6 +83,8 @@ public interface Executor {
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
+    String getJarStreamingPlanStringJson(String parameter);
+
     ObjectNode getStreamGraph(List<String> statements);
 
     List<URL> getAllFileSet();
@@ -101,6 +104,12 @@ public interface Executor {
     TableResult executeStatementSet(List<String> statements);
 
     String explainStatementSet(List<String> statements);
+
+    JobPlanInfo getJobPlanInfo(JobParam jobParam);
+
+    String getJobPlanJson(JobParam jobParam);
+
+    void initializeFileSystem();
 
     List<LineageRel> getLineage(String statement);
 }
