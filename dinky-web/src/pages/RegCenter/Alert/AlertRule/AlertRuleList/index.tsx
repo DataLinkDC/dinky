@@ -22,6 +22,8 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import RuleEditForm from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm';
+import { RuleType } from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
@@ -34,8 +36,6 @@ import { l } from '@/utils/intl';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
-import {RuleType} from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants";
-import RuleEditForm from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm";
 
 const AlertRuleList: React.FC = () => {
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);
@@ -170,7 +170,10 @@ const AlertRuleList: React.FC = () => {
         loading={ruleState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key={`CreateRule_auth`} path={PermissionConstants.REGISTRATION_ALERT_RULE_ADD}>
+          <Authorized
+            key={`CreateRule_auth`}
+            path={PermissionConstants.REGISTRATION_ALERT_RULE_ADD}
+          >
             <CreateBtn
               key={'CreateRule'}
               onClick={() => setRuleState((prevState) => ({ ...prevState, addedOpen: true }))}
