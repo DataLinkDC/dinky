@@ -12,7 +12,7 @@ JAR_NAME="dinky-admin"
 
 if [ -z "${FLINK_VERSION}" ]; then
   # Obtain the Flink version under EXTENDSHOME, only perform recognition and do not perform any other operations, for prompt purposes
-  FLINK_VERSION_SCAN=$(ls ${EXTENDS_HOME} | grep flink | awk -F 'flink' '{print $2}')
+  FLINK_VERSION_SCAN=$(ll ${EXTENDS_HOME} |  grep '^d' | grep flink | awk -F 'flink' '{print $2}')
   # If FLINK_VERSION-SCAN is not empty, assign FLINK_VERSION-SCAN to FLINK_VERSION
   if [ -n "${FLINK_VERSION_SCAN}" ]; then
     FLINK_VERSION=${FLINK_VERSION_SCAN}
