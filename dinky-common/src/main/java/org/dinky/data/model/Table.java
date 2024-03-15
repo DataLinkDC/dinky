@@ -25,6 +25,7 @@ import org.dinky.utils.SqlUtil;
 
 import java.beans.Transient;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,9 +57,13 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     private Long rows;
     private Date createTime;
     private Date updateTime;
-    /** 表类型 */
+    /**
+     * 表类型
+     */
     private TableType tableType = TableType.SINGLE_DATABASE_AND_TABLE;
-    /** 分库或分表对应的表名 */
+    /**
+     * 分库或分表对应的表名
+     */
     private List<String> schemaTableNameList;
 
     private List<Column> columns;
@@ -67,6 +72,13 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     private String driverType;
 
     public Table() {}
+
+    public Table(List<Column> columns, String databaseName, String tableName, String tableComment) throws SQLException {
+        this.name = tableName;
+        this.schema = databaseName;
+        this.comment = tableComment;
+        this.columns = columns;
+    }
 
     public Table(String name, String schema, List<Column> columns) {
         this.name = name;
