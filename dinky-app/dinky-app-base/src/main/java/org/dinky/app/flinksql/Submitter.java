@@ -149,15 +149,10 @@ public class Submitter {
 
     public static String buildSql(AppTask appTask) throws SQLException {
         StringBuilder sb = new StringBuilder();
-        // build env task
-        if (Asserts.isNotNull(appTask.getEnvId()) && appTask.getEnvId() > 0) {
-            AppTask envTask = DBUtil.getTask(appTask.getEnvId());
-            if (Asserts.isNotNullString(envTask.getStatement())) {
-                log.info("use statement is enable, load env:{}", envTask.getName());
-                sb.append(envTask.getStatement()).append("\n");
-            }
-        }
-        // build Database golbal varibals
+
+        // 1. build Database golbal varibals
+        // Note: It is necessary to first build the global variables defined in the database and registry, otherwise it
+        // may cause some variables to be unable to be resolved and referenced properly due to order issues
         if (appTask.getFragment()) {
             log.info("Global env is enable, load database flink config env and global variables.");
             // append database flink config env
@@ -165,6 +160,16 @@ public class Submitter {
             // append global variables
             sb.append(DBUtil.getGlobalVariablesStatement()).append("\n");
         }
+
+        // 2. build env task
+        if (Asserts.isNotNull(appTask.getEnvId()) && appTask.getEnvId() > 0) {
+            AppTask envTask = DBUtil.getTask(appTask.getEnvId());
+            if (Asserts.isNotNullString(envTask.getStatement())) {
+                log.info("use statement is enable, load env:{}", envTask.getName());
+                sb.append(envTask.getStatement()).append("\n");
+            }
+        }
+
         sb.append(appTask.getStatement());
         return sb.toString();
     }
