@@ -55,7 +55,7 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @param dataBase {@link DataBase}
      * @return {@link Boolean}
      */
-    Boolean checkHeartBeat(DataBase dataBase);
+    String checkHeartBeat(DataBase dataBase);
 
     /**
      * save or update database

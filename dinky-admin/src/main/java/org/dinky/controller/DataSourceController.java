@@ -223,17 +223,12 @@ public class DataSourceController {
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
-        String error = "";
-        try {
-            databaseService.checkHeartBeat(dataBase);
-        } catch (Exception e) {
-            error = e.getMessage();
-        }
+        String checkedHeartBeat = databaseService.checkHeartBeat(dataBase);
         databaseService.updateById(dataBase);
-        if (Asserts.isNotNullString(error)) {
-            return Result.failed(error);
+        if (dataBase.getStatus()) {
+            return Result.succeed(Status.DATASOURCE_CONNECT_NORMAL);
         }
-        return Result.succeed(Status.DATASOURCE_CONNECT_NORMAL);
+        return Result.paramsError(Status.DATASOURCE_CONNECT_ERROR, checkedHeartBeat);
     }
 
     /**
