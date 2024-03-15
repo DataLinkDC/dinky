@@ -17,15 +17,15 @@
  *
  */
 
-import {
-  AlertRules,
-  AllRuleOperator,
-  EqRuleOperator,
-  OperatorType
-} from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
+
 import { l } from '@/utils/intl';
 import { ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { DefaultOptionType } from 'antd/es/select';
+import {
+  AlertRules, AllRuleOperator,
+  EqRuleOperator,
+  OperatorType
+} from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants";
 
 export const AlertRulesOption = () => {
   const res: DefaultOptionType[] = [];

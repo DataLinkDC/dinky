@@ -82,7 +82,7 @@ export default {
   'datastudio.middle.qg.fragment': '全局变量',
   'datastudio.middle.qg.gitprojects': 'Git 项目',
   'datastudio.middle.qg.resource': '资源',
-  'datastudio.middle.qg.alertRule': '告警规则',
+  'datastudio.middle.qg.alertRule': '告警策略',
   'datastudio.middle.qg.alertTemplate': '注册告警模板',
   'datastudio.middle.qg.accountCenter': '个人中心',
   'datastudio.middle.qg.globalsetting': '全局配置',
