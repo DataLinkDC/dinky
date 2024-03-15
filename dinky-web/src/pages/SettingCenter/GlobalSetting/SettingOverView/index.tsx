@@ -232,10 +232,9 @@ const SettingOverView = () => {
 
   return (
     <FadeIn>
-      <div style={{ paddingBottom: '20px' }}>
         <ProCard
           ghost
-          bodyStyle={{ height: '80vh' }}
+          bodyStyle={{ height: '80vh',overflowY: 'auto'}}
           className={'schemaTree'}
           size='small'
           bordered
@@ -245,7 +244,8 @@ const SettingOverView = () => {
             cardProps: {
               hoverable: true,
               bodyStyle: {
-                height: parent.innerHeight - 155
+                height: parent.innerHeight - 170,
+                overflowY: 'auto'
               },
               boxShadow: true
             },
@@ -257,7 +257,6 @@ const SettingOverView = () => {
             )
           }}
         />
-      </div>
     </FadeIn>
   );
 };
