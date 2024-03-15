@@ -153,7 +153,8 @@ public class Submitter {
         StringBuilder sb = new StringBuilder();
 
         // 1. build Database golbal varibals
-        // Note: It is necessary to first build the global variables defined in the database and registry, otherwise it may cause some variables to be unable to be resolved and referenced properly due to order issues
+        // Note: It is necessary to first build the global variables defined in the database and registry, otherwise it
+        // may cause some variables to be unable to be resolved and referenced properly due to order issues
         if (appTask.getFragment()) {
             log.info("Global env is enable, load database flink config env and global variables.");
             // append database flink config env
