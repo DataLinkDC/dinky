@@ -25,15 +25,18 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
+import org.dinky.data.result.RunResult;
 import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
+import org.dinky.job.ExecuteSqlException;
 import org.dinky.job.Job;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
+import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
 import org.dinky.utils.URLUtils;
@@ -48,33 +51,62 @@ import java.util.List;
 
 /**
  * JobTransBuilder
- *
  */
-public class JobTransBuilder extends JobBuilder {
+public class JobTransBuilder implements JobBuilder {
 
-    public JobTransBuilder(JobManager jobManager) {
-        super(jobManager);
+    private String currentSql;
+    private final JobParam jobParam;
+    private final boolean useStatementSet;
+    private final boolean useGateway;
+    private final JobConfig config;
+    private final Executor executor;
+    private final GatewayType runMode;
+    private final Job job;
+
+    public JobTransBuilder(JobParam jobParam, boolean useStatementSet, boolean useGateway, JobConfig config,
+                           Executor executor, GatewayType runMode, Job job) {
+        this.jobParam = jobParam;
+        this.useStatementSet = useStatementSet;
+        this.useGateway = useGateway;
+        this.config = config;
+        this.executor = executor;
+        this.runMode = runMode;
+        this.job = job;
     }
 
+
     public static JobTransBuilder build(JobManager jobManager) {
-        return new JobTransBuilder(jobManager);
+
+        return new JobTransBuilder(
+                jobManager.getJobParam(),
+                jobManager.isUseStatementSet(),
+                jobManager.isUseGateway(),
+                jobManager.getConfig(),
+                jobManager.getExecutor(),
+                jobManager.getRunMode(),
+                jobManager.getJob()
+        );
     }
 
     @Override
     public void run() throws Exception {
-        if (jobParam.getTrans().isEmpty()) {
-            return;
-        }
+        try {
+            if (jobParam.getTrans().isEmpty()) {
+                return;
+            }
 
-        if (useStatementSet) {
-            handleStatementSet();
-            return;
-        }
+            if (useStatementSet) {
+                handleStatementSet();
+                return;
+            }
 
-        handleNonStatementSet();
+            handleNonStatementSet();
+        } catch (Exception ex) {
+            throw new ExecuteSqlException(currentSql, ex);
+        }
     }
 
-    private void handleStatementSet() throws Exception {
+    private void handleStatementSet() {
         List<String> inserts = collectInserts();
 
         if (useGateway) {
@@ -84,7 +116,7 @@ public class JobTransBuilder extends JobBuilder {
         processWithoutGateway(inserts);
     }
 
-    private void handleNonStatementSet() throws Exception {
+    private void handleNonStatementSet() {
         if (useGateway) {
             processSingleInsertWithGateway();
             return;
@@ -104,36 +136,36 @@ public class JobTransBuilder extends JobBuilder {
         return inserts;
     }
 
-    private void processWithGateway(List<String> inserts) throws Exception {
-        jobManager.setCurrentSql(String.join(FlinkSQLConstant.SEPARATOR, inserts));
+    private void processWithGateway(List<String> inserts) {
+        currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
         GatewayResult gatewayResult = submitByGateway(inserts);
         setJobResultFromGatewayResult(gatewayResult);
     }
 
-    private void processWithoutGateway(List<String> inserts) throws Exception {
+    private void processWithoutGateway(List<String> inserts) {
         if (!inserts.isEmpty()) {
-            jobManager.setCurrentSql(String.join(FlinkSQLConstant.SEPARATOR, inserts));
+            currentSql = String.join(FlinkSQLConstant.SEPARATOR, inserts);
             TableResult tableResult = executor.executeStatementSet(inserts);
             updateJobWithTableResult(tableResult);
         }
     }
 
-    private void processSingleInsertWithGateway() throws Exception {
+    private void processSingleInsertWithGateway() {
         List<String> singleInsert = collectInserts();
         processWithGateway(singleInsert);
     }
 
-    private void processFirstStatement() throws Exception {
+    private void processFirstStatement() {
         if (jobParam.getTrans().isEmpty()) {
             return;
         }
         // Only process the first statement when not using statement set
         StatementParam item = jobParam.getTrans().get(0);
-        jobManager.setCurrentSql(item.getValue());
+        currentSql = item.getValue();
         processSingleStatement(item);
     }
 
-    private void processSingleStatement(StatementParam item) throws Exception {
+    private void processSingleStatement(StatementParam item) {
         FlinkInterceptorResult flinkInterceptorResult = FlinkInterceptor.build(executor, item.getValue());
         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
             updateJobWithTableResult(flinkInterceptorResult.getTableResult(), item.getType());
@@ -178,10 +210,6 @@ public class JobTransBuilder extends JobBuilder {
     }
 
     private GatewayResult submitByGateway(List<String> inserts) {
-        JobConfig config = jobManager.getConfig();
-        GatewayType runMode = jobManager.getRunMode();
-        Executor executor = jobManager.getExecutor();
-
         GatewayResult gatewayResult = null;
 
         // Use gateway need to build gateway config, include flink configuration.

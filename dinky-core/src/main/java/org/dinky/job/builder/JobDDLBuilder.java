@@ -19,8 +19,11 @@
 
 package org.dinky.job.builder;
 
+import org.dinky.executor.Executor;
+import org.dinky.job.ExecuteSqlException;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobManager;
+import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 
 import lombok.extern.slf4j.Slf4j;
@@ -30,21 +33,28 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Slf4j
-public class JobDDLBuilder extends JobBuilder {
+public class JobDDLBuilder implements JobBuilder {
 
-    public JobDDLBuilder(JobManager jobManager) {
-        super(jobManager);
+    private final JobParam jobParam;
+    private final Executor executor;
+
+    public JobDDLBuilder(JobParam jobParam, Executor executor) {
+        this.jobParam = jobParam;
+        this.executor = executor;
     }
 
     public static JobDDLBuilder build(JobManager jobManager) {
-        return new JobDDLBuilder(jobManager);
+        return new JobDDLBuilder(jobManager.getJobParam(), jobManager.getExecutor());
     }
 
     @Override
     public void run() throws Exception {
         for (StatementParam item : jobParam.getDdl()) {
-            jobManager.setCurrentSql(item.getValue());
-            executor.executeSql(item.getValue());
+            try {
+                executor.executeSql(item.getValue());
+            }catch (Exception ex) {
+                throw new ExecuteSqlException(item.getValue(), ex);
+            }
         }
     }
 }

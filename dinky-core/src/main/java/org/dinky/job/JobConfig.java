@@ -203,7 +203,7 @@ public class JobConfig {
         }
     }
 
-    public ExecutorConfig getExecutorSetting() {
+    public ExecutorConfig createExecutorSetting() {
         return ExecutorConfig.build(
                 type,
                 address,

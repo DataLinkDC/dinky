@@ -21,7 +21,9 @@ package org.dinky.job.builder;
 
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.executor.Executor;
 import org.dinky.job.JobBuilder;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
@@ -47,18 +49,23 @@ import cn.hutool.core.lang.Assert;
 /**
  * JobJarStreamGraphBuilder
  */
-public class JobJarStreamGraphBuilder extends JobBuilder {
+public class JobJarStreamGraphBuilder implements JobBuilder {
 
-    public JobJarStreamGraphBuilder(JobManager jobManager) {
-        super(jobManager);
+    private final JobConfig config;
+    private final Executor executor;
+
+    public JobJarStreamGraphBuilder(JobConfig config, Executor executor) {
+        this.config = config;
+        this.executor = executor;
     }
 
     public static JobJarStreamGraphBuilder build(JobManager jobManager) {
-        return new JobJarStreamGraphBuilder(jobManager);
+        return new JobJarStreamGraphBuilder(jobManager.getConfig(), jobManager.getExecutor());
     }
 
     @Override
-    public void run() throws Exception {}
+    public void run() throws Exception {
+    }
 
     public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
         DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);

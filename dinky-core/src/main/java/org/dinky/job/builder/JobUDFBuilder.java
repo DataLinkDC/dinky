@@ -23,12 +23,17 @@ import static org.dinky.function.util.UDFUtil.GATEWAY_TYPE_MAP;
 import static org.dinky.function.util.UDFUtil.SESSION;
 import static org.dinky.function.util.UDFUtil.YARN;
 
+import io.debezium.config.CommonConnectorConfig;
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.Executor;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.job.JobBuilder;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
+import org.dinky.job.JobParam;
 import org.dinky.utils.URLUtils;
 
 import java.io.File;
@@ -45,23 +50,31 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobUDFBuilder
- *
  */
 @Slf4j
-public class JobUDFBuilder extends JobBuilder {
+public class JobUDFBuilder implements JobBuilder {
 
-    public JobUDFBuilder(JobManager jobManager) {
-        super(jobManager);
+    private final JobParam jobParam;
+    private final Executor executor;
+    private final JobConfig config;
+    private final GatewayType runMode;
+
+    public JobUDFBuilder(JobParam jobParam, Executor executor, JobConfig config, GatewayType runMode) {
+        this.jobParam = jobParam;
+        this.executor = executor;
+        this.config = config;
+        this.runMode = runMode;
     }
 
     public static JobUDFBuilder build(JobManager jobManager) {
-        return new JobUDFBuilder(jobManager);
+        return new JobUDFBuilder(jobManager.getJobParam(), jobManager.getExecutor(), jobManager.getConfig(),
+                jobManager.getRunMode());
     }
 
     @Override
     public void run() throws Exception {
         Asserts.checkNotNull(jobParam, "No executable statement.");
-        List<UDF> udfList = jobManager.getJobParam().getUdfList();
+        List<UDF> udfList = jobParam.getUdfList();
         Integer taskId = config.getTaskId();
         if (taskId == null) {
             taskId = -RandomUtil.randomInt(0, 1000);
@@ -104,7 +117,7 @@ public class JobUDFBuilder extends JobBuilder {
             // 3.Write the required files for UDF
             UDFUtil.writeManifest(taskId, jarList, executor.getUdfPathContextHolder());
             UDFUtil.addConfigurationClsAndJars(
-                    jobManager.getExecutor().getCustomTableEnvironment(),
+                    executor.getCustomTableEnvironment(),
                     jarList,
                     CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
         } catch (Exception e) {

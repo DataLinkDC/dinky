@@ -22,27 +22,7 @@ package org.dinky.job;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.executor.Executor;
 
-public abstract class JobBuilder {
+public interface JobBuilder {
 
-    protected JobManager jobManager;
-    protected JobConfig config;
-    protected JobParam jobParam;
-    protected GatewayType runMode;
-    protected Executor executor;
-    protected boolean useStatementSet;
-    protected boolean useGateway;
-    protected Job job;
-
-    public JobBuilder(JobManager jobManager) {
-        this.jobManager = jobManager;
-        this.config = jobManager.getConfig();
-        this.jobParam = jobManager.getJobParam();
-        this.runMode = jobManager.getRunMode();
-        this.executor = jobManager.getExecutor();
-        this.useStatementSet = jobManager.isUseStatementSet();
-        this.useGateway = jobManager.isUseGateway();
-        this.job = jobManager.getJob();
-    }
-
-    public abstract void run() throws Exception;
+    void run() throws Exception;
 }

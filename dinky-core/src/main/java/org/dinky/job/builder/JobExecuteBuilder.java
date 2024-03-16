@@ -20,14 +20,19 @@
 package org.dinky.job.builder;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
+import org.dinky.data.result.RunResult;
+import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.Job;
 import org.dinky.job.JobBuilder;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
+import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
 import org.dinky.utils.URLUtils;
@@ -38,19 +43,37 @@ import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * JobExecuteBuilder
- *
  */
-public class JobExecuteBuilder extends JobBuilder {
+public class JobExecuteBuilder implements JobBuilder {
 
-    public JobExecuteBuilder(JobManager jobManager) {
-        super(jobManager);
+    private final JobParam jobParam;
+    private final boolean useGateway;
+    private final Executor executor;
+    private final boolean useStatementSet;
+    private final JobConfig config;
+    private final GatewayType runMode;
+    private final Job job;
+
+    public JobExecuteBuilder(JobParam jobParam, boolean useGateway, Executor executor, boolean useStatementSet,
+                             JobConfig config, GatewayType runMode, Job job) {
+        this.jobParam = jobParam;
+        this.useGateway = useGateway;
+        this.executor = executor;
+        this.useStatementSet = useStatementSet;
+        this.config = config;
+        this.runMode = runMode;
+        this.job = job;
     }
 
     public static JobExecuteBuilder build(JobManager jobManager) {
-        return new JobExecuteBuilder(jobManager);
+        return new JobExecuteBuilder(jobManager.getJobParam(),
+                jobManager.isUseGateway(),
+                jobManager.getExecutor(), jobManager.isUseStatementSet(), jobManager.getConfig(),
+                jobManager.getRunMode(), jobManager.getJob());
     }
 
     @Override
@@ -96,16 +119,13 @@ public class JobExecuteBuilder extends JobBuilder {
                         break;
                     }
                 }
+
                 JobClient jobClient = executor.executeAsync(config.getJobName());
                 if (Asserts.isNotNull(jobClient)) {
                     job.setJobId(jobClient.getJobID().toHexString());
-                    job.setJids(new ArrayList<String>() {
-
-                        {
-                            add(job.getJobId());
-                        }
-                    });
+                    job.setJids(Collections.singletonList(job.getJobId()));
                 }
+
                 if (config.isUseResult()) {
                     IResult result = ResultBuilder.build(
                                     SqlType.EXECUTE,

@@ -21,6 +21,8 @@ package org.dinky.job;
 
 import cn.hutool.core.text.StrFormatter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
@@ -89,57 +91,52 @@ import java.util.Map;
 import java.util.Set;
 
 @Slf4j
+@Setter
+@Getter
 public class JobManager {
     private JobHandler handler;
     private ExecutorConfig executorConfig;
     private JobConfig config;
     private Executor executor;
     private boolean useGateway = false;
-    private boolean isPlanMode = false;
     private boolean useStatementSet = false;
     private boolean useRestAPI = false;
     private GatewayType runMode = GatewayType.LOCAL;
 
     private JobParam jobParam = null;
-    private String currentSql = "";
+
     private Job job;
 
-    public JobManager() {}
+    public JobManager() {
+    }
 
-    private JobManager(JobConfig config) {
+    private JobManager(JobConfig config, boolean isPlanMode) {
         this.config = config;
-    }
 
-    public static JobManager build(JobConfig config) {
-        JobManager manager = new JobManager(config);
-        manager.init();
-        return manager;
-    }
-
-    public static JobManager buildPlanMode(JobConfig config) {
-        JobManager manager = new JobManager(config);
-        manager.setPlanMode(true);
-        manager.init();
-        log.info("Build Flink plan mode success.");
-        return manager;
-    }
-
-    public void init() {
         if (!isPlanMode) {
             runMode = GatewayType.get(config.getType());
             useGateway = GatewayType.isDeployCluster(config.getType());
             handler = JobHandler.build();
         }
+
         useStatementSet = config.isStatementSet();
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
-        executorConfig = config.getExecutorSetting();
+        executorConfig = config.createExecutorSetting();
         executorConfig.setPlan(isPlanMode);
         executor = ExecutorFactory.buildExecutor(executorConfig);
     }
 
-    private boolean ready(String statement) {
+    public static JobManager build(JobConfig config) {
+        return buildPlanMode(config, false);
+    }
+
+    public static JobManager buildPlanMode(JobConfig config, boolean isPlanMode) {
+        return new JobManager(config, isPlanMode);
+    }
+
+    private void prepare(String statement) {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
-        return handler.init(job);
+        handler.init(job);
     }
 
     private boolean success() {
@@ -169,7 +166,7 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        ready(statement);
+        prepare(statement);
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
         Configuration configuration =
@@ -240,7 +237,7 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
-        ready(statement);
+        prepare(statement);
 
         DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
         jobParam =
@@ -262,9 +259,9 @@ public class JobManager {
                 job.setStatus(Job.JobStatus.SUCCESS);
                 success();
             }
-        } catch (Exception e) {
+        } catch (ExecuteSqlException e) {
             String error = StrFormatter.format(
-                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), e.getMessage());
+                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(e.getMessage()), e.getMessage());
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
@@ -410,12 +407,12 @@ public class JobManager {
                             + YarnConfigOptions.PROVIDED_LIB_DIRS.key()
                             + " = "
                             + Collections.singletonList(
-                                    config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
+                            config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
                             + ";\r\n");
                 }
                 if (Asserts.isNotNull(config.getGatewayConfig())
                         && Asserts.isNotNullString(
-                                config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                        config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set "
                             + YarnConfigOptions.APPLICATION_NAME.key()
                             + " = "
@@ -429,62 +426,9 @@ public class JobManager {
         return sb.toString();
     }
 
-    public JobParam getJobParam() {
-        return jobParam;
-    }
-
-    public void setJobParam(JobParam jobParam) {
-        this.jobParam = jobParam;
-    }
-
-    public JobConfig getConfig() {
-        return config;
-    }
-
-    public void setConfig(JobConfig config) {
-        this.config = config;
-    }
-
-    public GatewayType getRunMode() {
-        return runMode;
-    }
-
-    public void setCurrentSql(String currentSql) {
-        this.currentSql = currentSql;
-    }
-
-    public Executor getExecutor() {
-        return executor;
-    }
-
-    public void setExecutor(Executor executor) {
-        this.executor = executor;
-    }
-
-    public void setPlanMode(boolean planMode) {
-        isPlanMode = planMode;
-    }
-
-    public boolean isUseStatementSet() {
-        return useStatementSet;
-    }
-
-    public boolean isUseGateway() {
-        return useGateway;
-    }
-
     // return dinkyclassloader
     public DinkyClassLoader getDinkyClassLoader() {
         return executor.getDinkyClassLoader();
     }
 
-    // return job
-    public Job getJob() {
-        return job;
-    }
-
-    // set job
-    public void setJob(Job job) {
-        this.job = job;
-    }
 }
