@@ -19,9 +19,6 @@
 
 package org.dinky.job.builder;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
@@ -40,6 +37,9 @@ import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.SqlUtil;
 
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.io.File;
@@ -68,8 +68,7 @@ public class JobJarStreamGraphBuilder implements JobBuilder {
     }
 
     @Override
-    public void run() throws Exception {
-    }
+    public void run() throws Exception {}
 
     public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
         DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
@@ -106,7 +105,6 @@ public class JobJarStreamGraphBuilder implements JobBuilder {
                     configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
         }
         return streamGraph;
-
     }
 
     public List<String> getUris(String statement) {

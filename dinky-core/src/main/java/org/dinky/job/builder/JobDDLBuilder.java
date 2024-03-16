@@ -52,7 +52,7 @@ public class JobDDLBuilder implements JobBuilder {
         for (StatementParam item : jobParam.getDdl()) {
             try {
                 executor.executeSql(item.getValue());
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 throw new ExecuteSqlException(item.getValue(), ex);
             }
         }

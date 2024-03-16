@@ -19,9 +19,6 @@
 
 package org.dinky.job;
 
-import org.dinky.data.enums.GatewayType;
-import org.dinky.executor.Executor;
-
 public interface JobBuilder {
 
     void run() throws Exception;

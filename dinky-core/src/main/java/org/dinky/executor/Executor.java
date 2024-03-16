@@ -23,6 +23,7 @@ import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.JobParam;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
@@ -41,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.dinky.job.JobParam;
 
 public interface Executor {
     // return dinkyClassLoader

@@ -19,7 +19,6 @@
 
 package org.dinky.executor;
 
-import org.apache.flink.core.fs.FileSystem;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -32,12 +31,14 @@ import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.utils.KerberosUtil;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.python.PythonOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
@@ -60,7 +61,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.dinky.utils.URLUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -272,15 +272,12 @@ public abstract class AbstractExecutor implements Executor {
         return null;
     }
 
-
     @Override
     public String getJarStreamingPlanStringJson(String parameter) {
         List<URL> allFileByAdd = getAllFileSet();
-        StreamGraph streamGraph = new ExecuteJarOperation(parameter)
-                .explain(getCustomTableEnvironment(), allFileByAdd);
+        StreamGraph streamGraph = new ExecuteJarOperation(parameter).explain(getCustomTableEnvironment(), allFileByAdd);
         return streamGraph.getStreamingPlanAsJSON();
     }
-
 
     @Override
     public ObjectNode getStreamGraph(List<String> statements) {
@@ -288,14 +285,12 @@ public abstract class AbstractExecutor implements Executor {
         return getStreamGraphJsonNode(streamGraph);
     }
 
-
-
     @Override
     public List<URL> getAllFileSet() {
         return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet())
                 ? Collections.emptyList()
                 : Arrays.asList(URLUtils.getURLs(
-                getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
+                        getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
     }
 
     @Override
@@ -376,7 +371,7 @@ public abstract class AbstractExecutor implements Executor {
     }
 
     @Override
-    public String getJobPlanJson(JobParam jobParam){
+    public String getJobPlanJson(JobParam jobParam) {
         return getJobPlanInfo(jobParam).getJsonPlan();
     }
 
@@ -386,11 +381,10 @@ public abstract class AbstractExecutor implements Executor {
     }
 
     @Override
-    public void initializeFileSystem(){
+    public void initializeFileSystem() {
         Configuration combinationConfig = getCombinationConfig();
         FileSystem.initialize(combinationConfig, null);
     }
-
 
     private Configuration getCombinationConfig() {
         CustomTableEnvironment cte = getCustomTableEnvironment();
