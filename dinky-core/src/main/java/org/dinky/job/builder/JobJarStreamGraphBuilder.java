@@ -19,6 +19,10 @@
 
 package org.dinky.job.builder;
 
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.executor.Executor;
@@ -93,7 +97,16 @@ public class JobJarStreamGraphBuilder implements JobBuilder {
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
         List<URL> urLs = executor.getAllFileSet();
-        return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
+        StreamGraph streamGraph = executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
+        Configuration configuration =
+                executor.getCustomTableEnvironment().getConfig().getConfiguration();
+        if (Asserts.isNotNullString(config.getSavePointPath())) {
+            streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                    config.getSavePointPath(),
+                    configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+        }
+        return streamGraph;
+
     }
 
     public List<String> getUris(String statement) {

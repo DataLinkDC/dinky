@@ -24,14 +24,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -169,13 +167,7 @@ public class JobManager {
         prepare(statement);
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
-        Configuration configuration =
-                executor.getCustomTableEnvironment().getConfig().getConfiguration();
-        if (Asserts.isNotNullString(config.getSavePointPath())) {
-            streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                    config.getSavePointPath(),
-                    configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
-        }
+
         try {
             if (!useGateway) {
                 JobClient jobClient = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
@@ -190,7 +182,7 @@ public class JobManager {
                 }
             } else {
                 GatewayResult gatewayResult;
-                config.addGatewayConfig(configuration);
+                config.addGatewayConfig(executor.getCustomTableEnvironment().getConfig().getConfiguration());
                 if (runMode.isApplicationMode()) {
                     gatewayResult =
                             Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());
