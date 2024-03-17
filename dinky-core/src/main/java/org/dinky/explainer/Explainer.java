@@ -29,7 +29,7 @@ import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.job.JobConfig;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobManagerHandler;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.job.builder.JobUDFBuilder;
@@ -71,15 +71,15 @@ public class Explainer {
     private Executor executor;
     private boolean useStatementSet;
     private ObjectMapper mapper = new ObjectMapper();
-    private JobManager jobManager;
+    private JobManagerHandler jobManager;
 
-    public Explainer(Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public Explainer(Executor executor, boolean useStatementSet, JobManagerHandler jobManager) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
         this.jobManager = jobManager;
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public static Explainer build(Executor executor, boolean useStatementSet, JobManagerHandler jobManager) {
         return new Explainer(executor, useStatementSet, jobManager);
     }
 

@@ -26,6 +26,7 @@ import org.dinky.executor.Executor;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
+import org.dinky.job.JobManagerHandler;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.ddl.CustomSetOperation;
@@ -63,15 +64,15 @@ public class JobJarStreamGraphBuilder implements JobBuilder {
         this.executor = executor;
     }
 
-    public static JobJarStreamGraphBuilder build(JobManager jobManager) {
+    public static JobJarStreamGraphBuilder build(JobManagerHandler jobManager) {
         return new JobJarStreamGraphBuilder(jobManager.getConfig(), jobManager.getExecutor());
     }
 
     @Override
     public void run() throws Exception {}
 
-    public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
-        DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
+    public StreamGraph getJarStreamGraph(String statement) {
+        DinkyClassLoaderUtil.initClassLoader(config, executor.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(statement);
         ExecuteJarOperation executeJarOperation = null;
         for (String sql : statements) {

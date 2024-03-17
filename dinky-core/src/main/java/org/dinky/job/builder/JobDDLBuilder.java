@@ -22,7 +22,7 @@ package org.dinky.job.builder;
 import org.dinky.executor.Executor;
 import org.dinky.job.ExecuteSqlException;
 import org.dinky.job.JobBuilder;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobManagerHandler;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 
@@ -43,7 +43,7 @@ public class JobDDLBuilder implements JobBuilder {
         this.executor = executor;
     }
 
-    public static JobDDLBuilder build(JobManager jobManager) {
+    public static JobDDLBuilder build(JobManagerHandler jobManager) {
         return new JobDDLBuilder(jobManager.getJobParam(), jobManager.getExecutor());
     }
 

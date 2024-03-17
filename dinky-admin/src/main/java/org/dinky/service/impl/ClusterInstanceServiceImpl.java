@@ -31,6 +31,8 @@ import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
+import org.dinky.function.util.UDFUtil;
+import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
@@ -221,8 +223,13 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
             FlinkClusterConfig flinkClusterConfig =
                     clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
             GatewayConfig gatewayConfig = GatewayConfig.build(flinkClusterConfig);
-            JobManager.killCluster(gatewayConfig, clusterInstance.getName());
+            killCluster(gatewayConfig, clusterInstance.getName());
         }
+    }
+
+    public static void killCluster(GatewayConfig gatewayConfig, String appId) {
+        gatewayConfig.getClusterConfig().setAppId(appId);
+        Gateway.build(gatewayConfig).killCluster();
     }
 
     @Override
@@ -234,7 +241,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
         gatewayConfig.setType(gatewayConfig.getType().getSessionType());
-        GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
+        GatewayResult gatewayResult = deploySessionCluster(gatewayConfig);
         if (gatewayResult.isSuccess()) {
             Asserts.checkNullString(gatewayResult.getWebURL(), "Unable to obtain Web URL.");
             return registersCluster(ClusterInstanceDTO.builder()
@@ -248,6 +255,10 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                     .build());
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());
+    }
+
+    public static GatewayResult deploySessionCluster(GatewayConfig gatewayConfig) {
+        return Gateway.build(gatewayConfig).deployCluster(UDFUtil.createFlinkUdfPathContextHolder());
     }
 
     /**

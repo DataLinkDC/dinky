@@ -483,7 +483,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public ObjectNode getStreamGraph(TaskDTO taskDTO) {
         JobConfig config = taskDTO.getJobConfig();
-        JobManager jobManager = JobManager.buildPlanMode(config, true);
+        JobManager jobManager = JobManager.build(config, true);
         ObjectNode streamGraph = jobManager.getStreamGraph(taskDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return streamGraph;

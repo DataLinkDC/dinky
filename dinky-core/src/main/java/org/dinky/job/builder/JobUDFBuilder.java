@@ -23,6 +23,7 @@ import static org.dinky.function.util.UDFUtil.GATEWAY_TYPE_MAP;
 import static org.dinky.function.util.UDFUtil.SESSION;
 import static org.dinky.function.util.UDFUtil.YARN;
 
+import io.debezium.config.CommonConnectorConfig;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
@@ -31,7 +32,7 @@ import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobConfig;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobManagerHandler;
 import org.dinky.job.JobParam;
 import org.dinky.utils.URLUtils;
 
@@ -65,9 +66,9 @@ public class JobUDFBuilder implements JobBuilder {
         this.runMode = runMode;
     }
 
-    public static JobUDFBuilder build(JobManager jobManager) {
-        return new JobUDFBuilder(
-                jobManager.getJobParam(), jobManager.getExecutor(), jobManager.getConfig(), jobManager.getRunMode());
+    public static JobUDFBuilder build(JobManagerHandler jobManager) {
+        return new JobUDFBuilder(jobManager.getJobParam(), jobManager.getExecutor(), jobManager.getConfig(),
+                jobManager.getRunMode());
     }
 
     @Override
@@ -116,7 +117,9 @@ public class JobUDFBuilder implements JobBuilder {
             // 3.Write the required files for UDF
             UDFUtil.writeManifest(taskId, jarList, executor.getUdfPathContextHolder());
             UDFUtil.addConfigurationClsAndJars(
-                    executor.getCustomTableEnvironment(), jarList, CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
+                    executor.getCustomTableEnvironment(),
+                    jarList,
+                    CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
         } catch (Exception e) {
             throw new RuntimeException("add configuration failed: ", e);
         }

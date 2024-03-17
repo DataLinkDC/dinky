@@ -21,19 +21,18 @@ package org.dinky;
 
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
-import org.dinky.executor.ExecutorFactory;
 import org.dinky.flink.ServerExecutorService;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class ServerExecutorServiceImpl extends UnicastRemoteObject implements ServerExecutorService {
+public class JobManagerServiceImpl extends UnicastRemoteObject implements ServerExecutorService {
     private Executor executor;
 
-    public ServerExecutorServiceImpl() throws RemoteException {}
+    public JobManagerServiceImpl() throws RemoteException {}
 
     @Override
     public void init(ExecutorConfig executorConfig) {
-        executor = ExecutorFactory.buildExecutor(executorConfig);
+
     }
 }
