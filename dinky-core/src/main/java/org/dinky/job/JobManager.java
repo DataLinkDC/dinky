@@ -19,10 +19,6 @@
 
 package org.dinky.job;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.result.ExplainResult;
@@ -32,14 +28,19 @@ import org.dinky.data.result.SelectResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Setter
 @Getter
 public class JobManager {
     JobManagerHandler jobManagerHandler;
 
-    public JobManager() {
-    }
+    public JobManager() {}
 
     private JobManager(JobConfig config, boolean isPlanMode) {
         jobManagerHandler = JobManagerHandler.build(config, isPlanMode);
@@ -102,5 +103,4 @@ public class JobManager {
     public String exportSql(String sql) {
         return jobManagerHandler.exportSql(sql);
     }
-
 }

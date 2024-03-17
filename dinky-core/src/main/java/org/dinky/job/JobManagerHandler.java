@@ -1,18 +1,24 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.job;
 
-import cn.hutool.core.text.StrFormatter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.configuration.DeploymentOptions;
-import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
-import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -27,13 +33,10 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
-import org.dinky.data.result.ResultPool;
-import org.dinky.data.result.SelectResult;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
-import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
@@ -56,8 +59,18 @@ import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.configuration.DeploymentOptions;
+import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
+import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,6 +79,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.text.StrFormatter;
 
 public class JobManagerHandler {
     Logger log = LoggerFactory.getLogger(JobManagerHandler.class);
@@ -83,8 +103,7 @@ public class JobManagerHandler {
 
     private Job job;
 
-    public JobManagerHandler() {
-    }
+    public JobManagerHandler() {}
 
     private JobManagerHandler(JobConfig config, boolean isPlanMode) {
         this.config = config;
@@ -135,8 +154,7 @@ public class JobManagerHandler {
     }
 
     public ObjectNode getJarStreamGraphJson(String statement) {
-        StreamGraph streamGraph =
-                JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
+        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
         return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
@@ -160,7 +178,8 @@ public class JobManagerHandler {
                 }
             } else {
                 GatewayResult gatewayResult;
-                config.addGatewayConfig(executor.getCustomTableEnvironment().getConfig().getConfiguration());
+                config.addGatewayConfig(
+                        executor.getCustomTableEnvironment().getConfig().getConfiguration());
                 if (runMode.isApplicationMode()) {
                     gatewayResult =
                             Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());
@@ -292,8 +311,7 @@ public class JobManagerHandler {
     }
 
     public String getJobPlanJson(String statement) {
-        Explainer explainer = Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement);
+        Explainer explainer = Explainer.build(executor, useStatementSet, this).initialize(config, statement);
         JobParam jobParam = explainer.pretreatStatements(SqlUtil.getStatements(statement));
         return executor.getJobPlanJson(jobParam);
     }
@@ -364,12 +382,12 @@ public class JobManagerHandler {
                             + YarnConfigOptions.PROVIDED_LIB_DIRS.key()
                             + " = "
                             + Collections.singletonList(
-                            config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
+                                    config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
                             + ";\r\n");
                 }
                 if (Asserts.isNotNull(config.getGatewayConfig())
                         && Asserts.isNotNullString(
-                        config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                                config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set "
                             + YarnConfigOptions.APPLICATION_NAME.key()
                             + " = "
@@ -382,7 +400,6 @@ public class JobManagerHandler {
         sb.append(statement);
         return sb.toString();
     }
-
 
     public Logger getLog() {
         return log;
@@ -471,5 +488,4 @@ public class JobManagerHandler {
     public void setJob(Job job) {
         this.job = job;
     }
-
 }

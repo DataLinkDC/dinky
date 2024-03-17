@@ -24,7 +24,6 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
-import org.dinky.data.result.RunResult;
 import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
@@ -42,7 +41,6 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -58,8 +56,14 @@ public class JobExecuteBuilder implements JobBuilder {
     private final GatewayType runMode;
     private final Job job;
 
-    public JobExecuteBuilder(JobParam jobParam, boolean useGateway, Executor executor, boolean useStatementSet,
-                             JobConfig config, GatewayType runMode, Job job) {
+    public JobExecuteBuilder(
+            JobParam jobParam,
+            boolean useGateway,
+            Executor executor,
+            boolean useStatementSet,
+            JobConfig config,
+            GatewayType runMode,
+            Job job) {
         this.jobParam = jobParam;
         this.useGateway = useGateway;
         this.executor = executor;
@@ -70,10 +74,14 @@ public class JobExecuteBuilder implements JobBuilder {
     }
 
     public static JobExecuteBuilder build(JobManagerHandler jobManager) {
-        return new JobExecuteBuilder(jobManager.getJobParam(),
+        return new JobExecuteBuilder(
+                jobManager.getJobParam(),
                 jobManager.isUseGateway(),
-                jobManager.getExecutor(), jobManager.isUseStatementSet(), jobManager.getConfig(),
-                jobManager.getRunMode(), jobManager.getJob());
+                jobManager.getExecutor(),
+                jobManager.isUseStatementSet(),
+                jobManager.getConfig(),
+                jobManager.getRunMode(),
+                jobManager.getJob());
     }
 
     @Override

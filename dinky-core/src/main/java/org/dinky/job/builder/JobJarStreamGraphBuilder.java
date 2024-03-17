@@ -20,12 +20,10 @@
 package org.dinky.job.builder;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.executor.Executor;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobConfig;
-import org.dinky.job.JobManager;
 import org.dinky.job.JobManagerHandler;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;

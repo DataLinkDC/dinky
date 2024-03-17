@@ -25,7 +25,6 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
-import org.dinky.data.result.RunResult;
 import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
@@ -63,8 +62,14 @@ public class JobTransBuilder implements JobBuilder {
     private final GatewayType runMode;
     private final Job job;
 
-    public JobTransBuilder(JobParam jobParam, boolean useStatementSet, boolean useGateway, JobConfig config,
-                           Executor executor, GatewayType runMode, Job job) {
+    public JobTransBuilder(
+            JobParam jobParam,
+            boolean useStatementSet,
+            boolean useGateway,
+            JobConfig config,
+            Executor executor,
+            GatewayType runMode,
+            Job job) {
         this.jobParam = jobParam;
         this.useStatementSet = useStatementSet;
         this.useGateway = useGateway;
@@ -73,7 +78,6 @@ public class JobTransBuilder implements JobBuilder {
         this.runMode = runMode;
         this.job = job;
     }
-
 
     public static JobTransBuilder build(JobManagerHandler jobManager) {
 
@@ -84,8 +88,7 @@ public class JobTransBuilder implements JobBuilder {
                 jobManager.getConfig(),
                 jobManager.getExecutor(),
                 jobManager.getRunMode(),
-                jobManager.getJob()
-        );
+                jobManager.getJob());
     }
 
     @Override

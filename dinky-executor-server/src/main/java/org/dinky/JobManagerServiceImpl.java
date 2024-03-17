@@ -32,7 +32,5 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     public JobManagerServiceImpl() throws RemoteException {}
 
     @Override
-    public void init(ExecutorConfig executorConfig) {
-
-    }
+    public void init(ExecutorConfig executorConfig) {}
 }
