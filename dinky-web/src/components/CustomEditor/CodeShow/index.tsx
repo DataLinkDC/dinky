@@ -46,6 +46,7 @@ export type CodeShowFormProps = {
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
   fullScreenBtn?: boolean;
+  enableAutoScroll?: boolean;
   style?: CSSProperties;
 };
 
@@ -74,12 +75,11 @@ const CodeShow = (props: CodeShowFormProps) => {
     showFloatButton = false,
     refreshLogCallback,
     fullScreenBtn = false,
-    enableMiniMap = false
+    enableMiniMap = false,
+    enableAutoScroll = false
   } = props;
 
   const { ScrollType } = editor;
-
-  const [scrollBeyondLastLine] = useState<boolean>(options.scrollBeyondLastLine);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [stopping, setStopping] = useState<boolean>(false);
@@ -180,7 +180,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     monacoInstance.current = monaco;
     editor.layout();
     editor.focus();
-    if (scrollBeyondLastLine) {
+    if (enableAutoScroll) {
       editor.onDidChangeModelContent(() => {
         const lineCount = editor.getModel()?.getLineCount() as number;
         if (lineCount > 20) {
@@ -232,7 +232,7 @@ const CodeShow = (props: CodeShowFormProps) => {
             value={code ?? ''}
             language={language}
             options={{
-              scrollBeyondLastLine: false,
+              scrollBeyondLastLine: enableAutoScroll,
               readOnly: true,
               glyphMargin: false,
               wordWrap: autoWrap,

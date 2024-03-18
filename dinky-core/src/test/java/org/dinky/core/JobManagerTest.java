@@ -19,9 +19,9 @@
 
 package org.dinky.core;
 
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;

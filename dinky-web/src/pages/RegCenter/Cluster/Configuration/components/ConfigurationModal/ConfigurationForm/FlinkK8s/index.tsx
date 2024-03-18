@@ -158,7 +158,7 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
       <Row gutter={[16, 16]}>
         <Col span={10}>
           <ProFormGroup>
-            {type && type === ClusterType.KUBERNETES_NATIVE && (
+            {type && type === ClusterType.KUBERNETES_APPLICATION && (
               <ProFormSelect
                 name={[
                   'config',

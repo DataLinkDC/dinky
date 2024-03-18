@@ -35,9 +35,11 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.FlinkJsonUtil;
+import org.dinky.utils.ThreadUtil;
 
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
@@ -57,6 +59,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.service.Service;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
+import org.apache.hadoop.yarn.api.records.ContainerReport;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.YarnClient;
@@ -82,8 +85,6 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
-
-    public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
 
     protected YarnConfiguration yarnConfiguration;
@@ -121,14 +122,16 @@ public abstract class YarnGateway extends AbstractGateway {
         }
 
         if (Asserts.isNotNullString(clusterConfig.getHadoopConfigPath())) {
-            configuration.setString(HADOOP_CONFIG, clusterConfig.getHadoopConfigPath());
+            configuration.setString(
+                    ConfigConstants.PATH_HADOOP_CONFIG,
+                    FileUtil.file(clusterConfig.getHadoopConfigPath()).getAbsolutePath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
             try {
                 SecurityUtils.install(new SecurityConfiguration(configuration));
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-                logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
+                logger.info("安全认证结束，用户和认证方式:{}", currentUser.toString());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -312,7 +315,7 @@ public abstract class YarnGateway extends AbstractGateway {
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
             yarnClusterDescriptor.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
         }
-        Set<File> otherPluginsFiles = udfPathContextHolder.getOtherPluginsFiles();
+        Set<File> otherPluginsFiles = udfPathContextHolder.getAllFileSet();
 
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
             yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
@@ -345,9 +348,9 @@ public abstract class YarnGateway extends AbstractGateway {
             ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
             if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
                 String log = getYarnContainerLog(applicationReport);
-                throw new RuntimeException(
-                        "Yarn application state is not running, please check yarn cluster status. Log content:\n"
-                                + log);
+                throw new RuntimeException(String.format(
+                        "Yarn application state is not running, please check yarn cluster status. Web URL is: %s , Log content: %s",
+                        webUrl, log));
             }
             // 睡眠1秒，防止flink因为依赖或其他问题导致任务秒挂
             Thread.sleep(1000);
@@ -363,8 +366,9 @@ public abstract class YarnGateway extends AbstractGateway {
             } catch (Exception e) {
                 Thread.sleep(1000);
                 String log = getYarnContainerLog(applicationReport);
-                logger.error("Yarn application state is not running, please check yarn cluster status. Log content:\n"
-                        + log);
+                logger.error(
+                        "Yarn application state is not running, please check yarn cluster status. Log content: {}",
+                        log);
             }
             if (!jobDetailsList.isEmpty()) {
                 break;
@@ -382,13 +386,20 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     protected String getYarnContainerLog(ApplicationReport applicationReport) throws YarnException, IOException {
-        String logUrl = yarnClient
-                .getContainers(applicationReport.getCurrentApplicationAttemptId())
-                .get(0)
-                .getLogUrl();
-        String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
-        String log = ReUtil.getGroup1(HTML_TAG_REGEX, content);
-        logger.info("\n\nHistory log url is: {}\n\n ", logUrl);
-        return log;
+        // Wait for up to 2.5 s. If the history log is not found yet, a prompt message will be returned.
+        int counts = 5;
+        while (yarnClient
+                        .getContainers(applicationReport.getCurrentApplicationAttemptId())
+                        .isEmpty()
+                && counts-- > 0) {
+            ThreadUtil.sleep(500);
+        }
+        List<ContainerReport> containers = yarnClient.getContainers(applicationReport.getCurrentApplicationAttemptId());
+        if (CollUtil.isNotEmpty(containers)) {
+            String logUrl = containers.get(0).getLogUrl();
+            String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
+            return ReUtil.getGroup1(HTML_TAG_REGEX, content);
+        }
+        return "No history log found yet. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster or please go to yarn interface to view the log.";
     }
 }

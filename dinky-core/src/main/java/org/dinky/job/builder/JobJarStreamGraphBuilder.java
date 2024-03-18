@@ -27,6 +27,7 @@ import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.trans.parse.SetSqlParseStrategy;
@@ -36,6 +37,7 @@ import org.dinky.utils.SqlUtil;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -76,10 +78,15 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
                 Set<File> files = AddJarSqlParseStrategy.getAllFilePath(sqlStatement);
                 files.forEach(executor::addJar);
                 files.forEach(jobManager.getUdfPathContextHolder()::addOtherPlugins);
+            } else if (operationType.equals(SqlType.ADD_FILE)) {
+                Set<File> files = AddFileSqlParseStrategy.getAllFilePath(sqlStatement);
+                files.forEach(executor::addJar);
+                files.forEach(jobManager.getUdfPathContextHolder()::addFile);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
-        return executeJarOperation.explain(executor.getCustomTableEnvironment());
+        List<URL> urLs = jobManager.getAllFileSet();
+        return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
     }
 
     public List<String> getUris(String statement) {

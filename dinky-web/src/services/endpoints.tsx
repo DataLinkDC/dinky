@@ -107,6 +107,8 @@ export enum API_CONSTANTS {
   DATASOURCE_CHECK_HEARTBEAT_BY_ID = '/api/database/checkHeartBeatByDataSourceId',
   DATASOURCE_COPY = '/api/database/copyDatabase',
   DATASOURCE_GET_SCHEMA_TABLES = '/api/database/getSchemasAndTables',
+  DATASOURCE_UN_CACHE_SCHEMA_TABLES = '/api/database/unCacheSchemasAndTables',
+  DATASOURCE_LIST_ENABLE_ALL = '/api/database/listEnabledAll',
   DATASOURCE_GET_COLUMNS_BY_TABLE = '/api/database/listColumns',
   DATASOURCE_GET_GEN_SQL = '/api/database/getSqlGeneration',
   DATASOURCE_QUERY_DATA = '/api/database/queryData',
@@ -201,6 +203,7 @@ export enum API_CONSTANTS {
   GET_JOB_METRICS_ITEMS = '/api/jobInstance/getJobMetricsItems',
   JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   GET_STATUS_COUNT = '/api/jobInstance/getStatusCount',
+  GET_JOB_DATA = '/api/studio/getJobData',
 
   // ------------------------------------ devops studio  ------------------------------------
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',

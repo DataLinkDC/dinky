@@ -148,5 +148,11 @@
             <artifactId>flink-state-processor-api</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-s3-fs-presto</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
     </dependencies>
 </project>

@@ -189,6 +189,8 @@ public enum Status {
     TASK_IS_PUBLISH_CANNOT_DELETE(12011, "task.is.publish.cannot.delete"),
     TASK_IS_RUNNING_CANNOT_DELETE(12012, "task.is.running.cannot.delete"),
     JOB_ALERT_MAX_SEND_COUNT(12013, "job.alert.max.send.count"),
+    MODE_IS_NOT_ALLOW_SELECT(12014, "mode.is.not.allow.select"),
+    OPERATE_NOT_SUPPORT_QUERY(12015, "operate.not.support.query"),
 
     /**
      * alert instance
@@ -230,6 +232,7 @@ public enum Status {
     GIT_BRANCH_NOT_FOUND(16003, "git.branch.not.found"),
     GIT_BUILDING(16004, "git.building"),
     GIT_BUILD_SUCCESS(16005, "git.build.success"),
+    GIT_MAVEN_HOME_NOT_SET(16006, "git.maven.home.not.set"),
 
     /**
      * dolphin scheduler
@@ -347,11 +350,12 @@ public enum Status {
 
     SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT(120, "sys.env.settings.diffMinuteMaxSendCount"),
     SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE(121, "sys.env.settings.diffMinuteMaxSendCount.note"),
-
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS(1171, "sys.env.settings.maxRetainDays"),
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE(1172, "sys.env.settings.maxRetainDays.note"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT(1173, "sys.env.settings.maxRetainCount"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE(1174, "sys.env.settings.maxRetainCount.note"),
+    SYS_ENV_SETTINGS_EXPRESSION_VARIABLE(1175, "sys.env.settings.expressionVariable"),
+    SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE(1176, "sys.env.settings.expressionVariable.note"),
 
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE(118, "sys.dolphinscheduler.settings.enable"),
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE(119, "sys.dolphinscheduler.settings.enable.note"),

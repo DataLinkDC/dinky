@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
@@ -33,9 +34,9 @@ import org.dinky.function.compiler.CustomStringScalaCompiler;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
@@ -365,10 +366,10 @@ public class UDFUtil {
         });
 
         UdfCodePool.getGitPool().values().forEach(gitPackage -> {
-            if (FileUtil.getSuffix(gitPackage).equals("jar")) {
-                udfPathContextHolder.addUdfPath(new File(gitPackage));
+            if ("jar".equals(FileUtil.getSuffix(gitPackage))) {
+                udfPathContextHolder.addUdfPath(URLUtils.toFile(gitPackage));
             } else {
-                udfPathContextHolder.addPyUdfPath(new File(gitPackage));
+                udfPathContextHolder.addPyUdfPath(URLUtils.toFile(gitPackage));
             }
         });
         return udfPathContextHolder;

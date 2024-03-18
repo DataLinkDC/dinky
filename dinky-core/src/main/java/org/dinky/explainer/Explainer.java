@@ -20,6 +20,7 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
@@ -28,7 +29,6 @@ import org.dinky.executor.Executor;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
@@ -37,9 +37,12 @@ import org.dinky.job.StatementParam;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
+import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.IpUtil;
 import org.dinky.utils.LogUtil;
@@ -51,6 +54,7 @@ import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -113,12 +117,21 @@ public class Explainer {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.ADD)) {
+            if (operationType.equals(SqlType.SET) && SetSqlParseStrategy.INSTANCE.match(statement)) {
+                CustomSetOperation customSetOperation = new CustomSetOperation(statement);
+                customSetOperation.execute(this.executor.getCustomTableEnvironment());
+            } else if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement)
                         .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
                 (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
                                 jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
+            } else if (operationType.equals(SqlType.ADD_FILE)) {
+                AddFileSqlParseStrategy.getAllFilePath(statement)
+                        .forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
+                (executor.getDinkyClassLoader())
+                        .addURLs(URLUtils.getURLs(
+                                jobManager.getUdfPathContextHolder().getFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
                 FileSystem.initialize(combinationConfig, null);
@@ -202,7 +215,7 @@ public class Explainer {
                 String error = StrFormatter.format(
                         "Exception in executing FlinkSQL:\n{}\n{}",
                         SqlUtil.addLineNumber(item.getValue()),
-                        e.getMessage());
+                        LogUtil.getError(e));
                 resultBuilder
                         .error(error)
                         .explainTrue(false)
@@ -285,8 +298,10 @@ public class Explainer {
                 if (Asserts.isNull(sqlExplainResult)) {
                     sqlExplainResult = new SqlExplainResult();
                 } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
-                    StreamGraph streamGraph =
-                            new ExecuteJarOperation(item.getValue()).explain(executor.getCustomTableEnvironment());
+
+                    List<URL> allFileByAdd = jobManager.getAllFileSet();
+                    StreamGraph streamGraph = new ExecuteJarOperation(item.getValue())
+                            .explain(executor.getCustomTableEnvironment(), allFileByAdd);
                     sqlExplainResult.setExplain(streamGraph.getStreamingPlanAsJSON());
                 } else {
                     executor.executeSql(item.getValue());

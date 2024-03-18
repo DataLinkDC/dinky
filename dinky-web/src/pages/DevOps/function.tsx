@@ -17,7 +17,7 @@
  *
  */
 
-import { JOB_STATUS } from '@/pages/DevOps/constants';
+import { JOB_STATUS, JOB_SUBMIT_STATUS } from '@/pages/DevOps/constants';
 import { Jobs } from '@/types/DevOps/data';
 import { parseMilliSecondStr } from '@/utils/function';
 
@@ -36,11 +36,15 @@ export function isStatusDone(type: string) {
     case JOB_STATUS.CANCELED:
     case JOB_STATUS.FINISHED:
     case JOB_STATUS.UNKNOWN:
+    case JOB_SUBMIT_STATUS.SUCCESS:
+    case JOB_SUBMIT_STATUS.FAILED:
+    case JOB_SUBMIT_STATUS.CANCEL:
       return true;
     default:
       return false;
   }
 }
+
 export function isNotFinallyStatus(type: string) {
   if (!type) {
     return false;

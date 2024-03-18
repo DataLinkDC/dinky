@@ -46,7 +46,7 @@ public class PaimonCache extends AbstractValueAdaptingCache {
     /**
      * TIMEOUT CACHE
      */
-    private final cn.hutool.cache.Cache<Object, Object> cache = new TimedCache<>(1000 * 60 * 10);
+    private final cn.hutool.cache.Cache<Object, Object> cache = new TimedCache<>(1000 * 60);
 
     public PaimonCache(String cacheName) {
         super(true);

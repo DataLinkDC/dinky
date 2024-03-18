@@ -29,6 +29,7 @@ import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
@@ -38,6 +39,7 @@ import org.dinky.parser.SqlType;
 import org.dinky.resource.BaseResourceManager;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.url.RsURLStreamHandlerFactory;
@@ -96,6 +98,7 @@ public class Submitter {
         Map<String, String> configMap =
                 CollUtil.toMap(sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
         systemConfiguration.initSetConfiguration(configMap);
+        systemConfiguration.initExpressionVariableList(configMap);
     }
 
     public static void submit(AppParamConfig config) throws SQLException {
@@ -148,7 +151,19 @@ public class Submitter {
 
     public static String buildSql(AppTask appTask) throws SQLException {
         StringBuilder sb = new StringBuilder();
-        // build env task
+
+        // 1. build Database golbal varibals
+        // Note: It is necessary to first build the global variables defined in the database and registry, otherwise it
+        // may cause some variables to be unable to be resolved and referenced properly due to order issues
+        if (appTask.getFragment()) {
+            log.info("Global env is enable, load database flink config env and global variables.");
+            // append database flink config env
+            sb.append(DBUtil.getDbSourceSQLStatement()).append("\n");
+            // append global variables
+            sb.append(DBUtil.getGlobalVariablesStatement()).append("\n");
+        }
+
+        // 2. build env task
         if (Asserts.isNotNull(appTask.getEnvId()) && appTask.getEnvId() > 0) {
             AppTask envTask = DBUtil.getTask(appTask.getEnvId());
             if (Asserts.isNotNullString(envTask.getStatement())) {
@@ -156,11 +171,7 @@ public class Submitter {
                 sb.append(envTask.getStatement()).append("\n");
             }
         }
-        // build Database golbal varibals
-        if (appTask.getFragment()) {
-            log.info("Global env is enable, load database flink config env.");
-            sb.append(DBUtil.getDbSourceSQLStatement()).append("\n");
-        }
+
         sb.append(appTask.getStatement());
         return sb.toString();
     }
@@ -171,9 +182,9 @@ public class Submitter {
             return;
         }
 
-        if ("kubernetes-application".equals(type)) {
+        if (GatewayType.get(type).isKubernetesApplicationMode()) {
             try {
-                String httpJar = "http://" + dinkyAddr + "/download/downloadDepJar/" + taskId;
+                String httpJar = dinkyAddr + "/download/downloadDepJar/" + taskId;
                 log.info("下载依赖 http-url为：{}", httpJar);
                 String flinkHome = System.getenv("FLINK_HOME");
                 String usrlib = flinkHome + "/usrlib";
@@ -213,7 +224,6 @@ public class Submitter {
                     }
                 }
             } catch (IOException e) {
-                log.error("");
                 throw new RuntimeException(e);
             }
         }
@@ -247,8 +257,8 @@ public class Submitter {
     public static Optional<JobClient> executeJarJob(String type, Executor executor, String[] statements) {
         Optional<JobClient> jobClient = Optional.empty();
 
-        for (int i = 0; i < statements.length; i++) {
-            String sqlStatement = executor.pretreatStatement(statements[i]);
+        for (String statement : statements) {
+            String sqlStatement = executor.pretreatStatement(statement);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 StreamGraph streamGraph = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
@@ -271,7 +281,13 @@ public class Submitter {
             if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
                 File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
                 Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
-                if ("kubernetes-application".equals(type)) {
+                if (GatewayType.get(type).isKubernetesApplicationMode()) {
+                    executor.addJar(info);
+                }
+            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD_FILE) {
+                File[] info = AddFileSqlParseStrategy.getInfo(sqlStatement);
+                Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addFile);
+                if (GatewayType.get(type).isKubernetesApplicationMode()) {
                     executor.addJar(info);
                 }
             }
