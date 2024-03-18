@@ -175,7 +175,6 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
       <ProTable
         rowKey={'id'}
         columns={columns}
-        headerTitle={false}
         search={false}
         options={false}
         dataSource={groupData[expandedRow.fileName]}
