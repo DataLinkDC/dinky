@@ -173,6 +173,7 @@ public enum Status {
 
     DATASOURCE_EXIST_RELATIONSHIP(11006, "datasource.exist.relationship"),
 
+    DATASOURCE_CONNECT_ERROR(11007, "datasource.connect.error"),
     /**
      * job or task about
      */
