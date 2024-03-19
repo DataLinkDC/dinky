@@ -81,3 +81,8 @@ EXECUTE CDCSOURCE cdc_upsert_kafka WITH (
  'sink.value.format' = 'avro'
 )
 ```
+
+如果需要给sink端增加kafka的属性，可以按照如下配置
+```
+'sink.properties.transaction.timeout.ms'='900000'
+```
