@@ -82,6 +82,11 @@ export default {
   'datastudio.middle.qg.fragment': '全局变量',
   'datastudio.middle.qg.gitprojects': 'Git 项目',
   'datastudio.middle.qg.resource': '资源',
+  'datastudio.middle.qg.alertRule': '告警规则',
+  'datastudio.middle.qg.alertTemplate': '注册告警模板',
+  'datastudio.middle.qg.accountCenter': '个人中心',
+  'datastudio.middle.qg.globalsetting': '全局配置',
+  'datastudio.middle.qg.rootLog': '查看系统日志',
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': '将任务 [ {name} ] 推送至 DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky任务编码',
@@ -348,12 +353,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': '检查',
-  'pages.datastudio.editor.debug': '预览',
+  'pages.datastudio.editor.debug': '查询',
   'pages.datastudio.editor.exec': '运行',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.debug.error': '任务【{jobName}】调试失败',
-  'pages.datastudio.editor.debug.success': '调试成功',
-  'pages.datastudio.editor.exec.success': '执行成功',
+  'pages.datastudio.editor.debug.success': '查询成功',
+  'pages.datastudio.editor.exec.success': '提交成功',
   'pages.datastudio.editor.execute.warn':
     '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
   'pages.datastudio.editor.explan': '获取当前的 FlinkSql 的执行图',
@@ -771,7 +776,7 @@ export default {
   'rc.ci.jma': 'JobManager 地址',
   'rc.ci.jmha': 'JobManager 高可用地址',
   'rc.ci.jmha.tips':
-    '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101',
+    '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081',
   'rc.ci.jmha.validate.port': '不符合规则! 端口号区间[0-65535]',
   'rc.ci.jmha.validate.slash': '不符合规则! 不能包含/',
   'rc.ci.jmhaPlaceholder': '请输入 JobManager HA 地址!',
@@ -1058,6 +1063,7 @@ export default {
   'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
   'sys.ldap.settings.testLogin': '测试登录',
   'sys.ldap.settings.loadUser': '导入用户',
+  'sys.ldap.settings.keyword': '可输入用户名/昵称进行搜索,支持模糊查询,输入关键词后回车即可',
   'sys.ldap.settings.loadable': '是否可以导入',
   /**
    *

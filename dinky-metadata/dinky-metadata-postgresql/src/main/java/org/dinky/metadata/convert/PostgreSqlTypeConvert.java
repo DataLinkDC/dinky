@@ -20,6 +20,11 @@
 package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
+import org.dinky.data.model.Column;
+import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.config.DriverConfig;
+
+import java.util.Optional;
 
 /**
  * PostgreSqlTypeConvert
@@ -44,8 +49,8 @@ public class PostgreSqlTypeConvert extends AbstractJdbcTypeConvert {
         register("float4", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
         register("float8", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
         register("double precision", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
-        register("numeric", ColumnType.DECIMAL);
-        register("decimal", ColumnType.DECIMAL);
+        register("numeric", PostgreSqlTypeConvert::convertDecimalOrNumeric);
+        register("decimal", PostgreSqlTypeConvert::convertDecimalOrNumeric);
         register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
         register("bool", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
         register("timestamp", ColumnType.TIMESTAMP);
@@ -56,5 +61,15 @@ public class PostgreSqlTypeConvert extends AbstractJdbcTypeConvert {
         register("bytea", ColumnType.BYTES);
         register("jsonb", ColumnType.STRING);
         register("json", ColumnType.STRING);
+    }
+
+    private static Optional<ColumnType> convertDecimalOrNumeric(
+            Column column, DriverConfig<AbstractJdbcConfig> driverConfig) {
+        // 该字段的精度
+        int intValue = column.getPrecision().intValue();
+        if (intValue > 38) {
+            return Optional.of(ColumnType.STRING);
+        }
+        return Optional.of(ColumnType.DECIMAL);
     }
 }

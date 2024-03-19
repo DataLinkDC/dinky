@@ -19,7 +19,7 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.job.JobConfig;
 
 import java.util.Map;

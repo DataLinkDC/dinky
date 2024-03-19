@@ -34,10 +34,8 @@ import org.dinky.utils.URLUtils;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -70,15 +68,7 @@ public class JobUDFBuilder extends JobBuilder {
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
         List<File> jarFiles =
-                new ArrayList<>(jobManager.getUdfPathContextHolder().getUdfFile());
-
-        Set<File> otherPluginsFiles = jobManager.getUdfPathContextHolder().getOtherPluginsFiles();
-        jarFiles.addAll(otherPluginsFiles);
-
-        List<File> udfJars = Arrays.stream(UDFUtil.initJavaUDF(udfList, runMode, taskId))
-                .map(File::new)
-                .collect(Collectors.toList());
-        jarFiles.addAll(udfJars);
+                new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
 
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
                 .map(File::getAbsolutePath)
@@ -117,7 +107,7 @@ public class JobUDFBuilder extends JobBuilder {
             UDFUtil.addConfigurationClsAndJars(
                     jobManager.getExecutor().getCustomTableEnvironment(),
                     jarList,
-                    CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
+                    CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
         } catch (Exception e) {
             throw new RuntimeException("add configuration failed: ", e);
         }

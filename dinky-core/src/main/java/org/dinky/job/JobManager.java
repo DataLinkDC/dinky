@@ -26,7 +26,9 @@ import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.data.annotations.ProcessStep;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.ProcessStepType;
+import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ErrorResult;
@@ -45,7 +47,6 @@ import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
@@ -57,6 +58,7 @@ import org.dinky.job.builder.JobTransBuilder;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
+import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.JsonUtils;
@@ -81,8 +83,10 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +94,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -104,7 +109,6 @@ public class JobManager {
     private boolean useStatementSet = false;
     private boolean useRestAPI = false;
     private GatewayType runMode = GatewayType.LOCAL;
-
     private JobParam jobParam = null;
     private String currentSql = "";
     private final WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
@@ -346,8 +350,12 @@ public class JobManager {
                 success();
             }
         } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.contains("Only insert statement is supported now")) {
+                throw new BusException(Status.OPERATE_NOT_SUPPORT_QUERY.getMessage());
+            }
             String error = StrFormatter.format(
-                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), e.getMessage());
+                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), errorMessage);
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
@@ -373,6 +381,9 @@ public class JobManager {
                     continue;
                 } else if (operationType.equals(SqlType.ADD) || operationType.equals(SqlType.ADD_JAR)) {
                     Set<File> allFilePath = AddJarSqlParseStrategy.getAllFilePath(item);
+                    getExecutor().getDinkyClassLoader().addURLs(allFilePath);
+                } else if (operationType.equals(SqlType.ADD_FILE)) {
+                    Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(item);
                     getExecutor().getDinkyClassLoader().addURLs(allFilePath);
                 }
                 LocalDateTime startTime = LocalDateTime.now();
@@ -504,5 +515,12 @@ public class JobManager {
         }
         sb.append(statement);
         return sb.toString();
+    }
+
+    public List<URL> getAllFileSet() {
+        return CollUtil.isEmpty(getUdfPathContextHolder().getAllFileSet())
+                ? Collections.emptyList()
+                : Arrays.asList(URLUtils.getURLs(
+                        getUdfPathContextHolder().getAllFileSet().toArray(new File[0])));
     }
 }

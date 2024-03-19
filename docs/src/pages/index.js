@@ -64,6 +64,16 @@ function HomepageHeader() {
                                    Quick Start
                                </Link>
                             </div>
+
+                            <div className={styles.buttonLink}>
+                                <Link
+                                    className="button button--secondary button--lg"
+                                    style={{backgroundColor: '#07f313'}}
+                                    to="http://demo.dinky.org.cn:32451/#/">
+                                    Demo 环境
+                                </Link>
+                            </div>
+
                             <div className={styles.buttonLink}>
                                <iframe style={{width:"100px",height:"30px"}}
                                     src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dinky&amp;type=star&amp;count=true&amp;size=large"

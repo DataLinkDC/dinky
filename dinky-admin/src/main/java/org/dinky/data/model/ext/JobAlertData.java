@@ -26,9 +26,9 @@ import org.dinky.data.flink.checkpoint.CheckPointOverView;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.options.JobAlertRuleOptions;
-import org.dinky.job.JobConfig;
 import org.dinky.utils.TimeUtil;
 
 import java.time.LocalDateTime;
@@ -156,7 +156,6 @@ public class JobAlertData {
         builder.alertTime(TimeUtil.nowStr());
 
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
-        JobConfig job = jobInfoDetail.getHistory().getConfigJson();
         ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
         CheckPointOverView checkpoints = jobDataDto.getCheckpoints();
         FlinkJobExceptionsDetail exceptions = jobDataDto.getExceptions();
@@ -173,8 +172,9 @@ public class JobAlertData {
                 .duration(Optional.ofNullable(jobInstance.getDuration()).orElse(0L))
                 .jobStartTime(getTime(jobInstance.getCreateTime()))
                 .jobEndTime(getTime(jobInstance.getFinishTime()));
-        if (job != null) {
-            builder.batchModel(job.isBatchModel());
+        History jobHis = jobInfoDetail.getHistory();
+        if (jobHis != null && jobHis.getConfigJson() != null) {
+            builder.batchModel(jobHis.getConfigJson().isBatchModel());
         }
 
         if (clusterInstance != null) {

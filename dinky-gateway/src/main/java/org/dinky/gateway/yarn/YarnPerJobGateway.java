@@ -20,7 +20,7 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
 

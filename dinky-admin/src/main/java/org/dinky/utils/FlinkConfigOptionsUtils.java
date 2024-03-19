@@ -78,7 +78,6 @@ public class FlinkConfigOptionsUtils {
                 configList.add(config);
             }
         } catch (ClassNotFoundException ignored) {
-            logger.warning("Could not get config option, class not found: " + name);
         }
         return configList;
     }

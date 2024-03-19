@@ -23,15 +23,22 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-/** @since 0.7.0 */
+/**
+ * @since 0.7.0
+ */
 public class FlinkUdfPathContextHolder {
 
     private final Set<File> UDF_PATH_CONTEXT = new HashSet<>();
     private final Set<File> OTHER_PLUGINS_PATH_CONTEXT = new HashSet<>();
     private final Set<File> PYTHON_UDF_FILE = new HashSet<>();
+    private final Set<File> FILES = new HashSet<>();
 
     public void addUdfPath(File file) {
         getUdfFile().add(file);
+    }
+
+    public void addFile(File file) {
+        getFiles().add(file);
     }
 
     public void addPyUdfPath(File file) {
@@ -52,5 +59,17 @@ public class FlinkUdfPathContextHolder {
 
     public Set<File> getOtherPluginsFiles() {
         return OTHER_PLUGINS_PATH_CONTEXT;
+    }
+
+    public Set<File> getAllFileSet() {
+        Set<File> allFileSet = new HashSet<>();
+        allFileSet.addAll(getUdfFile());
+        allFileSet.addAll(getOtherPluginsFiles());
+        allFileSet.addAll(getFiles());
+        return allFileSet;
+    }
+
+    public Set<File> getFiles() {
+        return FILES;
     }
 }

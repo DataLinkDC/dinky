@@ -192,6 +192,7 @@ export const buildAllSuggestionsToEditor = (
       range: range,
       kind: mappingKind(item.kind),
       insertText: item.insertText,
+      preselect: true,
       insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       detail: item?.label?.description || ''
     };

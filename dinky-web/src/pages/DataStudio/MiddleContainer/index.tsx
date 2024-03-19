@@ -257,7 +257,7 @@ const MiddleContainer = (props: any) => {
         >
           {getTabIcon(item.icon, 16)}
           <Text type={item.isModified ? 'success' : undefined}>
-            {item.label}
+            &zwj;{item.label}
             {item.isModified ? ' *' : ''}
           </Text>
         </Space>

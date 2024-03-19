@@ -53,6 +53,11 @@ public interface SysConfigService extends ISuperService<SysConfig> {
     void initSysConfig();
 
     /**
+     * Initialize expression variables.
+     */
+    void initExpressionVariables();
+
+    /**
      * Update system configurations by key-value pairs.
      *
      * @param key The key of the configuration to update.

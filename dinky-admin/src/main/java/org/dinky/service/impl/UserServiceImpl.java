@@ -182,7 +182,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
         } catch (AuthException e) {
             // Handle authentication exceptions and return the corresponding error status
-            return Result.authorizeFailed(Status.USER_NOT_EXIST, loginDTO.getUsername());
+            return Result.authorizeFailed(e.getStatus());
         }
 
         // Check if the user is enabled

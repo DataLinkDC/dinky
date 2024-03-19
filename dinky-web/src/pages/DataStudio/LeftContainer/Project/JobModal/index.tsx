@@ -22,7 +22,7 @@ import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import { isFlinkJob, isUDF } from '@/pages/DataStudio/LeftContainer/Project/function';
 import TemplateSelect from '@/pages/DataStudio/LeftContainer/Project/JobModal/components/TemplateSelect';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { RUN_MODE } from '@/services/constants';
+import { DIALECT, RUN_MODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
@@ -48,7 +48,7 @@ type JobModalProps = {
 };
 const JobModal: React.FC<JobModalProps> = (props) => {
   const { onCancel, onSubmit, modalVisible, title, values } = props;
-  const [jobType, setJobType] = React.useState<string>(values.type || 'FlinkSql');
+  const [jobType, setJobType] = React.useState<string>(values.type ?? DIALECT.FLINK_SQL);
   const [udfTemplate, setUdfTemplate] = React.useState<DefaultOptionType[]>([]);
   const [sqlTemplate, setSqlTemplate] = React.useState<string>('');
   const [form] = Form.useForm<Catalogue>();

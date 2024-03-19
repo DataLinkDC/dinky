@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.context.EngineContextHolder;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SysConfig;
 import org.dinky.data.model.SystemConfiguration;
@@ -33,11 +34,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SysConfigServiceImpl
@@ -45,6 +47,7 @@ import cn.hutool.core.convert.Convert;
  * @since 2021/11/18
  */
 @Service
+@Slf4j
 public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
 
     @Override
@@ -92,13 +95,30 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
         systemConfiguration.initSetConfiguration(configMap);
     }
 
+    /**
+     * Initialize expression variables.
+     */
+    @Override
+    public void initExpressionVariables() {
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        // to initialize expression variable class and load it into the engine context
+        EngineContextHolder.loadExpressionVariableClass(
+                systemConfiguration.getExpressionVariable().getValue());
+    }
+
     @Override
     public void updateSysConfigByKv(String key, String value) {
-        SysConfig config = getOne(new QueryWrapper<SysConfig>().eq("name", key));
+        SysConfig config = getOne(new LambdaQueryWrapper<>(SysConfig.class).eq(SysConfig::getName, key));
         config.setValue(value);
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
         systemConfiguration.setConfiguration(key, value);
         config.updateById();
+        // if the expression variable is modified, reinitialize the expression variable
+        if (key.equals(systemConfiguration.getExpressionVariable().getKey())) {
+            log.info(
+                    "The expression variable is modified, reinitialize the expression variable to the engine context.");
+            initExpressionVariables();
+        }
     }
 }

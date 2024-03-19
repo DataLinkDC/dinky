@@ -87,6 +87,11 @@ export default {
   'datastudio.middle.qg.fragment': 'Global Variables',
   'datastudio.middle.qg.gitprojects': 'Git Projects',
   'datastudio.middle.qg.resource': 'Resource',
+  'datastudio.middle.qg.alertRule': 'Alert Rule',
+  'datastudio.middle.qg.alertTemplate': 'Register Alert Template',
+  'datastudio.middle.qg.accountCenter': 'Account Center',
+  'datastudio.middle.qg.globalsetting': 'Global Settings',
+  'datastudio.middle.qg.rootLog': 'View Root Log',
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
@@ -361,12 +366,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': 'Check',
-  'pages.datastudio.editor.debug': 'Preview',
+  'pages.datastudio.editor.debug': 'Search',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
   'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',
-  'pages.datastudio.editor.exec.success': 'Execution succeeded',
-  'pages.datastudio.editor.debug.success': 'Debug succeeded',
+  'pages.datastudio.editor.exec.success': 'Submit succeeded',
+  'pages.datastudio.editor.debug.success': 'Search succeeded',
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
   'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
@@ -804,7 +809,7 @@ export default {
   'rc.ci.jma': 'JobManager Address',
   'rc.ci.jmha': 'JobManager HA Address',
   'rc.ci.jmha.tips':
-    'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example',
+    'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081',
   'rc.ci.jmha.validate.port': 'Does not meet the rules! Port number range [0-65535]',
   'rc.ci.jmha.validate.slash': 'Does not comply with the rules! Cannot contain /',
   'rc.ci.jmhaPlaceholder': 'Please enter the JobManager HA address!',
@@ -1100,6 +1105,8 @@ export default {
   'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
   'sys.ldap.settings.testLogin': 'Test Login',
   'sys.ldap.settings.loadUser': 'Load User',
+  'sys.ldap.settings.keyword':
+    'You can enter your username/nickname for search, support fuzzy queries, enter keywords and press enter to complete the search',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
   /**
    *

@@ -78,6 +78,7 @@ public class DataSourceController {
      * @param dataBaseDTO {@link DataBaseDTO}
      * @return {@link Result}< {@link Void}>
      */
+    @CacheEvict(cacheNames = "metadata_schema", key = "#dataBaseDTO.id")
     @PutMapping("/saveOrUpdate")
     @Log(title = "Insert Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update DataBase")

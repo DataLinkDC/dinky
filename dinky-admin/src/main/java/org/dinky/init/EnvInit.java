@@ -41,7 +41,7 @@ public class EnvInit implements ApplicationRunner {
         ApplicationContext application = SpringUtil.getApplicationContext();
         Environment env = application.getEnvironment();
         String port = env.getProperty("server.port");
-        System.setProperty("dinkyAddr", ipAddress + ":" + port);
+        System.setProperty("dinkyAddr", "http://" + ipAddress + ":" + port);
         log.info(
                 "\n----------------------------------------------------------\n\t"
                         + "Application 'Dinky' is running! Access URLs:\n\t"

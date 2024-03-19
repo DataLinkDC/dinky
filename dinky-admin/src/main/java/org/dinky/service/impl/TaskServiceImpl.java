@@ -31,6 +31,7 @@ import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSubmitDto;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.ProcessStepType;
@@ -61,7 +62,6 @@ import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.FlinkClusterConfig;
@@ -335,6 +335,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         task.setUseResult(true);
         // Debug mode need execute
         task.setStatementSet(false);
+        // mode check
+        if (GatewayType.get(task.getType()).isDeployCluster()) {
+            throw new BusException(Status.MODE_IS_NOT_ALLOW_SELECT.getMessage());
+        }
+
         // 注解自调用会失效，这里通过获取对象方法绕过此限制
         TaskServiceImpl taskServiceBean = applicationContext.getBean(TaskServiceImpl.class);
         JobResult jobResult;
