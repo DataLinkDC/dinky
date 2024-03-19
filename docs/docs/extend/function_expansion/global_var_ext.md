@@ -6,7 +6,7 @@ title: 表达式变量扩展
 
 :::tip
 
-本扩展文档适用于 v1.0.0 及以上版本,可以直接在已部署服务中直接扩展,无需重新编译部署
+本扩展文档适用于 v1.0.1 以上版本,可以直接在已部署服务中直接扩展,无需重新编译部署
 :::
 
 ## 介绍
@@ -16,14 +16,18 @@ title: 表达式变量扩展
 
 ## 扩展方法
 
-找到 `部署的 dinky/dinky-loader` 目录下的 `ExpressionVariableClass` 文件, 并在其中添加
-
+1. 启动 Dinky 服务,如已启动则无需重启
+2. 登录 Dinky 
+3. 点击 `配置中心` -> `全局配置` -> `Dinky 环境配置` -> `表达式变量列表`
+4. 点击右侧`修改按钮`
+5. 在输入框内输入您需要扩展的类的全限定名,多个类之间用逗号分隔
+6. 点击 `保存`
 
 举例:
 
 > 假设需要扩展 [`Hash 算法`](https://doc.hutool.cn/pages/HashUtil/) 相关的表达式变量
 
-只需要在 `ExpressionVariableClass` 文件中添加如下类的全限定名即可
+只需要在 上述步骤中的 `5` 中追加类的全限定名即可,注意逗号分隔
 ```text
 
 cn.hutool.core.util.HashUtil
@@ -32,10 +36,8 @@ cn.hutool.core.util.HashUtil
 如上示例，将会扩展表达式变量中的 `Hash 算法`,你就可以在表达式中使用 `Hash 算法` 相关的表达式了
 
 :::tip 说明
-1. 请确保您的扩展类在 `dinky-loader` 中存在
-2. 请确保您的扩展类在 `dinky 中已被加载(类加载机制)`
-3. 请确保您的扩展类中的方法为 `public static` 修饰
+1. 请确保您的扩展类在 `dinky 中已被加载(类加载机制)`
+2. 请确保您的扩展类中的方法为 `public static` 修饰
+3. 请确保您的扩展列表一定按照逗号分隔
 
-
-考虑到多数用户通用情况下,当然也欢迎您将此次扩展贡献给社区, 请参考 [如何贡献](../../developer_guide/contribution/how_contribute) 进行 [PR](../../developer_guide/contribution/pull_request)
 :::
