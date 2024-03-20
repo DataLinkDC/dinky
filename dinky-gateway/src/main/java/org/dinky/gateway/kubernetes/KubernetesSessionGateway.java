@@ -47,11 +47,9 @@ public class KubernetesSessionGateway extends KubernetesGateway {
 
     @Override
     public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
-        if (Asserts.isNull(getK8sClientHelper().getClient())) {
-            String clusterId = StrFormatter.format("dinky-flink-session-{}", System.currentTimeMillis());
-            addConfigParas(KubernetesConfigOptions.CLUSTER_ID, clusterId);
-            init();
-        }
+        String clusterId = StrFormatter.format("dinky-flink-session-{}", System.currentTimeMillis());
+        addConfigParas(KubernetesConfigOptions.CLUSTER_ID, clusterId);
+        init();
 
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
