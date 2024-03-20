@@ -19,11 +19,12 @@
 
 package org.dinky.job;
 
-import lombok.Data;
 import org.dinky.function.data.model.UDF;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.Data;
 
 /**
  * JobParam

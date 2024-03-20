@@ -172,7 +172,7 @@ public class Explainer {
                 statementList.add(statement);
             }
         }
-        return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList),parsedSql.toString());
+        return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList), parsedSql.toString());
     }
 
     private Configuration getCombinationConfig() {
