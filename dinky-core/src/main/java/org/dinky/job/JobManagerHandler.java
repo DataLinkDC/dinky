@@ -103,8 +103,6 @@ public class JobManagerHandler {
 
     private Job job;
 
-    public JobManagerHandler() {}
-
     private JobManagerHandler(JobConfig config, boolean isPlanMode) {
         this.config = config;
 
@@ -119,10 +117,6 @@ public class JobManagerHandler {
         executorConfig = config.createExecutorSetting();
         executorConfig.setPlan(isPlanMode);
         executor = ExecutorFactory.buildExecutor(executorConfig);
-    }
-
-    public static JobManagerHandler build(JobConfig config) {
-        return build(config, false);
     }
 
     public static JobManagerHandler build(JobConfig config, boolean isPlanMode) {
@@ -336,10 +330,6 @@ public class JobManagerHandler {
         }
     }
 
-    public static TestResult testGateway(GatewayConfig gatewayConfig) {
-        return Gateway.build(gatewayConfig).test();
-    }
-
     public String exportSql(String sql) {
         String statement = executor.pretreatStatement(sql);
         StringBuilder sb = new StringBuilder();
@@ -382,12 +372,12 @@ public class JobManagerHandler {
                             + YarnConfigOptions.PROVIDED_LIB_DIRS.key()
                             + " = "
                             + Collections.singletonList(
-                                    config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
+                            config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
                             + ";\r\n");
                 }
                 if (Asserts.isNotNull(config.getGatewayConfig())
                         && Asserts.isNotNullString(
-                                config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                        config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set "
                             + YarnConfigOptions.APPLICATION_NAME.key()
                             + " = "
@@ -400,6 +390,7 @@ public class JobManagerHandler {
         sb.append(statement);
         return sb.toString();
     }
+
 
     public Logger getLog() {
         return log;
@@ -488,4 +479,5 @@ public class JobManagerHandler {
     public void setJob(Job job) {
         this.job = job;
     }
+
 }
