@@ -17,14 +17,11 @@
  *
  */
 
-package org.dinky.core;
+package org.dinky.job;
 
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
-import org.dinky.job.JobConfig;
-import org.dinky.job.JobManager;
-import org.dinky.job.JobResult;
 
 import org.junit.Ignore;
 import org.junit.Test;

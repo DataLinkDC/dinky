@@ -37,6 +37,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-executor-server</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.mitre.dsmiley.httpproxy</groupId>
             <artifactId>smiley-http-proxy-servlet</artifactId>
         </dependency>

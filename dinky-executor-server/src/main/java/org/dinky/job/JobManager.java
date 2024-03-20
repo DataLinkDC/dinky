@@ -30,13 +30,9 @@ import org.dinky.gateway.result.SavePointResult;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Setter
-@Getter
 public class JobManager {
     JobManagerHandler jobManagerHandler;
 

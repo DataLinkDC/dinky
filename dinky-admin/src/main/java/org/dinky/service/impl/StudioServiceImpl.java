@@ -148,11 +148,12 @@ public class StudioServiceImpl implements StudioService {
                 catalogs.add(defaultCatalog);
             }
         } else {
-            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment =
-                    jobManager.getExecutor().getCustomTableEnvironment();
-            catalogs.addAll(FlinkTableMetadataUtil.getCatalog(customTableEnvironment));
+            // TODO: 2024/3/20 remote
+//            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+//            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+//            CustomTableEnvironment customTableEnvironment =
+//                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
+//            catalogs.addAll(FlinkTableMetadataUtil.getCatalog(customTableEnvironment));
         }
         return catalogs;
     }
@@ -169,12 +170,13 @@ public class StudioServiceImpl implements StudioService {
                 tables.addAll(driver.listTables(database));
             }
         } else {
-            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment =
-                    jobManager.getExecutor().getCustomTableEnvironment();
-            FlinkTableMetadataUtil.setSchemaInfo(
-                    customTableEnvironment, studioMetaStoreDTO.getCatalog(), database, schema, tables);
+            // TODO: 2024/3/20 remote
+//            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+//            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+//            CustomTableEnvironment customTableEnvironment =
+//                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
+//            FlinkTableMetadataUtil.setSchemaInfo(
+//                    customTableEnvironment, studioMetaStoreDTO.getCatalog(), database, schema, tables);
         }
         schema.setTables(tables);
         return schema;
@@ -193,13 +195,13 @@ public class StudioServiceImpl implements StudioService {
                 columns.addAll(driver.listColumns(database, tableName));
             }
         } else {
-
-            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment =
-                    jobManager.getExecutor().getCustomTableEnvironment();
-            columns.addAll(
-                    FlinkTableMetadataUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
+            // TODO: 2024/3/20 remote
+//            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+//            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+//            CustomTableEnvironment customTableEnvironment =
+//                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
+//            columns.addAll(
+//                    FlinkTableMetadataUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
         }
         return columns;
     }

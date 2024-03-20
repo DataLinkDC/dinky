@@ -19,13 +19,14 @@
 
 package org.dinky.explainer.lineage;
 
+import org.apache.phoenix.job.JobManager;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
 import org.dinky.job.JobConfig;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobManagerHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,18 +41,15 @@ import java.util.Map;
 public class LineageBuilder {
 
     public static LineageResult getColumnLineageByLogicalPlan(String statement) {
-        Executor executor = ExecutorFactory.getDefaultExecutor();
         JobConfig jobConfig = JobConfig.builder()
                 .type(GatewayType.LOCAL.getLongValue())
                 .useRemote(false)
                 .fragment(true)
                 .statementSet(false)
                 .parallelism(1)
-                .configJson(executor.getTableConfig().getConfiguration().toMap())
                 .build();
-        JobManager jobManager = JobManager.build(jobConfig);
-        jobManager.setExecutor(executor);
-        Explainer explainer = new Explainer(executor, false, jobManager);
+        JobManagerHandler jobManagerHandler = JobManagerHandler.build(jobConfig, false);
+        Explainer explainer = new Explainer(jobManagerHandler.getExecutor(), false, jobManagerHandler);
         List<LineageRel> lineageRelList = explainer.getLineage(statement);
         List<LineageRelation> relations = new ArrayList<>();
         Map<String, LineageTable> tableMap = new HashMap<>();

@@ -618,6 +618,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-executor-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpclient.version}</version>
