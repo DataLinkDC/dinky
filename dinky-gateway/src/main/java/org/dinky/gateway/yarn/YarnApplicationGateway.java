@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -40,6 +39,8 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 import java.io.File;
 import java.util.Collections;
 import java.util.stream.Collectors;
+
+import cn.hutool.core.collection.CollUtil;
 
 /**
  * YarnApplicationGateway
