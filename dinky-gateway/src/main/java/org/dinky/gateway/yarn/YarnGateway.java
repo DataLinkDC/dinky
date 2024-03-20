@@ -20,6 +20,7 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
@@ -141,7 +142,6 @@ public abstract class YarnGateway extends AbstractGateway {
             configuration.set(YarnConfigOptions.APPLICATION_TYPE, "Dinky Flink");
             resetCheckpointInApplicationMode(flinkConfig.getJobName());
         }
-
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, clusterConfig.getFlinkConfigPath());
     }
 
@@ -319,6 +319,11 @@ public abstract class YarnGateway extends AbstractGateway {
 
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
             yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
+        }
+        File tempSqlFile = getTempSqlFile();
+        if (tempSqlFile != null) {
+            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(tempSqlFile));
+            addConfigParas(CustomerConfigureOptions.EXEC_SQL_FILE, tempSqlFile.getName());
         }
         return yarnClusterDescriptor;
     }

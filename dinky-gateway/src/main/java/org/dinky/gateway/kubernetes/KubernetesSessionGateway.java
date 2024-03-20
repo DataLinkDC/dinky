@@ -47,7 +47,7 @@ public class KubernetesSessionGateway extends KubernetesGateway {
 
     @Override
     public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
-        if (Asserts.isNull(client)) {
+        if (Asserts.isNull(getK8sClientHelper().getClient())) {
             String clusterId = StrFormatter.format("dinky-flink-session-{}", System.currentTimeMillis());
             addConfigParas(KubernetesConfigOptions.CLUSTER_ID, clusterId);
             init();
@@ -58,7 +58,7 @@ public class KubernetesSessionGateway extends KubernetesGateway {
 
         KubernetesResult result = KubernetesResult.build(getType());
         try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                new KubernetesClusterDescriptor(configuration, client)) {
+                new KubernetesClusterDescriptor(configuration, getK8sClientHelper().getClient())) {
             ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deploySessionCluster(
                     clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();

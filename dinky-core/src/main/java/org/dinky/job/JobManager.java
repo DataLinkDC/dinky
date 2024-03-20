@@ -96,9 +96,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrFormatter;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Data
 public class JobManager {
     private JobHandler handler;
     private ExecutorConfig executorConfig;
@@ -116,32 +118,16 @@ public class JobManager {
 
     public JobManager() {}
 
-    public JobParam getJobParam() {
-        return jobParam;
-    }
-
     public void setJobParam(JobParam jobParam) {
         this.jobParam = jobParam;
-    }
-
-    public JobConfig getConfig() {
-        return config;
     }
 
     public void setConfig(JobConfig config) {
         this.config = config;
     }
 
-    public GatewayType getRunMode() {
-        return runMode;
-    }
-
     public void setCurrentSql(String currentSql) {
         this.currentSql = currentSql;
-    }
-
-    public Executor getExecutor() {
-        return executor;
     }
 
     public void setExecutor(Executor executor) {
@@ -156,18 +142,6 @@ public class JobManager {
         return isPlanMode;
     }
 
-    public boolean isUseStatementSet() {
-        return useStatementSet;
-    }
-
-    public boolean isUseRestAPI() {
-        return useRestAPI;
-    }
-
-    public boolean isUseGateway() {
-        return useGateway;
-    }
-
     // return dinkyclassloader
     public DinkyClassLoader getDinkyClassLoader() {
         return dinkyClassLoader.get();
@@ -176,11 +150,6 @@ public class JobManager {
     // return udfPathContextHolder
     public FlinkUdfPathContextHolder getUdfPathContextHolder() {
         return getDinkyClassLoader().getUdfPathContextHolder();
-    }
-
-    // return job
-    public Job getJob() {
-        return job;
     }
 
     // set job
@@ -351,7 +320,7 @@ public class JobManager {
             }
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            if (errorMessage.contains("Only insert statement is supported now")) {
+            if (errorMessage!=null && errorMessage.contains("Only insert statement is supported now")) {
                 throw new BusException(Status.OPERATE_NOT_SUPPORT_QUERY.getMessage());
             }
             String error = StrFormatter.format(

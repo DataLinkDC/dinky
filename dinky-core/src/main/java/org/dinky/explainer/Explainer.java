@@ -65,6 +65,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +97,7 @@ public class Explainer {
         DinkyClassLoaderUtil.initClassLoader(config, jobManager.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
         List<UDF> udfs = parseUDFFromStatements(statements);
-        jobManager.setJobParam(new JobParam(udfs));
+        jobManager.setJobParam(JobParam.builder().udfList(udfs).build());
         try {
             JobUDFBuilder.build(jobManager).run();
         } catch (Exception e) {
@@ -111,8 +112,10 @@ public class Explainer {
         List<StatementParam> execute = new ArrayList<>();
         List<String> statementList = new ArrayList<>();
         List<UDF> udfList = new ArrayList<>();
+        StrBuilder parsedSql = new StrBuilder();
         for (String item : statements) {
             String statement = executor.pretreatStatement(item);
+            parsedSql.append(statement).append(";\n");
             if (statement.isEmpty()) {
                 continue;
             }
@@ -169,7 +172,14 @@ public class Explainer {
                 statementList.add(statement);
             }
         }
-        return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
+        return JobParam.builder()
+                .parsedSql(parsedSql.toString())
+                .statements(statementList)
+                .ddl(ddl)
+                .trans(trans)
+                .execute(execute)
+                .udfList(CollUtil.removeNull(udfList))
+                .build();
     }
 
     private Configuration getCombinationConfig() {

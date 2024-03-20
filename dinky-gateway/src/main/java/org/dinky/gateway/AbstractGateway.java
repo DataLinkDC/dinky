@@ -20,6 +20,7 @@
 package org.dinky.gateway;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobStatus;
@@ -45,6 +46,7 @@ import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,18 +59,23 @@ import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.StrFormatter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AbstractGateway
  *
  * @since 2021/10/29
  */
+@Slf4j
 public abstract class AbstractGateway implements Gateway {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractGateway.class);
     protected GatewayConfig config;
     protected Configuration configuration = new Configuration();
+    protected String tmpConfDir = String.format("%s/tmp/", System.getProperty("user.dir"));
+    private File tempSqlFile;
 
     public AbstractGateway() {}
 
@@ -235,5 +242,33 @@ public abstract class AbstractGateway implements Gateway {
     @Override
     public boolean onJobFinishCallback(String status) {
         return true;
+    }
+
+    private File initTempSqlFile() {
+        tempSqlFile = new File(String.format(
+                "%s/%s/%s", tmpConfDir, UUID.randomUUID(), configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
+        FileUtil.writeString(config.getSql(), tempSqlFile.getAbsolutePath(), "UTF-8");
+        return tempSqlFile;
+    }
+
+    public File getTempSqlFile() {
+        if (tempSqlFile == null) {
+            tempSqlFile = initTempSqlFile();
+        }
+        return tempSqlFile;
+    }
+
+    @Override
+    public boolean close() {
+        try {
+            if (tempSqlFile != null) {
+                File parentFile = tempSqlFile.getParentFile();
+                FileUtil.clean(parentFile);
+                return parentFile.delete();
+            }
+        } catch (Exception e) {
+            log.warn("fail delete temp sql dir {}", tempSqlFile.getAbsolutePath());
+        }
+        return false;
     }
 }
