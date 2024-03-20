@@ -97,7 +97,7 @@ public class Explainer {
         DinkyClassLoaderUtil.initClassLoader(config, jobManager.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
         List<UDF> udfs = parseUDFFromStatements(statements);
-        jobManager.setJobParam(JobParam.builder().udfList(udfs).build());
+        jobManager.setJobParam(new JobParam(udfs));
         try {
             JobUDFBuilder.build(jobManager).run();
         } catch (Exception e) {
@@ -172,14 +172,7 @@ public class Explainer {
                 statementList.add(statement);
             }
         }
-        return JobParam.builder()
-                .parsedSql(parsedSql.toString())
-                .statements(statementList)
-                .ddl(ddl)
-                .trans(trans)
-                .execute(execute)
-                .udfList(CollUtil.removeNull(udfList))
-                .build();
+        return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList),parsedSql.toString());
     }
 
     private Configuration getCombinationConfig() {

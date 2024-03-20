@@ -142,6 +142,7 @@ public abstract class YarnGateway extends AbstractGateway {
             configuration.set(YarnConfigOptions.APPLICATION_TYPE, "Dinky Flink");
             resetCheckpointInApplicationMode(flinkConfig.getJobName());
         }
+
         YarnLogConfigUtil.setLogConfigFileInConfig(configuration, clusterConfig.getFlinkConfigPath());
     }
 

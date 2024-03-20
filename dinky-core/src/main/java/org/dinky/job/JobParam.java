@@ -19,20 +19,17 @@
 
 package org.dinky.job;
 
+import lombok.Data;
 import org.dinky.function.data.model.UDF;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.Builder;
-import lombok.Data;
 
 /**
  * JobParam
  *
  * @since 2021/11/16
  */
-@Builder
 @Data
 public class JobParam {
 
@@ -43,12 +40,59 @@ public class JobParam {
     private List<UDF> udfList;
     private String parsedSql;
 
+    public JobParam(List<UDF> udfList) {
+        this.udfList = udfList;
+    }
+
+    public JobParam(List<StatementParam> ddl, List<StatementParam> trans) {
+        this.ddl = ddl;
+        this.trans = trans;
+    }
+
+    public JobParam(
+            List<String> statements,
+            List<StatementParam> ddl,
+            List<StatementParam> trans,
+            List<StatementParam> execute) {
+        this.statements = statements;
+        this.ddl = ddl;
+        this.trans = trans;
+        this.execute = execute;
+    }
+
+    public JobParam(
+            List<String> statements,
+            List<StatementParam> ddl,
+            List<StatementParam> trans,
+            List<StatementParam> execute,
+            List<UDF> udfList,
+            String parsedSql) {
+        this.statements = statements;
+        this.ddl = ddl;
+        this.trans = trans;
+        this.execute = execute;
+        this.udfList = udfList;
+        this.parsedSql = parsedSql;
+    }
+
+    public List<String> getStatements() {
+        return statements;
+    }
+
     public void setStatements(List<String> statements) {
         this.statements = statements;
     }
 
+    public List<StatementParam> getDdl() {
+        return ddl;
+    }
+
     public void setDdl(List<StatementParam> ddl) {
         this.ddl = ddl;
+    }
+
+    public List<StatementParam> getTrans() {
+        return trans;
     }
 
     public List<String> getTransStatement() {
@@ -59,7 +103,15 @@ public class JobParam {
         this.trans = trans;
     }
 
+    public List<StatementParam> getExecute() {
+        return execute;
+    }
+
     public void setExecute(List<StatementParam> execute) {
         this.execute = execute;
+    }
+
+    public List<UDF> getUdfList() {
+        return udfList;
     }
 }

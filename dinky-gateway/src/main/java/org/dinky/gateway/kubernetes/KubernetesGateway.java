@@ -81,7 +81,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
             addConfigParas(
                     GlobalConfiguration.loadConfiguration(flinkConfigPath).toMap());
         } catch (Exception e) {
-            log.warn("load locale config yaml failed：{},Skip config it", e.getMessage());
+            logger.warn("load locale config yaml failed：{},Skip config it", e.getMessage());
         }
 
         addConfigParas(flinkConfig.getConfiguration());
@@ -152,14 +152,14 @@ public abstract class KubernetesGateway extends AbstractGateway {
                 Object internalClient = ReflectUtil.getFieldValue(client, "internalClient");
                 Method method = ReflectUtil.getMethod(internalClient.getClass(), "getVersion");
                 Object versionInfo = method.invoke(internalClient);
-                log.info(
+                logger.info(
                         "k8s cluster link successful ; k8s version: {} ; platform: {}",
                         ReflectUtil.getFieldValue(versionInfo, "gitVersion"),
                         ReflectUtil.getFieldValue(versionInfo, "platform"));
             }
             return TestResult.success();
         } catch (Exception e) {
-            log.error(Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e);
+            logger.error(Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e);
             return TestResult.fail(
                     StrFormatter.format("{}:{}", Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e.getMessage()));
         } finally {
@@ -185,7 +185,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
                 clusterClientFactory.createClusterDescriptor(configuration)) {
             clusterDescriptor.killCluster(clusterId);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 

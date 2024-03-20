@@ -79,7 +79,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
     public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         init();
         try (KubernetesClient kubernetesClient = getK8sClientHelper().getKubernetesClient()) {
-            log.info("Start submit k8s application.");
+            logger.info("Start submit k8s application.");
             ClusterClientProvider<String> clusterClient =
                     deployApplication(getK8sClientHelper().getClient());
 
@@ -126,7 +126,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 containerStatus.getImage(),
                 yaml.dumpAsMap(containerStatus.getState()),
                 yaml.dumpAsMap(containerStatus.getLastState()));
-        log.info(logStr);
+        logger.info(logStr);
 
         if (containerStatus.getRestartCount() > 0 || containerStatus.getState().getTerminated() != null) {
             throw new GatewayException("Deploy k8s failed, pod have restart or terminated");
@@ -180,15 +180,15 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                     .getItems();
             for (Pod pod : pods) {
                 if (!checkPodStatus(pod)) {
-                    log.info("Kubernetes Pod have not ready, reTry at 5 sec later");
+                    logger.info("Kubernetes Pod have not ready, reTry at 5 sec later");
                     continue;
                 }
                 try (ClusterClient<String> client = clusterClient.getClusterClient()) {
-                    log.info("Start get job list ....");
+                    logger.info("Start get job list ....");
                     Collection<JobStatusMessage> jobList = client.listJobs().get(15, TimeUnit.SECONDS);
-                    log.info("Get K8S Job list: {}", jobList);
+                    logger.info("Get K8S Job list: {}", jobList);
                     if (jobList.isEmpty()) {
-                        log.error("Get job is empty, will be reconnect later....");
+                        logger.error("Get job is empty, will be reconnect later....");
                         continue;
                     }
                     JobStatusMessage job = jobList.stream().findFirst().get();
@@ -196,14 +196,14 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                     // To create a cluster ID, you need to combine the cluster ID with the jobID to ensure uniqueness
                     String cid = configuration.getString(KubernetesConfigOptions.CLUSTER_ID)
                             + job.getJobId().toHexString();
-                    log.info("Success get job status:{}", jobStatus);
+                    logger.info("Success get job status:{}", jobStatus);
                     return result.setWebURL(client.getWebInterfaceURL())
                             .setJids(Collections.singletonList(job.getJobId().toHexString()))
                             .setId(cid);
                 } catch (GatewayException e) {
                     throw e;
                 } catch (Exception ex) {
-                    log.error("Get job status failed,{}", ex.getMessage());
+                    logger.error("Get job status failed,{}", ex.getMessage());
                 }
             }
             Thread.sleep(5000);

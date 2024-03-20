@@ -118,16 +118,32 @@ public class JobManager {
 
     public JobManager() {}
 
+    public JobParam getJobParam() {
+        return jobParam;
+    }
+
     public void setJobParam(JobParam jobParam) {
         this.jobParam = jobParam;
+    }
+
+    public JobConfig getConfig() {
+        return config;
     }
 
     public void setConfig(JobConfig config) {
         this.config = config;
     }
 
+    public GatewayType getRunMode() {
+        return runMode;
+    }
+
     public void setCurrentSql(String currentSql) {
         this.currentSql = currentSql;
+    }
+
+    public Executor getExecutor() {
+        return executor;
     }
 
     public void setExecutor(Executor executor) {
@@ -142,6 +158,18 @@ public class JobManager {
         return isPlanMode;
     }
 
+    public boolean isUseStatementSet() {
+        return useStatementSet;
+    }
+
+    public boolean isUseRestAPI() {
+        return useRestAPI;
+    }
+
+    public boolean isUseGateway() {
+        return useGateway;
+    }
+
     // return dinkyclassloader
     public DinkyClassLoader getDinkyClassLoader() {
         return dinkyClassLoader.get();
@@ -150,6 +178,11 @@ public class JobManager {
     // return udfPathContextHolder
     public FlinkUdfPathContextHolder getUdfPathContextHolder() {
         return getDinkyClassLoader().getUdfPathContextHolder();
+    }
+
+    // return job
+    public Job getJob() {
+        return job;
     }
 
     // set job
