@@ -84,7 +84,7 @@ public class K8sClientHelper {
      * initKubeClient
      */
     private void initKubeClient() {
-        //k8s flink native client
+        // k8s flink native client
         client = FlinkKubeClientFactory.getInstance().fromConfiguration(configuration, "client");
         // k8s fabric client
         if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
@@ -146,7 +146,7 @@ public class K8sClientHelper {
 
         // use snakyaml to serialize the pod
         Representer representer = new IgnoreNullRepresenter();
-        //set the label of the Map type, only the map type will not print the class name when dumping
+        // set the label of the Map type, only the map type will not print the class name when dumping
         representer.addClassTag(Pod.class, Tag.MAP);
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
