@@ -320,7 +320,7 @@ public class JobManager {
             }
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            if (errorMessage!=null && errorMessage.contains("Only insert statement is supported now")) {
+            if (errorMessage != null && errorMessage.contains("Only insert statement is supported now")) {
                 throw new BusException(Status.OPERATE_NOT_SUPPORT_QUERY.getMessage());
             }
             String error = StrFormatter.format(
