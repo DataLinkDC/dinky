@@ -126,7 +126,7 @@ public class K8sClientHelper {
      * @param sqlFile
      * @return
      */
-    public Map<String, String> initPodTemplate(File sqlFile) {
+    public String decoratePodTemplate(File sqlFile) {
         Pod pod;
         // k8s pod template
         Map<String, String> cfg = new HashMap<>();
@@ -152,42 +152,9 @@ public class K8sClientHelper {
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         options.setPrettyFlow(true);
         Yaml yaml = new Yaml(representer, options);
-        String dump = yaml.dump(sqlDecoratedPod);
-
-        // save the pod template to a temporary file
-        cfg.put(
-                KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE.key(),
-                preparPodTemplate(dump, KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE));
-        cfg.put(
-                KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE.key(),
-                preparPodTemplate(k8sConfig.getJmPodTemplate(), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE));
-        cfg.put(
-                KubernetesConfigOptions.TASK_MANAGER_POD_TEMPLATE.key(),
-                preparPodTemplate(k8sConfig.getTmPodTemplate(), KubernetesConfigOptions.TASK_MANAGER_POD_TEMPLATE));
-        cfg.put(
-                KubernetesConfigOptions.KUBE_CONFIG_FILE.key(),
-                preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE));
-        // return the pod template config
-        return cfg;
+        return yaml.dump(sqlDecoratedPod);
     }
 
-    /**
-     * preparPodTemplate
-     * @param podTemplate
-     * @param option
-     * @return
-     */
-    private String preparPodTemplate(String podTemplate, ConfigOption<String> option) {
-        if (!TextUtil.isEmpty(podTemplate)) {
-            String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
-            if (FileUtil.exist(filePath)) {
-                Assert.isTrue(FileUtil.del(filePath));
-            }
-            FileUtil.writeUtf8String(podTemplate, filePath);
-            return filePath;
-        }
-        return null;
-    }
 
     /**
      * close

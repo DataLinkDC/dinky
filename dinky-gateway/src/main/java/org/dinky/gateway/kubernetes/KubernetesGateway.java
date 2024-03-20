@@ -19,6 +19,9 @@
 
 package org.dinky.gateway.kubernetes;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
+import org.apache.flink.configuration.ConfigOption;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.Status;
 import org.dinky.gateway.AbstractGateway;
@@ -49,6 +52,7 @@ import cn.hutool.core.util.ReflectUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.dinky.utils.TextUtil;
 
 /**
  * KubernetesGateway
@@ -98,8 +102,25 @@ public abstract class KubernetesGateway extends AbstractGateway {
         }
 
         k8sClientHelper = new K8sClientHelper(configuration, k8sConfig);
+        String decoratedPodTemplate = k8sClientHelper.decoratePodTemplate(getTempSqlFile());
+        k8sConfig.setPodTemplate(decoratedPodTemplate);
+        preparPodTemplate(k8sConfig.getPodTemplate(), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
+        preparPodTemplate(k8sConfig.getJmPodTemplate(), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
+        preparPodTemplate(k8sConfig.getTmPodTemplate(), KubernetesConfigOptions.TASK_MANAGER_POD_TEMPLATE);
+        preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE);
+
     }
 
+    private void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
+        if (!TextUtil.isEmpty(podTemplate)) {
+            String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
+            if (FileUtil.exist(filePath)) {
+                Assert.isTrue(FileUtil.del(filePath));
+            }
+            FileUtil.writeUtf8String(podTemplate, filePath);
+            addConfigParas(option, filePath);
+        }
+    }
     public SavePointResult savepointCluster(String savePoint) {
         if (Asserts.isNull(k8sClientHelper.getClient())) {
             initConfig();

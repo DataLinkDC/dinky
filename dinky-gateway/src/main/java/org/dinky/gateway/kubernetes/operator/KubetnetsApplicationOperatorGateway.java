@@ -76,7 +76,7 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                     .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
                     .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
                     .get();
-            getK8sClientHelper().createDinkyResource(deployment);
+//            getK8sClientHelper().createDinkyResource(deployment);
 
             FlinkDeployment flinkDeploymentResult = kubernetesClient
                     .resource(flinkDeployment)

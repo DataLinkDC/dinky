@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.enums.UpgradeMode;
@@ -38,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,20 +73,20 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
 
     @Override
     public TestResult test() {
+        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        addConfigParas(KubernetesConfigOptions.CLUSTER_ID, UUID.randomUUID().toString());
 
         initConfig();
         initBase();
         initMetadata();
         initSpec();
-        getK8sClientHelper().getKubernetesClient().resource(flinkDeployment).fromServer();
+        getK8sClientHelper().getKubernetesClient().nodes().list();
         logger.info("配置连接测试成功");
         return TestResult.success();
     }
 
     @Override
     public boolean onJobFinishCallback(String status) {
-
-        initConfig();
         String jobName = config.getFlinkConfig().getJobName();
         if (status.equals(JobStatus.FINISHED.getValue())) {
             logger.info(

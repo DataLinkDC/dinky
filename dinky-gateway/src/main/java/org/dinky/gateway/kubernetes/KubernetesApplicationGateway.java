@@ -80,7 +80,6 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         init();
         try (KubernetesClient kubernetesClient = getK8sClientHelper().getKubernetesClient()) {
             logger.info("Start submit k8s application.");
-            addConfigParas(getK8sClientHelper().initPodTemplate(getTempSqlFile()));
 
             ClusterClientProvider<String> clusterClient =
                     deployApplication(getK8sClientHelper().getClient());

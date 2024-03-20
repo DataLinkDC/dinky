@@ -247,7 +247,8 @@ public abstract class AbstractGateway implements Gateway {
     private File initTempSqlFile() {
         tempSqlFile = new File(String.format(
                 "%s/%s/%s", tmpConfDir, UUID.randomUUID(), configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
-        FileUtil.writeString(config.getSql(), tempSqlFile.getAbsolutePath(), "UTF-8");
+        String sql = config == null ? "" : config.getSql();
+        FileUtil.writeString(Optional.ofNullable(sql).orElse(""), tempSqlFile.getAbsolutePath(), "UTF-8");
         return tempSqlFile;
     }
 
