@@ -19,6 +19,8 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
@@ -60,12 +62,20 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
         try {
             init();
 
-            KubernetesClient kubernetesClient = getKubernetesClient();
+            KubernetesClient kubernetesClient = getK8sClientHelper().getKubernetesClient();
             FlinkDeployment flinkDeployment = getFlinkDeployment();
 
             kubernetesClient.resource(flinkDeployment).delete();
             kubernetesClient.resource(flinkDeployment).waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
             kubernetesClient.resource(flinkDeployment).createOrReplace();
+
+            Deployment deployment = kubernetesClient
+                    .apps()
+                    .deployments()
+                    .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
+                    .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
+                    .get();
+            getK8sClientHelper().createDinkyResource(deployment);
 
             FlinkDeployment flinkDeploymentResult = kubernetesClient
                     .resource(flinkDeployment)

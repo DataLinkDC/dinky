@@ -70,7 +70,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         initConfig();
     }
 
-    private void initConfig() {
+    protected void initConfig() {
         flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
         flinkConfig = config.getFlinkConfig();
         k8sConfig = config.getKubernetesConfig();
