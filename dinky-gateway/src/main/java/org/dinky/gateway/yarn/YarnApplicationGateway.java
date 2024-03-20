@@ -19,7 +19,9 @@
 
 package org.dinky.gateway.yarn;
 
+import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.config.AppConfig;
@@ -74,6 +76,11 @@ public class YarnApplicationGateway extends YarnGateway {
         YarnResult result = YarnResult.build(getType());
         String webUrl;
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
+            File tempSqlFile = getTempSqlFile();
+            if (tempSqlFile != null) {
+                yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(tempSqlFile));
+                addConfigParas(CustomerConfigureOptions.EXEC_SQL_FILE, tempSqlFile.getName());
+            }
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
                     clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();

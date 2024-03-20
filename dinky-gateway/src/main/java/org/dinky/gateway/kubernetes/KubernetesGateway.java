@@ -68,7 +68,6 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     public void init() {
         initConfig();
-        addConfigParas(k8sClientHelper.initPodTemplate(getTempSqlFile()));
     }
 
     private void initConfig() {

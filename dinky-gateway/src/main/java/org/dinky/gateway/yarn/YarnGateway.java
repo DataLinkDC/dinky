@@ -321,11 +321,6 @@ public abstract class YarnGateway extends AbstractGateway {
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
             yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
         }
-        File tempSqlFile = getTempSqlFile();
-        if (tempSqlFile != null) {
-            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(tempSqlFile));
-            addConfigParas(CustomerConfigureOptions.EXEC_SQL_FILE, tempSqlFile.getName());
-        }
         return yarnClusterDescriptor;
     }
 
