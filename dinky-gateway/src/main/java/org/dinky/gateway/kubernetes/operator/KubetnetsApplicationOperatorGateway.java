@@ -19,8 +19,6 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
-import io.fabric8.kubernetes.api.model.apps.Deployment;
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
@@ -28,6 +26,8 @@ import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.LogUtil;
+
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -40,6 +40,7 @@ import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceList;
 import io.fabric8.kubernetes.api.model.ServicePort;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 

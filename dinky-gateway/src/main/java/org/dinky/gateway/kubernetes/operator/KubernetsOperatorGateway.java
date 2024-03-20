@@ -21,9 +21,6 @@ package org.dinky.gateway.kubernetes.operator;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
-import org.dinky.gateway.AbstractGateway;
-import org.dinky.gateway.config.FlinkConfig;
-import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.enums.UpgradeMode;
 import org.dinky.gateway.kubernetes.KubernetesGateway;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec;
@@ -36,7 +33,6 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.CoreOptions;
-import org.apache.http.util.TextUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -48,7 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
