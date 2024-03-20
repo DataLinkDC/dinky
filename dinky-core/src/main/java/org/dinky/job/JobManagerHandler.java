@@ -44,7 +44,6 @@ import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
-import org.dinky.gateway.result.TestResult;
 import org.dinky.job.builder.JobDDLBuilder;
 import org.dinky.job.builder.JobExecuteBuilder;
 import org.dinky.job.builder.JobJarStreamGraphBuilder;
@@ -87,7 +86,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.text.StrFormatter;
 
-public class JobManagerHandler {
+public class JobManagerHandler implements IJobManager {
     Logger log = LoggerFactory.getLogger(JobManagerHandler.class);
     private JobHandler handler;
     private ExecutorConfig executorConfig;
@@ -119,6 +118,11 @@ public class JobManagerHandler {
         executor = ExecutorFactory.buildExecutor(executorConfig);
     }
 
+    @Override
+    public void init(JobConfig config, boolean isPlanMode) {
+
+    }
+
     public static JobManagerHandler build(JobConfig config, boolean isPlanMode) {
         return new JobManagerHandler(config, isPlanMode);
     }
@@ -136,6 +140,7 @@ public class JobManagerHandler {
         return handler.failed();
     }
 
+    @Override
     public boolean close() {
         CustomTableEnvironmentContext.clear();
         RowLevelPermissionsContext.clear();
@@ -147,11 +152,13 @@ public class JobManagerHandler {
         return true;
     }
 
+    @Override
     public ObjectNode getJarStreamGraphJson(String statement) {
         StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
         return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
+    @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         prepare(statement);
@@ -218,6 +225,7 @@ public class JobManagerHandler {
         return job.getJobResult();
     }
 
+    @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
         prepare(statement);
@@ -256,6 +264,7 @@ public class JobManagerHandler {
         return job.getJobResult();
     }
 
+    @Override
     public IResult executeDDL(String statement) {
         String[] statements = SqlUtil.getStatements(statement);
         try {
@@ -292,24 +301,28 @@ public class JobManagerHandler {
         return new ErrorResult();
     }
 
+    @Override
     public ExplainResult explainSql(String statement) {
         return Explainer.build(executor, useStatementSet, this)
                 .initialize(config, statement)
                 .explainSql(statement);
     }
 
+    @Override
     public ObjectNode getStreamGraph(String statement) {
         return Explainer.build(executor, useStatementSet, this)
                 .initialize(config, statement)
                 .getStreamGraph(statement);
     }
 
+    @Override
     public String getJobPlanJson(String statement) {
         Explainer explainer = Explainer.build(executor, useStatementSet, this).initialize(config, statement);
         JobParam jobParam = explainer.pretreatStatements(SqlUtil.getStatements(statement));
         return executor.getJobPlanJson(jobParam);
     }
 
+    @Override
     public boolean cancelNormal(String jobId) {
         try {
             return FlinkAPI.build(config.getAddress()).stop(jobId);
@@ -319,6 +332,7 @@ public class JobManagerHandler {
         }
     }
 
+    @Override
     public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig()
@@ -330,6 +344,7 @@ public class JobManagerHandler {
         }
     }
 
+    @Override
     public String exportSql(String sql) {
         String statement = executor.pretreatStatement(sql);
         StringBuilder sb = new StringBuilder();

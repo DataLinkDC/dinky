@@ -19,6 +19,7 @@
 
 package org.dinky.job;
 
+import org.dinky.ServerExecutorService;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.result.ExplainResult;
@@ -32,14 +33,27 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
 @Slf4j
 public class JobManager {
-    JobManagerHandler jobManagerHandler;
-
-    public JobManager() {}
+    private IJobManager jobManagerHandler;
 
     private JobManager(JobConfig config, boolean isPlanMode) {
-        jobManagerHandler = JobManagerHandler.build(config, isPlanMode);
+        registerRemote();
+        jobManagerHandler.init(config, isPlanMode);
+    }
+
+    private void registerRemote() {
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost");
+
+            // 从Registry中检索远程对象的存根/代理
+            jobManagerHandler = (ServerExecutorService)registry.lookup("Compute");
+        }catch (Exception exception) {
+            System.out.println(exception);
+        }
     }
 
     public static JobManager build(JobConfig config) {

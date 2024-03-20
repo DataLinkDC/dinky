@@ -19,8 +19,9 @@
 
 package org.dinky.flink;
 
-import org.dinky.executor.ExecutorConfig;
+import org.dinky.job.IJobManager;
 
-public interface DinkyExecutor {
-    void init(ExecutorConfig executorConfig);
+import java.rmi.Remote;
+
+public interface DinkyExecutor extends Remote, IJobManager {
 }

@@ -19,18 +19,82 @@
 
 package org.dinky;
 
-import org.dinky.executor.Executor;
-import org.dinky.executor.ExecutorConfig;
-import org.dinky.flink.ServerExecutorService;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.dinky.data.result.ExplainResult;
+import org.dinky.data.result.IResult;
+import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManagerHandler;
+import org.dinky.job.JobResult;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class JobManagerServiceImpl extends UnicastRemoteObject implements ServerExecutorService {
-    private Executor executor;
+
+    JobManagerHandler jobManagerHandler;
 
     public JobManagerServiceImpl() throws RemoteException {}
 
     @Override
-    public void init(ExecutorConfig executorConfig) {}
+    public void init(JobConfig config, boolean isPlanMode) {
+        jobManagerHandler = JobManagerHandler.build(config, isPlanMode);
+    }
+
+    @Override
+    public boolean close() {
+        return jobManagerHandler.close();
+    }
+
+    @Override
+    public ObjectNode getJarStreamGraphJson(String statement) {
+        return jobManagerHandler.getJarStreamGraphJson(statement);
+    }
+
+    @Override
+    public JobResult executeJarSql(String statement) throws Exception {
+        return jobManagerHandler.executeJarSql(statement);
+    }
+
+    @Override
+    public JobResult executeSql(String statement) throws Exception {
+        return jobManagerHandler.executeSql(statement);
+    }
+
+    @Override
+    public IResult executeDDL(String statement) {
+        return jobManagerHandler.executeDDL(statement);
+    }
+
+    @Override
+    public ExplainResult explainSql(String statement) {
+        return jobManagerHandler.explainSql(statement);
+    }
+
+    @Override
+    public ObjectNode getStreamGraph(String statement) {
+        return jobManagerHandler.getStreamGraph(statement);
+    }
+
+    @Override
+    public String getJobPlanJson(String statement) {
+        return jobManagerHandler.getJobPlanJson(statement);
+    }
+
+    @Override
+    public boolean cancelNormal(String jobId) {
+        return jobManagerHandler.cancelNormal(jobId);
+    }
+
+    @Override
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
+        return jobManagerHandler.savepoint(jobId, savePointType, savePoint);
+    }
+
+    @Override
+    public String exportSql(String sql) {
+        return jobManagerHandler.exportSql(sql);
+    }
+
 }

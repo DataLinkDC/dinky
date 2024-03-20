@@ -19,18 +19,72 @@
 
 package org.dinky.flink;
 
-import org.dinky.classloader.DinkyClassLoader;
-import org.dinky.executor.ExecutorConfig;
-
-import java.lang.ref.WeakReference;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.dinky.data.result.ExplainResult;
+import org.dinky.data.result.IResult;
+import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobResult;
 
 public class LocalExecutorService implements DinkyExecutor {
-    private final WeakReference<DinkyClassLoader> dinkyClassLoader;
+    @Override
+    public void init(JobConfig config, boolean isPlanMode) {
 
-    public LocalExecutorService() {
-        dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
     }
 
     @Override
-    public void init(ExecutorConfig executorConfig) {}
+    public boolean close() {
+        return false;
+    }
+
+    @Override
+    public ObjectNode getJarStreamGraphJson(String statement) {
+        return null;
+    }
+
+    @Override
+    public JobResult executeJarSql(String statement) throws Exception {
+        return null;
+    }
+
+    @Override
+    public JobResult executeSql(String statement) throws Exception {
+        return null;
+    }
+
+    @Override
+    public IResult executeDDL(String statement) {
+        return null;
+    }
+
+    @Override
+    public ExplainResult explainSql(String statement) {
+        return null;
+    }
+
+    @Override
+    public ObjectNode getStreamGraph(String statement) {
+        return null;
+    }
+
+    @Override
+    public String getJobPlanJson(String statement) {
+        return null;
+    }
+
+    @Override
+    public boolean cancelNormal(String jobId) {
+        return false;
+    }
+
+    @Override
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
+        return null;
+    }
+
+    @Override
+    public String exportSql(String sql) {
+        return null;
+    }
 }

@@ -34,7 +34,6 @@ import org.dinky.data.model.Table;
 import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
-import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.sqllineage.SQLLineageBuilder;
@@ -45,7 +44,6 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.utils.FlinkTableMetadataUtil;
 import org.dinky.utils.RunTimeUtil;
 
 import java.util.ArrayList;

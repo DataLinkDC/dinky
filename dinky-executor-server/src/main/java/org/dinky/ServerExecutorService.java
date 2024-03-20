@@ -19,8 +19,11 @@
 
 package org.dinky;
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello world!");
-    }
+import org.dinky.flink.DinkyExecutor;
+import org.dinky.job.JobConfig;
+
+import java.rmi.Remote;
+
+public interface ServerExecutorService extends Remote, DinkyExecutor {
+
 }
