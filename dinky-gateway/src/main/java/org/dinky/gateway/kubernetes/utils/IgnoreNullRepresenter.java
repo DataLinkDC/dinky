@@ -43,9 +43,11 @@ public class IgnoreNullRepresenter extends Representer {
      */
     @Override
     protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag tag) {
+        // Ignore null value
         if (propertyValue == null) {
             return null;
         }
+        // Ignore empty map and list
         if (propertyValue instanceof Map) {
             if (((Map<?, ?>) propertyValue).isEmpty()) {
                 return null;

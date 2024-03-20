@@ -58,6 +58,10 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * K8sClientHelper
+ * manage k8s client
+ */
 @Data
 @Slf4j
 public class K8sClientHelper {
@@ -76,8 +80,13 @@ public class K8sClientHelper {
         initKubeClient();
     }
 
+    /**
+     * initKubeClient
+     */
     private void initKubeClient() {
+        //k8s flink native client
         client = FlinkKubeClientFactory.getInstance().fromConfiguration(configuration, "client");
+        // k8s fabric client
         if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
             kubernetesClient = new DefaultKubernetesClient();
         } else {
@@ -85,9 +94,17 @@ public class K8sClientHelper {
         }
     }
 
+    /**
+     * createDinkyResource
+     * Create the resources required by Dinky,
+     * and append the owner attribute of the deployment
+     * to automatically clear the related resources
+     * when the deployment is deleted
+     * @param deployment
+     */
     public void createDinkyResource(Deployment deployment) {
         List<HasMetadata> resources = getSqlFileDecorate().buildResources();
-
+        // set owner reference
         OwnerReference deploymentOwnerReference = new OwnerReferenceBuilder()
                 .withName(deployment.getMetadata().getName())
                 .withApiVersion(deployment.getApiVersion())
@@ -99,26 +116,37 @@ public class K8sClientHelper {
 
         resources.forEach(resource ->
                 resource.getMetadata().setOwnerReferences(Collections.singletonList(deploymentOwnerReference)));
+        // create resources
         kubernetesClient.resourceList(resources).createOrReplace();
     }
 
+    /**
+     * initPodTemplate
+     * Preprocess the pod template
+     * @param sqlFile
+     * @return
+     */
     public Map<String, String> initPodTemplate(File sqlFile) {
         Pod pod;
+        // k8s pod template
         Map<String, String> cfg = new HashMap<>();
-
+        // if the user has configured the pod template, combine user's configuration
         if (!TextUtil.isEmpty(k8sConfig.getPodTemplate())) {
             InputStream is =
                     new ByteArrayInputStream(k8sConfig.getTmPodTemplate().getBytes(StandardCharsets.UTF_8));
             pod = kubernetesClient.pods().load(is).get();
         } else {
+            // if the user has not configured the pod template, use the default configuration
             pod = new Pod();
         }
+
+        // decorate the pod template
         sqlFileDecorate = new DinkySqlConfigMapDecorate(configuration, pod, sqlFile);
         Pod sqlDecoratedPod = sqlFileDecorate.decoratePodMount();
 
-        // 使用SnakeYAML生成YAML字符串
+        // use snakyaml to serialize the pod
         Representer representer = new IgnoreNullRepresenter();
-        // 设置Map类型的标签, 只有map类型不会在dump时打印类名
+        //set the label of the Map type, only the map type will not print the class name when dumping
         representer.addClassTag(Pod.class, Tag.MAP);
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -126,6 +154,7 @@ public class K8sClientHelper {
         Yaml yaml = new Yaml(representer, options);
         String dump = yaml.dump(sqlDecoratedPod);
 
+        // save the pod template to a temporary file
         cfg.put(
                 KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE.key(),
                 preparPodTemplate(dump, KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE));
@@ -138,9 +167,16 @@ public class K8sClientHelper {
         cfg.put(
                 KubernetesConfigOptions.KUBE_CONFIG_FILE.key(),
                 preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE));
+        // return the pod template config
         return cfg;
     }
 
+    /**
+     * preparPodTemplate
+     * @param podTemplate
+     * @param option
+     * @return
+     */
     private String preparPodTemplate(String podTemplate, ConfigOption<String> option) {
         if (!TextUtil.isEmpty(podTemplate)) {
             String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
@@ -153,6 +189,11 @@ public class K8sClientHelper {
         return null;
     }
 
+    /**
+     * close
+     * delete the temporary directory and close the client
+     * @return
+     */
     public boolean close() {
         if (client != null) {
             client.close();
