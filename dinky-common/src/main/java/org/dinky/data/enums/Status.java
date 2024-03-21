@@ -357,6 +357,8 @@ public enum Status {
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE(1174, "sys.env.settings.maxRetainCount.note"),
     SYS_ENV_SETTINGS_EXPRESSION_VARIABLE(1175, "sys.env.settings.expressionVariable"),
     SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE(1176, "sys.env.settings.expressionVariable.note"),
+    SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY(1177, "sys.env.settings.taskOwnerLockStrategy"),
+    SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY_NOTE(1178, "sys.env.settings.taskOwnerLockStrategy.note"),
 
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE(118, "sys.dolphinscheduler.settings.enable"),
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE(119, "sys.dolphinscheduler.settings.enable.note"),
