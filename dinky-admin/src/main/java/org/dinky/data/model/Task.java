@@ -168,6 +168,20 @@ public class Task extends SuperEntity<Task> {
             notes = "ID of the user who created the task")
     private Integer operator;
 
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "String",
+            example = "1001,1002,",
+            notes = "list of secondary responsible persons' ids, separated by commas")
+    private String secondLevelOwners;
+
     public Task(Integer id, Integer jobInstanceId) {
         this.jobInstanceId = jobInstanceId;
         this.setId(id);

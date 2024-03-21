@@ -215,6 +215,20 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "The maximum number of rows to return")
     private Integer maxRowNum = 100;
 
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "String",
+            example = "1001,1002,",
+            notes = "list of secondary responsible persons' ids, separated by commas")
+    private String secondLevelOwners;
+
     public JobConfig getJobConfig() {
 
         Map<String, String> parsedConfig =
