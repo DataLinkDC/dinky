@@ -27,8 +27,6 @@ import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.LogUtil;
 
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
-
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +38,6 @@ import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceList;
 import io.fabric8.kubernetes.api.model.ServicePort;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 
@@ -132,7 +129,7 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
         } catch (KubernetesClientException e) {
             // some error while connecting to kube cluster
             result.fail(LogUtil.getError(e));
-           throw e;
+            throw e;
         }
         logger.info(
                 "submit {} job finish, web url is {}, jobid is {}", getType(), result.getWebURL(), result.getJids());
