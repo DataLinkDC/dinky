@@ -137,8 +137,7 @@ public class K8sClientHelper {
         Map<String, String> cfg = new HashMap<>();
         // if the user has configured the pod template, combine user's configuration
         if (!TextUtil.isEmpty(k8sConfig.getPodTemplate())) {
-            InputStream is =
-                    new ByteArrayInputStream(k8sConfig.getPodTemplate().getBytes(StandardCharsets.UTF_8));
+            InputStream is = new ByteArrayInputStream(k8sConfig.getPodTemplate().getBytes(StandardCharsets.UTF_8));
             pod = kubernetesClient.pods().load(is).get();
         } else {
             // if the user has not configured the pod template, use the default configuration
