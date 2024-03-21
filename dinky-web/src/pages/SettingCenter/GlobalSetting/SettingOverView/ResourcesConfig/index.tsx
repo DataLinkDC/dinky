@@ -18,7 +18,7 @@
  */
 
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {BaseConfigProperties, GLOBAL_SETTING_KEYS} from '@/types/SettingCenter/data.d';
+import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter/data.d';
 import { l } from '@/utils/intl';
 import { RadioChangeEvent, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -62,12 +62,13 @@ export const ResourcesConfig = ({ data, onSave, auth }: ResourcesConfigProps) =>
     );
     setFilterData({ base, hdfs, oss });
     // 获取当前的 model
-    const currentModel = base.find((d) => d.key === GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_MODEL)?.value;
+    const currentModel = base.find(
+      (d) => d.key === GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_MODEL
+    )?.value;
     if (currentModel) {
       setModel(currentModel);
     }
   }, [data]);
-
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
     setLoading(true);

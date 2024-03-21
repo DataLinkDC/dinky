@@ -91,13 +91,12 @@ export interface LogInfo {
   leaf: boolean;
 }
 
-
 /**
  * 任务责任人锁定策略
  */
 export enum TaskOwnerLockingStrategy {
   ONLY_TASK_OWNER_CAN_OPERATE = 'ONLY_TASK_OWNER_CAN_OPERATE', // 只有第一个责任人可以操作
-  ALL_CAN_OPERATE = 'ALL_CAN_OPERATE', // 所有责任人都可以操作, 即不上锁
+  ALL_CAN_OPERATE = 'ALL_CAN_OPERATE' // 所有责任人都可以操作, 即不上锁
 }
 
 /**
@@ -149,5 +148,5 @@ export enum GLOBAL_SETTING_KEYS {
   SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER = 'sys.resource.settings.hdfs.root.user',
   SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULT_FS = 'sys.resource.settings.hdfs.fs.defaultFS',
   SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE = 'sys.resource.settings.hdfs.core.site',
-  SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE = 'sys.resource.settings.hdfs.hdfs.site',
+  SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE = 'sys.resource.settings.hdfs.hdfs.site'
 }

@@ -18,9 +18,9 @@
  */
 
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {BaseConfigProperties, GLOBAL_SETTING_KEYS, TaskOwnerLockingStrategy} from '@/types/SettingCenter/data.d';
+import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter/data.d';
 import { l } from '@/utils/intl';
-import {RadioChangeEvent, Tag} from 'antd';
+import { RadioChangeEvent, Tag } from 'antd';
 import React from 'react';
 
 interface EnvConfigProps {
