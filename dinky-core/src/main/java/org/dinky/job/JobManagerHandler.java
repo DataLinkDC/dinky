@@ -415,14 +415,6 @@ public class JobManagerHandler implements IJobManager {
         this.log = log;
     }
 
-    public JobHandler getHandler() {
-        return handler;
-    }
-
-    public void setHandler(JobHandler handler) {
-        this.handler = handler;
-    }
-
     public ExecutorConfig getExecutorConfig() {
         return executorConfig;
     }

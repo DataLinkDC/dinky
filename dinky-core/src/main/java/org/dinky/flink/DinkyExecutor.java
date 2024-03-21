@@ -19,9 +19,7 @@
 
 package org.dinky.flink;
 
-import org.dinky.job.IJobManager;
-
 import java.rmi.Remote;
 
-public interface DinkyExecutor extends Remote, IJobManager {
+public interface DinkyExecutor extends Remote {
 }

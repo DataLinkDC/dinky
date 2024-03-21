@@ -19,11 +19,39 @@
 
 package org.dinky;
 
-import org.dinky.flink.DinkyExecutor;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.dinky.data.result.ExplainResult;
+import org.dinky.data.result.IResult;
+import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobConfig;
+import org.dinky.job.JobResult;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-public interface ServerExecutorService extends Remote, DinkyExecutor {
+public interface ServerExecutorService extends Remote {
+    void init(JobConfig config, boolean isPlanMode) throws RemoteException;
 
+    boolean close() throws RemoteException;
+
+    ObjectNode getJarStreamGraphJson(String statement) throws RemoteException;
+
+    JobResult executeJarSql(String statement) throws RemoteException;
+
+    JobResult executeSql(String statement) throws RemoteException;
+
+    IResult executeDDL(String statement) throws RemoteException;
+
+    ExplainResult explainSql(String statement) throws RemoteException;
+
+    ObjectNode getStreamGraph(String statement) throws RemoteException;
+
+    String getJobPlanJson(String statement) throws RemoteException;
+
+    boolean cancelNormal(String jobId) throws RemoteException;
+
+    SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) throws RemoteException;
+
+    String exportSql(String sql) throws RemoteException;
 }

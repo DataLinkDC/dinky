@@ -9,7 +9,7 @@ public class RMIServer {
 
         try {
             ServerExecutorService remoteMath = new JobManagerServiceImpl();
-            LocateRegistry.createRegistry(9099);
+            LocateRegistry.createRegistry(1099);
             Registry registry = LocateRegistry.getRegistry();
             registry.bind("Compute", remoteMath);
             System.out.println("Math server ready");

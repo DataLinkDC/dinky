@@ -32,6 +32,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 @ApiModel(value = "JobConfig", description = "Configuration details of a job")
-public class JobConfig {
+public class JobConfig implements Serializable {
 
     @ApiModelProperty(
             value = "Flink run mode",

@@ -33,16 +33,21 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 @Slf4j
 public class JobManager {
-    private IJobManager jobManagerHandler;
+    private ServerExecutorService jobManagerHandler;
 
     private JobManager(JobConfig config, boolean isPlanMode) {
         registerRemote();
-        jobManagerHandler.init(config, isPlanMode);
+        try {
+            jobManagerHandler.init(config, isPlanMode);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void registerRemote() {
@@ -65,11 +70,19 @@ public class JobManager {
     }
 
     public boolean close() {
-        return jobManagerHandler.close();
+        try {
+            return jobManagerHandler.close();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ObjectNode getJarStreamGraphJson(String statement) {
-        return jobManagerHandler.getJarStreamGraphJson(statement);
+        try {
+            return jobManagerHandler.getJarStreamGraphJson(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
@@ -83,7 +96,11 @@ public class JobManager {
     }
 
     public IResult executeDDL(String statement) {
-        return jobManagerHandler.executeDDL(statement);
+        try {
+            return jobManagerHandler.executeDDL(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static SelectResult getJobData(String jobId) {
@@ -91,26 +108,50 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return jobManagerHandler.explainSql(statement);
+        try {
+            return jobManagerHandler.explainSql(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return jobManagerHandler.getStreamGraph(statement);
+        try {
+            return jobManagerHandler.getStreamGraph(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getJobPlanJson(String statement) {
-        return jobManagerHandler.getJobPlanJson(statement);
+        try {
+            return jobManagerHandler.getJobPlanJson(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean cancelNormal(String jobId) {
-        return jobManagerHandler.cancelNormal(jobId);
+        try {
+            return jobManagerHandler.cancelNormal(jobId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
-        return jobManagerHandler.savepoint(jobId, savePointType, savePoint);
+        try {
+            return jobManagerHandler.savepoint(jobId, savePointType, savePoint);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String exportSql(String sql) {
-        return jobManagerHandler.exportSql(sql);
+        try {
+            return jobManagerHandler.exportSql(sql);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

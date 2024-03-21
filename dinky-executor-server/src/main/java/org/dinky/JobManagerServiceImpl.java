@@ -35,7 +35,8 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
 
     JobManagerHandler jobManagerHandler;
 
-    public JobManagerServiceImpl() throws RemoteException {}
+    public JobManagerServiceImpl() throws RemoteException {
+    }
 
     @Override
     public void init(JobConfig config, boolean isPlanMode) {
@@ -48,47 +49,55 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     }
 
     @Override
-    public ObjectNode getJarStreamGraphJson(String statement) {
+    public ObjectNode getJarStreamGraphJson(String statement) throws RemoteException {
         return jobManagerHandler.getJarStreamGraphJson(statement);
     }
 
     @Override
-    public JobResult executeJarSql(String statement) throws Exception {
-        return jobManagerHandler.executeJarSql(statement);
+    public JobResult executeJarSql(String statement) throws RemoteException {
+        try {
+            return jobManagerHandler.executeJarSql(statement);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override
-    public JobResult executeSql(String statement) throws Exception {
-        return jobManagerHandler.executeSql(statement);
+    public JobResult executeSql(String statement) throws RemoteException {
+        try {
+            return jobManagerHandler.executeSql(statement);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override
-    public IResult executeDDL(String statement) {
+    public IResult executeDDL(String statement) throws RemoteException {
         return jobManagerHandler.executeDDL(statement);
     }
 
     @Override
-    public ExplainResult explainSql(String statement) {
+    public ExplainResult explainSql(String statement) throws RemoteException {
         return jobManagerHandler.explainSql(statement);
     }
 
     @Override
-    public ObjectNode getStreamGraph(String statement) {
+    public ObjectNode getStreamGraph(String statement) throws RemoteException {
         return jobManagerHandler.getStreamGraph(statement);
     }
 
     @Override
-    public String getJobPlanJson(String statement) {
+    public String getJobPlanJson(String statement) throws RemoteException {
         return jobManagerHandler.getJobPlanJson(statement);
     }
 
     @Override
-    public boolean cancelNormal(String jobId) {
+    public boolean cancelNormal(String jobId) throws RemoteException {
         return jobManagerHandler.cancelNormal(jobId);
     }
 
     @Override
-    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) throws RemoteException {
         return jobManagerHandler.savepoint(jobId, savePointType, savePoint);
     }
 
