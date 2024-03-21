@@ -149,6 +149,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch({
       type: CONFIG_MODEL_ASYNC.queryDsConfig,
       payload: data
+    }),
+  queryTaskOwnerLockingStrategy: (data: string) =>
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryTaskOwnerLockingStrategy,
+      payload: data
     })
 });
 

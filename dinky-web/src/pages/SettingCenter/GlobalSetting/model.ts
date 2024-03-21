@@ -17,8 +17,8 @@
  *
  */
 
-import { queryDsConfig } from '@/pages/SettingCenter/GlobalSetting/service';
-import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import {queryDsConfig, queryTaskOwnerLockingStrategy} from '@/pages/SettingCenter/GlobalSetting/service';
+import {BaseConfigProperties, GLOBAL_SETTING_KEYS, TaskOwnerLockingStrategy} from '@/types/SettingCenter/data.d';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
 import { Reducer } from 'umi';
@@ -28,6 +28,7 @@ const SYS_CONFIG = 'SysConfig';
 export type SysConfigStateType = {
   dsConfig: BaseConfigProperties[];
   enabledDs: boolean;
+  taskOwnerLockingStrategy: TaskOwnerLockingStrategy;
 };
 
 export type ConfigModelType = {
@@ -35,10 +36,12 @@ export type ConfigModelType = {
   state: SysConfigStateType;
   effects: {
     queryDsConfig: Effect;
+    queryTaskOwnerLockingStrategy: Effect;
   };
   reducers: {
     saveDsConfig: Reducer<SysConfigStateType>;
     updateEnabledDs: Reducer<SysConfigStateType>;
+    updateTaskOwnerLockingStrategy: Reducer<SysConfigStateType>;
   };
 };
 
@@ -46,10 +49,22 @@ const ConfigModel: ConfigModelType = {
   namespace: SYS_CONFIG,
   state: {
     dsConfig: [],
-    enabledDs: false
+    enabledDs: false,
+    taskOwnerLockingStrategy: TaskOwnerLockingStrategy.ALL_CAN_OPERATE,
   },
 
   effects: {
+    *queryTaskOwnerLockingStrategy({ payload }, { call, put }) {
+      const response: BaseConfigProperties[] = yield call(queryTaskOwnerLockingStrategy, payload);
+      if (response && response.length > 0) {
+        const taskOwnerLockingStrategy = response.find(item => item.key === GLOBAL_SETTING_KEYS.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY);
+        console.log('taskOwnerLockingStrategy', taskOwnerLockingStrategy)
+        yield put({
+          type: 'updateTaskOwnerLockingStrategy',
+          payload: taskOwnerLockingStrategy ? taskOwnerLockingStrategy.value : TaskOwnerLockingStrategy.ALL_CAN_OPERATE
+        });
+      }
+    },
     *queryDsConfig({ payload }, { call, put }) {
       const response: BaseConfigProperties[] = yield call(queryDsConfig, payload);
       yield put({
@@ -59,7 +74,7 @@ const ConfigModel: ConfigModelType = {
       if (response && response.length > 0) {
         const enabledDs = response.some(
           (item: BaseConfigProperties) =>
-            item.key === 'sys.dolphinscheduler.settings.enable' && item.value === true
+            item.key === GLOBAL_SETTING_KEYS.SYS_DOLPHINSETTINGS_ENABLE && item.value === true
         );
         yield put({
           type: 'updateEnabledDs',
@@ -80,6 +95,12 @@ const ConfigModel: ConfigModelType = {
       return {
         ...state,
         enabledDs: payload
+      };
+    },
+    updateTaskOwnerLockingStrategy(state, { payload }) {
+      return {
+        ...state,
+        taskOwnerLockingStrategy: payload
       };
     }
   }

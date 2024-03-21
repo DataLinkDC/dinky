@@ -92,9 +92,13 @@ const HeaderContainer = (props: connect) => {
     updateJobRunningMsg,
     updateSelectBottomKey,
     queryDsConfig,
+    queryTaskOwnerLockingStrategy,
     queryTaskData,
-    enabledDs
+    enabledDs,
+    taskOwnerLockingStrategy,
   } = props;
+
+  console.log(taskOwnerLockingStrategy)// 从这里拿到 taskOwnerLockingStrategy 使用枚举 TaskOwnerLockingStrategy 的值进行判断走哪个逻辑交互
 
   const [modal, contextHolder] = Modal.useModal();
 
@@ -116,6 +120,7 @@ const HeaderContainer = (props: connect) => {
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
+    queryTaskOwnerLockingStrategy(SettingConfigKeyEnum.ENV.toLowerCase());
   }, []);
 
   const currentData = getCurrentData(panes, activeKey);
@@ -539,7 +544,8 @@ export default connect(
   ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     tabs: Studio.tabs,
     dsConfig: SysConfig.dsConfig,
-    enabledDs: SysConfig.enabledDs
+    enabledDs: SysConfig.enabledDs,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   }),
   mapDispatchToProps
 )(memo(HeaderContainer));
