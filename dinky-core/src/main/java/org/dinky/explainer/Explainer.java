@@ -204,11 +204,11 @@ public class Explainer {
         boolean correct = true;
         try {
             jobParam = pretreatStatements(SqlUtil.getStatements(statement));
-        }catch (Exception e){
+        } catch (Exception e) {
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
             resultBuilder.error(e.getMessage()).parseTrue(false);
             sqlExplainRecords.add(resultBuilder.build());
-            log.error("failed pretreatStatements:",e);
+            log.error("failed pretreatStatements:", e);
             return new ExplainResult(false, sqlExplainRecords.size(), sqlExplainRecords);
         }
         for (StatementParam item : jobParam.getDdl()) {
