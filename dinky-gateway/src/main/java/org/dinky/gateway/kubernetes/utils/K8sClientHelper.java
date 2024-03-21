@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.kubernetes.utils;
 
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.kubernetes.decorate.DinkySqlConfigMapDecorate;
 import org.dinky.utils.TextUtil;
