@@ -19,6 +19,9 @@
 
 package org.dinky.gateway;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
+import org.apache.commons.beanutils.BeanUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -47,6 +50,7 @@ import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -80,7 +84,11 @@ public abstract class AbstractGateway implements Gateway {
     public AbstractGateway() {}
 
     public AbstractGateway(GatewayConfig config) {
-        this.config = config;
+        try {
+            this.config = (GatewayConfig) BeanUtils.cloneBean(config);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -90,7 +98,11 @@ public abstract class AbstractGateway implements Gateway {
 
     @Override
     public void setGatewayConfig(GatewayConfig config) {
-        this.config = config;
+        try {
+            this.config = (GatewayConfig) BeanUtils.cloneBean(config);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected abstract void init();
