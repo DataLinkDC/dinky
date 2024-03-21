@@ -58,7 +58,7 @@ const ConfigModel: ConfigModelType = {
       const response: BaseConfigProperties[] = yield call(queryTaskOwnerLockingStrategy, payload);
       if (response && response.length > 0) {
         const taskOwnerLockingStrategy = response.find(item => item.key === GLOBAL_SETTING_KEYS.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY);
-        console.log('taskOwnerLockingStrategy', taskOwnerLockingStrategy)
+
         yield put({
           type: 'updateTaskOwnerLockingStrategy',
           payload: taskOwnerLockingStrategy ? taskOwnerLockingStrategy.value : TaskOwnerLockingStrategy.ALL_CAN_OPERATE
