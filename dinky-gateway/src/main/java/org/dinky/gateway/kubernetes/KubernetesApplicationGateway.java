@@ -84,13 +84,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             ClusterClientProvider<String> clusterClient =
                     deployApplication(getK8sClientHelper().getClient());
 
-            Deployment deployment = kubernetesClient
-                    .apps()
-                    .deployments()
-                    .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
-                    .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
-                    .get();
-            getK8sClientHelper().createDinkyResource(deployment);
+            Deployment deployment = getK8sClientHelper().createDinkyResource();
 
             KubernetesResult kubernetesResult = waitForJmAndJobStart(kubernetesClient, deployment, clusterClient);
             kubernetesResult.success();

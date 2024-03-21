@@ -100,9 +100,15 @@ public class K8sClientHelper {
      * and append the owner attribute of the deployment
      * to automatically clear the related resources
      * when the deployment is deleted
-     * @param deployment
      */
-    public void createDinkyResource(Deployment deployment) {
+    public Deployment createDinkyResource() {
+        log.info("createDinkyResource");
+        Deployment deployment = kubernetesClient
+                .apps()
+                .deployments()
+                .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
+                .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
+                .get();
         List<HasMetadata> resources = getSqlFileDecorate().buildResources();
         // set owner reference
         OwnerReference deploymentOwnerReference = new OwnerReferenceBuilder()
@@ -118,6 +124,7 @@ public class K8sClientHelper {
                 resource.getMetadata().setOwnerReferences(Collections.singletonList(deploymentOwnerReference)));
         // create resources
         kubernetesClient.resourceList(resources).createOrReplace();
+        return deployment;
     }
 
     /**
