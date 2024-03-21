@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.enums.UpgradeMode;
@@ -34,6 +33,7 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
