@@ -19,19 +19,18 @@
 
 package org.dinky.data.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import org.apache.ibatis.type.JdbcType;
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
-import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;

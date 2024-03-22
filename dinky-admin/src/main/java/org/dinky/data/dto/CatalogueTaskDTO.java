@@ -19,18 +19,17 @@
 
 package org.dinky.data.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import org.apache.ibatis.type.JdbcType;
 import org.dinky.data.model.ext.TaskExtConfig;
+import org.dinky.data.typehandler.ListTypeHandler;
+
+import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.dinky.data.typehandler.JSONObjectHandler;
-import org.dinky.data.typehandler.ListTypeHandler;
-
-import java.util.List;
 
 /**
  * CatalogueTaskDTO
