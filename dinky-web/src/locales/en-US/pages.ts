@@ -483,6 +483,8 @@ export default {
   'pages.datastudio.label.jobInfo.id': 'Job ID',
   'pages.datastudio.label.jobInfo.name': 'Job name',
   'pages.datastudio.label.jobInfo.versionId': 'Version number',
+  'pages.datastudio.label.jobInfo.firstLevelOwner': 'owner',
+  'pages.datastudio.label.jobInfo.secondLevelOwners': 'maintainer',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',

@@ -19,6 +19,7 @@
 
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
 import { Descriptions } from 'antd';
@@ -26,10 +27,20 @@ import Paragraph from 'antd/es/typography/Paragraph';
 
 const JobInfo = (props: any) => {
   const {
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey },
+    users
   } = props;
 
   const currentInfo = getCurrentData(panes, activeKey);
+
+  const getUserName = (id: Number) => {
+    let name = '';
+    const user: UserBaseInfo.User = users.find((user: UserBaseInfo.User) => user.id === id);
+    if (user && user.nickname) {
+      name = user.nickname;
+    }
+    return name;
+  };
 
   return (
     <div style={{ paddingInline: 8 }}>
@@ -46,11 +57,22 @@ const JobInfo = (props: any) => {
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
           {currentInfo?.versionId}
         </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.firstLevelOwner')}>
+          {getUserName(currentInfo?.firstLevelOwner)}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.secondLevelOwners')}>
+          {currentInfo?.secondLevelOwners
+            ?.map((user: Number) => {
+              return getUserName(user);
+            })
+            ?.join()}
+        </Descriptions.Item>
       </Descriptions>
     </div>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs
+  tabs: Studio.tabs,
+  users: Studio.users
 }))(JobInfo);

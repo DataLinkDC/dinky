@@ -458,6 +458,8 @@ export default {
   'pages.datastudio.label.jobInfo.id': '任务ID',
   'pages.datastudio.label.jobInfo.name': '任务名称',
   'pages.datastudio.label.jobInfo.versionId': '版本号',
+  'pages.datastudio.label.jobInfo.firstLevelOwner': '责任人',
+  'pages.datastudio.label.jobInfo.secondLevelOwners': '维护人',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',

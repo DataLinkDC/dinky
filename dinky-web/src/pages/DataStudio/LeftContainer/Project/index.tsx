@@ -231,6 +231,8 @@ const Project: React.FC = (props: connect) => {
             const { taskData } = params as DataStudioParams;
             if (taskData) {
               taskData.name = values.name;
+              taskData.firstLevelOwner = values.firstLevelOwner;
+              taskData.secondLevelOwners = values.secondLevelOwners;
             }
           }
           dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });

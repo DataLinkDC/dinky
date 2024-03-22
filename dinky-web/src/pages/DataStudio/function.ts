@@ -31,6 +31,7 @@ import {
 } from '@/pages/DataStudio/model';
 import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
 import { DIALECT } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
 
@@ -240,4 +241,13 @@ export const getFooterValue = (panes: any, activeKey: string): Partial<FooterTyp
         codeType: currentTab.subType
       }
     : {};
+};
+
+export const getUserName = (id: Number, users: UserBaseInfo.User[] = []) => {
+  let name = '';
+  const user = users.find((user: UserBaseInfo.User) => user.id === id);
+  if (user && user.nickname) {
+    name = user.nickname;
+  }
+  return name;
 };

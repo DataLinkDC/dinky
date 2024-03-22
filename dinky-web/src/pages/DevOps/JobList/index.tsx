@@ -19,12 +19,14 @@
 
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
+import { getUserName, mapDispatchToProps } from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
   generateList,
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import { StateType } from '@/pages/DataStudio/model';
 import { DevopContext } from '@/pages/DevOps';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { getJobDuration } from '@/pages/DevOps/function';
@@ -33,12 +35,14 @@ import { queryList } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
+import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { ClearOutlined, ClockCircleTwoTone, EyeTwoTone, RedoOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProCard, ProTable } from '@ant-design/pro-components';
+import { connect } from '@umijs/max';
 import { Button, Empty, Radio, Table, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
@@ -46,7 +50,8 @@ import { history } from 'umi';
 
 const { DirectoryTree } = Tree;
 
-const JobList = () => {
+const JobList = (props: connect) => {
+  const { users, queryUserData } = props;
   const refObject = useRef<HTMLDivElement>(null);
   const tableRef = useRef<ActionType>();
   const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
@@ -79,6 +84,21 @@ const JobList = () => {
       dataIndex: 'jid',
       width: '20%',
       copyable: true
+    },
+    {
+      title: l('global.table.firstLevelOwner'),
+      hideInSearch: true,
+      render: (_: any, row: Jobs.JobInstance) => getUserName(row?.firstLevelOwner, users)
+    },
+    {
+      title: l('global.table.secondLevelOwners'),
+      hideInSearch: true,
+      render: (_: any, row: Jobs.JobInstance) =>
+        row?.secondLevelOwners
+          ?.map((id: Number) => {
+            return getUserName(id, users);
+          })
+          ?.join()
     },
     {
       title: l('global.table.createTime'),
@@ -140,6 +160,7 @@ const JobList = () => {
 
   useEffect(() => {
     setInterval(() => tableRef.current?.reload(false), 5 * 1000);
+    queryUserData({ id: getTenantByLocalStorage() });
   }, []);
 
   const onChangeSearch = (e: any) => {
@@ -313,4 +334,9 @@ const JobList = () => {
     </ProCard>
   );
 };
-export default JobList;
+export default connect(
+  ({ Studio }: { Studio: StateType }) => ({
+    users: Studio.users
+  }),
+  mapDispatchToProps
+)(JobList);
