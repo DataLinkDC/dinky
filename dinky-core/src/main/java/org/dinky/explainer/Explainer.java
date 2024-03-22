@@ -198,10 +198,19 @@ public class Explainer {
 
     public ExplainResult explainSql(String statement) {
         log.info("Start explain FlinkSQL...");
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+        JobParam jobParam;
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
         int index = 1;
         boolean correct = true;
+        try {
+            jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+        } catch (Exception e) {
+            SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
+            resultBuilder.error(e.getMessage()).parseTrue(false);
+            sqlExplainRecords.add(resultBuilder.build());
+            log.error("failed pretreatStatements:", e);
+            return new ExplainResult(false, sqlExplainRecords.size(), sqlExplainRecords);
+        }
         for (StatementParam item : jobParam.getDdl()) {
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
             try {
