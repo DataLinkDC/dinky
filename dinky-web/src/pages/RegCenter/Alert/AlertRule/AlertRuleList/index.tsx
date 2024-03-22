@@ -170,7 +170,10 @@ const AlertRuleList: React.FC = () => {
         loading={ruleState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key={`CreateRule_auth`} path={PermissionConstants.REGISTRATION_ALERT_RULE_ADD}>
+          <Authorized
+            key={`CreateRule_auth`}
+            path={PermissionConstants.REGISTRATION_ALERT_RULE_ADD}
+          >
             <CreateBtn
               key={'CreateRule'}
               onClick={() => setRuleState((prevState) => ({ ...prevState, addedOpen: true }))}

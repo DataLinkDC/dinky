@@ -100,7 +100,6 @@ export enum PermissionConstants {
   REGISTRATION_ALERT_RULE_EDIT = '/registration/alert/rule/edit',
   REGISTRATION_ALERT_RULE_DELETE = '/registration/alert/rule/delete',
 
-
   /**
    * cluster config
    */
@@ -249,6 +248,5 @@ export enum PermissionConstants {
    * system log
    */
   SYSTEM_SETTING_INFO_LOG_LIST = '/settings/systemlog/loglist',
-  SYSTEM_SETTING_INFO_ROOT_LOG = '/settings/systemlog/rootlog',
-
+  SYSTEM_SETTING_INFO_ROOT_LOG = '/settings/systemlog/rootlog'
 }
