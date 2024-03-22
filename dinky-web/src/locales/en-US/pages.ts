@@ -71,6 +71,14 @@ export default {
   'catalog.udf.className.placeholder': 'Please enter the class or method name',
   'catalog.udf.templateId': 'UDF Template',
   'catalog.udf.templateId.placeholder': 'Please select UDF template',
+  'catalog.firstLevelOwner': 'owner',
+  'catalog.firstLevelOwner.tip1': 'Please select the person responsible for the task',
+  'catalog.firstLevelOwner.tip2':
+    'Select the person responsible for the task and have direct responsibility for the task',
+  'catalog.secondLevelOwners': 'maintainer',
+  'catalog.secondLevelOwners.tip1': 'Please select the task maintainer',
+  'catalog.secondLevelOwners.tip2':
+    'Choose a task maintainer who is indirectly responsible for the task',
   /**
    *
    * datastudio

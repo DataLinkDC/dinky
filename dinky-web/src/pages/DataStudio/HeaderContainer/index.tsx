@@ -95,11 +95,11 @@ const HeaderContainer = (props: connect) => {
     queryTaskOwnerLockingStrategy,
     queryTaskData,
     enabledDs,
-    taskOwnerLockingStrategy,
+    taskOwnerLockingStrategy
   } = props;
 
   // 打印测试
-  console.log(taskOwnerLockingStrategy)// 从这里拿到 taskOwnerLockingStrategy 使用枚举 TaskOwnerLockingStrategy 的值进行判断走哪个逻辑交互
+  console.log(taskOwnerLockingStrategy); // 从这里拿到 taskOwnerLockingStrategy 使用枚举 TaskOwnerLockingStrategy 的值进行判断走哪个逻辑交互
 
   const [modal, contextHolder] = Modal.useModal();
 

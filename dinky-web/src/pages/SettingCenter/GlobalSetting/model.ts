@@ -17,8 +17,15 @@
  *
  */
 
-import {queryDsConfig, queryTaskOwnerLockingStrategy} from '@/pages/SettingCenter/GlobalSetting/service';
-import {BaseConfigProperties, GLOBAL_SETTING_KEYS, TaskOwnerLockingStrategy} from '@/types/SettingCenter/data.d';
+import {
+  queryDsConfig,
+  queryTaskOwnerLockingStrategy
+} from '@/pages/SettingCenter/GlobalSetting/service';
+import {
+  BaseConfigProperties,
+  GLOBAL_SETTING_KEYS,
+  TaskOwnerLockingStrategy
+} from '@/types/SettingCenter/data.d';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
 import { Reducer } from 'umi';
@@ -50,18 +57,22 @@ const ConfigModel: ConfigModelType = {
   state: {
     dsConfig: [],
     enabledDs: false,
-    taskOwnerLockingStrategy: TaskOwnerLockingStrategy.ALL_CAN_OPERATE,
+    taskOwnerLockingStrategy: TaskOwnerLockingStrategy.ALL_CAN_OPERATE
   },
 
   effects: {
     *queryTaskOwnerLockingStrategy({ payload }, { call, put }) {
       const response: BaseConfigProperties[] = yield call(queryTaskOwnerLockingStrategy, payload);
       if (response && response.length > 0) {
-        const taskOwnerLockingStrategy = response.find(item => item.key === GLOBAL_SETTING_KEYS.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY);
+        const taskOwnerLockingStrategy = response.find(
+          (item) => item.key === GLOBAL_SETTING_KEYS.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY
+        );
 
         yield put({
           type: 'updateTaskOwnerLockingStrategy',
-          payload: taskOwnerLockingStrategy ? taskOwnerLockingStrategy.value : TaskOwnerLockingStrategy.ALL_CAN_OPERATE
+          payload: taskOwnerLockingStrategy
+            ? taskOwnerLockingStrategy.value
+            : TaskOwnerLockingStrategy.ALL_CAN_OPERATE
         });
       }
     },

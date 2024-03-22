@@ -66,6 +66,13 @@ export default {
   'catalog.udf.className.placeholder': '请输入类或方法名',
   'catalog.udf.templateId': 'UDF 模板',
   'catalog.udf.templateId.placeholder': '请选择 UDF 模板',
+  'catalog.firstLevelOwner': '责任人',
+  'catalog.firstLevelOwner.tip1': '请选择任务责任人',
+  'catalog.firstLevelOwner.tip2': '选择任务责任人，对任务负有直接责任',
+  'catalog.secondLevelOwners': '维护人',
+  'catalog.secondLevelOwners.tip1': '请选择任务维护人',
+  'catalog.secondLevelOwners.tip2': '选择任务维护人，对任务负有间接责任',
+
   /**
    *
    * datastudio

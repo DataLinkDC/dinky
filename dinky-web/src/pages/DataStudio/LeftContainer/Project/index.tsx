@@ -64,7 +64,8 @@ const Project: React.FC = (props: connect) => {
     dispatch,
     project: { expandKeys, selectKey },
     tabs: { panes, activeKey },
-    tabs
+    tabs,
+    users
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
@@ -462,6 +463,7 @@ const Project: React.FC = (props: connect) => {
         title={l('right.menu.createTask')}
         values={{}}
         modalVisible={projectState.isCreateTask}
+        users={users}
         onCancel={() =>
           setProjectState((prevState) => ({
             ...prevState,
@@ -477,6 +479,7 @@ const Project: React.FC = (props: connect) => {
           title={l('button.edit')}
           values={projectState.value}
           modalVisible={projectState.isEdit}
+          users={users}
           onCancel={() =>
             setProjectState((prevState) => ({
               ...prevState,
@@ -493,5 +496,6 @@ const Project: React.FC = (props: connect) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
-  project: Studio.project
+  project: Studio.project,
+  users: Studio.users
 }))(Project);

@@ -34,6 +34,8 @@ export type Catalogue = {
   children: Catalogue[];
   configJson: TaskExtConfig;
   task: TaskInfo;
+  firstLevelOwner: Number;
+  secondLevelOwners: [];
 };
 
 export type TaskUdfConfig = {
@@ -86,6 +88,8 @@ export type TaskInfo = {
   alertGroupName: string;
   createTime: Date;
   updateTime: Date;
+  firstLevelOwner: Number;
+  secondLevelOwners: [];
 };
 
 export type SavePoint = {

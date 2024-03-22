@@ -109,6 +109,12 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
       type: STUDIO_MODEL_ASYNC.queryClusterConfigurationData
     });
   },
+  queryUserData: (params: {}) => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryUserData,
+      payload: params
+    });
+  },
 
   saveProject: (data: any[]) =>
     dispatch({
