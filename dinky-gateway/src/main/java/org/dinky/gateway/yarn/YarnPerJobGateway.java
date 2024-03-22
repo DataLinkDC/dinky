@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.data.enums.GatewayType;
@@ -36,6 +35,7 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.URLUtil;
 

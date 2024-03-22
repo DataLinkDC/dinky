@@ -89,8 +89,7 @@ import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
-    private final String tmpConfDir = String.format(
-            "%s/tmp/%s", System.getProperty("user.dir"), UUID.randomUUID());
+    private final String tmpConfDir = String.format("%s/tmp/%s", System.getProperty("user.dir"), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 

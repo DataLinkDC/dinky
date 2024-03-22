@@ -38,12 +38,9 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
 
 /**
  * YarnApplicationGateway
@@ -102,5 +99,4 @@ public class YarnApplicationGateway extends YarnGateway {
         }
         return result;
     }
-
 }
