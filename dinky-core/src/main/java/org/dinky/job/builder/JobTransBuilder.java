@@ -220,7 +220,7 @@ public class JobTransBuilder implements JobBuilder {
                 .getConfig()
                 .getConfiguration()
                 .toMap());
-
+        config.getGatewayConfig().setSql(jobParam.getParsedSql());
         if (runMode.isApplicationMode()) {
             // Application mode need to submit dinky-app.jar that in the hdfs or image.
             gatewayResult = Gateway.build(config.getGatewayConfig())

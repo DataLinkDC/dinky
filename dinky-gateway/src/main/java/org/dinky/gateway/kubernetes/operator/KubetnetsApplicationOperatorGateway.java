@@ -60,12 +60,13 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
         try {
             init();
 
-            KubernetesClient kubernetesClient = getKubernetesClient();
+            KubernetesClient kubernetesClient = getK8sClientHelper().getKubernetesClient();
             FlinkDeployment flinkDeployment = getFlinkDeployment();
 
             kubernetesClient.resource(flinkDeployment).delete();
             kubernetesClient.resource(flinkDeployment).waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
             kubernetesClient.resource(flinkDeployment).createOrReplace();
+            logger.info("create flink deployment finish,wait for flink jobmanager ready");
 
             FlinkDeployment flinkDeploymentResult = kubernetesClient
                     .resource(flinkDeployment)
@@ -91,6 +92,9 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                                             .getJobId();
                                     result.setJids(Collections.singletonList(jobId));
                                     return true;
+                                }
+                                if (status.equals("DEPLOYING")) {
+                                    getK8sClientHelper().createDinkyResource();
                                 }
                                 return false;
                             },
@@ -125,7 +129,7 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
         } catch (KubernetesClientException e) {
             // some error while connecting to kube cluster
             result.fail(LogUtil.getError(e));
-            e.printStackTrace();
+            throw e;
         }
         logger.info(
                 "submit {} job finish, web url is {}, jobid is {}", getType(), result.getWebURL(), result.getJids());

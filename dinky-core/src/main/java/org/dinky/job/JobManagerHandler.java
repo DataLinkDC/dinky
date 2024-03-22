@@ -74,11 +74,13 @@ import org.apache.flink.yarn.configuration.YarnConfigOptions;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +149,11 @@ public class JobManagerHandler implements IJobManager {
     @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        Objects.requireNonNull(job, "job is null, prepare() first");
+        List<String> statements = Arrays.stream(SqlUtil.getStatements(statement))
+                .map(t -> executor.pretreatStatement(t))
+                .collect(Collectors.toList());
+        statement = String.join(";\n", statements);
+        job = Job.build(runMode, config, executorConfig, statement, useGateway);
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement);
 
@@ -168,8 +174,8 @@ public class JobManagerHandler implements IJobManager {
                         .getConfiguration()
                         .toMap());
                 if (runMode.isApplicationMode()) {
-                    gatewayResult =
-                            Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());
+                    config.getGatewayConfig().setSql(statement);
+                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());
                 } else {
                     streamGraph.setJobName(config.getJobName());
                     JobGraph jobGraph = streamGraph.getJobGraph();
@@ -231,11 +237,11 @@ public class JobManagerHandler implements IJobManager {
             }
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            if (errorMessage.contains("Only insert statement is supported now")) {
+            if (errorMessage != null && errorMessage.contains("Only insert statement is supported now")) {
                 throw new BusException(Status.OPERATE_NOT_SUPPORT_QUERY.getMessage());
             }
             String error = StrFormatter.format(
-                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), errorMessage);
+                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(e.getMessage()), errorMessage);
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);

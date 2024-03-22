@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
@@ -47,18 +46,16 @@ public class KubernetesSessionGateway extends KubernetesGateway {
 
     @Override
     public GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder) {
-        if (Asserts.isNull(client)) {
-            String clusterId = StrFormatter.format("dinky-flink-session-{}", System.currentTimeMillis());
-            addConfigParas(KubernetesConfigOptions.CLUSTER_ID, clusterId);
-            init();
-        }
+        String clusterId = StrFormatter.format("dinky-flink-session-{}", System.currentTimeMillis());
+        addConfigParas(KubernetesConfigOptions.CLUSTER_ID, clusterId);
+        init();
 
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
 
         KubernetesResult result = KubernetesResult.build(getType());
-        try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                new KubernetesClusterDescriptor(configuration, client)) {
+        try (KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(
+                configuration, getK8sClientHelper().getClient())) {
             ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deploySessionCluster(
                     clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
