@@ -32,6 +32,23 @@ declare namespace Alert {
     note: string;
   };
 
+
+  export type RuleConfig = {
+    ruleKey: string;
+    ruleOperator: string;
+    ruleValue: number;
+  };
+
+  export type AlertRule = {
+    id: number;
+    name: string;
+    templateId: number;
+    description: string;
+    ruleType: string;
+    triggerConditions: string;
+    rule: any;
+    enabled: boolean;
+  };
   /**
    * alert instance params sub type
    */

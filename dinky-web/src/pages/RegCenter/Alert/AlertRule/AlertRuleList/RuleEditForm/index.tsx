@@ -22,8 +22,7 @@ import { Authorized } from '@/hooks/useAccess';
 import { getData } from '@/services/api';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { Alert } from '@/types/RegCenter/data';
-import { AlertRule } from '@/types/SettingCenter/data';
+import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import {
   DrawerForm,
@@ -49,9 +48,9 @@ const { Link } = Typography;
 
 type AlertRuleFormProps = {
   onCancel: (flag?: boolean) => void;
-  onSubmit: (values: AlertRule) => void;
+  onSubmit: (values: Alert.AlertRule) => void;
   modalVisible: boolean;
-  values: Partial<AlertRule>;
+  values: Partial<Alert.AlertRule>;
 };
 
 const RuleEditForm = (props: AlertRuleFormProps) => {
@@ -60,7 +59,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
   // if is system rule disable edit
   const isSystem = values.ruleType == RuleType.SYSTEM;
 
-  const [form] = Form.useForm<AlertRule>();
+  const [form] = Form.useForm<Alert.AlertRule>();
 
   const getAlertTemplate = async () => {
     const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).data;

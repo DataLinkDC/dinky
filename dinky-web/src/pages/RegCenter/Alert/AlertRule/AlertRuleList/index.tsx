@@ -27,7 +27,6 @@ import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { PermissionConstants } from '@/types/Public/constants';
-import { AlertRule } from '@/types/SettingCenter/data';
 import { InitAlertRuleState } from '@/types/SettingCenter/init.d';
 import { AlertRuleListState } from '@/types/SettingCenter/state';
 import { l } from '@/utils/intl';
@@ -36,6 +35,7 @@ import { ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
 import {RuleType} from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants";
 import RuleEditForm from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm";
+import {Alert} from "@/types/RegCenter/data.d";
 
 const AlertRuleList: React.FC = () => {
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);
@@ -47,7 +47,7 @@ const AlertRuleList: React.FC = () => {
     setRuleState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
-  const editClick = async (item: AlertRule) => {
+  const editClick = async (item: Alert.AlertRule) => {
     await executeAndCallbackRefresh(() =>
       setRuleState((prevState) => ({
         ...prevState,
@@ -60,7 +60,7 @@ const AlertRuleList: React.FC = () => {
   const handleCleanState = () => {
     setRuleState(InitAlertRuleState);
   };
-  async function handleSubmit(rule: AlertRule) {
+  async function handleSubmit(rule: Alert.AlertRule) {
     if (rule.ruleType != RuleType.SYSTEM) {
       rule.ruleType = RuleType.CUSTOM;
     }
@@ -74,14 +74,14 @@ const AlertRuleList: React.FC = () => {
       sorter,
       filter
     });
-    const data = result.data.map((t: AlertRule) => {
+    const data = result.data.map((t: Alert.AlertRule) => {
       t.rule = JSON.parse(t.rule);
       return t;
     });
     return { data: data };
   };
 
-  const columns: ProColumns<AlertRule>[] = [
+  const columns: ProColumns<Alert.AlertRule>[] = [
     {
       title: 'id',
       dataIndex: 'id'
@@ -106,7 +106,7 @@ const AlertRuleList: React.FC = () => {
       title: l('global.table.isEnable'),
       dataIndex: 'enabled',
       hideInSearch: true,
-      render: (_: any, record: AlertRule) => {
+      render: (_: any, record: Alert.AlertRule) => {
         return (
           <EnableSwitchBtn
             key={`${record.id}_enable`}
@@ -137,7 +137,7 @@ const AlertRuleList: React.FC = () => {
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      render: (_text: any, record: AlertRule) => [
+      render: (_text: any, record: Alert.AlertRule) => [
         <Authorized
           key={`${record.id}_edit_auth`}
           path={PermissionConstants.REGISTRATION_ALERT_RULE_EDIT}
@@ -164,7 +164,7 @@ const AlertRuleList: React.FC = () => {
 
   return (
     <>
-      <ProTable<AlertRule>
+      <ProTable<Alert.AlertRule>
         actionRef={actionRef}
         headerTitle={false}
         loading={ruleState.loading}
