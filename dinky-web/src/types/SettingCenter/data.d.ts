@@ -42,7 +42,6 @@ export type Process = {
   userId: number;
 };
 
-
 // ============================  System Settings ============================
 export type Settings = {
   dolphinscheduler: BaseConfigProperties[];

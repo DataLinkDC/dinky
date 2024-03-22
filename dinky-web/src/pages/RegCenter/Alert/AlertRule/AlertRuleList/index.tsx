@@ -22,20 +22,20 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import RuleEditForm from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm';
+import { RuleType } from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { PermissionConstants } from '@/types/Public/constants';
+import { Alert } from '@/types/RegCenter/data.d';
 import { InitAlertRuleState } from '@/types/SettingCenter/init.d';
 import { AlertRuleListState } from '@/types/SettingCenter/state';
 import { l } from '@/utils/intl';
 import { ActionType, ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
-import {RuleType} from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants";
-import RuleEditForm from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm";
-import {Alert} from "@/types/RegCenter/data.d";
 
 const AlertRuleList: React.FC = () => {
   const [ruleState, setRuleState] = useState<AlertRuleListState>(InitAlertRuleState);

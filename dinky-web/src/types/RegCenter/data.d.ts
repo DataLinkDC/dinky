@@ -32,7 +32,6 @@ declare namespace Alert {
     note: string;
   };
 
-
   export type RuleConfig = {
     ruleKey: string;
     ruleOperator: string;
