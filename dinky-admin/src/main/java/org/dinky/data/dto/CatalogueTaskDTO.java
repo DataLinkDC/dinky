@@ -95,7 +95,7 @@ public class CatalogueTaskDTO {
 
     @ApiModelProperty(
             value = "Second Level Owners",
-            dataType = "String",
+            dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
     private List<Integer> secondLevelOwners;
