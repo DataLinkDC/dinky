@@ -84,11 +84,8 @@ const JobList = () => {
       title: l('global.table.createTime'),
       hideInSearch: true,
       dataIndex: 'createTime',
-      sorter: (a, b) => {
-        const aTime = new Date(a.createTime).getTime(); // 需要先转换成时间戳
-        const bTime = new Date(b.createTime).getTime();
-        return aTime - bTime;
-      },
+      valueType: 'dateTime',
+      sorter: true,
       defaultSortOrder: 'descend'
     },
     {

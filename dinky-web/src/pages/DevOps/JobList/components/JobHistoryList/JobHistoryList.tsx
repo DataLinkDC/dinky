@@ -44,11 +44,7 @@ const JobHistoryList = (props: HistoryProps) => {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
-      sorter: (a, b) => {
-        const aTime = new Date(a.createTime).getTime(); // 需要先转换成时间戳
-        const bTime = new Date(b.createTime).getTime();
-        return aTime - bTime;
-      },
+      sorter: true,
       defaultSortOrder: 'descend'
     },
     {
