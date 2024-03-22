@@ -19,6 +19,8 @@
 
 package org.dinky.data.vo.task;
 
+import org.dinky.data.typehandler.ListTypeHandler;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.dinky.data.typehandler.ListTypeHandler;
 
 @Data
 public class JobInstanceVo {
