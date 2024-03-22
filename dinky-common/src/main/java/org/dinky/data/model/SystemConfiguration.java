@@ -133,10 +133,11 @@ public class SystemConfiguration {
             .defaultValue(CommonConstant.DEFAULT_EXPRESSION_VARIABLES)
             .note(Status.SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE);
 
-    private final Configuration<TaskOwnerLockStrategyEnum> taskOwnerLockStrategy = key(Status.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY)
-            .enumType(TaskOwnerLockStrategyEnum.class)
-            .defaultValue(TaskOwnerLockStrategyEnum.ALL_CAN_OPERATE)
-            .note(Status.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY_NOTE);
+    private final Configuration<TaskOwnerLockStrategyEnum> taskOwnerLockStrategy =
+            key(Status.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY)
+                    .enumType(TaskOwnerLockStrategyEnum.class)
+                    .defaultValue(TaskOwnerLockStrategyEnum.ALL_CAN_OPERATE)
+                    .note(Status.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY_NOTE);
 
     private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
             .booleanType()
