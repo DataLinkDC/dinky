@@ -21,6 +21,7 @@ package org.dinky.data.model;
 
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
 import org.apache.ibatis.type.JdbcType;
@@ -34,6 +35,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * 任务
@@ -178,9 +181,9 @@ public class Task extends SuperEntity<Task> {
     @ApiModelProperty(
             value = "Second Level Owners",
             dataType = "String",
-            example = "1001,1002,",
-            notes = "list of secondary responsible persons' ids, separated by commas")
-    private String secondLevelOwners;
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
 
     public Task(Integer id, Integer jobInstanceId) {
         this.jobInstanceId = jobInstanceId;

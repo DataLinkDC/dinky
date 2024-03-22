@@ -36,15 +36,16 @@ import cn.hutool.json.JSONArray;
 
 @MappedTypes({List.class})
 @MappedJdbcTypes({JdbcType.VARCHAR})
-public class ListTypeHandler extends AbstractJsonTypeHandler<List<Map>> {
+public class ListTypeHandler extends AbstractJsonTypeHandler<List<Object>> {
     private static final Logger log = LoggerFactory.getLogger(FastjsonTypeHandler.class);
 
-    protected List<Map> parse(String json) {
-        return new JSONArray(json).toList(Map.class);
+    @Override
+    protected List<Object> parse(String json) {
+        return new JSONArray(json).toList(Object.class);
     }
 
     @Override
-    protected String toJson(List<Map> obj) {
+    protected String toJson(List<Object> obj) {
         return new JSONArray(obj).toString();
     }
 }

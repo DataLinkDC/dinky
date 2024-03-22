@@ -192,6 +192,7 @@ public enum Status {
     JOB_ALERT_MAX_SEND_COUNT(12013, "job.alert.max.send.count"),
     MODE_IS_NOT_ALLOW_SELECT(12014, "mode.is.not.allow.select"),
     OPERATE_NOT_SUPPORT_QUERY(12015, "operate.not.support.query"),
+    TASK_NOT_OPERATE_PERMISSION(12016, "task.not.operate.permission"),
 
     /**
      * alert instance

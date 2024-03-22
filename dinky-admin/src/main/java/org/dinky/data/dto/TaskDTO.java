@@ -19,13 +19,18 @@
 
 package org.dinky.data.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import org.apache.ibatis.type.JdbcType;
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
+import org.dinky.data.typehandler.JSONObjectHandler;
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -225,9 +230,9 @@ public class TaskDTO extends AbstractStatementDTO {
     @ApiModelProperty(
             value = "Second Level Owners",
             dataType = "String",
-            example = "1001,1002,",
-            notes = "list of secondary responsible persons' ids, separated by commas")
-    private String secondLevelOwners;
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
 
     public JobConfig getJobConfig() {
 

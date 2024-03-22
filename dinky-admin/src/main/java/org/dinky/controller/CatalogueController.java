@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.BusinessType;
@@ -146,6 +147,7 @@ public class CatalogueController {
             required = true,
             dataType = "CatalogueTaskDTO",
             dataTypeClass = CatalogueTaskDTO.class)
+    @CheckTaskOwner()
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         if (catalogueService.checkCatalogueTaskNameIsExistById(catalogueTaskDTO.getName(), catalogueTaskDTO.getId())) {
             return Result.failed(Status.TASK_IS_EXIST);
