@@ -186,7 +186,7 @@ public class JobTransBuilder extends JobBuilder {
 
         // Use gateway need to build gateway config, include flink configuration.
         config.addGatewayConfig(executor.getCustomTableEnvironment().getConfig().getConfiguration());
-
+        config.getGatewayConfig().setSql(jobParam.getParsedSql());
         if (runMode.isApplicationMode()) {
             // Application mode need to submit dinky-app.jar that in the hdfs or image.
             gatewayResult = Gateway.build(config.getGatewayConfig())
