@@ -56,8 +56,7 @@ public class Job implements Serializable {
     private boolean useGateway;
     private List<String> jids;
 
-    public Job() {
-    }
+    public Job() {}
 
     @Getter
     public enum JobStatus {

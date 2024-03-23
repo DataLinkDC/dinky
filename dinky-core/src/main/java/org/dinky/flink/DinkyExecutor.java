@@ -21,5 +21,4 @@ package org.dinky.flink;
 
 import java.rmi.Remote;
 
-public interface DinkyExecutor extends Remote {
-}
+public interface DinkyExecutor extends Remote {}

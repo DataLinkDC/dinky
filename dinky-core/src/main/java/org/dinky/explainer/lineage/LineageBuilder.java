@@ -19,11 +19,8 @@
 
 package org.dinky.explainer.lineage;
 
-import org.apache.phoenix.job.JobManager;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
-import org.dinky.executor.Executor;
-import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManagerHandler;

@@ -29,13 +29,13 @@ import org.dinky.data.result.SelectResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JobManager {
@@ -55,8 +55,8 @@ public class JobManager {
             Registry registry = LocateRegistry.getRegistry("localhost");
 
             // 从Registry中检索远程对象的存根/代理
-            jobManagerHandler = (ServerExecutorService)registry.lookup("Compute");
-        }catch (Exception exception) {
+            jobManagerHandler = (ServerExecutorService) registry.lookup("Compute");
+        } catch (Exception exception) {
             System.out.println(exception);
         }
     }

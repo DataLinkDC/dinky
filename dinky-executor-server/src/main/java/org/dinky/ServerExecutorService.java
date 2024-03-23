@@ -19,7 +19,6 @@
 
 package org.dinky;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
 import org.dinky.gateway.enums.SavePointType;
@@ -30,6 +29,8 @@ import org.dinky.job.JobResult;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface ServerExecutorService extends Remote {
     void init(JobConfig config, boolean isPlanMode) throws RemoteException;

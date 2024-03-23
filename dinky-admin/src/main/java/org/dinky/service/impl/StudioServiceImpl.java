@@ -147,11 +147,11 @@ public class StudioServiceImpl implements StudioService {
             }
         } else {
             // TODO: 2024/3/20 remote
-//            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-//            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-//            CustomTableEnvironment customTableEnvironment =
-//                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
-//            catalogs.addAll(FlinkTableMetadataUtil.getCatalog(customTableEnvironment));
+            //            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+            //            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+            //            CustomTableEnvironment customTableEnvironment =
+            //                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
+            //            catalogs.addAll(FlinkTableMetadataUtil.getCatalog(customTableEnvironment));
         }
         return catalogs;
     }
@@ -169,12 +169,12 @@ public class StudioServiceImpl implements StudioService {
             }
         } else {
             // TODO: 2024/3/20 remote
-//            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-//            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-//            CustomTableEnvironment customTableEnvironment =
-//                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
-//            FlinkTableMetadataUtil.setSchemaInfo(
-//                    customTableEnvironment, studioMetaStoreDTO.getCatalog(), database, schema, tables);
+            //            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+            //            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+            //            CustomTableEnvironment customTableEnvironment =
+            //                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
+            //            FlinkTableMetadataUtil.setSchemaInfo(
+            //                    customTableEnvironment, studioMetaStoreDTO.getCatalog(), database, schema, tables);
         }
         schema.setTables(tables);
         return schema;
@@ -194,12 +194,13 @@ public class StudioServiceImpl implements StudioService {
             }
         } else {
             // TODO: 2024/3/20 remote
-//            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-//            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-//            CustomTableEnvironment customTableEnvironment =
-//                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
-//            columns.addAll(
-//                    FlinkTableMetadataUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
+            //            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+            //            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+            //            CustomTableEnvironment customTableEnvironment =
+            //                    jobManager.getJobManagerHandler().getExecutor().getCustomTableEnvironment();
+            //            columns.addAll(
+            //                    FlinkTableMetadataUtil.getColumnList(customTableEnvironment, catalogName, database,
+            // tableName));
         }
         return columns;
     }

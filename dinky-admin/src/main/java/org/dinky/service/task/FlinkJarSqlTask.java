@@ -49,7 +49,7 @@ public class FlinkJarSqlTask extends FlinkSqlTask {
         JobResult result = jobManager.executeJarSql(task.getStatement());
         if (result.isSuccess()) {
             handler.success();
-        }else {
+        } else {
             handler.failed();
         }
         return result;

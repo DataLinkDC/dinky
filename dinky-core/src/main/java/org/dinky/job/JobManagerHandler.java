@@ -116,9 +116,7 @@ public class JobManagerHandler implements IJobManager {
     }
 
     @Override
-    public void init(JobConfig config, boolean isPlanMode) {
-
-    }
+    public void init(JobConfig config, boolean isPlanMode) {}
 
     public static JobManagerHandler build(JobConfig config, boolean isPlanMode) {
         return new JobManagerHandler(config, isPlanMode);
@@ -366,12 +364,12 @@ public class JobManagerHandler implements IJobManager {
                             + YarnConfigOptions.PROVIDED_LIB_DIRS.key()
                             + " = "
                             + Collections.singletonList(
-                            config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
+                                    config.getGatewayConfig().getClusterConfig().getFlinkLibPath())
                             + ";\r\n");
                 }
                 if (Asserts.isNotNull(config.getGatewayConfig())
                         && Asserts.isNotNullString(
-                        config.getGatewayConfig().getFlinkConfig().getJobName())) {
+                                config.getGatewayConfig().getFlinkConfig().getJobName())) {
                     sb.append("set "
                             + YarnConfigOptions.APPLICATION_NAME.key()
                             + " = "
@@ -384,7 +382,6 @@ public class JobManagerHandler implements IJobManager {
         sb.append(statement);
         return sb.toString();
     }
-
 
     public Logger getLog() {
         return log;
@@ -449,5 +446,4 @@ public class JobManagerHandler implements IJobManager {
     public void setJob(Job job) {
         this.job = job;
     }
-
 }

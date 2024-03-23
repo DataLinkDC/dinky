@@ -71,7 +71,7 @@ public class FlinkSqlTask extends BaseTask {
         JobResult result = jobManager.executeSql(task.getStatement());
         if (result.isSuccess()) {
             handler.success();
-        }else {
+        } else {
             handler.failed();
         }
         return result;
