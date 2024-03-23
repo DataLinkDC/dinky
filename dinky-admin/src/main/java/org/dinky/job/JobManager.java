@@ -85,6 +85,14 @@ public class JobManager {
         }
     }
 
+    public void prepare(String statement) {
+        try {
+            jobManagerHandler.prepare(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         return jobManagerHandler.executeJarSql(statement);
@@ -150,6 +158,14 @@ public class JobManager {
     public String exportSql(String sql) {
         try {
             return jobManagerHandler.exportSql(sql);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Job getJob() {
+        try {
+            return jobManagerHandler.getJob();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

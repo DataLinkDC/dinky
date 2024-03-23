@@ -77,6 +77,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -88,14 +89,12 @@ import cn.hutool.core.text.StrFormatter;
 
 public class JobManagerHandler implements IJobManager {
     Logger log = LoggerFactory.getLogger(JobManagerHandler.class);
-    private JobHandler handler;
     private ExecutorConfig executorConfig;
     private JobConfig config;
 
     private Executor executor;
     private boolean useGateway = false;
     private boolean useStatementSet = false;
-    private boolean useRestAPI = false;
     private GatewayType runMode = GatewayType.LOCAL;
 
     private JobParam jobParam = null;
@@ -108,11 +107,9 @@ public class JobManagerHandler implements IJobManager {
         if (!isPlanMode) {
             runMode = GatewayType.get(config.getType());
             useGateway = GatewayType.isDeployCluster(config.getType());
-            handler = JobHandler.build();
         }
 
         useStatementSet = config.isStatementSet();
-        useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         executorConfig = config.createExecutorSetting();
         executorConfig.setPlan(isPlanMode);
         executor = ExecutorFactory.buildExecutor(executorConfig);
@@ -127,17 +124,9 @@ public class JobManagerHandler implements IJobManager {
         return new JobManagerHandler(config, isPlanMode);
     }
 
-    private void prepare(String statement) {
+    @Override
+    public void prepare(String statement) {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
-        handler.init(job);
-    }
-
-    private boolean success() {
-        return handler.success();
-    }
-
-    private boolean failed() {
-        return handler.failed();
     }
 
     @Override
@@ -161,7 +150,7 @@ public class JobManagerHandler implements IJobManager {
     @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        prepare(statement);
+        Objects.requireNonNull(job, "job is null, prepare() first");
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement);
 
@@ -172,10 +161,8 @@ public class JobManagerHandler implements IJobManager {
                     job.setJobId(jobClient.getJobID().toHexString());
                     job.setJids(Collections.singletonList(job.getJobId()));
                     job.setStatus(Job.JobStatus.SUCCESS);
-                    success();
                 } else {
                     job.setStatus(Job.JobStatus.FAILED);
-                    failed();
                 }
             } else {
                 GatewayResult gatewayResult;
@@ -203,12 +190,10 @@ public class JobManagerHandler implements IJobManager {
 
                 if (gatewayResult.isSuccess()) {
                     job.setStatus(Job.JobStatus.SUCCESS);
-                    success();
                 } else {
                     job.setStatus(Job.JobStatus.FAILED);
                     job.setError(gatewayResult.getError());
                     log.error(gatewayResult.getError());
-                    failed();
                 }
             }
         } catch (Exception e) {
@@ -217,7 +202,6 @@ public class JobManagerHandler implements IJobManager {
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
-            failed();
             throw new Exception(error, e);
         } finally {
             close();
@@ -228,8 +212,7 @@ public class JobManagerHandler implements IJobManager {
     @Override
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
-        prepare(statement);
-
+        Objects.requireNonNull(job, "job is null, prepare() first");
         DinkyClassLoaderUtil.initClassLoader(config, executor.getDinkyClassLoader());
         jobParam =
                 Explainer.build(executor, useStatementSet, this).pretreatStatements(SqlUtil.getStatements(statement));
@@ -244,11 +227,8 @@ public class JobManagerHandler implements IJobManager {
             JobExecuteBuilder.build(this).run();
             // finished
             job.setEndTime(LocalDateTime.now());
-            if (job.isFailed()) {
-                failed();
-            } else {
+            if (!job.isFailed()) {
                 job.setStatus(Job.JobStatus.SUCCESS);
-                success();
             }
         } catch (ExecuteSqlException e) {
             String error = StrFormatter.format(
@@ -256,7 +236,6 @@ public class JobManagerHandler implements IJobManager {
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
-            failed();
             throw new Exception(error, e);
         } finally {
             close();
@@ -334,7 +313,7 @@ public class JobManagerHandler implements IJobManager {
 
     @Override
     public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
-        if (useGateway && !useRestAPI) {
+        if (useGateway && !SystemConfiguration.getInstances().isUseRestAPI()) {
             config.getGatewayConfig()
                     .setFlinkConfig(
                             FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(), savePointType.getValue(), null));
@@ -443,10 +422,6 @@ public class JobManagerHandler implements IJobManager {
         return useGateway;
     }
 
-    public void setUseGateway(boolean useGateway) {
-        this.useGateway = useGateway;
-    }
-
     public boolean isUseStatementSet() {
         return useStatementSet;
     }
@@ -455,20 +430,8 @@ public class JobManagerHandler implements IJobManager {
         this.useStatementSet = useStatementSet;
     }
 
-    public boolean isUseRestAPI() {
-        return useRestAPI;
-    }
-
-    public void setUseRestAPI(boolean useRestAPI) {
-        this.useRestAPI = useRestAPI;
-    }
-
     public GatewayType getRunMode() {
         return runMode;
-    }
-
-    public void setRunMode(GatewayType runMode) {
-        this.runMode = runMode;
     }
 
     public JobParam getJobParam() {

@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.GatewayType;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @ApiModel(value = "ExecutorConfig", description = "Executor config for a job")
-public class ExecutorConfig {
+public class ExecutorConfig implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(ExecutorConfig.class);
     private static final ObjectMapper mapper = new ObjectMapper();

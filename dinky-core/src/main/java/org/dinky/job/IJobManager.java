@@ -9,6 +9,8 @@ import org.dinky.gateway.result.SavePointResult;
 public interface IJobManager {
     void init(JobConfig config, boolean isPlanMode);
 
+    void prepare(String statement);
+
     boolean close();
 
     ObjectNode getJarStreamGraphJson(String statement);

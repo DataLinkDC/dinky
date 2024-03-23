@@ -24,6 +24,7 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.Job;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobResult;
 
@@ -54,4 +55,8 @@ public interface ServerExecutorService extends Remote {
     SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) throws RemoteException;
 
     String exportSql(String sql) throws RemoteException;
+
+    Job getJob() throws RemoteException;
+
+    void prepare(String statement) throws RemoteException;
 }

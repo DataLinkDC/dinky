@@ -24,6 +24,7 @@ import org.dinky.data.result.IResult;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,9 +36,9 @@ import lombok.Setter;
  *
  * @since 2021/6/26 23:39
  */
-@Getter
 @Setter
-public class Job {
+@Getter
+public class Job implements Serializable {
     private Integer id;
     private Integer jobInstanceId;
     private JobConfig jobConfig;
@@ -54,6 +55,9 @@ public class Job {
     private Executor executor;
     private boolean useGateway;
     private List<String> jids;
+
+    public Job() {
+    }
 
     @Getter
     public enum JobStatus {

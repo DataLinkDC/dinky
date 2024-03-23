@@ -24,6 +24,7 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.Job;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManagerHandler;
 import org.dinky.job.JobResult;
@@ -104,6 +105,16 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     @Override
     public String exportSql(String sql) {
         return jobManagerHandler.exportSql(sql);
+    }
+
+    @Override
+    public Job getJob() throws RemoteException {
+        return jobManagerHandler.getJob();
+    }
+
+    @Override
+    public void prepare(String statement) throws RemoteException {
+        jobManagerHandler.prepare(statement);
     }
 
 }
