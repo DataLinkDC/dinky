@@ -21,9 +21,12 @@ package org.dinky.data.enums;
 
 /** 业务操作类型 */
 public enum TaskOwnerLockStrategyEnum {
-    /** 仅任务责任人可操作 */
-    ONLY_TASK_OWNER_CAN_OPERATE,
+    /** 只有责任人可以操作 */
+    OWNER,
 
-    /** 所有人可操作 */
-    ALL_CAN_OPERATE,
+    /** 责任人和维护人都可以操作 */
+    OWNER_AND_MAINTAINER,
+
+    /** 所有人都可以操作 */
+    ALL,
 }

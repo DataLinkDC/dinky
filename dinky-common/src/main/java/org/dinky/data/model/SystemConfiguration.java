@@ -136,7 +136,7 @@ public class SystemConfiguration {
     private final Configuration<TaskOwnerLockStrategyEnum> taskOwnerLockStrategy =
             key(Status.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY)
                     .enumType(TaskOwnerLockStrategyEnum.class)
-                    .defaultValue(TaskOwnerLockStrategyEnum.ALL_CAN_OPERATE)
+                    .defaultValue(TaskOwnerLockStrategyEnum.ALL)
                     .note(Status.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY_NOTE);
 
     private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
