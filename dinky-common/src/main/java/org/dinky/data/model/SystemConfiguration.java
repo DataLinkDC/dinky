@@ -393,4 +393,8 @@ public class SystemConfiguration {
                 .pathStyleAccess(resourcesPathStyleAccess.getValue())
                 .build();
     }
+
+    public TaskOwnerLockStrategyEnum getTaskOwnerLockStrategy() {
+        return taskOwnerLockStrategy.getValue();
+    }
 }

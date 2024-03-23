@@ -25,7 +25,9 @@ import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSaveDTO;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.exception.BusException;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.service.TaskService;
 
 import java.util.List;
@@ -59,14 +61,17 @@ public class TaskOperationCheckAspect {
      */
     @Around(value = "@annotation(checkTaskOwner)")
     public Object processAround(ProceedingJoinPoint joinPoint, CheckTaskOwner checkTaskOwner) throws Throwable {
-        String[] privilegeRoles = checkTaskOwner.privilegeRoles();
-        if (!StpUtil.hasRoleOr(privilegeRoles)) {
-            Integer id = getId(joinPoint);
-            if (Objects.nonNull(id)) {
-                TaskDTO taskDTO = taskService.getTaskInfoById(id);
-                if (Objects.nonNull(taskDTO)) {
-                    if (!hasPermission(taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners())) {
-                        throw new BusException(Status.TASK_NOT_OPERATE_PERMISSION);
+        if(SystemConfiguration.getInstances().getTaskOwnerLockStrategy()
+                .equals(TaskOwnerLockStrategyEnum.ONLY_TASK_OWNER_CAN_OPERATE)){
+            String[] privilegeRoles = checkTaskOwner.privilegeRoles();
+            if (!StpUtil.hasRoleOr(privilegeRoles)) {
+                Integer id = getId(joinPoint);
+                if (Objects.nonNull(id)) {
+                    TaskDTO taskDTO = taskService.getTaskInfoById(id);
+                    if (Objects.nonNull(taskDTO)) {
+                        if (!hasPermission(taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners())) {
+                            throw new BusException(Status.TASK_NOT_OPERATE_PERMISSION);
+                        }
                     }
                 }
             }
