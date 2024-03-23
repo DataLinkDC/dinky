@@ -95,8 +95,9 @@ export interface LogInfo {
  * 任务责任人锁定策略
  */
 export enum TaskOwnerLockingStrategy {
-  ONLY_TASK_OWNER_CAN_OPERATE = 'ONLY_TASK_OWNER_CAN_OPERATE', // 只有第一个责任人可以操作
-  ALL_CAN_OPERATE = 'ALL_CAN_OPERATE' // 所有责任人都可以操作, 即不上锁
+  OWNER = 'OWNER', // 只有责任人可以操作
+  OWNER_AND_MAINTAINER = 'OWNER_AND_MAINTAINER', // 责任人和维护人都可以操作
+  ALL = 'ALL' // 责任人和维护人都可以操作
 }
 
 /**
