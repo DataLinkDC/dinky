@@ -246,8 +246,8 @@ export const getFooterValue = (panes: any, activeKey: string): Partial<FooterTyp
 export const getUserName = (id: Number, users: UserBaseInfo.User[] = []) => {
   let name = '';
   const user = users.find((user: UserBaseInfo.User) => user.id === id);
-  if (user && user.nickname) {
-    name = user.nickname;
+  if (user && user.username) {
+    name = user.username;
   }
   return name;
 };

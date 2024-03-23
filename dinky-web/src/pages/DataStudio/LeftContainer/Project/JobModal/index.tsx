@@ -76,7 +76,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
       firstLevelOwner: values.task?.firstLevelOwner,
       secondLevelOwners: values.task?.secondLevelOwners
     };
-    console.log(values.task);
     if (modalVisible) form.resetFields();
     form.setFieldsValue(newValues);
   }, [open, values, form]);
@@ -179,7 +178,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
 
     users.forEach((user: UserBaseInfo.User) => {
       resultReturn.push({
-        label: user.nickname,
+        label: user.username,
         value: user.id
       });
     });

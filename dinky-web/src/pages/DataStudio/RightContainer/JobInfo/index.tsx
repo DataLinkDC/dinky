@@ -17,9 +17,8 @@
  *
  */
 
-import { getCurrentData } from '@/pages/DataStudio/function';
+import { getCurrentData, getUserName } from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
-import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
 import { Descriptions } from 'antd';
@@ -32,15 +31,6 @@ const JobInfo = (props: any) => {
   } = props;
 
   const currentInfo = getCurrentData(panes, activeKey);
-
-  const getUserName = (id: Number) => {
-    let name = '';
-    const user: UserBaseInfo.User = users.find((user: UserBaseInfo.User) => user.id === id);
-    if (user && user.nickname) {
-      name = user.nickname;
-    }
-    return name;
-  };
 
   return (
     <div style={{ paddingInline: 8 }}>
@@ -58,12 +48,12 @@ const JobInfo = (props: any) => {
           {currentInfo?.versionId}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.firstLevelOwner')}>
-          {getUserName(currentInfo?.firstLevelOwner)}
+          {getUserName(currentInfo?.firstLevelOwner, users)}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.secondLevelOwners')}>
           {currentInfo?.secondLevelOwners
-            ?.map((user: Number) => {
-              return getUserName(user);
+            ?.map((id: Number) => {
+              return getUserName(id, users);
             })
             ?.join()}
         </Descriptions.Item>
