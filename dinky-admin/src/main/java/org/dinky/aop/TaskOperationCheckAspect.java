@@ -61,8 +61,9 @@ public class TaskOperationCheckAspect {
      */
     @Around(value = "@annotation(checkTaskOwner)")
     public Object processAround(ProceedingJoinPoint joinPoint, CheckTaskOwner checkTaskOwner) throws Throwable {
-        if(SystemConfiguration.getInstances().getTaskOwnerLockStrategy()
-                .equals(TaskOwnerLockStrategyEnum.ONLY_TASK_OWNER_CAN_OPERATE)){
+        if (SystemConfiguration.getInstances()
+                .getTaskOwnerLockStrategy()
+                .equals(TaskOwnerLockStrategyEnum.ONLY_TASK_OWNER_CAN_OPERATE)) {
             String[] privilegeRoles = checkTaskOwner.privilegeRoles();
             if (!StpUtil.hasRoleOr(privilegeRoles)) {
                 Integer id = getId(joinPoint);
