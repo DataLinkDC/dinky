@@ -117,10 +117,10 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     tabsItem.monacoInstance = monaco;
 
     editor.onDidChangeCursorPosition((e) => {
-      props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
+      props.footContainerCacher.cache.codePosition = [e.position.lineNumber, e.position.column];
       dispatch({
         type: STUDIO_MODEL.saveFooterValue,
-        payload: { ...props.footContainer }
+        payload: { ...props.footContainerCacher.cache }
       });
     });
     registerEditorKeyBindingAndAction(editor);
@@ -205,7 +205,13 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
-  footContainer: Studio.footContainer
-}))(memo(StudioEditor));
+const footContainerCacher = { cache: {} as StateType['footContainer'] };
+
+export default connect(({ Studio }: { Studio: StateType }) => {
+  footContainerCacher.cache = Studio.footContainer;
+
+  return {
+    tabs: Studio.tabs,
+    footContainerCacher
+  };
+})(memo(StudioEditor));
