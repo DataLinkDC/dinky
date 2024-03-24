@@ -21,7 +21,6 @@ package org.dinky.job;
 
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.IResult;
-import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 
 import java.io.Serializable;

@@ -19,8 +19,6 @@
 
 package org.dinky;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
 import org.dinky.gateway.enums.SavePointType;
@@ -33,13 +31,16 @@ import org.dinky.job.JobResult;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public class JobManagerServiceImpl extends UnicastRemoteObject implements ServerExecutorService {
 
     JobManagerHandler jobManagerHandler;
 
-    public JobManagerServiceImpl() throws RemoteException {
-    }
+    public JobManagerServiceImpl() throws RemoteException {}
 
     @Override
     public void init(JobConfig config, boolean isPlanMode) {
@@ -101,7 +102,8 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     }
 
     @Override
-    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) throws RemoteException {
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint)
+            throws RemoteException {
         return jobManagerHandler.savepoint(jobId, savePointType, savePoint);
     }
 
@@ -119,5 +121,4 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     public void prepare(String statement) throws RemoteException {
         jobManagerHandler.prepare(statement);
     }
-
 }
