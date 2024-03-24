@@ -37,6 +37,7 @@ import {
 } from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import { LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide } from '@/pages/DataStudio/route';
+import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect, getDvaApp } from '@umijs/max';
@@ -68,7 +69,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
     tabs: { panes, activeKey },
-    queryUserData
+    queryUserData,
+    queryTaskOwnerLockingStrategy
   } = props;
   const isProject = isProjectTabs(panes, activeKey);
   const { token } = useToken();
@@ -115,6 +117,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     queryEnv();
     queryClusterConfigurationData();
     queryUserData({ id: getTenantByLocalStorage() });
+    queryTaskOwnerLockingStrategy(SettingConfigKeyEnum.ENV.toLowerCase());
   };
 
   useEffect(() => {

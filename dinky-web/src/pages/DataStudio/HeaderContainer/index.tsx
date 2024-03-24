@@ -92,7 +92,6 @@ const HeaderContainer = (props: connect) => {
     updateJobRunningMsg,
     updateSelectBottomKey,
     queryDsConfig,
-    queryTaskOwnerLockingStrategy,
     queryTaskData,
     enabledDs,
     taskOwnerLockingStrategy
@@ -118,7 +117,6 @@ const HeaderContainer = (props: connect) => {
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
-    queryTaskOwnerLockingStrategy(SettingConfigKeyEnum.ENV.toLowerCase());
   }, []);
 
   const currentData = getCurrentData(panes, activeKey);

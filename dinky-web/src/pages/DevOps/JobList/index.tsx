@@ -19,7 +19,11 @@
 
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
-import { getUserName, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {
+  mapDispatchToProps,
+  showFirstLevelOwner,
+  showSecondLevelOwners
+} from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
   generateList,
@@ -31,6 +35,8 @@ import { DevopContext } from '@/pages/DevOps';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { getJobDuration } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList/JobHistoryList';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import { queryList } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -42,7 +48,7 @@ import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { ClearOutlined, ClockCircleTwoTone, EyeTwoTone, RedoOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProCard, ProTable } from '@ant-design/pro-components';
-import { connect } from '@umijs/max';
+import { connect, useModel } from '@umijs/max';
 import { Button, Empty, Radio, Table, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
@@ -51,7 +57,7 @@ import { history } from 'umi';
 const { DirectoryTree } = Tree;
 
 const JobList = (props: connect) => {
-  const { users, queryUserData } = props;
+  const { users, queryUserData, taskOwnerLockingStrategy, queryTaskOwnerLockingStrategy } = props;
   const refObject = useRef<HTMLDivElement>(null);
   const tableRef = useRef<ActionType>();
   const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
@@ -63,6 +69,7 @@ const JobList = (props: connect) => {
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [selectedKey, setSelectedKey] = useState<Key[]>([]);
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
@@ -88,17 +95,13 @@ const JobList = (props: connect) => {
     {
       title: l('global.table.firstLevelOwner'),
       hideInSearch: true,
-      render: (_: any, row: Jobs.JobInstance) => getUserName(row?.firstLevelOwner, users)
+      render: (_: any, row: Jobs.JobInstance) => showFirstLevelOwner(row?.firstLevelOwner, users)
     },
     {
       title: l('global.table.secondLevelOwners'),
       hideInSearch: true,
       render: (_: any, row: Jobs.JobInstance) =>
-        row?.secondLevelOwners
-          ?.map((id: Number) => {
-            return getUserName(id, users);
-          })
-          ?.join()
+        showSecondLevelOwners(row?.secondLevelOwners, users)
     },
     {
       title: l('global.table.createTime'),
@@ -153,14 +156,24 @@ const JobList = (props: connect) => {
   useEffect(() => {
     getTaskData().then((res) => {
       if (res) {
-        setData(buildProjectTree(res, searchValue, []));
+        setData(
+          buildProjectTree(
+            res,
+            searchValue,
+            [],
+            initialState?.currentUser?.user,
+            taskOwnerLockingStrategy,
+            users
+          )
+        );
       }
     });
-  }, [searchValue]);
+  }, [searchValue, taskOwnerLockingStrategy]);
 
   useEffect(() => {
     setInterval(() => tableRef.current?.reload(false), 5 * 1000);
     queryUserData({ id: getTenantByLocalStorage() });
+    queryTaskOwnerLockingStrategy(SettingConfigKeyEnum.ENV.toLowerCase());
   }, []);
 
   const onChangeSearch = (e: any) => {
@@ -335,8 +348,9 @@ const JobList = (props: connect) => {
   );
 };
 export default connect(
-  ({ Studio }: { Studio: StateType }) => ({
-    users: Studio.users
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+    users: Studio.users,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   }),
   mapDispatchToProps
 )(JobList);

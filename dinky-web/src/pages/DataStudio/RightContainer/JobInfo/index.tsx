@@ -17,7 +17,11 @@
  *
  */
 
-import { getCurrentData, getUserName } from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  showFirstLevelOwner,
+  showSecondLevelOwners
+} from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
@@ -48,14 +52,10 @@ const JobInfo = (props: any) => {
           {currentInfo?.versionId}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.firstLevelOwner')}>
-          {getUserName(currentInfo?.firstLevelOwner, users)}
+          {showFirstLevelOwner(currentInfo?.firstLevelOwner, users)}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.secondLevelOwners')}>
-          {currentInfo?.secondLevelOwners
-            ?.map((id: Number) => {
-              return getUserName(id, users);
-            })
-            ?.join()}
+          {showSecondLevelOwners(currentInfo?.secondLevelOwners, users)}
         </Descriptions.Item>
       </Descriptions>
     </div>

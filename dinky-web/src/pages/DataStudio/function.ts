@@ -33,6 +33,8 @@ import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
 import { DIALECT } from '@/services/constants';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
+import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
+import { l } from '@/utils/intl';
 import { Dispatch } from '@@/plugin-dva/types';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -250,4 +252,44 @@ export const getUserName = (id: Number, users: UserBaseInfo.User[] = []) => {
     name = user.username;
   }
   return name;
+};
+
+export const showFirstLevelOwner = (id: Number, users: UserBaseInfo.User[] = []) => {
+  return getUserName(id, users);
+};
+
+export const showSecondLevelOwners = (ids: [], users: UserBaseInfo.User[] = []) => {
+  return ids
+    ?.map((id: Number) => {
+      return getUserName(id, users);
+    })
+    ?.join();
+};
+
+export const showAllOwners = (id: Number, ids: [], users: UserBaseInfo.User[] = []) => {
+  const firstLevelOwnerLabel = l('pages.datastudio.label.jobInfo.firstLevelOwner');
+  const secondLevelOwnersLabel = l('pages.datastudio.label.jobInfo.secondLevelOwners');
+  const firstLevelOwner = showFirstLevelOwner(id, users);
+  const secondLevelOwners = showSecondLevelOwners(ids, users);
+  return `${firstLevelOwnerLabel}:${firstLevelOwner ? firstLevelOwner : ''}; 
+  ${secondLevelOwnersLabel}:${secondLevelOwners ? secondLevelOwners : ''}`;
+};
+
+export const lockTask = (
+  firstLevelOwner: Number,
+  secondLevelOwners: Number[] = [],
+  currentUser: UserBaseInfo.User,
+  taskOwnerLockingStrategy: TaskOwnerLockingStrategy
+) => {
+  const isOwner = currentUser?.id == firstLevelOwner;
+  switch (taskOwnerLockingStrategy) {
+    case TaskOwnerLockingStrategy.OWNER:
+      return !isOwner;
+    case TaskOwnerLockingStrategy.OWNER_AND_MAINTAINER:
+      return !isOwner && !secondLevelOwners?.includes(currentUser?.id);
+    case TaskOwnerLockingStrategy.ALL:
+      return false;
+    default:
+      return false;
+  }
 };
