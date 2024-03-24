@@ -92,7 +92,7 @@ public abstract class AbstractExecutor implements Executor {
     // The config of Dinky executor.
     protected ExecutorConfig executorConfig;
 
-    protected WeakReference<DinkyClassLoader> dinkyClassLoader = new WeakReference<>(DinkyClassLoader.build());
+    protected DinkyClassLoader dinkyClassLoader = DinkyClassLoader.build();
 
     // Flink configuration, such as set rest.port = 8086
     protected Map<String, String> setConfig = new HashMap<>();
@@ -103,7 +103,7 @@ public abstract class AbstractExecutor implements Executor {
     // return dinkyClassLoader
     @Override
     public DinkyClassLoader getDinkyClassLoader() {
-        return dinkyClassLoader.get();
+        return dinkyClassLoader;
     }
 
     @Override
