@@ -52,7 +52,6 @@ import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
