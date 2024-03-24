@@ -52,7 +52,6 @@ public class Job implements Serializable {
     private ExecutorConfig executorConfig;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Executor executor;
     private boolean useGateway;
     private List<String> jids;
 
@@ -78,7 +77,6 @@ public class Job implements Serializable {
             JobStatus status,
             String statement,
             ExecutorConfig executorConfig,
-            Executor executor,
             boolean useGateway) {
         this.jobConfig = jobConfig;
         this.type = type;
@@ -86,7 +84,6 @@ public class Job implements Serializable {
         this.statement = statement;
         this.executorConfig = executorConfig;
         this.startTime = LocalDateTime.now();
-        this.executor = executor;
         this.useGateway = useGateway;
     }
 
@@ -94,10 +91,9 @@ public class Job implements Serializable {
             GatewayType type,
             JobConfig jobConfig,
             ExecutorConfig executorConfig,
-            Executor executor,
             String statement,
             boolean useGateway) {
-        Job job = new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorConfig, executor, useGateway);
+        Job job = new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorConfig, useGateway);
         if (!useGateway) {
             job.setJobManagerAddress(executorConfig.getJobManagerAddress());
         }

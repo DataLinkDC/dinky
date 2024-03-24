@@ -124,7 +124,7 @@ public class JobManagerHandler implements IJobManager {
 
     @Override
     public void prepare(String statement) {
-        job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
+        job = Job.build(runMode, config, executorConfig, statement, useGateway);
     }
 
     @Override
