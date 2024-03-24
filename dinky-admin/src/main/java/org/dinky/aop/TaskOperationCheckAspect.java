@@ -20,6 +20,7 @@
 package org.dinky.aop;
 
 import org.dinky.data.annotations.CheckTaskOwner;
+import org.dinky.data.constant.BaseConstant;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
@@ -61,9 +62,9 @@ public class TaskOperationCheckAspect {
      */
     @Around(value = "@annotation(checkTaskOwner)")
     public Object processAround(ProceedingJoinPoint joinPoint, CheckTaskOwner checkTaskOwner) throws Throwable {
-        if (!SystemConfiguration.getInstances().getTaskOwnerLockStrategy().equals(TaskOwnerLockStrategyEnum.ALL)) {
-            String[] privilegeRoles = checkTaskOwner.privilegeRoles();
-            if (!StpUtil.hasRoleOr(privilegeRoles)) {
+        if (!TaskOwnerLockStrategyEnum.ALL.equals(SystemConfiguration.getInstances().getTaskOwnerLockStrategy())
+                &&BaseConstant.ADMIN_ID!=StpUtil.getLoginIdAsInt()
+        ) {
                 Integer id = getId(joinPoint);
                 if (Objects.nonNull(id)) {
                     TaskDTO taskDTO = taskService.getTaskInfoById(id);
@@ -73,7 +74,6 @@ public class TaskOperationCheckAspect {
                         }
                     }
                 }
-            }
         }
 
         Object result;
@@ -87,11 +87,10 @@ public class TaskOperationCheckAspect {
 
     private Boolean hasPermission(Integer firstLevelOwner, List<Integer> secondLevelOwners) {
         boolean isFirstLevelOwner = firstLevelOwner != null && firstLevelOwner == StpUtil.getLoginIdAsInt();
-        if (SystemConfiguration.getInstances().getTaskOwnerLockStrategy().equals(TaskOwnerLockStrategyEnum.OWNER)) {
+        if (TaskOwnerLockStrategyEnum.OWNER.equals(SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
             return isFirstLevelOwner;
-        } else if (SystemConfiguration.getInstances()
-                .getTaskOwnerLockStrategy()
-                .equals(TaskOwnerLockStrategyEnum.OWNER_AND_MAINTAINER)) {
+        } else if (TaskOwnerLockStrategyEnum.OWNER_AND_MAINTAINER
+                .equals(SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
             return isFirstLevelOwner
                     || (secondLevelOwners != null && secondLevelOwners.contains(StpUtil.getLoginIdAsInt()));
         }

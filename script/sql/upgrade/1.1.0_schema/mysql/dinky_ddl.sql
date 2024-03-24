@@ -17,18 +17,20 @@
  *
  */
 
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
 begin ;
 
+ALTER TABLE dinky_task
+    add  COLUMN `first_level_owner` int DEFAULT NULL comment 'primary responsible person id';
 
-update dinky_sys_menu set `type`= 'F' where `id`= 151;
-update dinky_sys_menu set `path`= '/datastudio/bottom/table-data' , `perms`= 'datastudio:bottom:table-data' where `id`= 46;
-
-delete from dinky_sys_menu where `id`= 26;
-
-update dinky_task set first_level_owner = creator;
+ALTER TABLE dinky_task
+    add  COLUMN `second_level_owners` varchar(128) DEFAULT NULL comment 'list of secondary responsible persons'' ids';
 
 commit ;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 
 

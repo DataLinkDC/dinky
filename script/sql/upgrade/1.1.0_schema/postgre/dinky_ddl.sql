@@ -20,20 +20,11 @@
 
 begin ;
 
+alter table dinky_task add column first_level_owner int;
+alter table dinky_task add column second_level_owners varchar(128);
 
-update dinky_sys_menu set `type`= 'F' where `id`= 151;
-update dinky_sys_menu set `path`= '/datastudio/bottom/table-data' , `perms`= 'datastudio:bottom:table-data' where `id`= 46;
-
-delete from dinky_sys_menu where `id`= 26;
-
-update dinky_task set first_level_owner = creator;
+COMMENT ON COLUMN dinky_task.first_level_owner IS 'primary responsible person id';
+COMMENT ON COLUMN dinky_task.second_level_owners IS 'list of secondary responsible persons'' ids';
 
 commit ;
-
-
-
-
-
-
-
 

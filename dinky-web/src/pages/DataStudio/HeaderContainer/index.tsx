@@ -93,8 +93,7 @@ const HeaderContainer = (props: connect) => {
     updateSelectBottomKey,
     queryDsConfig,
     queryTaskData,
-    enabledDs,
-    taskOwnerLockingStrategy
+    enabledDs
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
@@ -540,8 +539,7 @@ export default connect(
   ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     tabs: Studio.tabs,
     dsConfig: SysConfig.dsConfig,
-    enabledDs: SysConfig.enabledDs,
-    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
+    enabledDs: SysConfig.enabledDs
   }),
   mapDispatchToProps
 )(memo(HeaderContainer));

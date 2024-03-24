@@ -281,6 +281,9 @@ export const lockTask = (
   currentUser: UserBaseInfo.User,
   taskOwnerLockingStrategy: TaskOwnerLockingStrategy
 ) => {
+  if (currentUser?.superAdminFlag) {
+    return false;
+  }
   const isOwner = currentUser?.id == firstLevelOwner;
   switch (taskOwnerLockingStrategy) {
     case TaskOwnerLockingStrategy.OWNER:
