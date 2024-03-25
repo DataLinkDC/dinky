@@ -209,7 +209,7 @@ export const buildProjectTree = (
           title: (
             <>
               {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>}
-              <Space style={{marginLeft: item.isLeaf ? 4: 0}} align={'baseline'} size={'small'}>
+              <Space style={{ marginLeft: item.isLeaf ? 4 : 0 }} align={'baseline'} size={'small'}>
                 {renderTitle}
                 {item.isLeaf && renderSuffixIcon}
               </Space>

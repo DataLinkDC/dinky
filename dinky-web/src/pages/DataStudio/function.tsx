@@ -36,7 +36,7 @@ import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
 import { l } from '@/utils/intl';
 import { Dispatch } from '@@/plugin-dva/types';
-import {Col, Row} from 'antd';
+import { Col, Row } from 'antd';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) =>
@@ -288,11 +288,19 @@ export const showAllOwners = (id: number, ids: number[], users: UserBaseInfo.Use
   const secondLevelOwnersLabel = l('pages.datastudio.label.jobInfo.secondLevelOwners');
   const firstLevelOwner = showFirstLevelOwner(id, users);
   const secondLevelOwners = showSecondLevelOwners(ids, users);
-  return <Row>
-    {/*理论上责任人必填, 无需判断*/}
-    <Col span={24}>{firstLevelOwnerLabel}：{firstLevelOwner}</Col>
-    {<Col span={24}>{secondLevelOwnersLabel}：{secondLevelOwners ?? '-'}</Col>}
-  </Row>;
+  return (
+    <Row>
+      {/*理论上责任人必填, 无需判断*/}
+      <Col span={24}>
+        {firstLevelOwnerLabel}：{firstLevelOwner}
+      </Col>
+      {
+        <Col span={24}>
+          {secondLevelOwnersLabel}：{secondLevelOwners ?? '-'}
+        </Col>
+      }
+    </Row>
+  );
 };
 
 export const lockTask = (
