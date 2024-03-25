@@ -32,6 +32,7 @@ import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceD
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { SuggestionInfo } from '@/types/Public/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
+import { TaskInfo } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
@@ -139,7 +140,7 @@ export type TaskDataBaseType = {
   envId?: number;
 };
 
-export type TaskDataType = TaskDataBaseType & Record<string, any>;
+export type TaskDataType = TaskDataBaseType & TaskInfo & Record<string, any>;
 
 export type DataStudioParams = {
   taskId: number;

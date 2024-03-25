@@ -149,7 +149,6 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
       payload: { ...props.tabs }
     });
   };
-
   return (
     <Spin spinning={loading} delay={600}>
       <div style={{ width: '100%', height: fullscreen ? 'calc(100vh - 50px)' : height }}>

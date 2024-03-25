@@ -26,6 +26,7 @@ import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -231,7 +232,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
-    private List<Integer> secondLevelOwners;
+    private List<Integer> secondLevelOwners = new ArrayList<>();
 
     public JobConfig getJobConfig() {
 
