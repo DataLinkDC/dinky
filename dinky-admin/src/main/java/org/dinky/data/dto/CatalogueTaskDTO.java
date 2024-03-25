@@ -19,10 +19,10 @@
 
 package org.dinky.data.dto;
 
-import java.util.ArrayList;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableField;

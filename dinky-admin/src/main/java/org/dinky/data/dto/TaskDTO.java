@@ -19,7 +19,6 @@
 
 package org.dinky.data.dto;
 
-import java.util.ArrayList;
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
@@ -27,6 +26,7 @@ import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
