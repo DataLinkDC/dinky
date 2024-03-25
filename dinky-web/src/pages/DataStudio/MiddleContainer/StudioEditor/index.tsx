@@ -127,10 +127,10 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     tabsItem.monacoInstance = monaco;
 
     editor.onDidChangeCursorPosition((e) => {
-      props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
+      props.footContainerCacher.cache.codePosition = [e.position.lineNumber, e.position.column];
       dispatch({
         type: STUDIO_MODEL.saveFooterValue,
-        payload: { ...props.footContainer }
+        payload: { ...props.footContainerCacher.cache }
       });
     });
     registerEditorKeyBindingAndAction(editor);
@@ -149,6 +149,7 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
       payload: { ...props.tabs }
     });
   };
+
   return (
     <Spin spinning={loading} delay={600}>
       <div style={{ width: '100%', height: fullscreen ? 'calc(100vh - 50px)' : height }}>
@@ -218,10 +219,14 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
   );
 };
 
-export default connect(
-  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+const footContainerCacher = { cache: {} as StateType['footContainer'] };
+
+export default connect(({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => {
+  footContainerCacher.cache = Studio.footContainer;
+
+  return {
     tabs: Studio.tabs,
-    footContainer: Studio.footContainer,
+    footContainerCacher,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
-  })
-)(memo(StudioEditor));
+  };
+})(memo(StudioEditor));
