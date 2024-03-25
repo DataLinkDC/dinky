@@ -296,7 +296,8 @@ export const showAllOwners = (id: number, ids: number[], users: UserBaseInfo.Use
       </Col>
       {
         <Col span={24}>
-          {secondLevelOwnersLabel}：{(secondLevelOwners && secondLevelOwners.length > 0)? secondLevelOwners : '-'}
+          {secondLevelOwnersLabel}：
+          {secondLevelOwners && secondLevelOwners.length > 0 ? secondLevelOwners : '-'}
         </Col>
       }
     </Row>
