@@ -80,7 +80,7 @@ const JobConfig = (props: any) => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const isLockTask = lockTask(
-    current?.firstLevelOwner,
+    current?.firstLevelOwner!,
     current?.secondLevelOwners,
     initialState?.currentUser?.user,
     taskOwnerLockingStrategy

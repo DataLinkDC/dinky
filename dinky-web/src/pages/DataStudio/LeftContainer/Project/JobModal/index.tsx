@@ -66,6 +66,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     }),
     [form]
   );
+
   /**
    * when modalVisible or values changed, set form values
    */
