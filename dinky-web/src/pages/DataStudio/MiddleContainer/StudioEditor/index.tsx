@@ -221,12 +221,14 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
 
 const footContainerCacher = { cache: {} as StateType['footContainer'] };
 
-export default connect(({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => {
-  footContainerCacher.cache = Studio.footContainer;
+export default connect(
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => {
+    footContainerCacher.cache = Studio.footContainer;
 
-  return {
-    tabs: Studio.tabs,
-    footContainerCacher,
-    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
-  };
-})(memo(StudioEditor));
+    return {
+      tabs: Studio.tabs,
+      footContainerCacher,
+      taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
+    };
+  }
+)(memo(StudioEditor));
