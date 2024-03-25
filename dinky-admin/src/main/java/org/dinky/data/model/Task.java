@@ -19,7 +19,6 @@
 
 package org.dinky.data.model;
 
-import java.util.ArrayList;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.data.typehandler.ListTypeHandler;
@@ -27,6 +26,7 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import org.apache.ibatis.type.JdbcType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;

@@ -32,6 +32,7 @@ import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceD
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { SuggestionInfo } from '@/types/Public/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
+import { TaskInfo } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
@@ -40,7 +41,6 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
-import {TaskInfo} from "@/types/Studio/data";
 
 /**
  * 初始化布局宽高度
