@@ -34,8 +34,8 @@ export type Catalogue = {
   children: Catalogue[];
   configJson: TaskExtConfig;
   task: TaskInfo;
-  firstLevelOwner: Number;
-  secondLevelOwners: [];
+  firstLevelOwner: number;
+  secondLevelOwners: number[];
 };
 
 export type TaskUdfConfig = {

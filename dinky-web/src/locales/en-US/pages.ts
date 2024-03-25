@@ -394,6 +394,8 @@ export default {
   'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
+  'pages.datastudio.editor.onlyread.lock':
+    'No permission for task operation. Please contact the task owner',
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
   'pages.datastudio.editor.notsave.note':
     'Continue will discard the changes, are you sure to continue?',
@@ -458,6 +460,8 @@ export default {
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.watermark':
     'Current task has published,Config cannot modified,If you need to modify, please offline first',
+  'pages.datastudio.label.jobConfig.lock':
+    'The current task has no permission and cannot be modified. If you need to modify the task, contact the task owner to obtain the permission',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     'Select the FlinkSQL execution environment of the current task, and the environment statement will be executed in advance. The default is none. ',

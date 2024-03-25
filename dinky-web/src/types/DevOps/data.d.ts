@@ -38,8 +38,8 @@ declare namespace Jobs {
     failedRestartCount: number;
     duration: number;
     finishTime: string;
-    firstLevelOwner: Number;
-    secondLevelOwners: [];
+    firstLevelOwner: number;
+    secondLevelOwners: number[];
   };
 
   export type JobConfig = {
