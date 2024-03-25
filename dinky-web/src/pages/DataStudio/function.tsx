@@ -36,6 +36,7 @@ import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
 import { l } from '@/utils/intl';
 import { Dispatch } from '@@/plugin-dva/types';
+import {Col, Row} from 'antd';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) =>
@@ -254,11 +255,21 @@ export const getUserName = (id: Number, users: UserBaseInfo.User[] = []) => {
   return name;
 };
 
-export const showFirstLevelOwner = (id: Number, users: UserBaseInfo.User[] = []) => {
+/**
+ * 构建责任人
+ * @param id
+ * @param users
+ */
+export const showFirstLevelOwner = (id: number, users: UserBaseInfo.User[] = []) => {
   return getUserName(id, users);
 };
 
-export const showSecondLevelOwners = (ids: [], users: UserBaseInfo.User[] = []) => {
+/**
+ * 构建维护人
+ * @param ids
+ * @param users
+ */
+export const showSecondLevelOwners = (ids: number[], users: UserBaseInfo.User[] = []) => {
   return ids
     ?.map((id: Number) => {
       return getUserName(id, users);
@@ -266,18 +277,27 @@ export const showSecondLevelOwners = (ids: [], users: UserBaseInfo.User[] = []) 
     ?.join();
 };
 
-export const showAllOwners = (id: Number, ids: [], users: UserBaseInfo.User[] = []) => {
+/**
+ * 构建所有责任人 用于悬浮提示
+ * @param id
+ * @param ids
+ * @param users
+ */
+export const showAllOwners = (id: number, ids: number[], users: UserBaseInfo.User[] = []) => {
   const firstLevelOwnerLabel = l('pages.datastudio.label.jobInfo.firstLevelOwner');
   const secondLevelOwnersLabel = l('pages.datastudio.label.jobInfo.secondLevelOwners');
   const firstLevelOwner = showFirstLevelOwner(id, users);
   const secondLevelOwners = showSecondLevelOwners(ids, users);
-  return `${firstLevelOwnerLabel}:${firstLevelOwner ? firstLevelOwner : ''}; 
-  ${secondLevelOwnersLabel}:${secondLevelOwners ? secondLevelOwners : ''}`;
+  return <Row>
+    {/*理论上责任人必填, 无需判断*/}
+    <Col span={24}>{firstLevelOwnerLabel}：{firstLevelOwner}</Col>
+    {<Col span={24}>{secondLevelOwnersLabel}：{secondLevelOwners ?? '-'}</Col>}
+  </Row>;
 };
 
 export const lockTask = (
-  firstLevelOwner: Number,
-  secondLevelOwners: Number[] = [],
+  firstLevelOwner: number,
+  secondLevelOwners: number[] = [],
   currentUser: UserBaseInfo.User,
   taskOwnerLockingStrategy: TaskOwnerLockingStrategy
 ) => {

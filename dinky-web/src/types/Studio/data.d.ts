@@ -88,8 +88,8 @@ export type TaskInfo = {
   alertGroupName: string;
   createTime: Date;
   updateTime: Date;
-  firstLevelOwner: Number;
-  secondLevelOwners: [];
+  firstLevelOwner: number;
+  secondLevelOwners: number[];
 };
 
 export type SavePoint = {

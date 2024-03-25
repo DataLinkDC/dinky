@@ -129,6 +129,9 @@ export const showBadge = (type: string) => {
  * @param {Catalogue[]} data
  * @param {string} searchValue
  * @param path
+ * @param currentUser
+ * @param taskOwnerLockingStrategy
+ * @param users
  * @returns {any}
  */
 
@@ -182,9 +185,9 @@ export const buildProjectTree = (
               currentUser,
               taskOwnerLockingStrategy
             ) ? (
-              <LockTwoTone />
+              <LockTwoTone title={'无法操作'} twoToneColor={'red'} />
             ) : (
-              <UnlockTwoTone twoToneColor='#52c41a' />
+              <UnlockTwoTone title={'可操作'} twoToneColor='gray' />
             )}
           </>
         );
@@ -205,8 +208,11 @@ export const buildProjectTree = (
           type: item.type,
           title: (
             <>
-              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>} {renderTitle}{' '}
-              {item.isLeaf && renderSuffixIcon}
+              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>}
+              <Space style={{marginLeft: item.isLeaf ? 4: 0}} align={'baseline'} size={'small'}>
+                {renderTitle}
+                {item.isLeaf && renderSuffixIcon}
+              </Space>
             </>
           ),
           fullInfo: item,
