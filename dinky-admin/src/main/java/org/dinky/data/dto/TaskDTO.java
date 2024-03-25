@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import java.util.ArrayList;
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
@@ -231,7 +232,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
-    private List<Integer> secondLevelOwners;
+    private List<Integer> secondLevelOwners = new ArrayList<>();
 
     public JobConfig getJobConfig() {
 

@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import java.util.ArrayList;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
 import org.dinky.data.typehandler.ListTypeHandler;
@@ -183,7 +184,7 @@ public class Task extends SuperEntity<Task> {
             dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
-    private List<Integer> secondLevelOwners;
+    private List<Integer> secondLevelOwners = new ArrayList<>();
 
     public Task(Integer id, Integer jobInstanceId) {
         this.jobInstanceId = jobInstanceId;

@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import java.util.ArrayList;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 
@@ -98,7 +99,7 @@ public class CatalogueTaskDTO {
             dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
-    private List<Integer> secondLevelOwners;
+    private List<Integer> secondLevelOwners = new ArrayList<>();
 
     @ApiModelProperty(value = "Task", dataType = "TaskDTO", notes = "The task information")
     private TaskDTO task;

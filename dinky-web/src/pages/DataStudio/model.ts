@@ -40,6 +40,7 @@ import { DefaultOptionType } from 'antd/es/select';
 import { editor } from 'monaco-editor';
 import React from 'react';
 import ICodeEditor = editor.ICodeEditor;
+import {TaskInfo} from "@/types/Studio/data";
 
 /**
  * 初始化布局宽高度
@@ -139,7 +140,7 @@ export type TaskDataBaseType = {
   envId?: number;
 };
 
-export type TaskDataType = TaskDataBaseType & Record<string, any>;
+export type TaskDataType = TaskDataBaseType & TaskInfo & Record<string, any>;
 
 export type DataStudioParams = {
   taskId: number;
