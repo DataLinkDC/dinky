@@ -31,23 +31,23 @@ import CarouselList from "../components/CarouselList";
 const info = [
     {
         id: 1,
-        image: 'https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/datastudio.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/datastudio.png',
     },
     {
         id: 2,
-        image: 'https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/checksql.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/checksql.png',
     },
     {
         id: 3,
-        image: 'https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/versiondiff.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/versiondiff.png',
     },
     {
         id: 4,
-        image: 'https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/lineage.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/lineage.png',
     },
     {
         id: 5,
-        image: 'https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/monitor.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/monitor.png',
     },
 ];
 
