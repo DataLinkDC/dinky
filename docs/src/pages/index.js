@@ -114,13 +114,15 @@ function HomepageHeader() {
                     {/*</div>*/}
                    <div style={{
                        position: "absolute",
-                       width: "40vw",
-                       right: "10vw",
+                       width: "48%",
+                       right: "2vw",
+                       top: "18%",
                        zIndex: "1"
                    }}>
                        <CarouselList items={info}/>
                    </div>
                 </div>
+
             </div>
         </header>
     );
