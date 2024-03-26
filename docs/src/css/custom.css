@@ -253,11 +253,10 @@ div[class^='announcementBar_'] {
 
 
 .container .desc{
-  width: 100%;
+  width: 50%;
   high: auto;
   display:flex;
-  align-items: center;
-  justify-content: space-between;
+  margin-inline-start: -5rem;
 }
 
 .container .hero__title{
@@ -269,6 +268,8 @@ div[class^='announcementBar_'] {
 }
 .container .desc_left{
   width:50%;
+  display:flex;
+  flex-direction: column;
 }
 .container .desc_left .hero__title{
   font-size:2.5rem;
@@ -287,17 +288,6 @@ div[class^='announcementBar_'] {
   margin-bottom:1rem;
 }
 
-.container .desc .desc_right{
-  display:flex;
-  position: relative;
-  width:100%;
-  height: 20%;
-  padding-left: 80px;
-}
-.container  .desc .desc_right img .fly_svg{
-  width:100%;
-  height:40%;
-}
 /*a:link {color: blue; text-decoration:none;} !*  未访问：蓝色、无下划线  *!*/
 /*a:active { color: red; } !* //激活：红色 *!*/
 /*a:visited {color:purple;text-decoration:none;} !* //已访问：紫色、无下划线 *!*/

@@ -24,7 +24,32 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import CarouselList from "../components/CarouselList";
 
+
+// 轮播图数据
+const info = [
+    {
+        id: 1,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/datastudio.png',
+    },
+    {
+        id: 2,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/checksql.png',
+    },
+    {
+        id: 3,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/versiondiff.png',
+    },
+    {
+        id: 4,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/lineage.png',
+    },
+    {
+        id: 5,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/monitor.png',
+    },
+];
 
 function HomepageHeader() {
     const {siteConfig} = useDocusaurusContext();
@@ -75,19 +100,27 @@ function HomepageHeader() {
                             </div>
 
                             <div className={styles.buttonLink}>
-                               <iframe style={{width:"100px",height:"30px"}}
+                               <iframe style={{width:"150px",height:"30px"}}
                                     src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dinky&amp;type=star&amp;count=true&amp;size=large"
                                     title="GitHub Stars"
                                 />
                             </div>
                         </div>
                     </div>
-                    <div className={clsx("desc_right", styles.box,styles.descRight)}>
-                        <div>
-                           <img src="home.png" className="fly_svg"></img>
-                        </div>
-                    </div>
+                    {/*<div className={clsx("desc_right", styles.box,styles.descRight)}>*/}
+                    {/*    <div>*/}
+                    {/*       <img src="home.png" className="fly_svg"></img>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+                   <div style={{
+                       position: "absolute",
+                       width: "40vw",
+                       right: "2vw",
+                   }}>
+                       <CarouselList items={info}/>
+                   </div>
                 </div>
+
             </div>
         </header>
     );
