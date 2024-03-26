@@ -69,6 +69,8 @@ public class FlinkSqlTask extends BaseTask {
         jobManager.prepare(task.getStatement());
         handler.init(jobManager.getJob());
         JobResult result = jobManager.executeSql(task.getStatement());
+        // Job class maybe change at remote server
+        handler.setJob(jobManager.getJob());
         if (result.isSuccess()) {
             handler.success();
         } else {

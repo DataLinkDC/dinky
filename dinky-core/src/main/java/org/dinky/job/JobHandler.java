@@ -32,15 +32,13 @@ public interface JobHandler {
 
     boolean init(Job job);
 
-    boolean ready();
+    void setJob(Job job);
 
     boolean running();
 
     boolean success();
 
     boolean failed();
-
-    boolean callback();
 
     boolean close();
 

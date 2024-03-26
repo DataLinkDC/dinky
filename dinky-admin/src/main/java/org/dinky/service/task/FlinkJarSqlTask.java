@@ -47,6 +47,7 @@ public class FlinkJarSqlTask extends FlinkSqlTask {
         jobManager.prepare(task.getStatement());
         handler.init(jobManager.getJob());
         JobResult result = jobManager.executeJarSql(task.getStatement());
+        handler.setJob(jobManager.getJob());
         if (result.isSuccess()) {
             handler.success();
         } else {

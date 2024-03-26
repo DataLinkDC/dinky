@@ -97,11 +97,6 @@ public class Job2MysqlHandler extends AbsJobHandler {
     }
 
     @Override
-    public boolean ready() {
-        return true;
-    }
-
-    @Override
     public boolean running() {
         return true;
     }
@@ -218,11 +213,6 @@ public class Job2MysqlHandler extends AbsJobHandler {
         history.setEndTime(job.getEndTime());
         history.setError(job.getError());
         historyService.updateById(history);
-        return true;
-    }
-
-    @Override
-    public boolean callback() {
         return true;
     }
 

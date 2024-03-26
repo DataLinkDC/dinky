@@ -24,4 +24,8 @@ import org.dinky.job.JobHandler;
 
 public abstract class AbsJobHandler implements JobHandler {
     protected Job job;
+
+    public void setJob(Job job) {
+        this.job = job;
+    }
 }
