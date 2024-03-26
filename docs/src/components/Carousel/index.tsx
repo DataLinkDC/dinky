@@ -103,8 +103,13 @@ const Carousel = ({
         };
     });
 
-    return (
-        <div className={style.container}>
+    /**
+     * Renders the children elements with specific styles and transformations.
+     *
+     * @return {JSX.Element} The rendered JSX elements with modified styles.
+     */
+    const renderChildren = () => {
+        return (
             <div
                 className={style.inner}
                 style={{transform: `translateX(-${activeIndex * 100}%)`}}
@@ -113,6 +118,16 @@ const Carousel = ({
                     return React.cloneElement(child, {width: "100%", height: "100%"});
                 })}
             </div>
+        )
+    }
+
+    /**
+     * Function to render loading indicators for each child component.
+     *
+     * @return {JSX.Element} The loading indicators JSX element
+     */
+    const renderLoading = () => {
+        return (
             <div className={style.loading}>
                 {React.Children.map(children, (child, index) => {
                     return (
@@ -131,6 +146,13 @@ const Carousel = ({
                     );
                 })}
             </div>
+        )
+    }
+
+    return (
+        <div className={style.container}>
+            {renderChildren()}
+            {renderLoading()}
         </div>
     );
 };
