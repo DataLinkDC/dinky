@@ -4059,7 +4059,7 @@ CREATE TABLE dinky_udf_manage
 (
     id           SERIAL PRIMARY KEY          NOT NULL,
     name         VARCHAR(50),
-    class_name   VARCHAR(50),
+    class_name   VARCHAR(100),
     task_id      INT,
     resources_id INT,
     enabled      BOOLEAN                              DEFAULT TRUE,
