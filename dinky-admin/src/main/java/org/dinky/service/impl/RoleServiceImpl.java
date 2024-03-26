@@ -183,10 +183,9 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         if (Asserts.isNotNull(userRoleList)) {
             userRoleList.forEach(userRole -> {
                 User user = userService.getById(userRole.getUserId());
-                if (Objects.isNull(user)) {
-                    return;
+                if (Objects.nonNull(user)) {
+                    userList.add(user);
                 }
-                userList.add(user);
             });
         }
         return userList;
