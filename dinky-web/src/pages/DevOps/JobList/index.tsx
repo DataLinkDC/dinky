@@ -83,7 +83,10 @@ const JobList = () => {
     {
       title: l('global.table.createTime'),
       hideInSearch: true,
-      dataIndex: 'createTime'
+      dataIndex: 'createTime',
+      valueType: 'dateTime',
+      sorter: true,
+      defaultSortOrder: 'descend'
     },
     {
       title: l('global.table.useTime'),

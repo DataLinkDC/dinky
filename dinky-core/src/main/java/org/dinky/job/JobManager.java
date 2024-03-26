@@ -91,14 +91,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrFormatter;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Data
 public class JobManager {
     private JobHandler handler;
     private ExecutorConfig executorConfig;
@@ -250,6 +253,10 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
+        List<String> statements = Arrays.stream(SqlUtil.getStatements(statement))
+                .map(t -> executor.pretreatStatement(t))
+                .collect(Collectors.toList());
+        statement = String.join(";\n", statements);
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
@@ -282,6 +289,7 @@ public class JobManager {
                 GatewayResult gatewayResult;
                 config.addGatewayConfig(configuration);
                 if (runMode.isApplicationMode()) {
+                    config.getGatewayConfig().setSql(statement);
                     gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
                 } else {
                     streamGraph.setJobName(config.getJobName());
@@ -351,7 +359,7 @@ public class JobManager {
             }
         } catch (Exception e) {
             String errorMessage = e.getMessage();
-            if (errorMessage.contains("Only insert statement is supported now")) {
+            if (errorMessage != null && errorMessage.contains("Only insert statement is supported now")) {
                 throw new BusException(Status.OPERATE_NOT_SUPPORT_QUERY.getMessage());
             }
             String error = StrFormatter.format(

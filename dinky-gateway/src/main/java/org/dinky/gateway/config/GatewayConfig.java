@@ -48,6 +48,13 @@ public class GatewayConfig {
     private Integer taskId;
 
     @ApiModelProperty(
+            value = "SQL statement to be executed",
+            dataType = "String",
+            example = "SELECT * FROM table",
+            notes = "SQL statement")
+    private String sql;
+
+    @ApiModelProperty(
             value = "Paths to the JAR files",
             dataType = "String[]",
             example = "[\"/path/to/jar1.jar\",\"/path/to/jar2.jar\"]",

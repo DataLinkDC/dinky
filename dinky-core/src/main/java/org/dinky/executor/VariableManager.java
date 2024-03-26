@@ -27,7 +27,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.EngineContextHolder;
 import org.dinky.data.constant.CommonConstant;
-import org.dinky.data.exception.DinkyException;
+import org.dinky.data.exception.BusException;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.Table;
@@ -144,7 +144,14 @@ public final class VariableManager {
             }
             return null;
         } catch (Exception e) {
-            throw new DinkyException(format("The variable name or jexl key of sql %s does not exist.", variableName));
+            String error = format(
+                    "The variable name or jexl key of sql \"${%s}\" does not exist.\n"
+                            + "Please follow the following methods to resolve the problem:\n"
+                            + "1. global variables are enabled ? \n"
+                            + "2. variable is exists ? it`s defined in sql ? or  global variable is defined ? \n"
+                            + "3. If it is a custom function variable, please check whether the class is loaded correctly",
+                    variableName);
+            throw new BusException(error);
         }
     }
 

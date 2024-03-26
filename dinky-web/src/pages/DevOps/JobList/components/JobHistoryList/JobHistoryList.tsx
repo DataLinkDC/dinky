@@ -43,7 +43,9 @@ const JobHistoryList = (props: HistoryProps) => {
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
-      valueType: 'dateTime'
+      valueType: 'dateTime',
+      sorter: true,
+      defaultSortOrder: 'descend'
     },
     {
       title: l('global.table.finishTime'),

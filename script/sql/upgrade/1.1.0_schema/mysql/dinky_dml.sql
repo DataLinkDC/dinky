@@ -46,5 +46,13 @@ set `path`='/registration/alert/rule/edit',
 where `id` = 119;
 
 
+update dinky_sys_menu set `type`= 'F' where `id`= 151;
+update dinky_sys_menu set `path`= '/datastudio/bottom/table-data' , `perms`= 'datastudio:bottom:table-data' where `id`= 46;
+
+delete from dinky_sys_menu where `id`= 26;
+
 
 commit ;
+
+
+

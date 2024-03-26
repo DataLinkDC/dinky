@@ -25,8 +25,10 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.kubernetes.utils.IgnoreNullRepresenter;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
+import org.dinky.utils.TextUtil;
 
 import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.client.deployment.ClusterDeploymentException;
@@ -34,8 +36,10 @@ import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
+import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.utils.Constants;
 import org.apache.flink.runtime.client.JobStatusMessage;
 
@@ -43,23 +47,31 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * KubernetesApplicationGateway
  */
+@Slf4j
 public class KubernetesApplicationGateway extends KubernetesGateway {
+
+    private final String tmpConfDir =
+            String.format("%s/tmp/kubernets/%s", System.getProperty("user.dir"), UUID.randomUUID());
 
     /**
      * @return The type of the Kubernetes gateway, which is GatewayType.KUBERNETES_APPLICATION.
@@ -69,6 +81,24 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         return GatewayType.KUBERNETES_APPLICATION;
     }
 
+    @Override
+    public void init() {
+        super.init();
+        Pod decoratedPodTemplate = getK8sClientHelper().decoratePodTemplate(config.getSql());
+        // use snakyaml to serialize the pod
+        Representer representer = new IgnoreNullRepresenter();
+        // set the label of the Map type, only the map type will not print the class name when dumping
+        representer.addClassTag(Pod.class, Tag.MAP);
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setPrettyFlow(true);
+        Yaml yaml = new Yaml(representer, options);
+        preparPodTemplate(yaml.dump(decoratedPodTemplate), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
+        preparPodTemplate(k8sConfig.getJmPodTemplate(), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
+        preparPodTemplate(k8sConfig.getTmPodTemplate(), KubernetesConfigOptions.TASK_MANAGER_POD_TEMPLATE);
+        preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE);
+    }
+
     /**
      * Submits a jar file to the Kubernetes gateway.
      *
@@ -76,16 +106,16 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      */
     @Override
     public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
-        try {
+        init();
+        try (KubernetesClient kubernetesClient = getK8sClientHelper().getKubernetesClient()) {
             logger.info("Start submit k8s application.");
-            ClusterClientProvider<String> clusterClient = deployApplication();
-            Deployment deployment = kubernetesClient
-                    .apps()
-                    .deployments()
-                    .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
-                    .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
-                    .get();
-            KubernetesResult kubernetesResult = waitForJmAndJobStart(deployment, clusterClient);
+
+            ClusterClientProvider<String> clusterClient =
+                    deployApplication(getK8sClientHelper().getClient());
+
+            Deployment deployment = getK8sClientHelper().createDinkyResource();
+
+            KubernetesResult kubernetesResult = waitForJmAndJobStart(kubernetesClient, deployment, clusterClient);
             kubernetesResult.success();
             return kubernetesResult;
         } catch (Exception ex) {
@@ -110,7 +140,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         ContainerStatus containerStatus =
                 flinContainer.orElseThrow(() -> new GatewayException("Deploy k8s failed, can't find flink container"));
 
-        Yaml yaml = new Yaml(new LogRepresenter());
+        Yaml yaml = new Yaml(new IgnoreNullRepresenter());
         String logStr = StrFormatter.format(
                 "Got Flink Container State:\nPod: {},\tReady: {},\trestartCount: {},\timage: {}\n"
                         + "------CurrentState------\n{}\n------LastState------\n{}",
@@ -134,10 +164,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      * @return A ClusterClientProvider<String> object for accessing the Kubernetes cluster.
      * @throws ClusterDeploymentException if deployment to Kubernetes fails.
      */
-    public ClusterClientProvider<String> deployApplication() throws ClusterDeploymentException {
-        if (Asserts.isNull(client)) {
-            init();
-        }
+    public ClusterClientProvider<String> deployApplication(FlinkKubeClient client) throws ClusterDeploymentException {
         // Build the commit information
         AppConfig appConfig = config.getAppConfig();
         String[] userJarParas =
@@ -161,7 +188,8 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      * @return A KubernetesResult object containing the Kubernetes gateway's Web URL, the Job ID, and the cluster ID.
      * @throws InterruptedException if waiting is interrupted.
      */
-    public KubernetesResult waitForJmAndJobStart(Deployment deployment, ClusterClientProvider<String> clusterClient)
+    public KubernetesResult waitForJmAndJobStart(
+            KubernetesClient kubernetesClient, Deployment deployment, ClusterClientProvider<String> clusterClient)
             throws InterruptedException {
         KubernetesResult result = KubernetesResult.build(getType());
         long waitSends = SystemConfiguration.getInstances().getJobIdWait() * 1000L;
@@ -208,27 +236,19 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 "The number of retries exceeds the limit, check the K8S cluster for more information");
     }
 
-    /**
-     * Represents Java Bean properties for YAML serialization with LogRepresenter.
-     * If the property value is null, it is ignored.
-     */
-    static class LogRepresenter extends Representer {
-        /**
-         * Represents the Java Bean property, ignoring null and empty values.
-         *
-         * @param javaBean      The Java Bean object.
-         * @param property      The property to represent.
-         * @param propertyValue The value of the property.
-         * @param tag           The custom tag.
-         * @return The represented node tuple, or null if the property value is null.
-         */
-        @Override
-        protected NodeTuple representJavaBeanProperty(
-                Object javaBean, Property property, Object propertyValue, Tag tag) {
-            if (propertyValue == null) {
-                return null;
+    private void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
+        if (!TextUtil.isEmpty(podTemplate)) {
+            String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
+            if (FileUtil.exist(filePath)) {
+                Assert.isTrue(FileUtil.del(filePath));
             }
-            return super.representJavaBeanProperty(javaBean, property, propertyValue, tag);
+            FileUtil.writeUtf8String(podTemplate, filePath);
+            addConfigParas(option, filePath);
         }
+    }
+
+    public boolean close() {
+        super.close();
+        return FileUtil.del(tmpConfDir);
     }
 }

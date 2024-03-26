@@ -232,32 +232,31 @@ const SettingOverView = () => {
 
   return (
     <FadeIn>
-      <div style={{ paddingBottom: '20px' }}>
-        <ProCard
-          ghost
-          bodyStyle={{ height: '80vh' }}
-          className={'schemaTree'}
-          size='small'
-          bordered
-          tabs={{
-            activeKey: activeKey,
-            type: 'card',
-            cardProps: {
-              hoverable: true,
-              bodyStyle: {
-                height: parent.innerHeight - 155
-              },
-              boxShadow: true
+      <ProCard
+        ghost
+        bodyStyle={{ height: '80vh', overflowY: 'auto' }}
+        className={'schemaTree'}
+        size='small'
+        bordered
+        tabs={{
+          activeKey: activeKey,
+          type: 'card',
+          cardProps: {
+            hoverable: true,
+            bodyStyle: {
+              height: parent.innerHeight - 170,
+              overflowY: 'auto'
             },
-            animated: true,
-            onChange: (key: any) => setActiveKey(key),
-            items: renderDataTag().filter(
-              (menu) =>
-                !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
-            )
-          }}
-        />
-      </div>
+            boxShadow: true
+          },
+          animated: true,
+          onChange: (key: any) => setActiveKey(key),
+          items: renderDataTag().filter(
+            (menu) =>
+              !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+          )
+        }}
+      />
     </FadeIn>
   );
 };

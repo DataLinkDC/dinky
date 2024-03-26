@@ -17,34 +17,10 @@
  *
  */
 
+package org.dinky.gateway.kubernetes.utils;
 
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule',
-    "component"='./RegCenter/Alert/AlertRule',
-    "perms"='registration:alert:rule',
-    "parent_id"=12
-where "id" = 116;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/add',
-    "perms"='registration:alert:rule:add'
-where "id" = 117;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/delete',
-    "perms"='registration:alert:rule:delete'
-where "id" = 118;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/edit',
-    "perms"='registration:alert:rule:edit'
-where "id" = 119;
-
-
-update dinky_sys_menu set "type"= 'F' where "id"= 151;
-update dinky_sys_menu set "path"= '/datastudio/bottom/table-data' , "perms"= 'datastudio:bottom:table-data' where "id"= 46;
-
-delete from dinky_sys_menu where "id"= 26;
-
-
+/** Constants for kubernetes. */
+public class DinkyKubernetsConstants {
+    public static final String DINKY_CONF_VOLUME = "dinky-config-volume";
+    public static final String DINKY_CONF_VOLUME_PERFIX = "dinky-config-";
+}

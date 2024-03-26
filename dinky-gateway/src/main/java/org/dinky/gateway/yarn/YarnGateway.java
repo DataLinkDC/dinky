@@ -20,6 +20,7 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
@@ -73,7 +74,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -86,6 +89,7 @@ import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
+    private final String tmpConfDir = String.format("%s/tmp/%s", System.getProperty("user.dir"), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 
@@ -401,5 +405,17 @@ public abstract class YarnGateway extends AbstractGateway {
             return ReUtil.getGroup1(HTML_TAG_REGEX, content);
         }
         return "No history log found yet. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster or please go to yarn interface to view the log.";
+    }
+
+    protected File preparSqlFile() {
+        File tempSqlFile =
+                new File(String.format("%s/%s", tmpConfDir, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
+        String sql = config == null ? "" : config.getSql();
+        FileUtil.writeString(Optional.ofNullable(sql).orElse(""), tempSqlFile.getAbsolutePath(), "UTF-8");
+        return tempSqlFile;
+    }
+
+    public boolean close() {
+        return FileUtil.del(tmpConfDir);
     }
 }

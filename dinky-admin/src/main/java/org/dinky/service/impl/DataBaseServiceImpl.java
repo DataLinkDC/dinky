@@ -80,24 +80,14 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public Boolean checkHeartBeat(DataBase db) {
-        boolean isHealthy = false;
+    public String checkHeartBeat(DataBase db) {
+        String result = "";
         db.setHeartbeatTime(LocalDateTime.now());
-        try {
-            isHealthy = Asserts.isEquals(
-                    CommonConstant.HEALTHY,
-                    Driver.buildUnconnected(db.getName(), db.getType(), db.getConnectConfig())
-                            .test());
-            if (isHealthy) {
-                db.setHealthTime(LocalDateTime.now());
-            }
-        } catch (Exception e) {
-            isHealthy = false;
-            throw e;
-        } finally {
-            db.setStatus(isHealthy);
-        }
-        return isHealthy;
+        result = Driver.buildUnconnected(db.getName(), db.getType(), db.getConnectConfig())
+                .test();
+        db.setStatus(Asserts.isEquals(CommonConstant.HEALTHY, result));
+
+        return result;
     }
 
     @Override

@@ -160,6 +160,15 @@ java.lang.classCastException: java.lang.Integer cannot be cast to java.lang.Bool
     org.apache.doris.flink.deserialization,converter.DorisRowConverter ,lambda$createExternalConverter$81fa9aea33 (DorisRowConverter.java:239)
 at org.apache.doris.flink.deserialization.converter.DorisRowConverter.
 ```
+或
+```shell
+org.apache.flink.streaming.runtime.tasks.ExceptionInChainedOperatorException: Could not forward element to next operator
+...
+Caused by: org.apache.flink.streaming.runtime.tasks.ExceptionInChainedOperatorException: Could not forward element to next operator
+...
+Caused by: java.lang.ClassCastException: java.lang.Integer cannot be cast to java.lang.Boolean
+
+```
 
 1. 在 mysql 中 tinyint 会被 cdc 识别为 boolean 类型，造成转换错误
 
