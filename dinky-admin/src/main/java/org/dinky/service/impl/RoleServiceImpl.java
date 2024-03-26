@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -180,7 +181,12 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         List<User> userList = new ArrayList<>();
 
         if (Asserts.isNotNull(userRoleList)) {
-            userRoleList.forEach(userRole -> userList.add(userService.getById(userRole.getUserId())));
+            userRoleList.forEach(userRole -> {
+                User user = userService.getById(userRole.getUserId());
+                if (Objects.nonNull(user)) {
+                    userList.add(user);
+                }
+            });
         }
         return userList;
     }
