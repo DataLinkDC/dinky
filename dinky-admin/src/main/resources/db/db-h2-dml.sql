@@ -21,7 +21,7 @@ INSERT INTO `dinky_git_project` ( `id`, `tenant_id`, `name`, `url`, `branch`
                                 , `username`, `password`, `private_key`, `pom`, `build_args`
                                 , `code_type`, `type`, `last_build`, `description`, `build_state`
                                 , `build_step`, `enabled`, `udf_class_map_list`, `order_line`)
-VALUES ( 1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master'
+VALUES ( 1, 1, 'java-udf', 'https://github.com/DataLinkDC/dinky-quickstart-java.git', 'master'
        , null, null, null, null, '-P flink-1.14'
        , 1, 1, null, null, 0
        , 0, 1, '[]', 1);
@@ -29,7 +29,7 @@ INSERT INTO `dinky_git_project` ( `id`, `tenant_id`, `name`, `url`, `branch`
                                 , `username`, `password`, `private_key`, `pom`, `build_args`
                                 , `code_type`, `type`, `last_build`, `description`, `build_state`
                                 , `build_step`, `enabled`, `udf_class_map_list`, `order_line`)
-VALUES ( 2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master'
+VALUES ( 2, 1, 'python-udf', 'https://github.com/DataLinkDC/dinky-quickstart-python.git', 'master'
        , null, null, null, null, ''
        , 2, 1, null, null, 0
        , 0, 1, '[]', 2);
