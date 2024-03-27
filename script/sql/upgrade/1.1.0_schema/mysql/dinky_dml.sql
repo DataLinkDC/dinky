@@ -18,7 +18,32 @@
  */
 
 
-begin ;
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+begin;
+
+update dinky_sys_menu
+set `path`='/registration/alert/rule',
+    `component`='./RegCenter/Alert/AlertRule',
+    `perms`='registration:alert:rule',
+    `parent_id`=12
+where `id` = 116;
+
+update dinky_sys_menu
+set `path`='/registration/alert/rule/add',
+    `perms`='registration:alert:rule:add'
+where `id` = 117;
+
+update dinky_sys_menu
+set `path`='/registration/alert/rule/delete',
+    `perms`='registration:alert:rule:delete'
+where `id` = 118;
+
+update dinky_sys_menu
+set `path`='/registration/alert/rule/edit',
+    `perms`='registration:alert:rule:edit'
+where `id` = 119;
 
 
 update dinky_sys_menu set `type`= 'F' where `id`= 151;
@@ -28,11 +53,6 @@ delete from dinky_sys_menu where `id`= 26;
 
 
 commit ;
-
-
-
-
-
 
 
 

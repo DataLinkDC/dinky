@@ -17,7 +17,7 @@ title: 1.0.1 release
 
 :::warning 提示
 - 1.0.1 是一个 BUG 修复版本,无数据库升级变更,可以直接升级
-- 关于 SCALA 版本: 发版使用 Scala-2.12 , 如你的环境必须使用 Scala-2.11, 请自行编译,请参考 [编译部署](../docs/next/deploy_guide/compile_deploy) , 将 profile 的 scala-2.12 改为 scala-2.11
+- 关于 SCALA 版本: 发版使用 Scala-2.12 , 如你的环境必须使用 Scala-2.11, 请自行编译,请参考 [编译部署](https://www.dinky.org.cn/docs/next/deploy_guide/compile_deploy) , 将 profile 的 scala-2.12 改为 scala-2.11
 :::
 
 

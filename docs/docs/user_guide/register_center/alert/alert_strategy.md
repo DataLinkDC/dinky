@@ -6,7 +6,7 @@ title: 告警策略
 ---
 
 :::info
-告警策略是指在满足告警规则的前提下，告警模板的触发条件。
+告警策略是指在满足告警策略的前提下，告警模板的触发条件。
 
 默认情况下,系统内置了一些告警策略,需要注意的是,内置的告警策略不可删除,可以修改告警模版,但是规则不可修改
 
@@ -47,4 +47,4 @@ title: 告警策略
 ![alert_rules](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/system_setting/alert_template/alert_rules.png)
 
 注意: 如需添加自定义告警模版, 请点击 **告警模版下拉框**中的**新建告警模版** 按钮,跳转至告警模版页面, 或者直接在 *
-*[告警模版](../register_center/alert/alert_template)** 页面创建告警模版
+*[告警模版](./alert_template)** 页面创建告警模版
