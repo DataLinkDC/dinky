@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.BusinessType;
@@ -27,6 +28,7 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.service.CatalogueService;
+import org.dinky.service.TaskService;
 
 import java.io.File;
 import java.util.List;
@@ -146,6 +148,7 @@ public class CatalogueController {
             required = true,
             dataType = "CatalogueTaskDTO",
             dataTypeClass = CatalogueTaskDTO.class)
+    @CheckTaskOwner(serviceType = TaskService.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         if (catalogueService.checkCatalogueTaskNameIsExistById(catalogueTaskDTO.getName(), catalogueTaskDTO.getId())) {
             return Result.failed(Status.TASK_IS_EXIST);
@@ -181,6 +184,7 @@ public class CatalogueController {
                 dataType = "Integer",
                 dataTypeClass = Integer.class)
     })
+    @CheckTaskOwner(serviceType = CatalogueService.class)
     public Result<Boolean> moveCatalogue(
             @RequestParam("originCatalogueId") Integer originCatalogueId,
             @RequestParam("targetParentId") Integer targetParentId) {
@@ -205,6 +209,7 @@ public class CatalogueController {
             dataType = "Catalogue",
             dataTypeClass = Catalogue.class)
     @ApiOperation("Copy Task")
+    @CheckTaskOwner(serviceType = TaskService.class)
     public Result<Void> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
             return Result.succeed(Status.COPY_SUCCESS);
@@ -222,6 +227,7 @@ public class CatalogueController {
     @Log(title = "Delete Catalogue By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete Catalogue By Id")
     @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Integer", dataTypeClass = Integer.class)
+    @CheckTaskOwner(serviceType = CatalogueService.class)
     public Result<Void> deleteCatalogueById(@RequestParam Integer id) {
         return catalogueService.deleteCatalogueById(id);
     }

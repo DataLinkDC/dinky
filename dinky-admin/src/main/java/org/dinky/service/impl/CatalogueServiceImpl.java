@@ -244,6 +244,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         task.setDialect(catalogueTaskDTO.getType());
         task.setConfigJson(catalogueTaskDTO.getConfigJson());
         task.setNote(catalogueTaskDTO.getNote());
+        task.setFirstLevelOwner(catalogueTaskDTO.getFirstLevelOwner());
+        task.setSecondLevelOwners(catalogueTaskDTO.getSecondLevelOwners());
         taskService.saveOrUpdateTask(task);
 
         catalogue.setTenantId(catalogueTaskDTO.getTenantId());

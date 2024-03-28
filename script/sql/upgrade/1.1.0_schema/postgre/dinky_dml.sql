@@ -26,5 +26,7 @@ update dinky_sys_menu set "path"= '/datastudio/bottom/table-data' , "perms"= 'da
 
 delete from dinky_sys_menu where "id"= 26;
 
+update dinky_task set "first_level_owner" = "creator";
+
 commit ;
 

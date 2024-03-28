@@ -17,23 +17,16 @@
  *
  */
 
+package org.dinky.data.enums;
 
-begin ;
+/** 业务操作类型 */
+public enum TaskOwnerLockStrategyEnum {
+    /** 只有责任人可以操作 */
+    OWNER,
 
+    /** 责任人和维护人都可以操作 */
+    OWNER_AND_MAINTAINER,
 
-update dinky_sys_menu set `type`= 'F' where `id`= 151;
-update dinky_sys_menu set `path`= '/datastudio/bottom/table-data' , `perms`= 'datastudio:bottom:table-data' where `id`= 46;
-
-delete from dinky_sys_menu where `id`= 26;
-
-update dinky_task set first_level_owner = creator;
-
-commit ;
-
-
-
-
-
-
-
-
+    /** 所有人都可以操作 */
+    ALL,
+}

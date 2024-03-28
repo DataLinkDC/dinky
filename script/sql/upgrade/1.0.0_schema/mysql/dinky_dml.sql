@@ -862,7 +862,7 @@ UPDATE dinky_flink_document t SET t.subtype = 'OTHER_FUNCTION' WHERE t.subtype =
 
 update dinky_user set `password`= 'f4b3a484ee745b98d64cd69c429b2aa2' where `username` = 'admin' and `id` =1;
 
-
+update dinky_task set first_level_owner = creator;
 
 
 

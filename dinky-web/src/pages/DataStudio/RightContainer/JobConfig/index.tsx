@@ -22,7 +22,8 @@ import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
 import {
   getCurrentData,
   getCurrentTab,
-  isDataStudioTabsItemType
+  isDataStudioTabsItemType,
+  lockTask
 } from '@/pages/DataStudio/function';
 import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import {
@@ -37,6 +38,7 @@ import {
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -49,6 +51,7 @@ import {
   ProFormSwitch,
   ProFormText
 } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Alert, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
@@ -64,7 +67,8 @@ const JobConfig = (props: any) => {
     env,
     group,
     rightContainer,
-    flinkConfigOptions
+    flinkConfigOptions,
+    taskOwnerLockingStrategy
   } = props;
 
   const current = getCurrentData(panes, activeKey);
@@ -72,6 +76,15 @@ const JobConfig = (props: any) => {
   const [form] = useForm();
 
   const [selectRunMode, setSelectRunMode] = useState<string>(current?.type);
+
+  const { initialState, setInitialState } = useModel('@@initialState');
+
+  const isLockTask = lockTask(
+    current?.firstLevelOwner!,
+    current?.secondLevelOwners,
+    initialState?.currentUser?.user,
+    taskOwnerLockingStrategy
+  );
 
   useEffect(() => {
     dispatch({
@@ -112,9 +125,17 @@ const JobConfig = (props: any) => {
 
   return (
     <div style={{ maxHeight: rightContainer.height, marginTop: 10 }}>
-      {current?.step === JOB_LIFE_CYCLE.PUBLISH && (
+      {(current?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask) && (
         <>
-          <Alert message={l('pages.datastudio.label.jobConfig.watermark')} type='info' showIcon />
+          <Alert
+            message={
+              isLockTask
+                ? l('pages.datastudio.label.jobConfig.lock')
+                : l('pages.datastudio.label.jobConfig.watermark')
+            }
+            type='info'
+            showIcon
+          />
         </>
       )}
       <ProForm
@@ -131,7 +152,7 @@ const JobConfig = (props: any) => {
         form={form}
         submitter={false}
         layout='vertical'
-        disabled={current?.step === JOB_LIFE_CYCLE.PUBLISH} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
+        disabled={current?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
         onValuesChange={debounce(onValuesChange, 500)}
         syncToInitialValues
       >
@@ -307,12 +328,23 @@ const JobConfig = (props: any) => {
   );
 };
 
-export default connect(({ Studio, Alert }: { Studio: StateType; Alert: AlertStateType }) => ({
-  sessionCluster: Studio.sessionCluster,
-  clusterConfiguration: Studio.clusterConfiguration,
-  rightContainer: Studio.rightContainer,
-  tabs: Studio.tabs,
-  env: Studio.env,
-  group: Alert.group,
-  flinkConfigOptions: Studio.flinkConfigOptions
-}))(JobConfig);
+export default connect(
+  ({
+    Studio,
+    Alert,
+    SysConfig
+  }: {
+    Studio: StateType;
+    Alert: AlertStateType;
+    SysConfig: SysConfigStateType;
+  }) => ({
+    sessionCluster: Studio.sessionCluster,
+    clusterConfiguration: Studio.clusterConfiguration,
+    rightContainer: Studio.rightContainer,
+    tabs: Studio.tabs,
+    env: Studio.env,
+    group: Alert.group,
+    flinkConfigOptions: Studio.flinkConfigOptions,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
+  })
+)(JobConfig);

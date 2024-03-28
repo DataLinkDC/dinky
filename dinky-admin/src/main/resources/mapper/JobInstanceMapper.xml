@@ -13,7 +13,9 @@
         select
         a.*,
         dh.type as type,
-        (select dc.name FROM dinky_cluster dc where dc.id=a.cluster_id) as clusterName
+        (select dc.name FROM dinky_cluster dc where dc.id=a.cluster_id) as clusterName,
+        dt.first_level_owner,
+        dt.second_level_owners
         from
         dinky_job_instance a
         <if test='!(param.isHistory!=null and param.isHistory==true)'>
@@ -23,6 +25,7 @@
             ) snap on snap.id = a.id
         </if>
         left join dinky_history dh on a.history_id = dh.id
+        left join dinky_task dt on a.task_id = dt.id
         <where>
             1=1
             <if test='param.status!=null and param.status!=""'>

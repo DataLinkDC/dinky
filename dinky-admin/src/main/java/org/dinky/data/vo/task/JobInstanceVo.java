@@ -19,7 +19,10 @@
 
 package org.dinky.data.vo.task;
 
+import org.dinky.data.typehandler.ListTypeHandler;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -99,4 +102,18 @@ public class JobInstanceVo {
             example = "2",
             notes = "Count of failed restarts")
     private Integer failedRestartCount;
+
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "List",
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
 }

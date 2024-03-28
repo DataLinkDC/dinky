@@ -25,9 +25,11 @@ import {
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType, STUDIO_MODEL, TabsItemType } from '@/pages/DataStudio/model';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Key } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
 import { Empty, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import React, { useEffect, useState } from 'react';
@@ -55,16 +57,37 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     onRightClick,
     selectKeyChange,
     onExpand,
-    dispatch
+    dispatch,
+    taskOwnerLockingStrategy,
+    users
   } = props;
 
+  const { initialState, setInitialState } = useModel('@@initialState');
   const [searchValue, setSearchValueValue] = useState('');
-  const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
+  const [data, setData] = useState<any[]>(
+    buildProjectTree(
+      projectData,
+      searchValue,
+      [],
+      initialState?.currentUser?.user,
+      taskOwnerLockingStrategy,
+      users
+    )
+  );
   const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
-    setData(buildProjectTree(projectData, searchValue));
-  }, [searchValue, projectData]);
+    setData(
+      buildProjectTree(
+        projectData,
+        searchValue,
+        [],
+        initialState?.currentUser?.user,
+        taskOwnerLockingStrategy,
+        users
+      )
+    );
+  }, [searchValue, projectData, taskOwnerLockingStrategy]);
 
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const onChangeSearch = (e: any) => {
@@ -171,7 +194,11 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  height: Studio.toolContentHeight,
-  project: Studio.project
-}))(JobTree);
+export default connect(
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+    height: Studio.toolContentHeight,
+    project: Studio.project,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
+    users: Studio.users
+  })
+)(JobTree);

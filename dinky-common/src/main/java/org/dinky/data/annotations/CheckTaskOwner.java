@@ -17,23 +17,17 @@
  *
  */
 
+package org.dinky.data.annotations;
 
-begin ;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-
-update dinky_sys_menu set `type`= 'F' where `id`= 151;
-update dinky_sys_menu set `path`= '/datastudio/bottom/table-data' , `perms`= 'datastudio:bottom:table-data' where `id`= 46;
-
-delete from dinky_sys_menu where `id`= 26;
-
-update dinky_task set first_level_owner = creator;
-
-commit ;
-
-
-
-
-
-
-
-
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface CheckTaskOwner {
+    Class serviceType();
+}
