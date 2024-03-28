@@ -28,7 +28,10 @@ import org.dinky.data.dto.TaskSaveDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.exception.BusException;
+import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.Task;
+import org.dinky.service.CatalogueService;
 import org.dinky.service.TaskService;
 
 import java.util.List;
@@ -42,6 +45,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Aspect
@@ -52,8 +56,11 @@ public class TaskOperationCheckAspect {
     @Resource
     private TaskService taskService;
 
+    @Resource
+    private CatalogueService catalogueService;
+
     /**
-     * Check whether the user has the permission to perform the task
+     * Check whether the user has the permission to perform the task.
      *
      * @param joinPoint
      * @param checkTaskOwner
@@ -65,11 +72,20 @@ public class TaskOperationCheckAspect {
         if (!TaskOwnerLockStrategyEnum.ALL.equals(
                         SystemConfiguration.getInstances().getTaskOwnerLockStrategy())
                 && BaseConstant.ADMIN_ID != StpUtil.getLoginIdAsInt()) {
+            Class serviceType = checkTaskOwner.serviceType();
             Integer id = getId(joinPoint);
             if (Objects.nonNull(id)) {
-                TaskDTO taskDTO = taskService.getTaskInfoById(id);
-                if (Objects.nonNull(taskDTO)) {
-                    if (!hasPermission(taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners())) {
+                Task task = null;
+                if (TaskService.class.equals(serviceType)) {
+                    task = taskService.getById(id);
+                } else if (CatalogueService.class.equals(serviceType)) {
+                    Catalogue catalogue = catalogueService.getById(id);
+                    if (BeanUtil.isNotEmpty(catalogue) && catalogue.getIsLeaf()) {
+                        task = taskService.getById(catalogue.getTaskId());
+                    }
+                }
+                if (Objects.nonNull(task)) {
+                    if (!hasPermission(task.getFirstLevelOwner(), task.getSecondLevelOwners())) {
                         throw new BusException(Status.TASK_NOT_OPERATE_PERMISSION);
                     }
                 }
@@ -112,6 +128,8 @@ public class TaskOperationCheckAspect {
             id = ((TaskRollbackVersionDTO) args[0]).getTaskId();
         } else if (args[0] instanceof CatalogueTaskDTO) {
             id = ((CatalogueTaskDTO) args[0]).getTaskId();
+        } else if (args[0] instanceof Catalogue) {
+            id = ((Catalogue) args[0]).getTaskId();
         }
 
         return id;

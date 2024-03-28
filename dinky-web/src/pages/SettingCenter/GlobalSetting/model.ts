@@ -57,7 +57,7 @@ const ConfigModel: ConfigModelType = {
   state: {
     dsConfig: [],
     enabledDs: false,
-    taskOwnerLockingStrategy: TaskOwnerLockingStrategy.ALL_CAN_OPERATE
+    taskOwnerLockingStrategy: TaskOwnerLockingStrategy.ALL
   },
 
   effects: {
@@ -72,7 +72,7 @@ const ConfigModel: ConfigModelType = {
           type: 'updateTaskOwnerLockingStrategy',
           payload: taskOwnerLockingStrategy
             ? taskOwnerLockingStrategy.value
-            : TaskOwnerLockingStrategy.ALL_CAN_OPERATE
+            : TaskOwnerLockingStrategy.ALL
         });
       }
     },
