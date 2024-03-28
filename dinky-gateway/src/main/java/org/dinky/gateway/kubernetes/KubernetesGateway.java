@@ -164,7 +164,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     @Override
     public void killCluster() {
-        log.info("Start kill cluster: "+config.getFlinkConfig().getJobName());
+        log.info("Start kill cluster: " + config.getFlinkConfig().getJobName());
         initConfig();
         addConfigParas(
                 KubernetesConfigOptions.CLUSTER_ID, config.getFlinkConfig().getJobName());
