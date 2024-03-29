@@ -28,8 +28,3 @@ spring:
     console:
       enabled: true
       path: /api/h2
-  sql:
-    init:
-      schema-locations: classpath:db/db-h2-ddl.sql
-      data-locations: classpath:db/db-h2-dml.sql
-      mode: always

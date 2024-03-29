@@ -76,9 +76,9 @@ public class DatabaseFlywayMigration {
     private void init() {
         Flyway flyway = SpringUtil.getBean(Flyway.class);
         try {
-
+            log.info("===========[Initialize flyway start]============");
             flyway.migrate();
-            log.info("===========[Initialize flyway successfully]============");
+            log.info("===========[Initialize flyway successfully ]============");
 
         } catch (FlywayException e) {
             flyway.repair();
@@ -87,6 +87,8 @@ public class DatabaseFlywayMigration {
         } finally {
             HikariDataSource dataSource =
                     (HikariDataSource) flyway.getConfiguration().getDataSource();
+            dataSource.close();
+            log.info("===========[Close dataSource of flyway  successfully]============");
         }
     }
 
