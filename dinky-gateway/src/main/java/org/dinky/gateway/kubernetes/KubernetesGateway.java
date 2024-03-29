@@ -101,9 +101,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     }
 
     public SavePointResult savepointCluster(String savePoint) {
-        if (Asserts.isNull(k8sClientHelper.getClient())) {
-            initConfig();
-        }
+        initConfig();
 
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
         addConfigParas(
@@ -120,9 +118,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     }
 
     public SavePointResult savepointJob(String savePoint) {
-        if (Asserts.isNull(k8sClientHelper.getClient())) {
-            initConfig();
-        }
+        initConfig();
         if (Asserts.isNull(config.getFlinkConfig().getJobId())) {
             throw new GatewayException(
                     "No job id was specified. Please specify a job to which you would like to" + " savepont.");
@@ -168,11 +164,10 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     @Override
     public void killCluster() {
-        if (Asserts.isNull(k8sClientHelper.getClient())) {
-            initConfig();
-        }
+        log.info("Start kill cluster: " + config.getFlinkConfig().getJobName());
+        initConfig();
         addConfigParas(
-                KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
+                KubernetesConfigOptions.CLUSTER_ID, config.getFlinkConfig().getJobName());
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
