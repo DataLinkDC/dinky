@@ -32,6 +32,7 @@ org.apache.flink.configuration.YarnConfigOptions
 org.apache.flink.kubernetes.configuration.KubernetesConfigOptions
 org.apache.flink.kubernetes.configuration.KubernetesHighAvailabilityOptions
 org.apache.flink.configuration.KubernetesConfigOptions
+org.apache.flink.configuration.DeploymentOptions
 org.apache.flink.python.PythonOptions
 org.apache.flink.table.api.config.TableConfigOptions
 org.apache.flink.table.api.config.OptimizerConfigOptions
