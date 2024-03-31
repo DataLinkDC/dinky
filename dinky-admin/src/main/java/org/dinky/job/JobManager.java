@@ -77,7 +77,7 @@ public class JobManager {
             // 从Registry中检索远程对象的存根/代理
             serverExecutorService = (ServerExecutorService) registry.lookup("Compute");
         } catch (Exception exception) {
-            System.out.println(exception);
+            throw new RuntimeException(exception);
         }
     }
 
