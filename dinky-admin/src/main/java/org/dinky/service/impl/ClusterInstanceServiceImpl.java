@@ -87,8 +87,8 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
         // TODO 这里判空逻辑有问题，clusterInstance有可能为null
         DinkyAssert.check(clusterInstance);
-        FlinkClusterInfo info =
-                JobManager.build(new JobConfig()).testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
+        FlinkClusterInfo info = JobManager.build(new JobConfig())
+                .testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();

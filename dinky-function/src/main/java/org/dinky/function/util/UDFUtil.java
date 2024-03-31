@@ -19,14 +19,6 @@
 
 package org.dinky.function.util;
 
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.ClassScanner;
-import cn.hutool.core.lang.JarClassLoader;
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.core.util.ReflectUtil;
-import org.apache.flink.table.api.ValidationException;
-import org.apache.flink.table.functions.UserDefinedFunction;
-import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
@@ -42,17 +34,18 @@ import org.dinky.function.compiler.CustomStringScalaCompiler;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
-import org.dinky.parser.SqlType;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
-import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
+import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.FunctionLanguage;
+import org.apache.flink.table.functions.UserDefinedFunction;
+import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 
 import java.io.File;
 import java.io.InputStream;
@@ -76,11 +69,16 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.ClassScanner;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.JarClassLoader;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ClassLoaderUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
@@ -480,5 +478,4 @@ public class UDFUtil {
         }
         return classList;
     }
-
 }

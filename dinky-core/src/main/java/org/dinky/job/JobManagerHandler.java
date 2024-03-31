@@ -164,8 +164,10 @@ public class JobManagerHandler implements IJobManager {
                 }
             } else {
                 GatewayResult gatewayResult;
-                config.addGatewayConfig(
-                        executor.getCustomTableEnvironment().getConfig().getConfiguration().toMap());
+                config.addGatewayConfig(executor.getCustomTableEnvironment()
+                        .getConfig()
+                        .getConfiguration()
+                        .toMap());
                 if (runMode.isApplicationMode()) {
                     gatewayResult =
                             Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());

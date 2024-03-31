@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import cn.hutool.core.io.FileUtil;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
@@ -52,6 +51,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
@@ -73,21 +73,20 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         Map<Integer, Resources> localMap =
                 local.stream().collect(Collectors.toMap(Resources::getId, Function.identity()));
 
-        List<Resources> resourcesList =
-                jobManager.getFullDirectoryStructure(rootResource.getId()).stream()
-                        .filter(x -> x.getPid() != -1)
-                        .map(Resources::of)
-                        .peek(x -> {
-                            // Restore the existing information. If the remotmap is not available,
-                            // it means that the configuration is out of sync and no processing will be done.
-                            Resources resources = localMap.get(x.getFileName().hashCode());
-                            if (resources != null) {
-                                x.setDescription(resources.getDescription());
-                                x.setType(resources.getType());
-                                x.setUserId(resources.getUserId());
-                            }
-                        })
-                        .collect(Collectors.toList());
+        List<Resources> resourcesList = jobManager.getFullDirectoryStructure(rootResource.getId()).stream()
+                .filter(x -> x.getPid() != -1)
+                .map(Resources::of)
+                .peek(x -> {
+                    // Restore the existing information. If the remotmap is not available,
+                    // it means that the configuration is out of sync and no processing will be done.
+                    Resources resources = localMap.get(x.getFileName().hashCode());
+                    if (resources != null) {
+                        x.setDescription(resources.getDescription());
+                        x.setType(resources.getType());
+                        x.setUserId(resources.getUserId());
+                    }
+                })
+                .collect(Collectors.toList());
         // not delete root directory
         this.remove(new LambdaQueryWrapper<Resources>().ne(Resources::getPid, -1));
         this.saveBatch(resourcesList);

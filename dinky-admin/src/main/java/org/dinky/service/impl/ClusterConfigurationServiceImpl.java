@@ -85,7 +85,7 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
     }
 
     public static TestResult testGateway(GatewayConfig gatewayConfig) {
-        // TODO: 2024/3/31 
+        // TODO: 2024/3/31
         //        return Gateway.build(gatewayConfig).test();
         return null;
     }

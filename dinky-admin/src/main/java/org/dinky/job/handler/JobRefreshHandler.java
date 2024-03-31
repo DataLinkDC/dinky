@@ -158,9 +158,9 @@ public class JobRefreshHandler {
 
         boolean isDone = (JobStatus.isDone(jobInstance.getStatus()))
                 || (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
-                .toMinutes()
-                >= 1);
+                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                                        .toMinutes()
+                                >= 1);
 
         isDone = !isTransition && isDone;
 

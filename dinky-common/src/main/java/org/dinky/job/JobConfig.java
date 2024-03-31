@@ -51,6 +51,7 @@ public class JobConfig implements Serializable {
 
     private static final String REST_PORT = "rest.port";
     private static final String DEFAULT_PARAllELISM = "parallelism.default";
+
     @ApiModelProperty(
             value = "Flink run mode",
             dataType = "String",
@@ -188,9 +189,7 @@ public class JobConfig implements Serializable {
     }
 
     public void setAddress(String address) {
-        if (GatewayType.LOCAL.equalsValue(type)
-                && Asserts.isNotNull(configJson)
-                && configJson.containsKey(REST_PORT)) {
+        if (GatewayType.LOCAL.equalsValue(type) && Asserts.isNotNull(configJson) && configJson.containsKey(REST_PORT)) {
             int colonIndex = address.indexOf(':');
             if (colonIndex == -1) {
                 this.address = address + NetConstant.COLON + configJson.get(REST_PORT);

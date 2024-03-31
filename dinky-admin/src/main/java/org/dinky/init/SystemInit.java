@@ -223,7 +223,8 @@ public class SystemInit implements ApplicationRunner {
     public void registerUDF() {
         List<Task> allUDF = taskService.getReleaseUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
-            JobManager.build(new JobConfig()).registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
+            JobManager.build(new JobConfig())
+                    .registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         JobManager.build(new JobConfig()).updateGitPool(gitProjectService.getGitPool());
     }

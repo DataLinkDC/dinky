@@ -20,28 +20,28 @@
 package org.dinky.job;
 
 import org.dinky.cluster.FlinkClusterInfo;
+import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
-import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.function.data.model.UDF;
-import org.dinky.function.data.model.UDFPath;
-import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.result.GatewayResult;
-import org.dinky.metadata.config.DriverConfig;
-import org.dinky.remote.ServerExecutorService;
-import org.dinky.data.annotations.ProcessStep;
-import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.data.model.UDFPath;
+import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
+import org.dinky.metadata.config.DriverConfig;
+import org.dinky.remote.ServerExecutorService;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -295,17 +295,9 @@ public class JobManager {
         }
     }
 
-    public void setSchemaInfo(
-            String catalogName,
-            String databaseName,
-            Schema schema,
-            List<Table> tables) {
+    public void setSchemaInfo(String catalogName, String databaseName, Schema schema, List<Table> tables) {
         try {
-            serverExecutorService.setSchemaInfo(
-                    catalogName,
-                    databaseName,
-                    schema,
-                    tables);
+            serverExecutorService.setSchemaInfo(catalogName, databaseName, schema, tables);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

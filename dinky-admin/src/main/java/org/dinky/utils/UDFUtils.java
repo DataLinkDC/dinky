@@ -19,11 +19,12 @@
 
 package org.dinky.utils;
 
-import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
 import org.dinky.function.data.model.UDF;
+
+import org.apache.flink.table.catalog.FunctionLanguage;
 
 public class UDFUtils {
 

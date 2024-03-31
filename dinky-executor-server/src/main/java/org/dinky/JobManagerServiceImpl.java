@@ -50,6 +50,13 @@ import org.dinky.job.Job;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManagerHandler;
 import org.dinky.job.JobResult;
+import org.dinky.metadata.config.DriverConfig;
+import org.dinky.parser.SqlType;
+import org.dinky.remote.ServerExecutorService;
+import org.dinky.resource.BaseResourceManager;
+import org.dinky.trans.Operations;
+import org.dinky.utils.FlinkTableMetadataUtil;
+import org.dinky.utils.SqlUtil;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -62,13 +69,6 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dinky.metadata.config.DriverConfig;
-import org.dinky.parser.SqlType;
-import org.dinky.remote.ServerExecutorService;
-import org.dinky.resource.BaseResourceManager;
-import org.dinky.trans.Operations;
-import org.dinky.utils.FlinkTableMetadataUtil;
-import org.dinky.utils.SqlUtil;
 
 @Slf4j
 public class JobManagerServiceImpl extends UnicastRemoteObject implements ServerExecutorService {
@@ -76,14 +76,11 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     JobManagerHandler jobManagerHandler;
     protected static final CheckpointRead INSTANCE = new CheckpointRead();
 
-
-    public JobManagerServiceImpl() throws RemoteException {
-    }
+    public JobManagerServiceImpl() throws RemoteException {}
 
     @Override
     public void init(JobConfig config, boolean isPlanMode) throws RemoteException {
         jobManagerHandler = JobManagerHandler.build(config, isPlanMode);
-
     }
 
     @Override
@@ -160,7 +157,6 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     public void prepare(String statement) throws RemoteException {
         jobManagerHandler.prepare(statement);
     }
-
 
     // TODO: 2024/3/29 utils, coud individual rmeote interface
     @Override
@@ -240,7 +236,8 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     }
 
     @Override
-    public LineageResult getSqlLineage(String statement, String mysql, DriverConfig<Map<String, Object>> driverConfig) throws RemoteException {
+    public LineageResult getSqlLineage(String statement, String mysql, DriverConfig<Map<String, Object>> driverConfig)
+            throws RemoteException {
         return SQLLineageBuilder.getSqlLineage(statement, mysql, driverConfig);
     }
 
@@ -250,26 +247,26 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     }
 
     @Override
-    public void setSchemaInfo(
-            String catalogName,
-            String database,
-            Schema schema,
-            List<Table> tables) throws RemoteException {
-        FlinkTableMetadataUtil.setSchemaInfo(jobManagerHandler.getExecutor().getCustomTableEnvironment(), catalogName, database, schema, tables);
+    public void setSchemaInfo(String catalogName, String database, Schema schema, List<Table> tables)
+            throws RemoteException {
+        FlinkTableMetadataUtil.setSchemaInfo(
+                jobManagerHandler.getExecutor().getCustomTableEnvironment(), catalogName, database, schema, tables);
     }
 
     @Override
     public List<Column> getColumnList(String catalogName, String database, String tableName) throws RemoteException {
-        return FlinkTableMetadataUtil.getColumnList(jobManagerHandler.getExecutor().getCustomTableEnvironment(), catalogName, database, tableName);
+        return FlinkTableMetadataUtil.getColumnList(
+                jobManagerHandler.getExecutor().getCustomTableEnvironment(), catalogName, database, tableName);
     }
 
     @Override
-    public Map<String, Map<String, CheckPointReadTable>> readCheckpoint(String path, String operatorId) throws RemoteException {
+    public Map<String, Map<String, CheckPointReadTable>> readCheckpoint(String path, String operatorId)
+            throws RemoteException {
         return INSTANCE.readCheckpoint(path, operatorId);
     }
 
     @Override
-    public List<String> getPrintTables(String statement) throws RemoteException{
+    public List<String> getPrintTables(String statement) throws RemoteException {
         // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
         // couple function
         //  and status and task execute.

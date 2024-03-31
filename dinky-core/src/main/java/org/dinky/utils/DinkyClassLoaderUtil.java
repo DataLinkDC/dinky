@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.job.JobConfig;
 
 import org.apache.flink.configuration.PipelineOptions;
 
@@ -30,8 +31,6 @@ import java.io.File;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import org.dinky.flink.checkpoint.CheckpointRead;
-import org.dinky.job.JobConfig;
 
 public class DinkyClassLoaderUtil {
 

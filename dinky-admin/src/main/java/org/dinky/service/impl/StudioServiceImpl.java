@@ -31,7 +31,6 @@ import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
-import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
 import org.dinky.explainer.lineage.LineageResult;
@@ -42,11 +41,9 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.utils.RunTimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 

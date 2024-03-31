@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -71,7 +70,8 @@ public class AnalysisUdfClassStepSse extends StepSse {
             throw new DinkyException("flink dependency not found");
         }
         pathList.parallelStream().forEach(jar -> {
-            List<String> udfClassByJar = JobManager.build(new JobConfig()).getUdfClassNameByJarPath(URLUtils.toFile(jar).getPath());
+            List<String> udfClassByJar = JobManager.build(new JobConfig())
+                    .getUdfClassNameByJarPath(URLUtils.toFile(jar).getPath());
             udfMap.put(jar, udfClassByJar);
             sendMsg(Dict.create().set(jar, udfClassByJar));
         });

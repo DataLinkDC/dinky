@@ -20,6 +20,7 @@
 package org.dinky.job;
 
 import org.dinky.data.result.IResult;
+import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -29,7 +30,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.dinky.metadata.result.JdbcSelectResult;
 
 /**
  * JobResult

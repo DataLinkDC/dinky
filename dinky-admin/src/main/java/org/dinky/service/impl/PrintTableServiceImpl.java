@@ -25,14 +25,12 @@ import org.dinky.data.vo.PrintTableVo;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.service.PrintTableService;
-import org.dinky.utils.SqlUtil;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,7 +58,8 @@ public class PrintTableServiceImpl implements PrintTableService {
     @Override
     public List<PrintTableVo> getPrintTables(String statement) {
         // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
-        return JobManager.build(new JobConfig()).getPrintTable(statement).stream().map(t -> new PrintTableVo(t, getFullTableName(t)))
+        return JobManager.build(new JobConfig()).getPrintTable(statement).stream()
+                .map(t -> new PrintTableVo(t, getFullTableName(t)))
                 .collect(Collectors.toList());
     }
 

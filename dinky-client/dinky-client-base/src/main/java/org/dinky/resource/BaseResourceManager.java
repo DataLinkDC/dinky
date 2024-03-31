@@ -48,7 +48,7 @@ public interface BaseResourceManager {
 
     void rename(String path, String newPath);
 
-    default void putFile(String path, byte[] fileContext){
+    default void putFile(String path, byte[] fileContext) {
         putFile(path, IoUtil.toStream(fileContext));
     }
 

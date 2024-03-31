@@ -29,6 +29,17 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.data.model.UDFPath;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.Job;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobResult;
+import org.dinky.metadata.config.DriverConfig;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -37,18 +48,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.function.data.model.UDF;
-import org.dinky.function.data.model.UDFPath;
-import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.result.GatewayResult;
-import org.dinky.gateway.result.SavePointResult;
-import org.dinky.gateway.enums.SavePointType;
-import org.dinky.job.Job;
-import org.dinky.job.JobConfig;
-import org.dinky.job.JobResult;
-import org.dinky.metadata.config.DriverConfig;
-
 
 public interface ServerExecutorService extends Remote {
     void init(JobConfig config, boolean isPlanMode) throws RemoteException;
@@ -79,11 +78,11 @@ public interface ServerExecutorService extends Remote {
 
     void prepare(String statement) throws RemoteException;
 
-    List<String> getPythonUdfList(String udfFile)throws RemoteException;
+    List<String> getPythonUdfList(String udfFile) throws RemoteException;
 
-    JobStatus getJobStatus(GatewayConfig gatewayConfig, String appId)throws RemoteException;
+    JobStatus getJobStatus(GatewayConfig gatewayConfig, String appId) throws RemoteException;
 
-    void onJobGatewayFinishCallback(JobConfig jobConfig, String status)throws RemoteException;
+    void onJobGatewayFinishCallback(JobConfig jobConfig, String status) throws RemoteException;
 
     List<String> getUdfClassNameByJarPath(String path) throws RemoteException;
 
@@ -103,15 +102,12 @@ public interface ServerExecutorService extends Remote {
 
     LineageResult getSqlLineageByOne(String statement, String type) throws RemoteException;
 
-    LineageResult getSqlLineage(String statement, String mysql, DriverConfig<Map<String, Object>> driverConfig) throws RemoteException;
+    LineageResult getSqlLineage(String statement, String mysql, DriverConfig<Map<String, Object>> driverConfig)
+            throws RemoteException;
 
     List<Catalog> getCatalog() throws RemoteException;
 
-    void setSchemaInfo(
-            String catalogName,
-            String database,
-            Schema schema,
-            List<Table> tables) throws RemoteException;
+    void setSchemaInfo(String catalogName, String database, Schema schema, List<Table> tables) throws RemoteException;
 
     List<Column> getColumnList(String catalogName, String database, String tableName) throws RemoteException;
 
@@ -127,11 +123,11 @@ public interface ServerExecutorService extends Remote {
 
     FlinkClusterInfo testFlinkJobManagerIP(String hosts, String host) throws RemoteException;
 
-    void killCluster(GatewayConfig gatewayConfig)throws RemoteException;
+    void killCluster(GatewayConfig gatewayConfig) throws RemoteException;
 
     GatewayResult deployCluster(GatewayConfig gatewayConfig) throws RemoteException;
 
-    void addOrUpdate(UDF udf)throws RemoteException;
+    void addOrUpdate(UDF udf) throws RemoteException;
 
     void removeUdfCodePool(String className) throws RemoteException;
 

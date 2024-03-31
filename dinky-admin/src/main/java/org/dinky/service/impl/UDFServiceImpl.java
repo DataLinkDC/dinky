@@ -28,7 +28,6 @@ import org.dinky.job.JobManager;
 import org.dinky.mapper.UDFManageMapper;
 import org.dinky.service.UDFService;
 import org.dinky.service.resource.ResourcesService;
-import org.dinky.utils.UDFUtils;
 
 import java.io.File;
 import java.util.Collection;
@@ -128,7 +127,7 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                             });
                         } else if ("py".equals(suffix) || "zip".equals(suffix)) {
                             File file = resourcesService.getFile(x.getId());
-                            List<String> pythonUdfList =jm.getPythonUdfList(file.getAbsolutePath());
+                            List<String> pythonUdfList = jm.getPythonUdfList(file.getAbsolutePath());
                             return pythonUdfList.stream().map(className -> {
                                 UDFManage udfManage = UDFManage.builder()
                                         .className(className)

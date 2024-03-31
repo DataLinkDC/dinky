@@ -19,13 +19,14 @@
 
 package org.dinky.url;
 
-import cn.hutool.core.io.IoUtil;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+
+import cn.hutool.core.io.IoUtil;
 
 public class RsURLConnection extends URLConnection {
     private byte[] context;

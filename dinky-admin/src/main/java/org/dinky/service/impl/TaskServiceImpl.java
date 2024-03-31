@@ -558,7 +558,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Dialect.isUDF(task.getDialect())
                     && Asserts.isNotNull(task.getConfigJson())
                     && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
-                JobManager.build(new JobConfig()).removeUdfCodePool(task.getConfigJson().getUdfConfig().getClassName());
+                JobManager.build(new JobConfig())
+                        .removeUdfCodePool(task.getConfigJson().getUdfConfig().getClassName());
             }
         }
         boolean saved = saveOrUpdate(task.buildTask());
