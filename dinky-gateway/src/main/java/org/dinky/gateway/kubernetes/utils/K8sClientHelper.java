@@ -80,7 +80,7 @@ public class K8sClientHelper {
         if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
             kubernetesClient = new DefaultKubernetesClient();
         } else {
-            kubernetesClient = new DefaultKubernetesClient(Config.fromKubeconfig(k8sConfig.getKubeConfig()));
+            kubernetesClient = DefaultKubernetesClient.fromConfig(k8sConfig.getKubeConfig());
         }
     }
 
