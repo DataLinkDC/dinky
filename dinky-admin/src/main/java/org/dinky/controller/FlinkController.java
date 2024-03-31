@@ -22,7 +22,8 @@ package org.dinky.controller;
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.CascaderVO;
-import org.dinky.flink.checkpoint.CheckpointRead;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.service.FlinkService;
 
 import java.util.List;
@@ -44,13 +45,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class FlinkController {
 
-    protected static final CheckpointRead INSTANCE = new CheckpointRead();
     private final FlinkService flinkService;
 
     @GetMapping("/readCheckPoint")
     @ApiOperation("Read Checkpoint")
     public Result<Map<String, Map<String, CheckPointReadTable>>> readCheckPoint(String path, String operatorId) {
-        return Result.data(INSTANCE.readCheckpoint(path, operatorId));
+        return Result.data(JobManager.build(new JobConfig()).readCheckpoint(path, operatorId));
     }
 
     @GetMapping("/configOptions")

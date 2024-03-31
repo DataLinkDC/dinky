@@ -20,7 +20,6 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.AssignRoleDTO;
@@ -44,6 +43,8 @@ import org.dinky.data.model.rbac.UserRole;
 import org.dinky.data.model.rbac.UserTenant;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.UserVo;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.mapper.TokenMapper;
 import org.dinky.mapper.UserMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -432,7 +433,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     permission.put(roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression());
                 }
             }
-            RowLevelPermissionsContext.set(permission);
+
+            JobManager.build(new JobConfig()).buildRowPermission(permission);
         }
     }
 

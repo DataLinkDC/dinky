@@ -23,7 +23,8 @@ import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
-import org.dinky.function.util.UDFUtil;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.service.TaskService;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -68,7 +69,7 @@ public class JarController {
                                 FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                         .build())
                 .collect(Collectors.toList());
-        Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
+        Map<String, List<String>> resultMap = JobManager.build(new JobConfig()).buildJar(udfCodes);
         String msg = StrUtil.format(
                 "udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}",
                 PathConstant.UDF_JAR_TMP_PATH,

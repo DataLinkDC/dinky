@@ -19,7 +19,8 @@
 
 package org.dinky.sse;
 
-import org.dinky.function.pool.UdfCodePool;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.service.GitProjectService;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class DoneStepSse extends StepSse {
     public void exec() {
         addFileMsgCusLog("Updating UDF pool");
         GitProjectService gitProjectService = SpringUtil.getBean(GitProjectService.class);
-        UdfCodePool.updateGitPool(gitProjectService.getGitPool());
+        JobManager.build(new JobConfig()).updateGitPool(gitProjectService.getGitPool());
         addFileMsgCusLog("The UDF pool has been updated");
     }
 }

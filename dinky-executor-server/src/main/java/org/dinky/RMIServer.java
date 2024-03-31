@@ -19,6 +19,8 @@
 
 package org.dinky;
 
+import org.dinky.remote.ServerExecutorService;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 

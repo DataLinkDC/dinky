@@ -22,10 +22,9 @@ package org.dinky.service.impl;
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.PrintTableVo;
-import org.dinky.explainer.print_table.PrintStatementExplainer;
-import org.dinky.parser.SqlType;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.service.PrintTableService;
-import org.dinky.trans.Operations;
 import org.dinky.utils.SqlUtil;
 
 import java.net.DatagramPacket;
@@ -61,13 +60,7 @@ public class PrintTableServiceImpl implements PrintTableService {
     @Override
     public List<PrintTableVo> getPrintTables(String statement) {
         // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
-        // couple function
-        //  and status and task execute.
-        final String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
-        return Arrays.stream(statements)
-                .filter(t -> SqlType.PRINT.equals(Operations.getOperationType(t)))
-                .flatMap(t -> Arrays.stream(PrintStatementExplainer.splitTableNames(t)))
-                .map(t -> new PrintTableVo(t, getFullTableName(t)))
+        return JobManager.build(new JobConfig()).getPrintTable(statement).stream().map(t -> new PrintTableVo(t, getFullTableName(t)))
                 .collect(Collectors.toList());
     }
 

@@ -19,7 +19,6 @@
 
 package org.apache.flink.table.catalog;
 
-/** Categorizes the language semantics of a {@link CatalogFunction}. */
 public enum FunctionLanguage {
     JAVA,
 

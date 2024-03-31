@@ -19,15 +19,13 @@
 
 package org.dinky.utils;
 
+import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
 import org.dinky.function.data.model.UDF;
-import org.dinky.function.util.UDFUtil;
 
-import org.apache.flink.table.catalog.FunctionLanguage;
-
-public class UDFUtils extends UDFUtil {
+public class UDFUtils {
 
     public static UDF taskToUDF(Task task) {
         if (Asserts.isNotNull(task.getConfigJson())

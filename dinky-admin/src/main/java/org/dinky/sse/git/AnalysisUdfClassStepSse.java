@@ -22,7 +22,8 @@ package org.dinky.sse.git;
 import org.dinky.data.dto.GitAnalysisJarDTO;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.GitProject;
-import org.dinky.function.util.UDFUtil;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.URLUtils;
 
@@ -63,14 +64,14 @@ public class AnalysisUdfClassStepSse extends StepSse {
         List<String> pathList = (List<String>) params.get("jarPath");
 
         List<GitAnalysisJarDTO> dataList = new ArrayList<>();
-        Map<String, List<Class<?>>> udfMap = new TreeMap<>();
+        Map<String, List<String>> udfMap = new TreeMap<>();
         try {
             Thread.currentThread().getContextClassLoader().loadClass("org.apache.flink.table.api.ValidationException");
         } catch (ClassNotFoundException e) {
             throw new DinkyException("flink dependency not found");
         }
         pathList.parallelStream().forEach(jar -> {
-            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(URLUtils.toFile(jar));
+            List<String> udfClassByJar = JobManager.build(new JobConfig()).getUdfClassNameByJarPath(URLUtils.toFile(jar).getPath());
             udfMap.put(jar, udfClassByJar);
             sendMsg(Dict.create().set(jar, udfClassByJar));
         });
@@ -79,7 +80,7 @@ public class AnalysisUdfClassStepSse extends StepSse {
         udfMap.forEach((k, v) -> {
             GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
             gitAnalysisJarDTO.setJarPath(k);
-            gitAnalysisJarDTO.setClassList(v.stream().map(Class::getName).collect(Collectors.toList()));
+            gitAnalysisJarDTO.setClassList(new ArrayList<>(v));
             gitAnalysisJarDTO.setOrderLine(index.get());
             index.getAndIncrement();
             dataList.add(gitAnalysisJarDTO);

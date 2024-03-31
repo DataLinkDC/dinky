@@ -41,9 +41,10 @@ import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.vo.task.JobInstanceVo;
-import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTask;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.mapper.JobInstanceMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.mybatis.util.ProTableUtil;
@@ -254,7 +255,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement());
+        return JobManager.build(new JobConfig()).getColumnLineageByLogicalPlan(history.getStatement());
     }
 
     @Override

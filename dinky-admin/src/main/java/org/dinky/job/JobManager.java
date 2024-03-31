@@ -19,7 +19,21 @@
 
 package org.dinky.job;
 
-import org.dinky.ServerExecutorService;
+import org.dinky.cluster.FlinkClusterInfo;
+import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.Catalog;
+import org.dinky.data.model.CheckPointReadTable;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.ResourcesVO;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.data.model.UDFPath;
+import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.result.GatewayResult;
+import org.dinky.metadata.config.DriverConfig;
+import org.dinky.remote.ServerExecutorService;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.result.ExplainResult;
@@ -32,6 +46,9 @@ import org.dinky.gateway.result.SavePointResult;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -39,23 +56,26 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JobManager {
-    private ServerExecutorService jobManagerHandler;
+    private static ServerExecutorService serverExecutorService;
+
+    static {
+        registerRemote();
+    }
 
     private JobManager(JobConfig config, boolean isPlanMode) {
-        registerRemote();
         try {
-            jobManagerHandler.init(config, isPlanMode);
+            serverExecutorService.init(config, isPlanMode);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void registerRemote() {
+    private static void registerRemote() {
         try {
             Registry registry = LocateRegistry.getRegistry("localhost");
 
             // 从Registry中检索远程对象的存根/代理
-            jobManagerHandler = (ServerExecutorService) registry.lookup("Compute");
+            serverExecutorService = (ServerExecutorService) registry.lookup("Compute");
         } catch (Exception exception) {
             System.out.println(exception);
         }
@@ -71,7 +91,7 @@ public class JobManager {
 
     public boolean close() {
         try {
-            return jobManagerHandler.close();
+            return serverExecutorService.close();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -79,7 +99,7 @@ public class JobManager {
 
     public ObjectNode getJarStreamGraphJson(String statement) {
         try {
-            return jobManagerHandler.getJarStreamGraphJson(statement);
+            return serverExecutorService.getJarStreamGraphJson(statement);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -87,7 +107,7 @@ public class JobManager {
 
     public void prepare(String statement) {
         try {
-            jobManagerHandler.prepare(statement);
+            serverExecutorService.prepare(statement);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -95,17 +115,17 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        return jobManagerHandler.executeJarSql(statement);
+        return serverExecutorService.executeJarSql(statement);
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeSql(String statement) throws Exception {
-        return jobManagerHandler.executeSql(statement);
+        return serverExecutorService.executeSql(statement);
     }
 
     public IResult executeDDL(String statement) {
         try {
-            return jobManagerHandler.executeDDL(statement);
+            return serverExecutorService.executeDDL(statement);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -117,7 +137,7 @@ public class JobManager {
 
     public ExplainResult explainSql(String statement) {
         try {
-            return jobManagerHandler.explainSql(statement);
+            return serverExecutorService.explainSql(statement);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -125,7 +145,7 @@ public class JobManager {
 
     public ObjectNode getStreamGraph(String statement) {
         try {
-            return jobManagerHandler.getStreamGraph(statement);
+            return serverExecutorService.getStreamGraph(statement);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -133,7 +153,7 @@ public class JobManager {
 
     public String getJobPlanJson(String statement) {
         try {
-            return jobManagerHandler.getJobPlanJson(statement);
+            return serverExecutorService.getJobPlanJson(statement);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -141,7 +161,7 @@ public class JobManager {
 
     public boolean cancelNormal(String jobId) {
         try {
-            return jobManagerHandler.cancelNormal(jobId);
+            return serverExecutorService.cancelNormal(jobId);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -149,7 +169,7 @@ public class JobManager {
 
     public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
         try {
-            return jobManagerHandler.savepoint(jobId, savePointType, savePoint);
+            return serverExecutorService.savepoint(jobId, savePointType, savePoint);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -157,7 +177,7 @@ public class JobManager {
 
     public String exportSql(String sql) {
         try {
-            return jobManagerHandler.exportSql(sql);
+            return serverExecutorService.exportSql(sql);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -165,7 +185,255 @@ public class JobManager {
 
     public Job getJob() {
         try {
-            return jobManagerHandler.getJob();
+            return serverExecutorService.getJob();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getPythonUdfList(String udfFile) {
+        try {
+            return serverExecutorService.getPythonUdfList(udfFile);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public JobStatus getJobStatus(GatewayConfig gatewayConfig, String appId) {
+        try {
+            return serverExecutorService.getJobStatus(gatewayConfig, appId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void onJobGatewayFinishCallback(JobConfig jobConfig, String status) {
+        try {
+            serverExecutorService.onJobGatewayFinishCallback(jobConfig, status);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getUdfClassNameByJarPath(String path) {
+        try {
+            return serverExecutorService.getUdfClassNameByJarPath(path);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void putFile(String fullName, byte[] context) {
+        try {
+            serverExecutorService.putFile(fullName, context);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
+        try {
+            return serverExecutorService.getFullDirectoryStructure(rootId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void rename(String path, String newPath) {
+        try {
+            serverExecutorService.rename(path, newPath);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getFileContent(String path) {
+        try {
+            return serverExecutorService.getFileContent(path);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateGitPool(Map<String, String> newPool) {
+        try {
+            serverExecutorService.updateGitPool(newPool);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public UDFPath initUDF(List<UDF> udfClassList, Integer missionId) {
+        try {
+            return serverExecutorService.initUDF(udfClassList, missionId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public LineageResult getColumnLineageByLogicalPlan(String statement) {
+        try {
+            return serverExecutorService.getColumnLineageByLogicalPlan(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public LineageResult getSqlLineage(String statement, String mysql, DriverConfig<Map<String, Object>> driverConfig) {
+        try {
+            return serverExecutorService.getSqlLineage(statement, mysql, driverConfig);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Catalog> getCatalog() {
+        try {
+            return serverExecutorService.getCatalog();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setSchemaInfo(
+            String catalogName,
+            String databaseName,
+            Schema schema,
+            List<Table> tables) {
+        try {
+            serverExecutorService.setSchemaInfo(
+                    catalogName,
+                    databaseName,
+                    schema,
+                    tables);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Column> getColumnList(String catalogName, String databaseName, String tableName) {
+        try {
+            return serverExecutorService.getColumnList(catalogName, databaseName, tableName);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, Map<String, CheckPointReadTable>> readCheckpoint(String path, String operatorId) {
+        try {
+            return serverExecutorService.readCheckpoint(path, operatorId);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] readFIle(String path) {
+        try {
+            return serverExecutorService.readFile(path);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, List<String>> buildJar(List<UDF> udfCodes) {
+        try {
+            return serverExecutorService.buildJar(udfCodes);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void buildRowPermission(ConcurrentHashMap<String, String> permission) {
+        try {
+            serverExecutorService.buildRowPermission(permission);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getPrintTable(String statement) {
+        try {
+            return serverExecutorService.getPrintTables(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public FlinkClusterInfo testFlinkJobManagerIP(String hosts, String host) {
+        try {
+            return serverExecutorService.testFlinkJobManagerIP(hosts, host);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void killCluster(GatewayConfig gatewayConfig) {
+        try {
+            serverExecutorService.killCluster(gatewayConfig);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public GatewayResult deployCluster(GatewayConfig gatewayConfig) {
+        try {
+            return serverExecutorService.deployCluster(gatewayConfig);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void addOrUpdateUdfCodePool(UDF udf) {
+        try {
+            serverExecutorService.addOrUpdate(udf);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removeUdfCodePool(String className) {
+        try {
+            serverExecutorService.removeUdfCodePool(className);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String templateParse(String dialect, String templateCode, String className) {
+        try {
+            return serverExecutorService.templateParse(dialect, templateCode, className);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void registerPool(List<UDF> collect) {
+        try {
+            serverExecutorService.registerPool(collect);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void initResourceManager() {
+        try {
+            serverExecutorService.initResourceManager();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getPyUDFAttr(String statement) {
+        try {
+            return serverExecutorService.getPyUDFAttr(statement);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getScalaFullClassName(String statement) {
+        try {
+            return serverExecutorService.getScalaFullClassName(statement);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

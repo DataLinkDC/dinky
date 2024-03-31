@@ -19,29 +19,26 @@
 
 package org.dinky.url;
 
-import org.dinky.data.exception.BusException;
-import org.dinky.resource.BaseResourceManager;
+import cn.hutool.core.io.IoUtil;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
 public class RsURLConnection extends URLConnection {
-    private InputStream inputStream;
+    private byte[] context;
 
     @Override
     public void connect() {
-        BaseResourceManager instance = BaseResourceManager.getInstance();
-        if (instance == null) {
-            throw BusException.valueOf("ResourceManager is disabled");
-        }
-        inputStream = instance.readFile(getURL().getPath());
+        context = JobManager.build(new JobConfig()).readFIle(getURL().getPath());
     }
 
     @Override
     public InputStream getInputStream() {
         connect();
-        return inputStream;
+        return IoUtil.toStream(context);
     }
 
     public RsURLConnection(URL url) {

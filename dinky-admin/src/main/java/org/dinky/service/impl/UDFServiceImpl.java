@@ -23,6 +23,8 @@ import org.dinky.config.Dialect;
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.mapper.UDFManageMapper;
 import org.dinky.service.UDFService;
 import org.dinky.service.resource.ResourcesService;
@@ -109,23 +111,24 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                 resourceIds.stream().filter(x -> !udfManageIdList.contains(x)).collect(Collectors.toList());
         if (CollUtil.isNotEmpty(needAddList)) {
             List<Resources> resources = resourcesService.listByIds(needAddList);
+            JobManager jm = JobManager.build(new JobConfig());
             List<UDFManage> manageList = resources.stream()
                     .flatMap(x -> {
                         String suffix = FileUtil.getSuffix(x.getFileName());
                         if ("jar".equals(suffix)) {
                             File file = resourcesService.getFile(x.getId());
-                            List<Class<?>> classes = UDFUtils.getUdfClassByJar(file);
+                            List<String> classes = jm.getUdfClassNameByJarPath(file.getPath());
                             return classes.stream().map(clazz -> {
                                 UDFManage udfManage = UDFManage.builder()
-                                        .className(clazz.getName())
+                                        .className(clazz)
                                         .resourcesId(x.getId())
                                         .build();
-                                udfManage.setName(StrUtil.toUnderlineCase(getSimpleClassName(clazz.getName())));
+                                udfManage.setName(StrUtil.toUnderlineCase(getSimpleClassName(clazz)));
                                 return udfManage;
                             });
                         } else if ("py".equals(suffix) || "zip".equals(suffix)) {
                             File file = resourcesService.getFile(x.getId());
-                            List<String> pythonUdfList = UDFUtils.getPythonUdfList(file.getAbsolutePath());
+                            List<String> pythonUdfList =jm.getPythonUdfList(file.getAbsolutePath());
                             return pythonUdfList.stream().map(className -> {
                                 UDFManage udfManage = UDFManage.builder()
                                         .className(className)

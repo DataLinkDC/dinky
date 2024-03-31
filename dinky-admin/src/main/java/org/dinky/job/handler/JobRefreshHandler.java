@@ -36,11 +36,10 @@ import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.JobInstance;
-import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.exception.NotSupportGetStatusException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.utils.JsonUtils;
@@ -159,9 +158,9 @@ public class JobRefreshHandler {
 
         boolean isDone = (JobStatus.isDone(jobInstance.getStatus()))
                 || (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
-                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
-                                        .toMinutes()
-                                >= 1);
+                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                .toMinutes()
+                >= 1);
 
         isDone = !isTransition && isDone;
 
@@ -245,21 +244,15 @@ public class JobRefreshHandler {
 
         if (!Asserts.isNull(clusterCfg)
                 && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterCfg.getType())) {
-            try {
-                String appId = jobInfoDetail.getClusterInstance().getName();
+            String appId = jobInfoDetail.getClusterInstance().getName();
 
-                GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
-                gatewayConfig.getClusterConfig().setAppId(appId);
-                gatewayConfig
-                        .getFlinkConfig()
-                        .setJobName(jobInfoDetail.getInstance().getName());
+            GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
+            gatewayConfig.getClusterConfig().setAppId(appId);
+            gatewayConfig
+                    .getFlinkConfig()
+                    .setJobName(jobInfoDetail.getInstance().getName());
 
-                Gateway gateway = Gateway.build(gatewayConfig);
-                return gateway.getJobStatusById(appId);
-            } catch (NotSupportGetStatusException ignored) {
-                // if the gateway does not support get status, then use the api to get job status
-                // ignore to do something here
-            }
+            return JobManager.build(new JobConfig()).getJobStatus(gatewayConfig, appId);
         }
         JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
         String status = jobDataDto.getJob().getState();
@@ -282,7 +275,7 @@ public class JobRefreshHandler {
             jobConfig.buildGatewayConfig(configJson);
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
-            Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
+            JobManager.build(new JobConfig()).onJobGatewayFinishCallback(jobConfig, jobInstance.getStatus());
         }
     }
 }

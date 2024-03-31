@@ -28,10 +28,6 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.configuration.RestOptions;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +49,8 @@ import lombok.Data;
 @ApiModel(value = "JobConfig", description = "Configuration details of a job")
 public class JobConfig implements Serializable {
 
+    private static final String REST_PORT = "rest.port";
+    private static final String DEFAULT_PARAllELISM = "parallelism.default";
     @ApiModelProperty(
             value = "Flink run mode",
             dataType = "String",
@@ -192,12 +190,12 @@ public class JobConfig implements Serializable {
     public void setAddress(String address) {
         if (GatewayType.LOCAL.equalsValue(type)
                 && Asserts.isNotNull(configJson)
-                && configJson.containsKey(RestOptions.PORT.key())) {
+                && configJson.containsKey(REST_PORT)) {
             int colonIndex = address.indexOf(':');
             if (colonIndex == -1) {
-                this.address = address + NetConstant.COLON + configJson.get(RestOptions.PORT.key());
+                this.address = address + NetConstant.COLON + configJson.get(REST_PORT);
             } else {
-                this.address = address.replaceAll("(?<=:)\\d{0,6}$", configJson.get(RestOptions.PORT.key()));
+                this.address = address.replaceAll("(?<=:)\\d{0,6}$", configJson.get(REST_PORT));
             }
         } else {
             this.address = address;
@@ -222,7 +220,7 @@ public class JobConfig implements Serializable {
     public void buildGatewayConfig(FlinkClusterConfig config) {
         FlinkConfig flinkConfig = config.getFlinkConfig();
         flinkConfig.getConfiguration().putAll(getConfigJson());
-        flinkConfig.getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
+        flinkConfig.getConfiguration().put(DEFAULT_PARAllELISM, String.valueOf(parallelism));
         flinkConfig.setJobName(getJobName());
 
         gatewayConfig = GatewayConfig.build(config);
@@ -237,13 +235,6 @@ public class JobConfig implements Serializable {
         for (Map.Entry<String, String> entry : config.entrySet()) {
             gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue());
         }
-    }
-
-    public void addGatewayConfig(Configuration config) {
-        if (Asserts.isNull(gatewayConfig)) {
-            gatewayConfig = new GatewayConfig();
-        }
-        gatewayConfig.getFlinkConfig().getConfiguration().putAll(config.toMap());
     }
 
     public boolean isUseRemote() {

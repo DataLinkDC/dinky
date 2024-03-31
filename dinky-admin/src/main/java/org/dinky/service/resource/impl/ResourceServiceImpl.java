@@ -19,14 +19,16 @@
 
 package org.dinky.service.resource.impl;
 
+import cn.hutool.core.io.FileUtil;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
 import org.dinky.data.result.Result;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.mapper.ResourcesMapper;
-import org.dinky.resource.BaseResourceManager;
 import org.dinky.service.resource.ResourcesService;
 import org.dinky.utils.URLUtils;
 
@@ -58,6 +60,7 @@ import cn.hutool.core.util.StrUtil;
 public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources> implements ResourcesService {
     private static final TimedCache<Integer, Resources> RESOURCES_CACHE = new TimedCache<>(30 * 1000);
     private static final long ALLOW_MAX_CAT_CONTENT_SIZE = 10 * 1024 * 1024;
+    private static final JobManager jobManager = JobManager.build(new JobConfig());
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -71,7 +74,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 local.stream().collect(Collectors.toMap(Resources::getId, Function.identity()));
 
         List<Resources> resourcesList =
-                getBaseResourceManager().getFullDirectoryStructure(rootResource.getId()).stream()
+                jobManager.getFullDirectoryStructure(rootResource.getId()).stream()
                         .filter(x -> x.getPid() != -1)
                         .map(Resources::of)
                         .peek(x -> {
@@ -172,7 +175,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
             }
         }
         if (isRunStorageMove) {
-            getBaseResourceManager().rename(sourceFullName, fullName);
+            jobManager.rename(sourceFullName, fullName);
         }
     }
 
@@ -221,7 +224,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         Resources resources = getById(id);
         DinkyAssert.checkNull(resources, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
         Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
-        return getBaseResourceManager().getFileContent(resources.getFullName());
+        return jobManager.getFileContent(resources.getFullName());
     }
 
     @Override
@@ -243,7 +246,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         }
         long size = file.length();
         String fileName = file.getName();
-        upload(pid, desc, (fullName) -> getBaseResourceManager().putFile(fullName, file), fileName, pResource, size);
+        // get file context, and assign to context
+        byte[] context = FileUtil.readBytes(file);
+        upload(pid, desc, (fullName) -> jobManager.putFile(fullName, context), fileName, pResource, size);
     }
 
     /**
@@ -302,7 +307,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 desc,
                 (fullName) -> {
                     try {
-                        getBaseResourceManager().putFile(fullName, file.getInputStream());
+                        byte[] context = file.getBytes();
+                        jobManager.putFile(fullName, context);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -483,9 +489,5 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
      */
     private boolean hasChild(List<Resources> resourcesList, Resources resources) {
         return !getChildList(resourcesList, resources).isEmpty();
-    }
-
-    private BaseResourceManager getBaseResourceManager() {
-        return BaseResourceManager.getInstance();
     }
 }

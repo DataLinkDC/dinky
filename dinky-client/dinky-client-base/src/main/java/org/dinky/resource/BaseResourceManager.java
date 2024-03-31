@@ -48,6 +48,10 @@ public interface BaseResourceManager {
 
     void rename(String path, String newPath);
 
+    default void putFile(String path, byte[] fileContext){
+        putFile(path, IoUtil.toStream(fileContext));
+    }
+
     void putFile(String path, InputStream fileStream);
 
     void putFile(String path, File file);
@@ -57,6 +61,10 @@ public interface BaseResourceManager {
     List<ResourcesVO> getFullDirectoryStructure(int rootId);
 
     InputStream readFile(String path);
+
+    default byte[] readFileContext(String path) {
+        return IoUtil.readBytes(readFile(path));
+    }
 
     static BaseResourceManager getInstance() {
         switch (SystemConfiguration.getInstances().getResourcesModel().getValue()) {

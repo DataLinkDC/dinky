@@ -32,11 +32,11 @@ import org.dinky.data.model.Task;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.rbac.Tenant;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
 import org.dinky.job.FlinkJobTask;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.job.SystemMetricsTask;
-import org.dinky.resource.BaseResourceManager;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -134,7 +134,7 @@ public class SystemInit implements ApplicationRunner {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
                         try {
-                            BaseResourceManager.initResourceManager();
+                            JobManager.build(new JobConfig()).initResourceManager();
                         } catch (Exception e) {
                             log.error("Init resource error: ", e);
                         }
@@ -223,9 +223,9 @@ public class SystemInit implements ApplicationRunner {
     public void registerUDF() {
         List<Task> allUDF = taskService.getReleaseUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
-            UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
+            JobManager.build(new JobConfig()).registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
-        UdfCodePool.updateGitPool(gitProjectService.getGitPool());
+        JobManager.build(new JobConfig()).updateGitPool(gitProjectService.getGitPool());
     }
 
     public void updateGitBuildState() {

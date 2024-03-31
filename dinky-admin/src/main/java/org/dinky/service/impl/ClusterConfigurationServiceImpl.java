@@ -26,7 +26,6 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.Task;
-import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
@@ -86,7 +85,9 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
     }
 
     public static TestResult testGateway(GatewayConfig gatewayConfig) {
-        return Gateway.build(gatewayConfig).test();
+        // TODO: 2024/3/31 
+        //        return Gateway.build(gatewayConfig).test();
+        return null;
     }
 
     /**
