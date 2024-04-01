@@ -26,6 +26,9 @@ update dinky_sys_menu set `path`= '/datastudio/bottom/table-data' , `perms`= 'da
 
 delete from dinky_sys_menu where `id`= 26;
 
+update dinky_git_project set `url`= 'https://github.com/DataLinkDC/dinky-quickstart-java.git' where `id`= 1;
+update dinky_git_project set `url`= 'https://github.com/DataLinkDC/dinky-quickstart-python.git' where `id`= 2;
+
 
 commit ;
 
