@@ -19,12 +19,7 @@
 
 package org.dinky.gateway.kubernetes;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Assert;
-import io.fabric8.kubernetes.api.model.Pod;
-import org.apache.flink.configuration.*;
 import org.dinky.assertion.Asserts;
-import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.FlinkConfig;
@@ -33,6 +28,7 @@ import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.kubernetes.utils.K8sClientHelper;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
+import org.dinky.utils.TextUtil;
 
 import org.apache.flink.kubernetes.KubernetesClusterClientFactory;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
@@ -45,12 +41,14 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.UUID;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
+import io.fabric8.kubernetes.api.model.Pod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import org.dinky.utils.TextUtil;
 
 /**
  * KubernetesGateway
@@ -108,18 +106,20 @@ public abstract class KubernetesGateway extends AbstractGateway {
         k8sClientHelper = new K8sClientHelper(configuration, k8sConfig.getKubeConfig());
 
         String sql = config.getSql();
-        defaultPodTemplate = k8sClientHelper.decoratePodTemplate(sql,k8sConfig.getPodTemplate());
-        preparPodTemplate(k8sClientHelper.dumpPod2Str(defaultPodTemplate), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
+        defaultPodTemplate = k8sClientHelper.decoratePodTemplate(sql, k8sConfig.getPodTemplate());
+        preparPodTemplate(
+                k8sClientHelper.dumpPod2Str(defaultPodTemplate), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
 
-        if (!TextUtil.isEmpty(k8sConfig.getJmPodTemplate())){
-            jmPodTemplate = k8sClientHelper.decoratePodTemplate(sql,k8sConfig.getJmPodTemplate());
-            preparPodTemplate(k8sClientHelper.dumpPod2Str(jmPodTemplate), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
+        if (!TextUtil.isEmpty(k8sConfig.getJmPodTemplate())) {
+            jmPodTemplate = k8sClientHelper.decoratePodTemplate(sql, k8sConfig.getJmPodTemplate());
+            preparPodTemplate(
+                    k8sClientHelper.dumpPod2Str(jmPodTemplate), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
         }
-        if (!TextUtil.isEmpty(k8sConfig.getTmPodTemplate())){
-            tmPodTemplate = k8sClientHelper.decoratePodTemplate(sql,k8sConfig.getJmPodTemplate());
-            preparPodTemplate(k8sClientHelper.dumpPod2Str(tmPodTemplate), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
+        if (!TextUtil.isEmpty(k8sConfig.getTmPodTemplate())) {
+            tmPodTemplate = k8sClientHelper.decoratePodTemplate(sql, k8sConfig.getJmPodTemplate());
+            preparPodTemplate(
+                    k8sClientHelper.dumpPod2Str(tmPodTemplate), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
         }
-
     }
 
     protected void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
@@ -219,7 +219,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     public boolean close() {
         try {
             FileUtil.del(tmpConfDir);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.warn(e.getMessage());
         }
         if (k8sClientHelper != null) {

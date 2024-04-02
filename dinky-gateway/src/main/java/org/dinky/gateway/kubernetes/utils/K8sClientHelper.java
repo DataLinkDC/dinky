@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes.utils;
 
-import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.kubernetes.decorate.DinkySqlConfigMapDecorate;
 import org.dinky.utils.TextUtil;
 
@@ -34,9 +33,12 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
-import cn.hutool.core.io.FileUtil;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
+
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.OwnerReferenceBuilder;
@@ -47,10 +49,6 @@ import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
 /**
  * K8sClientHelper
@@ -123,7 +121,7 @@ public class K8sClientHelper {
      * @param sqlStatement
      * @return
      */
-    public Pod decoratePodTemplate(String sqlStatement,String podTemplate) {
+    public Pod decoratePodTemplate(String sqlStatement, String podTemplate) {
         Pod pod;
         // if the user has configured the pod template, combine user's configuration
         if (!TextUtil.isEmpty(podTemplate)) {
@@ -133,10 +131,10 @@ public class K8sClientHelper {
             // if the user has not configured the pod template, use the default configuration
             pod = new Pod();
         }
-        if (TextUtil.isEmpty(sqlStatement)){
+        if (TextUtil.isEmpty(sqlStatement)) {
             log.warn("Sql statement is Empty !!!!, will not decorate podTemplate");
             return pod;
-        }else {
+        } else {
             // decorate the pod template
             sqlFileDecorate = new DinkySqlConfigMapDecorate(configuration, pod, sqlStatement);
             return sqlFileDecorate.decoratePodMount();
@@ -147,7 +145,7 @@ public class K8sClientHelper {
      * dumpPod2Str
      *
      * */
-    public String dumpPod2Str(Pod pod){
+    public String dumpPod2Str(Pod pod) {
         // use snakyaml to serialize the pod
         Representer representer = new IgnoreNullRepresenter();
         // set the label of the Map type, only the map type will not print the class name when dumping

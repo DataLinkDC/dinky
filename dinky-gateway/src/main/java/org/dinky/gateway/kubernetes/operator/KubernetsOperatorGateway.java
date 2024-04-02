@@ -30,14 +30,10 @@ import org.dinky.gateway.kubernetes.operator.api.FlinkDeploymentSpec;
 import org.dinky.gateway.kubernetes.operator.api.JobSpec;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,8 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
