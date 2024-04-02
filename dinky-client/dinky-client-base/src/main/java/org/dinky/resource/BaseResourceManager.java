@@ -67,7 +67,7 @@ public interface BaseResourceManager {
     }
 
     static BaseResourceManager getInstance() {
-        switch (SystemConfiguration.getInstances().getResourcesModel().getValue()) {
+        switch (instances.getResourcesModel().getValue()) {
             case HDFS:
                 return Singleton.get(HdfsResourceManager.class);
             case OSS:
@@ -79,7 +79,9 @@ public interface BaseResourceManager {
         }
     }
 
-    static void initResourceManager() {
+    static void initResourceManager(SystemConfiguration other) {
+        // the executor not at admin server
+        other.copyTo(BaseResourceManager.instances);
         switch (instances.getResourcesModel().getValue()) {
             case LOCAL:
                 Singleton.get(LocalResourceManager.class);

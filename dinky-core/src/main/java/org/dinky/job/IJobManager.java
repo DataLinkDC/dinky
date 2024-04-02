@@ -49,7 +49,7 @@ public interface IJobManager {
 
     boolean cancelNormal(String jobId);
 
-    SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint);
+    SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI);
 
     String exportSql(String sql);
 }

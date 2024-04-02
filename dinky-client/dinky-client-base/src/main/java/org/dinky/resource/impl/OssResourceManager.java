@@ -141,7 +141,7 @@ public class OssResourceManager implements BaseResourceManager {
 
     public OssTemplate getOssTemplate() {
         if (ossTemplate == null
-                && BaseResourceManager.instances.getResourcesEnable().getValue()) {
+                && instances.getResourcesEnable().getValue()) {
             throw new BusException(Status.RESOURCE_OSS_CONFIGURATION_ERROR);
         }
         return ossTemplate;

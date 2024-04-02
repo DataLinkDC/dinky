@@ -134,7 +134,7 @@ public class SystemInit implements ApplicationRunner {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
                         try {
-                            JobManager.build(new JobConfig()).initResourceManager();
+                            JobManager.build(new JobConfig()).initResourceManager(systemConfiguration);
                         } catch (Exception e) {
                             log.error("Init resource error: ", e);
                         }

@@ -46,7 +46,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LocalResourceManager implements BaseResourceManager {
-    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
     @Override
     public void remove(String path) {
@@ -130,7 +129,7 @@ public class LocalResourceManager implements BaseResourceManager {
     @Override
     public InputStream readFile(String path) {
         try (HttpResponse exec = HttpUtil.createGet(
-                        systemConfiguration.getDinkyAddr().getValue() + "/download/downloadFromRs?path="
+                        instances.getDinkyAddr().getValue() + "/download/downloadFromRs?path="
                                 + URLUtil.encode(path))
                 .execute()) {
             return exec.bodyStream();

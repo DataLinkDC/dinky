@@ -28,6 +28,7 @@ import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.Schema;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
@@ -167,9 +168,9 @@ public class JobManager {
         }
     }
 
-    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI) {
         try {
-            return serverExecutorService.savepoint(jobId, savePointType, savePoint);
+            return serverExecutorService.savepoint(jobId, savePointType, savePoint, isUseRestAPI);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -407,9 +408,9 @@ public class JobManager {
         }
     }
 
-    public void initResourceManager() {
+    public void initResourceManager(SystemConfiguration systemConfiguration) {
         try {
-            serverExecutorService.initResourceManager();
+            serverExecutorService.initResourceManager(systemConfiguration);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

@@ -22,6 +22,7 @@ package org.dinky.job;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
@@ -183,6 +184,8 @@ public class JobConfig implements Serializable {
             example = "{\"var1\": \"value1\", \"var2\": \"value2\"}",
             notes = "Map of variables")
     private Map<String, String> variables;
+
+    private SystemConfiguration systemConfiguration;
 
     public JobConfig() {
         this.configJson = new HashMap<>();

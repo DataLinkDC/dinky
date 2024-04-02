@@ -28,6 +28,7 @@ import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.Schema;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
@@ -138,9 +139,9 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     }
 
     @Override
-    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint)
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI)
             throws RemoteException {
-        return jobManagerHandler.savepoint(jobId, savePointType, savePoint);
+        return jobManagerHandler.savepoint(jobId, savePointType, savePoint, isUseRestAPI );
     }
 
     @Override
@@ -313,8 +314,8 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     }
 
     @Override
-    public void initResourceManager() throws RemoteException {
-        BaseResourceManager.initResourceManager();
+    public void initResourceManager(SystemConfiguration systemConfiguration) throws RemoteException {
+        BaseResourceManager.initResourceManager(systemConfiguration);
     }
 
     @Override

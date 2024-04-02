@@ -27,7 +27,6 @@ import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ErrorResult;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
@@ -312,8 +311,8 @@ public class JobManagerHandler implements IJobManager {
     }
 
     @Override
-    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) {
-        if (useGateway && !SystemConfiguration.getInstances().isUseRestAPI()) {
+    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI) {
+        if (useGateway && !isUseRestAPI) {
             config.getGatewayConfig()
                     .setFlinkConfig(
                             FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(), savePointType.getValue(), null));

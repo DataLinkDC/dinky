@@ -19,10 +19,14 @@
 
 package org.dinky;
 
+import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.system.SystemUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import lombok.SneakyThrows;

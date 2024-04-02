@@ -26,6 +26,7 @@ import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.Schema;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
@@ -70,7 +71,7 @@ public interface ServerExecutorService extends Remote {
 
     boolean cancelNormal(String jobId) throws RemoteException;
 
-    SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint) throws RemoteException;
+    SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI) throws RemoteException;
 
     String exportSql(String sql) throws RemoteException;
 
@@ -135,7 +136,7 @@ public interface ServerExecutorService extends Remote {
 
     void registerPool(List<UDF> collect) throws RemoteException;
 
-    void initResourceManager() throws RemoteException;
+    void initResourceManager(SystemConfiguration systemConfiguration) throws RemoteException;
 
     String getPyUDFAttr(String statement) throws RemoteException;
 
