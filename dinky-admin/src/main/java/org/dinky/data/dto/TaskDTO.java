@@ -20,6 +20,7 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
@@ -225,7 +226,7 @@ public class TaskDTO extends AbstractStatementDTO {
         jobConfig.setConfigJson(parsedConfig);
         jobConfig.setTaskId(id);
         jobConfig.setJobName(name);
-
+        jobConfig.setSystemConfiguration(SystemConfiguration.getInstances());
         return jobConfig;
     }
 

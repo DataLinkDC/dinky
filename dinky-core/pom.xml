@@ -38,6 +38,11 @@
             <version>3.0.9</version>
         </dependency>-->
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6</version>
+        </dependency>
+        <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-common</artifactId>
         </dependency>

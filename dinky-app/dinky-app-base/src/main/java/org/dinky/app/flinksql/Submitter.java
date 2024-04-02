@@ -102,7 +102,7 @@ public class Submitter {
 
     public static void submit(AppParamConfig config) throws SQLException {
         initSystemConfiguration();
-        BaseResourceManager.initResourceManager();
+        BaseResourceManager.initResourceManager(SystemConfiguration.getInstances());
         URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
         log.info("{} Start Submit Job:{}", LocalDateTime.now(), config.getTaskId());
 

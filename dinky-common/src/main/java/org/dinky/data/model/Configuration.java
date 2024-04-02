@@ -129,7 +129,7 @@ public class Configuration<T> implements Serializable {
         return new OptionBuilder(key);
     }
 
-    public static class OptionBuilder {
+    public static class OptionBuilder implements Serializable {
 
         private final String key;
 
