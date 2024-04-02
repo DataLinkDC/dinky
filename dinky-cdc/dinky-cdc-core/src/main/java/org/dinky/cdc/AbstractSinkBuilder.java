@@ -51,6 +51,7 @@ import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.SmallIntType;
+import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarBinaryType;
@@ -335,6 +336,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             case INT:
             case INTEGER:
                 return new IntType();
+            case TIME:
+            case LOCALTIME:
+                return new TimeType(column.isNullable(), column.getPrecision() == null ? 0 : column.getPrecision());
             case DATE:
             case LOCAL_DATE:
                 return new DateType();
