@@ -19,19 +19,15 @@
 
 package org.dinky.cdc;
 
-import com.google.common.collect.Lists;
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
-import javax.xml.bind.DatatypeConverter;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.utils.JsonUtils;
+
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -63,16 +59,25 @@ import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.utils.FlinkStatementUtil;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JsonUtils;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
 
 public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected ObjectMapper objectMapper = new ObjectMapper();
@@ -230,8 +235,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             DataStream<RowData> rowDataDataStream,
             Table table,
             List<String> columnNameList,
-            List<LogicalType> columnTypeList) {
-    }
+            List<LogicalType> columnTypeList) {}
 
     protected List<Operation> createInsertOperations(
             CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
@@ -462,7 +466,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     @FunctionalInterface
     public interface ConvertType {
         Optional<Object> convert(Object target, LogicalType logicalType);
-
     }
 
     @Override
