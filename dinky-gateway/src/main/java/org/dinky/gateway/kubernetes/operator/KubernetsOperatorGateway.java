@@ -67,7 +67,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
         initBase();
         initMetadata();
         initSpec();
-        initResource(getK8sClientHelper().getKubernetesClient());
+        initResource();
         initJob();
     }
 
@@ -143,8 +143,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
         flinkDeploymentSpec.setJob(jobSpecBuilder.build());
     }
 
-    private void initResource(KubernetesClient kubernetesClient) {
-        Pod defaultPod;
+    private void initResource() {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
         String jbcpu = kubernetsConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
@@ -157,21 +156,9 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
 
-        defaultPod = getK8sClientHelper().decoratePodTemplate(config.getSql());
-        flinkDeploymentSpec.setPodTemplate(defaultPod);
-
-        if (!TextUtil.isEmpty(k8sConfig.getJmPodTemplate())) {
-            InputStream inputStream =
-                    new ByteArrayInputStream(k8sConfig.getJmPodTemplate().getBytes(StandardCharsets.UTF_8));
-            Pod pod = kubernetesClient.pods().load(inputStream).get();
-            jobManagerSpec.setPodTemplate(pod);
-        }
-        if (!TextUtil.isEmpty(k8sConfig.getTmPodTemplate())) {
-            InputStream inputStream =
-                    new ByteArrayInputStream(k8sConfig.getTmPodTemplate().getBytes(StandardCharsets.UTF_8));
-            Pod pod = kubernetesClient.pods().load(inputStream).get();
-            taskManagerSpec.setPodTemplate(pod);
-        }
+        flinkDeploymentSpec.setPodTemplate(getDefaultPodTemplate());
+        jobManagerSpec.setPodTemplate(getJmPodTemplate());
+        taskManagerSpec.setPodTemplate(getTmPodTemplate());
         flinkDeploymentSpec.setJobManager(jobManagerSpec);
         flinkDeploymentSpec.setTaskManager(taskManagerSpec);
     }
