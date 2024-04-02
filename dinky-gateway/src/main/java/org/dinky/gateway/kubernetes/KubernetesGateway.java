@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes;
 
-import org.apache.flink.configuration.*;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.Status;
 import org.dinky.gateway.AbstractGateway;
