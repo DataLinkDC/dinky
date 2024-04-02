@@ -19,15 +19,19 @@
 
 package org.dinky.cdc;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.utils.FlinkStatementUtil;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JsonUtils;
-
+import com.google.common.collect.Lists;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import javax.xml.bind.DatatypeConverter;
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -51,6 +55,7 @@ import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.SmallIntType;
+import org.apache.flink.table.types.logical.TimeType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarBinaryType;
@@ -58,25 +63,16 @@ import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.DatatypeConverter;
-
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected ObjectMapper objectMapper = new ObjectMapper();
@@ -234,7 +230,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             DataStream<RowData> rowDataDataStream,
             Table table,
             List<String> columnNameList,
-            List<LogicalType> columnTypeList) {}
+            List<LogicalType> columnTypeList) {
+    }
 
     protected List<Operation> createInsertOperations(
             CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
@@ -335,6 +332,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             case INT:
             case INTEGER:
                 return new IntType();
+            case TIME:
+            case LOCALTIME:
+                return new TimeType(column.isNullable(), column.getPrecision() == null ? 0 : column.getPrecision());
             case DATE:
             case LOCAL_DATE:
                 return new DateType();
@@ -462,6 +462,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     @FunctionalInterface
     public interface ConvertType {
         Optional<Object> convert(Object target, LogicalType logicalType);
+
     }
 
     @Override
