@@ -108,7 +108,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         Optional<ContainerStatus> flinContainer = pod.getStatus().getContainerStatuses().stream()
                 .filter(s -> s.getName().equals(Constants.MAIN_CONTAINER_NAME))
                 .findFirst();
-        if (flinContainer.isEmpty()) {
+        if (!flinContainer.isPresent()) {
             return false;
         }
         ContainerStatus containerStatus = flinContainer.get();
