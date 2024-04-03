@@ -30,14 +30,10 @@ import org.dinky.gateway.kubernetes.operator.api.FlinkDeploymentSpec;
 import org.dinky.gateway.kubernetes.operator.api.JobSpec;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,8 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -67,7 +61,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
         initBase();
         initMetadata();
         initSpec();
-        initResource(getK8sClientHelper().getKubernetesClient());
+        initResource();
         initJob();
     }
 
@@ -143,8 +137,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
         flinkDeploymentSpec.setJob(jobSpecBuilder.build());
     }
 
-    private void initResource(KubernetesClient kubernetesClient) {
-        Pod defaultPod;
+    private void initResource() {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
         String jbcpu = kubernetsConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
@@ -157,21 +150,9 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
 
-        defaultPod = getK8sClientHelper().decoratePodTemplate(config.getSql());
-        flinkDeploymentSpec.setPodTemplate(defaultPod);
-
-        if (!TextUtil.isEmpty(k8sConfig.getJmPodTemplate())) {
-            InputStream inputStream =
-                    new ByteArrayInputStream(k8sConfig.getJmPodTemplate().getBytes(StandardCharsets.UTF_8));
-            Pod pod = kubernetesClient.pods().load(inputStream).get();
-            jobManagerSpec.setPodTemplate(pod);
-        }
-        if (!TextUtil.isEmpty(k8sConfig.getTmPodTemplate())) {
-            InputStream inputStream =
-                    new ByteArrayInputStream(k8sConfig.getTmPodTemplate().getBytes(StandardCharsets.UTF_8));
-            Pod pod = kubernetesClient.pods().load(inputStream).get();
-            taskManagerSpec.setPodTemplate(pod);
-        }
+        flinkDeploymentSpec.setPodTemplate(getDefaultPodTemplate());
+        jobManagerSpec.setPodTemplate(getJmPodTemplate());
+        taskManagerSpec.setPodTemplate(getTmPodTemplate());
         flinkDeploymentSpec.setJobManager(jobManagerSpec);
         flinkDeploymentSpec.setTaskManager(taskManagerSpec);
     }
