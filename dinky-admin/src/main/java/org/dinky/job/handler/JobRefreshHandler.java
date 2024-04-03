@@ -175,8 +175,8 @@ public class JobRefreshHandler {
             try {
                 log.debug("Job is done: {}->{}", jobInstance.getId(), jobInstance.getName());
                 handleJobDone(jobInfoDetail);
-            }catch (Exception e){
-                log.error("failed handel job done：",e);
+            } catch (Exception e) {
+                log.error("failed handel job done：", e);
             }
         }
         return isDone;
