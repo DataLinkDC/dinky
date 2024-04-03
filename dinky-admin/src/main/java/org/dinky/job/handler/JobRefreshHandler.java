@@ -172,8 +172,12 @@ public class JobRefreshHandler {
         }
 
         if (isDone) {
-            log.debug("Job is done: {}->{}", jobInstance.getId(), jobInstance.getName());
-            handleJobDone(jobInfoDetail);
+            try {
+                log.debug("Job is done: {}->{}", jobInstance.getId(), jobInstance.getName());
+                handleJobDone(jobInfoDetail);
+            }catch (Exception e){
+                log.error("failed handel job done：",e);
+            }
         }
         return isDone;
     }

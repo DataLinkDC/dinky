@@ -108,9 +108,10 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         Optional<ContainerStatus> flinContainer = pod.getStatus().getContainerStatuses().stream()
                 .filter(s -> s.getName().equals(Constants.MAIN_CONTAINER_NAME))
                 .findFirst();
-        ContainerStatus containerStatus =
-                flinContainer.orElseThrow(() -> new GatewayException("Deploy k8s failed, can't find flink container"));
-
+        if (flinContainer.isEmpty()){
+            return false;
+        }
+        ContainerStatus containerStatus = flinContainer.get();
         Yaml yaml = new Yaml(new IgnoreNullRepresenter());
         String logStr = StrFormatter.format(
                 "Got Flink Container State:\nPod: {},\tReady: {},\trestartCount: {},\timage: {}\n"
