@@ -61,6 +61,18 @@ public class JobTransBuilder implements JobBuilder {
     private final Executor executor;
     private final GatewayType runMode;
     private final Job job;
+    private JobManagerHandler jobManagerHandler;
+
+    public JobTransBuilder(JobManagerHandler jobManagerHandler) {
+        this(jobManagerHandler.getJobParam(),
+                jobManagerHandler.isUseStatementSet(),
+                jobManagerHandler.isUseGateway(),
+                jobManagerHandler.getConfig(),
+                jobManagerHandler.getExecutor(),
+                jobManagerHandler.getRunMode(),
+                jobManagerHandler.getJob());
+        this.jobManagerHandler = jobManagerHandler;
+    }
 
     public JobTransBuilder(
             JobParam jobParam,
@@ -80,15 +92,7 @@ public class JobTransBuilder implements JobBuilder {
     }
 
     public static JobTransBuilder build(JobManagerHandler jobManager) {
-
-        return new JobTransBuilder(
-                jobManager.getJobParam(),
-                jobManager.isUseStatementSet(),
-                jobManager.isUseGateway(),
-                jobManager.getConfig(),
-                jobManager.getExecutor(),
-                jobManager.getRunMode(),
-                jobManager.getJob());
+        return new JobTransBuilder(jobManager);
     }
 
     @Override
@@ -208,6 +212,8 @@ public class JobTransBuilder implements JobBuilder {
                             config.isUseAutoCancel(),
                             executor.getTimeZone())
                     .getResult(tableResult);
+            // TODO: 2024/7/15 persist result should execute at dinky server by network.
+//                    .getResultWithPersistence(tableResult, jobManagerHandler.getHandler());
             job.setResult(result);
         }
     }

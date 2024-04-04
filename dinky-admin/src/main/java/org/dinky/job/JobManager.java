@@ -49,6 +49,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -58,6 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobManager {
     private static ServerExecutorService serverExecutorService;
+    JobHandler handler;
 
     static {
         registerRemote();
@@ -65,7 +67,11 @@ public class JobManager {
 
     private JobManager(JobConfig config, boolean isPlanMode) {
         try {
+
             serverExecutorService.init(config, isPlanMode);
+            if (isPlanMode) {
+                handler = JobHandler.build();
+            }
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -446,5 +452,9 @@ public class JobManager {
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public JobHandler getHandler() {
+        return handler;
     }
 }

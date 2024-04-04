@@ -118,9 +118,8 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   function buildSortTreeOptions(trees: TreeVo[] = []): ItemType[] {
     return trees.map((tree) => {
       return {
-        key: tree.name + '_' + tree.value,
+        key: tree.value,
         label: tree.name,
-        value: tree.value,
         children: tree?.children && buildSortTreeOptions(tree.children)
       };
     });
