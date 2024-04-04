@@ -44,6 +44,7 @@ public enum Dialect {
     HIVE("Hive"),
     STAR_ROCKS("StarRocks"),
     PRESTO("Presto"),
+    KYUUBI("Kyuubi"),
     KUBERNETES_APPLICATION("KubernetesApplication");
 
     private String value;

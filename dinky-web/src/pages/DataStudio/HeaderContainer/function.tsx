@@ -69,6 +69,7 @@ export const isSql = (dialect: string) => {
     case DIALECT.HIVE:
     case DIALECT.STARROCKS:
     case DIALECT.PRESTO:
+    case DIALECT.KYUUBI:
       return true;
     default:
       return false;

@@ -102,6 +102,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         return CommonConstant.HEALTHY;
     }
 
+    public String getCustomDbType(){
+        return "hive";
+    }
+
     public DruidDataSource createDataSource() throws SQLException {
         if (null == dataSource) {
             synchronized (this.getClass()) {
@@ -621,8 +625,15 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
     public JdbcSelectResult executeSql(String sql, Integer limit) {
         // TODO 改为ProcessStep注释
         log.info("Start parse sql...");
+        String dbType = config.getType().toLowerCase();
+
+        //todo 这里暂时不知道怎么处理好，sqlutils 中的数据库类型不支持 kyuubi 不支持spark, 而config.getType() 被两个地方用到，一处是这里，另一处是初始化driver的时候，需要传递driver的名字，
+        //其他的数据源 driver的名字就是数据源类型也被 druid sqlutils 支持的，但是 kyuubi 特殊，driver 名和数据库类型不同
+        if (config.getType().equalsIgnoreCase("kyuubi")){
+             dbType = this.getCustomDbType();
+        }
         List<SQLStatement> stmtList =
-                SQLUtils.parseStatements(sql, config.getType().toLowerCase());
+                SQLUtils.parseStatements(sql, dbType);
         log.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", stmtList.size()));
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();

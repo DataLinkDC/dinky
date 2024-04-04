@@ -67,6 +67,10 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
       {
         label: 'Presto',
         value: 'Presto'
+      },
+      {
+        label: 'Kyuubi',
+        value: 'Kyuubi'
       }
     ]
   },
@@ -165,6 +169,11 @@ export const AUTO_COMPLETE_TYPE = [
     key: 'presto',
     value: 'jdbc:presto://localhost:8080/dinky',
     label: 'jdbc:presto://localhost:8080/dinky'
+  },
+  {
+    key: 'kyuubi',
+    value: 'jdbc:hive2://localhost:8080/default',
+    label: 'jdbc:hive2://localhost:8080/default'
   }
 ];
 

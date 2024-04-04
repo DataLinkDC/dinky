@@ -59,6 +59,8 @@ export const renderDBIcon = (type: string, size?: number) => {
       return <StarRocksIcons size={size} />;
     case 'presto':
       return <PrestoIcons size={size} />;
+    case 'kyuubi':
+     return <PrestoIcons size={size} />;
     default:
       return <DefaultDBIcons size={size} />;
   }

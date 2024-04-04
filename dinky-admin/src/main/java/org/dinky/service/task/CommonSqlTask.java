@@ -44,7 +44,8 @@ import lombok.extern.slf4j.Slf4j;
     Dialect.DORIS,
     Dialect.PHOENIX,
     Dialect.STAR_ROCKS,
-    Dialect.PRESTO
+    Dialect.PRESTO,
+    Dialect.KYUUBI
 })
 public class CommonSqlTask extends BaseTask {
 

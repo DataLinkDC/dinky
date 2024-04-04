@@ -237,7 +237,6 @@ public class DataSourceController {
      * @param id {@link Integer}
      * @return {@link Result}< {@link List}< {@link Schema}>>
      */
-    @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
     @ApiOperation("Get All Schemas And Tables")
     @ApiImplicitParam(
