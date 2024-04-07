@@ -158,7 +158,7 @@ const MenuList: React.FC = () => {
         top: event.clientY + 5,
         left: event.clientX + 10,
         screenX: event.screenX,
-        screenY: event.screenY,
+        screenY: event.screenY
       }
     }));
   };
