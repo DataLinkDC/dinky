@@ -90,6 +90,11 @@ const Project: React.FC = (props: connect) => {
       event
     } = info;
 
+    // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 200px
+    if (event.clientY + 150 > window.innerHeight) {
+      event.clientY = window.innerHeight - 200;
+    }
+
     // 设置右键菜单
     setProjectState((prevState) => ({
       ...prevState,
@@ -101,7 +106,9 @@ const Project: React.FC = (props: connect) => {
       contextMenuPosition: {
         ...prevState.contextMenuPosition,
         top: event.clientY + 5,
-        left: event.clientX + 10
+        left: event.clientX + 10,
+        screenX: event.screenX,
+        screenY: event.screenY
       },
       selectedKeys: [key],
       rightClickedNode: { ...node, ...fullInfo },

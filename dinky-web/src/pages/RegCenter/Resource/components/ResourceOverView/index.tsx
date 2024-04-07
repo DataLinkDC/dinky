@@ -172,6 +172,13 @@ const ResourceOverView: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
+
+
+    // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 150
+    if (event.clientY + 150 > window.innerHeight) {
+      event.clientY = window.innerHeight - 75;
+    }
+
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],
@@ -179,8 +186,10 @@ const ResourceOverView: React.FC = () => {
       contextMenuOpen: true,
       contextMenuPosition: {
         ...prevState.contextMenuPosition,
-        left: event.clientX + 20,
-        top: event.clientY + 20
+        top: event.clientY + 5,
+        left: event.clientX + 10,
+        screenX: event.screenX,
+        screenY: event.screenY
       }
     }));
   };
