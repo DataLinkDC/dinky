@@ -138,8 +138,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     }
   };
 
-  console.log(!values?.id, 'values?.id')
-
   /**
    * validate name field value, contains '_'
    * because k8s job name not contains '_'
