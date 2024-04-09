@@ -19,6 +19,7 @@
 
 package org.dinky.configure;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
@@ -48,6 +49,7 @@ import cn.dev33.satoken.stp.StpUtil;
  * @since 2021/11/28 19:35
  */
 @Configuration
+@Slf4j
 public class AppConfig implements WebMvcConfigurer {
     @Autowired
     private Config config;
@@ -97,7 +99,8 @@ public class AppConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**", "/openapi/**")
                 .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
         if (ssoEnabled) {
-            registry.addInterceptor(buildInterceptor("GitHubClient")).addPathPatterns("/sso/*");
+            log.info("Load{}",config.getClients().getClients().get(0).getName());
+            registry.addInterceptor(buildInterceptor(config.getClients().getClients().get(0).getName())).addPathPatterns("/sso/*");
         }
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
