@@ -31,6 +31,8 @@ import java.util.List;
 @NoArgsConstructor
 @ConfigurationProperties(prefix = "pac4j")
 public class SsoCpntroller {
+    @Value("${sso.enabled:false}")
+    private Boolean ssoEnabled;
 
 
 
@@ -65,8 +67,9 @@ public class SsoCpntroller {
 
     @GetMapping ("/sso/token")
     public Result<UserDTO> token() throws AuthException {
-
-        System.out.println(config);
+        if (!ssoEnabled){
+            return Result.failed(Status.SINGLE_LOGIN_DISABLED);
+        }
         List<CommonProfile> all = profileManager.getAll(true);
         String username = all.get(0).getAttribute(principalNameAttribute).toString();
         if (username == null){

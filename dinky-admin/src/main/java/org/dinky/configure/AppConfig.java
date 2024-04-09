@@ -31,6 +31,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -51,7 +52,9 @@ import cn.dev33.satoken.stp.StpUtil;
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
     @Autowired
-    Config config;
+    private Config config;
+    @Value("${sso.enabled:false}")
+    private boolean ssoEnabled;
     /**
      * Cookie
      *
@@ -94,7 +97,9 @@ public class AppConfig implements WebMvcConfigurer {
                 }))
                 .addPathPatterns("/api/**", "/openapi/**")
                 .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
-        registry.addInterceptor(buildInterceptor("GitHubClient")).addPathPatterns("/sso/*");
+        if (ssoEnabled){
+            registry.addInterceptor(buildInterceptor("GitHubClient")).addPathPatterns("/sso/*");
+        }
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus")
