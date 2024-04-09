@@ -36,7 +36,7 @@ export enum ClusterType {
  * @param isClusterConfig
  */
 
-export const CLUSTER_TYPE_OPTIONS = (isClusterConfig: boolean = false): DefaultOptionType[]   => ([
+export const CLUSTER_TYPE_OPTIONS = (isClusterConfig: boolean = false): DefaultOptionType[] => [
   {
     value: ClusterType.STANDALONE,
     label: 'Standalone',
@@ -62,27 +62,35 @@ export const CLUSTER_TYPE_OPTIONS = (isClusterConfig: boolean = false): DefaultO
     label: 'Kubernetes Operator',
     key: ClusterType.KUBERNETES_OPERATOR
   },
-  isClusterConfig ? {
-    value: ClusterType.YARN,
-    label: <span>Yarn (<del>Pre-Job</del>/Application)</span>,
-    key: ClusterType.YARN
-  } : {
-    value: ClusterType.YARN_APPLICATION,
-    label: 'Yarn Application',
-    key: ClusterType.YARN_APPLICATION
-  },
+  isClusterConfig
+    ? {
+        value: ClusterType.YARN,
+        label: (
+          <span>
+            Yarn (<del>Pre-Job</del>/Application)
+          </span>
+        ),
+        key: ClusterType.YARN
+      }
+    : {
+        value: ClusterType.YARN_APPLICATION,
+        label: 'Yarn Application',
+        key: ClusterType.YARN_APPLICATION
+      },
   {
     value: ClusterType.LOCAL,
     label: 'Local',
     key: ClusterType.LOCAL
   }
-]);
+];
 
 /**
  * Cluster instance type
  */
 export const CLUSTER_INSTANCE_TYPE = (hiddenOptions: string[] = []): DefaultOptionType[] => {
-  return CLUSTER_TYPE_OPTIONS(false).filter((item) => !hiddenOptions.includes(item.value as string));
+  return CLUSTER_TYPE_OPTIONS(false).filter(
+    (item) => !hiddenOptions.includes(item.value as string)
+  );
 };
 
 /**
@@ -91,6 +99,11 @@ export const CLUSTER_INSTANCE_TYPE = (hiddenOptions: string[] = []): DefaultOpti
  * @param isClusterConfig
  * @constructor
  */
-export const CLUSTER_CONFIG_TYPE = (renderOptions: string[] = [], isClusterConfig: boolean = false): DefaultOptionType[] => {
-  return CLUSTER_TYPE_OPTIONS(isClusterConfig).filter((item) => renderOptions.includes(item.value as string));
+export const CLUSTER_CONFIG_TYPE = (
+  renderOptions: string[] = [],
+  isClusterConfig: boolean = false
+): DefaultOptionType[] => {
+  return CLUSTER_TYPE_OPTIONS(isClusterConfig).filter((item) =>
+    renderOptions.includes(item.value as string)
+  );
 };
