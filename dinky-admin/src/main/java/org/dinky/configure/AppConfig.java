@@ -19,7 +19,6 @@
 
 package org.dinky.configure;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
@@ -42,6 +41,7 @@ import cn.dev33.satoken.exception.StopMatchException;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AppConfiguration
@@ -99,8 +99,10 @@ public class AppConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**", "/openapi/**")
                 .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
         if (ssoEnabled) {
-            log.info("Load{}",config.getClients().getClients().get(0).getName());
-            registry.addInterceptor(buildInterceptor(config.getClients().getClients().get(0).getName())).addPathPatterns("/sso/*");
+            log.info("Load{}", config.getClients().getClients().get(0).getName());
+            registry.addInterceptor(buildInterceptor(
+                            config.getClients().getClients().get(0).getName()))
+                    .addPathPatterns("/sso/*");
         }
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
