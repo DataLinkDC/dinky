@@ -39,10 +39,12 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
+import org.dinky.mybatis.annotation.Save;
 import org.dinky.service.TaskService;
 
 import java.util.List;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -178,7 +180,7 @@ public class TaskController {
             dataType = "TaskSaveDTO",
             paramType = "body",
             dataTypeClass = TaskSaveDTO.class)
-    public Result<Void> saveOrUpdateTask(@RequestBody TaskSaveDTO task) {
+    public Result<Void> saveOrUpdateTask(@Validated({Save.class}) @RequestBody TaskSaveDTO task) {
         if (taskService.saveOrUpdateTask(task.toTaskEntity())) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
