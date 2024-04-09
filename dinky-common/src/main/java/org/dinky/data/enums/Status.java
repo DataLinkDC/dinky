@@ -251,6 +251,11 @@ public enum Status {
     DS_TASK_TYPE_NOT_SUPPORT(17008, "ds.task.type.not.support"),
     DS_WORK_FLOW_DEFINITION_NOT_EXIST(17009, "ds.work.flow.definition.not.exist"),
     DS_PROCESS_DEFINITION_UPDATE(17010, "ds.work.flow.definition.process.update"),
+    /**
+     * SSO About *
+     */
+    USER_TYPE_ERROR(22001, "sso.user.type.error"),
+    NOT_MATCHED_PRINCIPAL_NAME_ATTRIBUTE(22002,"sso.user.type.error" ),
 
     /**
      * LDAP About *
@@ -440,8 +445,8 @@ public enum Status {
     PROCESS_SUBMIT_BUILDCONFIG(193, "process.submit.buildConfig"),
     PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
     PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
-    PROCESS_REGISTER_EXITS(196, "process.register.exits"),
-    ;
+    PROCESS_REGISTER_EXITS(196, "process.register.exits");
+
     private final int code;
     private final String key;
 

@@ -33,9 +33,36 @@
     <properties>
         <expand.scope>provided</expand.scope>
         <postgresql.version>42.5.1</postgresql.version>
+        <!-- Pac4j 4.x for jdk 8 -->
+        <pac4jVersion>4.2.0</pac4jVersion>
+
     </properties>
 
     <dependencies>
+
+        <!-- Include pac4j-config/core/oauth/oidc-->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-springboot</artifactId>
+            <version>${pac4jVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+
         <dependency>
             <groupId>org.mitre.dsmiley.httpproxy</groupId>
             <artifactId>smiley-http-proxy-servlet</artifactId>
