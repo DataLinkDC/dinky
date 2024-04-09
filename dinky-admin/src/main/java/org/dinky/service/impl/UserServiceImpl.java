@@ -180,7 +180,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         try {
 
-            switch (loginDTO.getLoginType()){
+            switch (loginDTO.getLoginType()) {
                 case LDAP:
                     user = ldapLogin(loginDTO);
                     break;
@@ -242,8 +242,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userIds.add(userForm.getId());
             tenantService.assignUserToTenant(new AssignUserToTenantDTO(tenant.getId(), userIds));
             return userForm;
-        }
-        else{
+        } else {
             if (user.getUserType() != UserType.SSO.getCode()) {
                 throw new AuthException(Status.USER_TYPE_ERROR);
             }

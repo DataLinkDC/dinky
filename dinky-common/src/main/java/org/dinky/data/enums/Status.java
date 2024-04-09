@@ -255,7 +255,7 @@ public enum Status {
      * SSO About *
      */
     USER_TYPE_ERROR(22001, "sso.user.type.error"),
-    NOT_MATCHED_PRINCIPAL_NAME_ATTRIBUTE(22002,"sso.user.type.error" ),
+    NOT_MATCHED_PRINCIPAL_NAME_ATTRIBUTE(22002, "sso.user.type.error"),
     SINGLE_LOGIN_DISABLED(22003, "sso.not.enabled"),
 
     /**

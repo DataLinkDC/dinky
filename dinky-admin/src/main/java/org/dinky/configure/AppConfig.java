@@ -22,14 +22,12 @@ package org.dinky.configure;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
+import org.dinky.sso.web.SecurityInterceptor;
 
 import java.util.Locale;
 
-import org.dinky.sso.web.SecurityInterceptor;
 import org.pac4j.core.config.Config;
-
 import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +37,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-    import cn.dev33.satoken.exception.StopMatchException;
+import cn.dev33.satoken.exception.StopMatchException;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
@@ -53,6 +51,7 @@ import cn.dev33.satoken.stp.StpUtil;
 public class AppConfig implements WebMvcConfigurer {
     @Autowired
     private Config config;
+
     @Value("${sso.enabled:false}")
     private boolean ssoEnabled;
     /**
@@ -97,7 +96,7 @@ public class AppConfig implements WebMvcConfigurer {
                 }))
                 .addPathPatterns("/api/**", "/openapi/**")
                 .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
-        if (ssoEnabled){
+        if (ssoEnabled) {
             registry.addInterceptor(buildInterceptor("GitHubClient")).addPathPatterns("/sso/*");
         }
         registry.addInterceptor(new TenantInterceptor())
@@ -122,6 +121,7 @@ public class AppConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/git/**")
                 .addPathPatterns("/api/jar/*");
     }
+
     private SecurityInterceptor buildInterceptor(final String client) {
         return new SecurityInterceptor(config, client, JEEHttpActionAdapter.INSTANCE);
     }

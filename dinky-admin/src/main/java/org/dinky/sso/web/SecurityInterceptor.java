@@ -1,4 +1,28 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.sso.web;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.pac4j.core.authorization.authorizer.Authorizer;
 import org.pac4j.core.config.Config;
@@ -13,10 +37,6 @@ import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
 import org.pac4j.core.matching.matcher.Matcher;
 import org.pac4j.core.util.FindBest;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>This interceptor protects an url.</p>
@@ -67,12 +87,14 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         this.authorizers = addAuthorizers(config, authorizers);
     }
 
-    public SecurityInterceptor(final Config config, final String clients, final String authorizers, final String matchers) {
+    public SecurityInterceptor(
+            final Config config, final String clients, final String authorizers, final String matchers) {
         this(config, clients, authorizers);
         this.matchers = matchers;
     }
 
-    public SecurityInterceptor(final Config config, final String clients, final Authorizer[] authorizers, final Matcher[] matchers) {
+    public SecurityInterceptor(
+            final Config config, final String clients, final Authorizer[] authorizers, final Matcher[] matchers) {
         this(config, clients, addAuthorizers(config, authorizers));
         this.matchers = addMatchers(config, matchers);
     }
@@ -111,12 +133,22 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         final SessionStore<JEEContext> bestSessionStore = FindBest.sessionStore(null, config, JEESessionStore.INSTANCE);
-        final HttpActionAdapter<Boolean, JEEContext> bestAdapter = FindBest.httpActionAdapter(httpActionAdapter, config, JEEHttpActionAdapter.INSTANCE);
-        final SecurityLogic<Boolean, JEEContext> bestLogic = FindBest.securityLogic(securityLogic, config, DefaultSecurityLogic.INSTANCE);
+        final HttpActionAdapter<Boolean, JEEContext> bestAdapter =
+                FindBest.httpActionAdapter(httpActionAdapter, config, JEEHttpActionAdapter.INSTANCE);
+        final SecurityLogic<Boolean, JEEContext> bestLogic =
+                FindBest.securityLogic(securityLogic, config, DefaultSecurityLogic.INSTANCE);
 
         final JEEContext context = (JEEContext) FindBest.webContextFactory(null, config, JEEContextFactory.INSTANCE)
                 .newContext(request, response, bestSessionStore);
-        final Object result = bestLogic.perform(context, config, (ctx, profiles, parameters) -> true, bestAdapter, clients, authorizers, matchers, multiProfile);
+        final Object result = bestLogic.perform(
+                context,
+                config,
+                (ctx, profiles, parameters) -> true,
+                bestAdapter,
+                clients,
+                authorizers,
+                matchers,
+                multiProfile);
         if (result == null) {
             return false;
         }

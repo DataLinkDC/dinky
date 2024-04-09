@@ -32,9 +32,9 @@
 
     <properties>
         <expand.scope>provided</expand.scope>
-        <postgresql.version>42.5.1</postgresql.version>
         <!-- Pac4j 4.x for jdk 8 -->
         <pac4jVersion>4.2.0</pac4jVersion>
+        <postgresql.version>42.5.1</postgresql.version>
 
     </properties>
 
@@ -60,8 +60,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
 
         <dependency>
             <groupId>org.mitre.dsmiley.httpproxy</groupId>

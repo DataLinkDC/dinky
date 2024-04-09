@@ -19,11 +19,12 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.enums.UserType;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.dinky.data.enums.UserType;
 
 /**
  * LoginUTO
@@ -49,14 +50,12 @@ public class LoginDTO {
 
     @ApiModelProperty(value = "ldapLogin", required = true, example = "false", dataType = "Boolean")
     private boolean ldapLogin;
+
     @ApiModelProperty(value = "ssoLogin", required = true, example = "false", dataType = "Boolean")
     private boolean ssoLogin;
 
-
     public UserType getLoginType() {
 
-
-        return isLdapLogin()? UserType.LDAP:UserType.SSO;
-
+        return isLdapLogin() ? UserType.LDAP : UserType.SSO;
     }
 }

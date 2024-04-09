@@ -148,7 +148,7 @@ crypto:
 #################################################################################################################
 #see https://github.com/pac4j/spring-webmvc-pac4j-boot-demo/blob/master/src/main/resources/application.properties
 sso:
-  enabled: false  #enable sso
+  enabled: true  #enable sso
   logout:
     destroySession: true
     defaultUrl: /?defaulturlafterlogout
@@ -166,6 +166,8 @@ pac4j:
   # https://github.com/pac4j/pac4j/blob/master/documentation/docs/config-module.md
   properties:
     principalNameAttribute: login #Authenticate user principal
-    github.id:  #Authentication client id
-    github.secret:    #Authentication client secret
+    github.id: 66cf7e8845a0ab15c8af
+    github.secret: a9ab402d124eeb9f994bf0a4bfa26527317eada7
+    # Optional, change by authentication client
+    # Please replace and fill in your client config below when enabled SSO
 
