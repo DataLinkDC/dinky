@@ -212,12 +212,25 @@ public abstract class KubernetesGateway extends AbstractGateway {
             throw new GatewayException(
                     "No cluster id was specified. Please specify a cluster to which you would like" + " to connect.");
         }
-
-        try (KubernetesClusterDescriptor clusterDescriptor =
-                clusterClientFactory.createClusterDescriptor(configuration)) {
-            clusterDescriptor.killCluster(clusterId);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        if (k8sClientHelper.getClusterIsPresent(clusterId)) {
+            try (KubernetesClusterDescriptor clusterDescriptor =
+                    clusterClientFactory.createClusterDescriptor(configuration)) {
+                clusterDescriptor.killCluster(clusterId);
+                int retryCount = 0;
+                while (k8sClientHelper.getClusterIsPresent(clusterId)) {
+                    retryCount++;
+                    log.warn("cluster id: {} is still running, recheck at 1s later", clusterId);
+                    if (retryCount > 60) {
+                        throw new GatewayException("The cluster " + clusterId
+                                + " still running, abort wait kill cluster, please check your k8s cluster.");
+                    }
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else {
+            logger.info("Cluster {} is not present, ignore kill", clusterId);
         }
     }
 
