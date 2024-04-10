@@ -44,11 +44,14 @@ import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.url.RsURLStreamHandlerFactory;
+import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.api.common.Plan;
+import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.core.execution.JobClient;
@@ -252,20 +255,33 @@ public class Submitter {
             String sqlStatement = executor.pretreatStatement(statement);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
-                StreamGraph streamGraph = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
+                Pipeline pipeline = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
                 ReadableConfig configuration =
                         executor.getStreamExecutionEnvironment().getConfiguration();
-                streamGraph
-                        .getExecutionConfig()
-                        .configure(configuration, Thread.currentThread().getContextClassLoader());
-                streamGraph.getCheckpointConfig().configure(configuration);
-                streamGraph.setJobName(executor.getExecutorConfig().getJobName());
-                String savePointPath = executor.getExecutorConfig().getSavePointPath();
-                if (Asserts.isNotNullString(savePointPath)) {
-                    streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                            savePointPath, configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+                if (pipeline instanceof StreamGraph) {
+                    // stream job
+                    StreamGraph streamGraph = (StreamGraph) pipeline;
+                    streamGraph
+                            .getExecutionConfig()
+                            .configure(configuration, Thread.currentThread().getContextClassLoader());
+                    streamGraph.getCheckpointConfig().configure(configuration);
+                    streamGraph.setJobName(executor.getExecutorConfig().getJobName());
+                    String savePointPath = executor.getExecutorConfig().getSavePointPath();
+                    if (Asserts.isNotNullString(savePointPath)) {
+                        streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                                savePointPath,
+                                configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+                    }
+                } else if (pipeline instanceof Plan) {
+                    // batch job
+                    Plan plan = (Plan) pipeline;
+                    plan.getExecutionConfig()
+                            .configure(configuration, Thread.currentThread().getContextClassLoader());
+                    plan.setJobName(executor.getExecutorConfig().getJobName());
                 }
-                JobClient client = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+
+                JobClient client =
+                        FlinkStreamEnvironmentUtil.executeAsync(pipeline, executor.getStreamExecutionEnvironment());
                 jobClient = Optional.of(client);
                 break;
             }

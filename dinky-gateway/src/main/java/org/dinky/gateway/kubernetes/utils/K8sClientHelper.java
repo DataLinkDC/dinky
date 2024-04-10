@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes.utils;
 
-import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.kubernetes.decorate.DinkySqlConfigMapDecorate;
 import org.dinky.utils.TextUtil;
 
@@ -27,6 +26,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
+import org.apache.flink.kubernetes.kubeclient.decorators.ExternalServiceDecorator;
 import org.apache.http.util.TextUtils;
 
 import java.io.ByteArrayInputStream;
@@ -34,9 +34,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
-import cn.hutool.core.io.FileUtil;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
+
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.fabric8.kubernetes.api.model.OwnerReference;
 import io.fabric8.kubernetes.api.model.OwnerReferenceBuilder;
@@ -59,28 +63,43 @@ public class K8sClientHelper {
     private FlinkKubeClient client;
     private KubernetesClient kubernetesClient;
     protected Configuration configuration;
-    private K8sConfig k8sConfig;
-    private String tmpConfDir;
     private DinkySqlConfigMapDecorate sqlFileDecorate;
 
-    public K8sClientHelper(Configuration configuration, K8sConfig k8sConfig) {
+    public K8sClientHelper(Configuration configuration, String kubeConfig) {
         this.configuration = configuration;
-        this.k8sConfig = k8sConfig;
-        tmpConfDir = String.format("%s/tmp/kubernets/%s", System.getProperty("user.dir"), UUID.randomUUID());
-        initKubeClient();
+        initKubeClient(kubeConfig);
+    }
+
+    public Optional<Deployment> getJobService(String clusterId) {
+        String serviceName = ExternalServiceDecorator.getExternalServiceName(clusterId);
+        Deployment deployment = kubernetesClient
+                .apps()
+                .deployments()
+                .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
+                .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
+                .get();
+        if (deployment == null) {
+            log.debug("Service {} does not exist", serviceName);
+            return Optional.empty();
+        }
+        return Optional.of(deployment);
+    }
+
+    public boolean getClusterIsPresent(String clusterId) {
+        return getJobService(clusterId).isPresent();
     }
 
     /**
      * initKubeClient
      */
-    private void initKubeClient() {
+    private void initKubeClient(String kubeConfig) {
         // k8s flink native client
         client = FlinkKubeClientFactory.getInstance().fromConfiguration(configuration, "client");
         // k8s fabric client
-        if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
+        if (TextUtils.isEmpty(kubeConfig)) {
             kubernetesClient = new DefaultKubernetesClient();
         } else {
-            kubernetesClient = new DefaultKubernetesClient(Config.fromKubeconfig(k8sConfig.getKubeConfig()));
+            kubernetesClient = new DefaultKubernetesClient(Config.fromKubeconfig(kubeConfig));
         }
     }
 
@@ -123,22 +142,41 @@ public class K8sClientHelper {
      * @param sqlStatement
      * @return
      */
-    public Pod decoratePodTemplate(String sqlStatement) {
+    public Pod decoratePodTemplate(String sqlStatement, String podTemplate) {
         Pod pod;
         // if the user has configured the pod template, combine user's configuration
-        if (!TextUtil.isEmpty(k8sConfig.getPodTemplate())) {
-            InputStream is = new ByteArrayInputStream(k8sConfig.getPodTemplate().getBytes(StandardCharsets.UTF_8));
+        if (!TextUtil.isEmpty(podTemplate)) {
+            InputStream is = new ByteArrayInputStream(podTemplate.getBytes(StandardCharsets.UTF_8));
             pod = kubernetesClient.pods().load(is).get();
         } else {
             // if the user has not configured the pod template, use the default configuration
             pod = new Pod();
         }
-
-        // decorate the pod template
-        sqlFileDecorate = new DinkySqlConfigMapDecorate(configuration, pod, sqlStatement);
-        return sqlFileDecorate.decoratePodMount();
+        if (TextUtil.isEmpty(sqlStatement)) {
+            log.warn("Sql statement is Empty !!!!, will not decorate podTemplate");
+            return pod;
+        } else {
+            // decorate the pod template
+            sqlFileDecorate = new DinkySqlConfigMapDecorate(configuration, pod, sqlStatement);
+            return sqlFileDecorate.decoratePodMount();
+        }
     }
 
+    /**
+     * dumpPod2Str
+     *
+     * */
+    public String dumpPod2Str(Pod pod) {
+        // use snakyaml to serialize the pod
+        Representer representer = new IgnoreNullRepresenter();
+        // set the label of the Map type, only the map type will not print the class name when dumping
+        representer.addClassTag(Pod.class, Tag.MAP);
+        DumperOptions options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setPrettyFlow(true);
+        Yaml yaml = new Yaml(representer, options);
+        return yaml.dump(pod);
+    }
     /**
      * close
      * delete the temporary directory and close the client
@@ -151,11 +189,6 @@ public class K8sClientHelper {
         if (kubernetesClient != null) {
             kubernetesClient.close();
         }
-        try {
-            return FileUtil.del(tmpConfDir);
-        } catch (Exception e) {
-            log.warn("failed delete kubernetes temp dir: " + tmpConfDir);
-        }
-        return false;
+        return true;
     }
 }

@@ -220,7 +220,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         />
 
         {/*不支持UDF模板*/}
-        {!isUDF(jobType) && (
+        {!isUDF(jobType) && !values.id && (
           <ProFormDependency name={['type']}>
             {({ type }) => <TemplateSelect type={type} onChange={(v) => setSqlTemplate(v)} />}
           </ProFormDependency>
