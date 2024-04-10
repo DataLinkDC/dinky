@@ -167,18 +167,19 @@ public class JobRefreshHandler {
 
         if (!oldStatus.equals(jobInstance.getStatus()) || isDone || needSave) {
             log.debug("Dump JobInfo to database: {}->{}", jobInstance.getId(), jobInstance.getName());
-            if (jobInstance.getStatus().equals(JobStatus.UNKNOWN.getValue()) || jobInstance.getStatus().equals(JobStatus.RECONNECTING.getValue())){
+            if (jobInstance.getStatus().equals(JobStatus.UNKNOWN.getValue())
+                    || jobInstance.getStatus().equals(JobStatus.RECONNECTING.getValue())) {
                 JobInstance fromDb = jobInstanceService.getById(jobInstance.getId());
                 // If the job status is unknown and the job status in the database is not done, update the job status
                 // just prevent the task from being mistakenly updated to UNKNOWN
-                if (JobStatus.valueOf(fromDb.getStatus()).isDone()){
+                if (JobStatus.valueOf(fromDb.getStatus()).isDone()) {
                     // if status is RECONNECTING, ignore it
                     isDone = true;
-                }else {
+                } else {
                     jobInstanceService.updateById(jobInstance);
                     jobHistoryService.updateById(jobInfoDetail.getJobDataDto().toJobHistory());
                 }
-            }else {
+            } else {
                 jobInstanceService.updateById(jobInstance);
                 jobHistoryService.updateById(jobInfoDetail.getJobDataDto().toJobHistory());
             }
