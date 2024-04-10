@@ -34,7 +34,7 @@ import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.SqlUtil;
 
-import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.api.dag.Pipeline;
 
 import java.io.File;
 import java.net.URL;
@@ -60,7 +60,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
     @Override
     public void run() throws Exception {}
 
-    public StreamGraph getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
+    public Pipeline getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
         DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
         String[] statements = SqlUtil.getStatements(statement);
         ExecuteJarOperation executeJarOperation = null;

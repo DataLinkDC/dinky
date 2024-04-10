@@ -21,6 +21,10 @@ management:
     web:
       exposure:
         include: "*"
+        exclude:
+          - heapdump
+          - threaddump
+          - env
     enabled-by-default: true
     jmx:
       exposure:
