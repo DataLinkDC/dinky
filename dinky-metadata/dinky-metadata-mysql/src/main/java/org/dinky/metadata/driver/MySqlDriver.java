@@ -112,7 +112,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
                             ? String.format(" DEFAULT '%s'", dv.isEmpty() ? "''" : dv)
                             : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
 
-                    // Avoid parsing mismatches when the numeric data type column declared by UNSIGNED / ZEROFILL keyword
+                    // Avoid parsing mismatches when the numeric data type column declared by UNSIGNED/ZEROFILL keyword
                     String columnType = column.getType();
                     if (columnType.contains("unsigned") || columnType.contains("zerofill")) {
                         String[] arr = columnType.split(" ");
