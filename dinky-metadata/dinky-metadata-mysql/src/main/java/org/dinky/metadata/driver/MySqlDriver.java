@@ -124,7 +124,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     return String.format(
                             "  `%s`  %s%s%s%s%s",
                             column.getName(),
-                            column.getType(),
+                            columnType,
                             unit,
                             defaultValue,
                             column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
