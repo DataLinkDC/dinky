@@ -106,10 +106,9 @@ public class FlinkAppUtil {
      */
     private static void sendHook(int taskId, String jobId, int reTryCount) {
         String dinkyAddr = SystemConfiguration.getInstances().getDinkyAddr().getValue();
-        String url =
-                StrFormatter.format("{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
+        String url = StrFormatter.format("{}/api/jobInstance/hookJobDone?taskId={}&jobId={}", dinkyAddr, taskId, jobId);
         try {
-            String resultStr = HttpUtil.get(url,5000);
+            String resultStr = HttpUtil.get(url, 5000);
             // TODO 这里应该使用Result实体类，但是Result.class不在comm里，迁移改动太大，暂时不搞
             String code = JsonUtils.parseObject(resultStr).get("code").toString();
             if (!"0".equals(code)) {
@@ -118,7 +117,12 @@ public class FlinkAppUtil {
             }
         } catch (Exception e) {
             if (reTryCount < 10) {
-                log.error("send hook failed,retry later，url：{}， taskId:{},jobId:{},{}",url, taskId, jobId, e.getMessage());
+                log.error(
+                        "send hook failed,retry later，url：{}， taskId:{},jobId:{},{}",
+                        url,
+                        taskId,
+                        jobId,
+                        e.getMessage());
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
