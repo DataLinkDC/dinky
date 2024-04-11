@@ -38,11 +38,10 @@ const BaseConfig: React.FC = () => {
           name='type'
           label={l('rc.cc.type')}
           width='md'
-          options={CLUSTER_CONFIG_TYPE([
-            ClusterType.KUBERNETES_OPERATOR,
-            ClusterType.KUBERNETES_APPLICATION,
-            ClusterType.YARN
-          ])}
+          options={CLUSTER_CONFIG_TYPE(
+            [ClusterType.KUBERNETES_OPERATOR, ClusterType.KUBERNETES_APPLICATION, ClusterType.YARN],
+            true
+          )}
           rules={[{ required: true, message: l('rc.cc.typePlaceholder') }]}
           placeholder={l('rc.cc.typePlaceholder')}
         />
