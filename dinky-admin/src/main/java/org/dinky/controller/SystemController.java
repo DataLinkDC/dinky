@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -81,6 +82,7 @@ public class SystemController {
     @GetMapping("/readFile")
     @ApiOperation("Read File By File Path")
     @ApiImplicitParam(name = "path", value = "File Path", required = true, dataType = "String")
+    @SaCheckLogin
     public Result<String> readFile(@RequestParam String path) {
         return Result.data(systemService.readFile(path));
     }
