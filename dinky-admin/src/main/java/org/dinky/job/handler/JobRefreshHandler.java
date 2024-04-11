@@ -34,6 +34,7 @@ import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.gateway.Gateway;
@@ -266,9 +267,9 @@ public class JobRefreshHandler {
     private static Optional<JobStatus> getJobStatus(JobInfoDetail jobInfoDetail) {
 
         ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
-
+        ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
         if (!Asserts.isNull(clusterCfg)
-                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterCfg.getType())) {
+                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterInstance.getType())) {
             try {
                 String appId = jobInfoDetail.getClusterInstance().getName();
 
