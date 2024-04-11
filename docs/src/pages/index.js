@@ -24,7 +24,32 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
+import CarouselList from "../components/CarouselList";
 
+
+// 轮播图数据
+const info = [
+    {
+        id: 1,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/datastudio.png',
+    },
+    {
+        id: 2,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/checksql.png',
+    },
+    {
+        id: 3,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/versiondiff.png',
+    },
+    {
+        id: 4,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/lineage.png',
+    },
+    {
+        id: 5,
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/monitor.png',
+    },
+];
 
 function HomepageHeader() {
     const {siteConfig} = useDocusaurusContext();
@@ -36,33 +61,31 @@ function HomepageHeader() {
                         <h1 className="hero__title">{siteConfig.title}</h1>
                         <p className="hero__subtitle">{siteConfig.tagline}</p>
                         <p className="hero_desc"> &nbsp;&nbsp;&nbsp;&nbsp;
-                            一站式 FlinkSQL & SQL DataOps，
-                            基于 Apache Flink 二次开发，无侵入，开箱即用，
-                            实时即未来，批流为一体。<br/><br/>
+                            为 Apache Flink 深度定制的新一代实时计算平台， <br/> 提供敏捷的 Flink SQL 作业开发、部署及监控能力，助力实时计算高效应用。
                         </p>
                         <div className={styles.buttons}>
                             <div className={styles.buttonLink}>
-                            <Link
-                                className="button button--secondary button--lg"
-                                to="https://github.com/DataLinkDC/dinky">
-                                GitHub
-                            </Link>
+                                <Link
+                                    className="button button--secondary button--lg"
+                                    to="https://github.com/DataLinkDC/dinky">
+                                    GitHub
+                                </Link>
                             </div>
                             <div className={styles.buttonLink}>
-                            <Link
-                                className="button button--secondary button--lg"
-                                to="https://gitee.com/mirrors/Dlink">
-                                Gitee
-                            </Link>
+                                <Link
+                                    className="button button--secondary button--lg"
+                                    to="https://gitee.com/DataLinkDC/Dinky">
+                                    Gitee
+                                </Link>
                             </div>
 
                             <div className={styles.buttonLink}>
-                               <Link
-                                   className="button button--secondary button--lg"
-                                   style={{backgroundColor: '#42b983'}}
-                                   to="/docs/next/get_started/quick_experience">
-                                   Quick Start
-                               </Link>
+                                <Link
+                                    className="button button--secondary button--lg"
+                                    style={{backgroundColor: '#42b983'}}
+                                    to="/docs/next/get_started/quick_experience">
+                                    快速开始
+                                </Link>
                             </div>
 
                             <div className={styles.buttonLink}>
@@ -70,24 +93,32 @@ function HomepageHeader() {
                                     className="button button--secondary button--lg"
                                     style={{backgroundColor: '#07f313'}}
                                     to="http://demo.dinky.org.cn:32451/#/">
-                                    Demo 环境
+                                    在线体验
                                 </Link>
                             </div>
 
                             <div className={styles.buttonLink}>
-                               <iframe style={{width:"100px",height:"30px"}}
-                                    src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dinky&amp;type=star&amp;count=true&amp;size=large"
-                                    title="GitHub Stars"
+                                <iframe style={{width:"150px",height:"30px"}}
+                                        src="https://ghbtns.com/github-btn.html?user=DataLinkDC&amp;repo=dinky&amp;type=star&amp;count=true&amp;size=large"
+                                        title="GitHub Stars"
                                 />
                             </div>
                         </div>
                     </div>
-                    <div className={clsx("desc_right", styles.box,styles.descRight)}>
-                        <div>
-                           <img src="home.png" className="fly_svg"></img>
-                        </div>
-                    </div>
+                    {/*<div className={clsx("desc_right", styles.box,styles.descRight)}>*/}
+                    {/*    <div>*/}
+                    {/*       <img src="home.png" className="fly_svg"></img>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+                   <div style={{
+                       position: "absolute",
+                       width: "40vw",
+                       right: "2vw",
+                   }}>
+                       <CarouselList items={info}/>
+                   </div>
                 </div>
+
             </div>
         </header>
     );
@@ -112,7 +143,7 @@ function Structure() {
                 <div className={clsx("description", styles.box,styles.structureDesc)}>
                     {/*{siteConfig.customFields.structDescription}*/}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    Dinky 是一个开箱即用的一站式实时计算平台,以 Apache Flink 为基础，连接 OLAP 和数据湖等众多框架,致力于流批一体和湖仓一体的建设与实践。
+                    Dinky 是一个开箱即用的一站式实时计算平台，以 Apache Flink 为基础，连接 OLAP 和数据湖等众多框架,致力于流批一体和湖仓一体的建设与实践。
                 </div>
                 <br/>
                 <a href={siteConfig.customFields.learningMore} target="_blank" className="action-button">

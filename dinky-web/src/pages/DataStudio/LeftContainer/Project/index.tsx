@@ -18,7 +18,6 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
-import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import { getTabByTaskId } from '@/pages/DataStudio/function';
 import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import {
@@ -26,10 +25,7 @@ import {
   JOB_RIGHT_MENU
 } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
-import {
-  getBottomSelectKeyFromNodeClickJobType,
-  getRightSelectKeyFromNodeClickJobType
-} from '@/pages/DataStudio/LeftContainer/Project/function';
+import { getRightSelectKeyFromNodeClickJobType } from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
@@ -39,7 +35,6 @@ import {
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC
 } from '@/pages/DataStudio/model';
-import { LeftBottomMoreTabs } from '@/pages/DataStudio/route';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -90,6 +85,11 @@ const Project: React.FC = (props: connect) => {
       event
     } = info;
 
+    // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 200px (需要根据具体的右键菜单数量合理设置)
+    if (event.clientY + 150 > window.innerHeight) {
+      event.clientY = window.innerHeight - 200;
+    }
+
     // 设置右键菜单
     setProjectState((prevState) => ({
       ...prevState,
@@ -101,7 +101,9 @@ const Project: React.FC = (props: connect) => {
       contextMenuPosition: {
         ...prevState.contextMenuPosition,
         top: event.clientY + 5,
-        left: event.clientX + 10
+        left: event.clientX + 10,
+        screenX: event.screenX,
+        screenY: event.screenY
       },
       selectedKeys: [key],
       rightClickedNode: { ...node, ...fullInfo },
@@ -142,14 +144,6 @@ const Project: React.FC = (props: connect) => {
         type: STUDIO_MODEL.updateSelectRightKey,
         payload: getRightSelectKeyFromNodeClickJobType(type)
       });
-      const bottomKey = getBottomSelectKeyFromNodeClickJobType(type);
-      dispatch({ type: STUDIO_MODEL.updateSelectBottomKey, payload: bottomKey });
-      if (bottomKey === LeftBottomKey.TOOLS_KEY) {
-        dispatch({
-          type: STUDIO_MODEL.updateSelectBottomSubKey,
-          payload: LeftBottomMoreTabs[bottomKey][0].key
-        });
-      }
     }
 
     dispatch({

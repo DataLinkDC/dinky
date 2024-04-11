@@ -44,15 +44,16 @@ import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.IpUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -312,9 +313,9 @@ public class Explainer {
                 } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
 
                     List<URL> allFileByAdd = jobManager.getAllFileSet();
-                    StreamGraph streamGraph = new ExecuteJarOperation(item.getValue())
+                    Pipeline pipeline = new ExecuteJarOperation(item.getValue())
                             .explain(executor.getCustomTableEnvironment(), allFileByAdd);
-                    sqlExplainResult.setExplain(streamGraph.getStreamingPlanAsJSON());
+                    sqlExplainResult.setExplain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(pipeline));
                 } else {
                     executor.executeSql(item.getValue());
                 }

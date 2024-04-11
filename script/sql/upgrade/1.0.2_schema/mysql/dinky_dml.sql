@@ -17,16 +17,25 @@
  *
  */
 
-package org.dinky.configure.cache;
 
-import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+begin ;
 
-@Configuration
-public class CacheConfiguration {
-    @Bean
-    public CacheManager cacheManager() {
-        return new PaimonCacheManager();
-    }
-}
+
+update dinky_sys_menu set `type`= 'F' where `id`= 151;
+update dinky_sys_menu set `path`= '/datastudio/bottom/table-data' , `perms`= 'datastudio:bottom:table-data' where `id`= 46;
+
+delete from dinky_sys_menu where `id`= 26;
+
+update dinky_git_project set `url`= 'https://github.com/DataLinkDC/dinky-quickstart-java.git' where `id`= 1;
+update dinky_git_project set `url`= 'https://github.com/DataLinkDC/dinky-quickstart-python.git' where `id`= 2;
+
+
+commit ;
+
+
+
+
+
+
+
+

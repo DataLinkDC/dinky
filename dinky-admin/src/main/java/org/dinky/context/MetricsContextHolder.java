@@ -55,6 +55,7 @@ public class MetricsContextHolder {
 
     public void sendAsync(String key, MetricsVO o) {
         CompletableFuture.runAsync(() -> {
+                    Thread.currentThread().setContextClassLoader(MetricsContextHolder.class.getClassLoader());
                     metricsVOS.add(o);
                     long duration = System.currentTimeMillis() - lastDumpTime;
                     synchronized (metricsVOS) {

@@ -37,8 +37,8 @@
 
 .buttons {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
+  flex-direction: row;
+  margin-left: -6vw;
   width: 30rem;
   height: 10rem;
 }
@@ -65,7 +65,7 @@
 .buttonLink{
   width: 200px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   margin: 0.5rem;
 }
