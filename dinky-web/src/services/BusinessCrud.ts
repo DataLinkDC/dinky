@@ -63,6 +63,20 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
     ...(options ?? {})
   });
 }
+/**
+ * user sso login
+ */
+export async function ssoToken() {
+  return request<API.Result>(API_CONSTANTS.SSO_TOKEN, {
+    method: METHOD_CONSTANTS.GET,
+    headers: {
+      CONTENT_TYPE: APPLICATION_JSON
+    }
+  });
+}
+
+
+
 
 /**
  * choose tenant

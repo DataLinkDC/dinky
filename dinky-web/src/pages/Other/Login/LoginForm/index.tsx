@@ -40,8 +40,15 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
   const [submitting, setSubmitting] = useState(false);
   const [ldapEnabled, setLdapEnabled] = useState(false);
+  const [ssoEnabled, setSsoEnabled] = useState(false);
 
   useEffect(() => {
+    getData(API_CONSTANTS.GET_SSO_ENABLE).then(
+      (res) => {
+        setSsoEnabled(res.data);
+      },
+      (err) => console.error(err)
+    );
     getData(API_CONSTANTS.GET_LDAP_ENABLE).then(
       (res) => {
         setLdapEnabled(res.data);
@@ -95,9 +102,14 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
             <ProFormCheckbox name='autoLogin'>{l('login.rememberMe')}</ProFormCheckbox>
           </Col>
           <Col span={6}>
-            <ProFormCheckbox name='ldapLogin' hidden={!ldapEnabled}>
-              {l('login.ldapLogin')}
-            </ProFormCheckbox>
+          <ProFormCheckbox name='ldapLogin' hidden={!ldapEnabled}>
+            {l('login.ldapLogin')}
+          </ProFormCheckbox>
+        </Col>
+          <Col span={6}>
+            <a href={API_CONSTANTS.SSO_LOGIN}  hidden={!ssoEnabled}>
+              {l('login.ssoLogin')}
+            </a>
           </Col>
         </Row>
       </>
@@ -135,3 +147,4 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 };
 
 export default LoginForm;
+

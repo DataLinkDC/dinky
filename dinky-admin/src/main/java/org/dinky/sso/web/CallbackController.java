@@ -49,7 +49,7 @@ public class CallbackController {
 
     private CallbackLogic<Object, JEEContext> callbackLogic;
 
-    @Value("${pac4j.callback.defaultUrl:#{null}}")
+    @Value("${pac4j.callback.defaultUrl:api/sso/login}")
     private String defaultUrl;
 
     @Value("${pac4j.callback.multiProfile:#{null}}")
