@@ -55,13 +55,13 @@ public class LoginDTO {
     private boolean ssoLogin;
 
     public UserType getLoginType() {
-        if (isLdapLogin()){
+        if (isLdapLogin()) {
             return UserType.LDAP;
         }
-        if (isSsoLogin()){
+        if (isSsoLogin()) {
             return UserType.SSO;
         }
 
-        return  UserType.LOCAL;
+        return UserType.LOCAL;
     }
 }

@@ -97,16 +97,22 @@ public class AppConfig implements WebMvcConfigurer {
                     }
                 }))
                 .addPathPatterns("/api/**", "/openapi/**")
-                .excludePathPatterns("/api/sso/ssoEnableStatus","/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
+                .excludePathPatterns(
+                        "/api/sso/ssoEnableStatus",
+                        "/api/login",
+                        "/api/ldap/ldapEnableStatus",
+                        "/download/**",
+                        "/druid/**");
         if (ssoEnabled) {
             log.info("Load{}", config.getClients().getClients().get(0).getName());
             registry.addInterceptor(buildInterceptor(
                             config.getClients().getClients().get(0).getName()))
-                    .addPathPatterns("/api/sso/login").addPathPatterns("/api/sso/token");
+                    .addPathPatterns("/api/sso/login")
+                    .addPathPatterns("/api/sso/token");
         }
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/sso/ssoEnableStatus","/api/login", "/api/ldap/ldapEnableStatus")
+                .excludePathPatterns("/api/sso/ssoEnableStatus", "/api/login", "/api/ldap/ldapEnableStatus")
                 .addPathPatterns("/api/alertGroup/**")
                 .addPathPatterns("/api/alertHistory/**")
                 .addPathPatterns("/api/alertInstance/**")

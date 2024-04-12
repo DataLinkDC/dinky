@@ -19,8 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.dev33.satoken.annotation.SaIgnore;
-import io.swagger.annotations.ApiOperation;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
@@ -41,13 +39,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import lombok.NoArgsConstructor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
+import cn.dev33.satoken.annotation.SaIgnore;
+import io.swagger.annotations.ApiOperation;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 杨泽翰
@@ -59,6 +58,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class SsoCpntroller {
     @Value("${sso.baseUrl:localhost:8000}")
     private String baseUrl;
+
     @Value("${sso.enabled:false}")
     private Boolean ssoEnabled;
 
@@ -113,8 +113,8 @@ public class SsoCpntroller {
     }
 
     @GetMapping("/login")
-    public ModelAndView ssoLogin()   {
-        RedirectView redirectView = new RedirectView("http://"+baseUrl+"/#/user/login?from=sso");
+    public ModelAndView ssoLogin() {
+        RedirectView redirectView = new RedirectView("http://" + baseUrl + "/#/user/login?from=sso");
         return new ModelAndView(redirectView);
     }
 
