@@ -92,7 +92,7 @@ public class SseSessionContextHolder {
     public static synchronized SseEmitter connectSession(String sessionKey) {
         log.debug("New session wants to connect: {}", sessionKey);
 
-        SseEmitter sseEmitter = new SseEmitter(5 * 60 * 1000L);
+        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
         sseEmitter.onError(err -> onError(sseEmitter, sessionKey, err));
         sseEmitter.onTimeout(() -> onTimeout(sseEmitter));
         sseEmitter.onCompletion(() -> onCompletion(sseEmitter, sessionKey));

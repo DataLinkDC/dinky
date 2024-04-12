@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.dto.SseSubscribeDTO;
 import org.dinky.data.enums.Status;
@@ -43,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "SSE Controller")
 @RequestMapping("/api/sse")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class SseController {
 
     @PostMapping(value = "/subscribeTopic")
