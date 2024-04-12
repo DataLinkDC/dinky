@@ -40,7 +40,8 @@ public class ScheduleThreadPool {
         ScheduledFuture<?> schedule = threadPoolTaskScheduler.schedule(task::dealTask, trigger);
         getScheduleMap().put(task.getType(), schedule);
     }
-    public void addSchedule(String type,Runnable task, Trigger trigger) {
+
+    public void addSchedule(String type, Runnable task, Trigger trigger) {
         ScheduledFuture<?> schedule = threadPoolTaskScheduler.schedule(task, trigger);
         getScheduleMap().put(type, schedule);
     }
