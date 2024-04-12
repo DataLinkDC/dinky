@@ -89,7 +89,8 @@ public class AppConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/login","/api/sse/subscribeTopic","/api/sse/connect", "/api/ldap/ldapEnableStatus")
+                .excludePathPatterns(
+                        "/api/login", "/api/sse/subscribeTopic", "/api/sse/connect", "/api/ldap/ldapEnableStatus")
                 .addPathPatterns("/api/alertGroup/**")
                 .addPathPatterns("/api/alertHistory/**")
                 .addPathPatterns("/api/alertInstance/**")
