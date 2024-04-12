@@ -19,6 +19,7 @@
 
 package org.dinky.context;
 
+import org.dinky.daemon.pool.ScheduleThreadPool;
 import org.dinky.data.constant.SseConstant;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.vo.SseDataVo;
@@ -30,14 +31,38 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Data
 public class SseSessionContextHolder {
+
+    @Getter
     private static final Map<String, TopicSubscriber> sessionMap = new ConcurrentHashMap<>();
+
+    public static void init(ScheduleThreadPool schedulePool) {
+        log.info("start init sse heart schedule task");
+        PeriodicTrigger trigger = new PeriodicTrigger(9 * 1000L);
+        schedulePool.addSchedule(
+                SseSessionContextHolder.class.toString(), SseSessionContextHolder::checkHeart, trigger);
+    }
+
+    public static void checkHeart() {
+        sessionMap.forEach((sessionKey, topicSubscriber) -> {
+            try {
+                SseDataVo data = new SseDataVo(sessionKey, SseConstant.HEART_TOPIC, "heart");
+                sendSse(sessionKey, data);
+            } catch (Exception e) {
+                log.error("Error sending sse data:{}", e.getMessage());
+                onError(topicSubscriber.getEmitter(), sessionKey, e);
+            }
+        });
+    }
 
     /**
      * Subscribes a session to the topics.
@@ -65,21 +90,20 @@ public class SseSessionContextHolder {
      * @param sessionKey The session key of the new session.
      * @return The SseEmitter for the session.
      */
-    public static SseEmitter connectSession(String sessionKey) {
+    public static synchronized SseEmitter connectSession(String sessionKey) {
         log.debug("New session wants to connect: {}", sessionKey);
-        log.warn("Session key already exists: {}，replace it", sessionKey);
 
-        SseEmitter sseEmitter = new SseEmitter(60 * 1000L * 10);
-        sseEmitter.onError(err -> onError(sessionKey, err));
-        sseEmitter.onTimeout(() -> onTimeout(sessionKey));
-        sseEmitter.onCompletion(() -> onCompletion(sessionKey));
+        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
+        sseEmitter.onError(err -> onError(sseEmitter, sessionKey, err));
+        sseEmitter.onTimeout(() -> onTimeout(sseEmitter));
+        sseEmitter.onCompletion(() -> onCompletion(sseEmitter, sessionKey));
+        sessionMap.put(sessionKey, TopicSubscriber.of(sseEmitter));
         try {
             // Set the client reconnection interval, 0 to reconnect immediately
             sseEmitter.send(SseEmitter.event().reconnectTime(1000));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        sessionMap.put(sessionKey, TopicSubscriber.of(sseEmitter));
         return sseEmitter;
     }
 
@@ -95,28 +119,12 @@ public class SseSessionContextHolder {
 
     /**
      * Handles the timeout event for a session.
-     *
-     * @param sessionKey The session key of the timed-out session.
      */
-    public static void onTimeout(String sessionKey) {
-        log.debug("Type: SseSession Timeout, Session ID: {}", sessionKey);
-        closeSse(sessionKey);
-    }
-
-    /**
-     * Closes the SseEmitter for a session.
-     *
-     * @param sessionKey The session key of the session to close.
-     */
-    public static void closeSse(String sessionKey) {
-        if (exists(sessionKey)) {
-            try {
-                sessionMap.get(sessionKey).getEmitter().complete();
-            } catch (Exception e) {
-                log.warn("Failed to complete sseEmitter, Session Key: {}, Error: {}", sessionKey, e.getMessage());
-            } finally {
-                sessionMap.remove(sessionKey);
-            }
+    public static void onTimeout(SseEmitter sseEmitter) {
+        try {
+            sseEmitter.complete();
+        } catch (Exception e) {
+            log.warn("Failed to complete sseEmitter, Error: {}", e.getMessage());
         }
     }
 
@@ -126,16 +134,14 @@ public class SseSessionContextHolder {
      * @param sessionKey The session key of the session with the error.
      * @param throwable  The throwable representing the error.
      */
-    public static void onError(String sessionKey, Throwable throwable) {
-        log.error("Type: SseSession [{}] Error, Message: {}", sessionKey, throwable.getMessage());
-        if (exists(sessionKey)) {
-            try {
-                sessionMap.get(sessionKey).getEmitter().completeWithError(throwable);
-            } catch (Exception e) {
-                log.error("Failed to complete Sse With Error: {}", e.getMessage());
-            }
+    private static void onError(SseEmitter sseEmitter, String sessionKey, Throwable throwable) {
+        log.debug("Type: SseSession [{}] Error, Message: {}", sessionKey, throwable.getMessage());
+        try {
+            sseEmitter.completeWithError(throwable);
+        } catch (Exception e) {
+            log.debug("Failed to complete Sse With Error: {}", e.getMessage());
         }
-        sessionMap.remove(sessionKey);
+        onCompletion(sseEmitter, sessionKey);
     }
 
     /**
@@ -143,9 +149,14 @@ public class SseSessionContextHolder {
      *
      * @param sessionKey The session key of the completed session.
      */
-    public static void onCompletion(String sessionKey) {
+    private static synchronized void onCompletion(SseEmitter sseEmitter, String sessionKey) {
         log.debug("Type: SseSession Completion, Session ID: {}", sessionKey);
-        closeSse(sessionKey);
+        if (exists(sessionKey)) {
+            SseEmitter emitter = sessionMap.get(sessionKey).getEmitter();
+            if (emitter == sseEmitter) {
+                sessionMap.remove(sessionKey);
+            }
+        }
     }
 
     /**
@@ -162,7 +173,7 @@ public class SseSessionContextHolder {
                     sendSse(sessionKey, data);
                 } catch (Exception e) {
                     log.error("Error sending sse data:{}", e.getMessage());
-                    onError(sessionKey, e);
+                    onError(topicSubscriber.getEmitter(), sessionKey, e);
                 }
             }
         });
