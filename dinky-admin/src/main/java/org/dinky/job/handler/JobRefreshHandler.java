@@ -34,6 +34,7 @@ import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.gateway.Gateway;
@@ -48,6 +49,7 @@ import org.dinky.utils.TimeUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -111,18 +113,23 @@ public class JobRefreshHandler {
                 CopyOptions.create().ignoreNullValue());
 
         if (Asserts.isNull(jobDataDto.getJob()) || jobDataDto.isError()) {
-            // If the job fails to get it, the default Finish Time is the current time
-            jobInstance.setStatus(JobStatus.RECONNECTING.getValue());
-            jobInstance.setError(jobDataDto.getErrorMsg());
-            jobInfoDetail.getJobDataDto().setError(true);
-            jobInfoDetail.getJobDataDto().setErrorMsg(jobDataDto.getErrorMsg());
+            Optional<JobStatus> jobStatus = getJobStatus(jobInfoDetail);
+            if (jobStatus.isPresent() && JobStatus.isDone(jobStatus.get().getValue())) {
+                jobInstance.setStatus(jobStatus.get().getValue());
+            } else {
+                // If the job fails to get it, the default Finish Time is the current time
+                jobInstance.setStatus(JobStatus.RECONNECTING.getValue());
+                jobInstance.setError(jobDataDto.getErrorMsg());
+                jobInfoDetail.getJobDataDto().setError(true);
+                jobInfoDetail.getJobDataDto().setErrorMsg(jobDataDto.getErrorMsg());
+            }
             if (jobInstance.getFinishTime() == null || TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) < 1) {
                 jobInstance.setFinishTime(LocalDateTime.now());
             }
         } else {
             jobInfoDetail.setJobDataDto(jobDataDto);
             FlinkJobDetailInfo flinkJobDetailInfo = jobDataDto.getJob();
-            jobInstance.setStatus(getJobStatus(jobInfoDetail).getValue());
+            jobInstance.setStatus(flinkJobDetailInfo.getState());
             jobInstance.setDuration(flinkJobDetailInfo.getDuration());
             jobInstance.setCreateTime(TimeUtil.toLocalDateTime(flinkJobDetailInfo.getStartTime()));
             // if the job is still running the end-time is -1
@@ -257,12 +264,12 @@ public class JobRefreshHandler {
      * @param jobInfoDetail The job info detail.
      * @return The job status.
      */
-    private static JobStatus getJobStatus(JobInfoDetail jobInfoDetail) {
+    private static Optional<JobStatus> getJobStatus(JobInfoDetail jobInfoDetail) {
 
         ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
-
+        ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
         if (!Asserts.isNull(clusterCfg)
-                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterCfg.getType())) {
+                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterInstance.getType())) {
             try {
                 String appId = jobInfoDetail.getClusterInstance().getName();
 
@@ -273,15 +280,13 @@ public class JobRefreshHandler {
                         .setJobName(jobInfoDetail.getInstance().getName());
 
                 Gateway gateway = Gateway.build(gatewayConfig);
-                return gateway.getJobStatusById(appId);
+                return Optional.of(gateway.getJobStatusById(appId));
             } catch (NotSupportGetStatusException ignored) {
                 // if the gateway does not support get status, then use the api to get job status
                 // ignore to do something here
             }
         }
-        JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
-        String status = jobDataDto.getJob().getState();
-        return JobStatus.get(status);
+        return Optional.empty();
     }
 
     /**
