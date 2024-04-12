@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.dto.SseSubscribeDTO;
 import org.dinky.data.enums.Status;
@@ -35,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

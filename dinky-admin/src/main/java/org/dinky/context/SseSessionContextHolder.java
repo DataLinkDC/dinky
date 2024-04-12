@@ -19,7 +19,6 @@
 
 package org.dinky.context;
 
-import lombok.Getter;
 import org.dinky.daemon.pool.ScheduleThreadPool;
 import org.dinky.data.constant.SseConstant;
 import org.dinky.data.exception.BusException;
@@ -36,6 +35,7 @@ import org.springframework.scheduling.support.PeriodicTrigger;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,7 +48,8 @@ public class SseSessionContextHolder {
     public static void init(ScheduleThreadPool schedulePool) {
         log.info("start init sse heart schedule task");
         PeriodicTrigger trigger = new PeriodicTrigger(9 * 1000L);
-        schedulePool.addSchedule(SseSessionContextHolder.class.toString(), SseSessionContextHolder::checkHeart, trigger);
+        schedulePool.addSchedule(
+                SseSessionContextHolder.class.toString(), SseSessionContextHolder::checkHeart, trigger);
     }
 
     public static void checkHeart() {
