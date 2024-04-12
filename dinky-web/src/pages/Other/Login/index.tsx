@@ -43,8 +43,6 @@ const Login: React.FC = () => {
 
   const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage('token', '');
 
-  const { reconnectSse } = useModel('Sse', (model: any) => ({ reconnectSse: model.reconnectSse }));
-
   const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',
@@ -99,7 +97,6 @@ const Login: React.FC = () => {
       /**
        * Redirect to home page && reconnect Global Sse
        */
-      reconnectSse();
       gotoRedirectUrl();
     } else {
       ErrorMessage(l('login.chooseTenantFailed'));
