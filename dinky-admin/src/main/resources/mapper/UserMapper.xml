@@ -15,6 +15,9 @@
             <if test='param.nickname!=null and param.nickname!=""'>
                 and a.nickname like "%${param.nickname}%"
             </if>
+            <if test='param.worknum!=null and param.worknum!=""'>
+                and a.worknum like "%${param.worknum}%"
+            </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
             </if>
