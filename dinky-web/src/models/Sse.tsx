@@ -17,11 +17,11 @@
  *
  */
 
-import {postAll} from '@/services/api';
-import {ErrorMessage} from '@/utils/messages';
-import {useEffect, useRef, useState} from 'react';
+import { postAll } from '@/services/api';
+import { ErrorMessage } from '@/utils/messages';
+import { useEffect, useRef, useState } from 'react';
 // @ts-ignore
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 const session_invalid_label = 'SESSION_INVALID';
 export type SseData = {
@@ -50,24 +50,22 @@ export default () => {
   const subscribe = async () => {
     const topics: string[] = [];
     subscriberRef.current.forEach((sub) => topics.push(...sub.topic));
-    const para = {sessionKey: uuidRef.current, topics: topics};
+    const para = { sessionKey: uuidRef.current, topics: topics };
     await postAll('api/sse/subscribeTopic', para)
-        .then((res: any) => {
-          if (res.data.length === 1 && res.data[0] === session_invalid_label) {
-            reconnectSse();
-          }
-        })
-        .catch((e) => ErrorMessage(e));
-    };
-
+      .then((res: any) => {
+        if (res.data.length === 1 && res.data[0] === session_invalid_label) {
+          reconnectSse();
+        }
+      })
+      .catch((e) => ErrorMessage(e));
+  };
 
   useEffect(() => {
     setInterval(() => {
-        if (Date.now() - lastHeartTime.current > 20 * 1000) {
-          reconnectSse();
-        }
+      if (Date.now() - lastHeartTime.current > 20 * 1000) {
+        reconnectSse();
       }
-      , 5000)
+    }, 5000);
   }, []);
 
   useEffect(() => {
@@ -91,7 +89,7 @@ export default () => {
   }, [eventSource]);
 
   const subscribeTopic = (topic: string[], onMessage: (data: SseData) => void) => {
-    const sub: SubscriberData = {topic: topic, call: onMessage};
+    const sub: SubscriberData = { topic: topic, call: onMessage };
     subscriberRef.current = [...subscriberRef.current, sub];
     subscribe();
     return () => {
@@ -104,5 +102,5 @@ export default () => {
   return {
     subscribeTopic,
     reconnectSse
-  }
-}
+  };
+};
