@@ -23,14 +23,18 @@ import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
+import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.enums.HaModeEnum;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
+import org.dinky.gateway.config.ClusterConfig;
+import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
@@ -44,6 +48,11 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.TaskService;
 import org.dinky.utils.IpUtil;
 import org.dinky.utils.URLUtils;
+import org.dinky.utils.ZkUtils;
+
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.GlobalConfiguration;
+import org.apache.flink.configuration.HighAvailabilityOptions;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -277,6 +286,53 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         return !taskService
                 .list(new LambdaQueryWrapper<Task>().eq(Task::getClusterId, id))
                 .isEmpty();
+    }
+
+    @Override
+    public Boolean refreshCluster(ClusterInstance clusterInstance, ClusterConfigurationDTO clusterConfiguration) {
+        if (Asserts.isNull(clusterConfiguration)) {
+            return false;
+        }
+
+        ClusterConfig clusterConfig = clusterConfiguration.getConfig().getClusterConfig();
+        Configuration configuration = GlobalConfiguration.loadConfiguration(
+                clusterConfig.getFlinkConfigPath().trim());
+
+        FlinkConfig flinkConfig = clusterConfiguration.getConfig().getFlinkConfig();
+        if (Asserts.isNotNull(flinkConfig) && Asserts.isNotNull(flinkConfig.getConfiguration())) {
+            flinkConfig.getConfiguration().entrySet().stream()
+                    .filter(entry -> Asserts.isAllNotNullString(entry.getKey(), entry.getValue()))
+                    .forEach(entry -> configuration.setString(entry.getKey(), entry.getValue()));
+        }
+
+        if (Asserts.isNotNull(flinkConfig) && Asserts.isNotNull(flinkConfig.getFlinkConfigList())) {
+            flinkConfig.getFlinkConfigList().stream()
+                    .filter(entry -> Asserts.isAllNotNullString(entry.getName(), entry.getValue()))
+                    .forEach(entry -> configuration.setString(entry.getName(), entry.getValue()));
+        }
+
+        String haMode = configuration.get(HighAvailabilityOptions.HA_MODE);
+        if (Asserts.isNull(haMode)) {
+            return false;
+        }
+        if (HaModeEnum.ZOOKEEPER.name().equals(haMode.toUpperCase())) {
+            String quorum = configuration.get(HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM);
+            String root = configuration.get(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
+            String appId = clusterInstance.getName();
+            if (Asserts.isNullString(quorum) || Asserts.isNullString(root) || Asserts.isNullString(appId)) {
+                return false;
+            }
+            String jobManagerHost = ZkUtils.getJobManagerHost(quorum, root, appId);
+            if (Asserts.isNotNullString(jobManagerHost)
+                    && !jobManagerHost.equals(clusterInstance.getJobManagerHost())) {
+                clusterInstance.setHosts(jobManagerHost);
+                clusterInstance.setJobManagerHost(jobManagerHost);
+                updateById(clusterInstance);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

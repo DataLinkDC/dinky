@@ -21,6 +21,7 @@ package org.dinky.job.handler;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
+import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.ClusterConfigurationDTO;
@@ -42,6 +43,8 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.NotSupportGetStatusException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.job.JobConfig;
+import org.dinky.service.ClusterInstanceService;
+import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.utils.JsonUtils;
@@ -70,10 +73,14 @@ public class JobRefreshHandler {
 
     private static final JobInstanceService jobInstanceService;
     private static final JobHistoryService jobHistoryService;
+    private static final ClusterInstanceService clusterInstanceService;
+    private static final HistoryService historyService;
 
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
+        clusterInstanceService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceService.class);
+        historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
     }
 
     /**
@@ -102,6 +109,27 @@ public class JobRefreshHandler {
             jobInstanceService.updateById(jobInstance);
             return true;
         }
+
+        // In a YARN cluster with HA mode enabled,
+        // if the jobManagerHost cannot be connected,
+        // attempt to retrieve the latest address of the jobManagerHost from ZK
+        if (GatewayType.isDeployYarnCluster(jobInfoDetail.getClusterInstance().getType())) {
+            FlinkClusterInfo flinkClusterInfo = clusterInstanceService.checkHeartBeat(
+                    jobInfoDetail.getClusterInstance().getHosts(),
+                    jobInfoDetail.getClusterInstance().getJobManagerHost());
+            if (!flinkClusterInfo.isEffective()) {
+                Boolean success = clusterInstanceService.refreshCluster(
+                        jobInfoDetail.getClusterInstance(), jobInfoDetail.getClusterConfiguration());
+                if (success && Asserts.isNotNull(jobInfoDetail.getHistory())) {
+                    jobInfoDetail
+                            .getHistory()
+                            .setJobManagerAddress(
+                                    jobInfoDetail.getClusterInstance().getJobManagerHost());
+                    historyService.updateById(jobInfoDetail.getHistory());
+                }
+            }
+        }
+
         // Update the value of JobData from the flink api while ignoring the null value to prevent
         // some other configuration from being overwritten
         BeanUtil.copyProperties(
@@ -143,7 +171,7 @@ public class JobRefreshHandler {
         // The task status of stream job which automatically restart after failure: run -> transition -> run ->
         // transition -> run
         // Set to true if the job status which is done has completed
-        // If the job status is transition and the status fails to be updated for 1 minute, set to true and discard the
+        // If the job status is transition and the status fails to be updated for 3 minute, set to true and discard the
         // update
 
         boolean isTransition = false;
@@ -152,7 +180,7 @@ public class JobRefreshHandler {
             Long finishTime = TimeUtil.localDateTimeToLong(jobInstance.getFinishTime());
             long duration = Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
                     .toMinutes();
-            if (finishTime > 0 && duration < 1) {
+            if (finishTime > 0 && duration < 3) {
                 log.debug("Job is transition: {}->{}", jobInstance.getId(), jobInstance.getName());
                 isTransition = true;
             } else if (JobStatus.RECONNECTING.getValue().equals(jobInstance.getStatus())) {
@@ -168,7 +196,7 @@ public class JobRefreshHandler {
                 || (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
                         && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
                                         .toMinutes()
-                                >= 1);
+                                >= 3);
 
         isDone = !isTransition && isDone;
 
