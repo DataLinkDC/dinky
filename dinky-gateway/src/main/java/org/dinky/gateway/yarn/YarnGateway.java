@@ -22,6 +22,7 @@ package org.dinky.gateway.yarn;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.HaModeEnum;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.AbstractGateway;
@@ -35,6 +36,7 @@ import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;
+import org.dinky.gateway.utils.ZkUtils;
 import org.dinky.utils.FlinkJsonUtil;
 import org.dinky.utils.ThreadUtil;
 
@@ -44,6 +46,7 @@ import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
+import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.configuration.SecurityOptions;
 import org.apache.flink.runtime.messages.webmonitor.JobDetails;
 import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
@@ -417,5 +420,26 @@ public abstract class YarnGateway extends AbstractGateway {
 
     public boolean close() {
         return FileUtil.del(tmpConfDir);
+    }
+
+    @Override
+    public String getLatestJobManageHost(String id) {
+        initConfig();
+
+        String haMode = configuration.get(HighAvailabilityOptions.HA_MODE);
+        if (Asserts.isNull(haMode)) {
+            return null;
+        }
+        if (HaModeEnum.ZOOKEEPER.name().equals(haMode.toUpperCase())) {
+            String quorum = configuration.get(HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM);
+            String root = configuration.get(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
+            if (Asserts.isNullString(quorum) || Asserts.isNullString(root)) {
+                return null;
+            }
+
+            String jobManagerHost = ZkUtils.getJobManagerHost(quorum, root, id);
+            return jobManagerHost;
+        }
+        return null;
     }
 }

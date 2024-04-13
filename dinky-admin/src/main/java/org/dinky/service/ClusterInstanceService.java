@@ -20,7 +20,6 @@
 package org.dinky.service;
 
 import org.dinky.cluster.FlinkClusterInfo;
-import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.job.JobConfig;
@@ -145,12 +144,4 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
      * @return {@link Long}
      */
     Long heartbeat();
-
-    /**
-     * refresh clusterInstance instance
-     * @param clusterInstance
-     * @param clusterConfiguration
-     * @return
-     */
-    Boolean refreshCluster(ClusterInstance clusterInstance, ClusterConfigurationDTO clusterConfiguration);
 }

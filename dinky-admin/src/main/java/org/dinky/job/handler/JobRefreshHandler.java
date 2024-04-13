@@ -110,25 +110,7 @@ public class JobRefreshHandler {
             return true;
         }
 
-        // In a YARN cluster with HA mode enabled,
-        // if the jobManagerHost cannot be connected,
-        // attempt to retrieve the latest address of the jobManagerHost from ZK
-        if (GatewayType.isDeployYarnCluster(jobInfoDetail.getClusterInstance().getType())) {
-            FlinkClusterInfo flinkClusterInfo = clusterInstanceService.checkHeartBeat(
-                    jobInfoDetail.getClusterInstance().getHosts(),
-                    jobInfoDetail.getClusterInstance().getJobManagerHost());
-            if (!flinkClusterInfo.isEffective()) {
-                Boolean success = clusterInstanceService.refreshCluster(
-                        jobInfoDetail.getClusterInstance(), jobInfoDetail.getClusterConfiguration());
-                if (success && Asserts.isNotNull(jobInfoDetail.getHistory())) {
-                    jobInfoDetail
-                            .getHistory()
-                            .setJobManagerAddress(
-                                    jobInfoDetail.getClusterInstance().getJobManagerHost());
-                    historyService.updateById(jobInfoDetail.getHistory());
-                }
-            }
-        }
+        checkAndRefreshCluster(jobInfoDetail);
 
         // Update the value of JobData from the flink api while ignoring the null value to prevent
         // some other configuration from being overwritten
@@ -334,6 +316,51 @@ public class JobRefreshHandler {
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
+        }
+    }
+
+    /**
+     * In a YARN cluster with HA mode enabled,
+     * if the jobManagerHost cannot be connected,
+     * attempt to retrieve the latest address of the jobManagerHost from ZK
+     *
+     * @param jobInfoDetail The job info detail.
+     * @return The job status.
+     */
+    private static void checkAndRefreshCluster(JobInfoDetail jobInfoDetail) {
+        if (!GatewayType.isDeployYarnCluster(jobInfoDetail.getClusterInstance().getType())) {
+            return;
+        }
+
+        FlinkClusterInfo flinkClusterInfo = clusterInstanceService.checkHeartBeat(
+                jobInfoDetail.getClusterInstance().getHosts(),
+                jobInfoDetail.getClusterInstance().getJobManagerHost());
+        if (!flinkClusterInfo.isEffective()) {
+            ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
+            ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
+            if (!Asserts.isNull(clusterCfg)) {
+                String appId = jobInfoDetail.getClusterInstance().getName();
+
+                GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
+                gatewayConfig.getClusterConfig().setAppId(appId);
+                gatewayConfig
+                        .getFlinkConfig()
+                        .setJobName(jobInfoDetail.getInstance().getName());
+
+                Gateway gateway = Gateway.build(gatewayConfig);
+                String latestJobManageHost = gateway.getLatestJobManageHost(appId);
+
+                if (Asserts.isNotNullString(latestJobManageHost)
+                        && !latestJobManageHost.equals(clusterInstance.getJobManagerHost())) {
+                    clusterInstance.setHosts(latestJobManageHost);
+                    clusterInstance.setJobManagerHost(latestJobManageHost);
+                    clusterInstanceService.updateById(clusterInstance);
+                    if (Asserts.isNotNull(jobInfoDetail.getHistory())) {
+                        jobInfoDetail.getHistory().setJobManagerAddress(latestJobManageHost);
+                        historyService.updateById(jobInfoDetail.getHistory());
+                    }
+                }
+            }
         }
     }
 }

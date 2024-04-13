@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.gateway.utils;
 
 import org.dinky.assertion.Asserts;
 
