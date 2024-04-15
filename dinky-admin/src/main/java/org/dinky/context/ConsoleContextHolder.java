@@ -88,6 +88,15 @@ public class ConsoleContextHolder {
         }
     }
 
+    public boolean clearProcessLog(String processName) {
+        // find process and delete
+        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
+        if (FileUtil.exist(filePath)) {
+            return FileUtil.del(filePath);
+        }
+        return false;
+    }
+
     /**
      * Add log messages to specific processes and process steps.
      *

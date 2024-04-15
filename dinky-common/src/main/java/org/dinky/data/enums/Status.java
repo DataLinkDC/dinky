@@ -441,6 +441,8 @@ public enum Status {
     PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
     PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
     PROCESS_REGISTER_EXITS(196, "process.register.exits"),
+    PROCESS_CLEAR_LOG_SUCCESS(198, "process.clear.log.success"),
+    PROCESS_CLEAR_LOG_FAILED(199, "process.clear.log.failed"),
     ;
     private final int code;
     private final String key;
