@@ -53,7 +53,7 @@ export const isCanPushDolphin = (data: TaskDataType | undefined) => {
     : false;
 };
 
-export const isSql = (dialect: string) => {
+export const isSql = (dialect: string, includedFlinkSQL: boolean = false) => {
   if (!dialect) {
     return false;
   }
@@ -70,6 +70,8 @@ export const isSql = (dialect: string) => {
     case DIALECT.STARROCKS:
     case DIALECT.PRESTO:
       return true;
+    case DIALECT.FLINK_SQL:
+      return includedFlinkSQL;
     default:
       return false;
   }

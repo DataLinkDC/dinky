@@ -38,6 +38,7 @@ import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
 import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
+import {isFlinkJob} from "@/pages/DataStudio/LeftContainer/Project/function";
 
 type Data = {
   [c: string]: any;
@@ -230,7 +231,7 @@ const Result = (props: any) => {
     <div style={{ width: '100%' }}>
       <div style={{ direction: 'rtl' }}>
         {renderDownloadButton()}
-        {current ? isSql(current.dialect) ? <></> : renderFlinkSQLContent() : undefined}
+        {(current && (isSql(current?.dialect, true))) && renderFlinkSQLContent() }
       </div>
       {data.columns ? (
         <Table
