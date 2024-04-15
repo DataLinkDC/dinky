@@ -135,12 +135,12 @@ const config = {
     themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
-            announcementBar: {
-                id: 'announcementBar-2', // Increment on change
-                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="https://www.dinky.org.cn">www.dinky.org.cn</a>`,
-                backgroundColor: "#BBDFFF",
-                isCloseable: false,
-            },
+            // announcementBar: {
+            //     id: 'announcementBar-2', // Increment on change
+            //     content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="https://www.dinky.org.cn">www.dinky.org.cn</a>`,
+            //     backgroundColor: "#BBDFFF",
+            //     isCloseable: false,
+            // },
             hideOnScroll: false, // 滚动时是否隐藏 | Whether to hide the sidebar on scroll
             docs: {
                 sidebar: {
@@ -270,6 +270,7 @@ const config = {
             },
         }),
     plugins: [
+        './src/plugin/wwads-plugin.ts',
         'docusaurus-plugin-less',
         [
             '@docusaurus/plugin-content-docs',
@@ -308,11 +309,12 @@ const config = {
                 steps: 2, // 在 min 和 max 之间最多生成的图片数量（包含两端点）
                 disableInDev: false,
             },
-        ],
+        ]
     ],
     scripts: [
         // 统计 pv
-        {src: 'https://hm.baidu.com/hm.js?7f2b5e6f354b8ae1cdec43ba108936f7',  async: true}
+        {src: 'https://hm.baidu.com/hm.js?7f2b5e6f354b8ae1cdec43ba108936f7', async: true},
+        {src: 'https://cdn.wwads.cn/js/makemoney.js', async: true},
     ]
 };
 
