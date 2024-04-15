@@ -860,6 +860,7 @@ export default {
   'rc.ds.search': 'Search Name/Note',
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
+  'rc.ds.detail.tag.console.clear.log': 'Clear Log...',
   'rc.ds.create': 'Create DataSource',
   'rc.ds.decimalDigits': 'Decimal Range',
   'rc.ds.default': 'Default Value',

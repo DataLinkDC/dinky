@@ -831,6 +831,7 @@ export default {
   'rc.ds.delete': '删除数据源',
   'rc.ds.deleteConfirm': '确定删除该数据源吗？',
   'rc.ds.detail.tag.console': '控制台',
+  'rc.ds.detail.tag.console.clear.log': '清除日志...',
   'rc.ds.detail.tag.desc': '描述',
   'rc.ds.detail.tag.gensql': '生成 SQL',
   'rc.ds.detail.tag.query': '查询',

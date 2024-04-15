@@ -186,6 +186,7 @@ export enum API_CONSTANTS {
   // ------------------------------------ system process  ------------------------------------
   PROCESS_LIST = '/api/process/listAllProcess',
   PROCESS_LOG = '/api/process/getProcess',
+  PROCESS_LOG_CLEAR = '/api/process/clearProcessLog',
 
   /** ------------------------------------------------ Devops center  ------------------------------------ */
   // ------------------------------------ devops job  ------------------------------------
