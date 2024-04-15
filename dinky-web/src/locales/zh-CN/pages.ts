@@ -940,6 +940,8 @@ export default {
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
   'rc.resource.copy': '复制为: {fillValue}',
+  'rc.resource.enable': '未启用资源管理功能',
+  'rc.resource.enable.tips': '请前往 [配置中心 -> 全局配置 -> Resource 配置] 中启用资源管理功能!!!',
 
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',

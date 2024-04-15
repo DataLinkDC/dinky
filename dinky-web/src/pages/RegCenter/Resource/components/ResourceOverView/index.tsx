@@ -18,35 +18,36 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
-import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
-import {
-  RIGHT_CONTEXT_FILE_MENU,
-  RIGHT_CONTEXT_FOLDER_MENU
-} from '@/pages/RegCenter/Resource/components/constants';
+import {AuthorizedObject, useAccess} from '@/hooks/useAccess';
+import {RIGHT_CONTEXT_FILE_MENU, RIGHT_CONTEXT_FOLDER_MENU} from '@/pages/RegCenter/Resource/components/constants';
 import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
 import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
 import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
-import {
-  handleGetOption,
-  handleOption,
-  handleRemoveById,
-  queryDataByParams
-} from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { ResourceInfo } from '@/types/RegCenter/data';
-import { InitResourceState } from '@/types/RegCenter/init.d';
-import { ResourceState } from '@/types/RegCenter/state.d';
-import { unSupportView } from '@/utils/function';
-import { l } from '@/utils/intl';
-import { SplitPane } from '@andrewray/react-multi-split-pane';
-import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
-import { ProCard } from '@ant-design/pro-components';
-import { useAsyncEffect } from 'ahooks';
-import { MenuInfo } from 'rc-menu/es/interface';
-import React, { useCallback, useRef, useState } from 'react';
+import {handleGetOption, handleOption, handleRemoveById, queryDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {ResourceInfo} from '@/types/RegCenter/data';
+import {InitResourceState} from '@/types/RegCenter/init.d';
+import {ResourceState} from '@/types/RegCenter/state.d';
+import {unSupportView} from '@/utils/function';
+import {l} from '@/utils/intl';
+import {SplitPane} from '@andrewray/react-multi-split-pane';
+import {Pane} from '@andrewray/react-multi-split-pane/dist/lib/Pane';
+import {ProCard} from '@ant-design/pro-components';
+import {useAsyncEffect} from 'ahooks';
+import {MenuInfo} from 'rc-menu/es/interface';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {CONFIG_MODEL_ASYNC, SysConfigStateType} from "@/pages/SettingCenter/GlobalSetting/model";
+import {connect} from "umi";
+import {SettingConfigKeyEnum} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/constants";
+import {Button, Result} from "antd";
+import {WarningOutlined} from "@ant-design/icons";
+import {history} from "@umijs/max";
 
-const ResourceOverView: React.FC = () => {
+const ResourceOverView: React.FC<connect> = (props) => {
+
+  const {dispatch, enableResource} = props;
+
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
 
   const [editModal, setEditModal] = useState<string>('');
@@ -60,13 +61,23 @@ const ResourceOverView: React.FC = () => {
 
   const refreshTree = async () => {
     await queryDataByParams<ResourceInfo[]>(API_CONSTANTS.RESOURCE_SHOW_TREE).then((res) =>
-      setResourceState((prevState) => ({ ...prevState, treeData: res ?? [] }))
+      setResourceState((prevState) => ({...prevState, treeData: res ?? []}))
     );
   };
 
-  useAsyncEffect(async () => {
-    await refreshTree();
+  useEffect(() => {
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryResourceConfig,
+      payload: SettingConfigKeyEnum.RESOURCE.toLowerCase()
+    })
   }, []);
+
+  useAsyncEffect(async () => {
+    // if enableResource is true, then refresh the tree, otherwise do nothing
+    if (enableResource) {
+      await refreshTree();
+    }
+  }, [enableResource]);
 
   /**
    * query content by id
@@ -75,7 +86,7 @@ const ResourceOverView: React.FC = () => {
   const queryContent: (id: number) => Promise<void> = useCallback(async (id: number) => {
     await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
       id
-    }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
+    }).then((res) => setResourceState((prevState) => ({...prevState, content: res ?? ''})));
   }, []);
 
   /**
@@ -85,14 +96,14 @@ const ResourceOverView: React.FC = () => {
    */
   const handleNodeClick = async (info: any): Promise<void> => {
     const {
-      node: { id, isLeaf, key, name },
+      node: {id, isLeaf, key, name},
       node
     } = info;
-    setResourceState((prevState) => ({ ...prevState, selectedKeys: [key], clickedNode: node }));
+    setResourceState((prevState) => ({...prevState, selectedKeys: [key], clickedNode: node}));
     if (isLeaf && !unSupportView(name)) {
       await queryContent(id);
     } else {
-      setResourceState((prevState) => ({ ...prevState, content: '' }));
+      setResourceState((prevState) => ({...prevState, content: ''}));
     }
   };
 
@@ -102,11 +113,11 @@ const ResourceOverView: React.FC = () => {
   const handleCreateFolder = () => {
     if (resourceState.rightClickedNode) {
       setEditModal('createFolder');
-      const { id } = resourceState.rightClickedNode;
+      const {id} = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
         editOpen: true,
-        value: { id, fileName: '', description: '' },
+        value: {id, fileName: '', description: ''},
         contextMenuOpen: false
       }));
     }
@@ -115,7 +126,7 @@ const ResourceOverView: React.FC = () => {
     if (resourceState.rightClickedNode) {
       uploadValue.pid = resourceState.rightClickedNode.id;
       // todo: upload
-      setResourceState((prevState) => ({ ...prevState, uploadOpen: true, contextMenuOpen: false }));
+      setResourceState((prevState) => ({...prevState, uploadOpen: true, contextMenuOpen: false}));
     }
   };
 
@@ -124,7 +135,7 @@ const ResourceOverView: React.FC = () => {
    */
   const handleDelete = async () => {
     if (resourceState.rightClickedNode) {
-      setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }));
+      setResourceState((prevState) => ({...prevState, contextMenuOpen: false}));
       await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, resourceState.rightClickedNode.id);
       await refreshTree();
     }
@@ -136,11 +147,11 @@ const ResourceOverView: React.FC = () => {
   const handleRename = () => {
     if (resourceState.rightClickedNode) {
       setEditModal('rename');
-      const { id, name, desc } = resourceState.rightClickedNode;
+      const {id, name, desc} = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
         editOpen: true,
-        value: { id, fileName: name, description: desc },
+        value: {id, fileName: name, description: desc},
         contextMenuOpen: false
       }));
     }
@@ -171,7 +182,7 @@ const ResourceOverView: React.FC = () => {
    */
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
-    const { node, event } = info;
+    const {node, event} = info;
 
     // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 75 (需要根据具体的右键菜单数量合理设置)
     if (event.clientY + 150 > window.innerHeight) {
@@ -202,7 +213,7 @@ const ResourceOverView: React.FC = () => {
    * the rename cancel
    */
   const handleModalCancel = async () => {
-    setResourceState((prevState) => ({ ...prevState, editOpen: false }));
+    setResourceState((prevState) => ({...prevState, editOpen: false}));
     await refreshTree();
   };
 
@@ -210,19 +221,19 @@ const ResourceOverView: React.FC = () => {
    * the rename ok
    */
   const handleModalSubmit = async (value: Partial<ResourceInfo>) => {
-    const { id: pid } = resourceState.rightClickedNode;
+    const {id: pid} = resourceState.rightClickedNode;
     if (editModal === 'createFolder') {
       await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, l('right.menu.createFolder'), {
         ...value,
         pid
       });
-      setResourceState((prevState) => ({ ...prevState, editOpen: false }));
+      setResourceState((prevState) => ({...prevState, editOpen: false}));
     } else if (editModal === 'rename') {
-      await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid });
+      await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), {...value, pid});
     }
   };
   const handleUploadCancel = async () => {
-    setResourceState((prevState) => ({ ...prevState, uploadOpen: false }));
+    setResourceState((prevState) => ({...prevState, uploadOpen: false}));
     await refreshTree();
   };
 
@@ -231,7 +242,7 @@ const ResourceOverView: React.FC = () => {
    * @param value
    */
   const handleContentChange = (value: any) => {
-    setResourceState((prevState) => ({ ...prevState, content: value }));
+    setResourceState((prevState) => ({...prevState, content: value}));
     // todo: save content
   };
 
@@ -240,11 +251,11 @@ const ResourceOverView: React.FC = () => {
   const renderRightMenu = () => {
     if (!resourceState.rightClickedNode.isLeaf) {
       return RIGHT_CONTEXT_FOLDER_MENU.filter(
-        (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+        (menu) => !menu.path || !!AuthorizedObject({path: menu.path, children: menu, access})
       );
     }
     return RIGHT_CONTEXT_FILE_MENU.filter(
-      (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+      (menu) => !menu.path || !!AuthorizedObject({path: menu.path, children: menu, access})
     );
   };
 
@@ -253,87 +264,112 @@ const ResourceOverView: React.FC = () => {
    */
   return (
     <>
-      <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
-        <SplitPane
-          split={'vertical'}
-          defaultSizes={[200, 500]}
-          minSize={200}
-          className={'split-pane'}
-        >
-          <Pane
-            className={'split-pane'}
-            forwardRef={refObject}
-            minSize={200}
-            size={200}
-            split={'horizontal'}
-          >
-            <ProCard
-              hoverable
-              boxShadow
-              bodyStyle={{ height: parent.innerHeight - 80 }}
-              colSpan={'18%'}
-            >
-              <FileTree
-                selectedKeys={resourceState.selectedKeys}
-                treeData={resourceState.treeData}
-                onRightClick={handleRightClick}
-                onNodeClick={(info: any) => handleNodeClick(info)}
-                onSync={handleSync}
-              />
-              <RightContextMenu
-                contextMenuPosition={resourceState.contextMenuPosition}
-                open={resourceState.contextMenuOpen}
-                openChange={() =>
-                  setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
-                }
-                items={renderRightMenu()}
-                onClick={handleMenuClick}
-              />
-            </ProCard>
-          </Pane>
+      {
+        !enableResource ?
+          <ProCard ghost size={'small'} bodyStyle={{height: parent.innerHeight - 80}}>
+            <Result
+              status="warning"
+              style={{alignItems: 'center', justifyContent: 'center',}}
+              icon={<WarningOutlined/>}
+              title={l('rc.resource.enable')}
+              subTitle={l('rc.resource.enable.tips')}
+              extra={
+                <Button onClick={() => {
+                  history.push('/settings/globalsetting')
+                }} type="primary" key="globalsetting-to-jump">
+                  {l('menu.settings')}
+                </Button>
+              }
+            />
+          </ProCard>
+          :
+          <>
+            <ProCard ghost size={'small'} bodyStyle={{height: parent.innerHeight - 80}}>
+              <SplitPane
+                split={'vertical'}
+                defaultSizes={[200, 500]}
+                minSize={200}
+                className={'split-pane'}
+              >
+                <Pane
+                  className={'split-pane'}
+                  forwardRef={refObject}
+                  minSize={200}
+                  size={200}
+                  split={'horizontal'}
+                >
+                  <ProCard
+                    hoverable
+                    boxShadow
+                    bodyStyle={{height: parent.innerHeight - 80}}
+                    colSpan={'18%'}
+                  >
+                    <FileTree
+                      selectedKeys={resourceState.selectedKeys}
+                      treeData={resourceState.treeData}
+                      onRightClick={handleRightClick}
+                      onNodeClick={(info: any) => handleNodeClick(info)}
+                      onSync={handleSync}
+                    />
+                    <RightContextMenu
+                      contextMenuPosition={resourceState.contextMenuPosition}
+                      open={resourceState.contextMenuOpen}
+                      openChange={() =>
+                        setResourceState((prevState) => ({...prevState, contextMenuOpen: false}))
+                      }
+                      items={renderRightMenu()}
+                      onClick={handleMenuClick}
+                    />
+                  </ProCard>
+                </Pane>
 
-          <Pane
-            className={'split-pane'}
-            forwardRef={refObject}
-            minSize={100}
-            size={100}
-            split={'horizontal'}
-          >
-            <ProCard hoverable bodyStyle={{ height: parent.innerHeight }}>
-              <FileShow
-                onChange={handleContentChange}
-                code={resourceState.content}
-                item={resourceState.clickedNode}
-              />
+                <Pane
+                  className={'split-pane'}
+                  forwardRef={refObject}
+                  minSize={100}
+                  size={100}
+                  split={'horizontal'}
+                >
+                  <ProCard hoverable bodyStyle={{height: parent.innerHeight}}>
+                    <FileShow
+                      onChange={handleContentChange}
+                      code={resourceState.content}
+                      item={resourceState.clickedNode}
+                    />
+                  </ProCard>
+                </Pane>
+              </SplitPane>
             </ProCard>
-          </Pane>
-        </SplitPane>
-      </ProCard>
-      {resourceState.editOpen && (
-        <ResourceModal
-          title={
-            editModal === 'createFolder'
-              ? l('right.menu.createFolder')
-              : editModal === 'rename'
-              ? l('right.menu.rename')
-              : ''
-          }
-          formValues={resourceState.value}
-          onOk={handleModalSubmit}
-          onClose={handleModalCancel}
-          visible={resourceState.editOpen}
-        />
-      )}
-      {resourceState.uploadOpen && (
-        <ResourcesUploadModal
-          onUpload={uploadValue}
-          visible={resourceState.uploadOpen}
-          onOk={handleUploadCancel}
-          onClose={handleUploadCancel}
-        />
-      )}
+            {resourceState.editOpen && (
+              <ResourceModal
+                title={
+                  editModal === 'createFolder'
+                    ? l('right.menu.createFolder')
+                    : editModal === 'rename'
+                      ? l('right.menu.rename')
+                      : ''
+                }
+                formValues={resourceState.value}
+                onOk={handleModalSubmit}
+                onClose={handleModalCancel}
+                visible={resourceState.editOpen}
+              />
+            )}
+            {resourceState.uploadOpen && (
+              <ResourcesUploadModal
+                onUpload={uploadValue}
+                visible={resourceState.uploadOpen}
+                onOk={handleUploadCancel}
+                onClose={handleUploadCancel}
+              />
+            )}
+          </>
+      }
     </>
   );
 };
 
-export default ResourceOverView;
+export default connect(
+  ({SysConfig}: { SysConfig: SysConfigStateType }) => ({
+    enableResource: SysConfig.enableResource
+  }))(ResourceOverView);
