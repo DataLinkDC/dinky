@@ -982,7 +982,8 @@ export default {
   'rc.resource.sync': 'Sync remote files',
   'rc.resource.copy': 'Copy as: {fillValue}',
   'rc.resource.enable': 'Resource management function is not enabled',
-  'rc.resource.enable.tips': 'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
+  'rc.resource.enable.tips':
+    'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
 
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',

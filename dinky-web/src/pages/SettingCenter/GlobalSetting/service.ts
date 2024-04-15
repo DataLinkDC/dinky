@@ -24,7 +24,6 @@ export async function queryDsConfig(keyword: string) {
   return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
 }
 
-
 export async function queryResourceConfig(keyword: string) {
   return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
 }

@@ -17,7 +17,7 @@
  *
  */
 
-import {queryDsConfig, queryResourceConfig} from '@/pages/SettingCenter/GlobalSetting/service';
+import { queryDsConfig, queryResourceConfig } from '@/pages/SettingCenter/GlobalSetting/service';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
@@ -82,12 +82,12 @@ const ConfigModel: ConfigModelType = {
           (item: BaseConfigProperties) =>
             item.key === 'sys.resource.settings.base.enable' && item.value === true
         );
-       yield put({
+        yield put({
           type: 'updateEnableResource',
           payload: enableResource
-       })
-     }
-   }
+        });
+      }
+    }
   },
 
   reducers: {
