@@ -19,7 +19,6 @@
 
 package org.dinky.context;
 
-import java.util.Optional;
 import org.dinky.aop.ProcessAspect;
 import org.dinky.data.enums.ProcessStatus;
 import org.dinky.data.enums.ProcessStepType;
@@ -93,11 +92,10 @@ public class ConsoleContextHolder {
         // find process and delete
         String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
         if (FileUtil.exist(filePath)) {
-           return FileUtil.del(filePath);
+            return FileUtil.del(filePath);
         }
         return false;
     }
-
 
     /**
      * Add log messages to specific processes and process steps.

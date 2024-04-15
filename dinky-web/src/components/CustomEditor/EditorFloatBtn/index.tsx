@@ -102,13 +102,13 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
             )}
           </>
         )}
-        {
-          clearContent && <CircleBtn
-            icon={<ClearOutlined  twoToneColor={'red'} />}
+        {clearContent && (
+          <CircleBtn
+            icon={<ClearOutlined twoToneColor={'red'} />}
             onClick={clearContent}
             title={l('button.clear')}
           />
-        }
+        )}
         <CircleBtn
           icon={<VerticalAlignTopOutlined />}
           onClick={handleBackTop}

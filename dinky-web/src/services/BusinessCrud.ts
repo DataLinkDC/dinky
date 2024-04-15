@@ -25,7 +25,8 @@ import {
   postAll,
   putData,
   putDataJson,
-  removeById, removeData,
+  removeById,
+  removeData,
   updateDataByParams
 } from '@/services/api';
 import { METHOD_CONSTANTS, RESPONSE_CODE } from '@/services/constants';
@@ -137,7 +138,12 @@ export const handleRemoveById = async (url: string, id: number, afterCallBack?: 
  * @param title
  * @param afterCallBack
  */
-export const handleDeleteOperation = async (url: string, params: any, title: string, afterCallBack?: () => void) => {
+export const handleDeleteOperation = async (
+  url: string,
+  params: any,
+  title: string,
+  afterCallBack?: () => void
+) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const { code, msg } = await removeData(url, { ...params });
@@ -153,7 +159,6 @@ export const handleDeleteOperation = async (url: string, params: any, title: str
     return false;
   }
 };
-
 
 /**
  * update enabled status
