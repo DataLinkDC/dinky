@@ -17,13 +17,13 @@
  *
  */
 
+import { redirectToLogin } from '@/pages/Other/Login/function';
 import { ENABLE_MODEL_TIP } from '@/services/constants';
 import { getValueFromLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ErrorNotification, WarningNotification } from '@/utils/messages';
 import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
-import {redirectToLogin} from "@/pages/Other/Login/function";
 
 // Error handling scheme: Error type
 enum ErrorCode {
@@ -95,10 +95,10 @@ export const errorConfig: RequestConfig = {
           handleBizError(errorInfo);
         }
       } else if (error.response) {
-       //The request was successfully sent and the server also responded with a status code, but the status code exceeded the range of 2xx
-      //Authentication error, redirect to login page
+        //The request was successfully sent and the server also responded with a status code, but the status code exceeded the range of 2xx
+        //Authentication error, redirect to login page
         if (error.response.status === 401) {
-          redirectToLogin()
+          redirectToLogin();
         } else {
           if (getValueFromLocalStorage(ENABLE_MODEL_TIP) == 'true') {
             ErrorNotification(error.message, error.code);
@@ -126,7 +126,7 @@ export const errorConfig: RequestConfig = {
   // Response interceptor
   responseInterceptors: [
     (response) => {
-     //Intercept response data for personalized processing
+      //Intercept response data for personalized processing
       //No longer requires asynchronous processing to read the content of the return body, it can be directly read from data, and some fields can be found in config
       const { data = {} as any, config } = response;
       return response;

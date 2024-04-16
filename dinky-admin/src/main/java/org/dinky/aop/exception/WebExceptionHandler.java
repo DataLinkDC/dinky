@@ -102,7 +102,8 @@ public class WebExceptionHandler {
     @ResponseBody
     public Result<String> paramExceptionHandler(MethodArgumentNotValidException e) {
         BindingResult exceptions = e.getBindingResult();
-        // Check if there is any error message in the exception. If there is, use the message in the exception. Otherwise, use the default message
+        // Check if there is any error message in the exception. If there is, use the message in the exception.
+        // Otherwise, use the default message
         if (exceptions.hasErrors()) {
             List<ObjectError> errors = exceptions.getAllErrors();
             if (!errors.isEmpty()) {

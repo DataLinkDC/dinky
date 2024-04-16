@@ -23,10 +23,9 @@ import {
   setKeyToLocalStorage,
   setLocalThemeToStorage
 } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { WarningMessageAsync } from '@/utils/messages';
 import { history } from '@@/core/history';
-import {WarningMessage, WarningMessageAsync} from "@/utils/messages";
-import {Modal} from "antd";
-import {l} from "@/utils/intl";
 
 /** This method will redirect to the location of the redirect parameter */
 export const gotoRedirectUrl = () => {

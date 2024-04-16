@@ -17,7 +17,7 @@
  *
  */
 
-import Pop from '@/components/Animation/Pop';
+import FadeIn from '@/components/Animation/FadeIn';
 import { LogSvg } from '@/components/Icons/CodeLanguageIcon';
 import { loginOut } from '@/components/RightContent/AvatarDropdown';
 import PasswordForm from '@/pages/AuthCenter/User/components/PasswordModal/PasswordForm';
@@ -35,7 +35,6 @@ import { SecurityScanTwoTone } from '@ant-design/icons';
 import { PageContainer, PageLoading, ProCard } from '@ant-design/pro-components';
 import { Descriptions, Divider, Form, Tag } from 'antd';
 import { useEffect, useState } from 'react';
-import FadeIn from "@/components/Animation/FadeIn";
 
 const PersonCenter = () => {
   const [form] = Form.useForm();
