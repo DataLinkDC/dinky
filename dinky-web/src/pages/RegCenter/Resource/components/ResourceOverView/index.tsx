@@ -233,10 +233,9 @@ const ResourceOverView: React.FC<connect> = (props) => {
       await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, l('right.menu.createFolder'), {
         ...value,
         pid
-      });
-      setResourceState((prevState) => ({ ...prevState, editOpen: false }));
+      }, ()=> handleModalCancel());
     } else if (editModal === 'rename') {
-      await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid });
+      await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid },()=> handleModalCancel());
     }
   };
   const handleUploadCancel = async () => {
