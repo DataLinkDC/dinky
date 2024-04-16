@@ -19,12 +19,15 @@
 
 package org.dinky.scheduler.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.TaskDefinition;
 import org.dinky.scheduler.model.TaskDefinitionLog;
+import org.dinky.scheduler.model.TaskGroup;
 import org.dinky.scheduler.model.TaskMainInfo;
+import org.dinky.scheduler.result.DsPageInfo;
 import org.dinky.scheduler.result.PageInfo;
 import org.dinky.scheduler.result.Result;
 import org.dinky.scheduler.utils.MyJSONUtil;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -262,5 +266,33 @@ public class TaskClient {
             throw new SchedulerException("Failed to generate task definition number");
         }
         return codes.get(0);
+    }
+
+    /**
+     * 通过 projectCode 获得 DolphinScheduler 任务组列表
+     * @param projectCode
+     * @return
+     */
+    public List<TaskGroup> getTaskGroupList(Long projectCode) {
+        String url = SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
+                + "/task-group/query-list-by-projectCode";
+        Map<String, Object> params = new HashMap<>();
+        params.put("projectCode", projectCode);
+        params.put("pageNo", 1);
+        params.put("pageSize", 100);
+        String content = HttpRequest.get(url)
+                .header(
+                        Constants.TOKEN,
+                        SystemConfiguration.getInstances()
+                                .getDolphinschedulerToken()
+                                .getValue()
+        )
+                .form(params)
+                .timeout(5000)
+                .execute()
+                .body();
+        System.out.println(content);
+        List<JSONObject> jsonObjects = MyJSONUtil.toBean(content, DsPageInfo.class).getData().getTotalList();
+        return jsonObjects.stream().map(jsonObject->MyJSONUtil.toBean(jsonObject, TaskGroup.class)).collect(Collectors.toList());
     }
 }

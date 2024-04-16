@@ -21,6 +21,7 @@ package org.dinky.service;
 
 import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.scheduler.model.TaskDefinition;
+import org.dinky.scheduler.model.TaskGroup;
 import org.dinky.scheduler.model.TaskMainInfo;
 
 import java.util.List;
@@ -61,4 +62,10 @@ public interface SchedulerService {
      * @return              the task definition information
      */
     TaskDefinition getTaskDefinitionInfo(long dinkyTaskId);
+    /**
+     * Get the task groups from DolphinScheduler
+     * @param projectCode
+     * @return
+     */
+    List<TaskGroup> getTaskGroupsFromDolphinScheduler(long projectCode);
 }
