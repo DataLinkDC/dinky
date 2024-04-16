@@ -38,6 +38,7 @@ import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.FlinkJsonUtil;
 import org.dinky.utils.ThreadUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.ConfigConstants;
@@ -46,16 +47,13 @@ import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.configuration.SecurityOptions;
-import org.apache.flink.runtime.highavailability.zookeeper.CuratorFrameworkWithUnhandledErrorListener;
 import org.apache.flink.runtime.jobmanager.HighAvailabilityMode;
 import org.apache.flink.runtime.messages.webmonitor.JobDetails;
 import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
 import org.apache.flink.runtime.rest.messages.JobsOverviewHeaders;
-import org.apache.flink.runtime.rpc.FatalErrorHandler;
 import org.apache.flink.runtime.security.SecurityConfiguration;
 import org.apache.flink.runtime.security.SecurityUtils;
 import org.apache.flink.runtime.util.ZooKeeperUtils;
-import org.apache.flink.shaded.curator5.org.apache.curator.framework.CuratorFramework;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterClientFactory;
 import org.apache.flink.yarn.YarnClusterDescriptor;
@@ -72,6 +70,7 @@ import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.zookeeper.ZooKeeper;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -435,38 +434,45 @@ public abstract class YarnGateway extends AbstractGateway {
 
         if (HighAvailabilityMode.ZOOKEEPER == highAvailabilityMode) {
             configuration.setString(HighAvailabilityOptions.HA_CLUSTER_ID, appId);
-            CuratorFrameworkWithUnhandledErrorListener curatorFrameworkWrap = null;
+            String zkQuorum = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM);
+
+            if (zkQuorum == null || StringUtils.isBlank(zkQuorum)) {
+                throw new RuntimeException("No valid ZooKeeper quorum has been specified. "
+                        + "You can specify the quorum via the configuration key '"
+                        + HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM.key()
+                        + "'.");
+            }
+            int sessionTimeout = configuration.getInteger(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT);
+            String root = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
+            String namespace = configuration.getValue(HighAvailabilityOptions.HA_CLUSTER_ID);
+
+            ZooKeeper zooKeeper = null;
             try {
-                curatorFrameworkWrap = ZooKeeperUtils.startCuratorFramework(configuration, new FatalErrorHandler() {
-                    @Override
-                    public void onFatalError(Throwable exception) {
-                        exception.printStackTrace();
-                    }
-                });
-                CuratorFramework curatorFramework = curatorFrameworkWrap.asCuratorFramework();
-                String leaderPathForRestServer = ZooKeeperUtils.getLeaderPathForRestServer();
-                String connectionInformationPath =
-                        ZooKeeperUtils.generateConnectionInformationPath(leaderPathForRestServer);
-                final byte[] data = curatorFramework.getData().forPath(connectionInformationPath);
+                zooKeeper = new ZooKeeper(zkQuorum, sessionTimeout, watchedEvent -> {});
+                String path = ZooKeeperUtils.generateZookeeperPath(
+                        root, namespace, "leader", "rest_server", "connection_info");
+                byte[] data = zooKeeper.getData(path, false, null);
                 if (data != null && data.length > 0) {
                     ByteArrayInputStream bais = new ByteArrayInputStream(data);
                     ObjectInputStream ois = new ObjectInputStream(bais);
 
                     final String leaderAddress = ois.readUTF();
-                    if (Asserts.isNotNull(leaderAddress)) {
+                    if (Asserts.isNotNullString(leaderAddress)) {
                         String hosts = leaderAddress.substring(7);
                         if (!oldJobManagerHost.equals(hosts)) {
                             return hosts;
-                        } else {
-                            return null;
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                if (Asserts.isNotNull(curatorFrameworkWrap)) {
-                    curatorFrameworkWrap.close();
+                if (Asserts.isNotNull(zooKeeper)) {
+                    try {
+                        zooKeeper.close();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
