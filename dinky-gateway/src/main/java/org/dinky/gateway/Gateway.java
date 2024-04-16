@@ -91,5 +91,5 @@ public interface Gateway {
 
     GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder);
 
-    String getLatestJobManageHost(String id);
+    String getLatestJobManageHost(String appId, String oldJobManagerHost);
 }

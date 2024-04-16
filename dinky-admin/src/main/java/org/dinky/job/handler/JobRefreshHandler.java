@@ -348,10 +348,9 @@ public class JobRefreshHandler {
                         .setJobName(jobInfoDetail.getInstance().getName());
 
                 Gateway gateway = Gateway.build(gatewayConfig);
-                String latestJobManageHost = gateway.getLatestJobManageHost(appId);
+                String latestJobManageHost = gateway.getLatestJobManageHost(appId, clusterInstance.getJobManagerHost());
 
-                if (Asserts.isNotNullString(latestJobManageHost)
-                        && !latestJobManageHost.equals(clusterInstance.getJobManagerHost())) {
+                if (Asserts.isNotNull(latestJobManageHost)) {
                     clusterInstance.setHosts(latestJobManageHost);
                     clusterInstance.setJobManagerHost(latestJobManageHost);
                     clusterInstanceService.updateById(clusterInstance);

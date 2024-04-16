@@ -22,7 +22,6 @@ package org.dinky.gateway.yarn;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
-import org.dinky.data.enums.HaModeEnum;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.AbstractGateway;
@@ -36,7 +35,6 @@ import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;
-import org.dinky.gateway.utils.ZkUtils;
 import org.dinky.utils.FlinkJsonUtil;
 import org.dinky.utils.ThreadUtil;
 
@@ -48,11 +46,16 @@ import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.configuration.SecurityOptions;
+import org.apache.flink.runtime.highavailability.zookeeper.CuratorFrameworkWithUnhandledErrorListener;
+import org.apache.flink.runtime.jobmanager.HighAvailabilityMode;
 import org.apache.flink.runtime.messages.webmonitor.JobDetails;
 import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
 import org.apache.flink.runtime.rest.messages.JobsOverviewHeaders;
+import org.apache.flink.runtime.rpc.FatalErrorHandler;
 import org.apache.flink.runtime.security.SecurityConfiguration;
 import org.apache.flink.runtime.security.SecurityUtils;
+import org.apache.flink.runtime.util.ZooKeeperUtils;
+import org.apache.flink.shaded.curator5.org.apache.curator.framework.CuratorFramework;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterClientFactory;
 import org.apache.flink.yarn.YarnClusterDescriptor;
@@ -70,8 +73,10 @@ import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -423,22 +428,47 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     @Override
-    public String getLatestJobManageHost(String id) {
+    public String getLatestJobManageHost(String appId, String oldJobManagerHost) {
         initConfig();
 
-        String haMode = configuration.get(HighAvailabilityOptions.HA_MODE);
-        if (Asserts.isNull(haMode)) {
-            return null;
-        }
-        if (HaModeEnum.ZOOKEEPER.name().equals(haMode.toUpperCase())) {
-            String quorum = configuration.get(HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM);
-            String root = configuration.get(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
-            if (Asserts.isNullString(quorum) || Asserts.isNullString(root)) {
-                return null;
-            }
+        HighAvailabilityMode highAvailabilityMode = HighAvailabilityMode.fromConfig(configuration);
 
-            String jobManagerHost = ZkUtils.getJobManagerHost(quorum, root, id);
-            return jobManagerHost;
+        if (HighAvailabilityMode.ZOOKEEPER == highAvailabilityMode) {
+            configuration.setString(HighAvailabilityOptions.HA_CLUSTER_ID, appId);
+            CuratorFrameworkWithUnhandledErrorListener curatorFrameworkWrap = null;
+            try {
+                curatorFrameworkWrap = ZooKeeperUtils.startCuratorFramework(configuration, new FatalErrorHandler() {
+                    @Override
+                    public void onFatalError(Throwable exception) {
+                        exception.printStackTrace();
+                    }
+                });
+                CuratorFramework curatorFramework = curatorFrameworkWrap.asCuratorFramework();
+                String leaderPathForRestServer = ZooKeeperUtils.getLeaderPathForRestServer();
+                String connectionInformationPath =
+                        ZooKeeperUtils.generateConnectionInformationPath(leaderPathForRestServer);
+                final byte[] data = curatorFramework.getData().forPath(connectionInformationPath);
+                if (data != null && data.length > 0) {
+                    ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                    ObjectInputStream ois = new ObjectInputStream(bais);
+
+                    final String leaderAddress = ois.readUTF();
+                    if (Asserts.isNotNull(leaderAddress)) {
+                        String hosts = leaderAddress.substring(7);
+                        if (!oldJobManagerHost.equals(hosts)) {
+                            return hosts;
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (Asserts.isNotNull(curatorFrameworkWrap)) {
+                    curatorFrameworkWrap.close();
+                }
+            }
         }
         return null;
     }

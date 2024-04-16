@@ -238,7 +238,7 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     @Override
-    public String getLatestJobManageHost(String id) {
+    public String getLatestJobManageHost(String appId, String oldJobManagerHost) {
         throw new NotSupportGetStatusException("Does not support obtaining the latest JobManager host address");
     }
 }
