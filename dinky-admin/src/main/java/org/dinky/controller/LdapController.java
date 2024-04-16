@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -71,6 +72,7 @@ public class LdapController {
 
     @GetMapping("/testConnection")
     @ApiOperation("Test connection to LDAP server")
+    @SaCheckLogin
     @Log(title = "Test connection to LDAP server", businessType = BusinessType.TEST)
     public Result<Integer> testConnection() {
         List<User> users = ldapService.listUsers();
@@ -83,6 +85,7 @@ public class LdapController {
 
     @GetMapping("/listUser")
     @ApiOperation("List user from LDAP server")
+    @SaCheckLogin
     public Result<List<User>> listUser() {
         List<User> users = ldapService.listUsers();
         List<User> localUsers = userService.list();
@@ -98,6 +101,7 @@ public class LdapController {
 
     @PostMapping("/importUsers")
     @ApiOperation("Import users from LDAP server")
+    @SaCheckLogin
     @Log(title = "Import users from LDAP server", businessType = BusinessType.IMPORT)
     @ApiImplicitParam(name = "users", value = "User list", required = true, dataType = "List<User>")
     public Result<Void> importUsers(@RequestBody List<User> users) {
@@ -115,6 +119,7 @@ public class LdapController {
      * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
      */
     @PostMapping("/testLogin")
+    @SaCheckLogin
     @ApiOperation("Test login to LDAP server")
     @Log(title = "Test login to LDAP server", businessType = BusinessType.TEST)
     @ApiImplicitParam(name = "loginDTO", value = "Login information", required = true, dataType = "LoginDTO")

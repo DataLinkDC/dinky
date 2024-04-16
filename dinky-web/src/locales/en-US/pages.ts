@@ -299,6 +299,7 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': 'Username',
   'login.username.required': 'Please input your username!',
+  'login.token.error': 'Unable to get token information/session has expired, will jump to the login page, please re-login...',
   /**
    *
    * menu

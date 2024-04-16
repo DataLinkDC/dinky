@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Alert History Controller")
 @RequestMapping("/api/alertHistory")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class AlertHistoryController {
 
     private final AlertHistoryService alertHistoryService;

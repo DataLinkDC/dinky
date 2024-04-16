@@ -35,6 +35,7 @@ import { SecurityScanTwoTone } from '@ant-design/icons';
 import { PageContainer, PageLoading, ProCard } from '@ant-design/pro-components';
 import { Descriptions, Divider, Form, Tag } from 'antd';
 import { useEffect, useState } from 'react';
+import FadeIn from "@/components/Animation/FadeIn";
 
 const PersonCenter = () => {
   const [form] = Form.useForm();
@@ -169,7 +170,7 @@ const PersonCenter = () => {
    * render
    */
   return (
-    <Pop>
+    <FadeIn>
       <PageContainer title={false}>
         <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
           <ProCard
@@ -208,7 +209,7 @@ const PersonCenter = () => {
           />
         </ProCard>
       </PageContainer>
-    </Pop>
+    </FadeIn>
   );
 };
 
