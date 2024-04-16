@@ -54,7 +54,7 @@ import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/B
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data.d';
-import { ButtonRoute, DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
+import { ButtonRoute, DolphinTaskDefinition, DolphinTaskMinInfo,DolphinTaskGroupInfo } from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -103,6 +103,7 @@ const HeaderContainer = (props: connect) => {
     buttonLoading: boolean;
     confirmLoading: boolean;
     dolphinTaskList: DolphinTaskMinInfo[];
+    dolphinTaskGroup:DolphinTaskGroupInfo[],
     dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
     currentDinkyTaskValue: Partial<TaskDataType>;
   }>({
@@ -110,6 +111,7 @@ const HeaderContainer = (props: connect) => {
     buttonLoading: false,
     confirmLoading: false,
     dolphinTaskList: [],
+    dolphinTaskGroup:[],
     dolphinDefinitionTask: {},
     currentDinkyTaskValue: {}
   });
@@ -133,12 +135,22 @@ const HeaderContainer = (props: connect) => {
           dinkyTaskId
         }
       );
+      let dolphinTaskGroup:any =[]
+    //   : DolphinTaskGroupInfo[] | undefined = await queryDataByParams<
+    //   DolphinTaskGroupInfo[]
+    // >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, { dinkyTaskId }); 
+      dolphinTaskGroup=[{ label: '嗨',
+      value: 'HIGH',
+      key: 'HIGH'}]
+      console.log(44444,dolphinTaskGroup);
+      
     setPushDolphinState((prevState) => ({
       ...prevState,
       buttonLoading: true,
       confirmLoading: false,
       modalVisible: true,
       dolphinTaskList: dolphinTaskList ?? [],
+      dolphinTaskGroup:dolphinTaskGroup??[],
       dolphinDefinitionTask: dolphinTaskDefinition ?? {},
       currentDinkyTaskValue: currentData as TaskDataType
     }));
@@ -150,6 +162,7 @@ const HeaderContainer = (props: connect) => {
       modalVisible: false,
       buttonLoading: false,
       dolphinTaskList: [],
+      dolphinTaskGroup:[],
       confirmLoading: false,
       dolphinDefinitionTask: {},
       currentDinkyTaskValue: {}
@@ -502,13 +515,15 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
-    setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
-    await handleOption(
-      API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
-      `推送任务[${currentData?.name}]至 DolphinScheduler`,
-      value
-    );
-    await handlePushDolphinCancel();
+    console.log('提交按钮',value);
+    
+    // setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
+    // await handleOption(
+    //   API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
+    //   `推送任务[${currentData?.name}]至 DolphinScheduler`,
+    //   value
+    // );
+    // await handlePushDolphinCancel();
   };
 
   /**
@@ -527,6 +542,7 @@ const HeaderContainer = (props: connect) => {
             loading={pushDolphinState.confirmLoading}
             dolphinDefinitionTask={pushDolphinState.dolphinDefinitionTask}
             dolphinTaskList={pushDolphinState.dolphinTaskList}
+            dolphinTaskGroup={pushDolphinState.dolphinTaskGroup}
             onSubmit={(values) => handlePushDolphinSubmit(values)}
           />
         )}

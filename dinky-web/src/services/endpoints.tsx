@@ -278,6 +278,8 @@ export enum API_CONSTANTS {
   // ------------------------------------ scheduler ------------------------------------
   SCHEDULER_QUERY_UPSTREAM_TASKS = '/api/scheduler/queryUpstreamTasks',
   SCHEDULER_QUERY_TASK_DEFINITION = '/api/scheduler/queryTaskDefinition',
+  SCHEDULER_QUERY_TASK_GROUP = '/api/scheduler/XXXX',
+
   SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION = '/api/scheduler/createOrUpdateTaskDefinition',
 
   // ------------------------------------ flink conf about ------------------------------------

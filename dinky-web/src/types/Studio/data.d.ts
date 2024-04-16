@@ -250,6 +250,12 @@ export interface DolphinTaskMinInfo {
   upstreamTaskName: string;
 }
 
+export interface DolphinTaskGroupInfo {
+  label:string,
+      value: string,
+      key: string
+}
+
 export interface TaskParamProperty {
   prop: string;
   direct: string;
