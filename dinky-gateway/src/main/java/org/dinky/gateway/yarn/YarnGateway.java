@@ -53,7 +53,6 @@ import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
 import org.apache.flink.runtime.rest.messages.JobsOverviewHeaders;
 import org.apache.flink.runtime.security.SecurityConfiguration;
 import org.apache.flink.runtime.security.SecurityUtils;
-import org.apache.flink.runtime.util.ZooKeeperUtils;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterClientFactory;
 import org.apache.flink.yarn.YarnClusterDescriptor;
@@ -449,8 +448,7 @@ public abstract class YarnGateway extends AbstractGateway {
             ZooKeeper zooKeeper = null;
             try {
                 zooKeeper = new ZooKeeper(zkQuorum, sessionTimeout, watchedEvent -> {});
-                String path = ZooKeeperUtils.generateZookeeperPath(
-                        root, namespace, "leader", "rest_server", "connection_info");
+                String path = generateZookeeperPath(root, namespace, "leader", "rest_server", "connection_info");
                 byte[] data = zooKeeper.getData(path, false, null);
                 if (data != null && data.length > 0) {
                     ByteArrayInputStream bais = new ByteArrayInputStream(data);
@@ -477,5 +475,34 @@ public abstract class YarnGateway extends AbstractGateway {
             }
         }
         return null;
+    }
+
+    /** Creates a ZooKeeper path of the form "/a/b/.../z". */
+    private static String generateZookeeperPath(String... paths) {
+        final String result = Arrays.stream(paths)
+                .map(YarnGateway::trimSlashes)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining("/", "/", ""));
+
+        return result;
+    }
+
+    private static String trimSlashes(String input) {
+        int left = 0;
+        int right = input.length() - 1;
+
+        while (left <= right && input.charAt(left) == '/') {
+            left++;
+        }
+
+        while (right >= left && input.charAt(right) == '/') {
+            right--;
+        }
+
+        if (left <= right) {
+            return input.substring(left, right + 1);
+        } else {
+            return "";
+        }
     }
 }
