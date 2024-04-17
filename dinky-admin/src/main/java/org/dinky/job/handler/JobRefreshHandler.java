@@ -153,7 +153,7 @@ public class JobRefreshHandler {
         // The task status of stream job which automatically restart after failure: run -> transition -> run ->
         // transition -> run
         // Set to true if the job status which is done has completed
-        // If the job status is transition and the status fails to be updated for 3 minute, set to true and discard the
+        // If the job status is transition and the status fails to be updated for 1 minute, set to true and discard the
         // update
 
         boolean isTransition = false;
@@ -162,7 +162,7 @@ public class JobRefreshHandler {
             Long finishTime = TimeUtil.localDateTimeToLong(jobInstance.getFinishTime());
             long duration = Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
                     .toMinutes();
-            if (finishTime > 0 && duration < 3) {
+            if (finishTime > 0 && duration < 1) {
                 log.debug("Job is transition: {}->{}", jobInstance.getId(), jobInstance.getName());
                 isTransition = true;
             } else if (JobStatus.RECONNECTING.getValue().equals(jobInstance.getStatus())) {
@@ -178,7 +178,7 @@ public class JobRefreshHandler {
                 || (TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) > 0
                         && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
                                         .toMinutes()
-                                >= 3);
+                                >= 1);
 
         isDone = !isTransition && isDone;
 
