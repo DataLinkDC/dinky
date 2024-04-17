@@ -101,6 +101,7 @@ public class SchedulerServiceImpl implements SchedulerService {
             taskRequest.setTimeoutFlag(dinkyTaskRequest.getTimeoutFlag());
             taskRequest.setFlag(dinkyTaskRequest.getFlag());
             taskRequest.setIsCache(dinkyTaskRequest.getIsCache());
+            taskRequest.setTaskGroupId(dinkyTaskRequest.getTaskGroupId());
             JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
             JSONArray taskArray = new JSONArray();
             taskArray.set(jsonObject);
@@ -147,6 +148,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         taskRequest.setTimeoutFlag(dinkyTaskRequest.getTimeoutFlag());
         taskRequest.setFlag(dinkyTaskRequest.getFlag());
         taskRequest.setIsCache(dinkyTaskRequest.getIsCache());
+        taskRequest.setTaskGroupId(dinkyTaskRequest.getTaskGroupId());
 
         String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
         taskClient.createTaskDefinition(

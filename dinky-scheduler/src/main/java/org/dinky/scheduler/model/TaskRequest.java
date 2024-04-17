@@ -66,6 +66,9 @@ public class TaskRequest {
     @ApiModelProperty(value = "任务类型 默认DINKY")
     private String taskType = "DINKY";
 
+    @ApiModelProperty(value = "任务组 ID")
+    private Long taskGroupId;
+
     @ApiModelProperty(value = "超时时间(分钟)")
     private Integer timeout;
 
