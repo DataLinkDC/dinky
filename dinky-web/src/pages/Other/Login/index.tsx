@@ -74,7 +74,7 @@ const Login: React.FC = () => {
       const currentTime = Date.now();
       timeRemaining = expirationTime - currentTime;
       //  use setInterval to set a timer
-      timer = setInterval(() => redirectToLogin(), timeRemaining);
+      timer = setInterval(() => redirectToLogin(l('login.token.error')), timeRemaining);
     }
     return () => {
       clearTimeout(timer);
@@ -141,7 +141,7 @@ const Login: React.FC = () => {
             setLocalStorageOfToken(JSON.stringify(res));
           } else {
             // 如果没有获取到token信息，直接跳转到登录页
-            redirectToLogin();
+            redirectToLogin(l('login.token.error'));
           }
         });
       }
