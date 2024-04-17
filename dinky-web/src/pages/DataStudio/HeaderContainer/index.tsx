@@ -135,14 +135,15 @@ const HeaderContainer = (props: connect) => {
           dinkyTaskId
         }
       );
-      let dolphinTaskGroup:any =[]
-    //   : DolphinTaskGroupInfo[] | undefined = await queryDataByParams<
-    //   DolphinTaskGroupInfo[]
-    // >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, { dinkyTaskId }); 
-      dolphinTaskGroup=[{ label: '嗨',
-      value: 'HIGH',
-      key: 'HIGH'}]
-      console.log(44444,dolphinTaskGroup);
+     
+      
+      let dolphinTaskGroup : DolphinTaskGroupInfo[] | undefined = await queryDataByParams<
+      DolphinTaskGroupInfo[]
+    >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, { projectCode:dolphinTaskDefinition.projectCode }); 
+
+    
+      // dolphinTaskGroup=[{ name: '嗨',id: 66666 }]
+      // console.log(44444,dolphinTaskGroup);
       
     setPushDolphinState((prevState) => ({
       ...prevState,
@@ -517,13 +518,13 @@ const HeaderContainer = (props: connect) => {
   const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
     console.log('提交按钮',value);
     
-    // setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
-    // await handleOption(
-    //   API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
-    //   `推送任务[${currentData?.name}]至 DolphinScheduler`,
-    //   value
-    // );
-    // await handlePushDolphinCancel();
+    setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
+    await handleOption(
+      API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
+      `推送任务[${currentData?.name}]至 DolphinScheduler`,
+      value
+    );
+    await handlePushDolphinCancel();
   };
 
   /**

@@ -251,9 +251,16 @@ export interface DolphinTaskMinInfo {
 }
 
 export interface DolphinTaskGroupInfo {
-  label:string,
-      value: string,
-      key: string
+  id: number;
+  name: string;
+  description: string;
+  groupSize: number;
+  useSize: number;
+  userId: number;
+  status: number;
+  createTime: Date;
+  updateTime: Date;
+  projectCode: number;
 }
 
 export interface TaskParamProperty {

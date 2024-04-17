@@ -171,9 +171,13 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
           />
           <ProFormSelect
             label={l('datastudio.header.pushdolphin.taskGroup')}
-            name={'taskGroupVVVV'}
+            name={'taskGroupId'}
             width={'sm'}
             options={dolphinTaskGroup}
+            fieldProps={{
+              fieldNames: {label:'name', value: 'id' }
+            }}
+            // fieldNames={label:'label', value: 'value'}
           />
           <ProFormDigit
             label={l('datastudio.header.pushdolphin.failRetryTimes')}
