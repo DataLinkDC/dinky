@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -62,6 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "OpenAPI & Task API Controller")
 @RequestMapping("/openapi")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class APIController {
 
     private final TaskService taskService;
@@ -70,7 +72,7 @@ public class APIController {
     @GetMapping("/version")
     @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
     public Result<String> getVersionInfo() {
-        return Result.succeed(DinkyVersion.getVersion(), "Get success");
+        return Result.succeed(DinkyVersion.getVersion(), Status.QUERY_SUCCESS);
     }
 
     @PostMapping("/submitTask")
@@ -200,6 +202,6 @@ public class APIController {
             dataTypeClass = Integer.class)
     public Result getTaskLineage(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(taskService.getTaskLineage(id), "获取成功");
+        return Result.succeed(taskService.getTaskLineage(id), Status.QUERY_SUCCESS);
     }
 }

@@ -23,9 +23,11 @@ import {
   setKeyToLocalStorage,
   setLocalThemeToStorage
 } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { WarningMessageAsync } from '@/utils/messages';
 import { history } from '@@/core/history';
 
-/** 此方法会跳转到 redirect 参数所在的位置 */
+/** This method will redirect to the location of the redirect parameter */
 export const gotoRedirectUrl = () => {
   if (!history) return;
   setTimeout(() => {
@@ -34,15 +36,16 @@ export const gotoRedirectUrl = () => {
   }, 10);
 };
 
-export const redirectToLogin = () => {
-  //TODO: 弹出确认框
+export const redirectToLogin = async () => {
+  //todo: 使用模态框提示, 但是目前会重复弹出,原因是接口每次都会调用，所以会出现重复弹出
+  await WarningMessageAsync(l('login.token.error'));
   window.location.href = '/#/user/login';
 };
 
 export const initSomeThing = () => {
-  //  初始化设置主题
+  //  initialize setting theme
   setLocalThemeToStorage();
-  // 取出本地存储是否有启用消息提示的 key , 没有的话设置一下
+  // Retrieve the key for enabling message prompts from the local storage, and if not, set it accordingly
   if (hasKeyofLocalStorage(ENABLE_MODEL_TIP)) {
     setKeyToLocalStorage(ENABLE_MODEL_TIP, 'false');
   }

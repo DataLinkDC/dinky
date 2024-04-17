@@ -44,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @Api(tags = "System Controller")
 @RequestMapping("/api/system")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class SystemController {
 
