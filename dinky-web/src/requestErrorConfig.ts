@@ -33,7 +33,7 @@ enum ErrorCode {
   PARAMS_ERROR = 6,
   AUTHORIZE_ERROR = 7,
   SERVER_ERROR = 504,
-  UNAUTHORIZED = 401,
+  UNAUTHORIZED = 401
 }
 
 // Response data format agreed upon with the backend
@@ -88,10 +88,10 @@ export const errorConfig: RequestConfig = {
       }
     },
     // Error reception and handling
-    errorHandler:  (error: any, opts: any) => {
+    errorHandler: (error: any, opts: any) => {
       if (opts?.skipErrorHandler) throw error;
 
-      function processNotification(error:any, isEnableTips:string = 'false') {
+      function processNotification(error: any, isEnableTips: string = 'false') {
         if (getValueFromLocalStorage(ENABLE_MODEL_TIP) == isEnableTips) {
           ErrorNotification(error.message, error.code);
         }
