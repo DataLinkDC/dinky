@@ -89,7 +89,6 @@ const JobMetricsList = (props: MetricsProps) => {
       setJobIds(jids.join(','));
       if (timeRange.isReal) {
         return subscribeTopic(topics, (data: SseData) => {
-          console.log(data.data);
           setChartDatas((prevState) => dataProcess(prevState, [data.data]));
         });
       }
