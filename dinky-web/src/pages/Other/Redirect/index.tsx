@@ -23,8 +23,6 @@ import { Navigate, useModel } from 'umi';
 const Redirect = () => {
   const { initialState, _ } = useModel('@@initialState');
 
-  console.log(initialState);
-
   const filterMenus = (menus: SysMenu[]) => {
     return menus?.filter((menu) => menu.type !== 'F');
   };
