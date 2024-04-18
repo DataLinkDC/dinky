@@ -63,7 +63,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "OpenAPI & Task API Controller")
 @RequestMapping("/openapi")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class APIController {
 
     private final TaskService taskService;
