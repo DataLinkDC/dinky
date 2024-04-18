@@ -31,7 +31,9 @@ enum ErrorCode {
   ERROR = 1,
   EXCEPTION = 5,
   PARAMS_ERROR = 6,
-  AUTHORIZE_ERROR = 7
+  AUTHORIZE_ERROR = 7,
+  SERVER_ERROR = 504,
+  UNAUTHORIZED = 401
 }
 
 // Response data format agreed upon with the backend
@@ -88,6 +90,13 @@ export const errorConfig: RequestConfig = {
     // Error reception and handling
     errorHandler: (error: any, opts: any) => {
       if (opts?.skipErrorHandler) throw error;
+
+      function processNotification(error: any, isEnableTips: string = 'false') {
+        if (getValueFromLocalStorage(ENABLE_MODEL_TIP) == isEnableTips) {
+          ErrorNotification(error.message, error.code);
+        }
+      }
+
       //The error thrown by our errorThrower.
       if (error.name === 'BizError') {
         const errorInfo: ResponseStructure = error.info;
@@ -97,12 +106,14 @@ export const errorConfig: RequestConfig = {
       } else if (error.response) {
         //The request was successfully sent and the server also responded with a status code, but the status code exceeded the range of 2xx
         //Authentication error, redirect to login page
-        if (error.response.status === 401) {
-          redirectToLogin();
+        if (error.response.status === ErrorCode.UNAUTHORIZED) {
+          redirectToLogin(error.message);
+        } else if (error.response.status === ErrorCode.SERVER_ERROR) {
+          processNotification(error);
+          //Note: when the server is not available or the network is disconnected, redirect to login page
+          redirectToLogin(error.message);
         } else {
-          if (getValueFromLocalStorage(ENABLE_MODEL_TIP) == 'true') {
-            ErrorNotification(error.message, error.code);
-          }
+          processNotification(error, 'true');
         }
       } else if (error.request) {
         //The request has been successfully initiated, but no response has been received
