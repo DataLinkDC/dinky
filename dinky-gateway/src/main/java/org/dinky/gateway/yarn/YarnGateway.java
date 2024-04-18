@@ -24,6 +24,7 @@ import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
@@ -319,16 +320,16 @@ public abstract class YarnGateway extends AbstractGateway {
 
     protected YarnClusterDescriptor createYarnClusterDescriptorWithJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor();
-
+        ClusterDescriptorAdapterImpl clusterDescriptorAdapter = new ClusterDescriptorAdapterImpl(yarnClusterDescriptor);
         if (Asserts.isNotNull(config.getJarPaths())) {
-            yarnClusterDescriptor.addShipFiles(
+            clusterDescriptorAdapter.addShipFiles(
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
-            yarnClusterDescriptor.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
+            clusterDescriptorAdapter.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
         }
         Set<File> otherPluginsFiles = udfPathContextHolder.getAllFileSet();
 
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
-            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
+            clusterDescriptorAdapter.addShipFiles(new ArrayList<>(otherPluginsFiles));
         }
         return yarnClusterDescriptor;
     }
