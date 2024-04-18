@@ -139,7 +139,7 @@ const HeaderContainer = (props: connect) => {
       
       let dolphinTaskGroup : DolphinTaskGroupInfo[] | undefined = await queryDataByParams<
       DolphinTaskGroupInfo[]
-    >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, { projectCode:dolphinTaskDefinition.projectCode }); 
+    >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, { projectCode:dolphinTaskDefinition?.projectCode || undefined }); 
 
     
       // dolphinTaskGroup=[{ name: '嗨',id: 66666 }]
