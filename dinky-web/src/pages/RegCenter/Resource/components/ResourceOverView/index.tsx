@@ -16,6 +16,7 @@
  *  limitations under the License.
  *
  */
+
 import RightContextMenu from '@/components/RightContextMenu';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import {
@@ -50,33 +51,41 @@ import { Button, Result } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
+
 const ResourceOverView: React.FC<connect> = (props) => {
   const { dispatch, enableResource } = props;
+
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
+
   const [editModal, setEditModal] = useState<string>('');
   const refObject = useRef<HTMLDivElement>(null);
+
   const [uploadValue] = useState({
     url: API_CONSTANTS.BASE_URL + API_CONSTANTS.RESOURCE_UPLOAD,
     pid: '',
     description: ''
   });
+
   const refreshTree = async () => {
     await queryDataByParams<ResourceInfo[]>(API_CONSTANTS.RESOURCE_SHOW_TREE).then((res) =>
       setResourceState((prevState) => ({ ...prevState, treeData: res ?? [] }))
     );
   };
+
   useEffect(() => {
     dispatch({
       type: CONFIG_MODEL_ASYNC.queryResourceConfig,
       payload: SettingConfigKeyEnum.RESOURCE.toLowerCase()
     });
   }, []);
+
   useAsyncEffect(async () => {
     // if enableResource is true, then refresh the tree, otherwise do nothing
     if (enableResource) {
       await refreshTree();
     }
   }, [enableResource]);
+
   /**
    * query content by id
    * @type {(id: number) => Promise<void>}
@@ -86,6 +95,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
       id
     }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
   }, []);
+
   /**
    * the node click event
    * @param info
@@ -103,6 +113,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
       setResourceState((prevState) => ({ ...prevState, content: '' }));
     }
   };
+
   /**
    * the node right click event OF upload,
    */
@@ -125,6 +136,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
       setResourceState((prevState) => ({ ...prevState, uploadOpen: true, contextMenuOpen: false }));
     }
   };
+
   /**
    * the node right click event OF delete,
    */
@@ -135,6 +147,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
       await refreshTree();
     }
   };
+
   /**
    * the node right click event OF rename,
    */
@@ -150,6 +163,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
       }));
     }
   };
+
   const handleMenuClick = async (node: MenuInfo) => {
     switch (node.key) {
       case 'createFolder':
@@ -168,6 +182,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
         break;
     }
   };
+
   /**
    * the right click event
    * @param info
@@ -175,10 +190,12 @@ const ResourceOverView: React.FC<connect> = (props) => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
+
     // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 75 (需要根据具体的右键菜单数量合理设置)
     if (event.clientY + 150 > window.innerHeight) {
       event.clientY = window.innerHeight - 75;
     }
+
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],
@@ -193,10 +210,12 @@ const ResourceOverView: React.FC<connect> = (props) => {
       }
     }));
   };
+
   const handleSync = async () => {
     await handleGetOption(API_CONSTANTS.RESOURCE_SYNC_DATA, l('rc.resource.sync'), {});
     await refreshTree();
   };
+
   /**
    * the rename cancel
    */
@@ -204,35 +223,36 @@ const ResourceOverView: React.FC<connect> = (props) => {
     setResourceState((prevState) => ({ ...prevState, editOpen: false }));
     await refreshTree();
   };
+
   /**
    * the rename ok
    */
   const handleModalSubmit = async (value: Partial<ResourceInfo>) => {
     const { id: pid } = resourceState.rightClickedNode;
     if (editModal === 'createFolder') {
-      await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, l('right.menu.createFolder'), {
-        ...value,
-        pid
-      }, ()=> handleModalCancel());
+      await handleOption(
+        API_CONSTANTS.RESOURCE_CREATE_FOLDER,
+        l('right.menu.createFolder'),
+        {
+          ...value,
+          pid
+        },
+        () => handleModalCancel()
+      );
     } else if (editModal === 'rename') {
-      await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid },()=> handleModalCancel());
+      await handleOption(
+        API_CONSTANTS.RESOURCE_RENAME,
+        l('right.menu.rename'),
+        { ...value, pid },
+        () => handleModalCancel()
+      );
     }
   };
   const handleUploadCancel = async () => {
-
-
-
-
-
-
-
-    Expand Down
-
-
-
     setResourceState((prevState) => ({ ...prevState, uploadOpen: false }));
     await refreshTree();
   };
+
   /**
    * the content change
    * @param value
@@ -241,7 +261,9 @@ const ResourceOverView: React.FC<connect> = (props) => {
     setResourceState((prevState) => ({ ...prevState, content: value }));
     // todo: save content
   };
+
   const access = useAccess();
+
   const renderRightMenu = () => {
     if (!resourceState.rightClickedNode.isLeaf) {
       return RIGHT_CONTEXT_FOLDER_MENU.filter(
@@ -252,6 +274,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
       (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
     );
   };
+
   /**
    * render
    */
@@ -318,6 +341,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
                   />
                 </ProCard>
               </Pane>
+
               <Pane
                 className={'split-pane'}
                 forwardRef={refObject}
@@ -341,8 +365,8 @@ const ResourceOverView: React.FC<connect> = (props) => {
                 editModal === 'createFolder'
                   ? l('right.menu.createFolder')
                   : editModal === 'rename'
-                    ? l('right.menu.rename')
-                    : ''
+                  ? l('right.menu.rename')
+                  : ''
               }
               formValues={resourceState.value}
               onOk={handleModalSubmit}
@@ -363,6 +387,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
     </>
   );
 };
+
 export default connect(({ SysConfig }: { SysConfig: SysConfigStateType }) => ({
   enableResource: SysConfig.enableResource
 }))(ResourceOverView);
