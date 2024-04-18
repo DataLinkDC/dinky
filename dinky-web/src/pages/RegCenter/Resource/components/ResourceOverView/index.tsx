@@ -230,12 +230,22 @@ const ResourceOverView: React.FC<connect> = (props) => {
   const handleModalSubmit = async (value: Partial<ResourceInfo>) => {
     const { id: pid } = resourceState.rightClickedNode;
     if (editModal === 'createFolder') {
-      await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, l('right.menu.createFolder'), {
-        ...value,
-        pid
-      }, ()=> handleModalCancel());
+      await handleOption(
+        API_CONSTANTS.RESOURCE_CREATE_FOLDER,
+        l('right.menu.createFolder'),
+        {
+          ...value,
+          pid
+        },
+        () => handleModalCancel()
+      );
     } else if (editModal === 'rename') {
-      await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid },()=> handleModalCancel());
+      await handleOption(
+        API_CONSTANTS.RESOURCE_RENAME,
+        l('right.menu.rename'),
+        { ...value, pid },
+        () => handleModalCancel()
+      );
     }
   };
   const handleUploadCancel = async () => {
@@ -355,8 +365,8 @@ const ResourceOverView: React.FC<connect> = (props) => {
                 editModal === 'createFolder'
                   ? l('right.menu.createFolder')
                   : editModal === 'rename'
-                    ? l('right.menu.rename')
-                    : ''
+                  ? l('right.menu.rename')
+                  : ''
               }
               formValues={resourceState.value}
               onOk={handleModalSubmit}
