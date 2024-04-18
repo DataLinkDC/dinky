@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -63,7 +62,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "OpenAPI & Task API Controller")
 @RequestMapping("/openapi")
 @RequiredArgsConstructor
-@SaCheckLogin
 public class APIController {
 
     private final TaskService taskService;
