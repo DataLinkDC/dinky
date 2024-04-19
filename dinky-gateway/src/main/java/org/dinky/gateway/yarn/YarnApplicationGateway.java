@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
@@ -37,10 +38,9 @@ import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
-
-import cn.hutool.core.collection.CollUtil;
 
 /**
  * YarnApplicationGateway
@@ -77,8 +77,9 @@ public class YarnApplicationGateway extends YarnGateway {
         YarnResult result = YarnResult.build(getType());
         String webUrl;
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
-
-            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(preparSqlFile()));
+            ClusterDescriptorAdapterImpl clusterDescriptorAdapter =
+                    new ClusterDescriptorAdapterImpl(yarnClusterDescriptor);
+            clusterDescriptorAdapter.addShipFiles(Arrays.asList(preparSqlFile()));
             addConfigParas(
                     CustomerConfigureOptions.EXEC_SQL_FILE, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE));
 

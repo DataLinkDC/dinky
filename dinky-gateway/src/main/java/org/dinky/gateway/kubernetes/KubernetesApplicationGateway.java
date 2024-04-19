@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.kubernetes.utils.IgnoreNullRepresenter;
@@ -146,8 +147,9 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         // Deploy to k8s
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
+        ClusterDescriptorAdapterImpl clusterDescriptorAdapter = new ClusterDescriptorAdapterImpl();
         KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                new KubernetesClusterDescriptor(configuration, client);
+                clusterDescriptorAdapter.createKubernetesClusterDescriptor(configuration, client);
         return kubernetesClusterDescriptor.deployApplicationCluster(
                 clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
     }

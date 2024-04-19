@@ -109,6 +109,7 @@ Install/Package 过程中报错代码格式化问题,请参考 [代码格式化]
 |  flink-1.16   |                 用于指定 Flink 版本为 1.16,只能单选,需要勾选 flink-single-version                 |
 |  flink-1.17   |                 用于指定 Flink 版本为 1.17,只能单选,需要勾选 flink-single-version                 |
 |  flink-1.18   |                 用于指定 Flink 版本为 1.18,只能单选,需要勾选 flink-single-version                 |
+|  flink-1.19   |                 用于指定 Flink 版本为 1.19,只能单选,需要勾选 flink-single-version                 |
 |    jdk 11     |            用于指定 JDK 版本为 11,前提是本地已经安装了 JDK 11,如果没有安装 jdk11,则默认使用本地的 jdk8            |            
 |      mac      |                                 用于适配在 mac 系统上进行调试                                  |            
 | maven-central |                                 用于指定 maven 仓库为中央仓库                                 |  
