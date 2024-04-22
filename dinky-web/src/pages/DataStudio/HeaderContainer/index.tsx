@@ -16,7 +16,6 @@
  *  limitations under the License.
  *
  */
-
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { FlexCenterDiv } from '@/components/StyledComponents';
@@ -106,6 +105,7 @@ const HeaderContainer = (props: connect) => {
     dolphinTaskGroup:DolphinTaskGroupInfo[],
     dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
     currentDinkyTaskValue: Partial<TaskDataType>;
+    formValuesInfo:any
   }>({
     modalVisible: false,
     buttonLoading: false,
@@ -113,7 +113,8 @@ const HeaderContainer = (props: connect) => {
     dolphinTaskList: [],
     dolphinTaskGroup:[],
     dolphinDefinitionTask: {},
-    currentDinkyTaskValue: {}
+    currentDinkyTaskValue: {},
+    formValuesInfo:{}
   });
 
   useEffect(() => {
@@ -141,9 +142,8 @@ const HeaderContainer = (props: connect) => {
       DolphinTaskGroupInfo[]
     >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, { projectCode:dolphinTaskDefinition?.projectCode || undefined }); 
 
+    const formValuesInfo=dolphinTaskDefinition?JSON.parse(JSON.stringify(dolphinTaskDefinition)):{}    
     
-      // dolphinTaskGroup=[{ name: '嗨',id: 66666 }]
-      // console.log(44444,dolphinTaskGroup);
       
     setPushDolphinState((prevState) => ({
       ...prevState,
@@ -153,7 +153,8 @@ const HeaderContainer = (props: connect) => {
       dolphinTaskList: dolphinTaskList ?? [],
       dolphinTaskGroup:dolphinTaskGroup??[],
       dolphinDefinitionTask: dolphinTaskDefinition ?? {},
-      currentDinkyTaskValue: currentData as TaskDataType
+      currentDinkyTaskValue: currentData as TaskDataType,
+      formValuesInfo:formValuesInfo??{}
     }));
   };
 
@@ -166,7 +167,8 @@ const HeaderContainer = (props: connect) => {
       dolphinTaskGroup:[],
       confirmLoading: false,
       dolphinDefinitionTask: {},
-      currentDinkyTaskValue: {}
+      currentDinkyTaskValue: {},
+      formValuesInfo:{}
     }));
   };
 
@@ -516,7 +518,7 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
-    console.log('提交按钮',value);
+    
     
     setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
     await handleOption(
@@ -545,6 +547,7 @@ const HeaderContainer = (props: connect) => {
             dolphinTaskList={pushDolphinState.dolphinTaskList}
             dolphinTaskGroup={pushDolphinState.dolphinTaskGroup}
             onSubmit={(values) => handlePushDolphinSubmit(values)}
+            formValuesInfo={pushDolphinState.formValuesInfo}
           />
         )}
       </Descriptions.Item>
