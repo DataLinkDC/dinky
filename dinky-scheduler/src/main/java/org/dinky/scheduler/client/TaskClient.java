@@ -19,7 +19,6 @@
 
 package org.dinky.scheduler.client;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.exception.SchedulerException;
@@ -285,14 +284,15 @@ public class TaskClient {
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
                                 .getDolphinschedulerToken()
-                                .getValue()
-        )
+                                .getValue())
                 .form(params)
                 .timeout(5000)
                 .execute()
                 .body();
-        System.out.println(content);
-        List<JSONObject> jsonObjects = MyJSONUtil.toBean(content, DsPageInfo.class).getData().getTotalList();
-        return jsonObjects.stream().map(jsonObject->MyJSONUtil.toBean(jsonObject, TaskGroup.class)).collect(Collectors.toList());
+        List<JSONObject> jsonObjects =
+                MyJSONUtil.toBean(content, DsPageInfo.class).getData().getTotalList();
+        return jsonObjects.stream()
+                .map(jsonObject -> MyJSONUtil.toBean(jsonObject, TaskGroup.class))
+                .collect(Collectors.toList());
     }
 }

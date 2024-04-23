@@ -16,6 +16,7 @@
  *  limitations under the License.
  *
  */
+
 import { FormContextValue } from '@/components/Context/FormContext';
 import { NORMAL_MODAL_OPTIONS, SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
