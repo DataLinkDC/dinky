@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import cn.dev33.satoken.session.SaSession;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
@@ -478,6 +479,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public void outLogin() {
+        SaSession session = StpUtil.getSession();
+        session.logout();
         StpUtil.logout(StpUtil.getLoginIdAsInt());
     }
 
