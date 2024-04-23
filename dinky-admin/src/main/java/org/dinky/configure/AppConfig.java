@@ -22,16 +22,20 @@ package org.dinky.configure;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
-import org.dinky.sso.web.SecurityInterceptor;
 
 import java.util.Locale;
 
 import org.pac4j.core.config.Config;
 import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
+import org.pac4j.springframework.annotation.AnnotationConfig;
+import org.pac4j.springframework.component.ComponentConfig;
+import org.pac4j.springframework.web.SecurityInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -50,6 +54,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Configuration
 @Slf4j
+@Import({ComponentConfig.class, AnnotationConfig.class})
+@ComponentScan(basePackages = "org.pac4j.springframework.web")
 public class AppConfig implements WebMvcConfigurer {
     @Autowired
     private Config config;

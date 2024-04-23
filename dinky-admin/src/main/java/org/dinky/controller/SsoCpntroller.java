@@ -25,7 +25,7 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
-import org.dinky.sso.web.LogoutController;
+
 
 import java.util.List;
 
@@ -35,6 +35,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.springframework.web.LogoutController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -54,18 +55,18 @@ import lombok.NoArgsConstructor;
 @RestController
 @NoArgsConstructor
 @RequestMapping("/api/sso")
-@ConfigurationProperties(prefix = "pac4j")
 public class SsoCpntroller {
-    @Value("${sso.baseUrl:localhost:8000}")
-    private String baseUrl;
+    @Value("${sso.redirect}")
+    private String redirect;
 
     @Value("${sso.enabled:false}")
     private Boolean ssoEnabled;
 
-    @Value("${sso.centralLogout.defaultUrl:#{null}}")
+
+    @Value("${pac4j.centralLogout.defaultUrl:#{null}}")
     private String defaultUrl;
 
-    @Value("${sso.centralLogout.logoutUrlPattern:#{null}}")
+    @Value("${pac4j.centralLogout.logoutUrlPattern:#{null}}")
     private String logoutUrlPattern;
 
     @Value("${pac4j.properties.principalNameAttribute:#{null}}")
@@ -114,13 +115,15 @@ public class SsoCpntroller {
 
     @GetMapping("/login")
     public ModelAndView ssoLogin() {
-        RedirectView redirectView = new RedirectView("http://" + baseUrl + "/#/user/login?from=sso");
+        RedirectView redirectView = new RedirectView(redirect);
         return new ModelAndView(redirectView);
     }
 
     @GetMapping("/logout")
     public void ssoLogout() {
+
         logoutController.logout(webContext.getNativeRequest(), webContext.getNativeResponse());
+
     }
 
     @GetMapping("/ssoEnableStatus")
