@@ -33,34 +33,33 @@
     <properties>
         <expand.scope>provided</expand.scope>
         <!-- Pac4j 4.x for jdk 8 -->
-        <pac4jVersion>4.2.0</pac4jVersion>
+        <pac4j.version>4.2.0</pac4j.version>
+        <spring-webmvc-pac4j.version>4.0.1</spring-webmvc-pac4j.version>
         <postgresql.version>42.5.1</postgresql.version>
 
     </properties>
 
     <dependencies>
-
-        <!-- Include pac4j-config/core/oauth/oidc-->
         <dependency>
             <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-springboot</artifactId>
-            <version>${pac4jVersion}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-to-slf4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-collections</groupId>
-                    <artifactId>commons-collections</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>spring-webmvc-pac4j</artifactId>
+            <version>${spring-webmvc-pac4j.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-config</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-oauth</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-http</artifactId>
+            <version>${pac4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.mitre.dsmiley.httpproxy</groupId>
             <artifactId>smiley-http-proxy-servlet</artifactId>

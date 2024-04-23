@@ -2,6 +2,9 @@
 ################################################# Common Config #################################################
 #################################################################################################################
 # Dinky application port
+
+
+
 server:
   port: 8888
   shutdown: graceful
@@ -16,7 +19,7 @@ spring:
     # If you use pgsql database, please configure pgsql database connection information in application-pgsql.yml
     # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
     # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
-    active: ${DB_ACTIVE:mysql} #[h2,mysql,pgsql]
+    active: ${DB_ACTIVE:h2} #[h2,mysql,pgsql]
     include: jmx
   lifecycle:
     timeout-per-shutdown-phase: 30s
@@ -149,19 +152,23 @@ crypto:
 #see https://github.com/pac4j/spring-webmvc-pac4j-boot-demo/blob/master/src/main/resources/application.properties
 sso:
   enabled: true  #enable sso
-  logout:
-    destroySession: true
-    defaultUrl: /?defaulturlafterlogout
-  centralLogout:
-    defaultUrl: http://localhost:8888/?defaulturlafterlogoutafteridp
-    logoutUrlPattern: http://localhost:8888/.*
-  baseUrl: localhost:8000
+  redirect: http://localhost:8000/#/user/login?from=sso  #Front-end address
 
 #################################################################################################################
 ################################################# pac4j Config ####################################################
 #################################################################################################################
 pac4j:
-  callbackUrl: http://localhost:8888/callback # The callback URL
+  callback:
+    defaultUrl: ${sso.redirect}
+  logout:
+    defaultUrl:
+    destroySession: true
+    callback:
+      multiProfile: true
+  centralLogout:
+    defaultUrl: http://localhost:${server.port}/?defaulturlafterlogoutafteridp
+    logoutUrlPattern: http://localhost:${server.port}/.*
+  callbackUrl: http://localhost:${server.port}/callback # The callback URL
   # Put all parameters under `properties`
   # Check supported sso config parameters for different authentication clients from the below link
   # https://github.com/pac4j/pac4j/blob/master/documentation/docs/config-module.md
