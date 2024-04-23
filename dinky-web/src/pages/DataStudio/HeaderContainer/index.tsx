@@ -53,7 +53,12 @@ import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/B
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data.d';
-import { ButtonRoute, DolphinTaskDefinition, DolphinTaskMinInfo,DolphinTaskGroupInfo } from '@/types/Studio/data.d';
+import {
+  ButtonRoute,
+  DolphinTaskDefinition,
+  DolphinTaskGroupInfo,
+  DolphinTaskMinInfo
+} from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -102,19 +107,19 @@ const HeaderContainer = (props: connect) => {
     buttonLoading: boolean;
     confirmLoading: boolean;
     dolphinTaskList: DolphinTaskMinInfo[];
-    dolphinTaskGroup:DolphinTaskGroupInfo[],
+    dolphinTaskGroup: DolphinTaskGroupInfo[];
     dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
     currentDinkyTaskValue: Partial<TaskDataType>;
-    formValuesInfo:any
+    formValuesInfo: any;
   }>({
     modalVisible: false,
     buttonLoading: false,
     confirmLoading: false,
     dolphinTaskList: [],
-    dolphinTaskGroup:[],
+    dolphinTaskGroup: [],
     dolphinDefinitionTask: {},
     currentDinkyTaskValue: {},
-    formValuesInfo:{}
+    formValuesInfo: {}
   });
 
   useEffect(() => {
@@ -136,25 +141,27 @@ const HeaderContainer = (props: connect) => {
           dinkyTaskId
         }
       );
-     
-      
-      let dolphinTaskGroup : DolphinTaskGroupInfo[] | undefined = await queryDataByParams<
-      DolphinTaskGroupInfo[]
-    >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, { projectCode:dolphinTaskDefinition?.projectCode || undefined }); 
 
-    const formValuesInfo=dolphinTaskDefinition?JSON.parse(JSON.stringify(dolphinTaskDefinition)):{}    
-    
-      
+    let dolphinTaskGroup: DolphinTaskGroupInfo[] | undefined = await queryDataByParams<
+      DolphinTaskGroupInfo[]
+    >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, {
+      projectCode: dolphinTaskDefinition?.projectCode || undefined
+    });
+
+    const formValuesInfo = dolphinTaskDefinition
+      ? JSON.parse(JSON.stringify(dolphinTaskDefinition))
+      : {};
+
     setPushDolphinState((prevState) => ({
       ...prevState,
       buttonLoading: true,
       confirmLoading: false,
       modalVisible: true,
       dolphinTaskList: dolphinTaskList ?? [],
-      dolphinTaskGroup:dolphinTaskGroup??[],
+      dolphinTaskGroup: dolphinTaskGroup ?? [],
       dolphinDefinitionTask: dolphinTaskDefinition ?? {},
       currentDinkyTaskValue: currentData as TaskDataType,
-      formValuesInfo:formValuesInfo??{}
+      formValuesInfo: formValuesInfo ?? {}
     }));
   };
 
@@ -164,11 +171,11 @@ const HeaderContainer = (props: connect) => {
       modalVisible: false,
       buttonLoading: false,
       dolphinTaskList: [],
-      dolphinTaskGroup:[],
+      dolphinTaskGroup: [],
       confirmLoading: false,
       dolphinDefinitionTask: {},
       currentDinkyTaskValue: {},
-      formValuesInfo:{}
+      formValuesInfo: {}
     }));
   };
 
@@ -518,8 +525,6 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
-    
-    
     setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
     await handleOption(
       API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
