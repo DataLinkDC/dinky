@@ -28,7 +28,17 @@ import org.dinky.scheduler.client.ProcessClient;
 import org.dinky.scheduler.client.TaskClient;
 import org.dinky.scheduler.enums.ReleaseState;
 import org.dinky.scheduler.exception.SchedulerException;
-import org.dinky.scheduler.model.*;
+import org.dinky.scheduler.model.DagData;
+import org.dinky.scheduler.model.DagNodeLocation;
+import org.dinky.scheduler.model.DinkyTaskParams;
+import org.dinky.scheduler.model.DinkyTaskRequest;
+import org.dinky.scheduler.model.ProcessDefinition;
+import org.dinky.scheduler.model.ProcessTaskRelation;
+import org.dinky.scheduler.model.Project;
+import org.dinky.scheduler.model.TaskDefinition;
+import org.dinky.scheduler.model.TaskGroup;
+import org.dinky.scheduler.model.TaskMainInfo;
+import org.dinky.scheduler.model.TaskRequest;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.utils.JsonUtils;
@@ -346,6 +356,12 @@ public class SchedulerServiceImpl implements SchedulerService {
         return taskDefinition;
     }
 
+    /**
+     * Retrieves the list of task groups from DolphinScheduler.
+     *
+     * @param  projectCode   the project code
+     * @return               the list of task groups
+     */
     @Override
     public List<TaskGroup> getTaskGroupsFromDolphinScheduler(long projectCode) {
         return taskClient.getTaskGroupList(projectCode);
