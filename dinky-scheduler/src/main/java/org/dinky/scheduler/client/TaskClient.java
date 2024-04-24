@@ -26,7 +26,6 @@ import org.dinky.scheduler.model.TaskDefinition;
 import org.dinky.scheduler.model.TaskDefinitionLog;
 import org.dinky.scheduler.model.TaskGroup;
 import org.dinky.scheduler.model.TaskMainInfo;
-import org.dinky.scheduler.result.DsPageInfo;
 import org.dinky.scheduler.result.PageInfo;
 import org.dinky.scheduler.result.Result;
 import org.dinky.scheduler.utils.MyJSONUtil;
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -289,10 +287,7 @@ public class TaskClient {
                 .timeout(5000)
                 .execute()
                 .body();
-        List<JSONObject> jsonObjects =
-                MyJSONUtil.toBean(content, DsPageInfo.class).getData().getTotalList();
-        return jsonObjects.stream()
-                .map(jsonObject -> MyJSONUtil.toBean(jsonObject, TaskGroup.class))
-                .collect(Collectors.toList());
+        PageInfo<JSONObject> pageInfo = MyJSONUtil.toPageBean(content);
+        return MyJSONUtil.toBean(pageInfo.getTotalList().toString(), new TypeReference<List<TaskGroup>>() {});
     }
 }
