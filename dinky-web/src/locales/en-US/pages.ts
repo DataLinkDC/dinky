@@ -96,6 +96,7 @@ export default {
   'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
   'datastudio.header.pushdolphin.taskGroup': 'Task Group',
+  'datastudio.header.pushdolphin.taskGroupPriority': 'Task Group Priority',
   'datastudio.header.pushdolphin.taskName': 'Task name: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task type: {type} Process definition: {processDefinitionName}',

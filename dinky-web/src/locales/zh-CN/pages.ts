@@ -91,6 +91,7 @@ export default {
   'datastudio.header.pushdolphin.title': '将任务 [ {name} ] 推送至 DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky任务编码',
   'datastudio.header.pushdolphin.taskGroup': '任务组',
+  'datastudio.header.pushdolphin.taskGroupPriority': '组内优先级',
   'datastudio.header.pushdolphin.taskName': 'Task名称: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task类型: {type} 所属进程定义: {processDefinitionName}',
