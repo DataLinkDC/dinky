@@ -7,9 +7,13 @@ DINKY_HOME=${DINKY_HOME:-$(cd `dirname $0`; pwd)}
 APP_HOME="${DINKY_HOME}"
 
 DINKY_LOG_PATH="${APP_HOME}/logs/"
-
 if [ ! -d "${DINKY_LOG_PATH}" ]; then
   mkdir -p "${DINKY_LOG_PATH}"
+fi
+
+CUSTOMER_JAR_PATH="${APP_HOME}/customJar"
+if [ ! -d "${CUSTOMER_JAR_PATH}" ]; then
+  mkdir -p "${CUSTOMER_JAR_PATH}"
 fi
 
 EXTENDS_HOME="${APP_HOME}/extends"
@@ -36,7 +40,7 @@ assertIsInputVersion() {
 }
 
 # Use FLINK_HOME:
-CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${APP_HOME}/customJar/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${CUSTOMER_JAR_PATH}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
 PID_FILE="dinky.pid"
 
 # Log configuration file path
