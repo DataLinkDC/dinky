@@ -55,7 +55,6 @@ const Login: React.FC = () => {
     };
   });
   useEffect(() => {
-    console.log(location.hash)
     if (location.hash==("#/user/login?from=sso")){
       ssoToken().then(
         res => {
