@@ -207,6 +207,7 @@ export const handleOption = async (
   afterCallBack?: () => void
 ) => {
   await LoadingMessageAsync(l('app.request.running') + title);
+  
   try {
     const result = await postAll(url, param);
     if (result.code === RESPONSE_CODE.SUCCESS) {
