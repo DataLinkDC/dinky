@@ -59,7 +59,7 @@ JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.20.0.jar=10087:$APP_HOM
 JVM_OPTS="-Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M"
 
 # Check whether the pid path exists
-PID_PATH="$(cd "$(dirname "$0")";pwd)/run"
+PID_PATH="${APP_HOME}/run"
 
 if [ -d "${PID_PATH}" ];then
     echo "${PID_PATH} is already exist." >> /dev/null
