@@ -26,7 +26,6 @@ import org.dinky.data.exception.AuthException;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
 
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -38,7 +37,6 @@ import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.springframework.web.LogoutController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +59,6 @@ public class SsoCpntroller {
 
     @Value("${sso.enabled:false}")
     private Boolean ssoEnabled;
-
 
     @Value("${pac4j.centralLogout.defaultUrl:#{null}}")
     private String defaultUrl;
@@ -123,7 +120,6 @@ public class SsoCpntroller {
     public void ssoLogout() {
 
         logoutController.logout(webContext.getNativeRequest(), webContext.getNativeResponse());
-
     }
 
     @GetMapping("/ssoEnableStatus")

@@ -34,8 +34,8 @@
         <expand.scope>provided</expand.scope>
         <!-- Pac4j 4.x for jdk 8 -->
         <pac4j.version>4.2.0</pac4j.version>
-        <spring-webmvc-pac4j.version>4.0.1</spring-webmvc-pac4j.version>
         <postgresql.version>42.5.1</postgresql.version>
+        <spring-webmvc-pac4j.version>4.0.1</spring-webmvc-pac4j.version>
 
     </properties>
 
