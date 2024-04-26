@@ -323,7 +323,7 @@ export interface PushDolphinParams {
   isCache: boolean | string;
   timeoutNotifyStrategy: string[] | string;
   description: string;
-  taskGroupPriority:number
+  taskGroupPriority: number;
 }
 
 export type ButtonRoute = {

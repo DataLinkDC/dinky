@@ -23,8 +23,7 @@ export const transformPushDolphinParams = (
   dolphinTaskDefinition: DolphinTaskDefinition,
   pushDolphinParams: PushDolphinParams,
   toFormValues: boolean
-) => { 
-  
+) => {
   if (toFormValues && dolphinTaskDefinition) {
     const transformValue: PushDolphinParams = {
       ...pushDolphinParams,
