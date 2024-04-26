@@ -354,12 +354,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             case DATE:
             case LOCAL_DATE:
                 return new DateType();
-            case TIME:
-                if (column.getPrecision() != null) {
-                    return new TimeType(column.isNullable(), column.getPrecision());
-                } else {
-                    return new TimeType();
-                }
             case LOCAL_DATETIME:
             case TIMESTAMP:
                 if (column.getLength() != null) {
