@@ -92,6 +92,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
@@ -174,7 +175,28 @@ public abstract class YarnGateway extends AbstractGateway {
 
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);
-        yarnClient.start();
+
+        synchronized (YarnGateway.class) {
+            String hadoopUserName;
+            try {
+                hadoopUserName = UserGroupInformation.getLoginUser().getUserName();
+            } catch (Exception e) {
+                hadoopUserName = "hdfs";
+            }
+
+            // 设置 yarn 提交的用户名
+            String yarnUser = configuration.get(CustomerConfigureOptions.YARN_APPLICATION_USER);
+            if (StrUtil.isNotBlank(yarnUser)) {
+                UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser(yarnUser));
+            }
+            try {
+                yarnClient.start();
+            } finally {
+                if (StrUtil.isNotBlank(yarnUser)) {
+                    UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser(hadoopUserName));
+                }
+            }
+        }
     }
 
     private Path getYanConfigFilePath(String path) {
@@ -478,7 +500,9 @@ public abstract class YarnGateway extends AbstractGateway {
         return null;
     }
 
-    /** Creates a ZooKeeper path of the form "/a/b/.../z". */
+    /**
+     * Creates a ZooKeeper path of the form "/a/b/.../z".
+     */
     private static String generateZookeeperPath(String... paths) {
         final String result = Arrays.stream(paths)
                 .map(YarnGateway::trimSlashes)
