@@ -324,8 +324,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     public LogicalType getLogicalType(Column column) {
         switch (column.getJavaType()) {
-            case STRING:
-                return new VarCharType();
             case BOOLEAN:
             case JAVA_LANG_BOOLEAN:
                 return new BooleanType();
@@ -358,9 +356,11 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 return new DateType();
             case TIME:
             case LOCALTIME:
-                return column.getPrecision() != null
-                        ? new TimeType(column.isNullable(), column.getPrecision())
-                        : new TimeType();
+                if (column.getPrecision() != null) {
+                    return new TimeType(column.isNullable(), column.getPrecision());
+                } else {
+                    return new TimeType();
+                }
             case LOCAL_DATETIME:
             case TIMESTAMP:
                 if (column.getLength() != null) {
@@ -370,6 +370,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 }
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
+            case STRING:
             default:
                 return new VarCharType();
         }
