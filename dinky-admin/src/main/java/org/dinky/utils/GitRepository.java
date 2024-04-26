@@ -109,24 +109,22 @@ public class GitRepository {
                         .readEnvironment()
                         .findGitDir()
                         .build();
-                try (Git git = new Git(repository)){
-                    PullCommand pullCommand = git.pull()
-                            .setProgressMonitor(new TextProgressMonitor(new StringWriter() {
-                                @Override
-                                public void write(String str) {
-                                    if (logFile != null) {
-                                        FileUtil.appendUtf8String(str, logFile);
-                                    }
-                                    if (consumer != null) {
-                                        consumer.accept(str);
-                                    }
-                                    System.out.println(str);
-                                    super.write(str);
-                                }
-                            }));
+                try (Git git = new Git(repository)) {
+                    PullCommand pullCommand = git.pull().setProgressMonitor(new TextProgressMonitor(new StringWriter() {
+                        @Override
+                        public void write(String str) {
+                            if (logFile != null) {
+                                FileUtil.appendUtf8String(str, logFile);
+                            }
+                            if (consumer != null) {
+                                consumer.accept(str);
+                            }
+                            System.out.println(str);
+                            super.write(str);
+                        }
+                    }));
                     if (!StrUtil.hasBlank(username, password)) {
-                        pullCommand
-                                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
+                        pullCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
                     }
 
                     pullCommand.call();
@@ -137,7 +135,7 @@ public class GitRepository {
             }
             return writeFile;
         } catch (Exception e) {
-            log.error("",e);
+            log.error("", e);
             throw new DinkyException(e);
         }
     }

@@ -153,8 +153,8 @@
             <artifactId>sms4j-spring-boot-starter</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>*</artifactId>
                     <groupId>cn.hutool</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
