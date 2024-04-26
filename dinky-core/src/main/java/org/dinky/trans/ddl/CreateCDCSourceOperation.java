@@ -212,7 +212,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             driver.createSchema(schema);
         }
         sink.put(FlinkCDCConfig.SINK_DB, schema);
-        // todo: 存在 bug, 会导致 url 重复拼接 schema 的问题 , 例如: jdbc:mysql://localhost:3306/test?useSSL=false/test-1
+        // todo: There is a bug that can cause the problem of URL duplicate concatenation of schema, for example: jdbc: mysql://localhost:3306/test?useSSL=false/test -1
         if (!url.contains(schema)) {
             sink.put("url", url + "/" + schema);
         }
