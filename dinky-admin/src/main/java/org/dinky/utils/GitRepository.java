@@ -119,7 +119,7 @@ public class GitRepository {
                             if (consumer != null) {
                                 consumer.accept(str);
                             }
-                            System.out.println(str);
+                            log.info(str);
                             super.write(str);
                         }
                     }));
