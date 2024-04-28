@@ -67,7 +67,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
 
     @Override
     public TestResult test() {
-        kubernetsConfiguration =  config.getKubernetesConfig().getConfiguration();
+        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
         addConfigParas(KubernetesConfigOptions.CLUSTER_ID, UUID.randomUUID().toString());
 
         initConfig();

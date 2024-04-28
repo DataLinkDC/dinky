@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes.utils;
 
-import io.fabric8.kubernetes.client.utils.Serialization;
 import org.dinky.gateway.kubernetes.decorate.DinkySqlConfigMapDecorate;
 import org.dinky.utils.TextUtil;
 
@@ -50,6 +49,7 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.utils.Serialization;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -121,7 +121,7 @@ public class K8sClientHelper {
                 .get();
         List<HasMetadata> resources = getSqlFileDecorate().buildResources();
         // set owner reference
-        OwnerReference  deploymentOwnerReference = new OwnerReferenceBuilder()
+        OwnerReference deploymentOwnerReference = new OwnerReferenceBuilder()
                 .withName(deployment.getMetadata().getName())
                 .withApiVersion(deployment.getApiVersion())
                 .withUid(deployment.getMetadata().getUid())
