@@ -26,5 +26,6 @@ export const versionOptions = [
   { label: '1.15', value: 'v1_15' },
   { label: '1.16', value: 'v1_16' },
   { label: '1.17', value: 'v1_17' },
-  { label: '1.18', value: 'v1_18' }
+  { label: '1.18', value: 'v1_18' },
+  { label: '1.19', value: 'v1_19' }
 ];

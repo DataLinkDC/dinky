@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
@@ -53,6 +54,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/alertRule")
 @Api(tags = "Alert Rule Controller")
+@SaCheckLogin
 public class AlertRuleController {
 
     private final AlertRuleService alertRuleService;

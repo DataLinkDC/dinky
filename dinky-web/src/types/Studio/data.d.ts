@@ -250,6 +250,19 @@ export interface DolphinTaskMinInfo {
   upstreamTaskName: string;
 }
 
+export interface DolphinTaskGroupInfo {
+  id: number;
+  name: string;
+  description: string;
+  groupSize: number;
+  useSize: number;
+  userId: number;
+  status: number;
+  createTime: Date;
+  updateTime: Date;
+  projectCode: number;
+}
+
 export interface TaskParamProperty {
   prop: string;
   direct: string;
@@ -310,6 +323,7 @@ export interface PushDolphinParams {
   isCache: boolean | string;
   timeoutNotifyStrategy: string[] | string;
   description: string;
+  taskGroupPriority: number;
 }
 
 export type ButtonRoute = {

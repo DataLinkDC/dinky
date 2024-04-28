@@ -363,13 +363,18 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result<UserDTO> queryCurrentUserInfo() {
+    public Result<UserDTO> queryCurrentUserInfo(Integer tenantId) {
         UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
+        chooseTenant(tenantId);
 
         if (Asserts.isNotNull(userInfo)) {
             UserDTO userInfoDto = buildUserInfo(userInfo.getUser().getId());
             if (userInfoDto != null) {
-                userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+                Tenant currentTenant = userInfo.getCurrentTenant();
+                if (Asserts.isNull(currentTenant)) {
+                    currentTenant = tenantService.getById(tenantId);
+                }
+                userInfoDto.setCurrentTenant(currentTenant);
             }
             UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfoDto);
             return Result.succeed(userInfoDto);

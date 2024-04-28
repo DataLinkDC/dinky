@@ -39,7 +39,34 @@ spring:
   # circular references allowed
   main:
     allow-circular-references: true
-
+  #  默认使用内存缓存元数据信息，
+  #  dinky支持redis缓存，如有需要请把simple改为redis，并打开下面的redis连接配置
+  #  子配置项可以按需要打开或自定义配置
+  cache:
+    type: simple
+  #  #    如果type配置为redis，则该项可按需配置
+  #    redis:
+  ##      是否缓存空值，保存默认即可
+  #      cache-null-values: false
+  ##      缓存过期时间，24小时
+  #      time-to-live: 86400
+  #  redis:
+  #    host: 119.3.184.208
+  #    port: 6379
+  #    password: woai1998
+  #    database: 10
+  #    jedis:
+  #     pool:
+  #       # 连接池最大连接数（使用负值表示没有限制）
+  #       max-active: 50
+  #       # 连接池最大阻塞等待时间（使用负值表示没有限制）
+  #       max-wait: 3000
+  #       # 连接池中的最大空闲连接数
+  #       max-idle: 20
+  #       # 连接池中的最小空闲连接数
+  #       min-idle: 5
+  #   # 连接超时时间（毫秒）
+  #     timeout: 5000
   # file upload config of servlet , the default is 500MB
   servlet:
     multipart:
@@ -106,7 +133,7 @@ sa-token:
   timeout: 36000
   # The temporary validity period of the token (the token will be considered as expired if there is no operation within the specified time)
   # unit: second , if you do not need to set a temporary token, you can set it to -1
-  active-timeout: 1800
+  active-timeout: -1
   # Whether to allow the same account to log in concurrently (when true, allow login together, when false, new login squeezes out old login)
   is-concurrent: false
   # When multiple people log in to the same account, whether to share a token (if true, all logins share a token, and if false, create a new token for each login)

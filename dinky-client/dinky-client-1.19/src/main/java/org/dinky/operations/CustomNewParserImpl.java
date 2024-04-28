@@ -17,28 +17,25 @@
  *
  */
 
-package org.dinky.configure.cache;
+package org.dinky.operations;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
+import org.dinky.parser.CustomParserImpl;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.support.AbstractCacheManager;
+import org.apache.flink.table.api.TableEnvironment;
+import org.apache.flink.table.delegation.Parser;
+import org.apache.flink.table.planner.parse.ExtendedParser;
 
-public class PaimonCacheManager extends AbstractCacheManager {
+public class CustomNewParserImpl extends CustomParserImpl {
 
-    @Override
-    protected Collection<? extends Cache> loadCaches() {
-        Collection<Cache> caches = new LinkedHashSet<>();
-        for (String cacheName : this.getCacheNames()) {
-            Cache cache = this.getCache(cacheName);
-            caches.add(cache);
-        }
-        return caches;
+    private final DinkyParser dinkyParser;
+
+    public CustomNewParserImpl(TableEnvironment tableEnvironment, Parser parser) {
+        super(parser);
+        this.dinkyParser = new DinkyParser(tableEnvironment);
     }
 
     @Override
-    protected Cache getMissingCache(String name) {
-        return new PaimonCache(name);
+    public ExtendedParser getDinkyParser() {
+        return this.dinkyParser;
     }
 }

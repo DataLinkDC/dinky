@@ -17,16 +17,11 @@
  *
  */
 
-package org.dinky.configure.cache;
+package org.dinky.executor;
 
-import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.apache.flink.table.delegation.Parser;
 
-@Configuration
-public class CacheConfiguration {
-    @Bean
-    public CacheManager cacheManager() {
-        return new PaimonCacheManager();
-    }
+/** */
+public interface ExtendedParser extends Parser {
+    CustomParser getCustomParser();
 }

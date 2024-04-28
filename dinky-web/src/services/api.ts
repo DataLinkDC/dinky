@@ -78,7 +78,7 @@ export async function getData(url: string, params?: any) {
 export async function removeData(url: string, params: [any]) {
   return request(url, {
     method: METHOD_CONSTANTS.DELETE,
-    data: {
+    params: {
       ...params
     }
   });

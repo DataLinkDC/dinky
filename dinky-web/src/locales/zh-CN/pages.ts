@@ -90,6 +90,8 @@ export default {
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': '将任务 [ {name} ] 推送至 DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky任务编码',
+  'datastudio.header.pushdolphin.taskGroup': '任务组',
+  'datastudio.header.pushdolphin.taskGroupPriority': '组内优先级',
   'datastudio.header.pushdolphin.taskName': 'Task名称: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task类型: {type} 所属进程定义: {processDefinitionName}',
@@ -287,6 +289,7 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': '用户名',
   'login.username.required': '用户名是必填项！',
+  'login.token.error': '无法获取token信息/会话已过期，即将跳转到登录页,请重新登录...',
   /**
    *
    * menu
@@ -831,6 +834,7 @@ export default {
   'rc.ds.delete': '删除数据源',
   'rc.ds.deleteConfirm': '确定删除该数据源吗？',
   'rc.ds.detail.tag.console': '控制台',
+  'rc.ds.detail.tag.console.clear.log': '清除日志...',
   'rc.ds.detail.tag.desc': '描述',
   'rc.ds.detail.tag.gensql': '生成 SQL',
   'rc.ds.detail.tag.query': '查询',
@@ -940,6 +944,8 @@ export default {
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
   'rc.resource.copy': '复制为: {fillValue}',
+  'rc.resource.enable': '未启用资源管理功能',
+  'rc.resource.enable.tips': '请前往 [配置中心 -> 全局配置 -> Resource 配置] 中启用资源管理功能!!!',
 
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',

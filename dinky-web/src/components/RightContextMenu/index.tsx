@@ -36,6 +36,8 @@ const RightContextMenu: React.FC<RightContextMenuProps> = (props) => {
   return (
     <Dropdown
       arrow
+      autoAdjustOverflow
+      destroyPopupOnHide
       trigger={['contextMenu']}
       overlayStyle={{ ...contextMenuPosition }}
       menu={{ onClick: onClick, items: items }}

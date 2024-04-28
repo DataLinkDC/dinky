@@ -95,6 +95,8 @@ export default {
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
+  'datastudio.header.pushdolphin.taskGroup': 'Task Group',
+  'datastudio.header.pushdolphin.taskGroupPriority': 'Task Group Priority',
   'datastudio.header.pushdolphin.taskName': 'Task name: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task type: {type} Process definition: {processDefinitionName}',
@@ -299,6 +301,8 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': 'Username',
   'login.username.required': 'Please input your username!',
+  'login.token.error':
+    'Unable to get token information/session has expired, will jump to the login page, please re-login...',
   /**
    *
    * menu
@@ -860,6 +864,7 @@ export default {
   'rc.ds.search': 'Search Name/Note',
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
+  'rc.ds.detail.tag.console.clear.log': 'Clear Log...',
   'rc.ds.create': 'Create DataSource',
   'rc.ds.decimalDigits': 'Decimal Range',
   'rc.ds.default': 'Default Value',
@@ -981,6 +986,9 @@ export default {
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
   'rc.resource.copy': 'Copy as: {fillValue}',
+  'rc.resource.enable': 'Resource management function is not enabled',
+  'rc.resource.enable.tips':
+    'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
 
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',

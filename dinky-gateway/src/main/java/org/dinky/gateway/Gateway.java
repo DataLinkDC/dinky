@@ -90,4 +90,6 @@ public interface Gateway {
     boolean onJobFinishCallback(String status);
 
     GatewayResult deployCluster(FlinkUdfPathContextHolder udfPathContextHolder);
+
+    String getLatestJobManageHost(String appId, String oldJobManagerHost);
 }

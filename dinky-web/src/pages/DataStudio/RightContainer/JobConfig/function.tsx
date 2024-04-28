@@ -47,7 +47,8 @@ export const buildRunModelOptions = () => {
       value: RUN_MODE.YARN_SESSION
     },
     {
-      label: 'Yarn Per-Job',
+      // flink弃用了 yarn per-job 模式 在这写个标签 带横线的 | flink deprecated yarn per-job mode, write a label here with a horizontal line
+      label: <del>Yarn Per-Job (Deprecated)</del>,
       value: RUN_MODE.YARN_PER_JOB
     },
     {

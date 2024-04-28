@@ -41,12 +41,12 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
@@ -92,9 +92,19 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
                 dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
         final String schemaFieldName = config.getSchemaFieldName();
 
-        Map<Table, OutputTag<String>> tagMap = new HashMap<>();
-        Map<String, Table> tableMap = new HashMap<>();
+        Map<Table, OutputTag<String>> tagMap = new LinkedHashMap<>();
+        Map<String, Table> tableMap = new LinkedHashMap<>();
         for (Schema schema : schemaList) {
+            if (Asserts.isNullCollection(schema.getTables())) {
+                // if schema tables is empty, throw exception
+                throw new IllegalArgumentException(
+                        "Schema tables is empty, please check your configuration or check your database permission and try again.");
+            }
+            // if schema tables is not empty, sort by table name
+            List<Table> tableList = schema.getTables().stream()
+                    .sorted(Comparator.comparing(Table::getName))
+                    .collect(Collectors.toList());
+
             for (Table table : schema.getTables()) {
                 OutputTag<String> outputTag = new OutputTag<String>(getSinkTableName(table)) {};
                 tagMap.put(table, outputTag);
@@ -150,7 +160,8 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
                         getSinkSchemaName(table),
                         getSinkTableName(table)));
             } else {
-                // flink-cdc-pipeline-connector-doris 3.0.0 以上版本内部已经拼接了 SchemaName + SinkTableName，并且约定 TableLabel 正则表达式如下 --> regex: ^[-_A-Za-z0-9]{1,128}$
+                // flink-cdc-pipeline-connector-doris 3.0.0 以上版本内部已经拼接了 SchemaName + SinkTableName，并且约定 TableLabel
+                // 正则表达式如下 --> regex: ^[-_A-Za-z0-9]{1,128}$
                 executionBuilder.setLabelPrefix("dinky");
             }
 
@@ -160,11 +171,13 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
 
             executionBuilder.setStreamLoadProp(properties).setDeletable(true);
 
-            JsonDebeziumSchemaSerializer.Builder jsonDebeziumSchemaSerializerBuilder = JsonDebeziumSchemaSerializer.builder();
+            JsonDebeziumSchemaSerializer.Builder jsonDebeziumSchemaSerializerBuilder =
+                    JsonDebeziumSchemaSerializer.builder();
 
             // use new schema change
             if (sink.containsKey(DorisSinkOptions.SINK_USE_NEW_SCHEMA_CHANGE.key())) {
-                jsonDebeziumSchemaSerializerBuilder.setNewSchemaChange(Boolean.valueOf(sink.get(DorisSinkOptions.SINK_USE_NEW_SCHEMA_CHANGE.key())));
+                jsonDebeziumSchemaSerializerBuilder.setNewSchemaChange(
+                        Boolean.valueOf(sink.get(DorisSinkOptions.SINK_USE_NEW_SCHEMA_CHANGE.key())));
             }
 
             DorisSink.Builder<String> builder = DorisSink.builder();

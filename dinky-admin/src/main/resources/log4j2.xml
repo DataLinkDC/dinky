@@ -2,7 +2,7 @@
 <!--status用于设置log4j2框架内部的日志信息输出，设置成OFF将禁止log4j2内部日志输出，毕竟这个日志对我们没有什么作用，如果设置成trace，你会看到log4j2内部各种详细输出；monitorInterval是监控间隔，例如下面的设置是指：log4j2每隔600秒自动监控该配置文件是否有变化，如果有变化，则根据文件内容新的配置生成日志-->
 <configuration status="OFF" monitorInterval="600">
   <Properties>
-    <property name="LOG_PATH">./logs/</property>
+    <property name="LOG_PATH" >${sys:dinky.logs.path:-./logs/}</property>
     <property name="LOG_FILE">dinky</property>
   </Properties>
   <!--定义添加器-->

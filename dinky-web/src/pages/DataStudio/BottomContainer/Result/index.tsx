@@ -230,7 +230,7 @@ const Result = (props: any) => {
     <div style={{ width: '100%' }}>
       <div style={{ direction: 'rtl' }}>
         {renderDownloadButton()}
-        {current ? isSql(current.dialect) ? <></> : renderFlinkSQLContent() : undefined}
+        {current && isSql(current?.dialect, true) && renderFlinkSQLContent()}
       </div>
       {data.columns ? (
         <Table

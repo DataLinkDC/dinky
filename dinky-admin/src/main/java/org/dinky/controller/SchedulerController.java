@@ -23,6 +23,7 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.result.Result;
 import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.scheduler.model.TaskDefinition;
+import org.dinky.scheduler.model.TaskGroup;
 import org.dinky.scheduler.model.TaskMainInfo;
 import org.dinky.service.SchedulerService;
 
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -44,6 +46,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/scheduler")
 @Api(tags = "DolphinScheduler Controller")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class SchedulerController {
 
@@ -96,5 +99,15 @@ public class SchedulerController {
             return Result.succeed(Status.DS_ADD_TASK_DEFINITION_SUCCESS);
         }
         return Result.succeed(Status.DS_ADD_TASK_DEFINITION_SUCCESS);
+    }
+
+    /**
+     * 获取任务组
+     * @param projectCode
+     * @return
+     */
+    @GetMapping(value = "/task/groups")
+    public Result<List<TaskGroup>> getTaskGroups(@RequestParam("projectCode") Long projectCode) {
+        return Result.succeed(schedulerService.getTaskGroupsFromDolphinScheduler(projectCode));
     }
 }

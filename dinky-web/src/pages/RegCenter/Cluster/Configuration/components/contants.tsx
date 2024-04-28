@@ -68,7 +68,7 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
     rules: [{ required: true }]
   },
   {
-    name: 'kubernetes.service.account',
+    name: 'kubernetes.service-account',
     label: l('rc.cc.k8s.account'),
     placeholder: l('rc.cc.k8s.accountHelp'),
     tooltip: l('rc.cc.k8s.accountHelp'),

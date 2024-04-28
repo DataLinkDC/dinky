@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
 import io.swagger.annotations.Api;
@@ -60,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Catalogue Controller")
 @RequestMapping("/api/catalogue")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class CatalogueController {
 
     private final CatalogueService catalogueService;
