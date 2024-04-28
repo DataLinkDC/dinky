@@ -43,10 +43,12 @@ import org.apache.flink.util.Collector;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -91,7 +93,16 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
             }
 
             for (Schema schema : schemaList) {
-                for (Table table : schema.getTables()) {
+                if (Asserts.isNullCollection(schema.getTables())) {
+                    // if schema tables is empty, throw exception
+                    throw new IllegalArgumentException(
+                            "Schema tables is empty, please check your configuration or check your database permission and try again.");
+                }
+                // if schema tables is not empty, sort by table name
+                List<Table> tableList = schema.getTables().stream()
+                        .sorted(Comparator.comparing(Table::getName))
+                        .collect(Collectors.toList());
+                for (Table table : tableList) {
                     final String tableName = table.getName();
                     final String schemaName = table.getSchema();
                     SingleOutputStreamOperator<Map> filterOperator = mapOperator.filter((FilterFunction<Map>) value -> {

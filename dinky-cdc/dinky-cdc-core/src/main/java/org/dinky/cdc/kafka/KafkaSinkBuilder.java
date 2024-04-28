@@ -63,11 +63,12 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * MysqlCDCBuilder
@@ -128,17 +129,27 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
             KafkaSink<String> kafkaSink = kafkaSinkBuilder.build();
             dataStreamSource.sinkTo(kafkaSink);
         } else {
-            Map<Table, OutputTag<String>> tagMap = new HashMap<>();
-            Map<String, Table> tableMap = new HashMap<>();
+            Map<Table, OutputTag<String>> tagMap = new LinkedHashMap<>();
+            Map<String, Table> tableMap = new LinkedHashMap<>();
             ObjectMapper objectMapper = new ObjectMapper();
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource
                     .map(x -> objectMapper.readValue(x, Map.class))
                     .returns(Map.class);
             final List<Schema> schemaList = config.getSchemaList();
+
             final String schemaFieldName = config.getSchemaFieldName();
             if (Asserts.isNotNullCollection(schemaList)) {
                 for (Schema schema : schemaList) {
-                    for (Table table : schema.getTables()) {
+                    if (Asserts.isNullCollection(schema.getTables())) {
+                        // if schema tables is empty, throw exception
+                        throw new IllegalArgumentException(
+                                "Schema tables is empty, please check your configuration or check your database permission and try again.");
+                    }
+                    // if schema tables is not empty, sort by table name
+                    List<Table> tableList = schema.getTables().stream()
+                            .sorted(Comparator.comparing(Table::getName))
+                            .collect(Collectors.toList());
+                    for (Table table : tableList) {
                         String sinkTableName = getSinkTableName(table);
                         OutputTag<String> outputTag = new OutputTag<String>(sinkTableName) {};
                         tagMap.put(table, outputTag);
