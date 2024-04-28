@@ -67,7 +67,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
 
     @Override
     public TestResult test() {
-        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        kubernetsConfiguration =  config.getKubernetesConfig().getConfiguration();
         addConfigParas(KubernetesConfigOptions.CLUSTER_ID, UUID.randomUUID().toString());
 
         initConfig();
@@ -94,6 +94,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
     }
 
     public boolean deleteCluster() {
+        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
         initConfig();
         initMetadata();
         getK8sClientHelper().getKubernetesClient().resource(flinkDeployment).delete();
@@ -160,7 +161,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
     private void initSpec() {
         String flinkVersion = flinkConfig.getFlinkVersion();
         String image = kubernetsConfiguration.get("kubernetes.container.image");
-        String serviceAccount = kubernetsConfiguration.get("kubernetes.service.account");
+        String serviceAccount = kubernetsConfiguration.get("kubernetes.service-account");
 
         logger.info("\nflinkVersion is : {} \n image is : {}", flinkVersion, image);
 
