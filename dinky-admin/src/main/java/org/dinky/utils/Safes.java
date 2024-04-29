@@ -17,20 +17,28 @@
  *
  */
 
-import { TaskDataType } from '@/pages/DataStudio/model';
-import { postAll, putDataJson } from '@/services/api';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
+package org.dinky.utils;
 
-export async function getTaskData(params: any) {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA, params)).data;
-}
-export async function getTaskSortTypeData() {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA)).data;
-}
-export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
-  return queryDataByParams(API_CONSTANTS.TASK, { id: id });
-}
-export function putTask(params: any) {
-  return putDataJson(API_CONSTANTS.TASK, params);
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Safes Tool
+ *
+ * @since 2024/4/29 14:21
+ */
+public class Safes {
+
+    public static  <K, V> Map<K, V> of(Map<K, V> map) {
+        return Optional.ofNullable(map).orElse(Maps.newHashMap());
+    }
+
+    public static <T> List<T> of(List<T> list) {
+        return Optional.ofNullable(list).orElse(Lists.newArrayList());
+    }
+
 }

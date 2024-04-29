@@ -39,7 +39,7 @@ import org.dinky.scheduler.model.TaskDefinition;
 import org.dinky.scheduler.model.TaskGroup;
 import org.dinky.scheduler.model.TaskMainInfo;
 import org.dinky.scheduler.model.TaskRequest;
-import org.dinky.service.CatalogueService;
+import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.utils.JsonUtils;
 

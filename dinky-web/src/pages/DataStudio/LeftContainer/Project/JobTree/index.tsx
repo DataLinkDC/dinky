@@ -24,11 +24,18 @@ import {
   getLeafKeyList,
   getParentKey
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import { StateType, STUDIO_MODEL, TabsItemType } from '@/pages/DataStudio/model';
+import {
+  StateType,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC,
+  TabsItemType
+} from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
+import { SortAscendingOutlined } from '@ant-design/icons';
 import { Key } from '@ant-design/pro-components';
-import { Empty, Tree } from 'antd';
+import { Cascader, Empty, Space, Tree } from 'antd';
+import type { SingleCascaderProps } from 'antd/es/cascader';
 import Search from 'antd/es/input/Search';
 import React, { useEffect, useState } from 'react';
 import { BtnRoute, useTasksDispatch } from '../../BtnContext';
@@ -49,6 +56,8 @@ type TreeProps = {
 const JobTree: React.FC<TreeProps & connect> = (props) => {
   const {
     project: { data: projectData, expandKeys, selectKey },
+    catalogueSortType: { data: catalogueSortTypeData },
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
     onNodeClick,
     style,
     height,
@@ -59,12 +68,31 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   } = props;
 
   const [searchValue, setSearchValueValue] = useState('');
+  const [initialSelectSortType, setInitialSelectSortType] = useState<string[]>([]);
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
   const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
     setData(buildProjectTree(projectData, searchValue));
   }, [searchValue, projectData]);
+
+  useEffect(() => {
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+  }, [selectCatalogueSortTypeData]);
+
+  // set sort default value
+  useEffect(() => {
+    if (
+      selectCatalogueSortTypeData &&
+      selectCatalogueSortTypeData.sortValue != '' &&
+      selectCatalogueSortTypeData.sortType != ''
+    ) {
+      const initialSortValue = selectCatalogueSortTypeData.sortValue;
+      const initialSortType = initialSortValue + '_' + selectCatalogueSortTypeData.sortType;
+      const initialValue = [initialSortValue, initialSortType];
+      setInitialSelectSortType(initialValue);
+    }
+  }, []);
 
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const onChangeSearch = (e: any) => {
@@ -139,14 +167,44 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     payload: btnEvent
   });
 
+  interface Option {
+    value: string;
+    label: string;
+    children?: Option[];
+  }
+
+  const onChange: SingleCascaderProps<Option>['onChange'] = (value) => {
+    const lastValue: string = value[value.length - 1].toString();
+    const lastValueSortField: string = lastValue.substring(0, lastValue.lastIndexOf('_'));
+    const lastValueSortType: string = lastValue.substring(lastValue.lastIndexOf('_') + 1);
+    dispatch({
+      type: STUDIO_MODEL.saveTaskSortTypeData,
+      payload: {
+        sortValue: lastValueSortField,
+        sortType: lastValueSortType
+      }
+    });
+  };
+
   return (
     <>
-      <Search
-        style={{ margin: '8px 0px' }}
-        placeholder={l('global.search.text')}
-        onChange={onChangeSearch}
-        allowClear={true}
-      />
+      <Space direction='horizontal'>
+        <Search
+          style={{ margin: '8px 0px' }}
+          placeholder={l('global.search.text')}
+          onChange={onChangeSearch}
+          allowClear={true}
+        />
+        <Cascader
+          options={catalogueSortTypeData}
+          expandTrigger='click'
+          key={initialSelectSortType}
+          defaultValue={initialSelectSortType}
+          onChange={onChange}
+        >
+          <SortAscendingOutlined />
+        </Cascader>
+      </Space>
 
       {data.length ? (
         <DirectoryTree
@@ -173,5 +231,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   height: Studio.toolContentHeight,
-  project: Studio.project
+  project: Studio.project,
+  catalogueSortType: Studio.catalogueSortType,
+  selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
 }))(JobTree);

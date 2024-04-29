@@ -59,6 +59,7 @@ const Project: React.FC = (props: connect) => {
     dispatch,
     project: { expandKeys, selectKey },
     tabs: { panes, activeKey },
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
     tabs
   } = props;
 
@@ -210,7 +211,7 @@ const Project: React.FC = (props: connect) => {
       },
       () => {},
       () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
         if (values.type && values.type.toLowerCase() === DIALECT.FLINKSQLENV) {
           dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
         }
@@ -255,7 +256,7 @@ const Project: React.FC = (props: connect) => {
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
       });
       return;
     }
@@ -284,7 +285,7 @@ const Project: React.FC = (props: connect) => {
             dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
           }
         });
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
       }
     });
   };
@@ -321,7 +322,8 @@ const Project: React.FC = (props: connect) => {
       API_CONSTANTS.COPY_TASK_URL,
       l('right.menu.copy'),
       { ...projectState.value },
-      () => dispatch({ type: STUDIO_MODEL_ASYNC.queryProject })
+      () =>
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData })
     );
     handleContextCancel();
   };
@@ -358,7 +360,7 @@ const Project: React.FC = (props: connect) => {
         }));
       }
     );
-    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
     handleContextCancel();
   };
 
@@ -487,5 +489,6 @@ const Project: React.FC = (props: connect) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
-  project: Studio.project
+  project: Studio.project,
+  selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
 }))(Project);

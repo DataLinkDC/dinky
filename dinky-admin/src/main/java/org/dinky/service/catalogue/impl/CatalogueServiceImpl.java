@@ -17,17 +17,17 @@
  *
  */
 
-package org.dinky.service.impl;
+package org.dinky.service.catalogue.impl;
 
 import static org.dinky.assertion.Asserts.isNull;
 
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.dto.CatalogueTaskDTO;
-import org.dinky.data.enums.GatewayType;
-import org.dinky.data.enums.JobLifeCycle;
-import org.dinky.data.enums.JobStatus;
-import org.dinky.data.enums.Status;
+import org.dinky.data.dto.CatalogueTreeQueryDTO;
+import org.dinky.data.enums.*;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Metrics;
@@ -37,9 +37,10 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.CatalogueService;
+import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
@@ -50,13 +51,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
+import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,11 +74,13 @@ import lombok.RequiredArgsConstructor;
  *
  * @since 2021/5/28 14:02
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue> implements CatalogueService {
 
     private final TaskService taskService;
+
     private final JobInstanceService jobInstanceService;
 
     private final HistoryService historyService;
@@ -88,12 +89,18 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     private final MonitorService monitorService;
 
+    private final CatalogueTreeSortFactory catalogueTreeSortFactory;
+
     /**
      * @return
      */
     @Override
-    public List<Catalogue> getCatalogueTree() {
-        return buildCatalogueTree(this.list());
+    public List<Catalogue> getCatalogueTree(CatalogueTreeQueryDTO catalogueTreeQueryDto) {
+        log.info("getCatalogueTree, catalogueTreeQueryDto: {}", catalogueTreeQueryDto);
+        List<Catalogue> catalogueTree = buildCatalogueTree(this.list());
+        // sort
+        CatalogueTreeSortStrategy strategy = catalogueTreeSortFactory.getStrategy(catalogueTreeQueryDto.getSortValue());
+        return strategy.sort(catalogueTree, SortTypeEnum.getByName(catalogueTreeQueryDto.getSortType()));
     }
 
     /**
@@ -177,6 +184,34 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             }
         }
         return childList;
+    }
+
+    /**
+     * Get the catalogue sort type
+     *
+     * @return A list of {@link CascaderVO} objects representing the catalogue sort type.
+     */
+    @Override
+    public List<CascaderVO> getCatalogueSortType() {
+        List<CascaderVO> cascaderVoList = Lists.newArrayList();
+        for (CatalogueSortValueEnum catalogueSortValueEnum : CatalogueSortValueEnum.values()) {
+            String catalogueSortValueEnumName = catalogueSortValueEnum.getName();
+            String catalogueSortValueEnumI18nValue = catalogueSortValueEnum.getI18nValue();
+            CascaderVO cascaderVo = new CascaderVO();
+            cascaderVo.setValue(catalogueSortValueEnumName);
+            cascaderVo.setLabel(catalogueSortValueEnumI18nValue);
+            List<CascaderVO> subCascaderVoList = Arrays.stream(SortTypeEnum.values()).map(sortTypeEnum -> {
+                String sortTypeEnumName = sortTypeEnum.getName();
+                String sortTypeEnumI18nValue = sortTypeEnum.getI18nValue();
+                CascaderVO subCascaderVo = new CascaderVO();
+                subCascaderVo.setValue(catalogueSortValueEnumName + "_" + sortTypeEnumName);
+                subCascaderVo.setLabel(catalogueSortValueEnumI18nValue + " " + sortTypeEnumI18nValue);
+                return subCascaderVo;
+            }).collect(Collectors.toList());
+            cascaderVo.setChildren(subCascaderVoList);
+            cascaderVoList.add(cascaderVo);
+        }
+        return cascaderVoList;
     }
 
     @Override

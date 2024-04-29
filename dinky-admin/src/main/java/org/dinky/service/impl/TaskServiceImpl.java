@@ -74,7 +74,7 @@ import org.dinky.job.JobResult;
 import org.dinky.mapper.TaskMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertGroupService;
-import org.dinky.service.CatalogueService;
+import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;

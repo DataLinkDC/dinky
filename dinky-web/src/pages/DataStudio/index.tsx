@@ -55,6 +55,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     rightContainer,
     queryDatabaseList,
     queryTaskData,
+    queryTaskSortTypeData,
     updateToolContentHeight,
     updateBottomHeight,
     querySessionData,
@@ -66,7 +67,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
     queryClusterConfigurationData,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey },
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData }
   } = props;
   const isProject = isProjectTabs(panes, activeKey);
   const { token } = useToken();
@@ -108,7 +110,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
 
   const loadData = () => {
     queryDatabaseList();
-    queryTaskData();
+    queryTaskSortTypeData();
+    queryTaskData({ payload: selectCatalogueSortTypeData });
     querySessionData();
     queryEnv();
     queryClusterConfigurationData();
@@ -301,7 +304,8 @@ export default connect(
     rightContainer: Studio.rightContainer,
     bottomContainer: Studio.bottomContainer,
     activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
-    tabs: Studio.tabs
+    tabs: Studio.tabs,
+    selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
   }),
   mapDispatchToProps
 )(DataStudio);
