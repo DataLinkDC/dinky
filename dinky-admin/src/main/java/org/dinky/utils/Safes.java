@@ -19,12 +19,12 @@
 
 package org.dinky.utils;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Safes Tool
@@ -33,12 +33,11 @@ import java.util.Optional;
  */
 public class Safes {
 
-    public static  <K, V> Map<K, V> of(Map<K, V> map) {
+    public static <K, V> Map<K, V> of(Map<K, V> map) {
         return Optional.ofNullable(map).orElse(Maps.newHashMap());
     }
 
     public static <T> List<T> of(List<T> list) {
         return Optional.ofNullable(list).orElse(Lists.newArrayList());
     }
-
 }

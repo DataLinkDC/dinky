@@ -20,6 +20,7 @@
 package org.dinky.data.enums;
 
 import org.dinky.utils.I18n;
+
 import org.apache.commons.codec.binary.StringUtils;
 
 import java.util.Arrays;
@@ -102,5 +103,4 @@ public enum SortTypeEnum {
             return comparator.compare(a, b);
         }
     }
-
 }

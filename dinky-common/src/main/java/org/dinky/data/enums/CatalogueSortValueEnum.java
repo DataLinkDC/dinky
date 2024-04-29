@@ -54,5 +54,4 @@ public enum CatalogueSortValueEnum {
     public String getI18nValue() {
         return I18n.getMessage(this.getValue());
     }
-
 }

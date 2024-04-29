@@ -19,19 +19,21 @@
 
 package org.dinky.service.catalogue.strategy.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.constant.CatalogueSortConstant;
 import org.dinky.data.enums.SortTypeEnum;
 import org.dinky.data.model.Catalogue;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 import org.dinky.utils.Safes;
-import org.springframework.stereotype.Component;
 
 import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * CatalogueTreeSortFirstLetterStrategy
@@ -51,12 +53,16 @@ public class CatalogueTreeSortFirstLetterStrategy implements CatalogueTreeSortSt
      */
     @Override
     public List<Catalogue> sort(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum) {
-        log.info("sort catalogue tree based on first letter. catalogueTree: {}, sortTypeEnum: {}", catalogueTree, sortTypeEnum);
+        log.info(
+                "sort catalogue tree based on first letter. catalogueTree: {}, sortTypeEnum: {}",
+                catalogueTree,
+                sortTypeEnum);
         Collator collator = Collator.getInstance(Locale.CHINA);
         return recursionSortCatalogues(catalogueTree, sortTypeEnum, collator);
     }
 
-    public List<Catalogue> recursionSortCatalogues(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum, Collator collator) {
+    public List<Catalogue> recursionSortCatalogues(
+            List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum, Collator collator) {
         List<Catalogue> catalogueList = Safes.of(catalogueTree).stream()
                 .sorted((o1, o2) -> sortTypeEnum.compare(o1.getName(), o2.getName(), collator))
                 .collect(Collectors.toList());
@@ -71,5 +77,4 @@ public class CatalogueTreeSortFirstLetterStrategy implements CatalogueTreeSortSt
         }
         return catalogueList;
     }
-
 }

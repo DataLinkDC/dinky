@@ -19,17 +19,19 @@
 
 package org.dinky.service.catalogue.strategy.impl;
 
-import cn.hutool.core.collection.CollectionUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.constant.CatalogueSortConstant;
 import org.dinky.data.enums.SortTypeEnum;
 import org.dinky.data.model.Catalogue;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 import org.dinky.utils.Safes;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * CatalogueTreeSortCreateTimeStrategy
@@ -49,7 +51,10 @@ public class CatalogueTreeSortCreateTimeStrategy implements CatalogueTreeSortStr
      */
     @Override
     public List<Catalogue> sort(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum) {
-        log.info("sort catalogue tree based on creation time. catalogueTree: {}, sortTypeEnum: {}", catalogueTree, sortTypeEnum);
+        log.info(
+                "sort catalogue tree based on creation time. catalogueTree: {}, sortTypeEnum: {}",
+                catalogueTree,
+                sortTypeEnum);
         return recursionSortCatalogues(catalogueTree, sortTypeEnum);
     }
 
@@ -68,5 +73,4 @@ public class CatalogueTreeSortCreateTimeStrategy implements CatalogueTreeSortStr
         }
         return catalogueList;
     }
-
 }

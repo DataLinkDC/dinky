@@ -21,8 +21,6 @@ package org.dinky.service.catalogue.impl;
 
 import static org.dinky.assertion.Asserts.isNull;
 
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.dto.CatalogueTaskDTO;
@@ -40,12 +38,14 @@ import org.dinky.data.result.Result;
 import org.dinky.data.vo.CascaderVO;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 import org.dinky.service.TaskService;
+import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
+import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -54,13 +54,12 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
-import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -68,6 +67,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * CatalogueServiceImpl
@@ -200,14 +200,16 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             CascaderVO cascaderVo = new CascaderVO();
             cascaderVo.setValue(catalogueSortValueEnumName);
             cascaderVo.setLabel(catalogueSortValueEnumI18nValue);
-            List<CascaderVO> subCascaderVoList = Arrays.stream(SortTypeEnum.values()).map(sortTypeEnum -> {
-                String sortTypeEnumName = sortTypeEnum.getName();
-                String sortTypeEnumI18nValue = sortTypeEnum.getI18nValue();
-                CascaderVO subCascaderVo = new CascaderVO();
-                subCascaderVo.setValue(catalogueSortValueEnumName + "_" + sortTypeEnumName);
-                subCascaderVo.setLabel(catalogueSortValueEnumI18nValue + " " + sortTypeEnumI18nValue);
-                return subCascaderVo;
-            }).collect(Collectors.toList());
+            List<CascaderVO> subCascaderVoList = Arrays.stream(SortTypeEnum.values())
+                    .map(sortTypeEnum -> {
+                        String sortTypeEnumName = sortTypeEnum.getName();
+                        String sortTypeEnumI18nValue = sortTypeEnum.getI18nValue();
+                        CascaderVO subCascaderVo = new CascaderVO();
+                        subCascaderVo.setValue(catalogueSortValueEnumName + "_" + sortTypeEnumName);
+                        subCascaderVo.setLabel(catalogueSortValueEnumI18nValue + " " + sortTypeEnumI18nValue);
+                        return subCascaderVo;
+                    })
+                    .collect(Collectors.toList());
             cascaderVo.setChildren(subCascaderVoList);
             cascaderVoList.add(cascaderVo);
         }

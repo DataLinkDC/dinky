@@ -39,5 +39,4 @@ public interface CatalogueTreeSortStrategy {
      * @return A list of {@link Catalogue} Sorted catalogue tree.
      */
     List<Catalogue> sort(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum);
-
 }

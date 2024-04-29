@@ -29,5 +29,4 @@ public class CatalogueSortConstant {
     public static final String STRATEGY_FIRST_LETTER = "first_letter";
     public static final String STRATEGY_CREATE_TIME = "create_time";
     public static final String STRATEGY_DEFAULT = "default";
-
 }

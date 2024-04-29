@@ -19,17 +19,19 @@
 
 package org.dinky.service.catalogue.factory;
 
-import cn.hutool.core.util.StrUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.constant.CatalogueSortConstant;
 import org.dinky.data.exception.BusException;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 import org.dinky.utils.Safes;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * CatalogueTreeSortFactory
@@ -50,15 +52,16 @@ public class CatalogueTreeSortFactory {
      * @return {@link CatalogueTreeSortStrategy} CatalogueTreeSortStrategy.
      */
     public CatalogueTreeSortStrategy getStrategy(String strategyName) {
-        CatalogueTreeSortStrategy catalogueTreeSortStrategy = Safes.of(catalogueTreeSortStrategyMap).get(strategyName);
+        CatalogueTreeSortStrategy catalogueTreeSortStrategy =
+                Safes.of(catalogueTreeSortStrategyMap).get(strategyName);
         if (Objects.isNull(catalogueTreeSortStrategy)) {
             log.warn("Strategy {} is not defined. Use DefaultStrategy", strategyName);
-            catalogueTreeSortStrategy = Safes.of(catalogueTreeSortStrategyMap).get(CatalogueSortConstant.STRATEGY_DEFAULT);
+            catalogueTreeSortStrategy =
+                    Safes.of(catalogueTreeSortStrategyMap).get(CatalogueSortConstant.STRATEGY_DEFAULT);
         }
         if (Objects.isNull(catalogueTreeSortStrategy)) {
             throw new BusException(StrUtil.format("Strategy {} is not defined.", strategyName));
         }
         return catalogueTreeSortStrategy;
     }
-
 }

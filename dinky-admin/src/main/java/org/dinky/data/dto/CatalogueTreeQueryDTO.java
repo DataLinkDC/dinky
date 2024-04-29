@@ -41,5 +41,4 @@ public class CatalogueTreeQueryDTO {
 
     @ApiModelProperty(value = "Sort Type", dataType = "String", example = "asc")
     private String sortType;
-
 }
