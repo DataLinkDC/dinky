@@ -19,12 +19,13 @@
 
 package org.dinky.data.enums;
 
-import cn.hutool.core.util.ObjectUtil;
-import org.apache.commons.codec.binary.StringUtils;
 import org.dinky.utils.I18n;
+import org.apache.commons.codec.binary.StringUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
+
+import cn.hutool.core.util.ObjectUtil;
 
 /**
  * SortType
@@ -80,6 +81,7 @@ public enum SortTypeEnum {
     }
 
     public abstract <T extends Comparable<T>> Integer compare(T a, T b);
+
     public abstract <T extends Comparable<T>> Integer compare(T a, T b, Comparator<Object> comparator);
 
     public static SortTypeEnum getByName(String name) {
