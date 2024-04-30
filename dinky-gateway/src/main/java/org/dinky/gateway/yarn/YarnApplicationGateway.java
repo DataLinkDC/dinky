@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import cn.hutool.core.util.URLUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -29,6 +28,7 @@ import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.LogUtil;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
@@ -42,7 +42,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
-import org.dinky.utils.URLUtils;
+
+import cn.hutool.core.util.URLUtil;
 
 /**
  * YarnApplicationGateway
@@ -62,8 +63,8 @@ public class YarnApplicationGateway extends YarnGateway {
      * @param url url
      * @return formatted url
      */
-    private String formatUrl(String url){
-        if (URLUtil.url(url).getProtocol().equals("rs")){
+    private String formatUrl(String url) {
+        if (URLUtil.url(url).getProtocol().equals("rs")) {
             return URLUtils.toFile(url).getAbsolutePath();
         } else {
             return url;
