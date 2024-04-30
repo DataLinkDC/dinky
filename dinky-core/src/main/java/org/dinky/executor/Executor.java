@@ -153,6 +153,7 @@ public abstract class Executor {
     protected void init(DinkyClassLoader classLoader) {
         initClassloader(classLoader);
         this.dinkyClassLoader = classLoader;
+        Thread.currentThread().setContextClassLoader(classLoader);
         if (executorConfig.isValidParallelism()) {
             environment.setParallelism(executorConfig.getParallelism());
         }
