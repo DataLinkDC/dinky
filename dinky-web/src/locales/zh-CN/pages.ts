@@ -943,7 +943,12 @@ export default {
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
-  'rc.resource.copy': '复制为: {fillValue}',
+  'rc.resource.copy_to_add_custom_jar': '复制为 ADD CUSTOMJAR 语法',
+  'rc.resource.copy_to_add_jar': '复制为 ADD JAR 语法',
+  'rc.resource.copy_to_add_file': '复制为 ADD FILE 语法',
+  'rc.resource.copy_to_add_rs_path': '复制 RS 协议资源路径',
+  'rc.resource.copy_success':
+    '复制成功，值为：[{fillValue}] 已复制到剪贴板。请粘贴到需要的地方进行使用',
   'rc.resource.enable': '未启用资源管理功能',
   'rc.resource.enable.tips': '请前往 [配置中心 -> 全局配置 -> Resource 配置] 中启用资源管理功能!!!',
 
