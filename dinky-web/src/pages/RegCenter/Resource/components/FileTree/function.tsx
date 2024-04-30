@@ -21,10 +21,8 @@ import { TagAlignCenter } from '@/components/StyledComponents';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { parseByteStr, renderIcon } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { Typography } from 'antd';
 
 const buildTitleLabel = (item: ResourceInfo) => {
-
   return (
     <>
       {item.fileName}
@@ -83,7 +81,7 @@ function filterEmpty(
 export const buildResourceTreeData = (
   data: ResourceInfo[] = [],
   isFilterEmptyChildren = false,
-  filterSuffixList: string[] = [],
+  filterSuffixList: string[] = []
 ): any =>
   data
     .filter((item: ResourceInfo) => filterEmpty(isFilterEmptyChildren, item, filterSuffixList))

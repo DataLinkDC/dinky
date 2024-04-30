@@ -27,7 +27,6 @@ import {
   UploadOutlined
 } from '@ant-design/icons';
 
-
 export enum ResourceRightMenuKey {
   COPY_TO_ADD_CUSTOM_JAR = 'copy_to_add_custom_jar',
   COPY_TO_ADD_JAR = 'copy_to_add_jar',
@@ -37,9 +36,7 @@ export enum ResourceRightMenuKey {
   RENAME = 'rename',
   CREATE_FOLDER = 'createFolder',
   UPLOAD = 'upload'
-
 }
-
 
 /**
  *  the right context menu
@@ -52,26 +49,25 @@ export const RIGHT_CONTEXT_FILE_MENU = [
     key: ResourceRightMenuKey.COPY_TO_ADD_CUSTOM_JAR,
     icon: <CopyOutlined />,
     label: l('rc.resource.copy_to_add_custom_jar'),
-    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE,
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
     key: ResourceRightMenuKey.COPY_TO_ADD_JAR,
     icon: <CopyOutlined />,
     label: l('rc.resource.copy_to_add_jar'),
-    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE,
-
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
     key: ResourceRightMenuKey.COPY_TO_ADD_FILE,
     icon: <CopyOutlined />,
     label: l('rc.resource.copy_to_add_file'),
-    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE,
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
     key: ResourceRightMenuKey.COPY_TO_ADD_RS_PATH,
     icon: <CopyOutlined />,
     label: l('rc.resource.copy_to_add_rs_path'),
-    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE,
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
     key: ResourceRightMenuKey.DELETE,

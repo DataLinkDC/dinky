@@ -42,6 +42,7 @@ import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
 import { unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
+import { SuccessMessage } from '@/utils/messages';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { WarningOutlined } from '@ant-design/icons';
@@ -52,7 +53,6 @@ import { Button, Result } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
-import {SuccessMessage} from "@/utils/messages";
 
 const ResourceOverView: React.FC<connect> = (props) => {
   const { dispatch, enableResource } = props;
@@ -168,11 +168,11 @@ const ResourceOverView: React.FC<connect> = (props) => {
 
   async function handleCopyTo(fillValue: string) {
     await navigator.clipboard.writeText(fillValue);
-    await SuccessMessage(l('rc.resource.copy_success','',{fillValue}));
+    await SuccessMessage(l('rc.resource.copy_success', '', { fillValue }));
   }
 
   const handleMenuClick = async (node: MenuInfo) => {
-    const {fullInfo } = resourceState.rightClickedNode;
+    const { fullInfo } = resourceState.rightClickedNode;
     switch (node.key) {
       case ResourceRightMenuKey.CREATE_FOLDER:
         handleCreateFolder();
@@ -187,25 +187,25 @@ const ResourceOverView: React.FC<connect> = (props) => {
         handleRename();
         break;
       case ResourceRightMenuKey.COPY_TO_ADD_CUSTOM_JAR:
-        if (fullInfo){
+        if (fullInfo) {
           const fillValue = `ADD CUSTOMJAR 'rs:${fullInfo.fullName}';`;
           await handleCopyTo(fillValue);
         }
         break;
       case ResourceRightMenuKey.COPY_TO_ADD_JAR:
-        if (fullInfo){
+        if (fullInfo) {
           const fillValue = `ADD JAR 'rs:${fullInfo.fullName}';`;
           await handleCopyTo(fillValue);
         }
         break;
       case ResourceRightMenuKey.COPY_TO_ADD_FILE:
-        if (fullInfo){
+        if (fullInfo) {
           const fillValue = `ADD FILE 'rs:${fullInfo.fullName}';`;
           await handleCopyTo(fillValue);
         }
         break;
       case ResourceRightMenuKey.COPY_TO_ADD_RS_PATH:
-        if (fullInfo){
+        if (fullInfo) {
           const fillValue = `rs:${fullInfo.fullName}`;
           await handleCopyTo(fillValue);
         }
