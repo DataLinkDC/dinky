@@ -31,6 +31,7 @@ title: 1.0.2 release
 - 增加推送到 Apache DolphinScheduler 时的任务组相关配置
 - 新增由用户指定提交YarnApplication 任务的用户
 - 启动脚本增加 GC相关启动参数,并支持配置 DINKY_HOME 环境变量
+- 实现集群配置中的 FlinkSQL 配置项支持 RS 协议(仅 Yarn 模式)
 
 
 ### 修复
@@ -81,6 +82,7 @@ title: 1.0.2 release
 - 删除一些前端的无用代码
 - 优化整库同步多次构建算子图时,算子图顺序不一致导致无法从 savepoint 恢复的问题
 - 优化资源配置的提示文案
+- 优化并完善资源中心复制功能,支持目前 Dinky 内的所有引用场景
 
 ### 安全
 - 排除一些高危 jmx 暴露的 endpoints
