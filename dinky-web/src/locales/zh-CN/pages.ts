@@ -752,8 +752,10 @@ export default {
   'rc.cc.sqlSubmitJarPath': 'Jar 文件路径',
   'rc.cc.sqlSubmitJarPathHelp':
     '请输入 Jar 文件路径! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelpTips':
+    'Yarn 模式下此参数可以设置为: hdfs:///dinky/dinky-app-1.17-with-dependencies.jar 或者 rs:/dinky/dinky-app-1.17-with-dependencies.jar 如果设置为 rs:/ 协议,则需要将该jar包上传到 Dinky 的资源中心中,然后填写该路径。K8s 模式下仅支持 local:// 协议',
   'rc.cc.start': '启动 Session 集群',
-  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项 (Application 模式必填)',
+  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项',
   'rc.cc.tmHeap': 'TaskManager 堆内存',
   'rc.cc.tmHeapHelp': '请输入 TaskManager 堆内存大小! 此参数配置项为',
   'rc.cc.tmMem': 'TaskManager 内存',
