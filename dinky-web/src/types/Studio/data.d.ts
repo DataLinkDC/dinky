@@ -39,9 +39,13 @@ export type Catalogue = {
 export type TaskUdfConfig = {
   templateId: number;
   selectKeys: List<string | number>;
-  name: string;
   className: string;
 };
+
+export type TaskUdfRefer = {
+  name: string;
+  className: string;
+}
 
 export type ConfigItem = {
   key: string;
@@ -49,6 +53,7 @@ export type ConfigItem = {
 };
 
 export type TaskExtConfig = {
+  udfRefer: List<TaskUdfRefer>;
   udfConfig: TaskUdfConfig;
   customConfig: List<Map<string, object>>;
 };

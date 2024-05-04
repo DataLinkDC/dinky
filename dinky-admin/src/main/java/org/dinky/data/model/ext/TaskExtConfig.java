@@ -50,6 +50,12 @@ public class TaskExtConfig implements Serializable {
     private TaskUdfConfig udfConfig;
 
     @ApiModelProperty(
+            value = "UDF Refer",
+            dataType = "TaskUdfRefer",
+            notes = "UDF (User-Defined Function) reference for the task")
+    private List<TaskUdfRefer> udfRefer;
+
+    @ApiModelProperty(
             value = "Custom Config",
             dataType = "List<ConfigItem>",
             notes = "Custom configuration items for the task")

@@ -56,6 +56,7 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import {connect} from 'umi';
 import FlinkUdfOptionsSelect from "@/components/Flink/UdfSelect";
+import {ProFormDependency} from "@ant-design/pro-form";
 
 const JobConfig = (props: any) => {
   const {
@@ -311,7 +312,7 @@ const JobConfig = (props: any) => {
         <ProFormList
           label={l('pages.datastudio.label.udf')}
           tooltip={l('pages.datastudio.label.udf.tip')}
-          name={['configJson', 'udfConfig']}
+          name={['configJson', 'udfRefer']}
           copyIconProps={false}
           creatorButtonProps={{
             style: {width: '100%'},
@@ -328,28 +329,21 @@ const JobConfig = (props: any) => {
                 showSearch
                 placeholder={l('pages.datastudio.label.udf.className')}
                 options={flinkUdfOptions}
-                fieldProps={{
-                  onChange: (value: string) => {
-                    const simpleClassName = value?.split('.')?.pop() ?? '';
-                    const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1)
-
-                    form.setFieldsValue({
-                      'configJson': {
-                        'udfConfig': [
-                          {
-                            'name': lowerName
-                          }
-                        ]
-                      }
-                    });
-                  }
+              />
+              <ProFormDependency name={['className']}>
+                {({className}) => {
+                  const simpleClassName = className?.split('.')?.pop() ?? '';
+                  const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1)
+                  return (
+                    <ProFormText
+                      name= {'name'}
+                      width={calculatorWidth(rightContainer.width) - 80}
+                      placeholder={l('pages.datastudio.label.udf.name')}
+                      fieldProps={{value: lowerName}}
+                    />
+                  );
                 }}
-              />
-              <ProFormText
-                name={'name'}
-                width={calculatorWidth(rightContainer.width) - 80}
-                placeholder={l('pages.datastudio.label.udf.name')}
-              />
+              </ProFormDependency>
             </Space>
           </ProFormGroup>
         </ProFormList>
