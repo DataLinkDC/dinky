@@ -17,33 +17,18 @@
  *
  */
 
-import { l } from '@/utils/intl';
-import { ProFormSelect } from '@ant-design/pro-components';
-import { ProFormSelectProps } from '@ant-design/pro-form/es/components/Select';
-import { Divider, Typography } from 'antd';
+import {l} from '@/utils/intl';
+import {ProFormSelect} from '@ant-design/pro-components';
+import {ProFormSelectProps} from '@ant-design/pro-form/es/components/Select';
+import {Divider, Typography} from 'antd';
 import React from "react";
 
-const { Link } = Typography;
+const {Link} = Typography;
 
-export type FlinkOptionsProps = ProFormSelectProps & {};
+export type FlinkUdfOptionsProps = ProFormSelectProps & object;
 
-const FlinkOptionsSelect = (props: FlinkOptionsProps) => {
-  const renderTemplateDropDown = (item: any) => {
-    return (
-      <>
-        <Link href={'#/registration/document'}>+ {l('rc.cc.addConfig')}</Link>
-        <Divider style={{ margin: '8px 0' }} />
-        {item}
-      </>
-    );
-  };
-
-  return (
-    <ProFormSelect
-      {...props}
-      fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item) }}
-    />
-  );
+const FlinkUdfOptionsSelect = (props: FlinkUdfOptionsProps) => {
+  return<></>
 };
 
-export default FlinkOptionsSelect;
+export default FlinkUdfOptionsSelect;

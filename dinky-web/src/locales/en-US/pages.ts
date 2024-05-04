@@ -439,6 +439,11 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',
   'pages.datastudio.label.jobConfig.addConfig.value': 'value',
+  'pages.datastudio.label.udf': 'Udf Item',
+  'pages.datastudio.label.udf.tip': 'Inject UDF item',
+  'pages.datastudio.label.udf.injectUdf': 'Inject UDF item',
+  'pages.datastudio.label.udf.name': 'function name',
+  'pages.datastudio.label.udf.className': 'class name',
   'pages.datastudio.label.jobConfig.alertGroup': 'Alarm Group',
   'pages.datastudio.label.jobConfig.alertGroup.tip': 'Select alert group',
   'pages.datastudio.label.jobConfig.batchmode': 'Batch Mode',
@@ -466,6 +471,8 @@ export default {
   'pages.datastudio.label.jobConfig.other': 'Other Config',
   'pages.datastudio.label.jobConfig.other.tip':
     'Other Config items will be applied to the execution environment, such as pipeline.name',
+  'pages.datastudio.label.jobConfig.udf': 'UDF injected',
+  'pages.datastudio.label.jobConfig.udf.tip': 'Automatically inject UDF',
   'pages.datastudio.label.jobConfig.parallelism': 'Parallelism',
   'pages.datastudio.label.jobConfig.parallelism.tip':
     'Set the parallelism of Flink tasks, the minimum value is 1',

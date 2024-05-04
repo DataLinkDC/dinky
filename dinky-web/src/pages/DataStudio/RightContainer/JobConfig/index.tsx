@@ -52,6 +52,7 @@ import {
 import { Alert, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { connect } from 'umi';
 
@@ -64,7 +65,8 @@ const JobConfig = (props: any) => {
     env,
     group,
     rightContainer,
-    flinkConfigOptions
+    flinkConfigOptions,
+    flinkUdfOptions
   } = props;
 
   const current = getCurrentData(panes, activeKey);
@@ -79,6 +81,9 @@ const JobConfig = (props: any) => {
     });
     dispatch({
       type: ALERT_MODEL_ASYNC.queryAlertGroup
+    });
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryFlinkUdfOptions
     });
     setSelectRunMode(current?.type);
     form.setFieldsValue({ ...current, type: current?.type });
@@ -302,6 +307,35 @@ const JobConfig = (props: any) => {
             </Space>
           </ProFormGroup>
         </ProFormList>
+        <ProFormList
+          label={l('pages.datastudio.label.udf')}
+          tooltip={l('pages.datastudio.label.udf.tip')}
+          name={['configJson', 'udfInfo']}
+          copyIconProps={false}
+          creatorButtonProps={{
+            style: { width: '100%' },
+            creatorButtonText: l('pages.datastudio.label.udf.injectUdf')
+          }}
+        >
+          <ProFormGroup>
+            <Space key={'udf'} align='baseline'>
+              <FlinkOptionsSelect
+                name='className'
+                width={calculatorWidth(rightContainer.width) + 80}
+                mode={'single'}
+                allowClear
+                showSearch
+                placeholder={l('pages.datastudio.label.udf.className')}
+                options={flinkUdfOptions}
+              />
+              <ProFormText
+                name={'name'}
+                width={calculatorWidth(rightContainer.width) - 80}
+                placeholder={l('pages.datastudio.label.udf.name')}
+              />
+            </Space>
+          </ProFormGroup>
+        </ProFormList>
       </ProForm>
     </div>
   );
@@ -314,5 +348,6 @@ export default connect(({ Studio, Alert }: { Studio: StateType; Alert: AlertStat
   tabs: Studio.tabs,
   env: Studio.env,
   group: Alert.group,
-  flinkConfigOptions: Studio.flinkConfigOptions
+  flinkConfigOptions: Studio.flinkConfigOptions,
+  flinkUdfOptions: Studio.flinkUdfOptions
 }))(JobConfig);

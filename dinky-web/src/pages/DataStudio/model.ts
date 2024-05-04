@@ -24,9 +24,9 @@ import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
   getClusterConfigurationData,
   getEnvData,
-  getFlinkConfigs,
+  getFlinkConfigs, getFlinkUdfOptions,
   getSessionData,
-  querySuggessionData
+  querySuggestionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { SuggestionInfo } from '@/types/Public/data';
@@ -281,6 +281,7 @@ export type StateType = {
   sessionCluster: Cluster.Instance[];
   clusterConfiguration: Cluster.Config[];
   flinkConfigOptions: DefaultOptionType[];
+  flinkUdfOptions: DefaultOptionType[];
   env: EnvType[];
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
@@ -294,6 +295,7 @@ export type ModelType = {
   effects: {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
+    queryFlinkUdfOptions: Effect;
     querySuggestions: Effect;
     queryEnv: Effect;
     queryDatabaseList: Effect;
@@ -333,6 +335,7 @@ export type ModelType = {
     saveFooterValue: Reducer<StateType>;
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
+    saveFlinkUdfOptions: Reducer<StateType>;
     updateSuggestions: Reducer<StateType>;
   };
 };
@@ -383,6 +386,7 @@ const Model: ModelType = {
     sessionCluster: [],
     clusterConfiguration: [],
     flinkConfigOptions: [],
+    flinkUdfOptions: [],
     env: [],
     footContainer: {
       codePosition: [1, 1],
@@ -422,8 +426,15 @@ const Model: ModelType = {
         payload: response
       });
     },
+    *queryFlinkUdfOptions({ payload }, { call, put }) {
+      const response: [] = yield call(getFlinkUdfOptions, payload);
+      yield put({
+        type: 'saveUdfOptions',
+        payload: response
+      });
+    },
     *querySuggestions({ payload }, { call, put }) {
-      const response: SuggestionInfo[] = yield call(querySuggessionData, payload);
+      const response: SuggestionInfo[] = yield call(querySuggestionData, payload);
       yield put({
         type: 'updateSuggestions',
         payload: response
@@ -622,6 +633,15 @@ const Model: ModelType = {
       return {
         ...state,
         flinkConfigOptions: payload
+      };
+    },
+    /**
+     * udf options
+     */
+    saveFlinkUdfOptions(state, { payload }) {
+      return {
+        ...state,
+        udfOptions: payload
       };
     },
     /**

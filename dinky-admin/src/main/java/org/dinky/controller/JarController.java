@@ -19,6 +19,9 @@
 
 package org.dinky.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
 import org.dinky.function.constant.PathConstant;
@@ -28,10 +31,14 @@ import org.dinky.service.TaskService;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.dinky.utils.UDFUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -77,5 +84,29 @@ public class JarController {
                 resultMap.get("success"),
                 resultMap.get("failed"));
         return Result.succeed(resultMap, msg);
+    }
+
+    @GetMapping("/udf/geUdfs")
+    @ApiOperation("Get UDFs")
+    public Result<List<UdfInfo>> getUdfs() {
+        List<UDF> staticUdfs = UDFUtils.getStaticUdfs();
+        List<UDF> dynamicUdfs = taskService.getAllUDF().stream()
+                .map(UDFUtils::taskToUDF)
+                .collect(Collectors.toList());
+        List<UDF> allUdfs = new ArrayList<>(staticUdfs);
+        allUdfs.addAll(dynamicUdfs);
+        List<UdfInfo> result = allUdfs.stream().map(udf -> {
+           String name = udf.getClassName().substring(udf.getClassName().lastIndexOf(".") + 1);
+           name = name.substring(0, 1).toLowerCase() + name.substring(1);
+            return new UdfInfo(name, udf.getClassName());
+        }).collect(Collectors.toList());
+        return Result.succeed(result);
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class UdfInfo {
+        String name;
+        String className;
     }
 }

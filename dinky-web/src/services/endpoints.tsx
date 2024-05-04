@@ -285,6 +285,7 @@ export enum API_CONSTANTS {
   // ------------------------------------ flink conf about ------------------------------------
   READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',
   FLINK_CONF_CONFIG_OPTIONS = '/api/flinkConf/configOptions',
+  FLINK_UDF_OPTIONS = '/api/jar/udf/geUdfs',
 
   // ------------------------------------ suggestion ------------------------------------
   SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions'
