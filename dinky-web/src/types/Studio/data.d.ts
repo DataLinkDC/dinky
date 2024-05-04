@@ -37,7 +37,6 @@ export type Catalogue = {
 };
 
 export type TaskUdfConfig = {
-  templateId: number;
   selectKeys: List<string | number>;
   className: string;
 };

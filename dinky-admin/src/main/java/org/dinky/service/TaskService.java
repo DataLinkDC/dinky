@@ -190,12 +190,14 @@ public interface TaskService extends ISuperService<Task> {
      */
     Task initDefaultFlinkSQLEnv(Integer tenantId);
 
+    List<Task> getAllUdfEnabled();
+
     /**
-     * Get a list of all user-defined functions (UDFs) in the system.
+     * Get a list of user-defined functions (UDFs) that have savepoint path in the system.
      *
      * @return A list of {@link Task} objects representing the UDFs.
      */
-    List<Task> getAllUDF();
+    List<Task> getAllUDFWithSavePoint();
 
     /**
      * Get a list of all release user-defined functions (UDFs) in the system.

@@ -429,7 +429,7 @@ const Model: ModelType = {
     *queryFlinkUdfOptions({ payload }, { call, put }) {
       const response: [] = yield call(getFlinkUdfOptions, payload);
       yield put({
-        type: 'saveUdfOptions',
+        type: 'saveFlinkUdfOptions',
         payload: response
       });
     },
@@ -641,7 +641,7 @@ const Model: ModelType = {
     saveFlinkUdfOptions(state, { payload }) {
       return {
         ...state,
-        udfOptions: payload
+        flinkUdfOptions: payload
       };
     },
     /**

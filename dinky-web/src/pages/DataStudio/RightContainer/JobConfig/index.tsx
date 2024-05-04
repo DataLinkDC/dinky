@@ -18,13 +18,13 @@
  */
 
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
-import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
+import {SAVE_POINT_TYPE} from '@/pages/DataStudio/constants';
 import {
   getCurrentData,
   getCurrentTab,
   isDataStudioTabsItemType
 } from '@/pages/DataStudio/function';
-import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
+import {StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC} from '@/pages/DataStudio/model';
 import {
   buildAlertGroupOptions,
   buildClusterConfigOptions,
@@ -35,11 +35,11 @@ import {
   isCanRenderClusterConfiguration,
   isCanRenderClusterInstance
 } from '@/pages/DataStudio/RightContainer/JobConfig/function';
-import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
-import { AlertStateType, ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
-import { DIALECT, RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
-import { l } from '@/utils/intl';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import {JOB_LIFE_CYCLE} from '@/pages/DevOps/constants';
+import {AlertStateType, ALERT_MODEL_ASYNC} from '@/pages/RegCenter/Alert/AlertInstance/model';
+import {DIALECT, RUN_MODE, SWITCH_OPTIONS} from '@/services/constants';
+import {l} from '@/utils/intl';
+import {InfoCircleOutlined} from '@ant-design/icons';
 import {
   ProForm,
   ProFormDigit,
@@ -49,19 +49,20 @@ import {
   ProFormSwitch,
   ProFormText
 } from '@ant-design/pro-components';
-import { Alert, Space } from 'antd';
-import { useForm } from 'antd/es/form/Form';
-import { debounce } from 'lodash';
+import {Alert, Space} from 'antd';
+import {useForm} from 'antd/es/form/Form';
+import {debounce} from 'lodash';
 import React from 'react';
-import { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import {useEffect, useState} from 'react';
+import {connect} from 'umi';
+import FlinkUdfOptionsSelect from "@/components/Flink/UdfSelect";
 
 const JobConfig = (props: any) => {
   const {
     sessionCluster,
     clusterConfiguration,
     dispatch,
-    tabs: { panes, activeKey },
+    tabs: {panes, activeKey},
     env,
     group,
     rightContainer,
@@ -86,7 +87,7 @@ const JobConfig = (props: any) => {
       type: STUDIO_MODEL_ASYNC.queryFlinkUdfOptions
     });
     setSelectRunMode(current?.type);
-    form.setFieldsValue({ ...current, type: current?.type });
+    form.setFieldsValue({...current, type: current?.type});
   }, [current]);
 
   const onValuesChange = (change: { [key in string]: any }, all: any) => {
@@ -111,15 +112,15 @@ const JobConfig = (props: any) => {
     pane.isModified = true;
     dispatch({
       type: STUDIO_MODEL.saveTabs,
-      payload: { ...props.tabs }
+      payload: {...props.tabs}
     });
   };
 
   return (
-    <div style={{ maxHeight: rightContainer.height, marginTop: 10 }}>
+    <div style={{maxHeight: rightContainer.height, marginTop: 10}}>
       {current?.step === JOB_LIFE_CYCLE.PUBLISH && (
         <>
-          <Alert message={l('pages.datastudio.label.jobConfig.watermark')} type='info' showIcon />
+          <Alert message={l('pages.datastudio.label.jobConfig.watermark')} type='info' showIcon/>
         </>
       )}
       <ProForm
@@ -132,7 +133,7 @@ const JobConfig = (props: any) => {
           alertGroupId: -1
         }}
         className={'data-studio-form'}
-        style={{ paddingInline: '15px', overflow: 'scroll', marginTop: 5 }}
+        style={{paddingInline: '15px', overflow: 'scroll', marginTop: 5}}
         form={form}
         submitter={false}
         layout='vertical'
@@ -144,7 +145,7 @@ const JobConfig = (props: any) => {
           name='type'
           label={l('global.table.execmode')}
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
-          rules={[{ required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip') }]}
+          rules={[{required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip')}]}
           options={buildRunModelOptions()}
           fieldProps={{
             onChange: (value: string) => {
@@ -160,7 +161,7 @@ const JobConfig = (props: any) => {
             {isCanRenderClusterInstance(selectRunMode) && (
               <>
                 <ProFormSelect
-                  style={{ width: '100%' }}
+                  style={{width: '100%'}}
                   placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
                     type: current?.type
                   })}
@@ -215,7 +216,7 @@ const JobConfig = (props: any) => {
             tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
             options={buildEnvOptions(env)}
             rules={[
-              { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
+              {required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
             ]}
             showSearch
             allowClear={false}
@@ -237,7 +238,7 @@ const JobConfig = (props: any) => {
             valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.fragment.tip'),
-              icon: <InfoCircleOutlined />
+              icon: <InfoCircleOutlined/>
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -247,7 +248,7 @@ const JobConfig = (props: any) => {
             valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.batchmode.tip'),
-              icon: <InfoCircleOutlined />
+              icon: <InfoCircleOutlined/>
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -284,7 +285,7 @@ const JobConfig = (props: any) => {
           name={['configJson', 'customConfig']}
           copyIconProps={false}
           creatorButtonProps={{
-            style: { width: '100%' },
+            style: {width: '100%'},
             creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig')
           }}
         >
@@ -310,16 +311,16 @@ const JobConfig = (props: any) => {
         <ProFormList
           label={l('pages.datastudio.label.udf')}
           tooltip={l('pages.datastudio.label.udf.tip')}
-          name={['configJson', 'udfInfo']}
+          name={['configJson', 'udfConfig']}
           copyIconProps={false}
           creatorButtonProps={{
-            style: { width: '100%' },
+            style: {width: '100%'},
             creatorButtonText: l('pages.datastudio.label.udf.injectUdf')
           }}
         >
           <ProFormGroup>
             <Space key={'udf'} align='baseline'>
-              <FlinkOptionsSelect
+              <FlinkUdfOptionsSelect
                 name='className'
                 width={calculatorWidth(rightContainer.width) + 80}
                 mode={'single'}
@@ -327,6 +328,22 @@ const JobConfig = (props: any) => {
                 showSearch
                 placeholder={l('pages.datastudio.label.udf.className')}
                 options={flinkUdfOptions}
+                fieldProps={{
+                  onChange: (value: string) => {
+                    const simpleClassName = value?.split('.')?.pop() ?? '';
+                    const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1)
+
+                    form.setFieldsValue({
+                      'configJson': {
+                        'udfConfig': [
+                          {
+                            'name': lowerName
+                          }
+                        ]
+                      }
+                    });
+                  }
+                }}
               />
               <ProFormText
                 name={'name'}
@@ -341,7 +358,7 @@ const JobConfig = (props: any) => {
   );
 };
 
-export default connect(({ Studio, Alert }: { Studio: StateType; Alert: AlertStateType }) => ({
+export default connect(({Studio, Alert}: { Studio: StateType; Alert: AlertStateType }) => ({
   sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
   rightContainer: Studio.rightContainer,

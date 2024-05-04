@@ -21,9 +21,9 @@ package org.dinky.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
@@ -32,7 +32,6 @@ import org.dinky.service.TaskService;
 import org.apache.flink.table.catalog.FunctionLanguage;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,7 +67,7 @@ public class JarController {
     @PostMapping("/udf/generateJar")
     @ApiOperation("Generate jar")
     public Result<Map<String, List<String>>> generateJar() {
-        List<Task> allUDF = taskService.getAllUDF();
+        List<Task> allUDF = taskService.getAllUDFWithSavePoint();
         List<UDF> udfCodes = allUDF.stream()
                 .map(task -> UDF.builder()
                         .code(task.getStatement())
@@ -88,25 +87,16 @@ public class JarController {
 
     @GetMapping("/udf/geUdfs")
     @ApiOperation("Get UDFs")
-    public Result<List<UdfInfo>> getUdfs() {
+    public Result<List<CascaderVO>> getUdfs() {
         List<UDF> staticUdfs = UDFUtils.getStaticUdfs();
-        List<UDF> dynamicUdfs = taskService.getAllUDF().stream()
+        List<UDF> dynamicUdfs = taskService.getAllUdfEnabled().stream()
                 .map(UDFUtils::taskToUDF)
                 .collect(Collectors.toList());
         List<UDF> allUdfs = new ArrayList<>(staticUdfs);
         allUdfs.addAll(dynamicUdfs);
-        List<UdfInfo> result = allUdfs.stream().map(udf -> {
-           String name = udf.getClassName().substring(udf.getClassName().lastIndexOf(".") + 1);
-           name = name.substring(0, 1).toLowerCase() + name.substring(1);
-            return new UdfInfo(name, udf.getClassName());
-        }).collect(Collectors.toList());
+        List<CascaderVO> result = allUdfs.stream().map(udf -> new CascaderVO(udf.getClassName()))
+                .collect(Collectors.toList());
         return Result.succeed(result);
     }
 
-    @Data
-    @AllArgsConstructor
-    public static class UdfInfo {
-        String name;
-        String className;
-    }
 }
