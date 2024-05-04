@@ -4,7 +4,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "esModuleInterop": true,
     "sourceMap": true,
     "baseUrl": "./",
