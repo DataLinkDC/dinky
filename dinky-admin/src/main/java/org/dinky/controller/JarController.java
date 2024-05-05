@@ -87,7 +87,7 @@ public class JarController {
     @GetMapping("/udf/geUdfs")
     @ApiOperation("Get UDFs")
     public Result<List<CascaderVO>> getUdfs() {
-        List<UDF> staticUdfs = Operations.getStaticUdfs();
+        List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
         List<UDF> dynamicUdfs =
                 taskService.getAllUdfEnabled().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
         List<UDF> allUdfs = new ArrayList<>(staticUdfs);

@@ -19,6 +19,7 @@
 
 package org.dinky.trans;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.dinky.function.data.model.UDF;
 import org.dinky.parser.SqlType;
 
@@ -51,6 +52,7 @@ public class Operations {
 
     private static final Operation[] ALL_OPERATIONS = getAllOperations();
 
+    private static final List<UDF> JAVA_STATIC_UDF_LIST = getCustomStaticUdfs();
     /**
      * get all {@link Operation} children ordinary class,
      *
@@ -102,7 +104,11 @@ public class Operations {
                 .orElse(null);
     }
 
-    public static List<UDF> getStaticUdfs() {
+    public static List<UDF> getCustomStaticUdfs() {
+        if (CollectionUtils.isNotEmpty(JAVA_STATIC_UDF_LIST )) {
+            return JAVA_STATIC_UDF_LIST;
+        }
+
         Reflections reflections = new Reflections(Function.class.getPackage().getName());
         Set<Class<?>> operations =
                 reflections.get(Scanners.SubTypes.of(Function.class).asClass());
