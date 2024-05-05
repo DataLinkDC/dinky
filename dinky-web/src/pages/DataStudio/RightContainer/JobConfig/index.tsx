@@ -329,21 +329,19 @@ const JobConfig = (props: any) => {
                 showSearch
                 placeholder={l('pages.datastudio.label.udf.className')}
                 options={flinkUdfOptions}
-              />
-              <ProFormDependency name={['className']}>
-                {({className}) => {
-                  const simpleClassName = className?.split('.')?.pop() ?? '';
-                  const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1)
-                  return (
-                    <ProFormText
-                      name= {'name'}
-                      width={calculatorWidth(rightContainer.width) - 80}
-                      placeholder={l('pages.datastudio.label.udf.name')}
-                      fieldProps={{value: lowerName}}
-                    />
-                  );
+                fieldProps={{
+                  onChange: (value: string) => {
+                    const simpleClassName = value?.split('.')?.pop() ?? '';
+                    const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1)
+                    // 这个应该联动
+                  }
                 }}
-              </ProFormDependency>
+              />
+              <ProFormText
+                name={"name"}
+                width={calculatorWidth(rightContainer.width) - 80}
+                placeholder={l('pages.datastudio.label.udf.name')}
+              />
             </Space>
           </ProFormGroup>
         </ProFormList>

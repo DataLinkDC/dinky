@@ -81,8 +81,18 @@ public class TaskExtConfig implements Serializable {
     public Map<String, String> getCustomConfigMaps() {
         return Asserts.isNotNullCollection(customConfig)
                 ? customConfig.stream()
-                        .filter(item -> item.getKey() != null && item.getValue() != null)
-                        .collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
+                .filter(item -> item.getKey() != null && item.getValue() != null)
+                .collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
+                : new HashMap<>();
+    }
+
+    // udfRefer-value的所有key-value
+    @JsonIgnore
+    public Map<String, String> getUdfReferMaps() {
+        return Asserts.isNotNullCollection(udfRefer)
+                ? udfRefer.stream()
+                .filter(item -> item.getClassName() != null)
+                .collect(Collectors.toMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
                 : new HashMap<>();
     }
 
