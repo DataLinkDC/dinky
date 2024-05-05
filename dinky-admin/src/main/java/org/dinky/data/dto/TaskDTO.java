@@ -218,8 +218,7 @@ public class TaskDTO extends AbstractStatementDTO {
 
         Map<String, String> parsedConfig =
                 this.configJson == null ? new HashMap<>(0) : this.configJson.getCustomConfigMaps();
-        Map<String, String> udfRefers =
-                this.configJson == null ? new HashMap<>(0) : this.configJson.getUdfReferMaps();
+        Map<String, String> udfRefers = this.configJson == null ? new HashMap<>(0) : this.configJson.getUdfReferMaps();
         JobConfig jobConfig = new JobConfig();
         BeanUtil.copyProperties(this, jobConfig);
         jobConfig.setConfigJson(parsedConfig);

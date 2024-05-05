@@ -19,9 +19,10 @@
 
 package org.dinky.data.model.ext;
 
-import org.apache.commons.lang3.StringUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.ext.ConfigItem;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -82,8 +83,8 @@ public class TaskExtConfig implements Serializable {
     public Map<String, String> getCustomConfigMaps() {
         return Asserts.isNotNullCollection(customConfig)
                 ? customConfig.stream()
-                .filter(item -> item.getKey() != null && item.getValue() != null)
-                .collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
+                        .filter(item -> item.getKey() != null && item.getValue() != null)
+                        .collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
                 : new HashMap<>();
     }
 
@@ -92,16 +93,17 @@ public class TaskExtConfig implements Serializable {
     public Map<String, String> getUdfReferMaps() {
         return Asserts.isNotNullCollection(udfRefer)
                 ? udfRefer.stream()
-                .filter(item -> item.getClassName() != null)
-                .map(t -> {
-                    if (StringUtils.isEmpty(t.getName())) {
-                        String name =  t.getClassName().substring(t.getClassName().lastIndexOf(".") + 1);
-                        name = name.substring(0, 1).toLowerCase() + name.substring(1);
-                        t.setName(name);
-                    }
-                    return t;
-                })
-                .collect(Collectors.toMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
+                        .filter(item -> item.getClassName() != null)
+                        .map(t -> {
+                            if (StringUtils.isEmpty(t.getName())) {
+                                String name = t.getClassName()
+                                        .substring(t.getClassName().lastIndexOf(".") + 1);
+                                name = name.substring(0, 1).toLowerCase() + name.substring(1);
+                                t.setName(name);
+                            }
+                            return t;
+                        })
+                        .collect(Collectors.toMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
                 : new HashMap<>();
     }
 

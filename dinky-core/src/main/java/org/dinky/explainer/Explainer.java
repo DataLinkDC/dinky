@@ -72,7 +72,6 @@ import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 /**
  * Explainer
@@ -119,10 +118,11 @@ public class Explainer {
         StrBuilder parsedSql = new StrBuilder();
 
         List<String> statementsWithUdf = Arrays.stream(statements).collect(Collectors.toList());
-        Optional.ofNullable(jobManager.getConfig().getUdfRefer()).ifPresent( t-> t.forEach((key, value) -> {
-            String sql = String.format("create temporary function %s as '%s'", value, key);
-            statementsWithUdf.add(0, sql);
-        }));
+        Optional.ofNullable(jobManager.getConfig().getUdfRefer())
+                .ifPresent(t -> t.forEach((key, value) -> {
+                    String sql = String.format("create temporary function %s as '%s'", value, key);
+                    statementsWithUdf.add(0, sql);
+                }));
 
         for (String item : statementsWithUdf) {
             String statement = executor.pretreatStatement(item);

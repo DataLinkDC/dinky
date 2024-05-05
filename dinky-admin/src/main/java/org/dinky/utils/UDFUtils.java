@@ -19,20 +19,21 @@
 
 package org.dinky.utils;
 
-import org.apache.flink.api.common.functions.Function;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 
+import org.apache.flink.api.common.functions.Function;
 import org.apache.flink.table.catalog.FunctionLanguage;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
 
 public class UDFUtils extends UDFUtil {
 
@@ -55,15 +56,12 @@ public class UDFUtils extends UDFUtil {
                 reflections.get(Scanners.SubTypes.of(Function.class).asClass());
 
         return operations.stream()
-                .filter(operation -> !operation.isInterface()
-                        && !operation.getName
-                        ().startsWith("org.apache.flink"))
+                .filter(operation ->
+                        !operation.isInterface() && !operation.getName().startsWith("org.apache.flink"))
                 .map(operation -> UDF.builder()
                         .className(operation.getName())
                         .functionLanguage(FunctionLanguage.JAVA)
                         .build())
                 .collect(Collectors.toList());
     }
-
-
 }

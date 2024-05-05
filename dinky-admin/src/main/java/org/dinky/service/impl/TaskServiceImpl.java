@@ -705,7 +705,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public List<Task> getAllUdfEnabled(){
+    public List<Task> getAllUdfEnabled() {
         return list(new QueryWrapper<Task>()
                 .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
                 .eq("enabled", 1));
