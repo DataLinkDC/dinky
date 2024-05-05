@@ -25,15 +25,7 @@ import org.dinky.data.model.Task;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 
-import org.apache.flink.api.common.functions.Function;
 import org.apache.flink.table.catalog.FunctionLanguage;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
 
 public class UDFUtils extends UDFUtil {
 
@@ -48,20 +40,5 @@ public class UDFUtils extends UDFUtil {
         } else {
             throw new BusException("udf `class` config is null,please check your udf task config");
         }
-    }
-
-    public static List<UDF> getStaticUdfs() {
-        Reflections reflections = new Reflections(Function.class.getPackage().getName());
-        Set<Class<?>> operations =
-                reflections.get(Scanners.SubTypes.of(Function.class).asClass());
-
-        return operations.stream()
-                .filter(operation ->
-                        !operation.isInterface() && !operation.getName().startsWith("org.apache.flink"))
-                .map(operation -> UDF.builder()
-                        .className(operation.getName())
-                        .functionLanguage(FunctionLanguage.JAVA)
-                        .build())
-                .collect(Collectors.toList());
     }
 }

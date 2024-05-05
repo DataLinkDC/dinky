@@ -38,6 +38,7 @@ import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.api.common.functions.Function;
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -472,5 +473,20 @@ public class UDFUtil {
         FileUtil.writeUtf8String(
                 JSONUtil.toJsonStr(flinkUdfManifest),
                 PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
+    }
+
+    public static List<UDF> getStaticUdfs() {
+        Reflections reflections = new Reflections(Function.class.getPackage().getName());
+        Set<Class<?>> operations =
+                reflections.get(Scanners.SubTypes.of(Function.class).asClass());
+
+        return operations.stream()
+                .filter(operation ->
+                        !operation.isInterface() && !operation.getName().startsWith("org.apache.flink"))
+                .map(operation -> UDF.builder()
+                        .className(operation.getName())
+                        .functionLanguage(FunctionLanguage.JAVA)
+                        .build())
+                .collect(Collectors.toList());
     }
 }
