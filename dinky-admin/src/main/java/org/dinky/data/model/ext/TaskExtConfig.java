@@ -19,6 +19,7 @@
 
 package org.dinky.data.model.ext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.ext.ConfigItem;
 
@@ -92,6 +93,14 @@ public class TaskExtConfig implements Serializable {
         return Asserts.isNotNullCollection(udfRefer)
                 ? udfRefer.stream()
                 .filter(item -> item.getClassName() != null)
+                .map(t -> {
+                    if (StringUtils.isEmpty(t.getName())) {
+                        String name =  t.getClassName().substring(t.getClassName().lastIndexOf(".") + 1);
+                        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+                        t.setName(name);
+                    }
+                    return t;
+                })
                 .collect(Collectors.toMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
                 : new HashMap<>();
     }
