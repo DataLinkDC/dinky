@@ -19,12 +19,18 @@
 
 package org.dinky.trans;
 
+import org.dinky.function.data.model.UDF;
 import org.dinky.parser.SqlType;
+
+import org.apache.flink.api.common.functions.Function;
+import org.apache.flink.table.catalog.FunctionLanguage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -94,5 +100,20 @@ public class Operations {
                 .findFirst()
                 .map(p -> p.create(statement))
                 .orElse(null);
+    }
+
+    public static List<UDF> getStaticUdfs() {
+        Reflections reflections = new Reflections(Function.class.getPackage().getName());
+        Set<Class<?>> operations =
+                reflections.get(Scanners.SubTypes.of(Function.class).asClass());
+
+        return operations.stream()
+                .filter(operation ->
+                        !operation.isInterface() && !operation.getName().startsWith("org.apache.flink"))
+                .map(operation -> UDF.builder()
+                        .className(operation.getName())
+                        .functionLanguage(FunctionLanguage.JAVA)
+                        .build())
+                .collect(Collectors.toList());
     }
 }

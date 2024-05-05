@@ -26,6 +26,7 @@ import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.service.TaskService;
+import org.dinky.trans.Operations;
 import org.dinky.utils.UDFUtils;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -86,7 +87,7 @@ public class JarController {
     @GetMapping("/udf/geUdfs")
     @ApiOperation("Get UDFs")
     public Result<List<CascaderVO>> getUdfs() {
-        List<UDF> staticUdfs = UDFUtil.getStaticUdfs();
+        List<UDF> staticUdfs = Operations.getStaticUdfs();
         List<UDF> dynamicUdfs =
                 taskService.getAllUdfEnabled().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
         List<UDF> allUdfs = new ArrayList<>(staticUdfs);
