@@ -319,31 +319,47 @@ const JobConfig = (props: any) => {
             creatorButtonText: l('pages.datastudio.label.udf.injectUdf')
           }}
         >
-          <ProFormGroup>
-            <Space key={'udf'} align='baseline'>
-              <FlinkUdfOptionsSelect
-                name='className'
-                width={calculatorWidth(rightContainer.width) + 80}
-                mode={'single'}
-                allowClear
-                showSearch
-                placeholder={l('pages.datastudio.label.udf.className')}
-                options={flinkUdfOptions}
-                fieldProps={{
-                  onChange: (value: string) => {
-                    const simpleClassName = value?.split('.')?.pop() ?? '';
-                    const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1)
-                    // 这个应该联动
-                  }
-                }}
-              />
-              <ProFormText
-                name={"name"}
-                width={calculatorWidth(rightContainer.width) - 80}
-                placeholder={l('pages.datastudio.label.udf.name')}
-              />
-            </Space>
-          </ProFormGroup>
+          {(
+            _, index
+          ) => {
+            return (
+              <ProFormGroup>
+                <Space key={'udf'} align='baseline'>
+                  <FlinkUdfOptionsSelect
+                    name='className'
+                    width={calculatorWidth(rightContainer.width) + 80}
+                    mode={'single'}
+                    allowClear
+                    showSearch
+                    placeholder={l('pages.datastudio.label.udf.className')}
+                    options={flinkUdfOptions}
+                    fieldProps={{
+                      onChange: (value: string) => {
+                        const simpleClassName = value?.split('.')?.pop() ?? '';
+                        const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1)
+
+                        form.setFieldsValue({
+                          'configJson': {
+                            'udfRefer': {
+                              [index]: {
+                                name: lowerName
+                              }
+                            }
+                          }
+                        });
+                      }
+                    }}
+                  />
+                  <ProFormText
+                    name={'name'}
+                    width={calculatorWidth(rightContainer.width) - 80}
+                    placeholder={l('pages.datastudio.label.udf.name')}
+                  />
+                </Space>
+              </ProFormGroup>
+            );
+          }
+          }
         </ProFormList>
       </ProForm>
     </div>
