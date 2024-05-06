@@ -55,8 +55,6 @@ public class PermissionConstants {
 
     public static final String REGISTRATION_ALERT_TEMPLATE_DELETE = "registration:alert:template:delete";
 
-
-
     /**
      * alert 策略
      */
@@ -65,8 +63,6 @@ public class PermissionConstants {
     public static final String REGISTRATION_ALERT_RULE_EDIT = "registration:alert:rule:edit";
 
     public static final String REGISTRATION_ALERT_RULE_DELETE = "registration:alert:rule:delete";
-
-
 
     /**
      * catalog
@@ -244,5 +240,4 @@ public class PermissionConstants {
     public static final String SYSTEM_SETTING_INFO_LOG_LIST = "settings:systemlog:loglist";
 
     public static final String SYSTEM_SETTING_INFO_ROOT_LOG = "settings:systemlog:rootlog";
-
 }

@@ -19,6 +19,15 @@
 
 import { Authorized } from '@/hooks/useAccess';
 
+import {
+  RuleType,
+  TriggerType
+} from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants';
+import {
+  AlertRulesOption,
+  buildValueItem,
+  getOperatorOptions
+} from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/function';
 import { getData } from '@/services/api';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -39,11 +48,6 @@ import {
 } from '@ant-design/pro-components';
 import { ProFormDependency } from '@ant-design/pro-form';
 import { Button, Divider, Form, Space, Typography } from 'antd';
-import {RuleType, TriggerType} from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants";
-import {
-  AlertRulesOption, buildValueItem,
-  getOperatorOptions
-} from "@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/function";
 
 const { Link } = Typography;
 
