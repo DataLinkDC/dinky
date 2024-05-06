@@ -26,7 +26,7 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
-import org.dinky.data.vo.CascaderVO;
+import org.dinky.data.vo.TreeVo;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.service.catalogue.CatalogueService;
 
@@ -140,12 +140,12 @@ public class CatalogueController {
 
     /**
      * query catalogue sort type
-     * @return {@link Result}< {@link List}< {@link CascaderVO}>>}
+     * @return {@link Result}< {@link List}< {@link TreeVo}>>}
      */
     @PostMapping("/getCatalogueSortType")
     @ApiOperation("Get Catalogue Sort Type")
-    public Result<List<CascaderVO>> getCatalogueSortType() {
-        List<CascaderVO> catalogueSortType = catalogueService.getCatalogueSortType();
+    public Result<List<TreeVo>> getCatalogueSortType() {
+        List<TreeVo> catalogueSortType = catalogueService.getCatalogueSortType();
         return Result.succeed(catalogueSortType);
     }
 

@@ -23,7 +23,7 @@ import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
-import org.dinky.data.vo.CascaderVO;
+import org.dinky.data.vo.TreeVo;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -46,9 +46,9 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     /**
      * Get the catalogue sort type.
      *
-     * @return A list of {@link CascaderVO} objects representing the catalogue sort type.
+     * @return A list of {@link TreeVo} objects representing the catalogue sort type.
      */
-    List<CascaderVO> getCatalogueSortType();
+    List<TreeVo> getCatalogueSortType();
 
     /**
      * Find a catalogue by its parent ID and name.

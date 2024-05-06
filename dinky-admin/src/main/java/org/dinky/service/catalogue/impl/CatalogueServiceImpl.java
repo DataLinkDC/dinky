@@ -40,7 +40,7 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
-import org.dinky.data.vo.CascaderVO;
+import org.dinky.data.vo.TreeVo;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.HistoryService;
@@ -199,31 +199,32 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     /**
      * Get the catalogue sort type
      *
-     * @return A list of {@link CascaderVO} objects representing the catalogue sort type.
+     * @return A list of {@link TreeVo} objects representing the catalogue sort type.
      */
     @Override
-    public List<CascaderVO> getCatalogueSortType() {
-        List<CascaderVO> cascaderVoList = Lists.newArrayList();
+    public List<TreeVo> getCatalogueSortType() {
+        List<TreeVo> treeVoList = Lists.newArrayList();
         for (CatalogueSortValueEnum catalogueSortValueEnum : CatalogueSortValueEnum.values()) {
             String catalogueSortValueEnumName = catalogueSortValueEnum.getName();
             String catalogueSortValueEnumI18nValue = catalogueSortValueEnum.getI18nValue();
-            CascaderVO cascaderVo = new CascaderVO();
-            cascaderVo.setValue(catalogueSortValueEnumName);
-            cascaderVo.setLabel(catalogueSortValueEnumI18nValue);
-            List<CascaderVO> subCascaderVoList = Arrays.stream(SortTypeEnum.values())
+            TreeVo treeVo = TreeVo.builder()
+                    .name(catalogueSortValueEnumI18nValue)
+                    .value(catalogueSortValueEnumName)
+                    .build();
+            List<TreeVo> subTreeVoList = Arrays.stream(SortTypeEnum.values())
                     .map(sortTypeEnum -> {
                         String sortTypeEnumName = sortTypeEnum.getName();
                         String sortTypeEnumI18nValue = sortTypeEnum.getI18nValue();
-                        CascaderVO subCascaderVo = new CascaderVO();
-                        subCascaderVo.setValue(catalogueSortValueEnumName + "_" + sortTypeEnumName);
-                        subCascaderVo.setLabel(catalogueSortValueEnumI18nValue + " " + sortTypeEnumI18nValue);
-                        return subCascaderVo;
+                        return TreeVo.builder()
+                                .name(catalogueSortValueEnumI18nValue + " " + sortTypeEnumI18nValue)
+                                .value(catalogueSortValueEnumName + "_" + sortTypeEnumName)
+                                .build();
                     })
                     .collect(Collectors.toList());
-            cascaderVo.setChildren(subCascaderVoList);
-            cascaderVoList.add(cascaderVo);
+            treeVo.setChildren(subTreeVoList);
+            treeVoList.add(treeVo);
         }
-        return cascaderVoList;
+        return treeVoList;
     }
 
     @Override

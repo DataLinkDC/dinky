@@ -28,15 +28,17 @@ import {
   StateType,
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC,
-  TabsItemType
+  TabsItemType,
+  TreeVo
 } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { SortAscendingOutlined } from '@ant-design/icons';
 import { Key } from '@ant-design/pro-components';
-import { Cascader, Empty, Space, Tree } from 'antd';
-import type { SingleCascaderProps } from 'antd/es/cascader';
+import type { MenuProps } from 'antd';
+import { Button, Dropdown, Empty, Space, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
+import { ItemType } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
 import { BtnRoute, useTasksDispatch } from '../../BtnContext';
 
@@ -68,7 +70,8 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   } = props;
 
   const [searchValue, setSearchValueValue] = useState('');
-  const [initialSelectSortType, setInitialSelectSortType] = useState<string[]>([]);
+  const [sortIconType, setSortIconType] = useState('');
+  const [selectedSortValue, setSelectedSortValue] = useState<string[]>([]);
   const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
   const btnDispatch = useTasksDispatch();
 
@@ -80,6 +83,22 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
   }, [selectCatalogueSortTypeData]);
 
+  function renameTrees(trees: TreeVo[]): ItemType[] {
+    const menuItems: ItemType[] = [];
+    for (let tree of trees) {
+      let menuItem = {
+        key: tree['value'],
+        label: tree['name']
+      };
+      if (tree['children']) {
+        const subTrees = renameTrees(tree['children']);
+        menuItem['children'] = subTrees;
+      }
+      menuItems.push(menuItem);
+    }
+    return menuItems;
+  }
+
   // set sort default value
   useEffect(() => {
     if (
@@ -87,12 +106,20 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
       selectCatalogueSortTypeData.sortValue != '' &&
       selectCatalogueSortTypeData.sortType != ''
     ) {
-      const initialSortValue = selectCatalogueSortTypeData.sortValue;
-      const initialSortType = initialSortValue + '_' + selectCatalogueSortTypeData.sortType;
-      const initialValue = [initialSortValue, initialSortType];
-      setInitialSelectSortType(initialValue);
+      const initialSortValue =
+        selectCatalogueSortTypeData.sortValue + '_' + selectCatalogueSortTypeData.sortType;
+      setSelectedSortValue([initialSortValue]);
     }
   }, []);
+
+  // when sorted, change the icon display
+  useEffect(() => {
+    if (selectCatalogueSortTypeData.sortValue && selectCatalogueSortTypeData.sortType) {
+      setSortIconType('link');
+    } else {
+      setSortIconType('text');
+    }
+  }, [selectCatalogueSortTypeData]);
 
   const [autoExpandParent, setAutoExpandParent] = useState(true);
   const onChangeSearch = (e: any) => {
@@ -167,23 +194,32 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     payload: btnEvent
   });
 
-  interface Option {
-    value: string;
-    label: string;
-    children?: Option[];
-  }
-
-  const onChange: SingleCascaderProps<Option>['onChange'] = (value) => {
-    const lastValue: string = value[value.length - 1].toString();
-    const lastValueSortField: string = lastValue.substring(0, lastValue.lastIndexOf('_'));
-    const lastValueSortType: string = lastValue.substring(lastValue.lastIndexOf('_') + 1);
-    dispatch({
-      type: STUDIO_MODEL.saveTaskSortTypeData,
-      payload: {
-        sortValue: lastValueSortField,
-        sortType: lastValueSortType
-      }
-    });
+  const onClick: MenuProps['onClick'] = (e) => {
+    const selectSortValue = e.key;
+    const sortField: string = selectSortValue.substring(0, selectSortValue.lastIndexOf('_'));
+    const sortType: string = selectSortValue.substring(selectSortValue.lastIndexOf('_') + 1);
+    if (
+      sortField == selectCatalogueSortTypeData.sortValue &&
+      sortType == selectCatalogueSortTypeData.sortType
+    ) {
+      setSelectedSortValue([]);
+      dispatch({
+        type: STUDIO_MODEL.saveTaskSortTypeData,
+        payload: {
+          sortValue: '',
+          sortType: ''
+        }
+      });
+    } else {
+      setSelectedSortValue([selectSortValue]);
+      dispatch({
+        type: STUDIO_MODEL.saveTaskSortTypeData,
+        payload: {
+          sortValue: sortField,
+          sortType: sortType
+        }
+      });
+    }
   };
 
   return (
@@ -195,15 +231,18 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           onChange={onChangeSearch}
           allowClear={true}
         />
-        <Cascader
-          options={catalogueSortTypeData}
-          expandTrigger='click'
-          key={initialSelectSortType}
-          defaultValue={initialSelectSortType}
-          onChange={onChange}
+        <Dropdown
+          menu={{
+            items: renameTrees(catalogueSortTypeData),
+            mode: 'horizontal',
+            selectable: true,
+            onClick: onClick,
+            selectedKeys: selectedSortValue
+          }}
+          placement='bottomLeft'
         >
-          <SortAscendingOutlined />
-        </Cascader>
+          <Button icon={<SortAscendingOutlined />} type={sortIconType}></Button>
+        </Dropdown>
       </Space>
 
       {data.length ? (

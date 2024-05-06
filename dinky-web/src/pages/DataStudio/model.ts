@@ -80,10 +80,10 @@ export type EnvType = {
   fragment?: boolean;
 };
 
-export type Cascader = {
+export type TreeVo = {
+  name?: string;
   value?: string;
-  label?: string;
-  children?: Cascader[];
+  children?: TreeVo[];
 };
 
 export type TaskType = {
@@ -285,7 +285,7 @@ export type StateType = {
     selectKey: [];
   };
   catalogueSortType: {
-    data: Cascader[];
+    data: TreeVo[];
   };
   selectCatalogueSortTypeData: {
     data: {
@@ -471,7 +471,7 @@ const Model: ModelType = {
       });
     },
     *queryTaskSortTypeData({ payload }, { call, put }) {
-      const response: Cascader[] = yield call(getTaskSortTypeData, payload);
+      const response: TreeVo[] = yield call(getTaskSortTypeData, payload);
       yield put({
         type: 'saveCatalogueSortType',
         payload: response
