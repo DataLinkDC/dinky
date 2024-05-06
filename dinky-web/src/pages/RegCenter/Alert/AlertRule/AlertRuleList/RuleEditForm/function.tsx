@@ -17,7 +17,6 @@
  *
  */
 
-
 import { l } from '@/utils/intl';
 import { ProFormDigit, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { DefaultOptionType } from 'antd/es/select';
