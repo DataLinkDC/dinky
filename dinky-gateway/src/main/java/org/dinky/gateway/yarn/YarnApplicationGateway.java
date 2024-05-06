@@ -28,6 +28,7 @@ import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.LogUtil;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
@@ -42,6 +43,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.util.URLUtil;
+
 /**
  * YarnApplicationGateway
  *
@@ -54,6 +57,20 @@ public class YarnApplicationGateway extends YarnGateway {
         return GatewayType.YARN_APPLICATION;
     }
 
+    /**
+     *  format url
+     *  <p>if url is rs protocol, convert to file path</p>
+     * @param url url
+     * @return formatted url
+     */
+    private String formatUrl(String url) {
+        if (URLUtil.url(url).getProtocol().equals("rs")) {
+            return URLUtils.toFile(url).getAbsolutePath();
+        } else {
+            return url;
+        }
+    }
+
     @Override
     public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         if (Asserts.isNull(yarnClient)) {
@@ -61,7 +78,7 @@ public class YarnApplicationGateway extends YarnGateway {
         }
 
         AppConfig appConfig = config.getAppConfig();
-        configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
+        configuration.set(PipelineOptions.JARS, Collections.singletonList(formatUrl(appConfig.getUserJarPath())));
         configuration.setString(
                 "python.files",
                 udfPathContextHolder.getPyUdfFile().stream().map(File::getName).collect(Collectors.joining(",")));
