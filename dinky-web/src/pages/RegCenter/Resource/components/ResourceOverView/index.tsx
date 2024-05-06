@@ -20,6 +20,7 @@
 import RightContextMenu from '@/components/RightContextMenu';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import {
+  ResourceRightMenuKey,
   RIGHT_CONTEXT_FILE_MENU,
   RIGHT_CONTEXT_FOLDER_MENU
 } from '@/pages/RegCenter/Resource/components/constants';
@@ -41,6 +42,7 @@ import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
 import { unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
+import { SuccessMessage } from '@/utils/messages';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { WarningOutlined } from '@ant-design/icons';
@@ -119,7 +121,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
    */
   const handleCreateFolder = () => {
     if (resourceState.rightClickedNode) {
-      setEditModal('createFolder');
+      setEditModal(ResourceRightMenuKey.CREATE_FOLDER);
       const { id } = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
@@ -153,7 +155,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
    */
   const handleRename = () => {
     if (resourceState.rightClickedNode) {
-      setEditModal('rename');
+      setEditModal(ResourceRightMenuKey.RENAME);
       const { id, name, desc } = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
@@ -164,19 +166,49 @@ const ResourceOverView: React.FC<connect> = (props) => {
     }
   };
 
+  async function handleCopyTo(fillValue: string) {
+    await navigator.clipboard.writeText(fillValue);
+    await SuccessMessage(l('rc.resource.copy_success', '', { fillValue }));
+  }
+
   const handleMenuClick = async (node: MenuInfo) => {
+    const { fullInfo } = resourceState.rightClickedNode;
     switch (node.key) {
-      case 'createFolder':
+      case ResourceRightMenuKey.CREATE_FOLDER:
         handleCreateFolder();
         break;
-      case 'upload':
+      case ResourceRightMenuKey.UPLOAD:
         handleUpload();
         break;
-      case 'delete':
+      case ResourceRightMenuKey.DELETE:
         await handleDelete();
         break;
-      case 'rename':
+      case ResourceRightMenuKey.RENAME:
         handleRename();
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_CUSTOM_JAR:
+        if (fullInfo) {
+          const fillValue = `ADD CUSTOMJAR 'rs:${fullInfo.fullName}';`;
+          await handleCopyTo(fillValue);
+        }
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_JAR:
+        if (fullInfo) {
+          const fillValue = `ADD JAR 'rs:${fullInfo.fullName}';`;
+          await handleCopyTo(fillValue);
+        }
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_FILE:
+        if (fullInfo) {
+          const fillValue = `ADD FILE 'rs:${fullInfo.fullName}';`;
+          await handleCopyTo(fillValue);
+        }
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_RS_PATH:
+        if (fullInfo) {
+          const fillValue = `rs:${fullInfo.fullName}`;
+          await handleCopyTo(fillValue);
+        }
         break;
       default:
         break;
@@ -188,10 +220,10 @@ const ResourceOverView: React.FC<connect> = (props) => {
    * @param info
    */
   const handleRightClick = (info: any) => {
-    // 获取右键点击的节点信息
+    // Obtain the node information for right-click
     const { node, event } = info;
 
-    // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 75 (需要根据具体的右键菜单数量合理设置)
+    // Determine if the position of the right button exceeds the screen. If it exceeds the screen, set it to the maximum value of the screen offset upwards by 75 (it needs to be reasonably set according to the specific number of right button menus)
     if (event.clientY + 150 > window.innerHeight) {
       event.clientY = window.innerHeight - 75;
     }
@@ -229,7 +261,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
    */
   const handleModalSubmit = async (value: Partial<ResourceInfo>) => {
     const { id: pid } = resourceState.rightClickedNode;
-    if (editModal === 'createFolder') {
+    if (editModal === ResourceRightMenuKey.CREATE_FOLDER) {
       await handleOption(
         API_CONSTANTS.RESOURCE_CREATE_FOLDER,
         l('right.menu.createFolder'),
@@ -239,7 +271,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
         },
         () => handleModalCancel()
       );
-    } else if (editModal === 'rename') {
+    } else if (editModal === ResourceRightMenuKey.RENAME) {
       await handleOption(
         API_CONSTANTS.RESOURCE_RENAME,
         l('right.menu.rename'),

@@ -21,6 +21,7 @@ package org.dinky.gateway.kubernetes;
 
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 
@@ -54,8 +55,10 @@ public class KubernetesSessionGateway extends KubernetesGateway {
                 createClusterSpecificationBuilder();
 
         KubernetesResult result = KubernetesResult.build(getType());
-        try (KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(
-                configuration, getK8sClientHelper().getClient())) {
+        ClusterDescriptorAdapterImpl clusterDescriptorAdapter = new ClusterDescriptorAdapterImpl();
+        try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
+                clusterDescriptorAdapter.createKubernetesClusterDescriptor(
+                        configuration, getK8sClientHelper().getClient())) {
             ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deploySessionCluster(
                     clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();

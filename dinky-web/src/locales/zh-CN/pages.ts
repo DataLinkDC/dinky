@@ -90,6 +90,8 @@ export default {
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': '将任务 [ {name} ] 推送至 DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky任务编码',
+  'datastudio.header.pushdolphin.taskGroup': '任务组',
+  'datastudio.header.pushdolphin.taskGroupPriority': '组内优先级',
   'datastudio.header.pushdolphin.taskName': 'Task名称: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task类型: {type} 所属进程定义: {processDefinitionName}',
@@ -750,8 +752,10 @@ export default {
   'rc.cc.sqlSubmitJarPath': 'Jar 文件路径',
   'rc.cc.sqlSubmitJarPathHelp':
     '请输入 Jar 文件路径! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelpTips':
+    'Yarn 模式下此参数可以设置为: hdfs:///dinky/dinky-app-1.17-with-dependencies.jar 或者 rs:/dinky/dinky-app-1.17-with-dependencies.jar 如果设置为 rs:/ 协议,则需要将该jar包上传到 Dinky 的资源中心中,然后填写该路径。K8s 模式下仅支持 local:// 协议',
   'rc.cc.start': '启动 Session 集群',
-  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项 (Application 模式必填)',
+  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项',
   'rc.cc.tmHeap': 'TaskManager 堆内存',
   'rc.cc.tmHeapHelp': '请输入 TaskManager 堆内存大小! 此参数配置项为',
   'rc.cc.tmMem': 'TaskManager 内存',
@@ -941,7 +945,12 @@ export default {
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
-  'rc.resource.copy': '复制为: {fillValue}',
+  'rc.resource.copy_to_add_custom_jar': '复制为 ADD CUSTOMJAR 语法',
+  'rc.resource.copy_to_add_jar': '复制为 ADD JAR 语法',
+  'rc.resource.copy_to_add_file': '复制为 ADD FILE 语法',
+  'rc.resource.copy_to_add_rs_path': '复制 RS 协议资源路径',
+  'rc.resource.copy_success':
+    '复制成功，值为：[{fillValue}] 已复制到剪贴板。请粘贴到需要的地方进行使用',
   'rc.resource.enable': '未启用资源管理功能',
   'rc.resource.enable.tips': '请前往 [配置中心 -> 全局配置 -> Resource 配置] 中启用资源管理功能!!!',
 

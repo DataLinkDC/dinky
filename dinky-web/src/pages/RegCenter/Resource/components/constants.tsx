@@ -20,11 +20,23 @@
 import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import {
+  CopyOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
   UploadOutlined
 } from '@ant-design/icons';
+
+export enum ResourceRightMenuKey {
+  COPY_TO_ADD_CUSTOM_JAR = 'copy_to_add_custom_jar',
+  COPY_TO_ADD_JAR = 'copy_to_add_jar',
+  COPY_TO_ADD_FILE = 'copy_to_add_file',
+  COPY_TO_ADD_RS_PATH = 'copy_to_add_rs_path',
+  DELETE = 'delete',
+  RENAME = 'rename',
+  CREATE_FOLDER = 'createFolder',
+  UPLOAD = 'upload'
+}
 
 /**
  *  the right context menu
@@ -34,13 +46,37 @@ import {
  */
 export const RIGHT_CONTEXT_FILE_MENU = [
   {
-    key: 'delete',
+    key: ResourceRightMenuKey.COPY_TO_ADD_CUSTOM_JAR,
+    icon: <CopyOutlined />,
+    label: l('rc.resource.copy_to_add_custom_jar'),
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
+  },
+  {
+    key: ResourceRightMenuKey.COPY_TO_ADD_JAR,
+    icon: <CopyOutlined />,
+    label: l('rc.resource.copy_to_add_jar'),
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
+  },
+  {
+    key: ResourceRightMenuKey.COPY_TO_ADD_FILE,
+    icon: <CopyOutlined />,
+    label: l('rc.resource.copy_to_add_file'),
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
+  },
+  {
+    key: ResourceRightMenuKey.COPY_TO_ADD_RS_PATH,
+    icon: <CopyOutlined />,
+    label: l('rc.resource.copy_to_add_rs_path'),
+    path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
+  },
+  {
+    key: ResourceRightMenuKey.DELETE,
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
     path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
-    key: 'rename',
+    key: ResourceRightMenuKey.RENAME,
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
     path: PermissionConstants.REGISTRATION_RESOURCE_RENAME
@@ -48,25 +84,25 @@ export const RIGHT_CONTEXT_FILE_MENU = [
 ];
 export const RIGHT_CONTEXT_FOLDER_MENU = [
   {
-    key: 'createFolder',
+    key: ResourceRightMenuKey.CREATE_FOLDER,
     icon: <PlusCircleOutlined />,
     label: l('right.menu.createFolder'),
     path: PermissionConstants.REGISTRATION_RESOURCE_ADD_FOLDER
   },
   {
-    key: 'upload',
+    key: ResourceRightMenuKey.UPLOAD,
     icon: <UploadOutlined />,
     label: l('button.upload'),
     path: PermissionConstants.REGISTRATION_RESOURCE_UPLOAD
   },
   {
-    key: 'delete',
+    key: ResourceRightMenuKey.DELETE,
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
     path: PermissionConstants.REGISTRATION_RESOURCE_DELETE
   },
   {
-    key: 'rename',
+    key: ResourceRightMenuKey.RENAME,
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
     path: PermissionConstants.REGISTRATION_RESOURCE_RENAME

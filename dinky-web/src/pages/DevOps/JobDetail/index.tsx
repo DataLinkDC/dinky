@@ -109,7 +109,6 @@ const JobDetail = (props: any) => {
     },
     { tab: l('devops.jobinfo.config.JobAlert'), key: OperatorEnum.JOB_ALERT }
   ];
-  console.log(!!data);
 
   return (
     <PageContainer
