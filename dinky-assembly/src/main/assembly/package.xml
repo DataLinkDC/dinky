@@ -44,11 +44,17 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-admin/target/classes/static</directory>
+            <outputDirectory>html</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-admin/target/classes</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>**/dinky-loader/FlinkConfClass</include>
-                <include>**/dinky-loader/ExpressionVariableClass</include>
             </includes>
         </fileSet>
         <fileSet>
