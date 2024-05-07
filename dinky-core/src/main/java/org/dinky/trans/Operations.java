@@ -19,18 +19,15 @@
 
 package org.dinky.trans;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.table.functions.UserDefinedFunction;
 import org.dinky.function.data.model.UDF;
-import org.dinky.function.udtaf.Top2;
 import org.dinky.parser.SqlType;
 
-import org.apache.flink.api.common.functions.Function;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.catalog.FunctionLanguage;
+import org.apache.flink.table.functions.UserDefinedFunction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -38,10 +35,10 @@ import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
-
-import lombok.extern.slf4j.Slf4j;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Operations
@@ -110,11 +107,12 @@ public class Operations {
     }
 
     public static List<UDF> getCustomStaticUdfs() {
-        if (CollectionUtils.isNotEmpty(JAVA_STATIC_UDF_LIST )) {
+        if (CollectionUtils.isNotEmpty(JAVA_STATIC_UDF_LIST)) {
             return JAVA_STATIC_UDF_LIST;
         }
 
-        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
+        Reflections reflections =
+                new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
         Set<Class<?>> operations =
                 reflections.get(Scanners.SubTypes.of(UserDefinedFunction.class).asClass());
         return operations.stream()
