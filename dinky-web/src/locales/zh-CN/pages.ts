@@ -421,7 +421,7 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',
   'pages.datastudio.label.jobConfig.addConfig.value': '值',
   'pages.datastudio.label.udf': '注入UDF算子',
-  'pages.datastudio.label.udf.tip': '自动注入UDF算子',
+  'pages.datastudio.label.udf.tip': '注入UDF算子, 自动在所有语句前注入`create temporary function {functionName} as {className}` 语句',
   'pages.datastudio.label.udf.injectUdf': '注入UDF',
   'pages.datastudio.label.udf.name': '函数名称',
   'pages.datastudio.label.udf.className': '类名',
