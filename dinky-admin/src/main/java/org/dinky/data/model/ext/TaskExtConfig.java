@@ -103,7 +103,7 @@ public class TaskExtConfig implements Serializable {
                             }
                             return t;
                         })
-                        .collect(Collectors.toMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
+                        .collect(Collectors.toConcurrentMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
                 : new HashMap<>();
     }
 

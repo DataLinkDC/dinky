@@ -441,6 +441,7 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig.value': 'value',
   'pages.datastudio.label.udf': 'Udf Item',
   'pages.datastudio.label.udf.tip': 'Inject UDF item, Automatically add statement `create temporary function {functionName} as {className}` at the beginning of the SQL statement',
+  'pages.datastudio.label.udf.duplicate.tip': 'The class [{className}] selected this time already exists and duplicate injection is not allowed. Please reselect or cancel injection (delete and change line).',
   'pages.datastudio.label.udf.injectUdf': 'Inject UDF item',
   'pages.datastudio.label.udf.name': 'function name',
   'pages.datastudio.label.udf.className': 'class name',
