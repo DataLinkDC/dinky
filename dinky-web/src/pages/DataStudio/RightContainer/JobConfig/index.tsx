@@ -395,6 +395,14 @@ const JobConfig = (props: any) => {
           tooltip={l('pages.datastudio.label.udf.tip')}
           name={['configJson', 'udfRefer']}
           copyIconProps={false}
+          onAfterRemove={(_, index) => {
+            // 删除一项之后拿到 index 从 currentSelectUdfIndexMap 中删除对应的值 || get the value from currentSelectUdfIndexMap and delete it
+            setCurrentSelectUdfIndexMap(prevState => {
+              const newState = new Map(prevState);
+              newState.delete(index);
+              return newState;
+            });
+          }}
           creatorButtonProps={{
             style: {width: '100%'},
             creatorButtonText: l('pages.datastudio.label.udf.injectUdf')
