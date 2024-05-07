@@ -20,7 +20,7 @@
 import { LeftBottomKey, LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
-import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import { getTaskData, getTaskSortTypeData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
   getClusterConfigurationData,
   getEnvData,
@@ -78,6 +78,12 @@ export type EnvType = {
   id?: number;
   name?: string;
   fragment?: boolean;
+};
+
+export type TreeVo = {
+  name?: string;
+  value?: string;
+  children?: TreeVo[];
 };
 
 export type TaskType = {
@@ -278,6 +284,15 @@ export type StateType = {
     expandKeys: [];
     selectKey: [];
   };
+  catalogueSortType: {
+    data: TreeVo[];
+  };
+  selectCatalogueSortTypeData: {
+    data: {
+      sortValue: string;
+      sortType: string;
+    };
+  };
   sessionCluster: Cluster.Instance[];
   clusterConfiguration: Cluster.Config[];
   flinkConfigOptions: DefaultOptionType[];
@@ -298,6 +313,7 @@ export type ModelType = {
     queryEnv: Effect;
     queryDatabaseList: Effect;
     queryTaskData: Effect;
+    queryTaskSortTypeData: Effect;
     querySessionData: Effect;
     queryClusterConfigurationData: Effect;
   };
@@ -313,6 +329,7 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    saveCatalogueSortType: Reducer<StateType>;
     updateProjectExpandKey: Reducer<StateType>;
     updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
@@ -334,6 +351,7 @@ export type ModelType = {
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
     updateSuggestions: Reducer<StateType>;
+    saveTaskSortTypeData: Reducer<StateType>;
   };
 };
 
@@ -371,6 +389,15 @@ const Model: ModelType = {
       data: [],
       expandKeys: [],
       selectKey: []
+    },
+    catalogueSortType: {
+      data: []
+    },
+    selectCatalogueSortTypeData: {
+      data: {
+        sortValue: '',
+        sortType: ''
+      }
     },
     tabs: {
       activeBreadcrumbTitle: '',
@@ -440,6 +467,13 @@ const Model: ModelType = {
       const response: TaskType = yield call(getTaskData, payload);
       yield put({
         type: 'saveProject',
+        payload: response
+      });
+    },
+    *queryTaskSortTypeData({ payload }, { call, put }) {
+      const response: TreeVo[] = yield call(getTaskSortTypeData, payload);
+      yield put({
+        type: 'saveCatalogueSortType',
         payload: response
       });
     },
@@ -599,6 +633,18 @@ const Model: ModelType = {
       return {
         ...state,
         project: { ...state.project, data: payload }
+      };
+    },
+    saveCatalogueSortType(state, { payload }) {
+      return {
+        ...state,
+        catalogueSortType: { data: payload }
+      };
+    },
+    saveTaskSortTypeData(state, { payload }) {
+      return {
+        ...state,
+        selectCatalogueSortTypeData: { data: payload }
       };
     },
 

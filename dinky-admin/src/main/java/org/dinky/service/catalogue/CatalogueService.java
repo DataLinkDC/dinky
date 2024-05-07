@@ -17,11 +17,13 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.service.catalogue;
 
 import org.dinky.data.dto.CatalogueTaskDTO;
+import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.TreeVo;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -34,11 +36,19 @@ import java.util.List;
 public interface CatalogueService extends ISuperService<Catalogue> {
 
     /**
-     * Get the catalogue tree
+     * Get the catalogue tree.
      *
+     * @param catalogueTreeQueryDto The query conditions.
      * @return A list of {@link Catalogue} objects representing the catalogue tree.
      */
-    List<Catalogue> getCatalogueTree();
+    List<Catalogue> getCatalogueTree(CatalogueTreeQueryDTO catalogueTreeQueryDto);
+
+    /**
+     * Get the catalogue sort type.
+     *
+     * @return A list of {@link TreeVo} objects representing the catalogue sort type.
+     */
+    List<TreeVo> getCatalogueSortType();
 
     /**
      * Find a catalogue by its parent ID and name.

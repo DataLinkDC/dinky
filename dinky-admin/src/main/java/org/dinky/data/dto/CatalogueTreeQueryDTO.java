@@ -17,20 +17,28 @@
  *
  */
 
-import { TaskDataType } from '@/pages/DataStudio/model';
-import { postAll, putDataJson } from '@/services/api';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
+package org.dinky.data.dto;
 
-export async function getTaskData(params: any) {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA, params)).data;
-}
-export async function getTaskSortTypeData() {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA)).data;
-}
-export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
-  return queryDataByParams(API_CONSTANTS.TASK, { id: id });
-}
-export function putTask(params: any) {
-  return putDataJson(API_CONSTANTS.TASK, params);
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * CatalogueTreeQueryDTO
+ *
+ * @since 2024/4/25 17:59
+ */
+@Getter
+@Setter
+@ToString
+@ApiModel(value = "CatalogueTreeQueryDTO", description = "DTO for catalogue tree query")
+public class CatalogueTreeQueryDTO {
+
+    @ApiModelProperty(value = "Sort Value", dataType = "String", example = "create_time")
+    private String sortValue;
+
+    @ApiModelProperty(value = "Sort Type", dataType = "String", example = "asc")
+    private String sortType;
 }

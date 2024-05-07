@@ -89,9 +89,15 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch({
       type: STUDIO_MODEL_ASYNC.queryDatabaseList
     }),
-  queryTaskData: () => {
+  queryTaskData: (payload: any) => {
     dispatch({
-      type: STUDIO_MODEL_ASYNC.queryTaskData
+      type: STUDIO_MODEL_ASYNC.queryTaskData,
+      ...payload
+    });
+  },
+  queryTaskSortTypeData: () => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryTaskSortTypeData
     });
   },
   querySessionData: () => {

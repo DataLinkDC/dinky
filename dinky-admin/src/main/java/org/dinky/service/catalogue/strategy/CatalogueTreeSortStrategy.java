@@ -17,20 +17,26 @@
  *
  */
 
-import { TaskDataType } from '@/pages/DataStudio/model';
-import { postAll, putDataJson } from '@/services/api';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
+package org.dinky.service.catalogue.strategy;
 
-export async function getTaskData(params: any) {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA, params)).data;
-}
-export async function getTaskSortTypeData() {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA)).data;
-}
-export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
-  return queryDataByParams(API_CONSTANTS.TASK, { id: id });
-}
-export function putTask(params: any) {
-  return putDataJson(API_CONSTANTS.TASK, params);
+import org.dinky.data.enums.SortTypeEnum;
+import org.dinky.data.model.Catalogue;
+
+import java.util.List;
+
+/**
+ * CatalogueTreeSortStrategy
+ *
+ * @since 2024/4/29 14:10
+ */
+public interface CatalogueTreeSortStrategy {
+
+    /**
+     * Sort catalogue tree.
+     *
+     * @param catalogueTree Catalogue Tree.
+     * @param sortTypeEnum Sort type.
+     * @return A list of {@link Catalogue} Sorted catalogue tree.
+     */
+    List<Catalogue> sort(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum);
 }
