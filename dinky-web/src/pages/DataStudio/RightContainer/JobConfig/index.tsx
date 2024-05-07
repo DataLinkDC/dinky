@@ -56,7 +56,6 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import {connect} from 'umi';
 import FlinkUdfOptionsSelect from "@/components/Flink/UdfSelect";
-import {ProFormDependency} from "@ant-design/pro-form";
 
 const JobConfig = (props: any) => {
   const {
