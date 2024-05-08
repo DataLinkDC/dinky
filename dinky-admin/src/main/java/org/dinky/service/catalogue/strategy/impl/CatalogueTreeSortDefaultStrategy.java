@@ -51,7 +51,7 @@ public class CatalogueTreeSortDefaultStrategy implements CatalogueTreeSortStrate
      */
     @Override
     public List<Catalogue> sort(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum) {
-        log.info("sort catalogue tree based on id. catalogueTree: {}, sortTypeEnum: {}", catalogueTree, sortTypeEnum);
+        log.debug("sort catalogue tree based on id. catalogueTree: {}, sortTypeEnum: {}", catalogueTree, sortTypeEnum);
         return recursionSortCatalogues(catalogueTree, sortTypeEnum);
     }
 
