@@ -19,6 +19,14 @@
 
 package org.dinky.metadata.driver;
 
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
@@ -30,14 +38,6 @@ import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.MySqlQuery;
 import org.dinky.utils.TextUtil;
-
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * MysqlDriver
@@ -106,14 +106,19 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     } else if (null != column.getLength()) {
                         unit = String.format("(%s)", column.getLength());
                     }
-
-                    final String dv = column.getDefaultValue();
-                    String defaultValue = Asserts.isNotNull(dv)
-                            ? String.format(" DEFAULT '%s'", dv.isEmpty() ? "''" : dv)
-                            : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
-
                     // Avoid parsing mismatches when the numeric data type column declared by UNSIGNED/ZEROFILL keyword
                     String columnType = column.getType();
+
+                    final String dv = column.getDefaultValue();
+                    // If it defaults to a numeric type, there is no need to include single quotes or a bit type
+                    String defaultValueTag = " DEFAULT '%s'";
+                    if (NumberUtil.isNumber(dv) || columnType.contains("bit")) {
+                        defaultValueTag = " DEFAULT %s";
+                    }
+                    String   defaultValue = Asserts.isNotNull(dv)
+                            ? String.format(defaultValueTag, StrUtil.isEmpty(dv) ? "''" : dv)
+                            : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
+
                     if (columnType.contains("unsigned") || columnType.contains("zerofill")) {
                         String[] arr = columnType.split(" ");
                         arr[0] = arr[0].concat(unit);
