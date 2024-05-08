@@ -19,7 +19,20 @@
 
 package org.dinky.service.impl;
 
-import java.util.Collections;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.CharUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Resources;
@@ -29,26 +42,8 @@ import org.dinky.mapper.UDFManageMapper;
 import org.dinky.service.UDFService;
 import org.dinky.service.resource.ResourcesService;
 import org.dinky.utils.UDFUtils;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.CharUtil;
-import cn.hutool.core.util.StrUtil;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @since 0.6.8
@@ -78,8 +73,10 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                     String fileName = x.getFileName();
                     if ("jar".equals(FileUtil.getSuffix(fileName))) {
                         x.setDialect(Dialect.JAVA.getValue());
+                        x.setLanguage(Dialect.JAVA.getValue());
                     } else {
                         x.setDialect(Dialect.PYTHON.getValue());
+                        x.setLanguage(Dialect.JAVA.getValue());
                     }
                 })
                 .collect(Collectors.toList());
@@ -156,9 +153,12 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
         // 1. get all resources
         List<Resources> resourcesList = resourcesService.list();
         // 2.  get all udf from udf manage  and then filter the udf by resources id in resources list
-        return this.list().stream().filter(udf-> resourcesList.stream().anyMatch(resources -> resources.getId().equals(udf.getResourcesId())))
+        List<UDFManage> collect = this.list().stream().filter(udf -> resourcesList.stream().anyMatch(resources -> resources.getId().equals(udf.getResourcesId())))
                 .collect(Collectors.toList());
+        // 去重 根据 className 去重 || distinct by className
+        return collect.stream().collect(Collectors.toMap(UDFManage::getClassName, udf -> udf, (a, b) -> a)).values().stream().collect(Collectors.toList());
     }
+
     private static String getSimpleClassName(String className) {
         final List<String> packages = StrUtil.split(className, CharUtil.DOT);
         if (null == packages || packages.size() < 2) {
