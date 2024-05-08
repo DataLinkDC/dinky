@@ -19,14 +19,6 @@
 
 package org.dinky.metadata.driver;
 
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.StrUtil;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
@@ -38,6 +30,16 @@ import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.MySqlQuery;
 import org.dinky.utils.TextUtil;
+
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * MysqlDriver
@@ -115,7 +117,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     if (NumberUtil.isNumber(dv) || columnType.contains("bit")) {
                         defaultValueTag = " DEFAULT %s";
                     }
-                    String   defaultValue = Asserts.isNotNull(dv)
+                    String defaultValue = Asserts.isNotNull(dv)
                             ? String.format(defaultValueTag, StrUtil.isEmpty(dv) ? "''" : dv)
                             : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
 
