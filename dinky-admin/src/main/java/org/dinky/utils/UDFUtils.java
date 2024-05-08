@@ -48,8 +48,7 @@ public class UDFUtils extends UDFUtil {
             return UDF.builder()
                     .className(udfManage.getClassName())
                     .code(udfManage.getName())
-                    // todo: I don't know how to specify the language
-//                    .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
+                    .functionLanguage(FunctionLanguage.valueOf(udfManage.getLanguage().toUpperCase()))
                     .build();
         } else {
             throw new BusException("udf `class` config is null,please check your udf task config");

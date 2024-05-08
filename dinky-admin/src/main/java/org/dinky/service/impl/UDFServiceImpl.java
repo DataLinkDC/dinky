@@ -20,6 +20,7 @@
 package org.dinky.service.impl;
 
 import java.util.Collections;
+import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
@@ -119,6 +120,7 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                             return classes.stream().map(clazz -> {
                                 UDFManage udfManage = UDFManage.builder()
                                         .className(clazz.getName())
+                                        .language(FunctionLanguage.JAVA.name())
                                         .resourcesId(x.getId())
                                         .build();
                                 udfManage.setName(StrUtil.toUnderlineCase(getSimpleClassName(clazz.getName())));
@@ -131,6 +133,7 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                                 UDFManage udfManage = UDFManage.builder()
                                         .className(className)
                                         .resourcesId(x.getId())
+                                        .language(FunctionLanguage.PYTHON.name())
                                         .build();
                                 udfManage.setName(StrUtil.toUnderlineCase(getSimpleClassName(className)));
                                 return udfManage;
