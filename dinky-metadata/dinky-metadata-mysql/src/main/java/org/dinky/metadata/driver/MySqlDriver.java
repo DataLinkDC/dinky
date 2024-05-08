@@ -112,7 +112,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     final String dv = column.getDefaultValue();
                     // If it defaults to a numeric type, there is no need to include single quotes or a bit type
                     String defaultValueTag = " DEFAULT '%s'";
-                    if (NumberUtil.isNumber(dv) || columnType.contains("bit")) {
+                    if (NumberUtil.isNumber(dv) || columnType.startsWith("bit")) {
                         defaultValueTag = " DEFAULT %s";
                     }
                     String   defaultValue = Asserts.isNotNull(dv)
