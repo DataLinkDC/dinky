@@ -625,6 +625,7 @@ CREATE TABLE IF NOT EXISTS `dinky_udf_manage` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
                                     `class_name` varchar(50) DEFAULT NULL COMMENT 'Complete class name',
+                                    `language` varchar(10) DEFAULT NULL COMMENT 'language',
                                     `task_id` int(11) DEFAULT NULL COMMENT 'task id',
                                     `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
                                     `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',
