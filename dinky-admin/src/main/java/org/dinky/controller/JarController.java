@@ -70,7 +70,7 @@ public class JarController {
         List<UDF> udfCodes = allUDF.stream()
                 .map(task -> UDF.builder()
                         .code(task.getStatement())
-                        .className(task.getSavePointPath())
+                        .className(StrUtil.isEmpty(task.getSavePointPath()) ? task.getConfigJson().getUdfConfig().getClassName(): task.getSavePointPath())
                         .functionLanguage(
                                 FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                         .build())
@@ -84,16 +84,5 @@ public class JarController {
         return Result.succeed(resultMap, msg);
     }
 
-    @GetMapping("/udf/geUdfs")
-    @ApiOperation("Get UDFs")
-    public Result<List<CascaderVO>> getUdfs() {
-        List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
-        List<UDF> dynamicUdfs =
-                taskService.getAllUdfEnabled().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
-        List<UDF> allUdfs = new ArrayList<>(staticUdfs);
-        allUdfs.addAll(dynamicUdfs);
-        List<CascaderVO> result =
-                allUdfs.stream().map(udf -> new CascaderVO(udf.getClassName())).collect(Collectors.toList());
-        return Result.succeed(result);
-    }
+
 }

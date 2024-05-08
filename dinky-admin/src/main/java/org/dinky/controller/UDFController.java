@@ -19,15 +19,23 @@
 
 package org.dinky.controller;
 
+import io.swagger.annotations.ApiOperation;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import org.dinky.data.dto.CommonDTO;
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.function.data.model.UDF;
+import org.dinky.service.TaskService;
 import org.dinky.service.UDFService;
 
 import java.util.List;
 
+import org.dinky.trans.Operations;
+import org.dinky.utils.UDFUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UDFController {
     private final UDFService udfService;
+    private final TaskService taskService;
 
     /**
      * update udf name by id
@@ -94,4 +103,28 @@ public class UDFController {
         udfService.addOrUpdateByResourceId(dto.getData());
         return Result.succeed();
     }
+
+    @GetMapping("/getAllUdfs")
+    @ApiOperation("Get UDFs")
+    public Result<List<CascaderVO>> getAllUdfs() {
+        // Get all UDFs of static UDFs and dynamic UDFs
+        List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
+        // get all UDFs of dynamic UDFs(user defined UDFs in the task)
+        List<UDF> userDefinedUdfs =
+                taskService.getAllUdfEnabled().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
+        // get all UDFs of UDFManage table
+        List<UDF> udfManageDynamic = udfService.getUDFFromUdfManage().stream().map(UDFUtils::resourceUdfManageToUDF).collect(Collectors.toList());
+
+        CascaderVO staticUdfCascaderVO =  new CascaderVO("Flink Static UDF", staticUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
+        CascaderVO userDefinedUdfCascaderVO =  new CascaderVO("User Defined UDF", userDefinedUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
+        CascaderVO udfManageDynamicCascaderVO =  new CascaderVO("From UDF Manage", udfManageDynamic.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
+
+        List<CascaderVO> result = new ArrayList<>();
+        result.add(staticUdfCascaderVO);
+        result.add(udfManageDynamicCascaderVO);
+        result.add(userDefinedUdfCascaderVO);
+        return Result.succeed(result);
+    }
+
+
 }

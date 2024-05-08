@@ -55,4 +55,11 @@ public interface UDFService extends IService<UDFManage> {
      */
     @Transactional(rollbackFor = Exception.class)
     void addOrUpdateByResourceId(List<Integer> resourceIds);
+
+    /**
+     * get udf from udfManage
+     * @return List
+     */
+    List<UDFManage> getUDFFromUdfManage();
+
 }

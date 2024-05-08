@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import java.util.Collections;
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
@@ -144,6 +145,17 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
         }
     }
 
+    /**
+     * @return
+     */
+    @Override
+    public List<UDFManage> getUDFFromUdfManage() {
+        // 1. get all resources
+        List<Resources> resourcesList = resourcesService.list();
+        // 2.  get all udf from udf manage  and then filter the udf by resources id in resources list
+        return this.list().stream().filter(udf-> resourcesList.stream().anyMatch(resources -> resources.getId().equals(udf.getResourcesId())))
+                .collect(Collectors.toList());
+    }
     private static String getSimpleClassName(String className) {
         final List<String> packages = StrUtil.split(className, CharUtil.DOT);
         if (null == packages || packages.size() < 2) {

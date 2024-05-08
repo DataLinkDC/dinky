@@ -35,7 +35,7 @@ export function getFlinkConfigs() {
 }
 
 export function getFlinkUdfOptions() {
-  return queryDataByParams(API_CONSTANTS.FLINK_UDF_OPTIONS);
+  return queryDataByParams(API_CONSTANTS.ALL_UDF_LIST);
 
 }
 

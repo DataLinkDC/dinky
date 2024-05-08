@@ -22,6 +22,7 @@ package org.dinky.utils;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.udf.UDFManage;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 
@@ -41,4 +42,18 @@ public class UDFUtils extends UDFUtil {
             throw new BusException("udf `class` config is null,please check your udf task config");
         }
     }
+
+    public static UDF resourceUdfManageToUDF(UDFManage udfManage) {
+        if (Asserts.isNotNull(udfManage)) {
+            return UDF.builder()
+                    .className(udfManage.getClassName())
+                    .code(udfManage.getName())
+                    // todo: I don't know how to specify the language
+//                    .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
+                    .build();
+        } else {
+            throw new BusException("udf `class` config is null,please check your udf task config");
+        }
+    }
+
 }

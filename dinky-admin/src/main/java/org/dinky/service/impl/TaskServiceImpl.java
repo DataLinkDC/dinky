@@ -19,6 +19,10 @@
 
 package org.dinky.service.impl;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
+import mssql.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -43,6 +47,7 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
+import org.dinky.data.model.Resources;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
@@ -53,6 +58,7 @@ import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.model.home.JobModelOverview;
 import org.dinky.data.model.home.JobTypeOverView;
 import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
@@ -60,6 +66,7 @@ import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
+import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -83,8 +90,10 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
+import org.dinky.service.UDFService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
+import org.dinky.service.resource.ResourcesService;
 import org.dinky.service.task.BaseTask;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
@@ -153,6 +162,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final DataSourceProperties dsProperties;
     private final UserService userService;
     private final ApplicationContext applicationContext;
+    private final UDFService udfService;
+    private final ResourcesService resourcesService;
 
     @Resource
     @Lazy
@@ -706,17 +717,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> getAllUdfEnabled() {
-        return list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq("enabled", 1));
+        return list(new LambdaQueryWrapper<>(Task.class )
+                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
+                .eq(Task::getEnabled, 1));
     }
 
     @Override
     public List<Task> getAllUDFWithSavePoint() {
-        return list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq("enabled", 1)
-                .isNotNull("save_point_path"));
+        return list(new LambdaQueryWrapper<Task>()
+                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
+                .eq(Task::getEnabled, 1)
+                .isNotNull(Task::getSavePointPath));
     }
 
     @Override

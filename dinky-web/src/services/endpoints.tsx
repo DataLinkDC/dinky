@@ -164,6 +164,7 @@ export enum API_CONSTANTS {
   UDF_RESOURCES_LIST = '/api/udf/udfResourcesList',
   UDF_ADD = '/api/udf/addOrUpdateByResourceId',
   UDF_UPDATE = '/api/udf/update',
+  ALL_UDF_LIST = '/api/udf/getAllUdfs',
 
   // ------------------------------------ udf template ------------------------------------
   UDF_TEMPLATE = '/api/udf/template/list',
@@ -285,7 +286,6 @@ export enum API_CONSTANTS {
   // ------------------------------------ flink conf about ------------------------------------
   READ_CHECKPOINT = '/api/flinkConf/readCheckPoint',
   FLINK_CONF_CONFIG_OPTIONS = '/api/flinkConf/configOptions',
-  FLINK_UDF_OPTIONS = '/api/jar/udf/geUdfs',
 
   // ------------------------------------ suggestion ------------------------------------
   SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions'
