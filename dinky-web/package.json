@@ -36,7 +36,7 @@
   ],
   "dependencies": {
     "@andrewray/react-multi-split-pane": "^0.3.5",
-    "@ant-design/charts": "^1.4.3",
+    "@ant-design/charts": "^2.1.1",
     "@ant-design/icons": "^5.2.6",
     "@ant-design/pro-components": "^2.6.43",
     "@ant-design/pro-layout": "^7.17.16",
