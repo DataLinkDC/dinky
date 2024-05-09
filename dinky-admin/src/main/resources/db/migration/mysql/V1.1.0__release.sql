@@ -39,6 +39,6 @@ ALTER TABLE dinky_task
 
 update dinky_task set first_level_owner = creator;
 
-
+ALTER TABLE dinky_alert_template MODIFY COLUMN `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'template name';
 
 SET FOREIGN_KEY_CHECKS = 1;
