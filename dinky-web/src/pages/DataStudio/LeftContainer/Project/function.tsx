@@ -18,13 +18,17 @@
  */
 
 import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
+import { lockTask, showAllOwners } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
 import { Catalogue } from '@/types/Studio/data.d';
 import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { Badge, Space } from 'antd';
+import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
+import { Badge, Space, Tooltip } from 'antd';
 import { Key } from 'react';
 
 export const generateList = (data: any, list: any[]) => {
@@ -125,13 +129,19 @@ export const showBadge = (type: string) => {
  * @param {Catalogue[]} data
  * @param {string} searchValue
  * @param path
+ * @param currentUser
+ * @param taskOwnerLockingStrategy
+ * @param users
  * @returns {any}
  */
 
 export const buildProjectTree = (
   data: Catalogue[] = [],
   searchValue: string = '',
-  path: string[] = []
+  path: string[] = [],
+  currentUser: UserBaseInfo.User,
+  taskOwnerLockingStrategy: TaskOwnerLockingStrategy,
+  users: UserBaseInfo.User[] = []
 ): any =>
   data
     ? data.map((item: Catalogue) => {
@@ -152,9 +162,33 @@ export const buildProjectTree = (
         // 总渲染 title
         const renderTitle = (
           <>
-            <Space align={'baseline'} size={2}>
-              {searchTreeNode(item.name, searchValue)}
-            </Space>
+            <Tooltip
+              title={
+                item?.isLeaf
+                  ? showAllOwners(item?.task?.firstLevelOwner, item?.task?.secondLevelOwners, users)
+                  : ''
+              }
+            >
+              <Space align={'baseline'} size={2}>
+                {searchTreeNode(item.name, searchValue)}
+              </Space>
+            </Tooltip>
+          </>
+        );
+
+        // 渲染后缀图标
+        const renderSuffixIcon = (
+          <>
+            {lockTask(
+              item?.task?.firstLevelOwner,
+              item?.task?.secondLevelOwners,
+              currentUser,
+              taskOwnerLockingStrategy
+            ) ? (
+              <LockTwoTone title={'无法操作'} twoToneColor={'red'} />
+            ) : (
+              <UnlockTwoTone title={'可操作'} twoToneColor='gray' />
+            )}
           </>
         );
 
@@ -174,14 +208,25 @@ export const buildProjectTree = (
           type: item.type,
           title: (
             <>
-              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>} {renderTitle}
+              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>}
+              <Space style={{ marginLeft: item.isLeaf ? 4 : 0 }} align={'baseline'} size={'small'}>
+                {renderTitle}
+                {item.isLeaf && renderSuffixIcon}
+              </Space>
             </>
           ),
           fullInfo: item,
           key: item.id,
           id: item.id,
           taskId: item.taskId,
-          children: buildProjectTree(item.children, searchValue, currentPath)
+          children: buildProjectTree(
+            item.children,
+            searchValue,
+            currentPath,
+            currentUser,
+            taskOwnerLockingStrategy,
+            users
+          )
         };
       })
     : [];

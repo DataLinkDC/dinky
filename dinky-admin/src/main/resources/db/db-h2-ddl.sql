@@ -264,7 +264,9 @@ CREATE TABLE `dinky_task` (
                             `statement` text null DEFAULT null COMMENT 'statement',
                             `creator` int(11) null DEFAULT null COMMENT 'creator',
                            `updater` int(11)  null DEFAULT null COMMENT 'updater',
-                           `operator` int(11)  null DEFAULT null COMMENT 'operator'
+                           `operator` int(11)  null DEFAULT null COMMENT 'operator',
+                            `first_level_owner` int(11) DEFAULT NULL COMMENT 'primary responsible person id',
+                            `second_level_owners` varchar(128) DEFAULT NULL COMMENT 'list of secondary responsible persons ids'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 

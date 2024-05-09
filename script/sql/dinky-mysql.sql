@@ -1348,6 +1348,8 @@ CREATE TABLE `dinky_task`  (
                             `creator` int(11) DEFAULT NULL  COMMENT 'creator',
                             `updater` int(11) DEFAULT NULL COMMENT 'updater',
                             `operator` int(11) DEFAULT NULL COMMENT 'operator user id',
+                            `first_level_owner` int(11) DEFAULT NULL COMMENT 'primary responsible person id',
+                            `second_level_owners` varchar(128) DEFAULT NULL COMMENT 'list of secondary responsible persons ids',
                              PRIMARY KEY (`id`) USING BTREE,
                              UNIQUE INDEX `task_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Task' ROW_FORMAT = Dynamic;

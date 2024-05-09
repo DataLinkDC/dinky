@@ -66,6 +66,13 @@ export default {
   'catalog.udf.className.placeholder': '请输入类或方法名',
   'catalog.udf.templateId': 'UDF 模板',
   'catalog.udf.templateId.placeholder': '请选择 UDF 模板',
+  'catalog.firstLevelOwner': '责任人',
+  'catalog.firstLevelOwner.tip1': '请选择任务责任人',
+  'catalog.firstLevelOwner.tip2': '选择任务责任人，对任务负有直接责任',
+  'catalog.secondLevelOwners': '维护人',
+  'catalog.secondLevelOwners.tip1': '请选择任务维护人',
+  'catalog.secondLevelOwners.tip2': '选择任务维护人，对任务负有间接责任',
+
   /**
    *
    * datastudio
@@ -375,6 +382,7 @@ export default {
   'pages.datastudio.editor.checking': '任务【{jobName}】正在检查',
   'pages.datastudio.editor.debugging': '新任务【{jobName}】正在调试',
   'pages.datastudio.editor.onlyread': '任务已发布，禁止修改，请先下线任务',
+  'pages.datastudio.editor.onlyread.lock': '无任务操作权限，请联系任务责任人获取',
   'pages.datastudio.editor.notsave': '当前修改内容未保存！',
   'pages.datastudio.editor.notsave.note': '继续将抛弃所修改内容，确定继续吗？',
   'pages.datastudio.to.jobDetail': '运维',
@@ -433,6 +441,8 @@ export default {
     '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
   'pages.datastudio.label.jobConfig.watermark': '当前任务已发布，配置禁止修改，如需修改，请先下线',
+  'pages.datastudio.label.jobConfig.lock':
+    '当前任务无权限，配置禁止修改，如需修改，请联系任务责任人获取权限',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',
@@ -454,6 +464,8 @@ export default {
   'pages.datastudio.label.jobInfo.id': '任务ID',
   'pages.datastudio.label.jobInfo.name': '任务名称',
   'pages.datastudio.label.jobInfo.versionId': '版本号',
+  'pages.datastudio.label.jobInfo.firstLevelOwner': '责任人',
+  'pages.datastudio.label.jobInfo.secondLevelOwners': '维护人',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',

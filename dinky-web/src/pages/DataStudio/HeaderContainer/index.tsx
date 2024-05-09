@@ -21,7 +21,12 @@ import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { LeftBottomKey } from '@/pages/DataStudio/data.d';
-import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  getCurrentTab,
+  lockTask,
+  mapDispatchToProps
+} from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import {
@@ -74,7 +79,7 @@ import {
   SaveOutlined,
   ScheduleOutlined
 } from '@ant-design/icons';
-import { connect } from '@umijs/max';
+import { connect, useModel } from '@umijs/max';
 import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
 import React, { memo, useEffect, useState } from 'react';
 
@@ -99,7 +104,8 @@ const HeaderContainer = (props: connect) => {
     queryDsConfig,
     queryTaskData,
     enabledDs,
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData }
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    taskOwnerLockingStrategy
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
@@ -124,12 +130,21 @@ const HeaderContainer = (props: connect) => {
     formValuesInfo: {}
   });
 
+  const { initialState, setInitialState } = useModel('@@initialState');
+
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
   }, []);
 
   const currentData = getCurrentData(panes, activeKey);
   const currentTab = getCurrentTab(panes, activeKey) as DataStudioTabsItemType;
+
+  const isLockTask = lockTask(
+    currentData?.firstLevelOwner!,
+    currentData?.secondLevelOwners,
+    initialState?.currentUser?.user,
+    taskOwnerLockingStrategy
+  );
 
   const handlePushDolphinOpen = async () => {
     const dinkyTaskId = currentData?.id;
@@ -350,7 +365,7 @@ const HeaderContainer = (props: connect) => {
       title: l('button.save'),
       click: () => handleSave(),
       props: {
-        disabled: isOnline(currentData)
+        disabled: isOnline(currentData) || isLockTask
       }
     },
     {
@@ -361,7 +376,10 @@ const HeaderContainer = (props: connect) => {
         (projectCommonShow(currentTab?.type) &&
           currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
         currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
-      click: async () => showDagGraph()
+      click: async () => showDagGraph(),
+      props: {
+        disabled: isLockTask
+      }
     },
     {
       // 检查 sql按钮
@@ -375,7 +393,10 @@ const HeaderContainer = (props: connect) => {
         projectCommonShow(currentTab?.type) &&
         currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
         currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG
+        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG,
+      props: {
+        disabled: isLockTask
+      }
     },
     {
       // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
@@ -384,14 +405,20 @@ const HeaderContainer = (props: connect) => {
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 'e',
       hotKeyDesc: 'Ctrl+E',
       isShow: enabledDs && isCanPushDolphin(currentData),
-      click: () => handlePushDolphinOpen()
+      click: () => handlePushDolphinOpen(),
+      props: {
+        disabled: isLockTask
+      }
     },
     {
       // 发布按钮
       icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
       title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
       isShow: currentTab?.type == TabsPageType.project,
-      click: () => handleChangeJobLife()
+      click: () => handleChangeJobLife(),
+      props: {
+        disabled: isLockTask
+      }
     },
     {
       // flink jobdetail跳转 运维
@@ -412,7 +439,8 @@ const HeaderContainer = (props: connect) => {
             window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
           }
         },
-        target: '_blank'
+        target: '_blank',
+        disabled: isLockTask
       }
     },
     {
@@ -431,7 +459,8 @@ const HeaderContainer = (props: connect) => {
         currentTab?.subType?.toLowerCase() !== DIALECT.FLINKSQLENV,
       props: {
         style: { background: '#52c41a' },
-        type: 'primary'
+        type: 'primary',
+        disabled: isLockTask
       }
     },
     {
@@ -448,7 +477,8 @@ const HeaderContainer = (props: connect) => {
           isSql(currentTab?.subType?.toLowerCase() ?? '')),
       props: {
         style: { background: '#52c41a' },
-        type: 'primary'
+        type: 'primary',
+        disabled: isLockTask
       }
     },
     {
@@ -461,7 +491,8 @@ const HeaderContainer = (props: connect) => {
       hotKeyDesc: 'Shift+F10',
       props: {
         type: 'primary',
-        style: { background: '#FF4D4F' }
+        style: { background: '#FF4D4F' },
+        disabled: isLockTask
       }
     },
     {
@@ -567,7 +598,8 @@ export default connect(
     tabs: Studio.tabs,
     dsConfig: SysConfig.dsConfig,
     enabledDs: SysConfig.enabledDs,
-    selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
+    selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   }),
   mapDispatchToProps
 )(memo(HeaderContainer));

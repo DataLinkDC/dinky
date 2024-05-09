@@ -138,6 +138,8 @@ export default {
   'global.table.endTime': 'End Time',
   'global.table.finishTime': 'Finished Time',
   'global.table.useTime': 'Duration',
+  'global.table.firstLevelOwner': 'Owner',
+  'global.table.secondLevelOwners': 'Maintainer',
 
   'global.table.registType': 'Regist Type',
   'global.table.registType.manual': 'Manual',
