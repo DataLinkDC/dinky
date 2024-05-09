@@ -119,7 +119,7 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
         <spotless.version>2.27.1</spotless.version>
-        <spring-boot-dependencies.version>2.7.11</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
         <spring.ldap.version>3.1.0</spring.ldap.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>

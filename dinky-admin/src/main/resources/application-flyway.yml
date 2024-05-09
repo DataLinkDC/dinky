@@ -15,16 +15,20 @@
 # limitations under the License.
 #
 
+# todo: pgsql 的sql文件 有些数据类型不对，需要修改 等待 pr https://github.com/DataLinkDC/dinky/pull/3306 合并后将文件内容复制到 db/migration/pgsql/V1.0.1__baseline.sql
+
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:dinky;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
-    url: jdbc:h2:./tmp/db/h2;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092;
-    druid:
-      initial-size: 1
-    username: dinky
-    password: dinky
-  h2:
-    console:
-      enabled: true
-      path: /api/h2
+  flyway:
+    enabled: true # 是否启用
+    group: true # 启用分组
+    locations:
+      - classpath:db/migration/${spring.profiles.active}
+    table: _dinky_flyway_schema_history
+    placeholder-replacement: false # 占位符替换
+    baseline-on-migrate: true  # 迁移时基线
+    baseline-version: 1.0.1 # 基线版本
+    validate-on-migrate: true # 迁移时验证
+    placeholder-prefix: '##{'
+    placeholder-suffix: '}##'
+    fail-on-missing-locations: true # 不存在的迁移文件是否抛出异常
+
