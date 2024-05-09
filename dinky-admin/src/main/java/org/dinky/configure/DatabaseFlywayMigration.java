@@ -22,7 +22,6 @@ package org.dinky.configure;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.flywaydb.core.Flyway;
@@ -48,7 +47,6 @@ import org.springframework.util.StringUtils;
 import com.zaxxer.hikari.HikariDataSource;
 
 import cn.hutool.core.lang.Opt;
-import cn.hutool.extra.spring.SpringUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,7 +69,6 @@ public class DatabaseFlywayMigration {
         Opt.ofBlankAble(dataSourceProperties.getDriverClassName()).ifPresent(hikariDataSource::setDriverClassName);
         return hikariDataSource;
     }
-
 
     @Bean
     public Flyway flyway(
