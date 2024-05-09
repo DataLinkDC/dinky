@@ -35,9 +35,8 @@ $$
 -- ----------------------------
 -- Table structure for dinky_alert_group
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_alert_group;
 
-CREATE TABLE dinky_alert_group
+CREATE TABLE IF NOT EXISTS dinky_alert_group
 (
     id                 SERIAL PRIMARY KEY NOT NULL,
     name               VARCHAR(50)        NOT NULL,
@@ -86,9 +85,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Table structure for dinky_alert_history
 -- ----------------------------
 
-DROP TABLE IF EXISTS dinky_alert_history;
 
-CREATE TABLE dinky_alert_history
+CREATE TABLE IF NOT EXISTS dinky_alert_history
 (
     id              SERIAL PRIMARY KEY NOT NULL,
     tenant_id       INT                NOT NULL DEFAULT 1,
@@ -135,9 +133,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Table structure for dinky_alert_instance
 -- ----------------------------
 
-DROP TABLE IF EXISTS dinky_alert_instance;
 
-CREATE TABLE dinky_alert_instance
+CREATE TABLE IF NOT EXISTS dinky_alert_instance
 (
     id          SERIAL PRIMARY KEY NOT NULL,
     name        VARCHAR(50)        NOT NULL,
@@ -187,9 +184,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Table structure for dinky_catalogue
 -- ----------------------------
 
-DROP TABLE IF EXISTS dinky_catalogue;
 
-CREATE TABLE dinky_catalogue
+CREATE TABLE IF NOT EXISTS dinky_catalogue
 (
     id          SERIAL PRIMARY KEY NOT NULL,
     tenant_id   INT                NOT NULL DEFAULT 1,
@@ -244,9 +240,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_cluster
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_cluster;
 
-CREATE TABLE dinky_cluster
+CREATE TABLE IF NOT EXISTS dinky_cluster
 (
     id                       SERIAL PRIMARY KEY NOT NULL,
     tenant_id                INT                NOT NULL DEFAULT 1,
@@ -319,9 +314,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_cluster_configuration
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_cluster_configuration;
 
-CREATE TABLE dinky_cluster_configuration
+CREATE TABLE IF NOT EXISTS dinky_cluster_configuration
 (
     id           SERIAL PRIMARY KEY NOT NULL,
     tenant_id    INT                NOT NULL DEFAULT 1,
@@ -378,9 +372,8 @@ EXECUTE PROCEDURE trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_database
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_database;
 
-CREATE TABLE dinky_database
+CREATE TABLE IF NOT EXISTS dinky_database
 (
     id             SERIAL PRIMARY KEY NOT NULL,
     tenant_id      INT                NOT NULL DEFAULT 1,
@@ -456,9 +449,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_flink_document
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_flink_document;
 
-CREATE TABLE dinky_flink_document
+CREATE TABLE IF NOT EXISTS dinky_flink_document
 (
     id          SERIAL PRIMARY KEY NOT NULL,
     category    VARCHAR(255)                DEFAULT NULL,
@@ -2302,11 +2294,8 @@ VALUES (249, 'Property', 'FLINK_OPTIONS', 'FlinkSql', 'restart-strategy', '重�
 -- ----------------------------
 -- Table structure for dinky_fragment
 -- ----------------------------
--- 首先，检查是否存在同名表，并在存在时删除它
-DROP TABLE IF EXISTS dinky_fragment;
 
--- 使用PostgreSQL语法创建新表
-CREATE TABLE dinky_fragment
+CREATE TABLE IF NOT EXISTS dinky_fragment
 (
     id             serial PRIMARY KEY          NOT NULL,
     name           varchar(50)                 NOT NULL,
@@ -2344,11 +2333,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- Table structure for dinky_history
 -- ----------------------------
 
--- Drop the table if it exists
-DROP TABLE IF EXISTS dinky_history;
-
--- Create the table
-CREATE TABLE dinky_history
+CREATE TABLE IF NOT EXISTS dinky_history
 (
     id                       SERIAL PRIMARY KEY NOT NULL,
     tenant_id                INT                NOT NULL DEFAULT 1,
@@ -2420,11 +2405,7 @@ COMMENT
 -- ----------------------------
 -- Table structure for dinky_job_history
 -- ----------------------------
--- 如果表存在则删除
-DROP TABLE IF EXISTS dinky_job_history;
-
--- 创建表
-CREATE TABLE dinky_job_history
+CREATE TABLE IF NOT EXISTS dinky_job_history
 (
     id                         SERIAL PRIMARY KEY NOT NULL,
     tenant_id                  INT                NOT NULL DEFAULT 1,
@@ -2473,11 +2454,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_job_instance
 -- ----------------------------
--- 如果表存在则删除
-DROP TABLE IF EXISTS dinky_job_instance;
 
--- 创建表
-CREATE TABLE dinky_job_instance
+CREATE TABLE IF NOT EXISTS dinky_job_instance
 (
     id                   SERIAL PRIMARY KEY NOT NULL,
     name                 VARCHAR(255)       NULL,
@@ -2556,11 +2534,8 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_role
 -- ----------------------------
--- 如果表存在则删除
-DROP TABLE IF EXISTS dinky_role;
 
--- 创建表
-CREATE TABLE dinky_role
+CREATE TABLE IF NOT EXISTS dinky_role
 (
     id          SERIAL PRIMARY KEY NOT NULL,
     tenant_id   INT                NOT NULL,
@@ -2615,11 +2590,7 @@ VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', false, 'SuperAdmin of Role', '2022-12-
 -- Table structure for dinky_savepoints
 -- ----------------------------
 
--- 如果表存在则删除
-DROP TABLE IF EXISTS dinky_savepoints;
-
--- 创建表
-CREATE TABLE dinky_savepoints
+CREATE TABLE IF NOT EXISTS dinky_savepoints
 (
     id          SERIAL PRIMARY KEY NOT NULL,
     task_id     INT                NOT NULL,
@@ -2654,8 +2625,7 @@ COMMENT
     ON TABLE dinky_savepoints IS 'dinky_savepoints';
 
 -- Table structure for dinky_sys_config
-DROP TABLE IF EXISTS dinky_sys_config;
-CREATE TABLE dinky_sys_config
+CREATE TABLE IF NOT EXISTS dinky_sys_config
 (
     id          serial PRIMARY KEY NOT NULL,
     name        varchar(255)       NOT NULL,
@@ -2686,8 +2656,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 
 
 -- Table structure for dinky_task
-DROP TABLE IF EXISTS dinky_task;
-CREATE TABLE dinky_task
+CREATE TABLE IF NOT EXISTS dinky_task
 (
     id                       serial PRIMARY KEY not null,
     name                     varchar(255)       NOT NULL,
@@ -2761,8 +2730,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 
 
 -- Table structure for dinky_task_version
-DROP TABLE IF EXISTS dinky_task_version;
-CREATE TABLE dinky_task_version
+CREATE TABLE IF NOT EXISTS dinky_task_version
 (
     id             serial PRIMARY KEY NOT NULL,
     task_id        int                NOT NULL,
@@ -2789,8 +2757,7 @@ COMMENT ON COLUMN dinky_task_version.task_configure IS 'task configuration';
 
 
 -- Table structure for dinky_tenant
-DROP TABLE IF EXISTS dinky_tenant;
-CREATE TABLE dinky_tenant
+CREATE TABLE IF NOT EXISTS dinky_tenant
 (
     id          serial PRIMARY KEY NOT NULL,
     tenant_code varchar(64)        NOT NULL,
@@ -2818,8 +2785,7 @@ VALUES (1, 'DefaultTenant', FALSE, 'DefaultTenant', '2022-12-13 05:27:19', '2022
 
 
 -- Table structure for dinky_udf_template
-DROP TABLE IF EXISTS dinky_udf_template;
-CREATE TABLE dinky_udf_template
+CREATE TABLE IF NOT EXISTS dinky_udf_template
 (
     id            serial PRIMARY KEY NOT NULL,
     name          varchar(100),
@@ -2943,8 +2909,7 @@ $$,
 
 
 -- Table structure for dinky_user
-DROP TABLE IF EXISTS dinky_user;
-CREATE TABLE dinky_user
+CREATE TABLE IF NOT EXISTS dinky_user
 (
     id               serial PRIMARY KEY NOT NULL,
     username         varchar(50)        NOT NULL,
@@ -2986,8 +2951,7 @@ VALUES (1, 'admin', 0, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001',
         '2022-12-13 05:27:19', '2023-07-28 23:22:52');
 
 -- Table structure for dinky_user_role
-DROP TABLE IF EXISTS dinky_user_role;
-CREATE TABLE dinky_user_role
+CREATE TABLE IF NOT EXISTS dinky_user_role
 (
     id          serial PRIMARY KEY NOT NULL,
     user_id     int                NOT NULL,
@@ -3015,8 +2979,7 @@ INSERT INTO dinky_user_role (id, user_id, role_id, create_time, update_time)
 VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- Table structure for dinky_user_tenant
-DROP TABLE IF EXISTS dinky_user_tenant;
-CREATE TABLE dinky_user_tenant
+CREATE TABLE IF NOT EXISTS dinky_user_tenant
 (
     id                serial PRIMARY KEY,
     user_id           int       NOT NULL,
@@ -3048,8 +3011,7 @@ VALUES (1, 1, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 
 -- Table structure for metadata_column
-DROP TABLE IF EXISTS metadata_column;
-CREATE TABLE metadata_column
+CREATE TABLE IF NOT EXISTS metadata_column
 (
     column_name varchar(255) NOT NULL,
     column_type varchar(255) NOT NULL,
@@ -3080,8 +3042,7 @@ CREATE TRIGGER set_update_time_metadata_column
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- Table structure for metadata_database
-DROP TABLE IF EXISTS metadata_database;
-CREATE TABLE metadata_database
+CREATE TABLE IF NOT EXISTS metadata_database
 (
     id            serial PRIMARY KEY NOT NULL,
     database_name varchar(255)       NOT NULL,
@@ -3103,8 +3064,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 
 
 -- Table structure for metadata_database_property
-DROP TABLE IF EXISTS metadata_database_property;
-CREATE TABLE metadata_database_property
+CREATE TABLE IF NOT EXISTS metadata_database_property
 (
     key         varchar(255) NOT NULL,
     value       varchar(255),
@@ -3128,8 +3088,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 
 
 -- Table structure for metadata_function
-DROP TABLE IF EXISTS metadata_function;
-CREATE TABLE metadata_function
+CREATE TABLE IF NOT EXISTS metadata_function
 (
     id                serial PRIMARY KEY NOT NULL,
     function_name     varchar(255)       NOT NULL,
@@ -3155,8 +3114,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 
 
 -- Table structure for metadata_table
-DROP TABLE IF EXISTS metadata_table;
-CREATE TABLE metadata_table
+CREATE TABLE IF NOT EXISTS metadata_table
 (
     id          serial PRIMARY KEY NOT NULL,
     table_name  varchar(255)       NOT NULL,
@@ -3182,8 +3140,7 @@ CREATE TRIGGER set_update_time_metadata_table
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- Table structure for metadata_table_property
-DROP TABLE IF EXISTS metadata_table_property;
-CREATE TABLE metadata_table_property
+CREATE TABLE IF NOT EXISTS metadata_table_property
 (
     key         varchar(255) NOT NULL,
     value       text,
@@ -3207,8 +3164,7 @@ CREATE TRIGGER set_update_time_metadata_table_property
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- Table structure for dinky_row_permissions
-DROP TABLE IF EXISTS dinky_row_permissions;
-CREATE TABLE dinky_row_permissions
+CREATE TABLE IF NOT EXISTS dinky_row_permissions
 (
     id          serial PRIMARY KEY NOT NULL,
     role_id     int                NOT NULL,
@@ -3234,8 +3190,7 @@ CREATE TRIGGER set_update_time_dinky_row_permissions
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- Table structure for dinky_git_project
-DROP TABLE IF EXISTS dinky_git_project;
-CREATE TABLE dinky_git_project
+CREATE TABLE IF NOT EXISTS dinky_git_project
 (
     id                 SERIAL PRIMARY KEY NOT NULL,
     tenant_id          bigint             NOT NULL,
@@ -3295,8 +3250,7 @@ VALUES (1, 1, 'java-udf', 'https://github.com/DataLinkDC/dinky-quickstart-java.g
 
 
 -- Table structure for dinky_metrics
-DROP TABLE IF EXISTS dinky_metrics;
-CREATE TABLE dinky_metrics
+CREATE TABLE IF NOT EXISTS dinky_metrics
 (
     id          SERIAL PRIMARY KEY          NOT NULL,
     task_id     INT,
@@ -3329,8 +3283,7 @@ CREATE TRIGGER update_dinky_dinky_metrics
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- Table structure for dinky_resources
-DROP TABLE IF EXISTS dinky_resources;
-CREATE TABLE dinky_resources
+CREATE TABLE IF NOT EXISTS dinky_resources
 (
     id           SERIAL PRIMARY KEY          NOT NULL,
     file_name    VARCHAR(64),
@@ -3369,8 +3322,7 @@ INSERT INTO dinky_resources (id, file_name, description, user_id, type, size, pi
 VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);
 
 -- Table structure for dinky_sys_login_log
-DROP TABLE IF EXISTS dinky_sys_login_log;
-CREATE TABLE dinky_sys_login_log
+CREATE TABLE IF NOT EXISTS dinky_sys_login_log
 (
     id          SERIAL PRIMARY KEY          NOT NULL,
     user_id     INT                         NOT NULL,
@@ -3403,8 +3355,7 @@ CREATE TRIGGER update_dinky_dinky_sys_login_log
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- Table structure for dinky_sys_operate_log
-DROP TABLE IF EXISTS dinky_sys_operate_log;
-CREATE TABLE dinky_sys_operate_log
+CREATE TABLE IF NOT EXISTS dinky_sys_operate_log
 (
     id               BIGSERIAL PRIMARY KEY NOT NULL,
     module_name      VARCHAR(50),
@@ -3449,8 +3400,7 @@ CREATE TRIGGER update_dinky_dinky_sys_operate_log
 EXECUTE FUNCTION trigger_set_timestamp();
 
 -- Table structure for dinky_sys_menu
-DROP TABLE IF EXISTS dinky_sys_menu;
-CREATE TABLE dinky_sys_menu
+CREATE TABLE IF NOT EXISTS dinky_sys_menu
 (
     id          BIGSERIAL PRIMARY KEY       not null,
     parent_id   BIGINT                      NOT NULL,
@@ -3947,8 +3897,7 @@ COMMIT;
 -- ----------------------------
 -- Table structure for dinky_sys_role_menu
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_sys_role_menu;
-CREATE TABLE dinky_sys_role_menu
+CREATE TABLE IF NOT EXISTS dinky_sys_role_menu
 (
     id          BIGSERIAL PRIMARY KEY       NOT NULL,
     role_id     BIGINT                      NOT NULL,
@@ -3975,8 +3924,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_alert_template
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_alert_template;
-CREATE TABLE dinky_alert_template
+CREATE TABLE IF NOT EXISTS dinky_alert_template
 (
     id               SERIAL PRIMARY KEY          NOT NULL,
     name             VARCHAR(20),
@@ -4004,8 +3952,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_alert_rules
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_alert_rules;
-CREATE TABLE dinky_alert_rules
+CREATE TABLE IF NOT EXISTS dinky_alert_rules
 (
     id                 SERIAL PRIMARY KEY,
     name               VARCHAR(40)                 NOT NULL,
@@ -4040,8 +3987,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_udf_manage
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_udf_manage;
-CREATE TABLE dinky_udf_manage
+CREATE TABLE IF NOT EXISTS dinky_udf_manage
 (
     id           SERIAL PRIMARY KEY          NOT NULL,
     name         VARCHAR(50),
@@ -4073,8 +4019,7 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Table structure for dinky_sys_token
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_sys_token;
-CREATE TABLE dinky_sys_token
+CREATE TABLE IF NOT EXISTS dinky_sys_token
 (
     id                BIGSERIAL PRIMARY KEY,
     token_value       VARCHAR(255)                NOT NULL,

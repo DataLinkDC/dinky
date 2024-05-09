@@ -23,8 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for dinky_alert_group
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_alert_group`;
-CREATE TABLE `dinky_alert_group`  (
+ CREATE TABLE IF NOT EXISTS `dinky_alert_group`  (
                                       `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                       `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'alert group name',
                                       `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
@@ -46,8 +45,7 @@ CREATE TABLE `dinky_alert_group`  (
 -- ----------------------------
 -- Table structure for dinky_alert_history
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_alert_history`;
-CREATE TABLE `dinky_alert_history`  (
+ CREATE TABLE IF NOT EXISTS `dinky_alert_history`  (
                                         `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                         `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                         `alert_group_id` int(11) NULL DEFAULT NULL COMMENT 'Alert group ID',
@@ -68,8 +66,7 @@ CREATE TABLE `dinky_alert_history`  (
 -- ----------------------------
 -- Table structure for dinky_alert_instance
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_alert_instance`;
-CREATE TABLE `dinky_alert_instance`  (
+ CREATE TABLE IF NOT EXISTS `dinky_alert_instance`  (
                                          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                          `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'alert instance name',
                                          `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
@@ -91,8 +88,7 @@ CREATE TABLE `dinky_alert_instance`  (
 -- ----------------------------
 -- Table structure for dinky_catalogue
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_catalogue`;
-CREATE TABLE `dinky_catalogue`  (
+ CREATE TABLE IF NOT EXISTS `dinky_catalogue`  (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                     `task_id` int(11) NULL DEFAULT NULL COMMENT 'Job ID',
@@ -116,8 +112,7 @@ CREATE TABLE `dinky_catalogue`  (
 -- ----------------------------
 -- Table structure for dinky_cluster
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_cluster`;
-CREATE TABLE `dinky_cluster`  (
+ CREATE TABLE IF NOT EXISTS `dinky_cluster`  (
                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                   `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'cluster instance name',
@@ -147,8 +142,7 @@ CREATE TABLE `dinky_cluster`  (
 -- ----------------------------
 -- Table structure for dinky_cluster_configuration
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_cluster_configuration`;
-CREATE TABLE `dinky_cluster_configuration`  (
+ CREATE TABLE IF NOT EXISTS `dinky_cluster_configuration`  (
                                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                                 `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                                 `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'cluster configuration name',
@@ -172,8 +166,7 @@ CREATE TABLE `dinky_cluster_configuration`  (
 -- ----------------------------
 -- Table structure for dinky_database
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_database`;
-CREATE TABLE `dinky_database`  (
+ CREATE TABLE IF NOT EXISTS `dinky_database`  (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                    `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                    `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'database name',
@@ -203,8 +196,7 @@ CREATE TABLE `dinky_database`  (
 -- ----------------------------
 -- Table structure for dinky_flink_document
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_flink_document`;
-CREATE TABLE `dinky_flink_document`  (
+ CREATE TABLE IF NOT EXISTS `dinky_flink_document`  (
                                          `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                          `category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'document category',
                                          `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'document type',
@@ -1146,8 +1138,7 @@ commit ;
 -- ----------------------------
 -- Table structure for dinky_fragment
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_fragment`;
-CREATE TABLE `dinky_fragment`  (
+ CREATE TABLE IF NOT EXISTS `dinky_fragment`  (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                    `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'fragment name',
                                    `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
@@ -1169,8 +1160,7 @@ CREATE TABLE `dinky_fragment`  (
 -- ----------------------------
 -- Table structure for dinky_history
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_history`;
-CREATE TABLE `dinky_history`  (
+ CREATE TABLE IF NOT EXISTS `dinky_history`  (
                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                   `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                   `cluster_id` int(11) NOT NULL DEFAULT 0 COMMENT 'cluster ID',
@@ -1203,8 +1193,7 @@ CREATE TABLE `dinky_history`  (
 -- ----------------------------
 -- Table structure for dinky_job_history
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_job_history`;
-CREATE TABLE `dinky_job_history`  (
+ CREATE TABLE IF NOT EXISTS `dinky_job_history`  (
                                       `id` int(11) NOT NULL COMMENT 'id',
                                       `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                       `job_json` json NULL COMMENT 'Job information json',
@@ -1225,8 +1214,7 @@ CREATE TABLE `dinky_job_history`  (
 -- ----------------------------
 -- Table structure for dinky_job_instance
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_job_instance`;
-CREATE TABLE `dinky_job_instance`  (
+ CREATE TABLE IF NOT EXISTS `dinky_job_instance`  (
                                        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                        `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'job instance name',
                                        `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
@@ -1257,8 +1245,7 @@ CREATE TABLE `dinky_job_instance`  (
 -- ----------------------------
 -- Table structure for dinky_role
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_role`;
-CREATE TABLE `dinky_role`  (
+ CREATE TABLE IF NOT EXISTS `dinky_role`  (
                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
                                `role_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'role code',
@@ -1280,8 +1267,7 @@ INSERT INTO `dinky_role` VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0, 'SuperAdmi
 -- ----------------------------
 -- Table structure for dinky_savepoints
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_savepoints`;
-CREATE TABLE `dinky_savepoints`  (
+ CREATE TABLE IF NOT EXISTS `dinky_savepoints`  (
                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                      `task_id` int(11) NOT NULL COMMENT 'task ID',
                                      `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
@@ -1300,8 +1286,7 @@ CREATE TABLE `dinky_savepoints`  (
 -- ----------------------------
 -- Table structure for dinky_sys_config
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_sys_config`;
-CREATE TABLE `dinky_sys_config`  (
+ CREATE TABLE IF NOT EXISTS `dinky_sys_config`  (
                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                      `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'configuration name',
                                      `value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'configuration value',
@@ -1317,8 +1302,7 @@ CREATE TABLE `dinky_sys_config`  (
 -- ----------------------------
 -- Table structure for dinky_task
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_task`;
-CREATE TABLE `dinky_task`  (
+ CREATE TABLE IF NOT EXISTS `dinky_task`  (
                                `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Job name',
                                `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
@@ -1355,8 +1339,7 @@ CREATE TABLE `dinky_task`  (
 -- ----------------------------
 -- Table structure for dinky_task_version
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_task_version`;
-CREATE TABLE `dinky_task_version`  (
+ CREATE TABLE IF NOT EXISTS `dinky_task_version`  (
                                        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                        `task_id` int(11) NOT NULL COMMENT 'task ID ',
                                        `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
@@ -1379,8 +1362,7 @@ CREATE TABLE `dinky_task_version`  (
 -- ----------------------------
 -- Table structure for dinky_tenant
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_tenant`;
-CREATE TABLE `dinky_tenant`  (
+ CREATE TABLE IF NOT EXISTS `dinky_tenant`  (
                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                  `tenant_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tenant code',
                                  `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
@@ -1398,8 +1380,7 @@ INSERT INTO `dinky_tenant` VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', '2022
 -- ----------------------------
 -- Table structure for dinky_udf_template
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_udf_template`;
-CREATE TABLE `dinky_udf_template`  (
+ CREATE TABLE IF NOT EXISTS `dinky_udf_template`  (
                                        `id` int(11) NOT NULL AUTO_INCREMENT,
                                        `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'template name',
                                        `code_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'code type',
@@ -1426,8 +1407,7 @@ INSERT INTO `dinky_udf_template` VALUES (5, 'python_udf_2', 'Python', 'UDF', 'fr
 -- ----------------------------
 -- Table structure for dinky_user
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_user`;
-CREATE TABLE `dinky_user` (
+ CREATE TABLE IF NOT EXISTS `dinky_user` (
                               `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
                               `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
                               `user_type` int DEFAULT '1',
@@ -1456,8 +1436,7 @@ VALUES (1, 'admin', 0, 'f4b3a484ee745b98d64cd69c429b2aa2', 'Admin', 'Dinky-001',
 -- ----------------------------
 -- Table structure for dinky_user_role
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_user_role`;
-CREATE TABLE `dinky_user_role`  (
+ CREATE TABLE IF NOT EXISTS `dinky_user_role`  (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `user_id` int(11) NOT NULL COMMENT 'user id',
                                     `role_id` int(11) NOT NULL COMMENT 'role id',
@@ -1475,8 +1454,7 @@ INSERT INTO `dinky_user_role` VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-1
 -- ----------------------------
 -- Table structure for dinky_user_tenant
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_user_tenant`;
-CREATE TABLE `dinky_user_tenant`  (
+ CREATE TABLE IF NOT EXISTS `dinky_user_tenant`  (
                                       `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                       `user_id` int(11) NOT NULL COMMENT 'user id',
                                       `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
@@ -1495,8 +1473,7 @@ INSERT INTO `dinky_user_tenant`(`id`, `user_id`, `tenant_id`,`tenant_admin_flag`
 -- ----------------------------
 -- Table structure for metadata_column
 -- ----------------------------
-DROP TABLE IF EXISTS `metadata_column`;
-CREATE TABLE `metadata_column`  (
+ CREATE TABLE IF NOT EXISTS `metadata_column`  (
                                     `column_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'column name',
                                     `column_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'column type, such as : Physical , Metadata , Computed , WATERMARK',
                                     `data_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'data type',
@@ -1516,8 +1493,7 @@ CREATE TABLE `metadata_column`  (
 -- ----------------------------
 -- Table structure for metadata_database
 -- ----------------------------
-DROP TABLE IF EXISTS `metadata_database`;
-CREATE TABLE `metadata_database`  (
+ CREATE TABLE IF NOT EXISTS `metadata_database`  (
                                       `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                       `database_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'database name',
                                       `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'database description',
@@ -1533,8 +1509,7 @@ CREATE TABLE `metadata_database`  (
 -- ----------------------------
 -- Table structure for metadata_database_property
 -- ----------------------------
-DROP TABLE IF EXISTS `metadata_database_property`;
-CREATE TABLE `metadata_database_property`  (
+ CREATE TABLE IF NOT EXISTS `metadata_database_property`  (
                                                `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'key',
                                                `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'value',
                                                `database_id` int(11) NOT NULL COMMENT 'database id',
@@ -1550,8 +1525,7 @@ CREATE TABLE `metadata_database_property`  (
 -- ----------------------------
 -- Table structure for metadata_function
 -- ----------------------------
-DROP TABLE IF EXISTS `metadata_function`;
-CREATE TABLE `metadata_function`  (
+ CREATE TABLE IF NOT EXISTS `metadata_function`  (
                                       `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
                                       `function_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'function name',
                                       `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'class name',
@@ -1569,8 +1543,7 @@ CREATE TABLE `metadata_function`  (
 -- ----------------------------
 -- Table structure for metadata_table
 -- ----------------------------
-DROP TABLE IF EXISTS `metadata_table`;
-CREATE TABLE `metadata_table`  (
+ CREATE TABLE IF NOT EXISTS `metadata_table`  (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
                                    `table_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'table name',
                                    `table_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'type，such as：database,table,view',
@@ -1589,8 +1562,7 @@ CREATE TABLE `metadata_table`  (
 -- ----------------------------
 -- Table structure for metadata_table_property
 -- ----------------------------
-DROP TABLE IF EXISTS `metadata_table_property`;
-CREATE TABLE `metadata_table_property`  (
+ CREATE TABLE IF NOT EXISTS `metadata_table_property`  (
                                             `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'key',
                                             `value` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'value',
                                             `table_id` int(11) NOT NULL COMMENT 'table id',
@@ -1607,8 +1579,7 @@ CREATE TABLE `metadata_table_property`  (
 -- ----------------------------
 -- Table structure for dinky_row_permissions
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_row_permissions;
-CREATE TABLE `dinky_row_permissions` (
+ CREATE TABLE IF NOT EXISTS `dinky_row_permissions` (
                                          `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                          `role_id` int NOT NULL COMMENT 'role id',
                                          `table_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'table name',
@@ -1625,8 +1596,7 @@ CREATE TABLE `dinky_row_permissions` (
 -- ----------------------------
 -- Table structure for dinky_git_project
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_git_project`;
-CREATE TABLE `dinky_git_project` (
+ CREATE TABLE IF NOT EXISTS `dinky_git_project` (
                                      `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                      `tenant_id` bigint(20) NOT NULL,
                                      `name` varchar(255) NOT NULL,
@@ -1666,8 +1636,7 @@ INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `us
 -- ----------------------------
 -- Table structure for dinky_metrics
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_metrics;
-CREATE TABLE `dinky_metrics` (
+ CREATE TABLE IF NOT EXISTS `dinky_metrics` (
                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                  `task_id` int(255) DEFAULT NULL COMMENT 'task id',
                                  `vertices` varchar(255) DEFAULT NULL COMMENT 'vertices',
@@ -1685,8 +1654,7 @@ CREATE TABLE `dinky_metrics` (
 -- ----------------------------
 -- Table structure for dinky_resources
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_resources;
-CREATE TABLE `dinky_resources` (
+ CREATE TABLE IF NOT EXISTS `dinky_resources` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
                                    `file_name` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'file name',
                                    `description` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -1712,8 +1680,7 @@ INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `typ
 -- ----------------------------
 -- Table structure for dinky_sys_login_log
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_sys_login_log;
-CREATE TABLE `dinky_sys_login_log` (
+ CREATE TABLE IF NOT EXISTS `dinky_sys_login_log` (
                                        `id` int NOT NULL AUTO_INCREMENT COMMENT 'key',
                                        `user_id` int NOT NULL COMMENT 'user id',
                                        `username` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
@@ -1732,8 +1699,7 @@ CREATE TABLE `dinky_sys_login_log` (
 -- ----------------------------
 -- Table structure for dinky_sys_operate_log
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_sys_operate_log`;
-CREATE TABLE `dinky_sys_operate_log` (
+ CREATE TABLE IF NOT EXISTS `dinky_sys_operate_log` (
                                          `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
                                          `module_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT 'module name',
                                          `business_type` int DEFAULT '0' COMMENT 'business type',
@@ -1756,8 +1722,7 @@ CREATE TABLE `dinky_sys_operate_log` (
 -- ----------------------------
 -- Table structure for dinky_sys_menu
 -- ----------------------------
-drop table if exists `dinky_sys_menu`;
-create table `dinky_sys_menu` (
+ CREATE TABLE IF NOT EXISTS `dinky_sys_menu` (
                                   `id` bigint not null auto_increment comment ' id',
                                   `parent_id` bigint not null comment 'parent menu id',
                                   `name` varchar(64) collate utf8mb4_general_ci not null comment 'menu button name',
@@ -1935,8 +1900,7 @@ COMMIT;
 -- ----------------------------
 -- Table structure dinky_sys_role_menu
 -- ----------------------------
-drop table if exists `dinky_sys_role_menu`;
-CREATE TABLE `dinky_sys_role_menu` (
+ CREATE TABLE IF NOT EXISTS `dinky_sys_role_menu` (
                                        `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
                                        `role_id` bigint NOT NULL COMMENT 'role id',
                                        `menu_id` bigint NOT NULL COMMENT 'menu id',
@@ -1949,8 +1913,7 @@ CREATE TABLE `dinky_sys_role_menu` (
 -- ----------------------------
 -- Table structure dinky_sys_alert
 -- ----------------------------
-drop table if exists `dinky_alert_template`;
-CREATE TABLE `dinky_alert_template` (
+ CREATE TABLE IF NOT EXISTS `dinky_alert_template` (
                                         `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
                                         `name` varchar(20) CHARACTER SET ucs2 COLLATE ucs2_general_ci DEFAULT NULL COMMENT 'template name',
                                         `template_content` text COLLATE utf8mb4_general_ci COMMENT 'template content',
@@ -1964,8 +1927,7 @@ CREATE TABLE `dinky_alert_template` (
 
 
 
-drop table if exists `dinky_alert_rules`;
-CREATE TABLE `dinky_alert_rules` (
+ CREATE TABLE IF NOT EXISTS `dinky_alert_rules` (
                                      `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
                                      `name` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'rule name',
                                      `rule` text COLLATE utf8mb4_general_ci COMMENT 'specify rule',
@@ -2008,8 +1970,7 @@ INSERT INTO dinky_alert_template (id, name, template_content, enabled, create_ti
 
 commit;
 
-drop table if exists `dinky_udf_manage`;
-CREATE TABLE `dinky_udf_manage` (
+ CREATE TABLE IF NOT EXISTS `dinky_udf_manage` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
                                     `class_name` varchar(100) DEFAULT NULL COMMENT 'Complete class name',
@@ -2027,8 +1988,7 @@ CREATE TABLE `dinky_udf_manage` (
 -- ----------------------------
 -- Table structure dinky_sys_token
 -- ----------------------------
-drop table if exists `dinky_sys_token`;
-CREATE TABLE `dinky_sys_token` (
+ CREATE TABLE IF NOT EXISTS `dinky_sys_token` (
                                    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                    `token_value` varchar(255) NOT NULL COMMENT 'token value',
                                    `user_id` bigint(20) NOT NULL COMMENT 'user id',
