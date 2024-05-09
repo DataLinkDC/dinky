@@ -20,7 +20,11 @@
 import { LeftBottomKey, LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
-import { getTaskData, getTaskSortTypeData, getUserData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import {
+  getTaskData,
+  getTaskSortTypeData,
+  getUserData
+} from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
   getClusterConfigurationData,
   getEnvData,
