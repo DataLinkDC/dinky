@@ -31,8 +31,8 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
-import org.dinky.service.CatalogueService;
 import org.dinky.service.TaskService;
+import org.dinky.service.catalogue.CatalogueService;
 
 import java.util.List;
 import java.util.Objects;
