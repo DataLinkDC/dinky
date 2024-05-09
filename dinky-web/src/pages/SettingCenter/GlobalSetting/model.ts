@@ -18,15 +18,15 @@
  */
 
 import {
-  BaseConfigProperties,
-  GLOBAL_SETTING_KEYS,
-  TaskOwnerLockingStrategy
-} from '@/types/SettingCenter/data';
-import {
   queryDsConfig,
   queryResourceConfig,
   queryTaskOwnerLockingStrategy
 } from '@/pages/SettingCenter/GlobalSetting/service';
+import {
+  BaseConfigProperties,
+  GLOBAL_SETTING_KEYS,
+  TaskOwnerLockingStrategy
+} from '@/types/SettingCenter/data.d';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
 import { Reducer } from 'umi';
