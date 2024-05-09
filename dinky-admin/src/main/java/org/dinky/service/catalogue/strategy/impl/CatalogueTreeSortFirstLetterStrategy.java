@@ -53,7 +53,7 @@ public class CatalogueTreeSortFirstLetterStrategy implements CatalogueTreeSortSt
      */
     @Override
     public List<Catalogue> sort(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum) {
-        log.info(
+        log.debug(
                 "sort catalogue tree based on first letter. catalogueTree: {}, sortTypeEnum: {}",
                 catalogueTree,
                 sortTypeEnum);

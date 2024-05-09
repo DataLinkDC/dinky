@@ -51,7 +51,7 @@ public class CatalogueTreeSortCreateTimeStrategy implements CatalogueTreeSortStr
      */
     @Override
     public List<Catalogue> sort(List<Catalogue> catalogueTree, SortTypeEnum sortTypeEnum) {
-        log.info(
+        log.debug(
                 "sort catalogue tree based on creation time. catalogueTree: {}, sortTypeEnum: {}",
                 catalogueTree,
                 sortTypeEnum);
