@@ -97,7 +97,8 @@ import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
-    private final String TMP_SQL_EXEC_DIR = String.format("%s/tmp/sql-exec/%s", System.getProperty("user.dir"), UUID.randomUUID());
+    private final String TMP_SQL_EXEC_DIR =
+            String.format("%s/tmp/sql-exec/%s", System.getProperty("user.dir"), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 
@@ -143,7 +144,8 @@ public abstract class YarnGateway extends AbstractGateway {
             try {
                 SecurityUtils.install(new SecurityConfiguration(configuration));
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-                logger.info("Security authentication completed, user and authentication method:{}", currentUser.toString());
+                logger.info(
+                        "Security authentication completed, user and authentication method:{}", currentUser.toString());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -270,7 +272,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 return TestResult.fail("This configuration does not have a corresponding Yarn cluster present");
             }
         } catch (Exception e) {
-            logger.error("Test Yarn configuration failed: {}" , e.getMessage());
+            logger.error("Test Yarn configuration failed: {}", e.getMessage());
             return TestResult.fail("Test Yarn configuration failed:" + e.getMessage());
         }
     }
@@ -437,8 +439,8 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     protected File preparSqlFile() {
-        File tempSqlFile =
-                new File(String.format("%s/%s", TMP_SQL_EXEC_DIR, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
+        File tempSqlFile = new File(
+                String.format("%s/%s", TMP_SQL_EXEC_DIR, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
         logger.info("Temp sql file path : {}", tempSqlFile.getAbsolutePath());
         String sql = config == null ? "" : config.getSql();
         FileUtil.writeString(Optional.ofNullable(sql).orElse(""), tempSqlFile.getAbsolutePath(), "UTF-8");
