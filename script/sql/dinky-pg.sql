@@ -2754,7 +2754,7 @@ COMMENT ON COLUMN dinky_task.creator IS 'creator';
 COMMENT ON COLUMN dinky_task.updater IS 'updater';
 COMMENT ON COLUMN dinky_task.operator IS 'operator user id';
 COMMENT ON COLUMN dinky_task.first_level_owner IS 'primary responsible person id';
-COMMENT ON COLUMN dinky_task.second_level_owners IS 'list of secondary responsible persons'' ids';
+COMMENT ON COLUMN dinky_task.second_level_owners IS 'list of secondary responsible persons ids';
 
 -- 创建触发器以在每次更新记录时设置update_time
 CREATE TRIGGER set_update_time_dinky_task

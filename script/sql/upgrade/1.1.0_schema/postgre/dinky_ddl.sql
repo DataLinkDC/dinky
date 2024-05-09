@@ -26,4 +26,4 @@ alter table dinky_task add column first_level_owner int;
 alter table dinky_task add column second_level_owners varchar(128);
 
 COMMENT ON COLUMN dinky_task.first_level_owner IS 'primary responsible person id';
-COMMENT ON COLUMN dinky_task.second_level_owners IS 'list of secondary responsible persons'' ids';
+COMMENT ON COLUMN dinky_task.second_level_owners IS 'list of secondary responsible persons ids';
