@@ -266,6 +266,7 @@ export enum API_CONSTANTS {
   SUBMIT_TASK = '/api/task/submitTask',
   CHANGE_TASK_LIFE = '/api/task/changeTaskLife',
   CATALOGUE_GET_CATALOGUE_TREE_DATA = '/api/catalogue/getCatalogueTreeData',
+  CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA = '/api/catalogue/getCatalogueSortType',
   GET_JOB_VERSION = '/api/task/version',
   RESTART_TASK = '/api/task/restartTask',
   SAVEPOINT = '/api/task/savepoint',

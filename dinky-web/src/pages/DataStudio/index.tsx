@@ -57,6 +57,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     rightContainer,
     queryDatabaseList,
     queryTaskData,
+    queryTaskSortTypeData,
     updateToolContentHeight,
     updateBottomHeight,
     querySessionData,
@@ -69,6 +70,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
     tabs: { panes, activeKey },
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
     queryUserData,
     queryTaskOwnerLockingStrategy
   } = props;
@@ -112,7 +114,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
 
   const loadData = () => {
     queryDatabaseList();
-    queryTaskData();
+    queryTaskSortTypeData();
+    queryTaskData({ payload: selectCatalogueSortTypeData });
     querySessionData();
     queryEnv();
     queryClusterConfigurationData();
@@ -307,7 +310,8 @@ export default connect(
     rightContainer: Studio.rightContainer,
     bottomContainer: Studio.bottomContainer,
     activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
-    tabs: Studio.tabs
+    tabs: Studio.tabs,
+    selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
   }),
   mapDispatchToProps
 )(DataStudio);

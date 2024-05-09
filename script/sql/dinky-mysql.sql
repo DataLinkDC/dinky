@@ -1889,10 +1889,10 @@ insert into dinky_sys_menu values (112, 22, '刷新', '/auth/menu/refresh', null
 insert into dinky_sys_menu values (113, 22, '编辑', '/auth/menu/edit', null, 'auth:menu:edit', 'EditOutlined', 'F', 0, 98, '2023-09-22 22:11:41', '2023-09-26 15:12:26', null);
 insert into dinky_sys_menu values (114, 22, '添加子项', '/auth/menu/addSub', null, 'auth:menu:addSub', 'PlusOutlined', 'F', 0, 96, '2023-09-22 22:11:41', '2023-09-26 15:12:26', null);
 insert into dinky_sys_menu values (115, 22, '删除', '/auth/menu/delete', null, 'auth:menu:delete', 'DeleteOutlined', 'F', 0, 99, '2023-09-22 22:11:41', '2023-09-26 15:12:26', null);
-insert into dinky_sys_menu values (116, 6, '告警策略', '/settings/alertrule', './SettingCenter/AlertRule', 'settings:alertrule', 'AndroidOutlined', 'C', 0, 136, '2023-09-22 23:31:10', '2023-09-26 15:19:52', null);
-insert into dinky_sys_menu values (117, 116, '添加', '/settings/alertrule/add', null, 'settings:alertrule:add', 'PlusOutlined', 'F', 0, 137, '2023-09-22 23:34:51', '2023-09-26 15:20:03', null);
-insert into dinky_sys_menu values (118, 116, '删除', '/settings/alertrule/delete', null, 'settings:alertrule:delete', 'DeleteOutlined', 'F', 0, 139, '2023-09-22 23:35:20', '2023-09-26 15:20:21', null);
-insert into dinky_sys_menu values (119, 116, '编辑', '/settings/alertrule/edit', null, 'settings:alertrule:edit', 'EditOutlined', 'F', 0, 138, '2023-09-22 23:36:32', '2023-09-26 15:20:13', null);
+insert into dinky_sys_menu values (116, 12, '告警策略', '/registration/alert/rule', './RegCenter/Alert/AlertRule', 'registration:alert:rule', 'AndroidOutlined', 'C', 0, 136, '2023-09-22 23:31:10', '2023-09-26 15:19:52', null);
+insert into dinky_sys_menu values (117, 116, '添加', '/registration/alert/rule/add', null, 'registration:alert:rule:add', 'PlusOutlined', 'F', 0, 137, '2023-09-22 23:34:51', '2023-09-26 15:20:03', null);
+insert into dinky_sys_menu values (118, 116, '删除', '/registration/alert/rule/delete', null, 'registration:alert:rule:delete', 'DeleteOutlined', 'F', 0, 139, '2023-09-22 23:35:20', '2023-09-26 15:20:21', null);
+insert into dinky_sys_menu values (119, 116, '编辑', '/registration/alert/rule/edit', null, 'registration:alert:rule:edit', 'EditOutlined', 'F', 0, 138, '2023-09-22 23:36:32', '2023-09-26 15:20:13', null);
 insert into dinky_sys_menu values (120, 8, 'Dinky 服务监控', '/metrics/server', './Metrics/Server', 'metrics:server', 'DashboardOutlined', 'F', 0, 141, '2023-09-22 23:37:43', '2023-09-26 15:21:00', null);
 insert into dinky_sys_menu values (121, 8, 'Flink 任务监控', '/metrics/job', './Metrics/Job', 'metrics:job', 'DashboardTwoTone', 'C', 0, 142, '2023-09-22 23:38:34', '2023-09-26 15:21:08', null);
 insert into dinky_sys_menu values (122, 24, 'Dinky 环境配置', '/settings/globalsetting/dinky', null, 'settings:globalsetting:dinky', 'SettingOutlined', 'F', 0, 117, '2023-09-22 23:40:30', '2023-09-26 15:16:20', null);
@@ -2014,7 +2014,7 @@ drop table if exists `dinky_udf_manage`;
 CREATE TABLE `dinky_udf_manage` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
-                                    `class_name` varchar(50) DEFAULT NULL COMMENT 'Complete class name',
+                                    `class_name` varchar(100) DEFAULT NULL COMMENT 'Complete class name',
                                     `task_id` int(11) DEFAULT NULL COMMENT 'task id',
                                     `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
                                     `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',

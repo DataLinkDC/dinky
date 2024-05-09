@@ -72,13 +72,15 @@ const FlinkChart = (props: FlinkChartProps) => {
   const config = {
     animation: false,
     data: data,
-    smooth: true,
+    shapeField: 'smooth',
     xField: 'time',
     yField: 'value',
-    xAxis: {
-      type: 'time',
-      mask: getLineTimeMask(data),
-      tickCount: 40
+    axis: {
+      x: {
+        type: 'time',
+        mask: getLineTimeMask(data),
+        tickCount: 40
+      }
     },
     ...chartOptions
   };

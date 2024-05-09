@@ -10,7 +10,7 @@ title: 1.0.2 release
 | 1.0.2    | 1.16     | [dinky-release-1.16-1.0.2.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.2/dinky-release-1.16-1.0.2.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.2.zip) |
 | 1.0.2    | 1.17     | [dinky-release-1.17-1.0.2.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.2/dinky-release-1.17-1.0.2.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.2.zip) |
 | 1.0.2    | 1.18     | [dinky-release-1.18-1.0.2.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.2/dinky-release-1.18-1.0.2.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.2.zip) |
-| 1.0.2    | 1.19     | [dinky-release-1.19-1.0.2.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.2/dinky-release-1.18-1.0.2.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.2.zip) |
+| 1.0.2    | 1.19     | [dinky-release-1.19-1.0.2.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.0.2/dinky-release-1.19-1.0.2.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.0.2.zip) |
 
 ## Dinky-1.0.2 发行说明
 

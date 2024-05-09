@@ -104,6 +104,7 @@ const HeaderContainer = (props: connect) => {
     queryDsConfig,
     queryTaskData,
     enabledDs,
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
     taskOwnerLockingStrategy
   } = props;
 
@@ -328,7 +329,7 @@ const HeaderContainer = (props: connect) => {
       }
     }
     saveTabs({ ...props.tabs });
-    await queryTaskData();
+    await queryTaskData({ payload: selectCatalogueSortTypeData });
   };
 
   const showDagGraph = async () => {
@@ -597,6 +598,7 @@ export default connect(
     tabs: Studio.tabs,
     dsConfig: SysConfig.dsConfig,
     enabledDs: SysConfig.enabledDs,
+    selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   }),
   mapDispatchToProps

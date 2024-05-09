@@ -157,7 +157,7 @@ const JobList = (props: connect) => {
    * 获取任务数据 | query task data
    */
   useEffect(() => {
-    getTaskData().then((res) => {
+    getTaskData({}).then((res) => {
       if (res) {
         setData(
           buildProjectTree(
