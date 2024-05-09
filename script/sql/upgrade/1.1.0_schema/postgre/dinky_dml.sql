@@ -41,3 +41,5 @@ set "path"='/registration/alert/rule/edit',
     "perms"='registration:alert:rule:edit'
 where "id" = 119;
 
+update dinky_task set "first_level_owner" = "creator";
+
