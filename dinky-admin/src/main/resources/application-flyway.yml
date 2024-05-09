@@ -15,20 +15,19 @@
 # limitations under the License.
 #
 
-# todo: pgsql 的sql文件 有些数据类型不对，需要修改 等待 pr https://github.com/DataLinkDC/dinky/pull/3306 合并后将文件内容复制到 db/migration/pgsql/V1.0.1__baseline.sql
 
 spring:
   flyway:
-    enabled: true # 是否启用
-    group: true # 启用分组
+    enabled: true # Is it enabled
+    group: true # Enable grouping
     locations:
       - classpath:db/migration/${spring.profiles.active}
     table: _dinky_flyway_schema_history
-    placeholder-replacement: false # 占位符替换
-    baseline-on-migrate: true  # 迁移时基线
-    baseline-version: 1.0.1 # 基线版本
-    validate-on-migrate: true # 迁移时验证
+    placeholder-replacement: false # Placeholder Replacement
+    baseline-on-migrate: true  # Baseline during migration
+    baseline-version: 1.0.2 # Baseline version
+    validate-on-migrate: true # Verify during migration
     placeholder-prefix: '##{'
     placeholder-suffix: '}##'
-    fail-on-missing-locations: true # 不存在的迁移文件是否抛出异常
+    fail-on-missing-locations: true # Does the non-existent migration file throw an exception
 
