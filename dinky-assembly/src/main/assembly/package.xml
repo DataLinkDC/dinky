@@ -44,11 +44,17 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-admin/target/classes/static</directory>
+            <outputDirectory>html</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-admin/target/classes</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>**/dinky-loader/FlinkConfClass</include>
-                <include>**/dinky-loader/ExpressionVariableClass</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -106,6 +112,14 @@
             <includes>
                 <include>dinky-catalog-mysql-1.18-${project.version}.jar</include>
                 <include>dinky-client-1.18-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>extends/flink1.19/dinky</outputDirectory>
+            <includes>
+                <include>dinky-catalog-mysql-1.19-${project.version}.jar</include>
+                <include>dinky-client-1.19-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>

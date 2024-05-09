@@ -65,6 +65,8 @@ public class JobExecuteBuilder extends JobBuilder {
                 }
                 GatewayResult gatewayResult = null;
                 config.addGatewayConfig(executor.getSetConfig());
+                config.getGatewayConfig().setSql(jobParam.getParsedSql());
+
                 if (runMode.isApplicationMode()) {
                     gatewayResult = Gateway.build(config.getGatewayConfig())
                             .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());

@@ -50,7 +50,7 @@ const FileTree: React.FC<FileTreeProps> = (props) => {
           selectedKeys={selectedKeys}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={(info) => onRightClick(info)}
-          treeData={buildResourceTreeData(treeData, false, [], true)}
+          treeData={buildResourceTreeData(treeData, false, [])}
         />
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

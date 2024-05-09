@@ -103,6 +103,8 @@ export default {
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
+  'datastudio.header.pushdolphin.taskGroup': 'Task Group',
+  'datastudio.header.pushdolphin.taskGroupPriority': 'Task Group Priority',
   'datastudio.header.pushdolphin.taskName': 'Task name: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task type: {type} Process definition: {processDefinitionName}',
@@ -307,6 +309,8 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': 'Username',
   'login.username.required': 'Please input your username!',
+  'login.token.error':
+    'Unable to get token information/session has expired, will jump to the login page, please re-login...',
   /**
    *
    * menu
@@ -795,8 +799,10 @@ export default {
   'rc.cc.sqlSubmitJarPath': 'Jar File Path',
   'rc.cc.sqlSubmitJarPathHelp':
     'Please enter the Jar file path! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelpTips':
+    'In Yarn mode, this parameter can be set to: hdfs:///dinky/dinky-app-1.17-with-dependencies.jar Alternatively, if rs:/dinky/inky app 1.17 with dependencies. jar is set to the rs:/ protocol, the jar package needs to be uploaded to Dinky`s resource center and the path filled in. In K8s mode, only the local://protocol is supported',
   'rc.cc.start': 'Start Session Cluster',
-  'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items (required in Application mode)',
+  'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items',
   'rc.cc.tmHeap': 'TaskManager Heap Memory',
   'rc.cc.tmHeapHelp':
     'Please enter the TaskManager heap memory size! This parameter configuration item is',
@@ -874,6 +880,7 @@ export default {
   'rc.ds.search': 'Search Name/Note',
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
+  'rc.ds.detail.tag.console.clear.log': 'Clear Log...',
   'rc.ds.create': 'Create DataSource',
   'rc.ds.decimalDigits': 'Decimal Range',
   'rc.ds.default': 'Default Value',
@@ -994,7 +1001,15 @@ export default {
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
-  'rc.resource.copy': 'Copy as: {fillValue}',
+  'rc.resource.copy_to_add_custom_jar': 'Copy as ADD CUSTOMJAR syntax',
+  'rc.resource.copy_to_add_jar': 'Copy as ADD JAR syntax',
+  'rc.resource.copy_to_add_file': 'Copy as ADD FILE syntax',
+  'rc.resource.copy_to_add_rs_path': 'Copy RS protocol resource path',
+  'rc.resource.copy_success':
+    'Copy successfully, The value is: [{fillValue}] has been copied to the clipboard. Please paste it to the desired location for use',
+  'rc.resource.enable': 'Resource management function is not enabled',
+  'rc.resource.enable.tips':
+    'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
 
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',

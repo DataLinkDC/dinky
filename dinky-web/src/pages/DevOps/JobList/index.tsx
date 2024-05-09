@@ -287,7 +287,7 @@ const JobList = (props: connect) => {
             search={false}
             tableStyle={{ height: parent.innerHeight - 245 }}
             loading={{ delay: 1000 }}
-            rowKey={(record) => record.jid}
+            rowKey={(record) => record.id}
             columns={jobListColumns}
             params={{
               isHistory: false,
@@ -331,7 +331,7 @@ const JobList = (props: connect) => {
             }
             expandable={{
               expandedRowRender: (record) => (
-                <JobHistoryList taskId={record.taskId} key={record.jid} />
+                <JobHistoryList taskId={record.taskId} key={record.id} />
               ),
               expandIcon: ({ expanded, onExpand, record }) => (
                 <Button

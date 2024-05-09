@@ -151,6 +151,12 @@
         <dependency>
             <groupId>org.dromara.sms4j</groupId>
             <artifactId>sms4j-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>cn.hutool</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -249,7 +255,11 @@
             <artifactId>jsqlparser</artifactId>
             <version>4.4</version>
         </dependency>
-
+        <!--    for    cache-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>org.junit.vintage</groupId>

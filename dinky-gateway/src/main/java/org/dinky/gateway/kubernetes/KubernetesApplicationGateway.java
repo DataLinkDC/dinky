@@ -23,12 +23,12 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.kubernetes.utils.IgnoreNullRepresenter;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
-import org.dinky.utils.TextUtil;
 
 import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.client.deployment.ClusterDeploymentException;
@@ -36,7 +36,6 @@ import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
@@ -47,16 +46,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.Pod;
@@ -70,33 +63,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KubernetesApplicationGateway extends KubernetesGateway {
 
-    private final String tmpConfDir =
-            String.format("%s/tmp/kubernets/%s", System.getProperty("user.dir"), UUID.randomUUID());
-
     /**
      * @return The type of the Kubernetes gateway, which is GatewayType.KUBERNETES_APPLICATION.
      */
     @Override
     public GatewayType getType() {
         return GatewayType.KUBERNETES_APPLICATION;
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        Pod decoratedPodTemplate = getK8sClientHelper().decoratePodTemplate(config.getSql());
-        // use snakyaml to serialize the pod
-        Representer representer = new IgnoreNullRepresenter();
-        // set the label of the Map type, only the map type will not print the class name when dumping
-        representer.addClassTag(Pod.class, Tag.MAP);
-        DumperOptions options = new DumperOptions();
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        options.setPrettyFlow(true);
-        Yaml yaml = new Yaml(representer, options);
-        preparPodTemplate(yaml.dump(decoratedPodTemplate), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
-        preparPodTemplate(k8sConfig.getJmPodTemplate(), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
-        preparPodTemplate(k8sConfig.getTmPodTemplate(), KubernetesConfigOptions.TASK_MANAGER_POD_TEMPLATE);
-        preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE);
     }
 
     /**
@@ -137,9 +109,10 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         Optional<ContainerStatus> flinContainer = pod.getStatus().getContainerStatuses().stream()
                 .filter(s -> s.getName().equals(Constants.MAIN_CONTAINER_NAME))
                 .findFirst();
-        ContainerStatus containerStatus =
-                flinContainer.orElseThrow(() -> new GatewayException("Deploy k8s failed, can't find flink container"));
-
+        if (!flinContainer.isPresent()) {
+            return false;
+        }
+        ContainerStatus containerStatus = flinContainer.get();
         Yaml yaml = new Yaml(new IgnoreNullRepresenter());
         String logStr = StrFormatter.format(
                 "Got Flink Container State:\nPod: {},\tReady: {},\trestartCount: {},\timage: {}\n"
@@ -174,8 +147,9 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         // Deploy to k8s
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
+        ClusterDescriptorAdapterImpl clusterDescriptorAdapter = new ClusterDescriptorAdapterImpl();
         KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                new KubernetesClusterDescriptor(configuration, client);
+                clusterDescriptorAdapter.createKubernetesClusterDescriptor(configuration, client);
         return kubernetesClusterDescriptor.deployApplicationCluster(
                 clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
     }
@@ -234,21 +208,5 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         }
         throw new GatewayException(
                 "The number of retries exceeds the limit, check the K8S cluster for more information");
-    }
-
-    private void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
-        if (!TextUtil.isEmpty(podTemplate)) {
-            String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
-            if (FileUtil.exist(filePath)) {
-                Assert.isTrue(FileUtil.del(filePath));
-            }
-            FileUtil.writeUtf8String(podTemplate, filePath);
-            addConfigParas(option, filePath);
-        }
-    }
-
-    public boolean close() {
-        super.close();
-        return FileUtil.del(tmpConfDir);
     }
 }

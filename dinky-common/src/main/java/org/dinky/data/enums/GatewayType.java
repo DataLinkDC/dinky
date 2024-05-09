@@ -83,6 +83,10 @@ public enum GatewayType {
         return get(type).isDeployCluster();
     }
 
+    public static boolean isDeployYarnCluster(String type) {
+        return get(type).isDeployYarnCluster();
+    }
+
     /**
      * 是否在本地构建 job graph , 用于校验是否提交到集群
      * @return true: 本地构建 jobgraph
@@ -106,6 +110,16 @@ public enum GatewayType {
             case YARN_PER_JOB:
             case KUBERNETES_APPLICATION:
             case KUBERNETES_APPLICATION_OPERATOR:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isDeployYarnCluster() {
+        switch (this) {
+            case YARN_APPLICATION:
+            case YARN_PER_JOB:
                 return true;
             default:
                 return false;

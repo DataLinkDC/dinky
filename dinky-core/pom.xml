@@ -342,6 +342,22 @@
                     <artifactId>dinky-flink-1.18</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
+
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.19</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-catalog-mysql-1.19</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.19</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
             </dependencies>
         </profile>
 
@@ -374,6 +390,15 @@
         </profile>
         <profile>
             <id>flink-1.18</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-cdc-plus</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>flink-1.19</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>

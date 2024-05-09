@@ -18,14 +18,15 @@
  */
 
 import {
-  queryDsConfig,
-  queryTaskOwnerLockingStrategy
-} from '@/pages/SettingCenter/GlobalSetting/service';
-import {
   BaseConfigProperties,
   GLOBAL_SETTING_KEYS,
   TaskOwnerLockingStrategy
-} from '@/types/SettingCenter/data.d';
+} from '@/types/SettingCenter/data';
+import {
+  queryDsConfig,
+  queryResourceConfig,
+  queryTaskOwnerLockingStrategy
+} from '@/pages/SettingCenter/GlobalSetting/service';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
 import { Reducer } from 'umi';
@@ -35,6 +36,7 @@ const SYS_CONFIG = 'SysConfig';
 export type SysConfigStateType = {
   dsConfig: BaseConfigProperties[];
   enabledDs: boolean;
+  enableResource: boolean;
   taskOwnerLockingStrategy: TaskOwnerLockingStrategy;
 };
 
@@ -43,11 +45,13 @@ export type ConfigModelType = {
   state: SysConfigStateType;
   effects: {
     queryDsConfig: Effect;
+    queryResourceConfig: Effect;
     queryTaskOwnerLockingStrategy: Effect;
   };
   reducers: {
     saveDsConfig: Reducer<SysConfigStateType>;
     updateEnabledDs: Reducer<SysConfigStateType>;
+    updateEnableResource: Reducer<SysConfigStateType>;
     updateTaskOwnerLockingStrategy: Reducer<SysConfigStateType>;
   };
 };
@@ -57,6 +61,7 @@ const ConfigModel: ConfigModelType = {
   state: {
     dsConfig: [],
     enabledDs: false,
+    enableResource: false,
     taskOwnerLockingStrategy: TaskOwnerLockingStrategy.ALL
   },
 
@@ -92,6 +97,23 @@ const ConfigModel: ConfigModelType = {
           payload: enabledDs
         });
       }
+    },
+    *queryResourceConfig({ payload }, { call, put }) {
+      const response: BaseConfigProperties[] = yield call(queryResourceConfig, payload);
+      yield put({
+        type: 'saveDsConfig',
+        payload: response || []
+      });
+      if (response && response.length > 0) {
+        const enableResource = response.some(
+          (item: BaseConfigProperties) =>
+            item.key === 'sys.resource.settings.base.enable' && item.value === true
+        );
+        yield put({
+          type: 'updateEnableResource',
+          payload: enableResource
+        });
+      }
     }
   },
 
@@ -112,6 +134,12 @@ const ConfigModel: ConfigModelType = {
       return {
         ...state,
         taskOwnerLockingStrategy: payload
+      };
+    },
+    updateEnableResource(state, { payload }) {
+      return {
+        ...state,
+        enableResource: payload
       };
     }
   }

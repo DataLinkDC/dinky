@@ -20,6 +20,7 @@
 import RightContextMenu from '@/components/RightContextMenu';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import {
+  ResourceRightMenuKey,
   RIGHT_CONTEXT_FILE_MENU,
   RIGHT_CONTEXT_FOLDER_MENU
 } from '@/pages/RegCenter/Resource/components/constants';
@@ -27,6 +28,8 @@ import FileShow from '@/pages/RegCenter/Resource/components/FileShow';
 import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
 import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
 import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
+import { CONFIG_MODEL_ASYNC, SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 import {
   handleGetOption,
   handleOption,
@@ -39,14 +42,21 @@ import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
 import { unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
+import { SuccessMessage } from '@/utils/messages';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
+import { WarningOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
+import { history } from '@umijs/max';
 import { useAsyncEffect } from 'ahooks';
+import { Button, Result } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { connect } from 'umi';
 
-const ResourceOverView: React.FC = () => {
+const ResourceOverView: React.FC<connect> = (props) => {
+  const { dispatch, enableResource } = props;
+
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
 
   const [editModal, setEditModal] = useState<string>('');
@@ -64,9 +74,19 @@ const ResourceOverView: React.FC = () => {
     );
   };
 
-  useAsyncEffect(async () => {
-    await refreshTree();
+  useEffect(() => {
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryResourceConfig,
+      payload: SettingConfigKeyEnum.RESOURCE.toLowerCase()
+    });
   }, []);
+
+  useAsyncEffect(async () => {
+    // if enableResource is true, then refresh the tree, otherwise do nothing
+    if (enableResource) {
+      await refreshTree();
+    }
+  }, [enableResource]);
 
   /**
    * query content by id
@@ -101,7 +121,7 @@ const ResourceOverView: React.FC = () => {
    */
   const handleCreateFolder = () => {
     if (resourceState.rightClickedNode) {
-      setEditModal('createFolder');
+      setEditModal(ResourceRightMenuKey.CREATE_FOLDER);
       const { id } = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
@@ -135,7 +155,7 @@ const ResourceOverView: React.FC = () => {
    */
   const handleRename = () => {
     if (resourceState.rightClickedNode) {
-      setEditModal('rename');
+      setEditModal(ResourceRightMenuKey.RENAME);
       const { id, name, desc } = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
@@ -146,19 +166,49 @@ const ResourceOverView: React.FC = () => {
     }
   };
 
+  async function handleCopyTo(fillValue: string) {
+    await navigator.clipboard.writeText(fillValue);
+    await SuccessMessage(l('rc.resource.copy_success', '', { fillValue }));
+  }
+
   const handleMenuClick = async (node: MenuInfo) => {
+    const { fullInfo } = resourceState.rightClickedNode;
     switch (node.key) {
-      case 'createFolder':
+      case ResourceRightMenuKey.CREATE_FOLDER:
         handleCreateFolder();
         break;
-      case 'upload':
+      case ResourceRightMenuKey.UPLOAD:
         handleUpload();
         break;
-      case 'delete':
+      case ResourceRightMenuKey.DELETE:
         await handleDelete();
         break;
-      case 'rename':
+      case ResourceRightMenuKey.RENAME:
         handleRename();
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_CUSTOM_JAR:
+        if (fullInfo) {
+          const fillValue = `ADD CUSTOMJAR 'rs:${fullInfo.fullName}';`;
+          await handleCopyTo(fillValue);
+        }
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_JAR:
+        if (fullInfo) {
+          const fillValue = `ADD JAR 'rs:${fullInfo.fullName}';`;
+          await handleCopyTo(fillValue);
+        }
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_FILE:
+        if (fullInfo) {
+          const fillValue = `ADD FILE 'rs:${fullInfo.fullName}';`;
+          await handleCopyTo(fillValue);
+        }
+        break;
+      case ResourceRightMenuKey.COPY_TO_ADD_RS_PATH:
+        if (fullInfo) {
+          const fillValue = `rs:${fullInfo.fullName}`;
+          await handleCopyTo(fillValue);
+        }
         break;
       default:
         break;
@@ -170,8 +220,14 @@ const ResourceOverView: React.FC = () => {
    * @param info
    */
   const handleRightClick = (info: any) => {
-    // 获取右键点击的节点信息
+    // Obtain the node information for right-click
     const { node, event } = info;
+
+    // Determine if the position of the right button exceeds the screen. If it exceeds the screen, set it to the maximum value of the screen offset upwards by 75 (it needs to be reasonably set according to the specific number of right button menus)
+    if (event.clientY + 150 > window.innerHeight) {
+      event.clientY = window.innerHeight - 75;
+    }
+
     setResourceState((prevState) => ({
       ...prevState,
       selectedKeys: [node.key],
@@ -179,8 +235,10 @@ const ResourceOverView: React.FC = () => {
       contextMenuOpen: true,
       contextMenuPosition: {
         ...prevState.contextMenuPosition,
-        left: event.clientX + 20,
-        top: event.clientY + 20
+        top: event.clientY + 5,
+        left: event.clientX + 10,
+        screenX: event.screenX,
+        screenY: event.screenY
       }
     }));
   };
@@ -203,14 +261,23 @@ const ResourceOverView: React.FC = () => {
    */
   const handleModalSubmit = async (value: Partial<ResourceInfo>) => {
     const { id: pid } = resourceState.rightClickedNode;
-    if (editModal === 'createFolder') {
-      await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, l('right.menu.createFolder'), {
-        ...value,
-        pid
-      });
-      setResourceState((prevState) => ({ ...prevState, editOpen: false }));
-    } else if (editModal === 'rename') {
-      await handleOption(API_CONSTANTS.RESOURCE_RENAME, l('right.menu.rename'), { ...value, pid });
+    if (editModal === ResourceRightMenuKey.CREATE_FOLDER) {
+      await handleOption(
+        API_CONSTANTS.RESOURCE_CREATE_FOLDER,
+        l('right.menu.createFolder'),
+        {
+          ...value,
+          pid
+        },
+        () => handleModalCancel()
+      );
+    } else if (editModal === ResourceRightMenuKey.RENAME) {
+      await handleOption(
+        API_CONSTANTS.RESOURCE_RENAME,
+        l('right.menu.rename'),
+        { ...value, pid },
+        () => handleModalCancel()
+      );
     }
   };
   const handleUploadCancel = async () => {
@@ -245,87 +312,114 @@ const ResourceOverView: React.FC = () => {
    */
   return (
     <>
-      <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
-        <SplitPane
-          split={'vertical'}
-          defaultSizes={[200, 500]}
-          minSize={200}
-          className={'split-pane'}
-        >
-          <Pane
-            className={'split-pane'}
-            forwardRef={refObject}
-            minSize={200}
-            size={200}
-            split={'horizontal'}
-          >
-            <ProCard
-              hoverable
-              boxShadow
-              bodyStyle={{ height: parent.innerHeight - 80 }}
-              colSpan={'18%'}
+      {!enableResource ? (
+        <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
+          <Result
+            status='warning'
+            style={{ alignItems: 'center', justifyContent: 'center' }}
+            icon={<WarningOutlined />}
+            title={l('rc.resource.enable')}
+            subTitle={l('rc.resource.enable.tips')}
+            extra={
+              <Button
+                onClick={() => {
+                  history.push('/settings/globalsetting');
+                }}
+                type='primary'
+                key='globalsetting-to-jump'
+              >
+                {l('menu.settings')}
+              </Button>
+            }
+          />
+        </ProCard>
+      ) : (
+        <>
+          <ProCard ghost size={'small'} bodyStyle={{ height: parent.innerHeight - 80 }}>
+            <SplitPane
+              split={'vertical'}
+              defaultSizes={[200, 500]}
+              minSize={200}
+              className={'split-pane'}
             >
-              <FileTree
-                selectedKeys={resourceState.selectedKeys}
-                treeData={resourceState.treeData}
-                onRightClick={handleRightClick}
-                onNodeClick={(info: any) => handleNodeClick(info)}
-                onSync={handleSync}
-              />
-              <RightContextMenu
-                contextMenuPosition={resourceState.contextMenuPosition}
-                open={resourceState.contextMenuOpen}
-                openChange={() =>
-                  setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
-                }
-                items={renderRightMenu()}
-                onClick={handleMenuClick}
-              />
-            </ProCard>
-          </Pane>
+              <Pane
+                className={'split-pane'}
+                forwardRef={refObject}
+                minSize={200}
+                size={200}
+                split={'horizontal'}
+              >
+                <ProCard
+                  hoverable
+                  boxShadow
+                  bodyStyle={{ height: parent.innerHeight - 80 }}
+                  colSpan={'18%'}
+                >
+                  <FileTree
+                    selectedKeys={resourceState.selectedKeys}
+                    treeData={resourceState.treeData}
+                    onRightClick={handleRightClick}
+                    onNodeClick={(info: any) => handleNodeClick(info)}
+                    onSync={handleSync}
+                  />
+                  <RightContextMenu
+                    contextMenuPosition={resourceState.contextMenuPosition}
+                    open={resourceState.contextMenuOpen}
+                    openChange={() =>
+                      setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
+                    }
+                    items={renderRightMenu()}
+                    onClick={handleMenuClick}
+                  />
+                </ProCard>
+              </Pane>
 
-          <Pane
-            className={'split-pane'}
-            forwardRef={refObject}
-            minSize={100}
-            size={100}
-            split={'horizontal'}
-          >
-            <ProCard hoverable bodyStyle={{ height: parent.innerHeight }}>
-              <FileShow
-                onChange={handleContentChange}
-                code={resourceState.content}
-                item={resourceState.clickedNode}
-              />
-            </ProCard>
-          </Pane>
-        </SplitPane>
-      </ProCard>
-      {resourceState.editOpen && (
-        <ResourceModal
-          title={
-            editModal === 'createFolder'
-              ? l('right.menu.createFolder')
-              : editModal === 'rename'
-              ? l('right.menu.rename')
-              : ''
-          }
-          formValues={resourceState.value}
-          onOk={handleModalSubmit}
-          onClose={handleModalCancel}
-          visible={resourceState.editOpen}
-        />
-      )}
-      {resourceState.uploadOpen && (
-        <ResourcesUploadModal
-          onUpload={uploadValue}
-          visible={resourceState.uploadOpen}
-          onOk={handleUploadCancel}
-          onClose={handleUploadCancel}
-        />
+              <Pane
+                className={'split-pane'}
+                forwardRef={refObject}
+                minSize={100}
+                size={100}
+                split={'horizontal'}
+              >
+                <ProCard hoverable bodyStyle={{ height: parent.innerHeight }}>
+                  <FileShow
+                    onChange={handleContentChange}
+                    code={resourceState.content}
+                    item={resourceState.clickedNode}
+                  />
+                </ProCard>
+              </Pane>
+            </SplitPane>
+          </ProCard>
+          {resourceState.editOpen && (
+            <ResourceModal
+              title={
+                editModal === 'createFolder'
+                  ? l('right.menu.createFolder')
+                  : editModal === 'rename'
+                  ? l('right.menu.rename')
+                  : ''
+              }
+              formValues={resourceState.value}
+              onOk={handleModalSubmit}
+              onClose={handleModalCancel}
+              visible={resourceState.editOpen}
+            />
+          )}
+          {resourceState.uploadOpen && (
+            <ResourcesUploadModal
+              onUpload={uploadValue}
+              visible={resourceState.uploadOpen}
+              onOk={handleUploadCancel}
+              onClose={handleUploadCancel}
+            />
+          )}
+        </>
       )}
     </>
   );
 };
 
-export default ResourceOverView;
+export default connect(({ SysConfig }: { SysConfig: SysConfigStateType }) => ({
+  enableResource: SysConfig.enableResource
+}))(ResourceOverView);

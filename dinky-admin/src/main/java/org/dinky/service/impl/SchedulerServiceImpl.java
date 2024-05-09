@@ -36,6 +36,7 @@ import org.dinky.scheduler.model.ProcessDefinition;
 import org.dinky.scheduler.model.ProcessTaskRelation;
 import org.dinky.scheduler.model.Project;
 import org.dinky.scheduler.model.TaskDefinition;
+import org.dinky.scheduler.model.TaskGroup;
 import org.dinky.scheduler.model.TaskMainInfo;
 import org.dinky.scheduler.model.TaskRequest;
 import org.dinky.service.CatalogueService;
@@ -110,6 +111,8 @@ public class SchedulerServiceImpl implements SchedulerService {
             taskRequest.setTimeoutFlag(dinkyTaskRequest.getTimeoutFlag());
             taskRequest.setFlag(dinkyTaskRequest.getFlag());
             taskRequest.setIsCache(dinkyTaskRequest.getIsCache());
+            taskRequest.setTaskGroupId(dinkyTaskRequest.getTaskGroupId());
+            taskRequest.setTaskGroupPriority(dinkyTaskRequest.getTaskGroupPriority());
             JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
             JSONArray taskArray = new JSONArray();
             taskArray.set(jsonObject);
@@ -156,6 +159,8 @@ public class SchedulerServiceImpl implements SchedulerService {
         taskRequest.setTimeoutFlag(dinkyTaskRequest.getTimeoutFlag());
         taskRequest.setFlag(dinkyTaskRequest.getFlag());
         taskRequest.setIsCache(dinkyTaskRequest.getIsCache());
+        taskRequest.setTaskGroupId(dinkyTaskRequest.getTaskGroupId());
+        taskRequest.setTaskGroupPriority(dinkyTaskRequest.getTaskGroupPriority());
 
         String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
         taskClient.createTaskDefinition(
@@ -351,6 +356,17 @@ public class SchedulerServiceImpl implements SchedulerService {
         taskDefinition.setProcessDefinitionVersion(taskMainInfo.getProcessDefinitionVersion());
         taskDefinition.setUpstreamTaskMap(taskMainInfo.getUpstreamTaskMap());
         return taskDefinition;
+    }
+
+    /**
+     * Retrieves the list of task groups from DolphinScheduler.
+     *
+     * @param  projectCode   the project code
+     * @return               the list of task groups
+     */
+    @Override
+    public List<TaskGroup> getTaskGroupsFromDolphinScheduler(long projectCode) {
+        return taskClient.getTaskGroupList(projectCode);
     }
 
     /**

@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -53,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Resource Controller")
 @RequestMapping("/api/resource")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class ResourceController {
     private final ResourcesService resourcesService;
 

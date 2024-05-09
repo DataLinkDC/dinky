@@ -20,6 +20,7 @@
 package org.dinky.init;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.SseSessionContextHolder;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.pool.ScheduleThreadPool;
@@ -154,7 +155,7 @@ public class SystemInit implements ApplicationRunner {
         Configuration<Integer> sysGatherTiming = sysConfig.getMetricsSysGatherTiming();
         Consumer<Configuration<?>> metricsListener = c -> {
             c.addChangeEvent(x -> {
-                schedule.removeSchedule(sysMetricsTask);
+                schedule.removeSchedule(sysMetricsTask.getType());
                 PeriodicTrigger trigger = new PeriodicTrigger(sysGatherTiming.getValue());
                 if (metricsSysEnable.getValue()) schedule.addSchedule(sysMetricsTask, trigger);
             });
@@ -175,6 +176,7 @@ public class SystemInit implements ApplicationRunner {
             DaemonTask daemonTask = DaemonTask.build(config);
             flinkJobThreadPool.execute(daemonTask);
         }
+        SseSessionContextHolder.init(schedule);
     }
 
     /**

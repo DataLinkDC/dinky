@@ -39,22 +39,25 @@ import { transformPushDolphinParams } from '@/pages/DataStudio/HeaderContainer/P
 import { TaskDataType } from '@/pages/DataStudio/model';
 import {
   DolphinTaskDefinition,
+  DolphinTaskGroupInfo,
   DolphinTaskMinInfo,
   PushDolphinParams
 } from '@/types/Studio/data.d';
 import { InitPushDolphinParams } from '@/types/Studio/init.d';
 import { Button, Form, Tag } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 type PushDolphinProps = {
   onCancel: () => void;
   dolphinTaskList: DolphinTaskMinInfo[];
+  dolphinTaskGroup: DolphinTaskGroupInfo[];
   dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
   modalVisible: boolean;
   currentDinkyTaskValue: Partial<TaskDataType>;
   loading: boolean;
   onSubmit: (values: DolphinTaskDefinition) => void;
+  formValuesInfo: DolphinTaskDefinition;
 };
 
 export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
@@ -64,8 +67,10 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
     modalVisible,
     dolphinTaskList,
     dolphinDefinitionTask,
+    dolphinTaskGroup,
     currentDinkyTaskValue,
-    loading
+    loading,
+    formValuesInfo
   } = props;
 
   const [formValues, setFormValues] = React.useState<PushDolphinParams>(
@@ -75,7 +80,21 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
       true
     ) as PushDolphinParams
   );
+  useEffect(() => {
+    if (JSON.stringify(formValuesInfo) != '{}') {
+      const isWARN = formValuesInfo?.timeoutNotifyStrategy?.includes('WARN') ? 'WARN' : false;
+      const isFAILED = formValuesInfo?.timeoutNotifyStrategy?.includes('FAILED') ? 'FAILED' : false;
 
+      const temp: any = {
+        ...formValuesInfo,
+        flag: formValuesInfo.flag == 'NO' ? false : true,
+        timeoutFlag: formValuesInfo.timeoutFlag == 'CLOSE' ? false : true,
+        isCache: formValuesInfo.isCache == 'YES' ? true : false,
+        timeoutNotifyStrategy: [isWARN, isFAILED].filter((item) => item)
+      };
+      form.setFieldsValue(temp);
+    }
+  }, []);
   /**
    * init form
    */
@@ -109,6 +128,7 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
       formValues,
       false
     ) as DolphinTaskDefinition;
+
     onSubmit(transformPushDolphinParamsValue);
     handleCancel();
   };
@@ -184,7 +204,27 @@ export const PushDolphin: React.FC<PushDolphinProps> = (props) => {
             width={'sm'}
             options={PriorityList}
           />
-
+          <ProFormSelect
+            label={l('datastudio.header.pushdolphin.taskGroup')}
+            name={'taskGroupId'}
+            width={'sm'}
+            options={dolphinTaskGroup}
+            fieldProps={{
+              fieldNames: { label: 'name', value: 'id' }
+            }}
+            // fieldNames={label:'label', value: 'value'}
+          />
+          <ProFormDigit
+            label={l('datastudio.header.pushdolphin.taskGroupPriority')}
+            name={'taskGroupPriority'}
+            initialValue={formValues.taskGroupPriority}
+            width={'sm'}
+            min={0}
+            max={99}
+            fieldProps={{
+              precision: 0
+            }}
+          />
           <ProFormDigit
             label={l('datastudio.header.pushdolphin.failRetryTimes')}
             name={'failRetryTimes'}

@@ -70,7 +70,7 @@ public class APIController {
     @GetMapping("/version")
     @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
     public Result<String> getVersionInfo() {
-        return Result.succeed(DinkyVersion.getVersion(), "Get success");
+        return Result.succeed(DinkyVersion.getVersion(), Status.QUERY_SUCCESS);
     }
 
     @PostMapping("/submitTask")
@@ -200,6 +200,6 @@ public class APIController {
             dataTypeClass = Integer.class)
     public Result getTaskLineage(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(taskService.getTaskLineage(id), "获取成功");
+        return Result.succeed(taskService.getTaskLineage(id), Status.QUERY_SUCCESS);
     }
 }

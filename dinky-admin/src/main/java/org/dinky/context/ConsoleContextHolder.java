@@ -88,6 +88,15 @@ public class ConsoleContextHolder {
         }
     }
 
+    public boolean clearProcessLog(String processName) {
+        // find process and delete
+        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
+        if (FileUtil.exist(filePath)) {
+            return FileUtil.del(filePath);
+        }
+        return false;
+    }
+
     /**
      * Add log messages to specific processes and process steps.
      *
@@ -156,11 +165,6 @@ public class ConsoleContextHolder {
      */
     public ProcessStepEntity registerProcessStep(ProcessStepType type, String processName, String parentStepPid)
             throws RuntimeException {
-        if (!logPross.containsKey(processName)) {
-            throw new BusException(StrFormatter.format("Process {} does not exist", type));
-        }
-        ProcessEntity process = logPross.get(processName);
-        process.setStatus(ProcessStatus.RUNNING);
         ProcessStepEntity processStepEntity = ProcessStepEntity.builder()
                 .key(UUID.fastUUID().toString())
                 .status(ProcessStatus.RUNNING)
@@ -171,6 +175,12 @@ public class ConsoleContextHolder {
                 .children(new CopyOnWriteArrayList<>())
                 .build();
 
+        if (!logPross.containsKey(processName)) {
+            log.error(StrFormatter.format("Process {} does not exist", type));
+            return processStepEntity;
+        }
+        ProcessEntity process = logPross.get(processName);
+        process.setStatus(ProcessStatus.RUNNING);
         if (TextUtils.isEmpty(parentStepPid)) {
             // parentStep为空表示为顶级节点
             process.getChildren().add(processStepEntity);
@@ -193,10 +203,10 @@ public class ConsoleContextHolder {
      * @param e           exception object, optional
      */
     public void finishedProcess(String processName, ProcessStatus status, Throwable e) {
-        if (!logPross.containsKey(processName)) {
+        ProcessEntity process = logPross.remove(processName);
+        if (process == null) {
             return;
         }
-        ProcessEntity process = logPross.get(processName);
         process.setStatus(status);
         process.setEndTime(LocalDateTime.now());
         process.setTime(
@@ -210,7 +220,6 @@ public class ConsoleContextHolder {
         }
         FileUtil.writeUtf8String(JSONObject.toJSONString(process), filePath);
         appendLog(processName, null, StrFormatter.format("Process {} exit with status:{}", processName, status), true);
-        logPross.remove(processName);
     }
 
     /**

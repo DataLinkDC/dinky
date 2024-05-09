@@ -24,6 +24,7 @@ import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.TaskDefinition;
 import org.dinky.scheduler.model.TaskDefinitionLog;
+import org.dinky.scheduler.model.TaskGroup;
 import org.dinky.scheduler.model.TaskMainInfo;
 import org.dinky.scheduler.result.PageInfo;
 import org.dinky.scheduler.result.Result;
@@ -262,5 +263,31 @@ public class TaskClient {
             throw new SchedulerException("Failed to generate task definition number");
         }
         return codes.get(0);
+    }
+
+    /**
+     * 通过 projectCode 获得 DolphinScheduler 任务组列表
+     * @param projectCode
+     * @return
+     */
+    public List<TaskGroup> getTaskGroupList(Long projectCode) {
+        String url = SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
+                + "/task-group/query-list-by-projectCode";
+        Map<String, Object> params = new HashMap<>();
+        params.put("projectCode", projectCode);
+        params.put("pageNo", 1);
+        params.put("pageSize", 100);
+        String content = HttpRequest.get(url)
+                .header(
+                        Constants.TOKEN,
+                        SystemConfiguration.getInstances()
+                                .getDolphinschedulerToken()
+                                .getValue())
+                .form(params)
+                .timeout(5000)
+                .execute()
+                .body();
+        PageInfo<JSONObject> pageInfo = MyJSONUtil.toPageBean(content);
+        return MyJSONUtil.toBean(pageInfo.getTotalList().toString(), new TypeReference<List<TaskGroup>>() {});
     }
 }

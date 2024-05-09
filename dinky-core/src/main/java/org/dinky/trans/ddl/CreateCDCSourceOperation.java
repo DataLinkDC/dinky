@@ -39,8 +39,9 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,16 +82,19 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
             config.setSchemaFieldName(cdcBuilder.getSchemaFieldName());
             SinkBuilder sinkBuilder = SinkBuilderFactory.buildSinkBuilder(config);
-            List<Schema> schemaList = new ArrayList<>();
             final List<String> schemaNameList = cdcBuilder.getSchemaList();
             final List<String> tableRegList = cdcBuilder.getTableList();
-            final List<String> schemaTableNameList = new ArrayList<>();
+
+            final List<Schema> schemaList = new LinkedList<>();
+            final List<String> schemaTableNameList = new LinkedList<>();
+            // Scenario of dividing databases and tables
             if (SplitUtil.isEnabled(cdcSource.getSplit())) {
+                logger.info("Split table or database mode is enabled...");
                 Map<String, String> confMap = cdcBuilder.parseMetaDataConfig();
                 Driver driver =
                         Driver.buildWithOutPool(confMap.get("name"), confMap.get("type"), JsonUtils.toMap(confMap));
 
-                // 这直接传正则过去
+                // This is passed directly to the regularization process
                 schemaTableNameList.addAll(tableRegList.stream()
                         .map(x -> x.replaceFirst("\\\\.", "."))
                         .collect(Collectors.toList()));
@@ -100,12 +104,17 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 Set<Table> tables = driver.getSplitTables(tableRegList, cdcSource.getSplit());
 
                 for (Table table : tables) {
+                    // Filter out views
+                    if (Asserts.isEquals(table.getType(), "VIEW")) {
+                        continue;
+                    }
                     String schemaName = table.getSchema();
                     Schema schema = Schema.build(schemaName);
                     schema.setTables(Collections.singletonList(table));
-                    // 分库分表所有表结构都是一样的，取出列表中第一个表名即可
+                    // The structure of all tables in a database or table is the same, just take out the first table
+                    // name from the list
                     String schemaTableName = table.getSchemaTableNameList().get(0);
-                    // 真实的表名
+                    // Real Table Name
                     String realSchemaName = schemaTableName.split("\\.")[0];
                     String tableName = schemaTableName.split("\\.")[1];
                     table.setColumns(driver.listColumnsSortByPK(realSchemaName, tableName));
@@ -167,7 +176,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 logger.info("{}: {}", i + 1, schemaTableNameList.get(i));
             }
             config.setSchemaTableNameList(schemaTableNameList);
-            config.setSchemaList(schemaList);
+            config.setSchemaList(schemaList.stream()
+                    .sorted(Comparator.comparing(Schema::getName))
+                    .collect(Collectors.toList()));
             StreamExecutionEnvironment streamExecutionEnvironment = executor.getStreamExecutionEnvironment();
             if (Asserts.isNotNull(config.getParallelism())) {
                 streamExecutionEnvironment.setParallelism(config.getParallelism());
@@ -201,6 +212,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             driver.createSchema(schema);
         }
         sink.put(FlinkCDCConfig.SINK_DB, schema);
+        // todo: There is a bug that can cause the problem of URL duplicate concatenation of schema, for example: jdbc:
+        // mysql://localhost:3306/test?useSSL=false/test -1
         if (!url.contains(schema)) {
             sink.put("url", url + "/" + schema);
         }

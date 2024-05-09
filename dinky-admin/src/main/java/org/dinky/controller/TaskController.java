@@ -56,6 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.lang.tree.Tree;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -67,6 +68,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Api(tags = "Task Controller")
 @RequestMapping("/api/task")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class TaskController {
 

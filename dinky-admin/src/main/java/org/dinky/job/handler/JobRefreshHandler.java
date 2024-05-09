@@ -21,6 +21,7 @@ package org.dinky.job.handler;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
+import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.ClusterConfigurationDTO;
@@ -34,6 +35,7 @@ import org.dinky.data.flink.config.FlinkJobConfigInfo;
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
+import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.gateway.Gateway;
@@ -41,6 +43,8 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.NotSupportGetStatusException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.job.JobConfig;
+import org.dinky.service.ClusterInstanceService;
+import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.utils.JsonUtils;
@@ -48,6 +52,7 @@ import org.dinky.utils.TimeUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
@@ -68,10 +73,14 @@ public class JobRefreshHandler {
 
     private static final JobInstanceService jobInstanceService;
     private static final JobHistoryService jobHistoryService;
+    private static final ClusterInstanceService clusterInstanceService;
+    private static final HistoryService historyService;
 
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
+        clusterInstanceService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceService.class);
+        historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
     }
 
     /**
@@ -100,6 +109,9 @@ public class JobRefreshHandler {
             jobInstanceService.updateById(jobInstance);
             return true;
         }
+
+        checkAndRefreshCluster(jobInfoDetail);
+
         // Update the value of JobData from the flink api while ignoring the null value to prevent
         // some other configuration from being overwritten
         BeanUtil.copyProperties(
@@ -111,18 +123,23 @@ public class JobRefreshHandler {
                 CopyOptions.create().ignoreNullValue());
 
         if (Asserts.isNull(jobDataDto.getJob()) || jobDataDto.isError()) {
-            // If the job fails to get it, the default Finish Time is the current time
-            jobInstance.setStatus(JobStatus.RECONNECTING.getValue());
-            jobInstance.setError(jobDataDto.getErrorMsg());
-            jobInfoDetail.getJobDataDto().setError(true);
-            jobInfoDetail.getJobDataDto().setErrorMsg(jobDataDto.getErrorMsg());
+            Optional<JobStatus> jobStatus = getJobStatus(jobInfoDetail);
+            if (jobStatus.isPresent() && JobStatus.isDone(jobStatus.get().getValue())) {
+                jobInstance.setStatus(jobStatus.get().getValue());
+            } else {
+                // If the job fails to get it, the default Finish Time is the current time
+                jobInstance.setStatus(JobStatus.RECONNECTING.getValue());
+                jobInstance.setError(jobDataDto.getErrorMsg());
+                jobInfoDetail.getJobDataDto().setError(true);
+                jobInfoDetail.getJobDataDto().setErrorMsg(jobDataDto.getErrorMsg());
+            }
             if (jobInstance.getFinishTime() == null || TimeUtil.localDateTimeToLong(jobInstance.getFinishTime()) < 1) {
                 jobInstance.setFinishTime(LocalDateTime.now());
             }
         } else {
             jobInfoDetail.setJobDataDto(jobDataDto);
             FlinkJobDetailInfo flinkJobDetailInfo = jobDataDto.getJob();
-            jobInstance.setStatus(getJobStatus(jobInfoDetail).getValue());
+            jobInstance.setStatus(flinkJobDetailInfo.getState());
             jobInstance.setDuration(flinkJobDetailInfo.getDuration());
             jobInstance.setCreateTime(TimeUtil.toLocalDateTime(flinkJobDetailInfo.getStartTime()));
             // if the job is still running the end-time is -1
@@ -167,13 +184,31 @@ public class JobRefreshHandler {
 
         if (!oldStatus.equals(jobInstance.getStatus()) || isDone || needSave) {
             log.debug("Dump JobInfo to database: {}->{}", jobInstance.getId(), jobInstance.getName());
-            jobInstanceService.updateById(jobInstance);
-            jobHistoryService.updateById(jobInfoDetail.getJobDataDto().toJobHistory());
+            if (jobInstance.getStatus().equals(JobStatus.UNKNOWN.getValue())
+                    || jobInstance.getStatus().equals(JobStatus.RECONNECTING.getValue())) {
+                JobInstance fromDb = jobInstanceService.getById(jobInstance.getId());
+                // If the job status is unknown and the job status in the database is not done, update the job status
+                // just prevent the task from being mistakenly updated to UNKNOWN
+                if (JobStatus.valueOf(fromDb.getStatus()).isDone()) {
+                    // if status is RECONNECTING, ignore it
+                    isDone = true;
+                } else {
+                    jobInstanceService.updateById(jobInstance);
+                    jobHistoryService.updateById(jobInfoDetail.getJobDataDto().toJobHistory());
+                }
+            } else {
+                jobInstanceService.updateById(jobInstance);
+                jobHistoryService.updateById(jobInfoDetail.getJobDataDto().toJobHistory());
+            }
         }
 
         if (isDone) {
-            log.debug("Job is done: {}->{}", jobInstance.getId(), jobInstance.getName());
-            handleJobDone(jobInfoDetail);
+            try {
+                log.debug("Job is done: {}->{}", jobInstance.getId(), jobInstance.getName());
+                handleJobDone(jobInfoDetail);
+            } catch (Exception e) {
+                log.error("failed handel job done：", e);
+            }
         }
         return isDone;
     }
@@ -239,12 +274,12 @@ public class JobRefreshHandler {
      * @param jobInfoDetail The job info detail.
      * @return The job status.
      */
-    private static JobStatus getJobStatus(JobInfoDetail jobInfoDetail) {
+    private static Optional<JobStatus> getJobStatus(JobInfoDetail jobInfoDetail) {
 
         ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
-
+        ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
         if (!Asserts.isNull(clusterCfg)
-                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterCfg.getType())) {
+                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterInstance.getType())) {
             try {
                 String appId = jobInfoDetail.getClusterInstance().getName();
 
@@ -255,15 +290,13 @@ public class JobRefreshHandler {
                         .setJobName(jobInfoDetail.getInstance().getName());
 
                 Gateway gateway = Gateway.build(gatewayConfig);
-                return gateway.getJobStatusById(appId);
+                return Optional.of(gateway.getJobStatusById(appId));
             } catch (NotSupportGetStatusException ignored) {
                 // if the gateway does not support get status, then use the api to get job status
                 // ignore to do something here
             }
         }
-        JobDataDto jobDataDto = jobInfoDetail.getJobDataDto();
-        String status = jobDataDto.getJob().getState();
-        return JobStatus.get(status);
+        return Optional.empty();
     }
 
     /**
@@ -283,6 +316,50 @@ public class JobRefreshHandler {
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
+        }
+    }
+
+    /**
+     * In a YARN cluster with HA mode enabled,
+     * if the jobManagerHost cannot be connected,
+     * attempt to retrieve the latest address of the jobManagerHost from ZK
+     *
+     * @param jobInfoDetail The job info detail.
+     * @return The job status.
+     */
+    private static void checkAndRefreshCluster(JobInfoDetail jobInfoDetail) {
+        if (!GatewayType.isDeployYarnCluster(jobInfoDetail.getClusterInstance().getType())) {
+            return;
+        }
+
+        FlinkClusterInfo flinkClusterInfo = clusterInstanceService.checkHeartBeat(
+                jobInfoDetail.getClusterInstance().getHosts(),
+                jobInfoDetail.getClusterInstance().getJobManagerHost());
+        if (!flinkClusterInfo.isEffective()) {
+            ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
+            ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
+            if (!Asserts.isNull(clusterCfg)) {
+                String appId = jobInfoDetail.getClusterInstance().getName();
+
+                GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
+                gatewayConfig.getClusterConfig().setAppId(appId);
+                gatewayConfig
+                        .getFlinkConfig()
+                        .setJobName(jobInfoDetail.getInstance().getName());
+
+                Gateway gateway = Gateway.build(gatewayConfig);
+                String latestJobManageHost = gateway.getLatestJobManageHost(appId, clusterInstance.getJobManagerHost());
+
+                if (Asserts.isNotNull(latestJobManageHost)) {
+                    clusterInstance.setHosts(latestJobManageHost);
+                    clusterInstance.setJobManagerHost(latestJobManageHost);
+                    clusterInstanceService.updateById(clusterInstance);
+                    if (Asserts.isNotNull(jobInfoDetail.getHistory())) {
+                        jobInfoDetail.getHistory().setJobManagerAddress(latestJobManageHost);
+                        historyService.updateById(jobInfoDetail.getHistory());
+                    }
+                }
+            }
         }
     }
 }

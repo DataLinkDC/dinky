@@ -23,62 +23,57 @@ import styles from './styles.module.css';
 
 const FeatureList = [
     {
-        title: '沉浸式',
-        Svg: require('@site/static/img/immersive.svg').default,
-        description: (
-            <>
-                提供专业的 DataStudio 功能，支持全屏开发、自动提示与补全、语法高亮、语句美化、语法校验、
-                调试预览结果、全局变量、MetaStore、字段级血缘分析、元数据查询、FlinkSQL 生成等功能
-            </>
-        ),
-    },
-    {
-        title: '易用性',
-        Svg: require('@site/static/img/ease_of_use.svg').default,
-        description: (
-            <>
-                Flink 多种执行模式无感知切换，支持 Flink 多版本切换，自动化托管实时任务、恢复点、报警等，
-                自定义各种配置，持久化管理的 Flink Catalog
-            </>
-        ),
-    },
-    {
-        title: '增强式',
-        Svg: require('@site/static/img/easy_of_deploy.svg').default,
-        description: (
-            <>
-                兼容且增强官方 FlinkSQL 语法，如 SQL 表值聚合函数、全局变量、CDC 整库同步、执行环境、
-                语句合并、共享会话等
-            </>
-        ),
-    },
-    {
-        title: '一站式',
+        title: '快速开发',
         Svg: require('@site/static/img/one_stop.svg').default,
         description: (
             <>
-                提供从 FlinkSQL 开发调试到上线下线的运维监控及 SQL 的查询执行能力，使数仓建设及数据治理
-                一体化
+                提供 FlinkSQL Studio，通过提示补全、逻辑检查、即席查询、全局变量、元数据查询等能力提升 Flink 作业开发效率
             </>
         ),
     },
     {
-        title: '易扩展',
+        title: '开箱即用',
+        Svg: require('@site/static/img/ease_of_use.svg').default,
+        description: (
+            <>
+                屏蔽技术细节，实现 Flink 所有作业提交方式，自动托管任务监控、保存点、报警等
+            </>
+        ),
+    },
+    {
+        title: '语法增强',
+        Svg: require('@site/static/img/easy_of_deploy.svg').default,
+        description: (
+            <>
+                扩展 FlinkSQL 语法，如全局变量、CDC 整库同步、打印表、执行 Jar 任务等
+            </>
+        ),
+    },
+    {
+        title: '易于扩展',
         Svg: require('@site/static/img/easy_of_extend.svg').default,
         description: (
             <>
-                源码采用 SPI 插件化及各种设计模式支持用户快速扩展新功能，如连接器、数据源、报警方式、
-                Flink Catalog、CDC 整库同步、自定义 FlinkSQL 语法等
+                多种设计模式支持快速扩展新功能，如数据源、报警方式、
+                CDC 整库同步、自定义语法等
             </>
         ),
     },
     {
-        title: '无侵入',
+        title: '无侵入性',
         Svg: require('@site/static/img/no_invasion.svg').default,
         description: (
             <>
-                Spring Boot 轻应用快速部署，不需要在任何 Flink 集群修改源码或添加额外插件，无感知连接和
-                监控 Flink 集群
+                Spring Boot 轻应用快速部署，不需要在 Flink 集群修改源码或添加额外插件，即装即用
+            </>
+        ),
+    },
+    {
+        title: '企业推动',
+        Svg: require('@site/static/img/immersive.svg').default,
+        description: (
+            <>
+                已有百家企业在生产环境中使用，进行实时数据开发与作业托管，大量用户实践保障项目日渐成熟
             </>
         ),
     },

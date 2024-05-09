@@ -59,7 +59,12 @@ import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/B
 import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data.d';
-import { ButtonRoute, DolphinTaskDefinition, DolphinTaskMinInfo } from '@/types/Studio/data.d';
+import {
+  ButtonRoute,
+  DolphinTaskDefinition,
+  DolphinTaskGroupInfo,
+  DolphinTaskMinInfo
+} from '@/types/Studio/data.d';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -109,15 +114,19 @@ const HeaderContainer = (props: connect) => {
     buttonLoading: boolean;
     confirmLoading: boolean;
     dolphinTaskList: DolphinTaskMinInfo[];
+    dolphinTaskGroup: DolphinTaskGroupInfo[];
     dolphinDefinitionTask: Partial<DolphinTaskDefinition>;
     currentDinkyTaskValue: Partial<TaskDataType>;
+    formValuesInfo: any;
   }>({
     modalVisible: false,
     buttonLoading: false,
     confirmLoading: false,
     dolphinTaskList: [],
+    dolphinTaskGroup: [],
     dolphinDefinitionTask: {},
-    currentDinkyTaskValue: {}
+    currentDinkyTaskValue: {},
+    formValuesInfo: {}
   });
 
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -148,14 +157,27 @@ const HeaderContainer = (props: connect) => {
           dinkyTaskId
         }
       );
+
+    let dolphinTaskGroup: DolphinTaskGroupInfo[] | undefined = await queryDataByParams<
+      DolphinTaskGroupInfo[]
+    >(API_CONSTANTS.SCHEDULER_QUERY_TASK_GROUP, {
+      projectCode: dolphinTaskDefinition?.projectCode || undefined
+    });
+
+    const formValuesInfo = dolphinTaskDefinition
+      ? JSON.parse(JSON.stringify(dolphinTaskDefinition))
+      : {};
+
     setPushDolphinState((prevState) => ({
       ...prevState,
       buttonLoading: true,
       confirmLoading: false,
       modalVisible: true,
       dolphinTaskList: dolphinTaskList ?? [],
+      dolphinTaskGroup: dolphinTaskGroup ?? [],
       dolphinDefinitionTask: dolphinTaskDefinition ?? {},
-      currentDinkyTaskValue: currentData as TaskDataType
+      currentDinkyTaskValue: currentData as TaskDataType,
+      formValuesInfo: formValuesInfo ?? {}
     }));
   };
 
@@ -165,9 +187,11 @@ const HeaderContainer = (props: connect) => {
       modalVisible: false,
       buttonLoading: false,
       dolphinTaskList: [],
+      dolphinTaskGroup: [],
       confirmLoading: false,
       dolphinDefinitionTask: {},
-      currentDinkyTaskValue: {}
+      currentDinkyTaskValue: {},
+      formValuesInfo: {}
     }));
   };
 
@@ -558,7 +582,9 @@ const HeaderContainer = (props: connect) => {
             loading={pushDolphinState.confirmLoading}
             dolphinDefinitionTask={pushDolphinState.dolphinDefinitionTask}
             dolphinTaskList={pushDolphinState.dolphinTaskList}
+            dolphinTaskGroup={pushDolphinState.dolphinTaskGroup}
             onSubmit={(values) => handlePushDolphinSubmit(values)}
+            formValuesInfo={pushDolphinState.formValuesInfo}
           />
         )}
       </Descriptions.Item>

@@ -20,7 +20,7 @@
 package org.dinky.data.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Getter;
@@ -38,11 +38,11 @@ public class Schema implements Serializable, Comparable<Schema> {
     private static final long serialVersionUID = 4278304357661271040L;
 
     private String name;
-    private List<Table> tables = new ArrayList<>();
-    private List<String> views = new ArrayList<>();
-    private List<String> functions = new ArrayList<>();
-    private List<String> userFunctions = new ArrayList<>();
-    private List<String> modules = new ArrayList<>();
+    private List<Table> tables = new LinkedList<>();
+    private List<String> views = new LinkedList<>();
+    private List<String> functions = new LinkedList<>();
+    private List<String> userFunctions = new LinkedList<>();
+    private List<String> modules = new LinkedList<>();
 
     /** 需要保留一个空构造方法，否则序列化有问题 */
     public Schema() {}

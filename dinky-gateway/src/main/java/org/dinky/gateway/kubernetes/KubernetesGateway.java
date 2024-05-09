@@ -28,7 +28,9 @@ import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.kubernetes.utils.K8sClientHelper;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
+import org.dinky.utils.TextUtil;
 
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
@@ -44,8 +46,11 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.UUID;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
+import io.fabric8.kubernetes.api.model.Pod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +67,12 @@ public abstract class KubernetesGateway extends AbstractGateway {
     protected FlinkConfig flinkConfig;
     protected K8sConfig k8sConfig;
 
+    private Pod jmPodTemplate;
+    private Pod tmPodTemplate;
+    private Pod defaultPodTemplate;
+
     private K8sClientHelper k8sClientHelper;
+    private String tmpConfDir = String.format("%s/tmp/kubernets/%s", System.getProperty("user.dir"), UUID.randomUUID());
 
     public KubernetesGateway() {}
 
@@ -97,13 +107,39 @@ public abstract class KubernetesGateway extends AbstractGateway {
             resetCheckpointInApplicationMode(flinkConfig.getJobName());
         }
 
-        k8sClientHelper = new K8sClientHelper(configuration, k8sConfig);
+        preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE);
+        k8sClientHelper = new K8sClientHelper(configuration, k8sConfig.getKubeConfig());
+
+        String sql = config.getSql();
+        defaultPodTemplate = k8sClientHelper.decoratePodTemplate(sql, k8sConfig.getPodTemplate());
+        preparPodTemplate(
+                k8sClientHelper.dumpPod2Str(defaultPodTemplate), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
+
+        if (!TextUtil.isEmpty(k8sConfig.getJmPodTemplate())) {
+            jmPodTemplate = k8sClientHelper.decoratePodTemplate(sql, k8sConfig.getJmPodTemplate());
+            preparPodTemplate(
+                    k8sClientHelper.dumpPod2Str(jmPodTemplate), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
+        }
+        if (!TextUtil.isEmpty(k8sConfig.getTmPodTemplate())) {
+            tmPodTemplate = k8sClientHelper.decoratePodTemplate(sql, k8sConfig.getJmPodTemplate());
+            preparPodTemplate(
+                    k8sClientHelper.dumpPod2Str(tmPodTemplate), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
+        }
+    }
+
+    protected void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
+        if (!TextUtil.isEmpty(podTemplate)) {
+            String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
+            if (FileUtil.exist(filePath)) {
+                Assert.isTrue(FileUtil.del(filePath));
+            }
+            FileUtil.writeUtf8String(podTemplate, filePath);
+            addConfigParas(option, filePath);
+        }
     }
 
     public SavePointResult savepointCluster(String savePoint) {
-        if (Asserts.isNull(k8sClientHelper.getClient())) {
-            initConfig();
-        }
+        initConfig();
 
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
         addConfigParas(
@@ -120,9 +156,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     }
 
     public SavePointResult savepointJob(String savePoint) {
-        if (Asserts.isNull(k8sClientHelper.getClient())) {
-            initConfig();
-        }
+        initConfig();
         if (Asserts.isNull(config.getFlinkConfig().getJobId())) {
             throw new GatewayException(
                     "No job id was specified. Please specify a job to which you would like to" + " savepont.");
@@ -168,27 +202,44 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     @Override
     public void killCluster() {
-        if (Asserts.isNull(k8sClientHelper.getClient())) {
-            initConfig();
-        }
+        log.info("Start kill cluster: " + config.getFlinkConfig().getJobName());
+        initConfig();
         addConfigParas(
-                KubernetesConfigOptions.CLUSTER_ID, config.getClusterConfig().getAppId());
+                KubernetesConfigOptions.CLUSTER_ID, config.getFlinkConfig().getJobName());
         KubernetesClusterClientFactory clusterClientFactory = new KubernetesClusterClientFactory();
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
             throw new GatewayException(
                     "No cluster id was specified. Please specify a cluster to which you would like" + " to connect.");
         }
-
-        try (KubernetesClusterDescriptor clusterDescriptor =
-                clusterClientFactory.createClusterDescriptor(configuration)) {
-            clusterDescriptor.killCluster(clusterId);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        if (k8sClientHelper.getClusterIsPresent(clusterId)) {
+            try (KubernetesClusterDescriptor clusterDescriptor =
+                    clusterClientFactory.createClusterDescriptor(configuration)) {
+                clusterDescriptor.killCluster(clusterId);
+                int retryCount = 0;
+                while (k8sClientHelper.getClusterIsPresent(clusterId)) {
+                    retryCount++;
+                    log.warn("cluster id: {} is still running, recheck at 1s later", clusterId);
+                    if (retryCount > 60) {
+                        throw new GatewayException("The cluster " + clusterId
+                                + " still running, abort wait kill cluster, please check your k8s cluster.");
+                    }
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else {
+            logger.info("Cluster {} is not present, ignore kill", clusterId);
         }
     }
 
     public boolean close() {
+        try {
+            FileUtil.del(tmpConfDir);
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+        }
         if (k8sClientHelper != null) {
             return k8sClientHelper.close();
         }
