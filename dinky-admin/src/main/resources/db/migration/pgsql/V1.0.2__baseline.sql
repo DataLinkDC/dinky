@@ -2717,9 +2717,7 @@ CREATE TABLE dinky_task
     statement                text,
     creator                  int,
     updater                  int,
-    operator                 int,
-    first_level_owner                  int,
-    second_level_owners                 varchar(128)
+    operator                 int
 );
 
 CREATE UNIQUE INDEX task_un_idx1 ON dinky_task (name, tenant_id);
@@ -2753,8 +2751,6 @@ COMMENT ON COLUMN dinky_task.statement IS 'sql statement';
 COMMENT ON COLUMN dinky_task.creator IS 'creator';
 COMMENT ON COLUMN dinky_task.updater IS 'updater';
 COMMENT ON COLUMN dinky_task.operator IS 'operator user id';
-COMMENT ON COLUMN dinky_task.first_level_owner IS 'primary responsible person id';
-COMMENT ON COLUMN dinky_task.second_level_owners IS 'list of secondary responsible persons ids';
 
 -- 创建触发器以在每次更新记录时设置update_time
 CREATE TRIGGER set_update_time_dinky_task

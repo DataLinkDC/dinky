@@ -72,25 +72,6 @@ public class DatabaseFlywayMigration {
         return hikariDataSource;
     }
 
-    @PostConstruct
-    private void init() {
-        Flyway flyway = SpringUtil.getBean(Flyway.class);
-        try {
-            log.info("===========[Initialize flyway start]============");
-            flyway.migrate();
-            log.info("===========[Initialize flyway successfully ]============");
-
-        } catch (FlywayException e) {
-            flyway.repair();
-            log.error("===========[Failed to initialize flyway]============");
-            throw e;
-        } finally {
-            HikariDataSource dataSource =
-                    (HikariDataSource) flyway.getConfiguration().getDataSource();
-            dataSource.close();
-            log.info("===========[Close dataSource of flyway  successfully]============");
-        }
-    }
 
     @Bean
     public Flyway flyway(
@@ -108,7 +89,32 @@ public class DatabaseFlywayMigration {
                 .forEach((customizer) -> customizer.customize(fluentConfiguration));
 
         configureProperties(fluentConfiguration, flywayProperties);
-        return fluentConfiguration.load();
+        Flyway flyway = fluentConfiguration.load();
+        // use flyway to migrate database schema
+        executeMigrate(flyway);
+        return flyway;
+    }
+
+    /**
+     * execute migrate method
+     * @param flyway flyway
+     */
+    private static void executeMigrate(Flyway flyway) {
+        try {
+            log.info("===========[Initialize flyway start]============");
+            flyway.migrate();
+            log.info("===========[Initialize flyway successfully ]============");
+
+        } catch (FlywayException e) {
+            flyway.repair();
+            log.error("===========[Failed to initialize flyway]============");
+            throw e;
+        } finally {
+            HikariDataSource dataSource =
+                    (HikariDataSource) flyway.getConfiguration().getDataSource();
+            dataSource.close();
+            log.info("===========[Close dataSource of flyway  successfully]============");
+        }
     }
 
     private void configureProperties(FluentConfiguration configuration, FlywayProperties properties) {
