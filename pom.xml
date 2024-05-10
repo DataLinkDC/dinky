@@ -112,6 +112,7 @@
         <sa-token.version>1.37.0</sa-token.version>
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
+        <flyway.version>10.10.12</flyway.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
         <smily.version>1.12.1</smily.version>
