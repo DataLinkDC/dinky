@@ -27,7 +27,6 @@ import org.dinky.mybatis.annotation.Save;
 
 import org.apache.ibatis.type.JdbcType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -162,7 +161,7 @@ public class TaskSaveDTO {
             dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
-    private List<Integer> secondLevelOwners = new ArrayList<>();
+    private List<Integer> secondLevelOwners;
 
     public Task toTaskEntity() {
         Task task = new Task();

@@ -22,7 +22,6 @@ package org.dinky.data.dto;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -99,7 +98,7 @@ public class CatalogueTaskDTO {
             dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
-    private List<Integer> secondLevelOwners = new ArrayList<>();
+    private List<Integer> secondLevelOwners;
 
     @ApiModelProperty(value = "Task", dataType = "TaskDTO", notes = "The task information")
     private TaskDTO task;

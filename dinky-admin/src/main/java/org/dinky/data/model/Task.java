@@ -26,7 +26,6 @@ import org.dinky.mybatis.model.SuperEntity;
 
 import org.apache.ibatis.type.JdbcType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
@@ -184,7 +183,7 @@ public class Task extends SuperEntity<Task> {
             dataType = "List",
             notes = "list of secondary responsible persons' ids")
     @TableField(typeHandler = ListTypeHandler.class)
-    private List<Integer> secondLevelOwners = new ArrayList<>();
+    private List<Integer> secondLevelOwners;
 
     public Task(Integer id, Integer jobInstanceId) {
         this.jobInstanceId = jobInstanceId;
