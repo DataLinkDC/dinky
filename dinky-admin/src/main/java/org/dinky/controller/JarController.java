@@ -68,12 +68,12 @@ public class JarController {
     public Result<Map<String, List<String>>> generateJar() {
         List<Task> allUDF = taskService.getAllUDFWithSavePoint();
         List<UDF> udfCodes = allUDF.stream()
-                .map(task -> UDF.builder()
-                        .code(task.getStatement())
-                        .className(StrUtil.isEmpty(task.getSavePointPath()) ? task.getConfigJson().getUdfConfig().getClassName(): task.getSavePointPath())
-                        .functionLanguage(
+                。map(task -> UDF.builder()
+                        。code(task.getStatement())
+                        。className(task.getConfigJson()。getUdfConfig().getClassName())
+                        。functionLanguage(
                                 FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
-                        .build())
+                        。build())
                 .collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
         String msg = StrUtil.format(
