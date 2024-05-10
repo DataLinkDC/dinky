@@ -113,13 +113,13 @@ public class UDFController {
         // Get all UDFs of static UDFs and dynamic UDFs
         List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
         // get all UDFs of dynamic UDFs(user defined UDFs in the task)
-        List<UDF> userDefinedUdfs =
-                taskService.getAllUdfEnabled().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
+        List<UDF> userDefinedReleaseUdfs =
+                taskService.getReleaseUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
         // get all UDFs of UDFManage table
         List<UDF> udfManageDynamic = udfService.getUDFFromUdfManage().stream().map(UDFUtils::resourceUdfManageToUDF).collect(Collectors.toList());
 
         CascaderVO staticUdfCascaderVO =  new CascaderVO("Flink Static UDF", staticUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
-        CascaderVO userDefinedUdfCascaderVO =  new CascaderVO("User Defined UDF", userDefinedUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
+        CascaderVO userDefinedUdfCascaderVO =  new CascaderVO("User Defined Release UDF", userDefinedReleaseUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
         CascaderVO udfManageDynamicCascaderVO =  new CascaderVO("From UDF Manage", udfManageDynamic.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
 
         List<CascaderVO> result = new ArrayList<>();

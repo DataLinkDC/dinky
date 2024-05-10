@@ -716,27 +716,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public List<Task> getAllUdfEnabled() {
-        return list(new LambdaQueryWrapper<>(Task.class )
-                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq(Task::getEnabled, 1));
-    }
-
-    @Override
-    public List<Task> getAllUDFWithSavePoint() {
-        return list(new LambdaQueryWrapper<Task>()
-                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq(Task::getEnabled, 1)
-                .isNotNull(Task::getSavePointPath));
-    }
-
-    @Override
     public List<Task> getReleaseUDF() {
         return list(new LambdaQueryWrapper<Task>()
                 .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
                 .eq(Task::getEnabled, 1)
-                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue())
-                .isNotNull(Task::getSavePointPath));
+                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
+                .stream()
+                .filter(task -> Asserts.isNotNullString(task.getConfigJson().getUdfConfig().getClassName()))
+                .collect(Collectors.toList());
     }
 
     @Override

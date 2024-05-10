@@ -66,14 +66,14 @@ public class JarController {
     @PostMapping("/udf/generateJar")
     @ApiOperation("Generate jar")
     public Result<Map<String, List<String>>> generateJar() {
-        List<Task> allUDF = taskService.getAllUDFWithSavePoint();
+        List<Task> allUDF = taskService.getReleaseUDF();
         List<UDF> udfCodes = allUDF.stream()
-                。map(task -> UDF.builder()
-                        。code(task.getStatement())
-                        。className(task.getConfigJson()。getUdfConfig().getClassName())
-                        。functionLanguage(
+                .map(task -> UDF.builder()
+                                .code(task.getStatement())
+                                .className(task.getConfigJson().getUdfConfig().getClassName())
+                                .functionLanguage(
                                 FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
-                        。build())
+                        .build())
                 .collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
         String msg = StrUtil.format(
