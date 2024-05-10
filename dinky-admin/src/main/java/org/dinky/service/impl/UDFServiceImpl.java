@@ -144,7 +144,7 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                                 return udfManage;
                             });
                         } else {
-                            log.error("Unsupported file type: {}", suffix);
+                            log.error("Unsupported file type to add UDFManage, extension: {}", suffix);
                         }
                         return Stream.of();
                     })
