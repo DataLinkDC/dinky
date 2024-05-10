@@ -51,7 +51,7 @@ public class UDFUtils extends UDFUtil {
                     .functionLanguage(FunctionLanguage.valueOf(udfManage.getLanguage().toUpperCase()))
                     .build();
         } else {
-            throw new BusException("udf `class` config is null,please check your udf task config");
+            throw new BusException("udf `class` config is null, Please check if the resource file to which this udf belongs exists");
         }
     }
 
