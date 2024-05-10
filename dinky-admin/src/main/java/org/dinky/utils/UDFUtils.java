@@ -46,8 +46,8 @@ public class UDFUtils extends UDFUtil {
     public static UDF resourceUdfManageToUDF(UDFManage udfManage) {
         if (Asserts.isNotNull(udfManage)) {
             return UDF.builder()
+                    .name(udfManage.getName())
                     .className(udfManage.getClassName())
-                    .code(udfManage.getName())
                     .functionLanguage(FunctionLanguage.valueOf(udfManage.getLanguage().toUpperCase()))
                     .build();
         } else {
