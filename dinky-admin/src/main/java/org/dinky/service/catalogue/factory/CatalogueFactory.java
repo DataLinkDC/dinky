@@ -19,14 +19,16 @@
 
 package org.dinky.service.catalogue.factory;
 
-import cn.hutool.core.bean.BeanUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.bean.BeanUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * CatalogueFactory
@@ -78,5 +80,4 @@ public class CatalogueFactory {
         newCatalogue.setTenantId(null);
         return newCatalogue;
     }
-
 }
