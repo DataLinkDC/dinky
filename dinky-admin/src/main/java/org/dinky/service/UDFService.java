@@ -26,6 +26,7 @@ import org.dinky.data.vo.UDFManageVO;
 
 import java.util.List;
 
+import org.dinky.function.data.model.UDF;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -68,6 +69,6 @@ public interface UDFService extends IService<UDFManage> {
      * get all udf to cascader list
      * @return List
      */
-    List<CascaderVO> getAllUdfsToCascader();
+    List<CascaderVO> getAllUdfsToCascader(List<UDF> userDefinedReleaseUdfs);
 
 }

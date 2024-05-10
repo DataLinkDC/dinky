@@ -60,7 +60,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> implements UDFService {
     private final ResourcesService resourcesService;
-    private final TaskService taskService;
 
 
     @Override
@@ -174,12 +173,10 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
      * @return List
      */
     @Override
-    public List<CascaderVO> getAllUdfsToCascader() {
+    public List<CascaderVO> getAllUdfsToCascader(List<UDF> userDefinedReleaseUdfs) {
         // Get all UDFs of static UDFs and dynamic UDFs
         List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
-        // get all UDFs of dynamic UDFs(user defined UDFs in the task)
-        List<UDF> userDefinedReleaseUdfs =
-                taskService.getReleaseUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
+
         // get all UDFs of UDFManage table
         List<UDF> udfManageDynamic = getUDFFromUdfManage().stream().map(UDFUtils::resourceUdfManageToUDF).collect(Collectors.toList());
 

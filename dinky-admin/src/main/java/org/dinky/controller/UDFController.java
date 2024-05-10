@@ -61,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UDFController {
     private final UDFService udfService;
+    private final TaskService taskService;
 
     /**
      * update udf name by id
@@ -114,7 +115,10 @@ public class UDFController {
     @GetMapping("/getAllUdfs")
     @ApiOperation("Get All UDFs")
     public Result<List<CascaderVO>> getAllUdfsToCascader() {
-        return Result.succeed(udfService.getAllUdfsToCascader());
+        // get all UDFs of dynamic UDFs(user defined UDFs in the task)
+        List<UDF> userDefinedReleaseUdfs =
+                taskService.getReleaseUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
+        return Result.succeed(udfService.getAllUdfsToCascader(userDefinedReleaseUdfs));
     }
 
 
