@@ -27,7 +27,10 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,10 +40,14 @@ import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.config.Dialect;
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.function.data.model.UDF;
 import org.dinky.mapper.UDFManageMapper;
+import org.dinky.service.TaskService;
 import org.dinky.service.UDFService;
 import org.dinky.service.resource.ResourcesService;
+import org.dinky.trans.Operations;
 import org.dinky.utils.UDFUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +60,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> implements UDFService {
     private final ResourcesService resourcesService;
+    private final TaskService taskService;
+
 
     @Override
     public boolean update(UDFManage entity) {
@@ -157,6 +166,32 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
                 .collect(Collectors.toList());
         // 去重 根据 className 去重 || distinct by className
         return collect.stream().collect(Collectors.toMap(UDFManage::getClassName, udf -> udf, (a, b) -> a)).values().stream().collect(Collectors.toList());
+    }
+
+    /**
+     * get all udf to cascader list
+     *
+     * @return List
+     */
+    @Override
+    public List<CascaderVO> getAllUdfsToCascader() {
+        // Get all UDFs of static UDFs and dynamic UDFs
+        List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
+        // get all UDFs of dynamic UDFs(user defined UDFs in the task)
+        List<UDF> userDefinedReleaseUdfs =
+                taskService.getReleaseUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
+        // get all UDFs of UDFManage table
+        List<UDF> udfManageDynamic = getUDFFromUdfManage().stream().map(UDFUtils::resourceUdfManageToUDF).collect(Collectors.toList());
+
+        CascaderVO staticUdfCascaderVO =  new CascaderVO("Flink Static UDF", staticUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
+        CascaderVO userDefinedUdfCascaderVO =  new CascaderVO("User Defined Release UDF", userDefinedReleaseUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
+        CascaderVO udfManageDynamicCascaderVO =  new CascaderVO("From UDF Manage", udfManageDynamic.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
+
+        List<CascaderVO> result = new LinkedList<>();
+        result.add(staticUdfCascaderVO);
+        result.add(udfManageDynamicCascaderVO);
+        result.add(userDefinedUdfCascaderVO);
+        return result;
     }
 
     private static String getSimpleClassName(String className) {

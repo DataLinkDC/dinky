@@ -61,7 +61,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UDFController {
     private final UDFService udfService;
-    private final TaskService taskService;
 
     /**
      * update udf name by id
@@ -107,26 +106,15 @@ public class UDFController {
         return Result.succeed();
     }
 
+    /**
+     * get all udf and convert its to cascader
+     * @return {@link Result} of {@link List} of {@link CascaderVO}
+     */
+
     @GetMapping("/getAllUdfs")
-    @ApiOperation("Get UDFs")
-    public Result<List<CascaderVO>> getAllUdfs() {
-        // Get all UDFs of static UDFs and dynamic UDFs
-        List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
-        // get all UDFs of dynamic UDFs(user defined UDFs in the task)
-        List<UDF> userDefinedReleaseUdfs =
-                taskService.getReleaseUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
-        // get all UDFs of UDFManage table
-        List<UDF> udfManageDynamic = udfService.getUDFFromUdfManage().stream().map(UDFUtils::resourceUdfManageToUDF).collect(Collectors.toList());
-
-        CascaderVO staticUdfCascaderVO =  new CascaderVO("Flink Static UDF", staticUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
-        CascaderVO userDefinedUdfCascaderVO =  new CascaderVO("User Defined Release UDF", userDefinedReleaseUdfs.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
-        CascaderVO udfManageDynamicCascaderVO =  new CascaderVO("From UDF Manage", udfManageDynamic.stream().map(udf -> new CascaderVO(udf.getClassName(),udf.getClassName())).collect(Collectors.toList()));
-
-        List<CascaderVO> result = new ArrayList<>();
-        result.add(staticUdfCascaderVO);
-        result.add(udfManageDynamicCascaderVO);
-        result.add(userDefinedUdfCascaderVO);
-        return Result.succeed(result);
+    @ApiOperation("Get All UDFs")
+    public Result<List<CascaderVO>> getAllUdfsToCascader() {
+        return Result.succeed(udfService.getAllUdfsToCascader());
     }
 
 

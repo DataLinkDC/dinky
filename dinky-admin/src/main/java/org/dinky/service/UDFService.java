@@ -21,6 +21,7 @@ package org.dinky.service;
 
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.UDFManageVO;
 
 import java.util.List;
@@ -61,5 +62,12 @@ public interface UDFService extends IService<UDFManage> {
      * @return List
      */
     List<UDFManage> getUDFFromUdfManage();
+
+
+    /**
+     * get all udf to cascader list
+     * @return List
+     */
+    List<CascaderVO> getAllUdfsToCascader();
 
 }
