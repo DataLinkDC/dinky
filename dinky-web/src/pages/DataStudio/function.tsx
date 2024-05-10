@@ -31,8 +31,12 @@ import {
 } from '@/pages/DataStudio/model';
 import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
 import { DIALECT } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
+import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
+import { l } from '@/utils/intl';
 import { Dispatch } from '@@/plugin-dva/types';
+import { Col, Row } from 'antd';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) =>
@@ -115,6 +119,12 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
       type: STUDIO_MODEL_ASYNC.queryClusterConfigurationData
     });
   },
+  queryUserData: (params: {}) => {
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryUserData,
+      payload: params
+    });
+  },
 
   saveProject: (data: any[]) =>
     dispatch({
@@ -154,6 +164,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryDsConfig: (data: string) =>
     dispatch({
       type: CONFIG_MODEL_ASYNC.queryDsConfig,
+      payload: data
+    }),
+  queryTaskOwnerLockingStrategy: (data: string) =>
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryTaskOwnerLockingStrategy,
       payload: data
     })
 });
@@ -235,4 +250,84 @@ export const getFooterValue = (panes: any, activeKey: string): Partial<FooterTyp
         codeType: currentTab.subType
       }
     : {};
+};
+
+export const getUserName = (id: Number, users: UserBaseInfo.User[] = []) => {
+  let name = '';
+  const user = users.find((user: UserBaseInfo.User) => user.id === id);
+  if (user && user.username) {
+    name = user.username;
+  }
+  return name;
+};
+
+/**
+ * 构建责任人
+ * @param id
+ * @param users
+ */
+export const showFirstLevelOwner = (id: number, users: UserBaseInfo.User[] = []) => {
+  return getUserName(id, users);
+};
+
+/**
+ * 构建维护人
+ * @param ids
+ * @param users
+ */
+export const showSecondLevelOwners = (ids: number[], users: UserBaseInfo.User[] = []) => {
+  return ids
+    ?.map((id: Number) => {
+      return getUserName(id, users);
+    })
+    ?.join();
+};
+
+/**
+ * 构建所有责任人 用于悬浮提示
+ * @param id
+ * @param ids
+ * @param users
+ */
+export const showAllOwners = (id: number, ids: number[], users: UserBaseInfo.User[] = []) => {
+  const firstLevelOwnerLabel = l('pages.datastudio.label.jobInfo.firstLevelOwner');
+  const secondLevelOwnersLabel = l('pages.datastudio.label.jobInfo.secondLevelOwners');
+  const firstLevelOwner = showFirstLevelOwner(id, users);
+  const secondLevelOwners = showSecondLevelOwners(ids, users);
+  return (
+    <Row>
+      {/*理论上责任人必填, 无需判断*/}
+      <Col span={24}>
+        {firstLevelOwnerLabel}：{firstLevelOwner}
+      </Col>
+      {
+        <Col span={24}>
+          {secondLevelOwnersLabel}：
+          {secondLevelOwners && secondLevelOwners.length > 0 ? secondLevelOwners : '-'}
+        </Col>
+      }
+    </Row>
+  );
+};
+
+export const lockTask = (
+  firstLevelOwner: number,
+  secondLevelOwners: number[] = [],
+  currentUser: UserBaseInfo.User,
+  taskOwnerLockingStrategy: TaskOwnerLockingStrategy
+) => {
+  if (currentUser?.superAdminFlag) {
+    return false;
+  }
+  const isOwner = currentUser?.id == firstLevelOwner;
+  switch (taskOwnerLockingStrategy) {
+    case TaskOwnerLockingStrategy.OWNER:
+      return !isOwner;
+    case TaskOwnerLockingStrategy.OWNER_AND_MAINTAINER:
+      return !isOwner && !secondLevelOwners?.includes(currentUser?.id);
+    case TaskOwnerLockingStrategy.ALL:
+      return false;
+    default:
+      return false;
+  }
 };

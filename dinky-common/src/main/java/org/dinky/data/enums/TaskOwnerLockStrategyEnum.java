@@ -17,29 +17,16 @@
  *
  */
 
+package org.dinky.data.enums;
 
+/** Business Operation Types */
+public enum TaskOwnerLockStrategyEnum {
+    /** Only the responsible person is allowed to operate */
+    OWNER,
 
-update dinky_sys_menu
-set "path"='/registration/alert/rule',
-    "component"='./RegCenter/Alert/AlertRule',
-    "perms"='registration:alert:rule',
-    "parent_id"=12
-where "id" = 116;
+    /** Both the responsible person and the maintainer are allowed to operate */
+    OWNER_AND_MAINTAINER,
 
-update dinky_sys_menu
-set "path"='/registration/alert/rule/add',
-    "perms"='registration:alert:rule:add'
-where "id" = 117;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/delete',
-    "perms"='registration:alert:rule:delete'
-where "id" = 118;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/edit',
-    "perms"='registration:alert:rule:edit'
-where "id" = 119;
-
-update dinky_task set "first_level_owner" = "creator";
-
+    /** Everyone is allowed to operate */
+    ALL,
+}

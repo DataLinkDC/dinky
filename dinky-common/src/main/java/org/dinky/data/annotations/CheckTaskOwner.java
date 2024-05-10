@@ -17,29 +17,17 @@
  *
  */
 
+package org.dinky.data.annotations;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-update dinky_sys_menu
-set "path"='/registration/alert/rule',
-    "component"='./RegCenter/Alert/AlertRule',
-    "perms"='registration:alert:rule',
-    "parent_id"=12
-where "id" = 116;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/add',
-    "perms"='registration:alert:rule:add'
-where "id" = 117;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/delete',
-    "perms"='registration:alert:rule:delete'
-where "id" = 118;
-
-update dinky_sys_menu
-set "path"='/registration/alert/rule/edit',
-    "perms"='registration:alert:rule:edit'
-where "id" = 119;
-
-update dinky_task set "first_level_owner" = "creator";
-
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface CheckTaskOwner {
+    Class serviceType();
+}

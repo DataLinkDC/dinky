@@ -34,3 +34,6 @@ export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
 export function putTask(params: any) {
   return putDataJson(API_CONSTANTS.TASK, params);
 }
+export function getUserData(params: any) {
+  return queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, params);
+}
