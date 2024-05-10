@@ -58,5 +58,7 @@ export const TASK_VAR_FILTER = [
   'envName',
   'alertGroupName',
   'variables',
-  'alertGroup'
+  'alertGroup',
+  'firstLevelOwner',
+  'secondLevelOwners'
 ];

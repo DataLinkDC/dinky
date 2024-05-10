@@ -446,6 +446,10 @@ alter table dinky_database
 alter table dinky_history
     modify job_id varchar(255) null comment 'Job ID';
 
+ALTER TABLE dinky_task
+    add  COLUMN `first_level_owner` int DEFAULT NULL comment 'primary responsible person id';
 
+ALTER TABLE dinky_task
+    add  COLUMN `second_level_owners` varchar(128) DEFAULT NULL comment 'list of secondary responsible persons'' ids, separated by commas';
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -56,6 +56,15 @@ public class PermissionConstants {
     public static final String REGISTRATION_ALERT_TEMPLATE_DELETE = "registration:alert:template:delete";
 
     /**
+     * alert 策略
+     */
+    public static final String REGISTRATION_ALERT_RULE_ADD = "registration:alert:rule:add";
+
+    public static final String REGISTRATION_ALERT_RULE_EDIT = "registration:alert:rule:edit";
+
+    public static final String REGISTRATION_ALERT_RULE_DELETE = "registration:alert:rule:delete";
+
+    /**
      * catalog
      * todo: add catalog permission
      */
@@ -231,13 +240,4 @@ public class PermissionConstants {
     public static final String SYSTEM_SETTING_INFO_LOG_LIST = "settings:systemlog:loglist";
 
     public static final String SYSTEM_SETTING_INFO_ROOT_LOG = "settings:systemlog:rootlog";
-
-    /**
-     * alert 策略
-     */
-    public static final String SYSTEM_ALERT_RULE_ADD = "settings:alertrule:add";
-
-    public static final String SYSTEM_ALERT_RULE_EDIT = "settings:alertrule:edit";
-
-    public static final String SYSTEM_ALERT_RULE_DELETE = "settings:alertrule:delete";
 }

@@ -94,6 +94,13 @@ export enum PermissionConstants {
   REGISTRATION_ALERT_TEMPLATE_DELETE = '/registration/alert/template/delete',
 
   /**
+   * registration alert rule
+   */
+  REGISTRATION_ALERT_RULE_ADD = '/registration/alert/rule/add',
+  REGISTRATION_ALERT_RULE_EDIT = '/registration/alert/rule/edit',
+  REGISTRATION_ALERT_RULE_DELETE = '/registration/alert/rule/delete',
+
+  /**
    * cluster config
    */
   REGISTRATION_CLUSTER_CONFIG_ADD = '/registration/cluster/config/add',
@@ -241,12 +248,5 @@ export enum PermissionConstants {
    * system log
    */
   SYSTEM_SETTING_INFO_LOG_LIST = '/settings/systemlog/loglist',
-  SYSTEM_SETTING_INFO_ROOT_LOG = '/settings/systemlog/rootlog',
-
-  /**
-   * alert 策略
-   */
-  SYSTEM_ALERT_RULE_ADD = '/settings/alertrule/add',
-  SYSTEM_ALERT_RULE_EDIT = '/settings/alertrule/edit',
-  SYSTEM_ALERT_RULE_DELETE = '/settings/alertrule/delete'
+  SYSTEM_SETTING_INFO_ROOT_LOG = '/settings/systemlog/rootlog'
 }

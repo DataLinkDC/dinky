@@ -17,21 +17,18 @@
  *
  */
 
- SET NAMES utf8mb4;
- SET FOREIGN_KEY_CHECKS = 0;
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Increase class_name column's length from 50 to 100.
+ALTER TABLE dinky_udf_manage CHANGE COLUMN class_name class_name VARCHAR(100) null DEFAULT null COMMENT 'Complete class name';
+
+ALTER TABLE dinky_task
+    add  COLUMN `first_level_owner` int DEFAULT NULL comment 'primary responsible person id';
+
+ALTER TABLE dinky_task
+    add  COLUMN `second_level_owners` varchar(128) DEFAULT NULL comment 'list of secondary responsible persons ids';
 
 alter table dinky_udf_manage add column `language` VARCHAR(10) DEFAULT null comment 'udf language' after class_name;
-
-UPDATE
-    dinky_udf_manage duml
-        JOIN
-        dinky_resources r ON duml.resources_id = r.id
-SET
-    duml.`language` =
-        CASE
-            WHEN r.file_name LIKE '%.zip' THEN 'python'
-            WHEN r.file_name LIKE '%.jar' THEN 'java'
-            ELSE 'unknown'
-            END;
 
 SET FOREIGN_KEY_CHECKS = 1;

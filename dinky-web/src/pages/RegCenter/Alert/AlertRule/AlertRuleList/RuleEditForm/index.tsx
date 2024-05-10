@@ -18,15 +18,16 @@
  */
 
 import { Authorized } from '@/hooks/useAccess';
+
 import {
   RuleType,
   TriggerType
-} from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
+} from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants';
 import {
   AlertRulesOption,
   buildValueItem,
   getOperatorOptions
-} from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/function';
+} from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/function';
 import { getData } from '@/services/api';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';

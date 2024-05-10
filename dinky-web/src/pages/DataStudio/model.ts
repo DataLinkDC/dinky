@@ -20,7 +20,11 @@
 import { LeftBottomKey, LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
-import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import {
+  getTaskData,
+  getTaskSortTypeData,
+  getUserData
+} from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
   getClusterConfigurationData,
   getEnvData,
@@ -29,8 +33,10 @@ import {
   querySuggestionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { SuggestionInfo } from '@/types/Public/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
+import { TaskInfo } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
@@ -78,6 +84,12 @@ export type EnvType = {
   id?: number;
   name?: string;
   fragment?: boolean;
+};
+
+export type TreeVo = {
+  name?: string;
+  value?: string;
+  children?: TreeVo[];
 };
 
 export type TaskType = {
@@ -138,7 +150,7 @@ export type TaskDataBaseType = {
   envId?: number;
 };
 
-export type TaskDataType = TaskDataBaseType & Record<string, any>;
+export type TaskDataType = TaskDataBaseType & TaskInfo & Record<string, any>;
 
 export type DataStudioParams = {
   taskId: number;
@@ -278,6 +290,15 @@ export type StateType = {
     expandKeys: [];
     selectKey: [];
   };
+  catalogueSortType: {
+    data: TreeVo[];
+  };
+  selectCatalogueSortTypeData: {
+    data: {
+      sortValue: string;
+      sortType: string;
+    };
+  };
   sessionCluster: Cluster.Instance[];
   clusterConfiguration: Cluster.Config[];
   flinkConfigOptions: DefaultOptionType[];
@@ -287,6 +308,7 @@ export type StateType = {
   bottomContainerContent: BottomContainerContent;
   footContainer: FooterType;
   suggestions: SuggestionInfo[];
+  users: UserBaseInfo.User[];
 };
 
 export type ModelType = {
@@ -300,8 +322,10 @@ export type ModelType = {
     queryEnv: Effect;
     queryDatabaseList: Effect;
     queryTaskData: Effect;
+    queryTaskSortTypeData: Effect;
     querySessionData: Effect;
     queryClusterConfigurationData: Effect;
+    queryUserData: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -315,6 +339,7 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    saveCatalogueSortType: Reducer<StateType>;
     updateProjectExpandKey: Reducer<StateType>;
     updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
@@ -337,6 +362,8 @@ export type ModelType = {
     saveFlinkConfigOptions: Reducer<StateType>;
     saveFlinkUdfOptions: Reducer<StateType>;
     updateSuggestions: Reducer<StateType>;
+    saveTaskSortTypeData: Reducer<StateType>;
+    saveUserData: Reducer<StateType>;
   };
 };
 
@@ -375,6 +402,15 @@ const Model: ModelType = {
       expandKeys: [],
       selectKey: []
     },
+    catalogueSortType: {
+      data: []
+    },
+    selectCatalogueSortTypeData: {
+      data: {
+        sortValue: '',
+        sortType: ''
+      }
+    },
     tabs: {
       activeBreadcrumbTitle: '',
       activeKey: '0',
@@ -402,7 +438,8 @@ const Model: ModelType = {
         runningLog: ''
       }
     },
-    suggestions: []
+    suggestions: [],
+    users: []
   },
   effects: {
     *queryProject({ payload }, { call, put }) {
@@ -454,6 +491,13 @@ const Model: ModelType = {
         payload: response
       });
     },
+    *queryTaskSortTypeData({ payload }, { call, put }) {
+      const response: TreeVo[] = yield call(getTaskSortTypeData, payload);
+      yield put({
+        type: 'saveCatalogueSortType',
+        payload: response
+      });
+    },
     *querySessionData({ payload }, { call, put }) {
       const response: Cluster.Instance[] = yield call(getSessionData, payload);
       yield put({
@@ -465,6 +509,13 @@ const Model: ModelType = {
       const response: Cluster.Config[] = yield call(getClusterConfigurationData, payload);
       yield put({
         type: 'saveClusterConfiguration',
+        payload: response
+      });
+    },
+    *queryUserData({ payload }, { call, put }) {
+      const response: Cluster.Config[] = yield call(getUserData, payload);
+      yield put({
+        type: 'saveUserData',
         payload: response
       });
     }
@@ -610,6 +661,18 @@ const Model: ModelType = {
       return {
         ...state,
         project: { ...state.project, data: payload }
+      };
+    },
+    saveCatalogueSortType(state, { payload }) {
+      return {
+        ...state,
+        catalogueSortType: { data: payload }
+      };
+    },
+    saveTaskSortTypeData(state, { payload }) {
+      return {
+        ...state,
+        selectCatalogueSortTypeData: { data: payload }
       };
     },
 
@@ -934,6 +997,15 @@ const Model: ModelType = {
       return {
         ...state,
         suggestions: payload
+      };
+    },
+    saveUserData(state, { payload }) {
+      const users = payload.users.filter((user: UserBaseInfo.User) => {
+        return payload.userIds.includes(user.id);
+      });
+      return {
+        ...state,
+        users: users
       };
     }
   }

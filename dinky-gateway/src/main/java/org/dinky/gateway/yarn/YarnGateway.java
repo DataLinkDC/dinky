@@ -97,7 +97,8 @@ import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
-    private final String tmpConfDir = String.format("%s/tmp/%s", System.getProperty("user.dir"), UUID.randomUUID());
+    private final String TMP_SQL_EXEC_DIR =
+            String.format("%s/tmp/sql-exec/%s", System.getProperty("user.dir"), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 
@@ -143,7 +144,8 @@ public abstract class YarnGateway extends AbstractGateway {
             try {
                 SecurityUtils.install(new SecurityConfiguration(configuration));
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-                logger.info("安全认证结束，用户和认证方式:{}", currentUser.toString());
+                logger.info(
+                        "Security authentication completed, user and authentication method:{}", currentUser.toString());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -256,22 +258,22 @@ public abstract class YarnGateway extends AbstractGateway {
         try {
             initConfig();
         } catch (Exception e) {
-            logger.error("测试 Flink 配置失败：" + e.getMessage());
-            return TestResult.fail("测试 Flink 配置失败：" + e.getMessage());
+            logger.error("Failed to test Flink configuration：" + e.getMessage());
+            return TestResult.fail("Failed to test Flink configuration：" + e.getMessage());
         }
 
         try {
             initYarnClient();
             if (yarnClient.isInState(Service.STATE.STARTED)) {
-                logger.info("配置连接测试成功");
+                logger.info("Configuration connection test successful");
                 return TestResult.success();
             } else {
-                logger.error("该配置无对应 Yarn 集群存在");
-                return TestResult.fail("该配置无对应 Yarn 集群存在");
+                logger.error("This configuration does not have a corresponding Yarn cluster present");
+                return TestResult.fail("This configuration does not have a corresponding Yarn cluster present");
             }
         } catch (Exception e) {
-            logger.error("测试 Yarn 配置失败：" + e.getMessage());
-            return TestResult.fail("测试 Yarn 配置失败：" + e.getMessage());
+            logger.error("Test Yarn configuration failed: {}", e.getMessage());
+            return TestResult.fail("Test Yarn configuration failed:" + e.getMessage());
         }
     }
 
@@ -437,15 +439,16 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     protected File preparSqlFile() {
-        File tempSqlFile =
-                new File(String.format("%s/%s", tmpConfDir, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
+        File tempSqlFile = new File(
+                String.format("%s/%s", TMP_SQL_EXEC_DIR, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
+        logger.info("Temp sql file path : {}", tempSqlFile.getAbsolutePath());
         String sql = config == null ? "" : config.getSql();
         FileUtil.writeString(Optional.ofNullable(sql).orElse(""), tempSqlFile.getAbsolutePath(), "UTF-8");
         return tempSqlFile;
     }
 
     public boolean close() {
-        return FileUtil.del(tmpConfDir);
+        return FileUtil.del(TMP_SQL_EXEC_DIR);
     }
 
     @Override
