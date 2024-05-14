@@ -232,6 +232,4 @@ export default {
 
   'global.operation.unable': '无法操作',
   'global.operation.able': '可以操作',
-  'global.expand.all': '展开所有',
-  'global.collapse.all': '收起所有',
 };

@@ -57,8 +57,10 @@ import { ProCard, ProTable } from '@ant-design/pro-components';
 import { connect, useModel } from '@umijs/max';
 import {Button, Empty, Radio, Space, Table, Tree} from 'antd';
 import Search from 'antd/es/input/Search';
-import { Key, useContext, useEffect, useRef, useState } from 'react';
+import React, { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
+import {ButtonIcon} from "@/components/Icons/CustomIcons";
+import {CircleBtn} from "@/components/CallBackButton/CircleBtn";
 
 const { DirectoryTree } = Tree;
 
@@ -97,6 +99,9 @@ const JobList = (props: connect) => {
         users
       )
     );
+    if(searchValue === '' || searchValue === undefined){
+      setExpandedKeys([]);
+    }
   }, [searchValue, projectData, taskOwnerLockingStrategy]);
 
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
@@ -257,8 +262,20 @@ const JobList = (props: connect) => {
                 )
               }
             />
-            <ArrowsAltOutlined title={l('global.expand.all')} style={{margin: '4px 0px',padding: '0 5px'}} onClick={() => setExpandedKeys(getLeafKeyList(data))} />
-            <ShrinkOutlined title={l('global.collapse.all')} style={{margin: '4px 0px',padding: '0 5px'}} onClick={() =>  setExpandedKeys([])}/>
+           <Button.Group>
+             <CircleBtn
+               title={l('button.expand-all')}
+               icon={<ArrowsAltOutlined />}
+               onClick={() =>  setExpandedKeys(getLeafKeyList(data))}
+             />
+           </Button.Group>
+           <Button.Group>
+             <CircleBtn
+               title={l('button.collapse-all')}
+               icon={<ShrinkOutlined />}
+               onClick={() =>  setExpandedKeys([])}
+             />
+           </Button.Group>
          </div>
 
           {data.length ? (
