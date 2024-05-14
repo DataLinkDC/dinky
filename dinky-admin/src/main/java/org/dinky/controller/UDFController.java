@@ -19,12 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.hutool.core.collection.CollUtil;
-import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 import org.dinky.data.dto.CommonDTO;
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
@@ -34,11 +28,11 @@ import org.dinky.data.vo.UDFManageVO;
 import org.dinky.function.data.model.UDF;
 import org.dinky.service.TaskService;
 import org.dinky.service.UDFService;
+import org.dinky.utils.UDFUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.dinky.trans.Operations;
-import org.dinky.utils.UDFUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -111,7 +106,6 @@ public class UDFController {
      * get all udf and convert its to cascader
      * @return {@link Result} of {@link List} of {@link CascaderVO}
      */
-
     @GetMapping("/getAllUdfs")
     @ApiOperation("Get All UDFs")
     public Result<List<CascaderVO>> getAllUdfsToCascader() {
@@ -120,6 +114,4 @@ public class UDFController {
                 taskService.getReleaseUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
         return Result.succeed(udfService.getAllUdfsToCascader(userDefinedReleaseUdfs));
     }
-
-
 }

@@ -21,22 +21,17 @@ package org.dinky.controller;
 
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
-import org.dinky.data.vo.CascaderVO;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.service.TaskService;
-import org.dinky.trans.Operations;
-import org.dinky.utils.UDFUtils;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -69,9 +64,9 @@ public class JarController {
         List<Task> allUDF = taskService.getReleaseUDF();
         List<UDF> udfCodes = allUDF.stream()
                 .map(task -> UDF.builder()
-                                .code(task.getStatement())
-                                .className(task.getConfigJson().getUdfConfig().getClassName())
-                                .functionLanguage(
+                        .code(task.getStatement())
+                        .className(task.getConfigJson().getUdfConfig().getClassName())
+                        .functionLanguage(
                                 FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                         .build())
                 .collect(Collectors.toList());
@@ -83,6 +78,4 @@ public class JarController {
                 resultMap.get("failed"));
         return Result.succeed(resultMap, msg);
     }
-
-
 }

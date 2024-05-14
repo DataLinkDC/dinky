@@ -19,10 +19,6 @@
 
 package org.dinky.service.impl;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
-import mssql.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -47,7 +43,6 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.DataBase;
-import org.dinky.data.model.Resources;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
@@ -58,7 +53,6 @@ import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.model.home.JobModelOverview;
 import org.dinky.data.model.home.JobTypeOverView;
 import org.dinky.data.model.job.JobInstance;
-import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
@@ -66,7 +60,6 @@ import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
-import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -92,8 +85,8 @@ import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
-import org.dinky.service.resource.ResourcesService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.resource.ResourcesService;
 import org.dinky.service.task.BaseTask;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
@@ -115,6 +108,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -718,11 +712,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getReleaseUDF() {
         return list(new LambdaQueryWrapper<Task>()
-                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq(Task::getEnabled, 1)
-                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
+                        .in(
+                                Task::getDialect,
+                                Dialect.JAVA.getValue(),
+                                Dialect.SCALA.getValue(),
+                                Dialect.PYTHON.getValue())
+                        .eq(Task::getEnabled, 1)
+                        .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
                 .stream()
-                .filter(task -> Asserts.isNotNullString(task.getConfigJson().getUdfConfig().getClassName()))
+                .filter(task -> Asserts.isNotNullString(
+                        task.getConfigJson().getUdfConfig().getClassName()))
                 .collect(Collectors.toList());
     }
 

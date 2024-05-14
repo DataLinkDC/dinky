@@ -55,7 +55,7 @@ public class CascaderVO implements Serializable {
         this.value = label;
     }
 
-    public CascaderVO(String label , String value) {
+    public CascaderVO(String label, String value) {
         this.label = label;
         this.value = value;
     }

@@ -48,11 +48,12 @@ public class UDFUtils extends UDFUtil {
             return UDF.builder()
                     .name(udfManage.getName())
                     .className(udfManage.getClassName())
-                    .functionLanguage(FunctionLanguage.valueOf(udfManage.getLanguage().toUpperCase()))
+                    .functionLanguage(
+                            FunctionLanguage.valueOf(udfManage.getLanguage().toUpperCase()))
                     .build();
         } else {
-            throw new BusException("udf `class` config is null, Please check if the resource file to which this udf belongs exists");
+            throw new BusException(
+                    "udf `class` config is null, Please check if the resource file to which this udf belongs exists");
         }
     }
-
 }
