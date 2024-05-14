@@ -17,6 +17,7 @@
  *
  */
 
+import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
 import {
@@ -58,10 +59,8 @@ import { ProCard, ProTable } from '@ant-design/pro-components';
 import { connect, useModel } from '@umijs/max';
 import { Button, Empty, Radio, Table, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
-import React, { Key, useContext, useEffect, useRef, useState } from 'react';
+import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
-import {ButtonIcon} from "@/components/Icons/CustomIcons";
-import {CircleBtn} from "@/components/CallBackButton/CircleBtn";
 
 const { DirectoryTree } = Tree;
 
@@ -106,7 +105,7 @@ const JobList = (props: connect) => {
         users
       )
     );
-    if(searchValue === '' || searchValue === undefined){
+    if (searchValue === '' || searchValue === undefined) {
       setExpandedKeys([]);
     }
   }, [searchValue, projectData, taskOwnerLockingStrategy]);
@@ -269,21 +268,21 @@ const JobList = (props: connect) => {
                 )
               }
             />
-           <Button.Group>
-             <CircleBtn
-               title={l('button.expand-all')}
-               icon={<ArrowsAltOutlined />}
-               onClick={() =>  setExpandedKeys(getLeafKeyList(data))}
-             />
-           </Button.Group>
-           <Button.Group>
-             <CircleBtn
-               title={l('button.collapse-all')}
-               icon={<ShrinkOutlined />}
-               onClick={() =>  setExpandedKeys([])}
-             />
-           </Button.Group>
-         </div>
+            <Button.Group>
+              <CircleBtn
+                title={l('button.expand-all')}
+                icon={<ArrowsAltOutlined />}
+                onClick={() => setExpandedKeys(getLeafKeyList(data))}
+              />
+            </Button.Group>
+            <Button.Group>
+              <CircleBtn
+                title={l('button.collapse-all')}
+                icon={<ShrinkOutlined />}
+                onClick={() => setExpandedKeys([])}
+              />
+            </Button.Group>
+          </div>
 
           {data.length ? (
             <DirectoryTree
