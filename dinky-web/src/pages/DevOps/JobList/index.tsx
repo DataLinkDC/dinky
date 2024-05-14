@@ -26,10 +26,9 @@ import {
 } from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
-  generateList,
-  getParentKey
+  generateList, getLeafKeyList,
+  searchInTree
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { StateType } from '@/pages/DataStudio/model';
 import { DevopContext } from '@/pages/DevOps';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
@@ -45,11 +44,18 @@ import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
-import { ClearOutlined, ClockCircleTwoTone, EyeTwoTone, RedoOutlined } from '@ant-design/icons';
+import {
+  ArrowsAltOutlined,
+  ClearOutlined,
+  ClockCircleTwoTone,
+  EyeTwoTone,
+  RedoOutlined,
+  ShrinkOutlined
+} from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProCard, ProTable } from '@ant-design/pro-components';
 import { connect, useModel } from '@umijs/max';
-import { Button, Empty, Radio, Table, Tree } from 'antd';
+import {Button, Empty, Radio, Space, Table, Tree} from 'antd';
 import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
@@ -57,7 +63,7 @@ import { history } from 'umi';
 const { DirectoryTree } = Tree;
 
 const JobList = (props: connect) => {
-  const { users, queryUserData, taskOwnerLockingStrategy, queryTaskOwnerLockingStrategy } = props;
+  const { users, queryUserData, taskOwnerLockingStrategy, queryTaskOwnerLockingStrategy,projectData } = props;
   const refObject = useRef<HTMLDivElement>(null);
   const tableRef = useRef<ActionType>();
   const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
@@ -65,11 +71,33 @@ const JobList = (props: connect) => {
   const [taskFilter, setTaskFilter] = useState<string | undefined>();
   const [taskId, setTaskId] = useState<number>();
   const [searchValue, setSearchValueValue] = useState('');
-  const [data, setData] = useState<any[]>([]);
-  const [autoExpandParent, setAutoExpandParent] = useState(true);
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [selectedKey, setSelectedKey] = useState<Key[]>([]);
   const { initialState, setInitialState } = useModel('@@initialState');
+
+  const [data, setData] = useState<any[]>(
+    buildProjectTree(
+      projectData,
+      searchValue,
+      [],
+      initialState?.currentUser?.user,
+      taskOwnerLockingStrategy,
+      users
+    )
+  );
+
+  useEffect(() => {
+    setData(
+      buildProjectTree(
+        projectData,
+        searchValue,
+        [],
+        initialState?.currentUser?.user,
+        taskOwnerLockingStrategy,
+        users
+      )
+    );
+  }, [searchValue, projectData, taskOwnerLockingStrategy]);
 
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
@@ -153,25 +181,6 @@ const JobList = (props: connect) => {
     }
   }, [statusFilter]);
 
-  /**
-   * 获取任务数据 | query task data
-   */
-  useEffect(() => {
-    getTaskData({}).then((res) => {
-      if (res) {
-        setData(
-          buildProjectTree(
-            res,
-            searchValue,
-            [],
-            initialState?.currentUser?.user,
-            taskOwnerLockingStrategy,
-            users
-          )
-        );
-      }
-    });
-  }, [searchValue, taskOwnerLockingStrategy]);
 
   useEffect(() => {
     setInterval(() => tableRef.current?.reload(false), 5 * 1000);
@@ -186,18 +195,9 @@ const JobList = (props: connect) => {
       return;
     }
     value = String(value).trim();
-    const expandList: any[] = generateList(data, []);
-    let expandedKeys: any = expandList
-      .map((item: any) => {
-        if (item?.name.indexOf(value) > -1) {
-          return getParentKey(item.key, data);
-        }
-        return null;
-      })
-      .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
+    const expandedKeys: string[] = searchInTree(generateList(data, []),  data,value , 'contain');
     setExpandedKeys(expandedKeys);
     setSearchValueValue(value);
-    setAutoExpandParent(true);
   };
 
   function onNodeClick(info: any) {
@@ -238,24 +238,28 @@ const JobList = (props: connect) => {
           size={200}
           split={'horizontal'}
         >
-          <Search
-            style={{ margin: '8px 0px', padding: '0 10px' }}
-            placeholder={l('global.search.text')}
-            onChange={onChangeSearch}
-            allowClear={true}
-            addonAfter={
-              // 如果选中的 key 长度大于 0 则显示清除按钮 | if the length of the selected key is greater than 0, the clear button is displayed
-              selectedKey.length > 0 && (
-                <Button
-                  title={l('devops.joblist.clear.filtertips')}
-                  icon={<ClearOutlined />}
-                  onClick={() => resetValue()}
-                >
-                  {l('devops.joblist.clear.filter')}
-                </Button>
-              )
-            }
-          />
+         <div style={{display: 'flex', justifyContent: 'space-evenly' , alignItems: 'center'}}>
+            <Search
+              style={{ margin: '4px 0px', padding: '0 5px',width: '80%' }}
+              placeholder={l('global.search.text')}
+              onChange={onChangeSearch}
+              allowClear={true} autoFocus
+              addonAfter={
+                // 如果选中的 key 长度大于 0 则显示清除按钮 | if the length of the selected key is greater than 0, the clear button is displayed
+                selectedKey.length > 0 && (
+                  <Button
+                    title={l('devops.joblist.clear.filtertips')}
+                    icon={<ClearOutlined />}
+                    onClick={() => resetValue()}
+                  >
+                    {l('devops.joblist.clear.filter')}
+                  </Button>
+                )
+              }
+            />
+            <ArrowsAltOutlined title={l('global.expand.all')} style={{margin: '4px 0px',padding: '0 5px'}} onClick={() => setExpandedKeys(getLeafKeyList(data))} />
+            <ShrinkOutlined title={l('global.collapse.all')} style={{margin: '4px 0px',padding: '0 5px'}} onClick={() =>  setExpandedKeys([])}/>
+         </div>
 
           {data.length ? (
             <DirectoryTree
@@ -268,7 +272,6 @@ const JobList = (props: connect) => {
               selectedKeys={selectedKey}
               onExpand={(expandedKeys: Key[]) => setExpandedKeys(expandedKeys)}
               treeData={data}
-              autoExpandParent={autoExpandParent}
             />
           ) : (
             <Empty className={'code-content-empty'} />
@@ -353,7 +356,9 @@ const JobList = (props: connect) => {
 export default connect(
   ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     users: Studio.users,
-    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
+    projectData: Studio.project.data,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
+
   }),
   mapDispatchToProps
 )(JobList);

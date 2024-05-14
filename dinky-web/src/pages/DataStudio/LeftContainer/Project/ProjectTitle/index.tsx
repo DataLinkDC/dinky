@@ -28,6 +28,7 @@ import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
 import { Space } from 'antd';
 import React, { useState } from 'react';
+import {LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {
@@ -68,7 +69,7 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
     );
   };
 
-  const currentTabName = 'menu.datastudio.project';
+  const currentTabName = LeftMenuKey.PROJECT_KEY;
   const btn = BtnRoute[currentTabName];
   btn[0].onClick = () => handleCreateClick();
   btnDispatch({

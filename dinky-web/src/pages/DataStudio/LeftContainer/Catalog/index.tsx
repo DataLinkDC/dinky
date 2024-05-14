@@ -39,6 +39,7 @@ import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import React, { useEffect, useState } from 'react';
 import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
+import {LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 const Catalog: React.FC = (props: connect) => {
   const { tabs } = props;
@@ -74,7 +75,7 @@ const Catalog: React.FC = (props: connect) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [columnData, setColumnData] = useState([]);
   const btnDispatch = useTasksDispatch();
-  const currentTabName = 'menu.datastudio.catalog';
+  const currentTabName = LeftMenuKey.CATALOG_KEY;
   const btnEvent = [...BtnRoute[currentTabName]];
 
   btnEvent[0].onClick = () => {

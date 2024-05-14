@@ -31,6 +31,7 @@ import { Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { StateType, STUDIO_MODEL, TabsPageType } from '../../model';
 import { clearDataSourceTable, getDataSourceList, showDataSourceTable } from './service';
+import {LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 const DataSource = (props: any) => {
   const {
@@ -88,7 +89,7 @@ const DataSource = (props: any) => {
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
-  const currentTabName = 'menu.datastudio.datasource';
+  const currentTabName = LeftMenuKey.DATASOURCE_KEY;
 
   const btnEvent = [...BtnRoute[currentTabName]];
 
