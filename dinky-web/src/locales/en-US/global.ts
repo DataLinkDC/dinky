@@ -238,5 +238,5 @@ export default {
   'global.operation.able': 'Can operate',
 
   'global.expand.all': 'Expand All',
-  'global.collapse.all': 'Collapse All',
+  'global.collapse.all': 'Collapse All'
 };

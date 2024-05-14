@@ -17,20 +17,19 @@
  *
  */
 
-import {LeftBottomKey, RightMenuKey} from '@/pages/DataStudio/data.d';
-import {lockTask, showAllOwners} from '@/pages/DataStudio/function';
-import {isSql} from '@/pages/DataStudio/HeaderContainer/function';
-import {getTabIcon} from '@/pages/DataStudio/MiddleContainer/function';
-import {DIALECT} from '@/services/constants';
-import {UserBaseInfo} from '@/types/AuthCenter/data.d';
-import {TaskOwnerLockingStrategy} from '@/types/SettingCenter/data.d';
-import {Catalogue} from '@/types/Studio/data.d';
-import {searchTreeNode} from '@/utils/function';
-import {l} from '@/utils/intl';
-import {LockTwoTone, UnlockTwoTone} from '@ant-design/icons';
-import {Badge, Space, Tooltip} from 'antd';
-import {Key} from 'react';
-
+import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
+import { lockTask, showAllOwners } from '@/pages/DataStudio/function';
+import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
+import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
+import { DIALECT } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
+import { Catalogue } from '@/types/Studio/data.d';
+import { searchTreeNode } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
+import { Badge, Space, Tooltip } from 'antd';
+import { Key } from 'react';
 
 /**
  * generate list of tree node from data
@@ -40,8 +39,8 @@ import {Key} from 'react';
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
     const node = element;
-    const {name, id, parentId, level} = node;
-    list.push({name, id, key: id, title: name, parentId, level});
+    const { name, id, parentId, level } = node;
+    list.push({ name, id, key: id, title: name, parentId, level });
     if (node.children) {
       generateList(node.children, list);
     }
@@ -69,15 +68,16 @@ export const getParentKey = (key: number | string, tree: any): any => {
   return parentKey;
 };
 
-
 /**
  * Obtain all parent node IDs based on a key
  * Note: Note that the data structure returned through the native backend is relatively simple, so here we directly use recursive object traversal to obtain all parent node IDs
  * @param key
  * @param data
  */
-export const getAllParentIdsByOneKey = (key: number | string, data: any[] = []): (number | string)[] => {
-
+export const getAllParentIdsByOneKey = (
+  key: number | string,
+  data: any[] = []
+): (number | string)[] => {
   let result: (number | string)[] = [];
   data.forEach((item) => {
     if (item.id === key) {
@@ -89,10 +89,9 @@ export const getAllParentIdsByOneKey = (key: number | string, data: any[] = []):
       }
     }
   });
-// Invert the result array so that the parent nodes are in order from the root to the direct parent node
+  // Invert the result array so that the parent nodes are in order from the root to the direct parent node
   return result.reverse();
 };
-
 
 /**
  * search in tree node
@@ -101,7 +100,12 @@ export const getAllParentIdsByOneKey = (key: number | string, data: any[] = []):
  * @param searchValue
  * @param assetType search type 'equal' or 'contain'
  */
-export function searchInTree(tree: any[] = [], data: any[], searchValue: string | number, assetType: 'equal' | 'contain'): string[] {
+export function searchInTree(
+  tree: any[] = [],
+  data: any[],
+  searchValue: string | number,
+  assetType: 'equal' | 'contain'
+): string[] {
   const foundKeys: string[] = [];
 
   /**
@@ -138,9 +142,8 @@ export function searchInTree(tree: any[] = [], data: any[], searchValue: string 
     dfs(node, [node.key]);
   }
   // Remove duplicate keys from the result
-  return Array.from(new Set(foundKeys))
+  return Array.from(new Set(foundKeys));
 }
-
 
 /**
  * get leaf key list from tree
@@ -233,90 +236,90 @@ export const buildProjectTree = (
 ): any =>
   data
     ? data.map((item: Catalogue) => {
-      const currentPath = path ? [...path, item.name] : [item.name];
-      // 构造生命周期的值
-      const stepValue = buildStepValue(item.task?.step);
-      // 渲染生命周期的 标记点
-      const renderPreFixState = item.isLeaf && showBadge(item.type) && (
-        <>
-          <Badge
-            title={stepValue.title}
-            color={stepValue.color}
-            // status={(stepValue.status as PresetStatusColorType) ?? 'default'}
-          />
-        </>
-      );
-
-      // 总渲染 title
-      const renderTitle = (
-        <>
-          <Tooltip
-            title={
-              item?.isLeaf
-                ? showAllOwners(item?.task?.firstLevelOwner, item?.task?.secondLevelOwners, users)
-                : ''
-            }
-          >
-            <Space align={'baseline'} size={2}>
-              {searchTreeNode(item.name, searchValue)}
-            </Space>
-          </Tooltip>
-        </>
-      );
-
-      // 渲染后缀图标
-      const renderSuffixIcon = (
-        <>
-          {lockTask(
-            item?.task?.firstLevelOwner,
-            item?.task?.secondLevelOwners,
-            currentUser,
-            taskOwnerLockingStrategy
-          ) ? (
-            <LockTwoTone title={l('global.operation.unable')} twoToneColor={'red'}/>
-          ) : (
-            <UnlockTwoTone title={l('global.operation.able')} twoToneColor='gray'/>
-          )}
-        </>
-      );
-
-      return {
-        isLeaf: item.isLeaf,
-        name: item.name,
-        parentId: item.parentId,
-        label: searchTreeNode(item.name, searchValue),
-        icon: item.type && item.children.length === 0 && (
-          <Space size={'small'}>
-            {renderPreFixState}
-            {getTabIcon(item.type, 20)}
-          </Space>
-        ),
-        value: item.id,
-        path: currentPath,
-        type: item.type,
-        title: (
+        const currentPath = path ? [...path, item.name] : [item.name];
+        // 构造生命周期的值
+        const stepValue = buildStepValue(item.task?.step);
+        // 渲染生命周期的 标记点
+        const renderPreFixState = item.isLeaf && showBadge(item.type) && (
           <>
-            {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>}
-            <Space style={{marginLeft: item.isLeaf ? 4 : 0}} align={'baseline'} size={'small'}>
-              {renderTitle}
-              {item.isLeaf && renderSuffixIcon}
-            </Space>
+            <Badge
+              title={stepValue.title}
+              color={stepValue.color}
+              // status={(stepValue.status as PresetStatusColorType) ?? 'default'}
+            />
           </>
-        ),
-        fullInfo: item,
-        key: item.id,
-        id: item.id,
-        taskId: item.taskId,
-        children: buildProjectTree(
-          item.children,
-          searchValue,
-          currentPath,
-          currentUser,
-          taskOwnerLockingStrategy,
-          users
-        )
-      };
-    })
+        );
+
+        // 总渲染 title
+        const renderTitle = (
+          <>
+            <Tooltip
+              title={
+                item?.isLeaf
+                  ? showAllOwners(item?.task?.firstLevelOwner, item?.task?.secondLevelOwners, users)
+                  : ''
+              }
+            >
+              <Space align={'baseline'} size={2}>
+                {searchTreeNode(item.name, searchValue)}
+              </Space>
+            </Tooltip>
+          </>
+        );
+
+        // 渲染后缀图标
+        const renderSuffixIcon = (
+          <>
+            {lockTask(
+              item?.task?.firstLevelOwner,
+              item?.task?.secondLevelOwners,
+              currentUser,
+              taskOwnerLockingStrategy
+            ) ? (
+              <LockTwoTone title={l('global.operation.unable')} twoToneColor={'red'} />
+            ) : (
+              <UnlockTwoTone title={l('global.operation.able')} twoToneColor='gray' />
+            )}
+          </>
+        );
+
+        return {
+          isLeaf: item.isLeaf,
+          name: item.name,
+          parentId: item.parentId,
+          label: searchTreeNode(item.name, searchValue),
+          icon: item.type && item.children.length === 0 && (
+            <Space size={'small'}>
+              {renderPreFixState}
+              {getTabIcon(item.type, 20)}
+            </Space>
+          ),
+          value: item.id,
+          path: currentPath,
+          type: item.type,
+          title: (
+            <>
+              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>}
+              <Space style={{ marginLeft: item.isLeaf ? 4 : 0 }} align={'baseline'} size={'small'}>
+                {renderTitle}
+                {item.isLeaf && renderSuffixIcon}
+              </Space>
+            </>
+          ),
+          fullInfo: item,
+          key: item.id,
+          id: item.id,
+          taskId: item.taskId,
+          children: buildProjectTree(
+            item.children,
+            searchValue,
+            currentPath,
+            currentUser,
+            taskOwnerLockingStrategy,
+            users
+          )
+        };
+      })
     : [];
 
 export const isUDF = (jobType: string): boolean => {
@@ -335,8 +338,8 @@ export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
   return isFlinkJob(jobType)
     ? RightMenuKey.JOB_CONFIG_KEY
     : isSql(jobType)
-      ? RightMenuKey.PREVIEW_CONFIG_KEY
-      : RightMenuKey.JOB_INFO_KEY;
+    ? RightMenuKey.PREVIEW_CONFIG_KEY
+    : RightMenuKey.JOB_INFO_KEY;
 }
 
 export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {

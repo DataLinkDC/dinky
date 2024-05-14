@@ -17,6 +17,7 @@
  *
  */
 
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
@@ -39,7 +40,6 @@ import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import React, { useEffect, useState } from 'react';
 import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
-import {LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 const Catalog: React.FC = (props: connect) => {
   const { tabs } = props;
