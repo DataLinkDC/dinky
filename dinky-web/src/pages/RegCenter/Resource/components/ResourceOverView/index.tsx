@@ -49,7 +49,7 @@ import { WarningOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
 import { useAsyncEffect } from 'ahooks';
-import { Button, Result } from 'antd';
+import {Button, Modal, Result} from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
@@ -244,8 +244,15 @@ const ResourceOverView: React.FC<connect> = (props) => {
   };
 
   const handleSync = async () => {
-    await handleGetOption(API_CONSTANTS.RESOURCE_SYNC_DATA, l('rc.resource.sync'), {});
-    await refreshTree();
+    Modal.confirm({
+      title: l('rc.resource.sync'),
+      content: l('rc.resource.sync.confirm'),
+      onOk: async () => {
+        await handleGetOption(API_CONSTANTS.RESOURCE_SYNC_DATA, l('rc.resource.sync'), {});
+        await refreshTree();
+      }
+    });
+
   };
 
   /**

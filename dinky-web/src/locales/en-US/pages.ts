@@ -1009,6 +1009,7 @@ export default {
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
+  'rc.resource.sync.confirm': 'Please note that this operation will delete all records in the database and will affect running jobs as well as corresponding resource files referenced in UDF management, resulting in job failure. And UDF cannot be used in UDF management Please operate with caution!! Please confirm if you want to continue?',
   'rc.resource.copy_to_add_custom_jar': 'Copy as ADD CUSTOMJAR syntax',
   'rc.resource.copy_to_add_jar': 'Copy as ADD JAR syntax',
   'rc.resource.copy_to_add_file': 'Copy as ADD FILE syntax',

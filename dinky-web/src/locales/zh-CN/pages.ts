@@ -965,6 +965,7 @@ export default {
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
+  'rc.resource.sync.confirm': '请注意: 该操作会删除数据库内的所有记录,且会关系到运行中的作业,以及UDF管理中引用的对应资源文件.从而导致作业运行失败。以及在 UDF管理中的 UDF 无法被使用. 请谨慎操作!! 请确认是否继续? ',
   'rc.resource.copy_to_add_custom_jar': '复制为 ADD CUSTOMJAR 语法',
   'rc.resource.copy_to_add_jar': '复制为 ADD JAR 语法',
   'rc.resource.copy_to_add_file': '复制为 ADD FILE 语法',
