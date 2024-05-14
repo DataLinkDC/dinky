@@ -18,6 +18,7 @@
  */
 
 import Title from '@/components/Front/Title';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { StateType, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
@@ -28,7 +29,6 @@ import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
 import { Space } from 'antd';
 import React, { useState } from 'react';
-import {LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {

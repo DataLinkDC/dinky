@@ -17,29 +17,36 @@
  *
  */
 
-import {getCurrentTab} from '@/pages/DataStudio/function';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
+import { getCurrentTab } from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
-  generateList, getLeafKeyList,
+  generateList,
+  getLeafKeyList,
   searchInTree
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import {StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC, TabsItemType, TreeVo} from '@/pages/DataStudio/model';
-import {SysConfigStateType} from '@/pages/SettingCenter/GlobalSetting/model';
-import {l} from '@/utils/intl';
-import {connect} from '@@/exports';
-import {SortAscendingOutlined} from '@ant-design/icons';
-import {Key} from '@ant-design/pro-components';
-import {useModel} from '@umijs/max';
-import type {MenuProps} from 'antd';
-import {Button, Dropdown, Empty, Space, Tree} from 'antd';
+import {
+  StateType,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC,
+  TabsItemType,
+  TreeVo
+} from '@/pages/DataStudio/model';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { l } from '@/utils/intl';
+import { connect } from '@@/exports';
+import { SortAscendingOutlined } from '@ant-design/icons';
+import { Key } from '@ant-design/pro-components';
+import { useModel } from '@umijs/max';
+import type { MenuProps } from 'antd';
+import { Button, Dropdown, Empty, Space, Tree } from 'antd';
+import type { ButtonType } from 'antd/es/button/buttonHelpers';
 import Search from 'antd/es/input/Search';
-import {ItemType} from 'rc-menu/es/interface';
-import React, {useEffect, useState} from 'react';
-import {BtnRoute, useTasksDispatch} from '../../BtnContext';
-import {LeftMenuKey} from "@/pages/DataStudio/data.d";
-import type {ButtonType} from "antd/es/button/buttonHelpers";
+import { ItemType } from 'rc-menu/es/interface';
+import React, { useEffect, useState } from 'react';
+import { BtnRoute, useTasksDispatch } from '../../BtnContext';
 
-const {DirectoryTree} = Tree;
+const { DirectoryTree } = Tree;
 
 /**
  * props
@@ -54,9 +61,9 @@ type TreeProps = {
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
   const {
-    project: {data: projectData, expandKeys, selectKey},
-    catalogueSortType: {data: catalogueSortTypeData},
-    selectCatalogueSortTypeData: {data: selectCatalogueSortTypeData},
+    project: { data: projectData, expandKeys, selectKey },
+    catalogueSortType: { data: catalogueSortTypeData },
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
     onNodeClick,
     style,
     height,
@@ -69,7 +76,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     users
   } = props;
 
-  const {initialState, setInitialState} = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel('@@initialState');
   const [searchValue, setSearchValueValue] = useState('');
   const [sortState, setSortState] = useState<{
     sortIconType: ButtonType;
@@ -105,7 +112,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   }, [searchValue, projectData, taskOwnerLockingStrategy]);
 
   useEffect(() => {
-    dispatch({type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData});
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
   }, [selectCatalogueSortTypeData]);
 
   function buildSortTreeOptions(trees: TreeVo[] = []): ItemType[] {
@@ -128,7 +135,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     ) {
       const initialSortValue =
         selectCatalogueSortTypeData.sortValue + '_' + selectCatalogueSortTypeData.sortType;
-      setSortState(prevState => ({
+      setSortState((prevState) => ({
         ...prevState,
         selectedSortValue: [initialSortValue]
       }));
@@ -138,21 +145,20 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   // when sorted, change the icon display
   useEffect(() => {
     if (selectCatalogueSortTypeData.sortValue && selectCatalogueSortTypeData.sortType) {
-      setSortState(prevState => ({
+      setSortState((prevState) => ({
         ...prevState,
         sortIconType: 'link'
       }));
     } else {
-      setSortState(prevState => ({
+      setSortState((prevState) => ({
         ...prevState,
         sortIconType: 'text'
       }));
     }
   }, [selectCatalogueSortTypeData]);
 
-
   const onChangeSearch = (e: any) => {
-    let {value} = e.target;
+    let { value } = e.target;
     if (!value) {
       dispatch({
         type: STUDIO_MODEL.updateProjectExpandKey,
@@ -161,7 +167,12 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
       setSearchValueValue(value);
       return;
     }
-    const expandedKeys: string[] = searchInTree(generateList(data, []),  data,String(value).trim() , 'contain');
+    const expandedKeys: string[] = searchInTree(
+      generateList(data, []),
+      data,
+      String(value).trim(),
+      'contain'
+    );
     dispatch({
       type: STUDIO_MODEL.updateProjectExpandKey,
       payload: expandedKeys
@@ -181,7 +192,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   const positionKey = (panes: TabsItemType[], activeKey: string) => {
     const treeKey = getCurrentTab(panes, activeKey)?.treeKey;
     if (treeKey) {
-      const expandedKeys: string[] = searchInTree(generateList(data, []),  data,treeKey , 'equal');
+      const expandedKeys: string[] = searchInTree(generateList(data, []), data, treeKey, 'equal');
       dispatch({
         type: STUDIO_MODEL.updateProjectExpandKey,
         payload: expandedKeys
@@ -212,10 +223,10 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
       sortField == selectCatalogueSortTypeData.sortValue &&
       sortType == selectCatalogueSortTypeData.sortType
     ) {
-      setSortState(prevState => ({
+      setSortState((prevState) => ({
         ...prevState,
-        selectedSortValue: [],
-      }))
+        selectedSortValue: []
+      }));
       dispatch({
         type: STUDIO_MODEL.saveTaskSortTypeData,
         payload: {
@@ -224,10 +235,10 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         }
       });
     } else {
-      setSortState(prevState => ({
+      setSortState((prevState) => ({
         ...prevState,
-        selectedSortValue: [selectSortValue],
-      }))
+        selectedSortValue: [selectSortValue]
+      }));
       dispatch({
         type: STUDIO_MODEL.saveTaskSortTypeData,
         payload: {
@@ -242,7 +253,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     <>
       <Space direction='horizontal' size={8}>
         <Search
-          style={{margin: '8px 0px' , width: leftContainerWidth - 60}}
+          style={{ margin: '8px 0px', width: leftContainerWidth - 60 }}
           placeholder={l('global.search.text')}
           onChange={onChangeSearch}
           allowClear={true}
@@ -257,13 +268,13 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           }}
           placement='bottomLeft'
         >
-          <Button icon={<SortAscendingOutlined/>} type={sortState.sortIconType}></Button>
+          <Button icon={<SortAscendingOutlined />} type={sortState.sortIconType}></Button>
         </Dropdown>
       </Space>
 
       {data.length ? (
         <DirectoryTree
-          style={{...style, height: height - 40 - 16, overflowY: 'auto'}}
+          style={{ ...style, height: height - 40 - 16, overflowY: 'auto' }}
           className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={onRightClick}
@@ -283,7 +294,8 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   );
 };
 
-export default connect(({Studio, SysConfig}: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+export default connect(
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     height: Studio.toolContentHeight,
     leftContainerWidth: Studio.leftContainer.width,
     project: Studio.project,

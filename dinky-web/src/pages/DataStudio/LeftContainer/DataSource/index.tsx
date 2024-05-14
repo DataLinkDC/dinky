@@ -18,6 +18,7 @@
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
@@ -31,7 +32,6 @@ import { Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { StateType, STUDIO_MODEL, TabsPageType } from '../../model';
 import { clearDataSourceTable, getDataSourceList, showDataSourceTable } from './service';
-import {LeftMenuKey} from "@/pages/DataStudio/data.d";
 
 const DataSource = (props: any) => {
   const {
