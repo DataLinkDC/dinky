@@ -228,5 +228,8 @@ export default {
   'global.job.status.reconciling': '调节中',
   'global.job.status.reconnecting': '重连中',
   'global.job.status.unknown': '未知',
-  'global.job.status.failed-tip': '未成功提交到集群,无法获取任务名称/作业ID'
+  'global.job.status.failed-tip': '未成功提交到集群,无法获取任务名称/作业ID',
+
+  'global.operation.unable': '无法操作',
+  'global.operation.able': '可以操作'
 };

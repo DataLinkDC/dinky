@@ -31,6 +31,11 @@ import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Space, Tooltip } from 'antd';
 import { Key } from 'react';
 
+/**
+ * generate list of tree node from data
+ * @param data
+ * @param list
+ */
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
     const node = element;
@@ -43,6 +48,11 @@ export const generateList = (data: any, list: any[]) => {
   return list;
 };
 
+/**
+ * get parent key of tree node by key
+ * @param key
+ * @param tree
+ */
 export const getParentKey = (key: number | string, tree: any): any => {
   let parentKey;
   for (const element of tree) {
@@ -58,6 +68,87 @@ export const getParentKey = (key: number | string, tree: any): any => {
   return parentKey;
 };
 
+/**
+ * Obtain all parent node IDs based on a key
+ * Note: Note that the data structure returned through the native backend is relatively simple, so here we directly use recursive object traversal to obtain all parent node IDs
+ * @param key
+ * @param data
+ */
+export const getAllParentIdsByOneKey = (
+  key: number | string,
+  data: any[] = []
+): (number | string)[] => {
+  let result: (number | string)[] = [];
+  data.forEach((item) => {
+    if (item.id === key) {
+      result.push(item.id);
+    } else if (item.children) {
+      const parentIds = getAllParentIdsByOneKey(key, item.children);
+      if (parentIds.length > 0) {
+        result = result.concat(parentIds, item.id);
+      }
+    }
+  });
+  // Invert the result array so that the parent nodes are in order from the root to the direct parent node
+  return result.reverse();
+};
+
+/**
+ * search in tree node
+ * @param tree data
+ * @param data
+ * @param searchValue
+ * @param assetType search type 'equal' or 'contain'
+ */
+export function searchInTree(
+  tree: any[] = [],
+  data: any[],
+  searchValue: string | number,
+  assetType: 'equal' | 'contain'
+): string[] {
+  const foundKeys: string[] = [];
+
+  /**
+   * Depth-first search algorithm to find the key of the node that meets the search criteria
+   * @param node tree node
+   * @param path path of the node
+   */
+  function dfs(node: any, path: string[]) {
+    if (assetType === 'equal') {
+      if (node?.key && node.key === searchValue) {
+        const allParentIdsByOneKey = getAllParentIdsByOneKey(node.key, data);
+        allParentIdsByOneKey.forEach((key) => {
+          foundKeys.push(key as string);
+        });
+      }
+    }
+    if (assetType === 'contain') {
+      if (node?.name?.indexOf(searchValue) > -1) {
+        const allParentIdsByOneKey = getAllParentIdsByOneKey(node.key, data);
+        allParentIdsByOneKey.forEach((key) => {
+          foundKeys.push(key as string);
+        });
+      }
+    }
+    if (node.children) {
+      for (const child of node.children) {
+        dfs(child, [...path, node.key]);
+      }
+    }
+  }
+
+  // Traverse all nodes in the tree to find the key of the node that meets the search criteria
+  for (const node of tree) {
+    dfs(node, [node.key]);
+  }
+  // Remove duplicate keys from the result
+  return Array.from(new Set(foundKeys));
+}
+
+/**
+ * get leaf key list from tree
+ * @param tree
+ */
 export const getLeafKeyList = (tree: any[]): Key[] => {
   let leafKeyList: Key[] = [];
   for (const node of tree) {
@@ -185,9 +276,9 @@ export const buildProjectTree = (
               currentUser,
               taskOwnerLockingStrategy
             ) ? (
-              <LockTwoTone title={'无法操作'} twoToneColor={'red'} />
+              <LockTwoTone title={l('global.operation.unable')} twoToneColor={'red'} />
             ) : (
-              <UnlockTwoTone title={'可操作'} twoToneColor='gray' />
+              <UnlockTwoTone title={l('global.operation.able')} twoToneColor='gray' />
             )}
           </>
         );
