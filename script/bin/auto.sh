@@ -8,8 +8,6 @@ FLINK_VERSION=${2}
 DINKY_HOME=${DINKY_HOME:-$(cd `dirname $0`; pwd)}
 JAVA_VERSION=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}' | awk -F'.' '{print $1"."$2}')
 
-echo "DINKY_HOME : ${DINKY_HOME} , JAVA_VERSION : ${JAVA_VERSION}"
-
 APP_HOME="${DINKY_HOME}"
 
 DINKY_LOG_PATH="${APP_HOME}/logs/"
