@@ -48,7 +48,7 @@ export const QUICK_GUIDE = [
   {
     key: 'alertRule',
     label: l('datastudio.middle.qg.alertRule'),
-    link: '/settings/alertrule'
+    link: '/registration/alert/rule'
   },
   {
     key: 'alertTemplate',
