@@ -33,8 +33,8 @@ declare namespace Alert {
   };
 
   export enum AlertInstanceOfWechatSubType {
-    WECHAT= 'wechat',
-    APP= 'app'
+    WECHAT = 'wechat',
+    APP = 'app'
   }
 
   /**
