@@ -91,17 +91,10 @@ start() {
   updatePid
   if [ -z "$pid" ]; then
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > $DINKY_LOG_PATH/dinky-current.log 2>&1 &
-    PID=$!
-    sleep 1s
-    PID_EXIST=$(ps aux | awk '{print $2}'| grep -w $PID)
-    if [ ! $PID_EXIST ];then
-      echo Start Dinky Failed, the process $PID is not exist
-      cat $DINKY_LOG_PATH/dinky-current.log
-    else
-        echo $PID >"${PID_PATH}"/${PID_FILE}
-        echo "FLINK VERSION : $FLINK_VERSION"
-        echo "........................................Start Dinky Successfully........................................"
-    fi
+    echo $! >"${PID_PATH}"/${PID_FILE}
+    echo "FLINK VERSION : $FLINK_VERSION"
+    echo "........................................Start Dinky Done........................................"
+    echo "current log path : $DINKY_LOG_PATH/dinky-current.log"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
   fi
