@@ -111,7 +111,7 @@ const WeChat = (props: WeChatProps) => {
       </ProForm.Group>
 
       <ProForm.Group>
-        {sendType === Alert.AlertInstanceOfWechatSubType.WECHAT ? (
+        {sendType === 'wechat' ? (
           // if sendType is wechat
           <>
             <ProFormTextArea
@@ -130,7 +130,7 @@ const WeChat = (props: WeChatProps) => {
             />
           </>
         ) : (
-          sendType === Alert.AlertInstanceOfWechatSubType.APP && (
+          sendType === 'app' && (
             // if sendType is app
             <>
               <ProFormText
