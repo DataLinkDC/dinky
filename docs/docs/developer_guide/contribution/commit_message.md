@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
-position: 4
+sidebar_position: 109
+position: 109
 id: commit_message
 title: Commit Message 须知
 ---
