@@ -42,6 +42,7 @@ import {
 } from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
+import { SuccessMessage } from '@/utils/messages';
 import { Monaco } from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
@@ -49,7 +50,6 @@ import { trim } from 'lodash';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import path from 'path';
 import { format } from 'sql-formatter';
-import {SuccessMessage} from "@/utils/messages";
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -631,7 +631,6 @@ export const parseDateStringToDate = (dateString: Date) => {
   return dayjs(dateString).toDate();
 };
 
-
 /**
  * copy text to clipboard function
  * @param copyText
@@ -645,7 +644,7 @@ export async function handleCopyToClipboard(copyText: string) {
     textarea.select();
     document.execCommand('copy');
     document.body.removeChild(textarea);
-  }else {
+  } else {
     await navigator.clipboard.writeText(copyText);
   }
   await SuccessMessage(l('rc.resource.copy_success', '', { fillValue: copyText }));

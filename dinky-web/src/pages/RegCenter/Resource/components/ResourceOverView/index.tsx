@@ -40,7 +40,7 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
-import { handleCopyToClipboard, unSupportView} from '@/utils/function';
+import { handleCopyToClipboard, unSupportView } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
@@ -164,7 +164,6 @@ const ResourceOverView: React.FC<connect> = (props) => {
       }));
     }
   };
-
 
   const handleMenuClick = async (node: MenuInfo) => {
     const { fullInfo } = resourceState.rightClickedNode;
