@@ -3,6 +3,7 @@
 FLINK_VERSION=${2}
 
 DINKY_HOME=${DINKY_HOME:-$(cd `dirname $0`; pwd)}
+JAVA_VERSION=`java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}'`
 
 APP_HOME="${DINKY_HOME}"
 
@@ -45,8 +46,15 @@ PID_FILE="dinky.pid"
 
 # Log configuration file path
 LOG_CONFIG=${APP_HOME}/config/log4j2.xml
-# JVM options G1GC and OOM dump ; Note: Do not set the DisableExplicitGC parameter. Because there is a call to System. gc() in the code.
-GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:${APP_HOME}/logs/gc-%t.log "
+
+if [ ${JAVA_VERSION:0:2} == "1.8" ]
+then
+  # JVM options G1GC and OOM dump ; Note: Do not set the DisableExplicitGC parameter. Because there is a call to System. gc() in the code.
+   GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -XX:+PrintGCCause -Xloggc:${APP_HOME}/logs/gc-%t.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=20M"
+else
+   GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:${APP_HOME}/logs/gc-%t.log"
+fi
+
 # OOM dump path
 OOM_OPT="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${APP_HOME}/logs/heapdump.hprof"
 # JVM parameters and log path
@@ -87,12 +95,13 @@ updatePid() {
 }
 
 start() {
+  echo "JAVA VERSION : $JAVA_VERSION"
+  echo "FLINK VERSION : $FLINK_VERSION"
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > $DINKY_LOG_PATH/dinky-current.log 2>&1 &
     echo $! >"${PID_PATH}"/${PID_FILE}
-    echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Done........................................"
     echo "current log path : $DINKY_LOG_PATH/dinky-current.log"
   else
