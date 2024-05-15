@@ -95,7 +95,7 @@ public class APIServiceImpl implements APIService {
         taskService.changeTaskLifeRecyle(catalogue.getTaskId(), JobLifeCycle.PUBLISH);
         // 推送任务
         DinkyTaskRequest dinkyTaskRequest = JSONUtil.toBean(dto.getJobConfigJson(), DinkyTaskRequest.class);
-        dinkyTaskRequest.setTaskId(taskDTO.getId() + "");
+        dinkyTaskRequest.setTaskId(catalogue.getTaskId() + "");
         schedulerService.pushAddTask(dinkyTaskRequest);
     }
 }
