@@ -46,7 +46,7 @@ PID_FILE="dinky.pid"
 # Log configuration file path
 LOG_CONFIG=${APP_HOME}/config/log4j2.xml
 # JVM options G1GC and OOM dump ; Note: Do not set the DisableExplicitGC parameter. Because there is a call to System. gc() in the code.
-GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -XX:+PrintGCCause -Xloggc:${APP_HOME}/logs/gc-%t.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=20M"
+GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:${APP_HOME}/logs/gc-%t.log "
 # OOM dump path
 OOM_OPT="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${APP_HOME}/logs/heapdump.hprof"
 # JVM parameters and log path
@@ -90,10 +90,18 @@ start() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > /dev/null 2>&1 &
-    echo $! >"${PID_PATH}"/${PID_FILE}
-    echo "FLINK VERSION : $FLINK_VERSION"
-    echo "........................................Start Dinky Successfully........................................"
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > $DINKY_LOG_PATH/dinky-current.log 2>&1 &
+    PID=$!
+    sleep 1s
+    PID_EXIST=$(ps aux | awk '{print $2}'| grep -w $PID)
+    if [ ! $PID_EXIST ];then
+      echo Start Dinky Failed, the process $PID is not exist
+      cat $DINKY_LOG_PATH/dinky-current.log
+    else
+        echo $PID >"${PID_PATH}"/${PID_FILE}
+        echo "FLINK VERSION : $FLINK_VERSION"
+        echo "........................................Start Dinky Successfully........................................"
+    fi
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
   fi
