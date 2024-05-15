@@ -32,6 +32,11 @@ declare namespace Alert {
     note: string;
   };
 
+  export enum AlertInstanceOfWechatSubType {
+    WECHAT= 'wechat',
+    APP= 'app'
+  }
+
   /**
    * alert instance params sub type
    */

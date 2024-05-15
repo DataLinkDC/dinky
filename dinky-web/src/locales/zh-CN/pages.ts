@@ -538,7 +538,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': '请输入AccessKeySecret',
   'rc.ai.action': '接口方法',
   'rc.ai.actionPleaseHolder': '请输入接口方法',
-  'rc.ai.agentId': '代理ID',
+  'rc.ai.agentId': '应用ID（AgentId）',
   'rc.ai.agentIdPleaseHolder': '请输入 AgentId',
   'rc.ai.sendUrl': '企微发送地址',
   'rc.ai.sendUrlPleaseHolder': '请输入发送地址可输入代理地址',
