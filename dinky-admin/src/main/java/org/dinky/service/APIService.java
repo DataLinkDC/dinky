@@ -19,9 +19,14 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.CreatingCatalogueTaskDTO;
+import org.dinky.data.exception.SqlExplainExcepition;
+
 /**
  * APIService
  *
  * @since 2021/12/11 21:45
  */
-public interface APIService {}
+public interface APIService {
+    void createTaskAndSend2Ds(CreatingCatalogueTaskDTO dto) throws SqlExplainExcepition;
+}
