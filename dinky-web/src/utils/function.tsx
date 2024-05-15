@@ -49,6 +49,7 @@ import { trim } from 'lodash';
 import { editor, KeyCode, KeyMod } from 'monaco-editor';
 import path from 'path';
 import { format } from 'sql-formatter';
+import {SuccessMessage} from "@/utils/messages";
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -629,3 +630,23 @@ export const formatTimestampToYYYYMMDDHHMMSS = (timestamp: number) => {
 export const parseDateStringToDate = (dateString: Date) => {
   return dayjs(dateString).toDate();
 };
+
+
+/**
+ * copy text to clipboard function
+ * @param copyText
+ */
+export async function handleCopyToClipboard(copyText: string) {
+  // Adapting to browsers without the navigator.clipboard.writeText method can be done using the following code
+  if (!navigator) {
+    const textarea = document.createElement('textarea');
+    textarea.value = copyText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  }else {
+    await navigator.clipboard.writeText(copyText);
+  }
+  await SuccessMessage(l('rc.resource.copy_success', '', { fillValue: copyText }));
+}

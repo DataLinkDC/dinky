@@ -40,9 +40,8 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { InitResourceState } from '@/types/RegCenter/init.d';
 import { ResourceState } from '@/types/RegCenter/state.d';
-import { unSupportView } from '@/utils/function';
+import { handleCopyToClipboard, unSupportView} from '@/utils/function';
 import { l } from '@/utils/intl';
-import { SuccessMessage } from '@/utils/messages';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { WarningOutlined } from '@ant-design/icons';
@@ -166,10 +165,6 @@ const ResourceOverView: React.FC<connect> = (props) => {
     }
   };
 
-  async function handleCopyTo(fillValue: string) {
-    await navigator.clipboard.writeText(fillValue);
-    await SuccessMessage(l('rc.resource.copy_success', '', { fillValue }));
-  }
 
   const handleMenuClick = async (node: MenuInfo) => {
     const { fullInfo } = resourceState.rightClickedNode;
@@ -189,25 +184,25 @@ const ResourceOverView: React.FC<connect> = (props) => {
       case ResourceRightMenuKey.COPY_TO_ADD_CUSTOM_JAR:
         if (fullInfo) {
           const fillValue = `ADD CUSTOMJAR 'rs:${fullInfo.fullName}';`;
-          await handleCopyTo(fillValue);
+          await handleCopyToClipboard(fillValue);
         }
         break;
       case ResourceRightMenuKey.COPY_TO_ADD_JAR:
         if (fullInfo) {
           const fillValue = `ADD JAR 'rs:${fullInfo.fullName}';`;
-          await handleCopyTo(fillValue);
+          await handleCopyToClipboard(fillValue);
         }
         break;
       case ResourceRightMenuKey.COPY_TO_ADD_FILE:
         if (fullInfo) {
           const fillValue = `ADD FILE 'rs:${fullInfo.fullName}';`;
-          await handleCopyTo(fillValue);
+          await handleCopyToClipboard(fillValue);
         }
         break;
       case ResourceRightMenuKey.COPY_TO_ADD_RS_PATH:
         if (fullInfo) {
           const fillValue = `rs:${fullInfo.fullName}`;
-          await handleCopyTo(fillValue);
+          await handleCopyToClipboard(fillValue);
         }
         break;
       default:
