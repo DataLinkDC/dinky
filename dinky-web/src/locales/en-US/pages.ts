@@ -566,7 +566,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': 'Please enter AccessKeySecret',
   'rc.ai.action': 'Interface method',
   'rc.ai.actionPleaseHolder': 'Please enter the interface method',
-  'rc.ai.agentId': 'AgentId',
+  'rc.ai.agentId': 'App ID(AgentId)',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
   'rc.ai.sendUrl': 'QiWei Send Addr',
   'rc.ai.sendUrlPleaseHolder': 'Please enter the sending address or the proxy address',
