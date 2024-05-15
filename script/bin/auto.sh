@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # debug mode
-set -x
+#set -x
 
 FLINK_VERSION=${2}
 
@@ -10,7 +10,7 @@ JAVA_VERSION=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3
 
 APP_HOME="${DINKY_HOME}"
 
-DINKY_LOG_PATH="${APP_HOME}/logs/"
+DINKY_LOG_PATH="${APP_HOME}/logs"
 if [ ! -d "${DINKY_LOG_PATH}" ]; then
   mkdir -p "${DINKY_LOG_PATH}"
 fi
@@ -99,15 +99,13 @@ updatePid() {
 }
 
 start() {
-  echo "JAVA VERSION : $JAVA_VERSION"
-  echo "FLINK VERSION : $FLINK_VERSION"
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > $DINKY_LOG_PATH/dinky-start.log 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     echo $! >"${PID_PATH}"/${PID_FILE}
     echo "........................................Start Dinky Done........................................"
-    echo "current log path : $DINKY_LOG_PATH/dinky-start.log , you can execute tail -f $DINKY_LOG_PATH/dinky-start.log to watch the log"
+    echo "current log path : ${DINKY_LOG_PATH}/dinky-start.log , you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
   fi
@@ -128,7 +126,7 @@ startWithJmx() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > $DINKY_LOG_PATH/dinky-start.log 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
 #    echo $! >"${PID_PATH}"/${PID_FILE}
     updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................
