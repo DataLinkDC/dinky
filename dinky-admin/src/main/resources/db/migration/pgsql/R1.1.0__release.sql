@@ -1,4 +1,4 @@
-# note: 回滚 sql 语句 仅仅为了在执行自动升级失败时进行回滚操作，需要手动执行以下 sql 语句
+# note: Rolling back SQL statements is only necessary to perform a rollback operation in the event of an automatic upgrade failure. The following SQL statements need to be manually executed
 update public.dinky_sys_menu set "path"='/settings/alertrule',
                           "component"='./SettingCenter/AlertRule',
                           "perms"='settings:alertrule',

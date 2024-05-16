@@ -1,4 +1,4 @@
-
+# note: Rolling back SQL statements is only necessary to perform a rollback operation in the event of an automatic upgrade failure. The following SQL statements need to be manually executed
 
 update dinky_sys_menu set `path`='/settings/alertrule',
                           `component`='./SettingCenter/AlertRule',
