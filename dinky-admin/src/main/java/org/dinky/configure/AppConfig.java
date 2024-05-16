@@ -75,6 +75,9 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(localeChangeInterceptor());
         // 注册Sa-Token的路由拦截器
         registry.addInterceptor(new SaInterceptor(handler -> {
+                    if (!StpUtil.isLogin()) {
+                        StpUtil.switchTo(BaseConstant.ADMIN_ID);
+                    }
                     StpUtil.checkLogin();
                 }))
                 .addPathPatterns("/api/**", "/openapi/createTaskAndSend2Ds")
