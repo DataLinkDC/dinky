@@ -63,6 +63,7 @@
         <easy.rules.version>4.1.0</easy.rules.version>
         <fastjson2.version>2.0.41</fastjson2.version>
         <flink.version>1.18.1</flink.version>
+        <flyway.version>10.10.12</flyway.version>
         <guava.version>32.1.3-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
         <hamcrest.version>1.3</hamcrest.version>
@@ -119,7 +120,7 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
         <spotless.version>2.27.1</spotless.version>
-        <spring-boot-dependencies.version>2.7.11</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
         <spring.ldap.version>3.1.0</spring.ldap.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
