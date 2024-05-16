@@ -39,6 +39,13 @@
                 <include>**/log4j2.xml</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>target/classes/db/migration</directory>
+            <outputDirectory>db/migration</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
