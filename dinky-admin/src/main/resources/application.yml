@@ -54,8 +54,6 @@ spring:
   #  3. Sub configuration items can be opened or customized as needed
   cache:
     type: simple
-    # Cache purpose, Custom configuration used to distinguish Redis databases. This value is a fixed value of 'metadata', please do not modify it
-#    purpose: metadata
     # If the type is configured as Redis, this item can be configured as needed
 #    redis:
       # Do you want to cache empty values? Just save by default
@@ -73,9 +71,8 @@ spring:
 #    port: 6379
 #    username:
 #    password:
-    # Redis database number, if you config  spring.cache.purpose == 'metadata' , then the database number is 10, otherwise it is 9
-#    database:
-#      ${spring.cache.purpose == 'metadata' ? 10: 9}
+    # Redis database number
+#    database: 10
 #    jedis:
 #      pool:
         # The maximum number of connections in the connection pool (use a negative value to indicate no limit)
