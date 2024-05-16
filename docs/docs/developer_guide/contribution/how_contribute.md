@@ -1,6 +1,6 @@
 ---
-sidebar_position: 6
-position: 6
+sidebar_position: 104
+position: 104
 id: how_contribute
 title: 如何贡献
 ---

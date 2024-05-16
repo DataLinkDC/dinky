@@ -1,6 +1,6 @@
 ---
-sidebar_position: 3
-position: 3
+sidebar_position: 108
+position: 108
 id: commit_code
 title: 提交代码须知
 ---
