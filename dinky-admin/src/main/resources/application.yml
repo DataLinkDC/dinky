@@ -41,61 +41,55 @@ spring:
   # circular references allowed
   main:
     allow-circular-references: true
-  #  默认使用内存缓存元数据信息，
-  #  dinky支持redis缓存，如有需要请把simple改为redis，并打开下面的redis连接配置
-  #  子配置项可以按需要打开或自定义配置
-  cache:
-    type: simple
-  #  #    如果type配置为redis，则该项可按需配置
-  #    redis:
-  ##      是否缓存空值，保存默认即可
-  #      cache-null-values: false
-  ##      缓存过期时间，24小时
-  #      time-to-live: 86400
-  #  redis:
-  #    host: 119.3.184.208
-  #    port: 6379
-  #    password: woai1998
-  #    database: 10
-  #    jedis:
-  #     pool:
-  #       # 连接池最大连接数（使用负值表示没有限制）
-  #       max-active: 50
-  #       # 连接池最大阻塞等待时间（使用负值表示没有限制）
-  #       max-wait: 3000
-  #       # 连接池中的最大空闲连接数
-  #       max-idle: 20
-  #       # 连接池中的最小空闲连接数
-  #       min-idle: 5
-  #   # 连接超时时间（毫秒）
-  #     timeout: 5000
-  # file upload config of servlet , the default is 500MB
+
+  # file upload config of servlet, the default is 500MB
   servlet:
     multipart:
       enabled: true
       max-file-size: 524288000
       max-request-size: 524288000
 
-########################################################## Redis配置 ##########################################################
-#  If sa-token needs to rely on redis, please open the redis configuration and depend on pom.xml and dinky-admin/pom.xml, and configure redis connection information in application.yml
-#  note: pay attention to the indentation of this configuration item
+  #  1. By default, memory cache metadata information is used,
+  #  2. DINKY supports Redis caching. If necessary, please change simple to Redis and open the Redis connection configuration below
+  #  3. Sub configuration items can be opened or customized as needed
+  cache:
+    type: simple
+    # Cache purpose, Custom configuration used to distinguish Redis databases. This value is a fixed value of 'metadata', please do not modify it
+#    purpose: metadata
+    # If the type is configured as Redis, this item can be configured as needed
+#    redis:
+      # Do you want to cache empty values? Just save by default
+#      cache-null-values: false
+      # Cache expiration time, 24 hours
+#      time-to-live: 86400
+
+  ########################################################## Redis配置 ##########################################################
+  # Note: Redis related configurations in DINKY can be used to cache meta-data information (memory caching is used by default) and cache session information of SA TOKEN (dependency needs to be added,please refer to the official documentation of SA TOKEN for Redis caching configuration instructions)
+  ## 1. If you need to use Redis to cache metadata information, please configure cache. Type to Redis and then configure the following configuration items
+  ## 2. If you need to use Redis to cache SA Token session information, please follow the instructions in the official SA Token documentation to configure it
+  # Note: Please pay attention to the indentation after opening comments, otherwise it may cause configuration file parsing errors. Note that when both 1 and 2 are used simultaneously, only the same Redis database can be supported
 #  redis:
-#     host: localhost
-#     port: 6379
-#     password:
-#     database: 10
-#     jedis:
-#       pool:
-#         # The maximum number of connections in the connection pool (use a negative value to indicate no limit)
-#         max-active: 50
-#         # The maximum blocking waiting time of the connection pool (use a negative value to indicate no limit)
-#         max-wait: 3000
-#         # The maximum number of idle connections in the connection pool
-#         max-idle: 20
-#         # The minimum number of idle connections in the connection pool
-#         min-idle: 5
-#     # Connection timeout (milliseconds)
-#     timeout: 5000
+#    host: localhost
+#    port: 6379
+#    username:
+#    password:
+    # Redis database number, if you config  spring.cache.purpose == 'metadata' , then the database number is 10, otherwise it is 9
+#    database:
+#      ${spring.cache.purpose == 'metadata' ? 10: 9}
+#    jedis:
+#      pool:
+        # The maximum number of connections in the connection pool (use a negative value to indicate no limit)
+#        max-active: 50
+        # The maximum blocking waiting time of the connection pool (use a negative value to indicate no limit)
+#        max-wait: 3000
+        # The maximum number of idle connections in the connection pool
+#        max-idle: 20
+        # The minimum number of idle connections in the connection pool
+#        min-idle: 5
+    # Connection timeout (milliseconds)
+#    timeout: 5000
+
+---
 
 #################################################################################################################
 ################################################# Mybatis Config ################################################
@@ -118,6 +112,8 @@ mybatis-plus:
     #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   type-handlers-package: org.dinky.data.typehandler
+
+---
 #################################################################################################################
 ################################################# SMS Config ####################################################
 #################################################################################################################
@@ -125,7 +121,7 @@ sms:
   is-print: false
 
 
-
+---
 #################################################################################################################
 ################################################# Sa-Token Config ###############################################
 #################################################################################################################
@@ -155,6 +151,7 @@ sa-token:
   token-name: token
   is-read-cookie: true
 
+---
 #################################################################################################################
 ################################################# knife4j Config ################################################
 #################################################################################################################
@@ -164,7 +161,7 @@ knife4j:
     language: en
 
 
-
+---
 #################################################################################################################
 ################################################# Crypto Config #################################################
 #################################################################################################################
