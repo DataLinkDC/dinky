@@ -19,7 +19,6 @@
 
 package org.dinky.metadata.driver;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Table;
@@ -52,6 +51,8 @@ import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ClickHouseDriver

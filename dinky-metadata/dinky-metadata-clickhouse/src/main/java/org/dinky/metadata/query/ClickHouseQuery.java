@@ -39,8 +39,8 @@ public class ClickHouseQuery extends AbstractDBQuery {
      */
     @Override
     public String tablesSql(String schemaName) {
-        return "select name, total_rows, engine, metadata_modification_time, comment " +
-                "from system.tables where 1=1 and database='" + schemaName + "'";
+        return "select name, total_rows, engine, metadata_modification_time, comment "
+                + "from system.tables where 1=1 and database='" + schemaName + "'";
     }
 
     /**
@@ -52,11 +52,7 @@ public class ClickHouseQuery extends AbstractDBQuery {
      */
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return "select * from system.columns where 1=1 and database='"
-                + schemaName
-                + "' and table='"
-                + tableName
-                + "'";
+        return "select * from system.columns where 1=1 and database='" + schemaName + "' and table='" + tableName + "'";
     }
 
     @Override
