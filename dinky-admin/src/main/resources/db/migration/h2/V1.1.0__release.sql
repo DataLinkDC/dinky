@@ -25,7 +25,7 @@ where `id` = 119;
 
 
 -- Increase class_name column's length from 50 to 100.
-ALTER TABLE dinky_udf_manage CHANGE COLUMN class_name class_name VARCHAR(100) null DEFAULT null COMMENT 'Complete class name';
+ALTER TABLE dinky_udf_manage ALTER COLUMN class_name SET DATA TYPE VARCHAR(100);
 
 ALTER TABLE dinky_task
     add  COLUMN `first_level_owner` int DEFAULT NULL comment 'primary responsible person id';
@@ -37,8 +37,8 @@ ALTER TABLE dinky_task
 update dinky_task set first_level_owner = creator;
 
 
-ALTER TABLE dinky_history CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'statement set';
+ALTER TABLE dinky_history ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;
 
-ALTER TABLE dinky_task CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'sql statement';
+ALTER TABLE dinky_task ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;
 
-ALTER TABLE dinky_task_version CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'flink sql statement';
+ALTER TABLE dinky_task_version ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;
