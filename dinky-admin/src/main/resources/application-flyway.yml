@@ -15,16 +15,19 @@
 # limitations under the License.
 #
 
+
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:dinky;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
-    url: jdbc:h2:./tmp/db/h2;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=29099;
-    druid:
-      initial-size: 1
-    username: dinky
-    password: dinky
-  h2:
-    console:
-      enabled: true
-      path: /api/h2
+  flyway:
+    enabled: true # Is it enabled
+    group: true # Enable grouping
+    locations:
+      - classpath:db/migration/${spring.profiles.active}
+    table: _dinky_flyway_schema_history
+    placeholder-replacement: false # Placeholder Replacement
+    baseline-on-migrate: true  # Baseline during migration
+    baseline-version: 1.0.2 # Baseline version
+    validate-on-migrate: false # Verify during migration
+    placeholder-prefix: '##{'
+    placeholder-suffix: '}##'
+    fail-on-missing-locations: true # Does the non-existent migration file throw an exception
+

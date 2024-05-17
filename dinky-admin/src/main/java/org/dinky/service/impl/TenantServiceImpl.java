@@ -45,13 +45,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.collection.CollectionUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> implements TenantService {
 
     @Resource
@@ -71,6 +74,22 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             }
             tenant.setIsDelete(false);
             if (save(tenant)) {
+                // When adding a new tenant, the admin user will be added to the tenant by default
+                Long count = new LambdaQueryChainWrapper<>(userTenantService.getBaseMapper())
+                        .eq(UserTenant::getUserId, BaseConstant.ADMIN_ID)
+                        .eq(UserTenant::getTenantId, tenant.getId())
+                        .count();
+                if (count == 0) {
+                    UserTenant userTenant = new UserTenant();
+                    userTenant.setUserId(BaseConstant.ADMIN_ID);
+                    userTenant.setTenantId(tenant.getId());
+                    userTenant.setTenantAdminFlag(
+                            true); // set an admin flag to true,because the admin user is the tenant admin
+                    userTenantService.save(userTenant);
+                    log.info(
+                            "You have added tenant {}, and the system will automatically add the admin user to that tenant.",
+                            tenant.getTenantCode());
+                }
                 TenantContextHolder.set(tenant.getId());
                 return Result.succeed(Status.ADDED_SUCCESS);
             }
