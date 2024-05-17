@@ -27,6 +27,7 @@ import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ClickHouseTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.enums.ClickHouseDataTypeEnum;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.parser.Clickhouse20StatementParser;
 import org.dinky.metadata.query.ClickHouseQuery;
@@ -52,6 +53,7 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -200,7 +202,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 field.setName(columnName);
                 if (columnList.contains(dbQuery.columnType())) {
                     String columnType = results.getString(dbQuery.columnType());
-                    if (Objects.nonNull(columnType) && columnType.contains("Nullable")) {
+                    if (StrUtil.containsIgnoreCase(columnType, ClickHouseDataTypeEnum.Nullable.getName())) {
                         field.setNullable(Boolean.TRUE);
                     }
                     field.setType(columnType);
@@ -213,6 +215,19 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 }
                 if (columnList.contains(dbQuery.columnPosition())) {
                     field.setPosition(results.getInt(dbQuery.columnPosition()));
+                }
+                ClickHouseDataTypeEnum clickHouseDataTypeEnum = ClickHouseDataTypeEnum.of(field.getType());
+                Integer length = clickHouseDataTypeEnum.getLength(field.getType());
+                if (Objects.nonNull(length)) {
+                    field.setLength(length);
+                }
+                Integer scale = clickHouseDataTypeEnum.getScale(field.getType());
+                if (Objects.nonNull(scale)) {
+                    field.setScale(scale);
+                }
+                Integer precision = clickHouseDataTypeEnum.getPrecision(field.getType());
+                if (Objects.nonNull(precision)) {
+                    field.setPrecision(precision);
                 }
                 field.setJavaType(getTypeConvert().convert(field));
                 columns.add(field);

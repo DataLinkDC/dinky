@@ -19,9 +19,11 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
+import org.dinky.metadata.enums.ClickHouseDataTypeEnum;
+
+import java.util.Objects;
 
 /**
  * ClickHouseTypeConvert
@@ -32,41 +34,17 @@ public class ClickHouseTypeConvert extends AbstractJdbcTypeConvert {
 
     @Override
     public ColumnType convert(Column column) {
-        if (Asserts.isNull(column)) {
+        if (Objects.isNull(column)) {
             return ColumnType.STRING;
         }
         String type = column.getType();
-        if (Asserts.isNull(type)) {
+        if (Objects.isNull(type)) {
             return ColumnType.STRING;
         }
-        type = type.replaceAll("Nullable\\(", "").replaceAll("\\)", "");
-
-        if (type.startsWith("Array")) {
-            return ColumnType.T;
+        ColumnType columnType = ClickHouseDataTypeEnum.of(type).getColumnType();
+        if (Objects.nonNull(columnType)) {
+            return columnType;
         }
-        if (type.startsWith("Map")) {
-            return ColumnType.MAP;
-        }
-        if (type.startsWith("UInt") || type.startsWith("Int")) {
-            return column.isNullable() ? ColumnType.JAVA_LANG_LONG : ColumnType.LONG;
-        }
-        if (type.startsWith("Float")) {
-            return column.isNullable() ? ColumnType.JAVA_LANG_DOUBLE : ColumnType.DOUBLE;
-        }
-        if (type.startsWith("Boolean")) {
-            return column.isNullable() ? ColumnType.JAVA_LANG_BOOLEAN : ColumnType.BOOLEAN;
-        }
-        if (type.startsWith("String") || type.startsWith("FixedString")) {
-            return ColumnType.STRING;
-        }
-        if (type.startsWith("DateTime")) {
-            return ColumnType.TIME;
-        }
-        if (type.startsWith("Date")) {
-            return ColumnType.DATE;
-        }
-
-        // other type default String
         return ColumnType.STRING;
     }
 
