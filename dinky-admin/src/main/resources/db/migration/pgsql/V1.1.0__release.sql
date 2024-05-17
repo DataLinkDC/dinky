@@ -21,6 +21,64 @@ END IF;
 END;
 $$ LANGUAGE plpgsql;
 
+-- 创建函数/操作符用于比较整数和布尔值 用于解决PostgreSQL 查询时报错 `operator does not exist: boolean = integer` 的问题
+-- Create a function to compare integers and booleans to solve the problem of `operator does not exist: boolean = integer` when querying in PostgreSQL
+CREATE OR REPLACE FUNCTION equal_int_bool(x int, y bool)
+    RETURNS BOOLEAN AS $$
+begin
+    return x = y::int;
+end;
+$$ LANGUAGE PLPGSQL IMMUTABLE STRICT;
+
+-- 创建操作符 用于比较整数和布尔值 用于解决PostgreSQL 查询时报错 `operator does not exist: boolean = integer` 的问题
+-- Create an operator to compare integers and booleans to solve the problem of `operator does not exist: boolean = integer` when querying in PostgreSQL
+DO $$
+    BEGIN
+        IF NOT EXISTS (
+            SELECT 1
+            FROM pg_operator
+            WHERE oprname = '=' AND
+                oprleft = 'integer'::regtype AND
+                oprright = 'boolean'::regtype
+        ) THEN
+            CREATE OPERATOR = (
+                leftarg = INTEGER,
+                rightarg = BOOLEAN,
+                procedure = equal_int_bool);
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
+
+
+-- 创建函数/操作符用于比较整数和布尔值 用于解决PostgreSQL 查询时报错 `operator does not exist: boolean = integer` 的问题
+-- Create a function to compare integers and booleans to solve the problem of `operator does not exist: boolean = integer` when querying in PostgreSQL
+CREATE OR REPLACE FUNCTION equal_bool_int(x bool, y int)
+    RETURNS BOOLEAN AS $$
+begin
+    return x::int = y;
+end;
+$$ LANGUAGE PLPGSQL IMMUTABLE STRICT;
+
+-- 创建操作符 用于比较整数和布尔值 用于解决PostgreSQL 查询时报错 `operator does not exist: boolean = integer` 的问题
+-- Create an operator to compare integers and booleans to solve the problem of `operator does not exist: boolean = integer` when querying in PostgreSQL
+DO $$
+    BEGIN
+        IF NOT EXISTS (
+            SELECT 1
+            FROM pg_operator
+            WHERE oprname = '=' AND
+                oprleft = 'boolean'::regtype AND
+                oprright = 'integer'::regtype
+        ) THEN
+            CREATE OPERATOR = (
+                leftarg = BOOLEAN,
+                rightarg = INTEGER,
+                procedure = equal_bool_int);
+        END IF;
+    END;
+$$ LANGUAGE plpgsql;
+
+
 
 
 update public.dinky_sys_menu
@@ -57,3 +115,6 @@ SELECT add_column_if_not_exists('public','dinky_task', 'second_level_owners', 'v
 
 
 update public.dinky_task set "first_level_owner" = "creator";
+
+-- 修改 用户 admin 的密码为 f4b3a484ee745b98d64cd69c429b2aa2
+UPDATE public.dinky_user SET "password" = 'f4b3a484ee745b98d64cd69c429b2aa2' WHERE "id" =1 and "password"= '21232f297a57a5a743894a0e4a801fc3';

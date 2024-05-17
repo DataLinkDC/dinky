@@ -3300,7 +3300,7 @@ CREATE TABLE IF NOT EXISTS public.dinky_resources
     updater      INT
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS  public.dinky_resources_un ON public.dinky_resources (full_name, type);
+CREATE UNIQUE INDEX IF NOT EXISTS dinky_resources_un ON public.dinky_resources (full_name, type);
 
 COMMENT ON TABLE public.dinky_resources IS 'resources';
 
@@ -3967,7 +3967,7 @@ CREATE TABLE IF NOT EXISTS public.dinky_alert_rules
     creator            INT,
     updater            INT
 );
-CREATE UNIQUE INDEX IF NOT EXISTS  public.dinky_alert_rules_name ON public.dinky_alert_rules (name);
+CREATE UNIQUE INDEX IF NOT EXISTS dinky_alert_rules_name ON public.dinky_alert_rules (name);
 
 COMMENT ON COLUMN public.dinky_alert_rules.id IS 'id';
 COMMENT ON COLUMN public.dinky_alert_rules.name IS 'rule name';
