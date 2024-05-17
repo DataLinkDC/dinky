@@ -1,34 +1,39 @@
 /*
- * Copyright (C) Red Gate Software Ltd 2010-2022
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
+
 package org.flywaydb.core.internal.database.postgresql;
 
-import org.flywaydb.core.api.MigrationType;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.flywaydb.core.api.configuration.Configuration;
 import org.flywaydb.core.internal.database.base.Database;
 import org.flywaydb.core.internal.database.base.Table;
 import org.flywaydb.core.internal.jdbc.JdbcConnectionFactory;
 import org.flywaydb.core.internal.jdbc.StatementInterceptor;
-import org.flywaydb.core.internal.util.AbbreviationUtils;
 import org.flywaydb.core.internal.util.StringUtils;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 public class PostgreSQLDatabase extends Database<PostgreSQLConnection> {
-    public PostgreSQLDatabase(Configuration configuration, JdbcConnectionFactory jdbcConnectionFactory, StatementInterceptor statementInterceptor) {
+    public PostgreSQLDatabase(
+            Configuration configuration,
+            JdbcConnectionFactory jdbcConnectionFactory,
+            StatementInterceptor statementInterceptor) {
         super(configuration, jdbcConnectionFactory, statementInterceptor);
     }
 
@@ -36,7 +41,6 @@ public class PostgreSQLDatabase extends Database<PostgreSQLConnection> {
     protected PostgreSQLConnection doGetConnection(Connection connection) {
         return new PostgreSQLConnection(this, connection);
     }
-
 
     @Override
     public String getInsertStatement(Table table) {
@@ -58,31 +62,32 @@ public class PostgreSQLDatabase extends Database<PostgreSQLConnection> {
     public void ensureSupported() {
         ensureDatabaseIsRecentEnough("9.0");
 
-        ensureDatabaseNotOlderThanOtherwiseRecommendUpgradeToFlywayEdition("10", org.flywaydb.core.internal.license.Edition.ENTERPRISE);
+        ensureDatabaseNotOlderThanOtherwiseRecommendUpgradeToFlywayEdition(
+                "10", org.flywaydb.core.internal.license.Edition.ENTERPRISE);
 
         recommendFlywayUpgradeIfNecessaryForMajorVersion("15");
     }
 
     @Override
     public String getRawCreateScript(Table table, boolean baseline) {
-        String tablespace = configuration.getTablespace() == null
-                ? ""
-                : " TABLESPACE \"" + configuration.getTablespace() + "\"";
+        String tablespace =
+                configuration.getTablespace() == null ? "" : " TABLESPACE \"" + configuration.getTablespace() + "\"";
 
-        return "CREATE TABLE " + table + " (\n" +
-                "    \"installed_rank\" INT NOT NULL,\n" +
-                "    \"version\" VARCHAR(50),\n" +
-                "    \"description\" VARCHAR(200) NOT NULL,\n" +
-                "    \"type\" VARCHAR(20) NOT NULL,\n" +
-                "    \"script\" VARCHAR(1000) NOT NULL,\n" +
-                "    \"checksum\" INTEGER,\n" +
-                "    \"installed_by\" VARCHAR(100) NOT NULL,\n" +
-                "    \"installed_on\" TIMESTAMP NOT NULL DEFAULT now(),\n" +
-                "    \"execution_time\" INTEGER NOT NULL,\n" +
-                "    \"success\" BOOLEAN NOT NULL DEFAULT FALSE\n" +
-                ")" + tablespace + ";\n" +
-                "ALTER TABLE " + table + " ADD CONSTRAINT \"" + table.getName() + "_pk\" PRIMARY KEY (\"installed_rank\");\n" +
-                "CREATE INDEX \"" + table.getName() + "_s_idx\" ON " + table + " (\"success\");";
+        return "CREATE TABLE " + table + " (\n" + "    \"installed_rank\" INT NOT NULL,\n"
+                + "    \"version\" VARCHAR(50),\n"
+                + "    \"description\" VARCHAR(200) NOT NULL,\n"
+                + "    \"type\" VARCHAR(20) NOT NULL,\n"
+                + "    \"script\" VARCHAR(1000) NOT NULL,\n"
+                + "    \"checksum\" INTEGER,\n"
+                + "    \"installed_by\" VARCHAR(100) NOT NULL,\n"
+                + "    \"installed_on\" TIMESTAMP NOT NULL DEFAULT now(),\n"
+                + "    \"execution_time\" INTEGER NOT NULL,\n"
+                + "    \"success\" BOOLEAN NOT NULL DEFAULT FALSE\n"
+                + ")"
+                + tablespace + ";\n" + "ALTER TABLE "
+                + table + " ADD CONSTRAINT \"" + table.getName() + "_pk\" PRIMARY KEY (\"installed_rank\");\n"
+                + "CREATE INDEX \""
+                + table.getName() + "_s_idx\" ON " + table + " (\"success\");";
     }
 
     @Override
@@ -112,7 +117,9 @@ public class PostgreSQLDatabase extends Database<PostgreSQLConnection> {
 
     @Override
     public String doQuote(String identifier) {
-        return getOpenQuote() + StringUtils.replaceAll(identifier, getCloseQuote(), getEscapedQuote()) + getCloseQuote();
+        return getOpenQuote()
+                + StringUtils.replaceAll(identifier, getCloseQuote(), getEscapedQuote())
+                + getCloseQuote();
     }
 
     @Override
