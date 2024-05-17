@@ -74,6 +74,22 @@ public class ConsoleContextHolder {
         return new ArrayList<>(logPross.values());
     }
 
+    public synchronized boolean killProcess(String processName) {
+        ProcessEntity process = logPross.remove(processName);
+        if (process == null){
+            return false;
+        }
+        ThreadGroup group = Thread.currentThread().getThreadGroup(); // 获取当前线程组
+        Thread[] threads = new Thread[group.activeCount()]; // 获取当前线程组中活跃的线程
+        group.enumerate(threads); // 将活跃的线程存入数组
+        for (Thread t : threads) {
+            if (t.getId() == process.getThreadId()) { // 根据线程ID查找目标线程
+                t.interrupt();
+                return true;
+            }
+        }
+        return false;
+    }
     public ProcessEntity getProcess(String processName) {
         if (logPross.containsKey(processName)) {
             return logPross.get(processName);
@@ -138,7 +154,7 @@ public class ConsoleContextHolder {
      * @param processName process name
      * @throws RuntimeException Throws an exception if the process already exists
      */
-    public void registerProcess(ProcessType type, String processName) throws RuntimeException {
+    public synchronized void registerProcess(ProcessType type, String processName) throws RuntimeException {
         if (logPross.containsKey(processName)) {
             throw new BusException(Status.PROCESS_REGISTER_EXITS);
         }
@@ -150,6 +166,7 @@ public class ConsoleContextHolder {
                 .title(type.getValue())
                 .startTime(LocalDateTime.now())
                 .children(new CopyOnWriteArrayList<>())
+                .threadId(Thread.currentThread().getId())
                 .build();
         logPross.put(processName, entity);
         appendLog(processName, null, "Start Process:" + processName, true);
@@ -202,24 +219,28 @@ public class ConsoleContextHolder {
      * @param status      Process status
      * @param e           exception object, optional
      */
-    public void finishedProcess(String processName, ProcessStatus status, Throwable e) {
-        ProcessEntity process = logPross.remove(processName);
-        if (process == null) {
-            return;
+    public synchronized void finishedProcess(String processName, ProcessStatus status, Throwable e) {
+        ProcessEntity process = logPross.get(processName);
+        try {
+            process.setStatus(status);
+            process.setEndTime(LocalDateTime.now());
+            process.setTime(
+                    Duration.between(process.getStartTime(), process.getEndTime()).toMillis());
+            if (e != null) {
+                appendLog(processName, null, LogUtil.getError(e.getCause()), true);
+            }
+            String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
+            if (FileUtil.exist(filePath)) {
+                Assert.isTrue(FileUtil.del(filePath));
+            }
+            FileUtil.writeUtf8String(JSONObject.toJSONString(process), filePath);
+            appendLog(processName, null, StrFormatter.format("Process {} exit with status:{}", processName, status), true);
+        }catch (Exception ex){
+            appendLog(processName, null, LogUtil.getError(ex.getCause()), true);
+            log.error("finishedProcess error",ex);
+        }finally {
+            logPross.remove(processName);
         }
-        process.setStatus(status);
-        process.setEndTime(LocalDateTime.now());
-        process.setTime(
-                Duration.between(process.getStartTime(), process.getEndTime()).toMillis());
-        if (e != null) {
-            appendLog(processName, null, LogUtil.getError(e.getCause()), true);
-        }
-        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
-        if (FileUtil.exist(filePath)) {
-            Assert.isTrue(FileUtil.del(filePath));
-        }
-        FileUtil.writeUtf8String(JSONObject.toJSONString(process), filePath);
-        appendLog(processName, null, StrFormatter.format("Process {} exit with status:{}", processName, status), true);
     }
 
     /**

@@ -28,7 +28,7 @@ import { parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
-import { CheckOutlined, CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
+import {CheckOutlined, CloseCircleFilled, LoadingOutlined, XFilled} from '@ant-design/icons';
 import { connect, useModel, useRequest } from '@umijs/max';
 import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
@@ -195,6 +195,7 @@ const ConsoleContent = (props: ConsoleProps) => {
               );
               if (boolean) run();
             }}
+            btnExtraContent={<XFilled style={{ color: 'red'}} />}
           />
         </Pane>
       </SplitPane>

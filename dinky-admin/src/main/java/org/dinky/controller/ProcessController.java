@@ -85,4 +85,18 @@ public class ProcessController {
         }
         return Result.succeed(Status.PROCESS_CLEAR_LOG_SUCCESS);
     }
+
+
+    @GetMapping("/killProcess")
+    @ApiOperation("killProcess ")
+    @ApiImplicitParam(name = "processName", value = "process name", dataType = "ProcessEntity")
+    public Result<Void> stopProcess(@RequestParam String processName) {
+        boolean killed = ConsoleContextHolder.getInstances().killProcess(processName);
+        if (!killed) {
+            return Result.failed(Status.FAILED);
+        }
+        return Result.succeed(Status.SUCCESS);
+    }
+
+
 }
