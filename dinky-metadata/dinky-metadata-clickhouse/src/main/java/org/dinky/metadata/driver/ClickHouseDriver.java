@@ -53,7 +53,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.parser.ParserException;
 import com.alibaba.druid.sql.parser.Token;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -202,9 +201,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 field.setName(columnName);
                 if (columnList.contains(dbQuery.columnType())) {
                     String columnType = results.getString(dbQuery.columnType());
-                    if (StrUtil.containsIgnoreCase(columnType, ClickHouseDataTypeEnum.Nullable.getName())) {
-                        field.setNullable(Boolean.TRUE);
-                    }
+                    field.setNullable(ClickHouseDataTypeEnum.isNullable(columnType));
                     field.setType(columnType);
                 }
                 if (columnList.contains(dbQuery.columnComment())

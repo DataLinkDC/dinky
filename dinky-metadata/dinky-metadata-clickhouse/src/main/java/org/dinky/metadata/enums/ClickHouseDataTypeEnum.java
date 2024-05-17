@@ -306,4 +306,11 @@ public enum ClickHouseDataTypeEnum {
         CK_DATA_TYPE_MAP.put(dataType, clickHouseDataTypeEnum);
         return clickHouseDataTypeEnum;
     }
+
+    public static Boolean isNullable(String dataType) {
+        if (StrUtil.isBlank(dataType)) {
+            return Boolean.FALSE;
+        }
+        return StrUtil.startWithIgnoreCase(dataType.trim(), Nullable.getName());
+    }
 }
