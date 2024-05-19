@@ -52,7 +52,7 @@ type EditFloatBtnProps = {
   handleDownloadLog?: () => string; // download log callback
   handleWrap?: () => void; // wrap callback
   clearContent?: () => void; // clear content callback
-  btnExtraContent?:any; //custom content
+  btnExtraContent?: any; //custom content
 };
 const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
   /**

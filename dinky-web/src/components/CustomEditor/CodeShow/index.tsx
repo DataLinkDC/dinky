@@ -49,7 +49,7 @@ export type CodeShowFormProps = {
   enableAutoScroll?: boolean;
   style?: CSSProperties;
   clearContent?: () => void;
-  btnExtraContent?:any;
+  btnExtraContent?: any;
 };
 
 const CodeShow = (props: CodeShowFormProps) => {

@@ -74,22 +74,25 @@ public class ConsoleContextHolder {
         return new ArrayList<>(logPross.values());
     }
 
-    public synchronized boolean killProcess(String processName) {
-        ProcessEntity process = logPross.remove(processName);
-        if (process == null){
-            return false;
+    public synchronized ProcessEntity killProcess(String processName) {
+        ProcessEntity process = logPross.get(processName);
+        if (process == null) {
+            return getProcess(processName);
         }
-        ThreadGroup group = Thread.currentThread().getThreadGroup(); // 获取当前线程组
-        Thread[] threads = new Thread[group.activeCount()]; // 获取当前线程组中活跃的线程
-        group.enumerate(threads); // 将活跃的线程存入数组
+        finishedProcess(processName, ProcessStatus.CANCELED, null);
+
+        ThreadGroup group = Thread.currentThread().getThreadGroup();
+        Thread[] threads = new Thread[group.activeCount()];
+        group.enumerate(threads);
         for (Thread t : threads) {
-            if (t.getId() == process.getThreadId()) { // 根据线程ID查找目标线程
+            if (t.getId() == process.getThreadId()) {
                 t.interrupt();
-                return true;
+                return process;
             }
         }
-        return false;
+        return getProcess(processName);
     }
+
     public ProcessEntity getProcess(String processName) {
         if (logPross.containsKey(processName)) {
             return logPross.get(processName);
@@ -97,7 +100,11 @@ public class ConsoleContextHolder {
         try {
             String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
             String string = FileUtil.readString(filePath, StandardCharsets.UTF_8);
-            return JSONObject.parseObject(string, ProcessEntity.class);
+            ProcessEntity process = JSONObject.parseObject(string, ProcessEntity.class);
+            if (process.getStatus().isActiveStatus()) {
+                process.setStatus(ProcessStatus.UNKNOWN);
+            }
+            return process;
         } catch (Exception e) {
             log.warn("Get process {} failed, maybe not exits", processName);
             return null;
@@ -224,8 +231,8 @@ public class ConsoleContextHolder {
         try {
             process.setStatus(status);
             process.setEndTime(LocalDateTime.now());
-            process.setTime(
-                    Duration.between(process.getStartTime(), process.getEndTime()).toMillis());
+            process.setTime(Duration.between(process.getStartTime(), process.getEndTime())
+                    .toMillis());
             if (e != null) {
                 appendLog(processName, null, LogUtil.getError(e.getCause()), true);
             }
@@ -234,11 +241,15 @@ public class ConsoleContextHolder {
                 Assert.isTrue(FileUtil.del(filePath));
             }
             FileUtil.writeUtf8String(JSONObject.toJSONString(process), filePath);
-            appendLog(processName, null, StrFormatter.format("Process {} exit with status:{}", processName, status), true);
-        }catch (Exception ex){
+            appendLog(
+                    processName,
+                    null,
+                    StrFormatter.format("Process {} exit with status:{}", processName, status),
+                    true);
+        } catch (Exception ex) {
             appendLog(processName, null, LogUtil.getError(ex.getCause()), true);
-            log.error("finishedProcess error",ex);
-        }finally {
+            log.error("finishedProcess error", ex);
+        } finally {
             logPross.remove(processName);
         }
     }
