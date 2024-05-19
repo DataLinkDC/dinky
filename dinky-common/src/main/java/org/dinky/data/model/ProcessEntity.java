@@ -50,6 +50,7 @@ public class ProcessEntity {
     private long time;
     private ProcessStepEntity lastUpdateStep;
     private CopyOnWriteArrayList<ProcessStepEntity> children;
+    private long threadId;
 
     public void appendLog(String str) {
         log.append(str).append(CommonConstant.LineSep);
