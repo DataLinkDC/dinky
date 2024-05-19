@@ -17,19 +17,32 @@
  *
  */
 
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
   generateList,
   getLeafKeyList,
-  getParentKey
+  searchInTree
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import { StateType, STUDIO_MODEL, TabsItemType } from '@/pages/DataStudio/model';
+import {
+  StateType,
+  STUDIO_MODEL,
+  STUDIO_MODEL_ASYNC,
+  TabsItemType,
+  TreeVo
+} from '@/pages/DataStudio/model';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
+import { SortAscendingOutlined } from '@ant-design/icons';
 import { Key } from '@ant-design/pro-components';
-import { Empty, Tree } from 'antd';
+import { useModel } from '@umijs/max';
+import type { MenuProps } from 'antd';
+import { Button, Dropdown, Empty, Space, Tree } from 'antd';
+import type { ButtonType } from 'antd/es/button/buttonHelpers';
 import Search from 'antd/es/input/Search';
+import { ItemType } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
 import { BtnRoute, useTasksDispatch } from '../../BtnContext';
 
@@ -49,24 +62,101 @@ type TreeProps = {
 const JobTree: React.FC<TreeProps & connect> = (props) => {
   const {
     project: { data: projectData, expandKeys, selectKey },
+    catalogueSortType: { data: catalogueSortTypeData },
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
     onNodeClick,
     style,
     height,
+    leftContainerWidth,
     onRightClick,
     selectKeyChange,
     onExpand,
-    dispatch
+    dispatch,
+    taskOwnerLockingStrategy,
+    users
   } = props;
 
+  const { initialState, setInitialState } = useModel('@@initialState');
   const [searchValue, setSearchValueValue] = useState('');
-  const [data, setData] = useState<any[]>(buildProjectTree(projectData, searchValue));
+  const [sortState, setSortState] = useState<{
+    sortIconType: ButtonType;
+    selectedSortValue: string[];
+  }>({
+    sortIconType: 'text' as ButtonType,
+    selectedSortValue: []
+  });
+
+  const [data, setData] = useState<any[]>(
+    buildProjectTree(
+      projectData,
+      searchValue,
+      [],
+      initialState?.currentUser?.user,
+      taskOwnerLockingStrategy,
+      users
+    )
+  );
   const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
-    setData(buildProjectTree(projectData, searchValue));
-  }, [searchValue, projectData]);
+    setData(
+      buildProjectTree(
+        projectData,
+        searchValue,
+        [],
+        initialState?.currentUser?.user,
+        taskOwnerLockingStrategy,
+        users
+      )
+    );
+  }, [searchValue, projectData, taskOwnerLockingStrategy]);
 
-  const [autoExpandParent, setAutoExpandParent] = useState(true);
+  useEffect(() => {
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+  }, [selectCatalogueSortTypeData]);
+
+  function buildSortTreeOptions(trees: TreeVo[] = []): ItemType[] {
+    return trees.map((tree) => {
+      return {
+        key: tree.name + '_' + tree.value,
+        label: tree.name,
+        value: tree.value,
+        children: tree?.children && buildSortTreeOptions(tree.children)
+      };
+    });
+  }
+
+  // set sort default value
+  useEffect(() => {
+    if (
+      selectCatalogueSortTypeData &&
+      selectCatalogueSortTypeData.sortValue != '' &&
+      selectCatalogueSortTypeData.sortType != ''
+    ) {
+      const initialSortValue =
+        selectCatalogueSortTypeData.sortValue + '_' + selectCatalogueSortTypeData.sortType;
+      setSortState((prevState) => ({
+        ...prevState,
+        selectedSortValue: [initialSortValue]
+      }));
+    }
+  }, []);
+
+  // when sorted, change the icon display
+  useEffect(() => {
+    if (selectCatalogueSortTypeData.sortValue && selectCatalogueSortTypeData.sortType) {
+      setSortState((prevState) => ({
+        ...prevState,
+        sortIconType: 'link'
+      }));
+    } else {
+      setSortState((prevState) => ({
+        ...prevState,
+        sortIconType: 'text'
+      }));
+    }
+  }, [selectCatalogueSortTypeData]);
+
   const onChangeSearch = (e: any) => {
     let { value } = e.target;
     if (!value) {
@@ -77,22 +167,17 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
       setSearchValueValue(value);
       return;
     }
-    value = String(value).trim();
-    const expandList: any[] = generateList(data, []);
-    let expandedKeys: any = expandList
-      .map((item: any) => {
-        if (item?.name.indexOf(value) > -1) {
-          return getParentKey(item.key, data);
-        }
-        return null;
-      })
-      .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
+    const expandedKeys: string[] = searchInTree(
+      generateList(data, []),
+      data,
+      String(value).trim(),
+      'contain'
+    );
     dispatch({
       type: STUDIO_MODEL.updateProjectExpandKey,
       payload: expandedKeys
     });
     setSearchValueValue(value);
-    setAutoExpandParent(true);
   };
 
   const expandAll = () => {
@@ -102,25 +187,16 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     });
   };
 
-  const currentTabName = 'menu.datastudio.project';
+  const currentTabName = LeftMenuKey.PROJECT_KEY;
   const btnEvent = [...BtnRoute[currentTabName]];
   const positionKey = (panes: TabsItemType[], activeKey: string) => {
     const treeKey = getCurrentTab(panes, activeKey)?.treeKey;
     if (treeKey) {
-      const expandList: any[] = generateList(data, []);
-      let expandedKeys: any = expandList
-        .map((item: any) => {
-          if (item?.key === treeKey) {
-            return getParentKey(item.key, data);
-          }
-          return null;
-        })
-        .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
+      const expandedKeys: string[] = searchInTree(generateList(data, []), data, treeKey, 'equal');
       dispatch({
         type: STUDIO_MODEL.updateProjectExpandKey,
         payload: expandedKeys
       });
-      setAutoExpandParent(true);
       selectKeyChange([treeKey]);
     }
   };
@@ -139,14 +215,62 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     payload: btnEvent
   });
 
+  const onClick: MenuProps['onClick'] = (e) => {
+    const selectSortValue = e.key;
+    const sortField: string = selectSortValue.substring(0, selectSortValue.lastIndexOf('_'));
+    const sortType: string = selectSortValue.substring(selectSortValue.lastIndexOf('_') + 1);
+    if (
+      sortField == selectCatalogueSortTypeData.sortValue &&
+      sortType == selectCatalogueSortTypeData.sortType
+    ) {
+      setSortState((prevState) => ({
+        ...prevState,
+        selectedSortValue: []
+      }));
+      dispatch({
+        type: STUDIO_MODEL.saveTaskSortTypeData,
+        payload: {
+          sortValue: '',
+          sortType: ''
+        }
+      });
+    } else {
+      setSortState((prevState) => ({
+        ...prevState,
+        selectedSortValue: [selectSortValue]
+      }));
+      dispatch({
+        type: STUDIO_MODEL.saveTaskSortTypeData,
+        payload: {
+          sortValue: sortField,
+          sortType: sortType
+        }
+      });
+    }
+  };
+
   return (
     <>
-      <Search
-        style={{ margin: '8px 0px' }}
-        placeholder={l('global.search.text')}
-        onChange={onChangeSearch}
-        allowClear={true}
-      />
+      <Space direction='horizontal' size={8}>
+        <Search
+          style={{ margin: '8px 0px', width: leftContainerWidth - 60 }}
+          placeholder={l('global.search.text')}
+          onChange={onChangeSearch}
+          allowClear={true}
+        />
+        <Dropdown
+          menu={{
+            items: buildSortTreeOptions(catalogueSortTypeData),
+            mode: 'horizontal',
+            selectable: true,
+            onClick: onClick,
+            selectedKeys: sortState.selectedSortValue
+          }}
+          placement='bottomLeft'
+        >
+          <Button icon={<SortAscendingOutlined />} type={sortState.sortIconType}></Button>
+        </Dropdown>
+      </Space>
 
       {data.length ? (
         <DirectoryTree
@@ -159,7 +283,6 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           selectedKeys={selectKey}
           onExpand={onExpand}
           treeData={data}
-          // autoExpandParent={autoExpandParent}
         />
       ) : (
         <Empty
@@ -171,7 +294,14 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  height: Studio.toolContentHeight,
-  project: Studio.project
-}))(JobTree);
+export default connect(
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+    height: Studio.toolContentHeight,
+    leftContainerWidth: Studio.leftContainer.width,
+    project: Studio.project,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
+    users: Studio.users,
+    catalogueSortType: Studio.catalogueSortType,
+    selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
+  })
+)(JobTree);

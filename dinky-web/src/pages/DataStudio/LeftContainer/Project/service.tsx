@@ -22,12 +22,18 @@ import { postAll, putDataJson } from '@/services/api';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 
-export async function getTaskData() {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA)).data;
+export async function getTaskData(params: any) {
+  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA, params)).data;
+}
+export async function getTaskSortTypeData() {
+  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA)).data;
 }
 export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
   return queryDataByParams(API_CONSTANTS.TASK, { id: id });
 }
 export function putTask(params: any) {
   return putDataJson(API_CONSTANTS.TASK, params);
+}
+export function getUserData(params: any) {
+  return queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, params);
 }

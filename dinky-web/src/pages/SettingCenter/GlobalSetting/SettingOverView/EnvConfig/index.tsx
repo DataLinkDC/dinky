@@ -18,9 +18,9 @@
  */
 
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter/data.d';
 import { l } from '@/utils/intl';
-import { Tag } from 'antd';
+import { RadioChangeEvent, Tag } from 'antd';
 import React from 'react';
 
 interface EnvConfigProps {
@@ -38,6 +38,19 @@ export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
     setLoading(false);
   };
 
+  const selectChange = async (e: RadioChangeEvent) => {
+    const { value } = e.target;
+
+    await onSaveHandler({
+      name: '',
+      example: [],
+      frontType: '',
+      key: GLOBAL_SETTING_KEYS.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY,
+      note: '',
+      value: value.toString().toLocaleUpperCase()
+    });
+  };
+
   return (
     <>
       <GeneralConfig
@@ -49,6 +62,7 @@ export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
             <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>
           </>
         }
+        selectChanges={selectChange}
         data={data}
       />
     </>
