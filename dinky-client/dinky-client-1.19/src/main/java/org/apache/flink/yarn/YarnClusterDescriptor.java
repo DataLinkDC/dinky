@@ -267,8 +267,11 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
     }
 
     private String getDecodedJarPath() {
-        final String encodedJarPath =
-                getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        final String encodedJarPath = YarnClusterClientFactory.class
+                .getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getPath();
         try {
             return URLDecoder.decode(encodedJarPath, Charset.defaultCharset().name());
         } catch (UnsupportedEncodingException e) {

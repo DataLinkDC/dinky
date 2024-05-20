@@ -150,6 +150,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
           loading={loading}
           {...PROTABLE_OPTIONS_PUBLIC}
           size={'small'}
+          scroll={{ x: 'max-content' }}
           search={false}
           pagination={{
             defaultPageSize: 15,

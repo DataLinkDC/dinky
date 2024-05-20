@@ -55,6 +55,7 @@ public class Task extends SuperEntity<Task> {
     @ApiModelProperty(value = "Dialect", dataType = "String", notes = "Dialect for the task")
     private String dialect;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(
             value = "Tenant ID",
             dataType = "Integer",

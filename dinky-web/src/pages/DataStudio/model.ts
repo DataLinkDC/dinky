@@ -87,8 +87,8 @@ export type EnvType = {
 };
 
 export type TreeVo = {
-  name?: string;
-  value?: string;
+  name: string;
+  value: string;
   children?: TreeVo[];
 };
 
