@@ -117,3 +117,5 @@ SELECT add_column_if_not_exists('public','dinky_task', 'second_level_owners', 'v
 update public.dinky_task set "first_level_owner" = "creator";
 
 UPDATE public.dinky_user SET "password" = 'f4b3a484ee745b98d64cd69c429b2aa2' WHERE "id" =1 and "password"= '21232f297a57a5a743894a0e4a801fc3';
+
+ALTER TABLE public.dinky_resources ALTER COLUMN file_name TYPE TEXT;

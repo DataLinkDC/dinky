@@ -30,3 +30,5 @@ ALTER TABLE dinky_task_version ALTER COLUMN statement SET DATA TYPE text ;
 
 -- Delete the 1.1.0 record in the _dinky_flyway_schema_history table
 DELETE FROM `_dinky_flyway_schema_history` WHERE version = '1.1.0';
+
+ALTER TABLE dinky_resources ALTER COLUMN `file_name` SET DATA TYPE VARCHAR(64);
