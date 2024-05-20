@@ -52,6 +52,7 @@ type EditFloatBtnProps = {
   handleDownloadLog?: () => string; // download log callback
   handleWrap?: () => void; // wrap callback
   clearContent?: () => void; // clear content callback
+  btnExtraContent?: any; //custom content
 };
 const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
   /**
@@ -71,7 +72,8 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
     handleDownScroll,
     handleDownloadLog,
     handleWrap,
-    clearContent
+    clearContent,
+    btnExtraContent
   } = props;
 
   /**
@@ -102,6 +104,7 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
             )}
           </>
         )}
+        {btnExtraContent && <>{btnExtraContent}</>}
         {clearContent && (
           <CircleBtn
             icon={<ClearOutlined twoToneColor={'red'} />}
