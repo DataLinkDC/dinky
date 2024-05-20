@@ -250,6 +250,7 @@ const Result = (props: any) => {
                 <Table
                   columns={getColumns(data.columns)}
                   size='small'
+                  scroll={{ x: 'max-content' }}
                   dataSource={data.rowData?.map((item: any, index: number) => {
                     return { ...item, key: index };
                   })}
