@@ -24,25 +24,20 @@ import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CreatingCatalogueTaskDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
-import org.dinky.data.enums.Status;
-import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.model.Catalogue;
+import org.dinky.data.model.Task;
 import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.service.APIService;
 
 import org.dinky.service.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.service.TaskService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * APIServiceImpl
@@ -62,11 +57,12 @@ public class APIServiceImpl implements APIService {
 
     /**
      * 创建目录、任务并推送到 DolphinScheduler
+     *
      * @param dto CreateCatalogueTaskDTO
-     * @throws SqlExplainExcepition
+     * @return Integer taskId
      */
     @Override
-    public void createTaskAndSend2Ds(CreatingCatalogueTaskDTO dto) throws SqlExplainExcepition {
+    public Integer createTaskAndSend2Ds(CreatingCatalogueTaskDTO dto) {
         int parentId = 0;
         for (String catalogueName : dto.getCatalogueNames()) {
             Catalogue catalogue = catalogueService.findByParentIdAndName(parentId, catalogueName);
@@ -92,10 +88,30 @@ public class APIServiceImpl implements APIService {
         Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
 
         // 发布任务
-        taskService.changeTaskLifeRecyle(catalogue.getTaskId(), JobLifeCycle.PUBLISH);
+        try {
+            taskService.changeTaskLifeRecyle(catalogue.getTaskId(), JobLifeCycle.PUBLISH);
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
         // 推送任务
         DinkyTaskRequest dinkyTaskRequest = JSONUtil.toBean(dto.getJobConfigJson(), DinkyTaskRequest.class);
         dinkyTaskRequest.setTaskId(catalogue.getTaskId() + "");
         schedulerService.pushAddTask(dinkyTaskRequest);
+
+        return catalogue.getTaskId();
+    }
+
+    /**
+     * 更新任务的名称和 sql
+     * @param dto
+     */
+    @Override
+    public void saveTask(TaskDTO dto) {
+        Task task = new Task();
+        task.setId(dto.getId());
+        task.setName(dto.getName());
+        task.setStatement(dto.getStatement());
+        taskService.save(task);
     }
 }

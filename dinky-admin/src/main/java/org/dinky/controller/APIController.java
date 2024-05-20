@@ -212,11 +212,13 @@ public class APIController {
     @ApiOperation("Create Catalogues & Task and Send to DolphinScheduler")
     @Log(title = "Create Catalogues & Task and Send to DolphinScheduler", businessType = BusinessType.OTHER)
     public Result createTaskAndSend2Ds(@RequestBody CreatingCatalogueTaskDTO dto) {
-        try {
-            apiService.createTaskAndSend2Ds(dto);
-            return Result.succeed(Status.EXECUTE_SUCCESS);
-        }catch(Exception e) {
-            return Result.failed(e.getMessage());
-        }
+        return Result.succeed(apiService.createTaskAndSend2Ds(dto));
+    }
+    @PostMapping("/saveTask")
+    @ApiOperation("Save a task")
+    @Log(title = "Save a task", businessType = BusinessType.OTHER)
+    public Result saveTask(@RequestBody TaskDTO dto) {
+        apiService.saveTask(dto);
+        return Result.succeed();
     }
 }
