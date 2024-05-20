@@ -71,6 +71,9 @@
     <Logger name="org.springframework.web.socket" level="info" additivity="false">
       <AppenderRef ref="RollingFileWs"/>
     </Logger>
+    <Logger name="org.flywaydb" level="debug" >
+      <AppenderRef ref="Console"/>
+    </Logger>
     <root level="info">
       <appender-ref ref="Console"/>
       <!--一般不使用这个，只是让你知道有这个输出日志文件的方式而已-->
