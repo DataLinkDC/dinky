@@ -32,4 +32,7 @@ ALTER TABLE dinky_task_version CHANGE COLUMN `statement` `statement` longtext DE
 # Delete the 1.1.0 record in the _dinky_flyway_schema_history table
 DELETE FROM `_dinky_flyway_schema_history` WHERE version = '1.1.0';
 
+ALTER TABLE dinky_resources CHANGE COLUMN `file_name` `file_name` varchar(64) DEFAULT NULL COMMENT 'file name';
+
+
 SET FOREIGN_KEY_CHECKS = 1;

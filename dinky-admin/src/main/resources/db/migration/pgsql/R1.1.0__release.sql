@@ -21,3 +21,8 @@ ALTER TABLE public.dinky_task DROP COLUMN "second_level_owners";
 
 -- Delete the 1.1.0 record in the _dinky_flyway_schema_history table
 DELETE FROM public."_dinky_flyway_schema_history" WHERE version = '1.1.0';
+
+UPDATE public.dinky_user SET "password" = '21232f297a57a5a743894a0e4a801fc3' WHERE "id" =1 and "password"= 'f4b3a484ee745b98d64cd69c429b2aa2';
+
+
+ALTER TABLE public.dinky_resources ALTER COLUMN file_name TYPE varchar(64);
