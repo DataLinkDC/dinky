@@ -21,3 +21,6 @@ ALTER TABLE public.dinky_task DROP COLUMN "second_level_owners";
 
 -- Delete the 1.1.0 record in the _dinky_flyway_schema_history table
 DELETE FROM public."_dinky_flyway_schema_history" WHERE version = '1.1.0';
+
+-- 删除 SELECT add_column_if_not_exists('public','dinky_udf_manage', 'language', 'varchar(10)', 'null', 'udf language');
+alter table public.dinky_udf_manage drop column "language";

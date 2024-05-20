@@ -31,5 +31,7 @@ ALTER TABLE dinky_task_version CHANGE COLUMN `statement` `statement` longtext DE
 
 # Delete the 1.1.0 record in the _dinky_flyway_schema_history table
 DELETE FROM `_dinky_flyway_schema_history` WHERE version = '1.1.0';
+ALTER TABLE dinky_udf_manage DROP COLUMN `language`;
+
 
 SET FOREIGN_KEY_CHECKS = 1;

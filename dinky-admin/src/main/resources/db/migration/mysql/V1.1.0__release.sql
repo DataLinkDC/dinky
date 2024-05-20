@@ -68,4 +68,8 @@ ALTER TABLE dinky_task CHANGE COLUMN `statement` `statement` mediumtext DEFAULT 
 
 ALTER TABLE dinky_task_version CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'flink sql statement';
 
+alter table dinky_udf_manage add column `language` VARCHAR(10) DEFAULT null comment 'udf language' after class_name;
+
+CALL add_column_if_not_exists('dinky_udf_manage', 'language', 'varchar(10)', 'NULL', 'udf language');
+
 SET FOREIGN_KEY_CHECKS = 1;
