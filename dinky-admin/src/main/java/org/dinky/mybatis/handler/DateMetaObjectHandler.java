@@ -19,7 +19,6 @@
 
 package org.dinky.mybatis.handler;
 
-import cn.hutool.core.lang.Opt;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
@@ -31,6 +30,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.Opt;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -103,12 +103,11 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
                         setFieldValByName(mybatisPlusFillProperties.getTenantIdField(), loginTenantId1, metaObject);
                     }
                 });
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.warn(
                         "Ignore set tenantId filed, because tenantId cant't get, Please check if your account is logged in normally or if it has been taken offline",
                         e);
             }
-
         }
     }
 
