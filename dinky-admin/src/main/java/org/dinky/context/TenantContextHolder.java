@@ -40,8 +40,7 @@ public class TenantContextHolder {
     }
 
     public static Object get() {
-        return Optional.ofNullable(TENANT_CONTEXT.get())
-                .orElseThrow(() -> new IllegalStateException("current Tenant context is not set"));
+        return TENANT_CONTEXT.get();
     }
 
     public static void clear() {

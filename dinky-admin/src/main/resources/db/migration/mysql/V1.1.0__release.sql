@@ -68,4 +68,8 @@ ALTER TABLE dinky_task CHANGE COLUMN `statement` `statement` mediumtext DEFAULT 
 
 ALTER TABLE dinky_task_version CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'flink sql statement';
 
+ALTER TABLE dinky_resources CHANGE COLUMN `file_name` `file_name` text DEFAULT NULL COMMENT 'file name';
+
+
+
 SET FOREIGN_KEY_CHECKS = 1;

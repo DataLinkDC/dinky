@@ -17,6 +17,7 @@
  *
  */
 
+import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { SseData } from '@/models/Sse';
 import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
@@ -28,7 +29,7 @@ import { parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
-import { CheckOutlined, CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseCircleFilled, LoadingOutlined, XFilled } from '@ant-design/icons';
 import { connect, useModel, useRequest } from '@umijs/max';
 import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
@@ -102,6 +103,11 @@ const ConsoleContent = (props: ConsoleProps) => {
     { url: API_CONSTANTS.PROCESS_LOG, params: { processName: process } },
     { onSuccess: async (res) => onUpdate(res) }
   );
+  const killProcess = useRequest(
+    { url: API_CONSTANTS.KILL_PROCESS, params: { processName: process } },
+    { onSuccess: async (res) => onUpdate(res) }
+  );
+
   useEffect(() => subscribeTopic([topic], (data: SseData) => onUpdate(data?.data)), []);
   const onSelect = (
     _selectedKeys: Key[],
@@ -195,6 +201,17 @@ const ConsoleContent = (props: ConsoleProps) => {
               );
               if (boolean) run();
             }}
+            btnExtraContent={
+              <LoadingBtn
+                key={'kill-process'}
+                click={async () => await killProcess.run()}
+                icon={
+                  <XFilled
+                    style={{ color: processNode?.status === JobStatus.RUNNING ? 'red' : 'gray' }}
+                  />
+                }
+              />
+            }
           />
         </Pane>
       </SplitPane>
