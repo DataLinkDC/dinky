@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.json.JSONUtil;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CreatingCatalogueTaskDTO;
 import org.dinky.data.dto.TaskDTO;
@@ -76,7 +75,7 @@ public class APIServiceImpl implements APIService {
             }
             parentId = catalogue.getId();
         }
-        TaskDTO taskDTO = JSONUtil.toBean(dto.getTaskJson(), TaskDTO.class);
+        TaskDTO taskDTO = dto.getTask();
         CatalogueTaskDTO catalogueTaskDTO = new CatalogueTaskDTO();
         catalogueTaskDTO.setLeaf(false);
         catalogueTaskDTO.setName(taskDTO.getName());
@@ -95,7 +94,7 @@ public class APIServiceImpl implements APIService {
             throw new RuntimeException(e);
         }
         // 推送任务
-        DinkyTaskRequest dinkyTaskRequest = JSONUtil.toBean(dto.getJobConfigJson(), DinkyTaskRequest.class);
+        DinkyTaskRequest dinkyTaskRequest = dto.getJobConfig();
         dinkyTaskRequest.setTaskId(catalogue.getTaskId() + "");
         schedulerService.pushAddTask(dinkyTaskRequest);
 

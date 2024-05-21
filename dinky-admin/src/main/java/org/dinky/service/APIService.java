@@ -21,7 +21,6 @@ package org.dinky.service;
 
 import org.dinky.data.dto.CreatingCatalogueTaskDTO;
 import org.dinky.data.dto.TaskDTO;
-import org.dinky.data.exception.SqlExplainExcepition;
 
 /**
  * APIService

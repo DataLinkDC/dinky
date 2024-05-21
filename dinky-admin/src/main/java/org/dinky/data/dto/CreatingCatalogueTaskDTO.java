@@ -1,6 +1,7 @@
 package org.dinky.data.dto;
 
 import lombok.Data;
+import org.dinky.scheduler.model.DinkyTaskRequest;
 
 import java.util.List;
 
@@ -22,11 +23,11 @@ public class CreatingCatalogueTaskDTO {
      * 例子：{"name": "test", "note": "作业描述", "statement": "sql 语句", "type": "kubernetes-session", "clusterId": 36}
      * 例子只列出了部分属性，其他属性请参考 TaskDTO 类
      */
-    private String taskJson;
+    private TaskDTO task;
     /**
      * Dinky 推送时的作业配置
      * 例子： {"delayTime": 0, "taskPriority": "MEDIUM", "failRetryInterval": 2, "failRetryTimes": 3, "flag": "YES" }
      * 例子只列出了部分属性，其他属性请参考 DinkyTaskRequest 类
      */
-    private String jobConfigJson;
+    private DinkyTaskRequest jobConfig;
 }
