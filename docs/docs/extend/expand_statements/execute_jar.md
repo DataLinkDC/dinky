@@ -35,7 +35,7 @@ EXECUTE JAR WITH (
 ```sql
 EXECUTE JAR WITH (
 'uri'='rs:/jar/flink/demo/SocketWindowWordCount.jar',
-'main-class'='org.apache.flink.streaming.examples.socket',
+'main-class'='org.apache.flink.streaming.examples.socket.SocketWindowWordCount',
 'args'=' --hostname localhost '
 );
 ```
