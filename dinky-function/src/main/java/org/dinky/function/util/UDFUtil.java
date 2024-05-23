@@ -154,7 +154,7 @@ public class UDFUtil {
         }
     }
 
-    public static String[] initJavaUDF(List<UDF> udf, GatewayType gatewayType, Integer missionId) {
+    public static String[] initJavaUDF(List<UDF> udf, Integer missionId) {
         return FunctionFactory.initUDF(
                         CollUtil.newArrayList(
                                 CollUtil.filterNew(udf, x -> x.getFunctionLanguage() != FunctionLanguage.PYTHON)),
