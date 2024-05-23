@@ -568,8 +568,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 UDF udf = UDFUtils.taskToUDF(task.buildTask());
                 try {
                     FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
-                }catch (Throwable e){
-                    throw new BusException("UDF compilation failed and cannot be published. The error message is as follows:"+e.getMessage());
+                } catch (Throwable e) {
+                    throw new BusException(
+                            "UDF compilation failed and cannot be published. The error message is as follows:"
+                                    + e.getMessage());
                 }
                 UdfCodePool.addOrUpdate(udf);
             }
