@@ -1,6 +1,6 @@
 ---
-sidebar_position: 7
-position: 7
+sidebar_position: 111
+position: 111
 id: code_format
 title: 代码格式化
 ---

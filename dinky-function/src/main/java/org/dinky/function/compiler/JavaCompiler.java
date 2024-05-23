@@ -24,38 +24,44 @@ import org.dinky.function.data.model.UDF;
 
 import org.apache.flink.configuration.ReadableConfig;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * java 编译
- *
- * @since 0.6.8
  */
 @Slf4j
 public class JavaCompiler implements FunctionCompiler {
+    private static final Set<String> COMPILER_CACHE = new HashSet<>();
 
     /**
      * 函数代码在线动态编译
      *
-     * @param udf udf
-     * @param conf flink-conf
+     * @param udf       udf
+     * @param conf      flink-conf
      * @param missionId 任务id
      * @return 是否成功
      */
     @Override
-    public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
+    public synchronized boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
+        String key = udf.getClassName() + udf.getFunctionLanguage();
+        if (COMPILER_CACHE.contains(key)) {
+            return true;
+        }
         // TODO 改为ProcessStep注释
-        log.info("正在编译 java 代码 , class: " + udf.getClassName());
+        log.info("Compiling java code, class: {}", udf.getClassName());
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(udf.getCode());
         boolean res = compiler.compilerToTmpPath(PathConstant.getUdfCompilerJavaPath(missionId));
         String className = compiler.getFullClassName();
         if (res) {
-            log.info("class编译成功:" + className);
-            log.info("compilerTakeTime：" + compiler.getCompilerTakeTime());
+            log.info("class编译成功:{}", className);
+            log.info("compiler take time：{}", compiler.getCompilerTakeTime());
+            COMPILER_CACHE.add(key);
             return true;
         } else {
             log.error("class编译失败:{}", className);
-            log.error("class编译失败:" + className);
             log.error(compiler.getCompilerMessage());
             return false;
         }

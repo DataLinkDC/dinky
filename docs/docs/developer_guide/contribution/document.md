@@ -1,6 +1,6 @@
 ---
-sidebar_position: 5
-position: 5
+sidebar_position: 110
+position: 110
 id: document
 title: 文档贡献
 ---

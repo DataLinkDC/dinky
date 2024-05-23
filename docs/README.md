@@ -4,14 +4,15 @@
 
 ## 条件
 
-Dinky 网站基于 Docusaurus 。如果您的 Docusaurus 版本低于 2.2.0，请升级到 2.2.0。另请确保您的Node版本为 14.x。
+Dinky 网站基于 Docusaurus 。如果您的 Docusaurus 版本低于 2.2.0，请升级到 2.2.0。另请确保您的Node版本为 18+。
 
 ### 安装
 
 ```shell
-yarn 
+yarn  
 或者
-npm i
+npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps --registry https://repo.huaweicloud.com/repository/npm/
+
 ```
 ### 本地启动
 

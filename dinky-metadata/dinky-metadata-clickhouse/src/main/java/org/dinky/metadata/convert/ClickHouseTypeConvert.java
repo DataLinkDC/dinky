@@ -20,6 +20,10 @@
 package org.dinky.metadata.convert;
 
 import org.dinky.data.enums.ColumnType;
+import org.dinky.data.model.Column;
+import org.dinky.metadata.enums.ClickHouseDataTypeEnum;
+
+import java.util.Objects;
 
 /**
  * ClickHouseTypeConvert
@@ -28,30 +32,20 @@ import org.dinky.data.enums.ColumnType;
  */
 public class ClickHouseTypeConvert extends AbstractJdbcTypeConvert {
 
-    // Use mysql now,and welcome to fix it.
-    public ClickHouseTypeConvert() {
-        this.convertMap.clear();
-        register("tinyint", ColumnType.BYTE);
-        register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
-        register("bigint unsigned", ColumnType.DECIMAL);
-        register("numeric", ColumnType.DECIMAL);
-        register("decimal", ColumnType.DECIMAL);
-        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
-        register("int unsigned", ColumnType.LONG);
-        register("float", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
-        register("double", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
-        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
-        register("tinyint(1)", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
-        register("datetime", ColumnType.TIMESTAMP);
-        register("date", ColumnType.DATE);
-        register("time", ColumnType.TIME);
-        register("char", ColumnType.STRING);
-        register("text", ColumnType.STRING);
-        register("binary", ColumnType.BYTES);
-        register("blob", ColumnType.BYTES);
-        register("int", ColumnType.INT, ColumnType.INTEGER);
-        register("mediumint", ColumnType.INT, ColumnType.INTEGER);
-        register("smallint unsigned", ColumnType.INT, ColumnType.INTEGER);
+    @Override
+    public ColumnType convert(Column column) {
+        if (Objects.isNull(column)) {
+            return ColumnType.STRING;
+        }
+        String type = column.getType();
+        if (Objects.isNull(type)) {
+            return ColumnType.STRING;
+        }
+        ColumnType columnType = ClickHouseDataTypeEnum.of(type).getColumnType();
+        if (Objects.nonNull(columnType)) {
+            return columnType;
+        }
+        return ColumnType.STRING;
     }
 
     @Override

@@ -280,6 +280,13 @@
                 <include>Dockerfile</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/deploy</directory>
+            <outputDirectory>deploy</outputDirectory>
+            <includes>
+                <include>**/**</include>
+            </includes>
+        </fileSet>
         <!--<fileSet>
             <directory>${project.parent.basedir}/dinky-web/dist</directory>
             <outputDirectory>html</outputDirectory>
