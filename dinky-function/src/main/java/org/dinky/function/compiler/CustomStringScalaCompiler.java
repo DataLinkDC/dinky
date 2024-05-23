@@ -21,6 +21,8 @@ package org.dinky.function.compiler;
 
 import org.dinky.function.constant.PathConstant;
 
+import org.apache.flink.table.catalog.FunctionLanguage;
+
 import lombok.extern.slf4j.Slf4j;
 import scala.runtime.AbstractFunction1;
 import scala.runtime.BoxedUnit;
@@ -40,12 +42,12 @@ public class CustomStringScalaCompiler {
         }
     }
 
-    public static IMain getInterpreter(Integer missionId) {
+    public static IMain getInterpreter() {
 
         GenericRunnerSettings settings = new GenericRunnerSettings(new ErrorHandler());
 
         settings.usejavacp().tryToSetFromPropertyValue("true");
-        settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.getUdfCompilerJavaPath(missionId));
+        settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.getUdfCompilerPath(FunctionLanguage.JAVA));
         return new IMain(settings);
     }
 }
