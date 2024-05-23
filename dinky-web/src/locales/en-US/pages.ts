@@ -465,7 +465,7 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available/Is it in an enabled state',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.watermark':
@@ -478,9 +478,6 @@ export default {
   'pages.datastudio.label.jobConfig.fragment': 'Global variables',
   'pages.datastudio.label.jobConfig.fragment.tip':
     '[Enhanced Features] Enable FlinkSql global variables, use "',
-  'pages.datastudio.label.jobConfig.insert': 'Insert StatementSet',
-  'pages.datastudio.label.jobConfig.insert.tip':
-    '[Enhanced Features] Enable the statement set mechanism, multiple Insert statements will be combined into one JobGraph before submission, and the Select statement is invalid',
   'pages.datastudio.label.jobConfig.other': 'Other Config',
   'pages.datastudio.label.jobConfig.other.tip':
     'Other Config items will be applied to the execution environment, such as pipeline.name',
