@@ -3,13 +3,13 @@ version: "3.9"
 services:
   mysql:
     build:
-      context: ..
+      context: ../..
       dockerfile: ${PWD:-.}/DockerfileMysql
 
   dinky:
     image: dinky-standalone-server:${DINKY_VERSION}
     build:
-      context: ..
+      context: ../..
       dockerfile: ${PWD:-.}/Dockerfile
       args:
         - DINKY_VERSION
@@ -18,7 +18,7 @@ services:
 
   standalone:
     build:
-      context: ..
+      context: ../..
       dockerfile: ${PWD:-.}/DockerfileDinkyFlink
       args:
         - FLINK_BIG_VERSION
@@ -31,5 +31,5 @@ services:
 
   web:
     build:
-      context: ..
+      context: ../..
       dockerfile: ${PWD:-.}/DockerfileWeb

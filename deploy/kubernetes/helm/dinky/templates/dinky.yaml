@@ -1,0 +1,169 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dinky.name" . }}
+  namespace: {{ .Release.Namespace | default "default"}}
+  labels:
+    {{- include "dinky.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.spec.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "dinky.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "dinky.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.spec.affinity }}
+      affinity:
+      {{- toYaml .Values.spec.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.spec.nodeSelector }}
+      nodeSelector:
+      {{- toYaml .Values.spec.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.spec.tolerations }}
+      tolerations:
+      {{- toYaml .Values.spec.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      {{- end }}
+      serviceAccountName: {{ include "dinky.serviceAccountName" . }}
+      containers:
+        - image: {{ .Values.image.repository }}:{{ .Values.image.tag}}
+          name: {{ .Chart.Name }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.spec.name }}
+              containerPort: {{ .Values.spec.containerPort }}
+              protocol: TCP
+          env:
+            {{- if .Values.mysql.enabled }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.auth.database }}
+            {{- else  if .Values.postgresql.enabled }}
+            - name: POSTGRES_DB
+              value: {{ .Values.postgresql.auth.database }}
+            {{- else }}
+            {{ if eq .Values.externalDatabase.type "mysql" }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.externalDatabase.auth.database }}
+            {{- else }}
+            - name: POSTGRES_DB
+              value: {{ .Values.externalDatabase.auth.database }}
+            {{- end }}
+            {{- end }}
+            {{- include "dinky.dbActive" . | nindent 12 }}
+          envFrom:
+            {{- if .Values.mysql.enabled }}
+            - secretRef:
+                name: {{ include "dinky.name" . }}-mysql
+            {{- end }}
+            {{- if .Values.postgresql.enabled }}
+            - secretRef:
+                name: {{ include "dinky.name" . }}-postgres
+            {{- end }}
+            {{- if .Values.externalDatabase.enabled }}
+            {{ if eq .Values.externalDatabase.type "mysql" }}
+            - secretRef:
+                name: {{ include "dinky.name" . }}-mysql
+            {{- else }}
+            - secretRef:
+                name: {{ include "dinky.name" . }}-postgres
+            {{- end }}
+            {{- end }}
+          securityContext:
+            privileged: false
+          command:
+            - /bin/bash
+            - '-c'
+            - >-
+              /dinky/auto.sh startOnPending {{ .Values.spec.extraEnv.flinkVersion}}
+          args:
+          {{- if .Values.spec.livenessProbe.enabled }}
+          livenessProbe:
+            exec:
+              command: [ "curl", "-s", "http://localhost:{{ .Values.spec.containerPort }}/actuator/health/liveness" ]
+            initialDelaySeconds: {{ .Values.spec.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.spec.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.spec.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.spec.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.spec.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.spec.readinessProbe.enabled }}
+          readinessProbe:
+            exec:
+              command: [ "curl", "-s", "http://localhost:{{ .Values.spec.containerPort }}/actuator/health/readiness" ]
+            initialDelaySeconds: {{ .Values.spec.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.spec.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.spec.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.spec.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.spec.readinessProbe.failureThreshold }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: /dinky/conf/application.properties
+              name: dinky-config-volume
+              subPath: application.properties
+            - mountPath: /dinky/conf/application.yml
+              name: dinky-config-volume
+              subPath: application.yml
+            - mountPath: /dinky/conf/application-h2.yml
+              name: dinky-config-volume
+              subPath: application-h2.yml
+            - mountPath: /dinky/conf/application-jmx.yml
+              name: dinky-config-volume
+              subPath: application-jmx.yml
+            - mountPath: /dinky/conf/application-mysql.yml
+              name: dinky-config-volume
+              subPath: application-mysql.yml
+            - mountPath: /dinky/conf/application-pgsql.yml
+              name: dinky-config-volume
+              subPath: application-pgsql.yml
+            - mountPath: /dinky/conf/log4j2.xml
+              name: dinky-config-volume
+              subPath: log4j2.xml
+            - mountPath: /dinky/conf/jmx/jmx_exporter_config.yaml
+              name: dinky-config-volume
+              subPath: jmx_exporter_config.yaml
+          resources:
+            {{- toYaml .Values.spec.resources | nindent 12 }}
+      volumes:
+        - name: dinky-config-volume
+          configMap:
+            name: dinky-config
+            items:
+              - key: application.properties
+                path: application.properties
+              - key: application.yml
+                path: application.yml
+              - key: application-h2.yml
+                path: application-h2.yml
+              - key: application-jmx.yml
+                path: application-jmx.yml
+              - key: application-mysql.yml
+                path: application-mysql.yml
+              - key: application-pgsql.yml
+                path: application-pgsql.yml
+              - key: log4j2.xml
+                path: log4j2.xml
+              - key: jmx_exporter_config.yaml
+                path: jmx_exporter_config.yaml
