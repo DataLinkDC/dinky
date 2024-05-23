@@ -75,7 +75,7 @@ const JobConfig = (props: any) => {
 
   const [form] = useForm();
 
-  const [selectRunMode, setSelectRunMode] = useState<string>(current?.type);
+  const [selectRunMode, setSelectRunMode] = useState<string>(current?.type ?? RUN_MODE.LOCAL);
 
   const { initialState, setInitialState } = useModel('@@initialState');
 
@@ -93,7 +93,7 @@ const JobConfig = (props: any) => {
     dispatch({
       type: ALERT_MODEL_ASYNC.queryAlertGroup
     });
-    setSelectRunMode(current?.type);
+    setSelectRunMode(current?.type ?? RUN_MODE.LOCAL);
     form.setFieldsValue({ ...current, type: current?.type });
   }, [current]);
 
@@ -181,7 +181,7 @@ const JobConfig = (props: any) => {
                     type: current?.type
                   })}
                   label={l('pages.datastudio.label.jobConfig.cluster')}
-                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
                     type: current?.type
                   })}
                   rules={[
