@@ -69,7 +69,8 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
         log.info("正在编译 python 代码 , class: " + udf.getClassName());
         File pyFile = FileUtil.writeUtf8String(
                 udf.getCode(),
-                PathConstant.getUdfCompilerPythonPath(missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
+                PathConstant.getUdfCompilerPath(
+                        FunctionLanguage.PYTHON, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
         File zipFile = ZipUtil.zip(pyFile);
         FileUtil.del(pyFile);
         try {
@@ -83,12 +84,12 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
                     SystemConfiguration.getInstances().getPythonHome());
 
             PythonFunctionFactory.getPythonFunction(udf.getClassName(), configuration, null);
-            log.info("Python udf编译成功 ; className:" + udf.getClassName());
+            log.info("Python udf compiled successfully; className:{}", udf.getClassName());
         } catch (Exception e) {
-            log.error("Python udf编译失败 ; className:"
-                    + udf.getClassName()
-                    + " 。 原因： "
-                    + ExceptionUtil.getRootCauseMessage(e));
+            log.error(
+                    "Python udf compilation failed; className:{}\n.reason: {}",
+                    udf.getClassName(),
+                    ExceptionUtil.getRootCauseMessage(e));
             return false;
         }
         FileUtil.del(zipFile);
@@ -112,8 +113,8 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
                 .map(udf -> {
                     File file = FileUtil.writeUtf8String(
                             udf.getCode(),
-                            PathConstant.getUdfCompilerPythonPath(
-                                    missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
+                            PathConstant.getUdfCompilerPath(
+                                    FunctionLanguage.PYTHON, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
                     return FileUtil.getInputStream(file);
                 })
                 .toArray(InputStream[]::new);
