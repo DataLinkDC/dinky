@@ -37,4 +37,7 @@ ALTER TABLE dinky_udf_manage DROP COLUMN `language`;
 ALTER TABLE dinky_resources CHANGE COLUMN `file_name` `file_name` varchar(64) DEFAULT NULL COMMENT 'file name';
 
 
+ALTER TABLE dinky_resources CHANGE COLUMN `file_name` `file_name` varchar(64) DEFAULT NULL COMMENT 'file name';
+
+
 SET FOREIGN_KEY_CHECKS = 1;

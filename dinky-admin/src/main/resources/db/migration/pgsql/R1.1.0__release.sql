@@ -27,5 +27,4 @@ UPDATE public.dinky_user SET "password" = '21232f297a57a5a743894a0e4a801fc3' WHE
 
 ALTER TABLE public.dinky_resources ALTER COLUMN file_name TYPE varchar(64);
 
--- 删除 SELECT add_column_if_not_exists('public','dinky_udf_manage', 'language', 'varchar(10)', 'null', 'udf language');
 alter table public.dinky_udf_manage drop column "language";
