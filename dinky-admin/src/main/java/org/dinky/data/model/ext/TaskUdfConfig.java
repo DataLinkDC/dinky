@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskUdfConfig implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5981544561742928810L;
 
     @ApiModelProperty(value = "Template ID", dataType = "Integer", example = "1", notes = "ID of the UDF template")
     private Integer templateId;

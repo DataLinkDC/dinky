@@ -161,6 +161,9 @@ public class Task extends SuperEntity<Task> {
             notes = "ID of the version associated with the task")
     private Integer versionId;
 
+    @ApiModelProperty(value = "Enabled", dataType = "Boolean", example = "true", notes = "Whether the task is enabled")
+    private Boolean enabled;
+
     @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
 

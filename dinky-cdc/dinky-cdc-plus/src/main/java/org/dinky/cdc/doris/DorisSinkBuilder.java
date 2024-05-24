@@ -19,6 +19,12 @@
 
 package org.dinky.cdc.doris;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Table;
+
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
@@ -30,11 +36,6 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.utils.TypeConversions;
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.AbstractSinkBuilder;
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Table;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -183,7 +184,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         DorisSink.Builder<RowData> builder = DorisSink.builder();
         builder.setDorisReadOptions(readOptionBuilder.build())
                 .setDorisExecutionOptions(executionBuilder.build())
-                .setSerializer( RowDataSerializer.builder()
+                .setSerializer(RowDataSerializer.builder()
                         .setFieldNames(columnNames)
                         .setType("json")
                         .enableDelete(true)

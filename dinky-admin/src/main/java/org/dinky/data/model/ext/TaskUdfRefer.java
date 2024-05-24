@@ -17,29 +17,25 @@
  *
  */
 
-package org.dinky.data.vo;
+package org.dinky.data.model.ext;
 
 import java.io.Serializable;
-import java.util.Date;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class UDFManageVO implements Serializable {
-    private Integer id;
-    private String name;
-    private Boolean enabled;
-    private String className;
-    private String language;
-    private Integer taskId;
-    private Integer resourcesId;
-    /**
-     * develop or resources
-     */
-    private String source;
+@ApiModel(value = "TaskUdfRefer", description = "UDF (User-Defined Function) refer for Task")
+@AllArgsConstructor
+@NoArgsConstructor
+public class TaskUdfRefer implements Serializable {
 
-    private String dialect;
-    private String fileName;
-    private Date createTime;
-    private Date updateTime;
+    @ApiModelProperty(value = "function name", dataType = "String", example = "add", notes = "Nmae of the UDF function")
+    private String name;
+
+    @ApiModelProperty(value = "Class Name", dataType = "String", notes = "Name of the UDF class")
+    private String className;
 }
