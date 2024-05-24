@@ -96,7 +96,7 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
             dataType = "Boolean",
             example = "test",
             notes = "is auto registers, if this record from projob/application mode , it will be true")
-    private Boolean autoRegisters;
+    private boolean autoRegisters;
 
     @ApiModelProperty(
             value = "clusterConfigurationId",

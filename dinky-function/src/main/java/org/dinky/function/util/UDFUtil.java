@@ -154,7 +154,7 @@ public class UDFUtil {
         }
     }
 
-    public static String[] initJavaUDF(List<UDF> udf, GatewayType gatewayType, Integer missionId) {
+    public static String[] initJavaUDF(List<UDF> udf, Integer missionId) {
         return FunctionFactory.initUDF(
                         CollUtil.newArrayList(
                                 CollUtil.filterNew(udf, x -> x.getFunctionLanguage() != FunctionLanguage.PYTHON)),
@@ -214,7 +214,7 @@ public class UDFUtil {
                 }
             } else if (udf.getFunctionLanguage() == FunctionLanguage.SCALA) {
                 String className = udf.getClassName();
-                if (CustomStringScalaCompiler.getInterpreter(null).compileString(udf.getCode())) {
+                if (CustomStringScalaCompiler.getInterpreter().compileString(udf.getCode())) {
                     log.info("scala class compile successful:{}", className);
                     ClassPool.push(ClassEntity.build(className, udf.getCode()));
                     successList.add(className);
