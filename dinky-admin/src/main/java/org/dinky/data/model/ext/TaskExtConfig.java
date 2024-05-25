@@ -22,6 +22,8 @@ package org.dinky.data.model.ext;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.ext.ConfigItem;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +50,12 @@ public class TaskExtConfig implements Serializable {
             dataType = "TaskUdfConfig",
             notes = "UDF (User-Defined Function) configuration for the task")
     private TaskUdfConfig udfConfig;
+
+    @ApiModelProperty(
+            value = "UDF Refer",
+            dataType = "TaskUdfRefer",
+            notes = "UDF (User-Defined Function) reference for the task")
+    private List<TaskUdfRefer> udfRefer;
 
     @ApiModelProperty(
             value = "Custom Config",
@@ -77,6 +85,25 @@ public class TaskExtConfig implements Serializable {
                 ? customConfig.stream()
                         .filter(item -> item.getKey() != null && item.getValue() != null)
                         .collect(Collectors.toMap(ConfigItem::getKey, ConfigItem::getValue))
+                : new HashMap<>();
+    }
+
+    // udfRefer-value的所有key-value
+    @JsonIgnore
+    public Map<String, String> getUdfReferMaps() {
+        return Asserts.isNotNullCollection(udfRefer)
+                ? udfRefer.stream()
+                        .filter(item -> item.getClassName() != null)
+                        .map(t -> {
+                            if (StringUtils.isEmpty(t.getName())) {
+                                String name = t.getClassName()
+                                        .substring(t.getClassName().lastIndexOf(".") + 1);
+                                name = name.substring(0, 1).toLowerCase() + name.substring(1);
+                                t.setName(name);
+                            }
+                            return t;
+                        })
+                        .collect(Collectors.toConcurrentMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
                 : new HashMap<>();
     }
 

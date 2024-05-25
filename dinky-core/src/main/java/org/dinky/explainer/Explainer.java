@@ -58,8 +58,10 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -114,7 +116,15 @@ public class Explainer {
         List<String> statementList = new ArrayList<>();
         List<UDF> udfList = new ArrayList<>();
         StrBuilder parsedSql = new StrBuilder();
-        for (String item : statements) {
+
+        List<String> statementsWithUdf = Arrays.stream(statements).collect(Collectors.toList());
+        Optional.ofNullable(jobManager.getConfig().getUdfRefer())
+                .ifPresent(t -> t.forEach((key, value) -> {
+                    String sql = String.format("create temporary function %s as '%s'", value, key);
+                    statementsWithUdf.add(0, sql);
+                }));
+
+        for (String item : statementsWithUdf) {
             String statement = executor.pretreatStatement(item);
             parsedSql.append(statement).append(";\n");
             if (statement.isEmpty()) {

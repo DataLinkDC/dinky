@@ -17,13 +17,21 @@
  *
  */
 
--- Increase class_name column's length from 50 to 100.
-ALTER TABLE dinky_udf_manage ALTER COLUMN class_name TYPE VARCHAR(100);
+CREATE TABLE "public"."_dinky_flyway_schema_history" (
+                                                         "installed_rank" int4 NOT NULL,
+                                                         "version" varchar(50) COLLATE "pg_catalog"."default",
+                                                         "description" varchar(200) COLLATE "pg_catalog"."default" NOT NULL,
+                                                         "type" varchar(20) COLLATE "pg_catalog"."default" NOT NULL,
+                                                         "script" varchar(1000) COLLATE "pg_catalog"."default" NOT NULL,
+                                                         "checksum" int4,
+                                                         "installed_by" varchar(100) COLLATE "pg_catalog"."default" NOT NULL,
+                                                         "installed_on" timestamp(6) NOT NULL DEFAULT now(),
+                                                         "execution_time" int4 NOT NULL,
+                                                         "success" bool NOT NULL DEFAULT false,
+                                                         CONSTRAINT "_dinky_flyway_schema_history_pk" PRIMARY KEY ("installed_rank")
+)
+;
 
-COMMENT ON COLUMN dinky_udf_manage.class_name IS 'Complete class name';
-
-alter table dinky_task add column first_level_owner int;
-alter table dinky_task add column second_level_owners varchar(128);
-
-COMMENT ON COLUMN dinky_task.first_level_owner IS 'primary responsible person id';
-COMMENT ON COLUMN dinky_task.second_level_owners IS 'list of secondary responsible persons ids';
+CREATE INDEX "_dinky_flyway_schema_history_s_idx" ON "public"."_dinky_flyway_schema_history" USING btree (
+    "success" "pg_catalog"."bool_ops" ASC NULLS LAST
+    );

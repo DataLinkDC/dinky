@@ -22,6 +22,7 @@ package org.dinky.utils;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.udf.UDFManage;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 
@@ -39,6 +40,20 @@ public class UDFUtils extends UDFUtil {
                     .build();
         } else {
             throw new BusException("udf `class` config is null,please check your udf task config");
+        }
+    }
+
+    public static UDF resourceUdfManageToUDF(UDFManage udfManage) {
+        if (Asserts.isNotNull(udfManage)) {
+            return UDF.builder()
+                    .name(udfManage.getName())
+                    .className(udfManage.getClassName())
+                    .functionLanguage(
+                            FunctionLanguage.valueOf(udfManage.getLanguage().toUpperCase()))
+                    .build();
+        } else {
+            throw new BusException(
+                    "udf `class` config is null, Please check if the resource file to which this udf belongs exists");
         }
     }
 }
