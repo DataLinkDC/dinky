@@ -78,7 +78,7 @@ public class AppConfig implements WebMvcConfigurer {
                     }
                     StpUtil.checkLogin();
                 }))
-                .addPathPatterns("/api/**")
+                .addPathPatterns("/api/**", "/openapi/createTaskAndSend2Ds", "/openapi/saveTask")
                 .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
 
         registry.addInterceptor(new TenantInterceptor())
