@@ -43,6 +43,9 @@ public class UDFManage extends SuperEntity<UDFManage> {
     @ApiModelProperty(value = "Class Name", dataType = "String", notes = "Class Name")
     private String className;
 
+    @ApiModelProperty(value = "Language", dataType = "String", notes = "Language")
+    private String language;
+
     @ApiModelProperty(value = "Task Id", dataType = "Integer", notes = "Task Id")
     private Integer taskId;
 

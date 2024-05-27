@@ -192,6 +192,7 @@ public enum Status {
     JOB_ALERT_MAX_SEND_COUNT(12013, "job.alert.max.send.count"),
     MODE_IS_NOT_ALLOW_SELECT(12014, "mode.is.not.allow.select"),
     OPERATE_NOT_SUPPORT_QUERY(12015, "operate.not.support.query"),
+    TASK_NOT_OPERATE_PERMISSION(12016, "task.not.operate.permission"),
 
     /**
      * alert instance
@@ -363,6 +364,8 @@ public enum Status {
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE(1174, "sys.env.settings.maxRetainCount.note"),
     SYS_ENV_SETTINGS_EXPRESSION_VARIABLE(1175, "sys.env.settings.expressionVariable"),
     SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE(1176, "sys.env.settings.expressionVariable.note"),
+    SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY(1177, "sys.env.settings.taskOwnerLockStrategy"),
+    SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY_NOTE(1178, "sys.env.settings.taskOwnerLockStrategy.note"),
 
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE(118, "sys.dolphinscheduler.settings.enable"),
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE(119, "sys.dolphinscheduler.settings.enable.note"),
@@ -446,7 +449,11 @@ public enum Status {
     PROCESS_SUBMIT_BUILDCONFIG(193, "process.submit.buildConfig"),
     PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
     PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
-    PROCESS_REGISTER_EXITS(196, "process.register.exits");
+    PROCESS_REGISTER_EXITS(196, "process.register.exits"),
+    PROCESS_CLEAR_LOG_SUCCESS(198, "process.clear.log.success"),
+    PROCESS_CLEAR_LOG_FAILED(199, "process.clear.log.failed"),
+    ;
+
 
     private final int code;
     private final String key;

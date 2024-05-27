@@ -66,6 +66,13 @@ export default {
   'catalog.udf.className.placeholder': '请输入类或方法名',
   'catalog.udf.templateId': 'UDF 模板',
   'catalog.udf.templateId.placeholder': '请选择 UDF 模板',
+  'catalog.firstLevelOwner': '责任人',
+  'catalog.firstLevelOwner.tip1': '请选择任务责任人',
+  'catalog.firstLevelOwner.tip2': '选择任务责任人，对任务负有直接责任',
+  'catalog.secondLevelOwners': '维护人',
+  'catalog.secondLevelOwners.tip1': '请选择任务维护人',
+  'catalog.secondLevelOwners.tip2': '选择任务维护人，对任务负有间接责任',
+
   /**
    *
    * datastudio
@@ -82,7 +89,7 @@ export default {
   'datastudio.middle.qg.fragment': '全局变量',
   'datastudio.middle.qg.gitprojects': 'Git 项目',
   'datastudio.middle.qg.resource': '资源',
-  'datastudio.middle.qg.alertRule': '告警规则',
+  'datastudio.middle.qg.alertRule': '告警策略',
   'datastudio.middle.qg.alertTemplate': '注册告警模板',
   'datastudio.middle.qg.accountCenter': '个人中心',
   'datastudio.middle.qg.globalsetting': '全局配置',
@@ -90,6 +97,8 @@ export default {
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': '将任务 [ {name} ] 推送至 DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky任务编码',
+  'datastudio.header.pushdolphin.taskGroup': '任务组',
+  'datastudio.header.pushdolphin.taskGroupPriority': '组内优先级',
   'datastudio.header.pushdolphin.taskName': 'Task名称: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task类型: {type} 所属进程定义: {processDefinitionName}',
@@ -288,6 +297,7 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': '用户名',
   'login.username.required': '用户名是必填项！',
+  'login.token.error': '无法获取token信息/会话已过期，即将跳转到登录页,请重新登录...',
   /**
    *
    * menu
@@ -373,6 +383,7 @@ export default {
   'pages.datastudio.editor.checking': '任务【{jobName}】正在检查',
   'pages.datastudio.editor.debugging': '新任务【{jobName}】正在调试',
   'pages.datastudio.editor.onlyread': '任务已发布，禁止修改，请先下线任务',
+  'pages.datastudio.editor.onlyread.lock': '无任务操作权限，请联系任务责任人获取',
   'pages.datastudio.editor.notsave': '当前修改内容未保存！',
   'pages.datastudio.editor.notsave.note': '继续将抛弃所修改内容，确定继续吗？',
   'pages.datastudio.to.jobDetail': '运维',
@@ -418,6 +429,12 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',
   'pages.datastudio.label.jobConfig.addConfig.value': '值',
+  'pages.datastudio.label.udf': '注入UDF算子',
+  'pages.datastudio.label.udf.tip': '注入UDF算子, 自动在所有语句前注入`create temporary function [functionName] as [className]` 语句',
+  'pages.datastudio.label.udf.duplicate.tip': '此次选择的类[className]已经存在,不允许重复注入,请重新选择,或者取消注入(删除改行即可)。',
+  'pages.datastudio.label.udf.injectUdf': '注入UDF',
+  'pages.datastudio.label.udf.name': '函数名称',
+  'pages.datastudio.label.udf.className': '类名',
   'pages.datastudio.label.jobConfig.alertGroup': '告警组',
   'pages.datastudio.label.jobConfig.alertGroup.tip': '选择告警组',
   'pages.datastudio.label.jobConfig.batchmode': '批模式',
@@ -428,19 +445,20 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     '选择Flink集群配置进行【{type}】模式的远程提交任务',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
+    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态/是否为启用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
   'pages.datastudio.label.jobConfig.watermark': '当前任务已发布，配置禁止修改，如需修改，请先下线',
+  'pages.datastudio.label.jobConfig.lock':
+    '当前任务无权限，配置禁止修改，如需修改，请联系任务责任人获取权限',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',
   'pages.datastudio.label.jobConfig.fragment': '全局变量',
-  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量，使用“',
-  'pages.datastudio.label.jobConfig.insert': 'Insert语句集',
-  'pages.datastudio.label.jobConfig.insert.tip':
-    '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
+  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量',
   'pages.datastudio.label.jobConfig.other': '其他配置',
   'pages.datastudio.label.jobConfig.other.tip': '其他配置项，将被应用于执行环境，如 pipeline.name',
+  'pages.datastudio.label.jobConfig.udf': 'UDF注入',
+  'pages.datastudio.label.jobConfig.udf.tip': '自动注入UDF算子',
   'pages.datastudio.label.jobConfig.parallelism': '任务并行度',
   'pages.datastudio.label.jobConfig.parallelism.tip': '设置Flink任务的并行度，最小为 1',
   'pages.datastudio.label.jobConfig.savePointStrategy': 'Savepoint策略',
@@ -452,6 +470,8 @@ export default {
   'pages.datastudio.label.jobInfo.id': '任务ID',
   'pages.datastudio.label.jobInfo.name': '任务名称',
   'pages.datastudio.label.jobInfo.versionId': '版本号',
+  'pages.datastudio.label.jobInfo.firstLevelOwner': '责任人',
+  'pages.datastudio.label.jobInfo.secondLevelOwners': '维护人',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',
@@ -524,7 +544,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': '请输入AccessKeySecret',
   'rc.ai.action': '接口方法',
   'rc.ai.actionPleaseHolder': '请输入接口方法',
-  'rc.ai.agentId': '代理ID',
+  'rc.ai.agentId': '应用ID（AgentId）',
   'rc.ai.agentIdPleaseHolder': '请输入 AgentId',
   'rc.ai.sendUrl': '企微发送地址',
   'rc.ai.sendUrlPleaseHolder': '请输入发送地址可输入代理地址',
@@ -750,8 +770,10 @@ export default {
   'rc.cc.sqlSubmitJarPath': 'Jar 文件路径',
   'rc.cc.sqlSubmitJarPathHelp':
     '请输入 Jar 文件路径! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelpTips':
+    'Yarn 模式下此参数可以设置为: hdfs:///dinky/dinky-app-1.17-with-dependencies.jar 或者 rs:/dinky/dinky-app-1.17-with-dependencies.jar 如果设置为 rs:/ 协议,则需要将该jar包上传到 Dinky 的资源中心中,然后填写该路径。K8s 模式下仅支持 local:// 协议',
   'rc.cc.start': '启动 Session 集群',
-  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项 (Application 模式必填)',
+  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项',
   'rc.cc.tmHeap': 'TaskManager 堆内存',
   'rc.cc.tmHeapHelp': '请输入 TaskManager 堆内存大小! 此参数配置项为',
   'rc.cc.tmMem': 'TaskManager 内存',
@@ -832,6 +854,7 @@ export default {
   'rc.ds.delete': '删除数据源',
   'rc.ds.deleteConfirm': '确定删除该数据源吗？',
   'rc.ds.detail.tag.console': '控制台',
+  'rc.ds.detail.tag.console.clear.log': '清除日志...',
   'rc.ds.detail.tag.desc': '描述',
   'rc.ds.detail.tag.gensql': '生成 SQL',
   'rc.ds.detail.tag.query': '查询',
@@ -940,7 +963,15 @@ export default {
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
-  'rc.resource.copy': '复制为: {fillValue}',
+  'rc.resource.sync.confirm': '请注意: 该操作会删除数据库内的所有记录,且会关系到运行中的作业,以及UDF管理中引用的对应资源文件.从而导致作业运行失败。以及在 UDF管理中的 UDF 无法被使用. 请谨慎操作!! 请确认是否继续? ',
+  'rc.resource.copy_to_add_custom_jar': '复制为 ADD CUSTOMJAR 语法',
+  'rc.resource.copy_to_add_jar': '复制为 ADD JAR 语法',
+  'rc.resource.copy_to_add_file': '复制为 ADD FILE 语法',
+  'rc.resource.copy_to_add_rs_path': '复制 RS 协议资源路径',
+  'rc.resource.copy_success':
+    '复制成功，值为：[{fillValue}] 已复制到剪贴板。请粘贴到需要的地方进行使用',
+  'rc.resource.enable': '未启用资源管理功能',
+  'rc.resource.enable.tips': '请前往 [配置中心 -> 全局配置 -> Resource 配置] 中启用资源管理功能!!!',
 
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',

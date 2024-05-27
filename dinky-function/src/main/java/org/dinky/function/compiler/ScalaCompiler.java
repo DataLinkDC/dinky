@@ -39,7 +39,7 @@ public class ScalaCompiler implements FunctionCompiler {
 
         String className = udf.getClassName();
         log.info("正在编译 scala 代码 , class: " + className);
-        if (CustomStringScalaCompiler.getInterpreter(missionId).compileString(udf.getCode())) {
+        if (CustomStringScalaCompiler.getInterpreter().compileString(udf.getCode())) {
             log.info("scala class编译成功:" + className);
             return true;
         } else {

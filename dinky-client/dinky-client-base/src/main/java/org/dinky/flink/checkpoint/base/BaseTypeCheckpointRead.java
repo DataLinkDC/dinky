@@ -22,6 +22,7 @@ package org.dinky.flink.checkpoint.base;
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.flink.checkpoint.BaseCheckpointRead;
 
+import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.runtime.state.PartitionableListState;
@@ -56,7 +57,8 @@ public class BaseTypeCheckpointRead extends BaseCheckpointRead {
         Map<Class<?>, BasicTypeInfo<?>> types = (Map<Class<?>, BasicTypeInfo<?>>)
                 ReflectUtil.getStaticFieldValue(ReflectUtil.getField(BasicTypeInfo.class, "TYPES"));
         for (Map.Entry<Class<?>, BasicTypeInfo<?>> entry : types.entrySet()) {
-            TypeSerializer<?> serializer = entry.getValue().createSerializer(null);
+            ExecutionConfig executionConfig = null;
+            TypeSerializer<?> serializer = entry.getValue().createSerializer(executionConfig);
             boolean equals = getArrayListSerializer(partitionableListState)
                     .getElementSerializer()
                     .getClass()

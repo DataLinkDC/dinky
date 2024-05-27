@@ -65,6 +65,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +104,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         typeConverterList = Lists.newArrayList(
                 this::convertVarCharType,
                 this::convertDateType,
+                this::convertTimeType,
                 this::convertVarBinaryType,
                 this::convertBigIntType,
                 this::convertFloatType,
@@ -272,15 +274,30 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         config.getSink().remove("timezone");
         if (Asserts.isNotNullString(timeZone)) {
             sinkTimeZone = ZoneId.of(timeZone);
+            logger.info("Sink timezone is {}", sinkTimeZone);
         }
 
         final List<Schema> schemaList = config.getSchemaList();
+        if (Asserts.isNullCollection(schemaList)) {
+            logger.warn("Schema list is empty, please check your configuration and try again.");
+            return dataStreamSource;
+        }
+
         final String schemaFieldName = config.getSchemaFieldName();
 
         if (Asserts.isNotNullCollection(schemaList)) {
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
             for (Schema schema : schemaList) {
-                for (Table table : schema.getTables()) {
+                if (Asserts.isNullCollection(schema.getTables())) {
+                    // if schema tables is empty, throw exception
+                    throw new IllegalArgumentException(
+                            "Schema tables is empty, please check your configuration or check your database permission and try again.");
+                }
+                // if schema tables is not empty, sort by table name
+                List<Table> tableList = schema.getTables().stream()
+                        .sorted(Comparator.comparing(Table::getName))
+                        .collect(Collectors.toList());
+                for (Table table : tableList) {
                     SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
 
                     List<String> columnNameList = new ArrayList<>();
@@ -307,8 +324,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     public LogicalType getLogicalType(Column column) {
         switch (column.getJavaType()) {
-            case STRING:
-                return new VarCharType();
             case BOOLEAN:
             case JAVA_LANG_BOOLEAN:
                 return new BooleanType();
@@ -351,6 +366,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 }
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
+            case STRING:
             default:
                 return new VarCharType();
         }
@@ -451,6 +467,16 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             return Optional.of(StringData.fromString(Instant.ofEpochMilli((long) target)
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate()
+                    .toString()));
+        }
+        return Optional.empty();
+    }
+
+    protected Optional<Object> convertTimeType(Object target, LogicalType logicalType) {
+        if (logicalType instanceof TimeType) {
+            return Optional.of(StringData.fromString(Instant.ofEpochMilli((long) target)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalTime()
                     .toString()));
         }
         return Optional.empty();

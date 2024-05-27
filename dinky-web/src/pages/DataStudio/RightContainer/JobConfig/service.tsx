@@ -34,6 +34,11 @@ export function getFlinkConfigs() {
   return queryDataByParams(API_CONSTANTS.FLINK_CONF_CONFIG_OPTIONS);
 }
 
-export function querySuggessionData(params: any) {
+export function getFlinkUdfOptions() {
+  return queryDataByParams(API_CONSTANTS.ALL_UDF_LIST);
+
+}
+
+export function querySuggestionData(params: any) {
   return getDataByParams(API_CONSTANTS.SUGGESTION_QUERY_ALL_SUGGESTIONS, params);
 }

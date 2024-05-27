@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -106,16 +108,33 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     } else if (null != column.getLength()) {
                         unit = String.format("(%s)", column.getLength());
                     }
+                    // Avoid parsing mismatches when the numeric data type column declared by UNSIGNED/ZEROFILL keyword
+                    String columnType = column.getType();
 
                     final String dv = column.getDefaultValue();
+                    // If it defaults to a numeric type, there is no need to include single quotes or a bit type
+                    String defaultValueTag = " DEFAULT '%s'";
+                    if (NumberUtil.isNumber(dv)
+                            || columnType.startsWith("bit")
+                            || (StrUtil.isNotEmpty(dv)
+                                    && dv.toLowerCase().trim().matches("^current_timestamp.*"))) {
+                        defaultValueTag = " DEFAULT %s";
+                    }
                     String defaultValue = Asserts.isNotNull(dv)
-                            ? String.format(" DEFAULT '%s'", dv.isEmpty() ? "''" : dv)
+                            ? String.format(defaultValueTag, StrUtil.isEmpty(dv) ? "''" : dv)
                             : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
+
+                    if (columnType.contains("unsigned") || columnType.contains("zerofill")) {
+                        String[] arr = columnType.split(" ");
+                        arr[0] = arr[0].concat(unit);
+                        columnType = String.join(" ", arr);
+                        unit = "";
+                    }
 
                     return String.format(
                             "  `%s`  %s%s%s%s%s",
                             column.getName(),
-                            column.getType(),
+                            columnType,
                             unit,
                             defaultValue,
                             column.isAutoIncrement() ? " AUTO_INCREMENT " : "",

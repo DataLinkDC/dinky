@@ -45,8 +45,6 @@ const Login: React.FC = () => {
 
   const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage('token', '');
 
-  const { reconnectSse } = useModel('Sse', (model: any) => ({ reconnectSse: model.reconnectSse }));
-
   const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',
@@ -104,7 +102,7 @@ const Login: React.FC = () => {
       const currentTime = Date.now();
       timeRemaining = expirationTime - currentTime;
       //  use setInterval to set a timer
-      timer = setInterval(() => redirectToLogin(), timeRemaining);
+      timer = setInterval(() => redirectToLogin(l('login.token.error')), timeRemaining);
     }
     return () => {
       clearTimeout(timer);
@@ -127,7 +125,6 @@ const Login: React.FC = () => {
       /**
        * Redirect to home page && reconnect Global Sse
        */
-      reconnectSse();
       gotoRedirectUrl();
     } else {
       ErrorMessage(l('login.chooseTenantFailed'));
@@ -158,6 +155,7 @@ const Login: React.FC = () => {
     const chooseTenantResult: API.Result = await chooseTenantSubmit({
       tenantId
     });
+
     await handleChooseTenant(chooseTenantResult);
   };
 
@@ -165,15 +163,15 @@ const Login: React.FC = () => {
     try {
       // login
       const result = await login({ ...values });
+
       if (result.code === 0) {
         // if login success then get token info and set it to local storage
         await queryDataByParams<SaTokenInfo>(API_CONSTANTS.TOKEN_INFO).then((res) => {
-          console.log(res);
           if (res) {
             setLocalStorageOfToken(JSON.stringify(res));
           } else {
             // 如果没有获取到token信息，直接跳转到登录页
-            redirectToLogin();
+            redirectToLogin(l('login.token.error'));
           }
         });
       }

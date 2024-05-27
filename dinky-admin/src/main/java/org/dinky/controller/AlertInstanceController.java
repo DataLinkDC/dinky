@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.xiaoymin.knife4j.annotations.DynamicParameter;
 import com.github.xiaoymin.knife4j.annotations.DynamicResponseParameters;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
@@ -60,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Alert Instance Controller")
 @RequestMapping("/api/alertInstance")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class AlertInstanceController {
 
     private final AlertInstanceService alertInstanceService;

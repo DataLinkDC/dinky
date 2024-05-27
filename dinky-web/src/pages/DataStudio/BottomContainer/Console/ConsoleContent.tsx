@@ -17,16 +17,19 @@
  *
  */
 
+import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { SseData } from '@/models/Sse';
 import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
+import { handleDeleteOperation } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { JobStatus } from '@/types/Studio/data.d';
 import { parseMilliSecondStr } from '@/utils/function';
+import { l } from '@/utils/intl';
 import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
-import { CheckOutlined, CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseCircleFilled, LoadingOutlined, XFilled } from '@ant-design/icons';
 import { connect, useModel, useRequest } from '@umijs/max';
 import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
@@ -79,16 +82,16 @@ const ConsoleContent = (props: ConsoleProps) => {
   const onUpdate = (data: ProcessStep) => {
     setProcessNode((prevState: any) => {
       //如果key不一致代表重新提交了任务，清空旧状态
-      if (prevState && prevState.key != data.key) {
+      if (prevState && prevState?.key != data?.key) {
         setSelectNode(undefined);
       }
       return data;
     });
     setSelectNode((prevState: any) => {
-      if (prevState && data?.lastUpdateStep && prevState.key === data.lastUpdateStep.key) {
+      if (prevState && data?.lastUpdateStep && prevState?.key === data?.lastUpdateStep?.key) {
         //更新当前节点
-        return data.lastUpdateStep;
-      } else if (!prevState || prevState.key === data.key) {
+        return data?.lastUpdateStep;
+      } else if (!prevState || prevState?.key === data?.key) {
         //未选择节点状态下选择根节点
         return data;
       }
@@ -96,11 +99,16 @@ const ConsoleContent = (props: ConsoleProps) => {
     });
   };
 
-  useRequest(
+  const { run } = useRequest(
     { url: API_CONSTANTS.PROCESS_LOG, params: { processName: process } },
     { onSuccess: async (res) => onUpdate(res) }
   );
-  useEffect(() => subscribeTopic([topic], (data: SseData) => onUpdate(data.data)), []);
+  const killProcess = useRequest(
+    { url: API_CONSTANTS.KILL_PROCESS, params: { processName: process } },
+    { onSuccess: async (res) => onUpdate(res) }
+  );
+
+  useEffect(() => subscribeTopic([topic], (data: SseData) => onUpdate(data?.data)), []);
   const onSelect = (
     _selectedKeys: Key[],
     info: {
@@ -185,6 +193,25 @@ const ConsoleContent = (props: ConsoleProps) => {
             enableMiniMap
             enableAutoScroll
             showFloatButton
+            clearContent={async () => {
+              const boolean = await handleDeleteOperation(
+                API_CONSTANTS.PROCESS_LOG_CLEAR,
+                { processName: process },
+                l('rc.ds.detail.tag.console.clear.log')
+              );
+              if (boolean) run();
+            }}
+            btnExtraContent={
+              <LoadingBtn
+                key={'kill-process'}
+                click={async () => await killProcess.run()}
+                icon={
+                  <XFilled
+                    style={{ color: processNode?.status === JobStatus.RUNNING ? 'red' : 'gray' }}
+                  />
+                }
+              />
+            }
           />
         </Pane>
       </SplitPane>

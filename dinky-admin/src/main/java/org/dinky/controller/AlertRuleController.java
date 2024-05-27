@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
@@ -53,6 +54,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/alertRule")
 @Api(tags = "Alert Rule Controller")
+@SaCheckLogin
 public class AlertRuleController {
 
     private final AlertRuleService alertRuleService;
@@ -81,7 +83,7 @@ public class AlertRuleController {
     @ApiOperation("Save or update alert rule")
     @Log(title = "Save or update alert rule", businessType = BusinessType.INSERT_OR_UPDATE)
     @SaCheckPermission(
-            value = {PermissionConstants.SYSTEM_ALERT_RULE_ADD, PermissionConstants.SYSTEM_ALERT_RULE_EDIT},
+            value = {PermissionConstants.REGISTRATION_ALERT_RULE_ADD, PermissionConstants.REGISTRATION_ALERT_RULE_EDIT},
             mode = SaMode.OR)
     public Result<Boolean> saveOrUpdateAlertRule(@RequestBody AlertRule alertRule) {
         boolean saved = alertRuleService.saveOrUpdate(alertRule);
@@ -103,7 +105,7 @@ public class AlertRuleController {
             example = "1")
     @ApiOperation("Delete alert rule")
     @Log(title = "Delete alert rule", businessType = BusinessType.DELETE)
-    @SaCheckPermission(PermissionConstants.SYSTEM_ALERT_RULE_DELETE)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_ALERT_RULE_DELETE)
     public Result<Boolean> deleteAlertRuleById(@RequestParam Integer id) {
         if (alertRuleService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);

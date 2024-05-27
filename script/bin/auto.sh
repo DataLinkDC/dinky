@@ -1,9 +1,24 @@
 #!/bin/bash
 
+# debug mode
+#set -x
+
 FLINK_VERSION=${2}
 
+DINKY_HOME=${DINKY_HOME:-$(cd `dirname $0`; pwd)}
+JAVA_VERSION=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}' | awk -F'.' '{print $1"."$2}')
 
-APP_HOME="$(cd `dirname $0`; pwd)"
+APP_HOME="${DINKY_HOME}"
+
+DINKY_LOG_PATH="${APP_HOME}/logs"
+if [ ! -d "${DINKY_LOG_PATH}" ]; then
+  mkdir -p "${DINKY_LOG_PATH}"
+fi
+
+CUSTOMER_JAR_PATH="${APP_HOME}/customJar"
+if [ ! -d "${CUSTOMER_JAR_PATH}" ]; then
+  mkdir -p "${CUSTOMER_JAR_PATH}"
+fi
 
 EXTENDS_HOME="${APP_HOME}/extends"
 
@@ -12,12 +27,14 @@ JAR_NAME="dinky-admin"
 
 if [ -z "${FLINK_VERSION}" ]; then
   # Obtain the Flink version under EXTENDSHOME, only perform recognition and do not perform any other operations, for prompt purposes
-  FLINK_VERSION_SCAN=$(ll ${EXTENDS_HOME} |  grep '^d' | grep flink | awk -F 'flink' '{print $2}')
+  FLINK_VERSION_SCAN=$(ls -n ${EXTENDS_HOME} |  grep '^d' | grep flink | awk -F 'flink' '{print $2}')
   # If FLINK_VERSION-SCAN is not empty, assign FLINK_VERSION-SCAN to FLINK_VERSION
   if [ -n "${FLINK_VERSION_SCAN}" ]; then
     FLINK_VERSION=${FLINK_VERSION_SCAN}
   fi
 fi
+
+echo "DINKY_HOME : ${DINKY_HOME} , JAVA_VERSION : ${JAVA_VERSION} , FLINK_VERSION : ${FLINK_VERSION}"
 
 # Check whether the flink version is specified
 assertIsInputVersion() {
@@ -29,14 +46,32 @@ assertIsInputVersion() {
 }
 
 # Use FLINK_HOME:
-CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${APP_HOME}/customJar/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${CUSTOMER_JAR_PATH}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
 PID_FILE="dinky.pid"
 
+# Log configuration file path
+LOG_CONFIG=${APP_HOME}/config/log4j2.xml
+
+if [ ${JAVA_VERSION} == "1.8" ];then
+  # JVM options G1GC and OOM dump ; Note: Do not set the DisableExplicitGC parameter. Because there is a call to System. gc() in the code.
+   GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -XX:+PrintGCCause -Xloggc:${APP_HOME}/logs/gc-%t.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=20M"
+else
+   GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:${APP_HOME}/logs/gc-%t.log"
+fi
+
+# OOM dump path
+OOM_OPT="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${APP_HOME}/logs/heapdump.hprof"
+# JVM parameters and log path
+PARAMS_OPT="-Ddinky.logs.path=${DINKY_LOG_PATH} -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true"
+# JAR parameters
+JAR_PARAMS_OPT="--logging.config=${LOG_CONFIG}"
 # JMX path
 JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.20.0.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
+#JVM OPTS
+JVM_OPTS="-Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M"
 
 # Check whether the pid path exists
-PID_PATH="$(cd "$(dirname "$0")";pwd)/run"
+PID_PATH="${APP_HOME}/run"
 
 if [ -d "${PID_PATH}" ];then
     echo "${PID_PATH} is already exist." >> /dev/null
@@ -67,10 +102,10 @@ start() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     echo $! >"${PID_PATH}"/${PID_FILE}
-    echo "FLINK VERSION : $FLINK_VERSION"
-    echo "........................................Start Dinky Successfully........................................"
+    echo "........................................Start Dinky Done........................................"
+    echo "current log path : ${DINKY_LOG_PATH}/dinky-start.log , you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
   fi
@@ -80,7 +115,7 @@ startOnPending() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky
+    java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}
     echo "........................................Start Dinky Successfully........................................"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
@@ -91,7 +126,7 @@ startWithJmx() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  > /dev/null 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
 #    echo $! >"${PID_PATH}"/${PID_FILE}
     updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................

@@ -230,7 +230,7 @@ const Result = (props: any) => {
     <div style={{ width: '100%' }}>
       <div style={{ direction: 'rtl' }}>
         {renderDownloadButton()}
-        {current ? isSql(current.dialect) ? <></> : renderFlinkSQLContent() : undefined}
+        {current && isSql(current?.dialect, true) && renderFlinkSQLContent()}
       </div>
       {data.columns ? (
         <Table
@@ -250,6 +250,7 @@ const Result = (props: any) => {
                 <Table
                   columns={getColumns(data.columns)}
                   size='small'
+                  scroll={{ x: 'max-content' }}
                   dataSource={data.rowData?.map((item: any, index: number) => {
                     return { ...item, key: index };
                   })}

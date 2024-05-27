@@ -153,7 +153,7 @@ jobs:
       fail-fast: true
       matrix:
         url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-        FLINK_VERSION: [1.14.6 , 1.15.4 , 1.16.3, 1.17.2, 1.18.1]
+        FLINK_VERSION: [1.14.6 , 1.15.4 , 1.16.3, 1.17.2, 1.18.1, 1.19.0]
         include:
           - url: registry.cn-hangzhou.aliyuncs.com
             namespace: dinky
@@ -169,6 +169,8 @@ jobs:
             FLINK_BIG_VERSION: 1.17
           - FLINK_VERSION: 1.18.1
             FLINK_BIG_VERSION: 1.18
+          - FLINK_VERSION: 1.19.0
+            FLINK_BIG_VERSION: 1.19
     steps:
       - uses: actions/checkout@v3
       - name: Move Dockerfile

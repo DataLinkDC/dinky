@@ -24,4 +24,6 @@ public class SseConstant {
      * Sse label for front to reconnect session
      */
     public static final String SSE_SESSION_INVALID = "SESSION_INVALID";
+
+    public static final String HEART_TOPIC = "HEART_BEAT";
 }

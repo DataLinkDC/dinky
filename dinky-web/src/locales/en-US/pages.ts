@@ -71,6 +71,14 @@ export default {
   'catalog.udf.className.placeholder': 'Please enter the class or method name',
   'catalog.udf.templateId': 'UDF Template',
   'catalog.udf.templateId.placeholder': 'Please select UDF template',
+  'catalog.firstLevelOwner': 'Owner',
+  'catalog.firstLevelOwner.tip1': 'Please select the person responsible for the task',
+  'catalog.firstLevelOwner.tip2':
+    'Select the person responsible for the task and have direct responsibility for the task',
+  'catalog.secondLevelOwners': 'maintainer',
+  'catalog.secondLevelOwners.tip1': 'Please select the task maintainer',
+  'catalog.secondLevelOwners.tip2':
+    'Choose a task maintainer who is indirectly responsible for the task',
   /**
    *
    * datastudio
@@ -95,6 +103,8 @@ export default {
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
+  'datastudio.header.pushdolphin.taskGroup': 'Task Group',
+  'datastudio.header.pushdolphin.taskGroupPriority': 'Task Group Priority',
   'datastudio.header.pushdolphin.taskName': 'Task name: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task type: {type} Process definition: {processDefinitionName}',
@@ -300,6 +310,8 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': 'Username',
   'login.username.required': 'Please input your username!',
+  'login.token.error':
+    'Unable to get token information/session has expired, will jump to the login page, please re-login...',
   /**
    *
    * menu
@@ -387,6 +399,8 @@ export default {
   'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
+  'pages.datastudio.editor.onlyread.lock':
+    'No permission for task operation. Please contact the task owner',
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
   'pages.datastudio.editor.notsave.note':
     'Continue will discard the changes, are you sure to continue?',
@@ -436,6 +450,12 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',
   'pages.datastudio.label.jobConfig.addConfig.value': 'value',
+  'pages.datastudio.label.udf': 'Udf Item',
+  'pages.datastudio.label.udf.tip': 'Inject UDF item, Automatically add statement `create temporary function [functionName] as [className]` at the beginning of the SQL statement',
+  'pages.datastudio.label.udf.duplicate.tip': 'The class [className] selected this time already exists and duplicate injection is not allowed. Please reselect or cancel injection (delete and change line).',
+  'pages.datastudio.label.udf.injectUdf': 'Inject UDF item',
+  'pages.datastudio.label.udf.name': 'function name',
+  'pages.datastudio.label.udf.className': 'class name',
   'pages.datastudio.label.jobConfig.alertGroup': 'Alarm Group',
   'pages.datastudio.label.jobConfig.alertGroup.tip': 'Select alert group',
   'pages.datastudio.label.jobConfig.batchmode': 'Batch Mode',
@@ -446,23 +466,24 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available/Is it in an enabled state',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.watermark':
     'Current task has published,Config cannot modified,If you need to modify, please offline first',
+  'pages.datastudio.label.jobConfig.lock':
+    'The current task has no permission and cannot be modified. If you need to modify the task, contact the task owner to obtain the permission',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     'Select the FlinkSQL execution environment of the current task, and the environment statement will be executed in advance. The default is none. ',
   'pages.datastudio.label.jobConfig.fragment': 'Global variables',
   'pages.datastudio.label.jobConfig.fragment.tip':
     '[Enhanced Features] Enable FlinkSql global variables, use "',
-  'pages.datastudio.label.jobConfig.insert': 'Insert StatementSet',
-  'pages.datastudio.label.jobConfig.insert.tip':
-    '[Enhanced Features] Enable the statement set mechanism, multiple Insert statements will be combined into one JobGraph before submission, and the Select statement is invalid',
   'pages.datastudio.label.jobConfig.other': 'Other Config',
   'pages.datastudio.label.jobConfig.other.tip':
     'Other Config items will be applied to the execution environment, such as pipeline.name',
+  'pages.datastudio.label.jobConfig.udf': 'UDF injected',
+  'pages.datastudio.label.jobConfig.udf.tip': 'Automatically inject UDF',
   'pages.datastudio.label.jobConfig.parallelism': 'Parallelism',
   'pages.datastudio.label.jobConfig.parallelism.tip':
     'Set the parallelism of Flink tasks, the minimum value is 1',
@@ -476,6 +497,8 @@ export default {
   'pages.datastudio.label.jobInfo.id': 'Job ID',
   'pages.datastudio.label.jobInfo.name': 'Job name',
   'pages.datastudio.label.jobInfo.versionId': 'Version number',
+  'pages.datastudio.label.jobInfo.firstLevelOwner': 'Owner',
+  'pages.datastudio.label.jobInfo.secondLevelOwners': 'Maintainer',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',
@@ -549,7 +572,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': 'Please enter AccessKeySecret',
   'rc.ai.action': 'Interface method',
   'rc.ai.actionPleaseHolder': 'Please enter the interface method',
-  'rc.ai.agentId': 'AgentId',
+  'rc.ai.agentId': 'App ID(AgentId)',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
   'rc.ai.sendUrl': 'QiWei Send Addr',
   'rc.ai.sendUrlPleaseHolder': 'Please enter the sending address or the proxy address',
@@ -782,8 +805,10 @@ export default {
   'rc.cc.sqlSubmitJarPath': 'Jar File Path',
   'rc.cc.sqlSubmitJarPathHelp':
     'Please enter the Jar file path! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelpTips':
+    'In Yarn mode, this parameter can be set to: hdfs:///dinky/dinky-app-1.17-with-dependencies.jar Alternatively, if rs:/dinky/inky app 1.17 with dependencies. jar is set to the rs:/ protocol, the jar package needs to be uploaded to Dinky`s resource center and the path filled in. In K8s mode, only the local://protocol is supported',
   'rc.cc.start': 'Start Session Cluster',
-  'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items (required in Application mode)',
+  'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items',
   'rc.cc.tmHeap': 'TaskManager Heap Memory',
   'rc.cc.tmHeapHelp':
     'Please enter the TaskManager heap memory size! This parameter configuration item is',
@@ -861,6 +886,7 @@ export default {
   'rc.ds.search': 'Search Name/Note',
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
+  'rc.ds.detail.tag.console.clear.log': 'Clear Log...',
   'rc.ds.create': 'Create DataSource',
   'rc.ds.decimalDigits': 'Decimal Range',
   'rc.ds.default': 'Default Value',
@@ -981,7 +1007,16 @@ export default {
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
-  'rc.resource.copy': 'Copy as: {fillValue}',
+  'rc.resource.sync.confirm': 'Please note that this operation will delete all records in the database and will affect running jobs as well as corresponding resource files referenced in UDF management, resulting in job failure. And UDF cannot be used in UDF management Please operate with caution!! Please confirm if you want to continue?',
+  'rc.resource.copy_to_add_custom_jar': 'Copy as ADD CUSTOMJAR syntax',
+  'rc.resource.copy_to_add_jar': 'Copy as ADD JAR syntax',
+  'rc.resource.copy_to_add_file': 'Copy as ADD FILE syntax',
+  'rc.resource.copy_to_add_rs_path': 'Copy RS protocol resource path',
+  'rc.resource.copy_success':
+    'Copy successfully, The value is: [{fillValue}] has been copied to the clipboard. Please paste it to the desired location for use',
+  'rc.resource.enable': 'Resource management function is not enabled',
+  'rc.resource.enable.tips':
+    'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
 
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',

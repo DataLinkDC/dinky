@@ -1182,7 +1182,7 @@ CREATE TABLE `dinky_history`  (
                                 `status` int(11) NOT NULL DEFAULT 0 COMMENT 'status',
                                 `batch_model` boolean NOT NULL DEFAULT false COMMENT 'is batch model',
                                 `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'job type',
-                                `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'statement set',
+                                `statement` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'statement set',
                                 `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'error message',
                                 `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'result set',
                                 `config_json` json NULL COMMENT 'config json',
@@ -1344,10 +1344,12 @@ CREATE TABLE `dinky_task`  (
                              `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                              `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                              `version_id` int(11) NULL DEFAULT NULL COMMENT 'version id',
-                             `statement`                longtext              default   null COMMENT ' sql statement',
+                             `statement` mediumtext DEFAULT NULL COMMENT 'sql statement',
                             `creator` int(11) DEFAULT NULL  COMMENT 'creator',
                             `updater` int(11) DEFAULT NULL COMMENT 'updater',
                             `operator` int(11) DEFAULT NULL COMMENT 'operator user id',
+                            `first_level_owner` int(11) DEFAULT NULL COMMENT 'primary responsible person id',
+                            `second_level_owners` varchar(128) DEFAULT NULL COMMENT 'list of secondary responsible persons ids',
                              PRIMARY KEY (`id`) USING BTREE,
                              UNIQUE INDEX `task_un_idx1`(`name`, `tenant_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Task' ROW_FORMAT = Dynamic;
@@ -1361,7 +1363,7 @@ CREATE TABLE `dinky_task_version`  (
                                      `task_id` int(11) NOT NULL COMMENT 'task ID ',
                                      `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
                                      `version_id` int(11) NOT NULL COMMENT 'version ID ',
-                                     `statement` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'flink sql statement',
+                                     `statement` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'flink sql statement',
                                      `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'version name',
                                      `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'dialect',
                                      `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'type',
@@ -1887,10 +1889,10 @@ insert into dinky_sys_menu values (112, 22, '刷新', '/auth/menu/refresh', null
 insert into dinky_sys_menu values (113, 22, '编辑', '/auth/menu/edit', null, 'auth:menu:edit', 'EditOutlined', 'F', 0, 98, '2023-09-22 22:11:41', '2023-09-26 15:12:26', null);
 insert into dinky_sys_menu values (114, 22, '添加子项', '/auth/menu/addSub', null, 'auth:menu:addSub', 'PlusOutlined', 'F', 0, 96, '2023-09-22 22:11:41', '2023-09-26 15:12:26', null);
 insert into dinky_sys_menu values (115, 22, '删除', '/auth/menu/delete', null, 'auth:menu:delete', 'DeleteOutlined', 'F', 0, 99, '2023-09-22 22:11:41', '2023-09-26 15:12:26', null);
-insert into dinky_sys_menu values (116, 6, '告警策略', '/settings/alertrule', './SettingCenter/AlertRule', 'settings:alertrule', 'AndroidOutlined', 'C', 0, 136, '2023-09-22 23:31:10', '2023-09-26 15:19:52', null);
-insert into dinky_sys_menu values (117, 116, '添加', '/settings/alertrule/add', null, 'settings:alertrule:add', 'PlusOutlined', 'F', 0, 137, '2023-09-22 23:34:51', '2023-09-26 15:20:03', null);
-insert into dinky_sys_menu values (118, 116, '删除', '/settings/alertrule/delete', null, 'settings:alertrule:delete', 'DeleteOutlined', 'F', 0, 139, '2023-09-22 23:35:20', '2023-09-26 15:20:21', null);
-insert into dinky_sys_menu values (119, 116, '编辑', '/settings/alertrule/edit', null, 'settings:alertrule:edit', 'EditOutlined', 'F', 0, 138, '2023-09-22 23:36:32', '2023-09-26 15:20:13', null);
+insert into dinky_sys_menu values (116, 12, '告警策略', '/registration/alert/rule', './RegCenter/Alert/AlertRule', 'registration:alert:rule', 'AndroidOutlined', 'C', 0, 136, '2023-09-22 23:31:10', '2023-09-26 15:19:52', null);
+insert into dinky_sys_menu values (117, 116, '添加', '/registration/alert/rule/add', null, 'registration:alert:rule:add', 'PlusOutlined', 'F', 0, 137, '2023-09-22 23:34:51', '2023-09-26 15:20:03', null);
+insert into dinky_sys_menu values (118, 116, '删除', '/registration/alert/rule/delete', null, 'registration:alert:rule:delete', 'DeleteOutlined', 'F', 0, 139, '2023-09-22 23:35:20', '2023-09-26 15:20:21', null);
+insert into dinky_sys_menu values (119, 116, '编辑', '/registration/alert/rule/edit', null, 'registration:alert:rule:edit', 'EditOutlined', 'F', 0, 138, '2023-09-22 23:36:32', '2023-09-26 15:20:13', null);
 insert into dinky_sys_menu values (120, 8, 'Dinky 服务监控', '/metrics/server', './Metrics/Server', 'metrics:server', 'DashboardOutlined', 'F', 0, 141, '2023-09-22 23:37:43', '2023-09-26 15:21:00', null);
 insert into dinky_sys_menu values (121, 8, 'Flink 任务监控', '/metrics/job', './Metrics/Job', 'metrics:job', 'DashboardTwoTone', 'C', 0, 142, '2023-09-22 23:38:34', '2023-09-26 15:21:08', null);
 insert into dinky_sys_menu values (122, 24, 'Dinky 环境配置', '/settings/globalsetting/dinky', null, 'settings:globalsetting:dinky', 'SettingOutlined', 'F', 0, 117, '2023-09-22 23:40:30', '2023-09-26 15:16:20', null);
@@ -2013,6 +2015,7 @@ CREATE TABLE `dinky_udf_manage` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(50) DEFAULT NULL COMMENT 'udf name',
                                     `class_name` varchar(50) DEFAULT NULL COMMENT 'Complete class name',
+                                    `language` varchar(10) DEFAULT NULL COMMENT 'language',
                                     `task_id` int(11) DEFAULT NULL COMMENT 'task id',
                                     `resources_id` int(11) DEFAULT NULL COMMENT 'resources id',
                                     `enabled` tinyint(1) DEFAULT 1 COMMENT 'is enable',

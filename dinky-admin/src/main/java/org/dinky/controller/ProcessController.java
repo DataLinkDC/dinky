@@ -20,15 +20,18 @@
 package org.dinky.controller;
 
 import org.dinky.context.ConsoleContextHolder;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.ProcessEntity;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @Api(tags = "Process Controller")
 @RequestMapping("/api/process")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class ProcessController {
 
@@ -67,7 +71,26 @@ public class ProcessController {
     @GetMapping("/getProcess")
     @ApiOperation("get process")
     @ApiImplicitParam(name = "processName", value = "process name", dataType = "ProcessEntity")
-    public Result<ProcessEntity> listAllProcess(@RequestParam String processName) {
+    public Result<ProcessEntity> getProcessByProcessName(@RequestParam String processName) {
         return Result.succeed(ConsoleContextHolder.getInstances().getProcess(processName));
+    }
+
+    @DeleteMapping("/clearProcessLog")
+    @ApiOperation("Clear Process")
+    @ApiImplicitParam(name = "processName", value = "process name", dataType = "ProcessEntity")
+    public Result<Void> clearProcessLog(@RequestParam String processName) {
+        boolean clearProcessLog = ConsoleContextHolder.getInstances().clearProcessLog(processName);
+        if (!clearProcessLog) {
+            return Result.failed(Status.PROCESS_CLEAR_LOG_FAILED);
+        }
+        return Result.succeed(Status.PROCESS_CLEAR_LOG_SUCCESS);
+    }
+
+    @GetMapping("/killProcess")
+    @ApiOperation("killProcess ")
+    @ApiImplicitParam(name = "processName", value = "process name", dataType = "ProcessEntity")
+    public Result<ProcessEntity> stopProcess(@RequestParam String processName) {
+        ProcessEntity process = ConsoleContextHolder.getInstances().killProcess(processName);
+        return Result.succeed(process);
     }
 }

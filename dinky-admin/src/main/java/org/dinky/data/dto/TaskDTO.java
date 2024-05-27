@@ -23,10 +23,14 @@ import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
@@ -37,7 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * StudioExecuteDTO
- *
  */
 @Getter
 @Setter
@@ -215,14 +218,29 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "The maximum number of rows to return")
     private Integer maxRowNum = 100;
 
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "List",
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
+
     public JobConfig getJobConfig() {
 
         Map<String, String> parsedConfig =
                 this.configJson == null ? new HashMap<>(0) : this.configJson.getCustomConfigMaps();
-
+        Map<String, String> udfRefers = this.configJson == null ? new HashMap<>(0) : this.configJson.getUdfReferMaps();
         JobConfig jobConfig = new JobConfig();
         BeanUtil.copyProperties(this, jobConfig);
         jobConfig.setConfigJson(parsedConfig);
+        jobConfig.setUdfRefer(udfRefers);
         jobConfig.setTaskId(id);
         jobConfig.setJobName(name);
 

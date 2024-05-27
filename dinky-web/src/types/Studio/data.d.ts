@@ -34,6 +34,8 @@ export type Catalogue = {
   children: Catalogue[];
   configJson: TaskExtConfig;
   task: TaskInfo;
+  firstLevelOwner: number;
+  secondLevelOwners: number[];
 };
 
 export type TaskUdfConfig = {
@@ -42,12 +44,18 @@ export type TaskUdfConfig = {
   className: string;
 };
 
+export type TaskUdfRefer = {
+  name: string;
+  className: string;
+}
+
 export type ConfigItem = {
   key: string;
   value: string;
 };
 
 export type TaskExtConfig = {
+  udfRefer: List<TaskUdfRefer>;
   udfConfig: TaskUdfConfig;
   customConfig: List<Map<string, object>>;
 };
@@ -86,6 +94,8 @@ export type TaskInfo = {
   alertGroupName: string;
   createTime: Date;
   updateTime: Date;
+  firstLevelOwner: number;
+  secondLevelOwners: number[];
 };
 
 export type SavePoint = {
@@ -250,6 +260,19 @@ export interface DolphinTaskMinInfo {
   upstreamTaskName: string;
 }
 
+export interface DolphinTaskGroupInfo {
+  id: number;
+  name: string;
+  description: string;
+  groupSize: number;
+  useSize: number;
+  userId: number;
+  status: number;
+  createTime: Date;
+  updateTime: Date;
+  projectCode: number;
+}
+
 export interface TaskParamProperty {
   prop: string;
   direct: string;
@@ -310,6 +333,7 @@ export interface PushDolphinParams {
   isCache: boolean | string;
   timeoutNotifyStrategy: string[] | string;
   description: string;
+  taskGroupPriority: number;
 }
 
 export type ButtonRoute = {

@@ -55,9 +55,19 @@ public class CascaderVO implements Serializable {
         this.value = label;
     }
 
+    public CascaderVO(String label, String value) {
+        this.label = label;
+        this.value = value;
+    }
+
     public CascaderVO(String label, List<CascaderVO> children) {
         this.label = label;
-        this.value = label;
+        this.children = children;
+    }
+
+    public CascaderVO(String label, String value, List<CascaderVO> children) {
+        this.label = label;
+        this.value = value;
         this.children = children;
     }
 }
