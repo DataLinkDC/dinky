@@ -120,7 +120,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
 
     public static List<String> extractArgs(String args) {
         List<String> programArgs = new ArrayList<>();
-        if (StringUtils.isNotEmpty(args)) {
+        if (StrUtil.isBlank(args)) {
             String[] array = args.split("\\s+");
             Iterator<String> iter = Arrays.asList(array).iterator();
             while (iter.hasNext()) {
