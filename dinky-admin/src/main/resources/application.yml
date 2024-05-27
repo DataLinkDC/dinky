@@ -181,16 +181,6 @@ sso:
 ################################################# pac4j Config ####################################################
 #################################################################################################################
 pac4j:
-  callback:
-    defaultUrl: ${sso.redirect}
-  logout:
-    defaultUrl:
-    destroySession: true
-    callback:
-      multiProfile: true
-  centralLogout:
-    defaultUrl: http://localhost:${server.port}/?defaulturlafterlogoutafteridp
-    logoutUrlPattern: http://localhost:${server.port}/.*
   callbackUrl: http://localhost:${server.port}/callback # The callback URL
   # Put all parameters under `properties`
   # Check supported sso config parameters for different authentication clients from the below link
@@ -199,6 +189,5 @@ pac4j:
     principalNameAttribute: login #Authenticate user principal
     github.id:
     github.secret:
-    # Optional, change by authentication client
-    # Please replace and fill in your client config below when enabled SSO
+
 
