@@ -26,7 +26,6 @@ import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.URLUtils;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.client.program.PackagedProgram;
 import org.apache.flink.client.program.PackagedProgramUtils;
