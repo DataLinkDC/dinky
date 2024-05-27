@@ -63,7 +63,7 @@ public class SystemMetricsTask implements DaemonTask {
 
     @Override
     public boolean dealTask() {
-        if (SystemConfiguration.getInstances().getMetricsSysEnable().getValue()){
+        if (SystemConfiguration.getInstances().getMetricsSysEnable().getValue()) {
             SystemMetricsHandler.refresh();
         }
         return false;
