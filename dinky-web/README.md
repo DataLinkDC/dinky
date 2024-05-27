@@ -6,10 +6,10 @@ This project uses [Ant Design Pro](https://pro.ant.design) for initialization. H
 
 ## Environment preparation
 
-| Environment | Version  | Remarks |
-| ----------- | -------- | ------- |
-| node        | 14.19.0+ |         |
-| npm         | 7.19.0+  |         |
+| Environment | Version | Remarks |
+|-------------|---------|---------|
+| node        | 18+     |         |
+| npm         | 10+     |         |
 
 > Configure related environment variables by yourself
 
@@ -19,6 +19,9 @@ This project uses [Ant Design Pro](https://pro.ant.design) for initialization. H
 # Note: You need to enter the directory of this module to execute
 
 npm i --force && npm start
+## 如果提示 npm ERR! code ERESOLVE
+npm cache clean --force
+
 ```
 
 ### Build
