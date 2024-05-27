@@ -454,7 +454,6 @@ public enum Status {
     PROCESS_CLEAR_LOG_FAILED(199, "process.clear.log.failed"),
     ;
 
-
     private final int code;
     private final String key;
 

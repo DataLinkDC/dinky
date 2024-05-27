@@ -31,10 +31,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.springframework.web.LogoutController;
+import org.pac4j.springframework.web.CallbackController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,12 +59,6 @@ public class SsoCpntroller {
     @Value("${sso.enabled:false}")
     private Boolean ssoEnabled;
 
-    @Value("${pac4j.centralLogout.defaultUrl:#{null}}")
-    private String defaultUrl;
-
-    @Value("${pac4j.centralLogout.logoutUrlPattern:#{null}}")
-    private String logoutUrlPattern;
-
     @Value("${pac4j.properties.principalNameAttribute:#{null}}")
     private String principalNameAttribute;
 
@@ -73,25 +66,18 @@ public class SsoCpntroller {
     private Config config;
 
     @Autowired
-    private JEEContext webContext;
+    CallbackController callbackController;
 
     @Autowired
     private ProfileManager profileManager;
-
-    private LogoutController logoutController;
 
     @Autowired
     private UserService userService;
 
     @PostConstruct
     protected void afterPropertiesSet() {
-        logoutController = new LogoutController();
-        logoutController.setDefaultUrl(defaultUrl);
-        logoutController.setLogoutUrlPattern(logoutUrlPattern);
-        logoutController.setLocalLogout(true);
-        logoutController.setCentralLogout(true);
-        logoutController.setConfig(config);
-        logoutController.setDestroySession(true);
+        callbackController.setDefaultUrl(redirect);
+        callbackController.setConfig(config);
     }
 
     @GetMapping("/token")
@@ -114,12 +100,6 @@ public class SsoCpntroller {
     public ModelAndView ssoLogin() {
         RedirectView redirectView = new RedirectView(redirect);
         return new ModelAndView(redirectView);
-    }
-
-    @GetMapping("/logout")
-    public void ssoLogout() {
-
-        logoutController.logout(webContext.getNativeRequest(), webContext.getNativeResponse());
     }
 
     @GetMapping("/ssoEnableStatus")

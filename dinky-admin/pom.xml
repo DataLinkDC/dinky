@@ -42,23 +42,41 @@
     <dependencies>
         <dependency>
             <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-springboot</artifactId>
+            <version>${pac4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.pac4j</groupId>
             <artifactId>spring-webmvc-pac4j</artifactId>
             <version>${spring-webmvc-pac4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-config</artifactId>
-            <version>${pac4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-oauth</artifactId>
-            <version>${pac4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-http</artifactId>
-            <version>${pac4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mitre.dsmiley.httpproxy</groupId>
