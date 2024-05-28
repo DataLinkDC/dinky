@@ -47,8 +47,8 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.12.0</version>
                 <configuration>
-                    <nodeVersion>v16.17.0</nodeVersion>
-                    <npmVersion>8.19.0</npmVersion>
+                    <nodeVersion>v18.15.0</nodeVersion>
+                    <npmVersion>10.5.0</npmVersion>
                     <!-- 国内node下载加速 -->
                     <!--<nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
                     <!--<npmDownloadRoot>https://repo.huaweicloud.com/npm-software/</npmDownloadRoot>-->

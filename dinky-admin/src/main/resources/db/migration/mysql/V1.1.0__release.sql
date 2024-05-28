@@ -24,12 +24,14 @@ BEGIN
           AND table_name = tableName
           AND column_name = columnName
     ) THEN
-        -- 判断 afterColumnName 入参是否 有值, 如果有值则拼接 afterColumnName 和 columnName 之间的关系
+        -- 判断 afterColumnName 入参是否 有值, 如果有值则拼接 afterColumnName 和 columnName 之间的关系 | Determine whether afterColumnName parameter has a value. If there is a value, the relationship between afterColumnName and columnName is spliced
         IF (afterColumnName IS NOT NULL OR afterColumnName <> '') THEN
-            SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinitionType, ' DEFAULT ', columnDefinitionDefaultValue, ' COMMENT ', columnDefinitionComment, ' AFTER ', afterColumnName);
+            SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinitionType, ' DEFAULT ', columnDefinitionDefaultValue, " COMMENT '", columnDefinitionComment, "' AFTER ", afterColumnName);
         ELSE
-            SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinitionType, ' DEFAULT ', columnDefinitionDefaultValue, ' COMMENT ', columnDefinitionComment);
+            SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinitionType, ' DEFAULT ', columnDefinitionDefaultValue, " COMMENT '", columnDefinitionComment , "'");
         END IF;
+        -- 查看拼接的sql语句 | View the spliced SQL statement
+        SELECT @sql AS executeSqlStatement;
         PREPARE stmt FROM @sql;
         EXECUTE stmt;
     END IF;

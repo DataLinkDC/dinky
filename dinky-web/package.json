@@ -93,20 +93,20 @@
     "cross-env": "^7.0.3",
     "eslint": "^9.3.0",
     "express": "^4.19.2",
-    "husky": "^8",
-    "lint-staged": "^13",
-    "prettier": "^2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.4",
+    "prettier": "^3.2.5",
     "react-dev-inspector": "^2.0.1",
     "react-inspector": "^6.0.2",
-    "sql-formatter": "^13.0.1",
+    "sql-formatter": "^15.3.1",
     "swagger-ui-dist": "^5.17.12",
     "ts-node": "^10.9.2",
-    "typescript": "^4",
+    "typescript": "^4.9.5",
     "umi-presets-pro": "^2.0.0"
   },
   "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0",
+    "node": ">=18",
+    "npm": ">=10",
     "umi": ">=3.0.0",
     "yarn": ">=1.0.0"
   }

@@ -109,7 +109,6 @@ spring:
     # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
     # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
     active: ${DB_ACTIVE:mysql} #[h2,mysql,pgsql]
-    include: jmx
 ```
 
 修改 Dinky 的 mysql 的配置文件。
@@ -130,13 +129,13 @@ spring:
 Dinky 需要具备内置的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下 extends/flink${FLINK_VERSION} 文件夹上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。
 
 :::warning 注意事项
-1. Dinky 并没有内置的 mysql/postgres 数据库驱动，需要用户自己上传 mysql-connector-java-xxx.jar/postgresql-xxx.jar 等jdbc 驱动到 lib 下/extends 下
+1. Dinky 并没有内置的 mysql/postgres 数据库驱动，需要用户自己上传 mysql-connector-java-xxx.jar/postgresql-xxx.jar 等jdbc 驱动到 `lib 下`或者`extends 下`
 2. Dinky 当前版本的 yarn 的 per-job 与 application 执行模式依赖 flink-shaded-hadoop ，需要额外添加 flink-shaded-hadoop-uber 包，如果您使用的是`flink-shaded-hadoop-uber-3`请手动删除该包内部的 javax.servlet 等冲突内容。
 当然如果你的 Hadoop 为 3+ 也可以自行编译对于版本的 dinky-client-hadoop.jar 以替代 uber 包，
 3. Dinky所有监控相关功能目前强依赖hadoop，即使你不需要任何hadoop功能，也需要上传flink-shaded-hadoop-uber，否则会导致监控功能无法正常使用
 :::
 
-将 flink-shaded-hadoop 上传到到 plugins 文件目录下，使用 flink-shaded-hadoop-3 地址如下：
+将 flink-shaded-hadoop 上传到到 extends 文件目录下，使用 flink-shaded-hadoop-3 地址如下：
 
 ```
 https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?repo=cloudera-repos
@@ -220,7 +219,7 @@ log4j-core-2.17.1.jar
 log4j-slf4j-impl-2.17.1.jar
 ```
 :::tip
-1.0.0 之前的版本 Flink 相关依赖是放在 plugins 目录下，1.0.0 及之后是放在 extends 目录下。（目前做了 plugins 目录的兼容，即放在 plugins 下也会生效）
+1.0.0 之前的版本 Flink 相关依赖是放在 plugins 目录下，1.0.0 及之后是放在 extends 目录下。
 
 推荐公共 jar 包放在 extends 目录下，Flink 版本的依赖放在 extends/flink${FLINK_VERSION} 下
 :::
@@ -236,10 +235,15 @@ sh auto.sh stop
 sh auto.sh restart
 #查看状态
 sh auto.sh status
+
+# 前台启动(调试使用,会输出日志,阻塞当前终端,结束请Ctrl+C,但是会直接退出服务,仅供启动时无日志输出且在排查问题时使用)
+sh auto.sh startOnPending
+
 ```
 
 #### 版本适配
-启动指令的第二个参数则是版本选择，支持 【1.14, 1.15, 1.16, 1.17, 1.18】,参考指令如下：
+启动指令的第二个参数则是版本选择，支持 【1.14, 1.15, 1.16, 1.17, 1.18, 1.19】,参考指令如下：
+> 自 1.0.2 版本开始加入了自动检测 Flink 版本的功能，如果不传入版本号，则会自动检测 Flink 版本作为启动版本(即检测 extends 目录下的 flink${FLINK_VERSION} 文件夹)
 ```shell
 #启动
 sh auto.sh start 1.16

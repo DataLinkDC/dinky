@@ -12,7 +12,7 @@ title: 本地调试
 - Flink, Java, Maven, Node, React, Ant Design Pro
 - MySQL/PostgreSQL/H2
 - IntelliJ IDEA
-:::
+  :::
 
 ## 前置条件
 
@@ -30,10 +30,10 @@ title: 本地调试
 
 |        环境        |            版本            |
 |:----------------:|:------------------------:|
-|       npm        |         7.19.0+          |
-|     node.js      |         14.17.0+         |
+|       npm        |           10+            |
+|     node.js      |           18+            |
 |       jdk        |     Java8 或者 Java11      |
-|      maven       |          3.8.0+          |
+|      maven       |           3.8+           |
 |      lombok      |         IDEA插件安装         |
 | MySQL/PostgreSQL | MySQL5.7+ / PostgreSQL15 |
 
@@ -54,7 +54,7 @@ git clone git://github.com/DataLinkDC/dlink.git
 1. 启动 IDEA 并选择 Open。
 2. 选择已克隆的 Dinky 存储库的根文件夹。
 3. 等待项目加载完成。
-4. 设置 JDK 1.8 和 Maven 3.6.0。
+4. 设置 JDK 1.8 和 Maven 3.8+。
 
 ## 前端环境
 
@@ -99,24 +99,26 @@ Install/Package 过程中报错代码格式化问题,请参考 [代码格式化]
 
 ### Profile 说明
 
-|    Profile    |                                         说明                                         |
-|:-------------:|:----------------------------------------------------------------------------------:|
-|      dev      |                     开发环境/本地调试，默认不选中,此功能主要用于本地调试或者二次开发,用于加载相关依赖                     |
-|    aliyun     |                                       加速依赖下载                                       |
-|     fast      | 主要用于跳过代码检查和代码格式化<br/>注意:如果 JDK 环境为 jdk8 需要勾选此 profile,否则会报错<br/>如果 JDK 环境为 11 无需勾选 |
-|  flink-1.14   |                 用于指定 Flink 版本为 1.14,只能单选,需要勾选 flink-single-version                 |
-|  flink-1.15   |                 用于指定 Flink 版本为 1.15,只能单选,需要勾选 flink-single-version                 |
-|  flink-1.16   |                 用于指定 Flink 版本为 1.16,只能单选,需要勾选 flink-single-version                 |
-|  flink-1.17   |                 用于指定 Flink 版本为 1.17,只能单选,需要勾选 flink-single-version                 |
-|  flink-1.18   |                 用于指定 Flink 版本为 1.18,只能单选,需要勾选 flink-single-version                 |
-|  flink-1.19   |                 用于指定 Flink 版本为 1.19,只能单选,需要勾选 flink-single-version                 |
-|    jdk 11     |            用于指定 JDK 版本为 11,前提是本地已经安装了 JDK 11,如果没有安装 jdk11,则默认使用本地的 jdk8            |            
-|      mac      |                                 用于适配在 mac 系统上进行调试                                  |            
-| maven-central |                                 用于指定 maven 仓库为中央仓库                                 |  
-|     prod      |             生产环境，默认选中,此功能主要用于编译打包,此 profile 会将部分依赖排除掉,不会打进最终 tar.gz 包内             |
-|  scala-2.11   |                              用于指定 Scala 版本为 2.11,只能单选                              |
-|  scala-2.12   |                              用于指定 Scala 版本为 2.12,只能单选                              |
-|      web      |                                    打包前端资源,需要勾选                                     |
+|       Profile        |                                         说明                                         |
+|:--------------------:|:----------------------------------------------------------------------------------:|
+|         dev          |                     开发环境/本地调试，默认不选中,此功能主要用于本地调试或者二次开发,用于加载相关依赖                     |
+|        aliyun        |                                       加速依赖下载                                       |
+|         fast         | 主要用于跳过代码检查和代码格式化<br/>注意:如果 JDK 环境为 jdk8 需要勾选此 profile,否则会报错<br/>如果 JDK 环境为 11 无需勾选 |
+|      flink-1.14      |                 用于指定 Flink 版本为 1.14,只能单选,需要勾选 flink-single-version                 |
+|      flink-1.15      |                 用于指定 Flink 版本为 1.15,只能单选,需要勾选 flink-single-version                 |
+|      flink-1.16      |                 用于指定 Flink 版本为 1.16,只能单选,需要勾选 flink-single-version                 |
+|      flink-1.17      |                 用于指定 Flink 版本为 1.17,只能单选,需要勾选 flink-single-version                 |
+|      flink-1.18      |                 用于指定 Flink 版本为 1.18,只能单选,需要勾选 flink-single-version                 |
+|      flink-1.19      |                 用于指定 Flink 版本为 1.19,只能单选,需要勾选 flink-single-version                 |
+|      flink-all       |                         主要用于本地的 install 生成依赖到本地仓库,不适合用打包部署                         |
+| flink-single-version |                                   配合单版本打包或者调试下勾选                                   |
+|        jdk11         |            用于指定 JDK 版本为 11,前提是本地已经安装了 JDK 11,如果没有安装 jdk11,则默认使用本地的 jdk8            |            
+|         mac          |                                 用于适配在 mac 系统上进行调试                                  |            
+|    maven-central     |                                 用于指定 maven 仓库为中央仓库                                 |  
+|         prod         |             生产环境，默认选中,此功能主要用于编译打包,此 profile 会将部分依赖排除掉,不会打进最终 tar.gz 包内             |
+|      scala-2.11      |                              用于指定 Scala 版本为 2.11,只能单选                              |
+|      scala-2.12      |                              用于指定 Scala 版本为 2.12,只能单选                              |
+|         web          |                                    打包前端资源,需要勾选                                     |
 
 :::warning 注意
 
@@ -183,7 +185,6 @@ spring:
     # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
     # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
     active: mysql #[h2,mysql,pgsql]
-    include: jmx
 ```
 
 ### 初始化数据库
