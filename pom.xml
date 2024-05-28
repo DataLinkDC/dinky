@@ -59,7 +59,7 @@
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <dinky.flink.version>1.18</dinky.flink.version>
         <docker.java.version>3.2.14</docker.java.version>
-        <druid-starter>1.2.8</druid-starter>
+        <druid-starter>1.2.15</druid-starter>
         <easy.rules.version>4.1.0</easy.rules.version>
         <fastjson2.version>2.0.41</fastjson2.version>
         <flink.version>1.18.1</flink.version>
