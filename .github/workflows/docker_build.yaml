@@ -23,6 +23,9 @@ on:
       dinky_version:
         description: 'dinky version'
         required: true
+      docker_space:
+              description: 'docker space(eg: dinky)'
+              required: true
 
 jobs:
   build_releases:
@@ -63,4 +66,4 @@ jobs:
             FLINK_VERSION=${{ matrix.flink }}
             DINKY_VERSION=${{ inputs.dinky_version }}
           tags: |
-            dinky:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
+            ${{inputs.docker_space}}/dinky:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
