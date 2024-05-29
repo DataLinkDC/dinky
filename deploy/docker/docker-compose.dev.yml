@@ -1,35 +1,40 @@
 version: "3.9"
 
 services:
-  mysql:
-    build:
-      context: ../..
-      dockerfile: ${PWD:-.}/DockerfileMysql
-
   dinky:
-    image: dinky-standalone-server:${DINKY_VERSION}
     build:
       context: ../..
       dockerfile: ${PWD:-.}/Dockerfile
       args:
-        - DINKY_VERSION
-    deploy:
-      replicas: 0
-
-  standalone:
-    build:
-      context: ../..
-      dockerfile: ${PWD:-.}/DockerfileDinkyFlink
-      args:
-        - FLINK_BIG_VERSION
         - FLINK_VERSION
-        - FLINK_HOME
-        - DINKY_IMAGE=dinky-standalone-server:${DINKY_VERSION}
-    depends_on:
+        - DINKY_VERSION
+    ports:
+      - "8888:8888"
+    env_file: .env
+    networks:
       - dinky
-      - mysql
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/dinky/customJar/
 
-  web:
-    build:
-      context: ../..
-      dockerfile: ${PWD:-.}/DockerfileWeb
+  jobmanager:
+    image: flink:${FLINK_VERSION}-scala_2.12-java8
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    env_file: .env
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/flink/lib/customJar/
+    networks:
+      - dinky
+
+  taskmanager:
+    image: flink:${FLINK_VERSION}-scala_2.12-java8
+    command: taskmanager
+    env_file: .env
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/flink/lib/customJar/
+    networks:
+      - dinky
+
+networks:
+  dinky:
