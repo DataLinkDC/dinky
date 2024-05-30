@@ -52,7 +52,7 @@ import lombok.NoArgsConstructor;
 @RestController
 @NoArgsConstructor
 @RequestMapping("/api/sso")
-public class SsoCpntroller {
+public class SsoController {
     @Value("${sso.redirect}")
     private String redirect;
 
