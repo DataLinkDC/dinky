@@ -19,22 +19,19 @@
 
 package org.dinky.context;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * The MetricsContextHolder class is used to manage the metric context,
  * including operations such as storing and sending metric data.
@@ -50,19 +47,18 @@ public class MetricsContextHolder {
         return instance;
     }
     // 创建具有自定义命名的ThreadFactory
-    ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
-            .setNameFormat("metrics-send-thread-%d")
-            .build();
+    ThreadFactory namedThreadFactory =
+            new ThreadFactoryBuilder().setNameFormat("metrics-send-thread-%d").build();
 
     // 创建自定义的ThreadPoolExecutor
     ExecutorService pool = new ThreadPoolExecutor(
-            5,               // 核心线程池大小
-            10,              // 最大线程池大小，允许线程池按需扩展
-            60L,             // 空闲线程的存活时间
+            5, // 核心线程池大小
+            10, // 最大线程池大小，允许线程池按需扩展
+            60L, // 空闲线程的存活时间
             TimeUnit.SECONDS, // 存活时间的单位
             new LinkedBlockingQueue<Runnable>(10), // 使用更大的队列容纳多余任务
-            namedThreadFactory
-    );
+            namedThreadFactory);
+
     public void sendAsync(String key, MetricsVO o) {
         Object content = o.getContent();
         if (content == null || (content instanceof ConcurrentHashMap && ((ConcurrentHashMap) content).isEmpty())) {
@@ -72,7 +68,7 @@ public class MetricsContextHolder {
             metricsVOS.add(o);
             long current = System.currentTimeMillis();
             long duration = current - lastDumpTime.get();
-            //Temporary cache monitoring information, mainly to prevent excessive buffering of write IO,
+            // Temporary cache monitoring information, mainly to prevent excessive buffering of write IO,
             // when metricsVOS data reaches 1000 or the time exceeds 15 seconds
             if (metricsVOS.size() >= 1000 || duration >= 15000) {
                 List<MetricsVO> snapshot;

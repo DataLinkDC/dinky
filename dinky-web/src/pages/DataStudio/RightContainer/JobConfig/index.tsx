@@ -18,7 +18,7 @@
  */
 
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
-import {SAVE_POINT_TYPE} from '@/pages/DataStudio/constants';
+import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
 import {
   getCurrentData,
   getCurrentTab,
@@ -52,21 +52,21 @@ import {
   ProFormText
 } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import {Alert, Input, Space} from 'antd';
+import { Alert, Input, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-import FlinkUdfOptionsSelect from "@/components/Flink/UdfSelect";
-import {TaskUdfRefer} from "@/types/Studio/data";
-import {ErrorMessageAsync} from "@/utils/messages";
+import FlinkUdfOptionsSelect from '@/components/Flink/UdfSelect';
+import { TaskUdfRefer } from '@/types/Studio/data';
+import { ErrorMessageAsync } from '@/utils/messages';
 
 const JobConfig = (props: any) => {
   const {
     sessionCluster,
     clusterConfiguration,
     dispatch,
-    tabs: {panes, activeKey},
+    tabs: { panes, activeKey },
     env,
     group,
     rightContainer,
@@ -81,8 +81,12 @@ const JobConfig = (props: any) => {
 
   const [selectRunMode, setSelectRunMode] = useState<string>(current?.type ?? RUN_MODE.LOCAL);
 
-  const [currentSelectUdfIndexMap, setCurrentSelectUdfIndexMap] = useState<Map<number, TaskUdfRefer>>(
-    new Map(current?.configJson?.udfRefer?.map((item: TaskUdfRefer, index: number) => [index, item]) ?? [])
+  const [currentSelectUdfIndexMap, setCurrentSelectUdfIndexMap] = useState<
+    Map<number, TaskUdfRefer>
+  >(
+    new Map(
+      current?.configJson?.udfRefer?.map((item: TaskUdfRefer, index: number) => [index, item]) ?? []
+    )
   );
 
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -105,7 +109,7 @@ const JobConfig = (props: any) => {
       type: STUDIO_MODEL_ASYNC.queryFlinkUdfOptions
     });
     setSelectRunMode(current?.type ?? RUN_MODE.LOCAL);
-    form.setFieldsValue({...current, type: current?.type});
+    form.setFieldsValue({ ...current, type: current?.type });
   }, [current]);
 
   const onValuesChange = (change: { [key in string]: any }, all: any) => {
@@ -130,10 +134,9 @@ const JobConfig = (props: any) => {
     pane.isModified = true;
     dispatch({
       type: STUDIO_MODEL.saveTabs,
-      payload: {...props.tabs}
+      payload: { ...props.tabs }
     });
   };
-
 
   /**
    * 处理 selectUdfIndexMap 的状态 | process the state of selectUdfIndexMap
@@ -142,7 +145,7 @@ const JobConfig = (props: any) => {
    * @param name
    */
   function processSelectUdfMapState(index: number, className: string = '', name: string = '') {
-    setCurrentSelectUdfIndexMap(prevState => {
+    setCurrentSelectUdfIndexMap((prevState) => {
       const newState = new Map(prevState);
       newState.set(index, {
         className: className,
@@ -152,17 +155,19 @@ const JobConfig = (props: any) => {
     });
   }
 
-
   const handleClassChange = async (value: string, index: number) => {
     // 检测 这个值是否已经存在 currentSelectUdfIndexMap 的 map 中 || check if the value already exists in the map of currentSelectUdfIndexMap
     const values = currentSelectUdfIndexMap.values();
     for (const taskUdfRefer of values) {
       if (taskUdfRefer?.className === value) {
-        await ErrorMessageAsync(l('pages.datastudio.label.udf.duplicate.tip', '', {className: value}), 3);
+        await ErrorMessageAsync(
+          l('pages.datastudio.label.udf.duplicate.tip', '', { className: value }),
+          3
+        );
         // clear the value of the form
         form.setFieldsValue({
-          'configJson': {
-            'udfRefer': {
+          configJson: {
+            udfRefer: {
               [index]: {
                 className: '',
                 name: ''
@@ -177,8 +182,8 @@ const JobConfig = (props: any) => {
     const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1);
     processSelectUdfMapState(index, value, lowerName);
     form.setFieldsValue({
-      'configJson': {
-        'udfRefer': {
+      configJson: {
+        udfRefer: {
           [index]: {
             className: value,
             name: lowerName
@@ -188,20 +193,18 @@ const JobConfig = (props: any) => {
     });
   };
 
-
   function handleNameChange(name: string, index: number) {
     // 拿到  currentSelectUdfIndexMap[index].get(index) 的值 || get the value of currentSelectUdfIndexMap[index].get(index)
     const currentSelectUdfIndexMapValue = currentSelectUdfIndexMap.get(index);
 
-
-  // 如果 name 和 currentSelectUdfIndexMapValue?.name 相等 则不做任何操作 || if name and currentSelectUdfIndexMapValue?.name are equal, do nothing
+    // 如果 name 和 currentSelectUdfIndexMapValue?.name 相等 则不做任何操作 || if name and currentSelectUdfIndexMapValue?.name are equal, do nothing
     if (currentSelectUdfIndexMapValue?.name && name !== currentSelectUdfIndexMapValue?.name) {
       // 更新 currentSelectUdfIndexMap 的值
       processSelectUdfMapState(index, currentSelectUdfIndexMapValue?.className, name);
     }
     form.setFieldsValue({
-      'configJson': {
-        'udfRefer': {
+      configJson: {
+        udfRefer: {
           [index]: {
             className: currentSelectUdfIndexMapValue?.className ?? '',
             name: name
@@ -236,7 +239,7 @@ const JobConfig = (props: any) => {
           alertGroupId: -1
         }}
         className={'data-studio-form'}
-        style={{paddingInline: '15px', overflow: 'scroll', marginTop: 5}}
+        style={{ paddingInline: '15px', overflow: 'scroll', marginTop: 5 }}
         form={form}
         submitter={false}
         layout='vertical'
@@ -248,7 +251,7 @@ const JobConfig = (props: any) => {
           name='type'
           label={l('global.table.execmode')}
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
-          rules={[{required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip')}]}
+          rules={[{ required: true, message: l('pages.datastudio.label.jobConfig.execmode.tip') }]}
           options={buildRunModelOptions()}
           fieldProps={{
             onChange: (value: string) => {
@@ -264,7 +267,7 @@ const JobConfig = (props: any) => {
             {isCanRenderClusterInstance(selectRunMode) && (
               <>
                 <ProFormSelect
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
                     type: current?.type
                   })}
@@ -319,7 +322,7 @@ const JobConfig = (props: any) => {
             tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
             options={buildEnvOptions(env)}
             rules={[
-              {required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
+              { required: true, message: l('pages.datastudio.label.jobConfig.flinksql.env.tip1') }
             ]}
             showSearch
             allowClear={false}
@@ -341,7 +344,7 @@ const JobConfig = (props: any) => {
             valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.fragment.tip'),
-              icon: <InfoCircleOutlined/>
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -351,7 +354,7 @@ const JobConfig = (props: any) => {
             valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.batchmode.tip'),
-              icon: <InfoCircleOutlined/>
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -388,7 +391,7 @@ const JobConfig = (props: any) => {
           name={['configJson', 'customConfig']}
           copyIconProps={false}
           creatorButtonProps={{
-            style: {width: '100%'},
+            style: { width: '100%' },
             creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig')
           }}
         >
@@ -418,20 +421,18 @@ const JobConfig = (props: any) => {
           copyIconProps={false}
           onAfterRemove={(_, index) => {
             // 删除一项之后拿到 index 从 currentSelectUdfIndexMap 中删除对应的值 || get the value from currentSelectUdfIndexMap and delete it
-            setCurrentSelectUdfIndexMap(prevState => {
+            setCurrentSelectUdfIndexMap((prevState) => {
               const newState = new Map(prevState);
               newState.delete(index);
               return newState;
             });
           }}
           creatorButtonProps={{
-            style: {width: '100%'},
+            style: { width: '100%' },
             creatorButtonText: l('pages.datastudio.label.udf.injectUdf')
           }}
         >
-          {(
-            _, index
-          ) => {
+          {(_, index) => {
             return (
               <ProFormGroup>
                 <Space key={'udf' + index} align='baseline'>
@@ -446,20 +447,17 @@ const JobConfig = (props: any) => {
                     options={flinkUdfOptions}
                     onChange={(value: string) => handleClassChange(value, index)}
                   />
-                  <ProForm.Item
-                    name={'name'}
-                  >
+                  <ProForm.Item name={'name'}>
                     <Input
                       onChange={(e) => handleNameChange(e.target.value, index)}
                       placeholder={l('pages.datastudio.label.udf.name')}
-                      style={{width: calculatorWidth(rightContainer.width) - 80}}
+                      style={{ width: calculatorWidth(rightContainer.width) - 80 }}
                     />
                   </ProForm.Item>
                 </Space>
               </ProFormGroup>
             );
-          }
-          }
+          }}
         </ProFormList>
       </ProForm>
     </div>
@@ -483,7 +481,7 @@ export default connect(
     env: Studio.env,
     group: Alert.group,
     flinkConfigOptions: Studio.flinkConfigOptions,
-       flinkUdfOptions: Studio.flinkUdfOptions,
+    flinkUdfOptions: Studio.flinkUdfOptions,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   })
 )(JobConfig);
