@@ -19,6 +19,15 @@
 
 package org.dinky.context;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import lombok.Getter;
 import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
@@ -39,13 +48,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetricsContextHolder {
 
+    @Getter
     protected static final MetricsContextHolder instance = new MetricsContextHolder();
     private final List<MetricsVO> metricsVOS = new CopyOnWriteArrayList<>();
     private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
 
-    public static MetricsContextHolder getInstance() {
-        return instance;
-    }
     // Create a ThreadFactory with custom naming
     ThreadFactory namedThreadFactory =
             new ThreadFactoryBuilder().setNameFormat("metrics-send-thread-%d").build();
@@ -61,7 +68,7 @@ public class MetricsContextHolder {
 
     public void sendAsync(String key, MetricsVO o) {
         Object content = o.getContent();
-        if (content == null || (content instanceof ConcurrentHashMap && ((ConcurrentHashMap) content).isEmpty())) {
+        if (content == null || (content instanceof ConcurrentHashMap && ((ConcurrentHashMap<?, ?>) content).isEmpty())) {
             return; // Return early to avoid unnecessary operations
         }
         pool.execute(() -> {
