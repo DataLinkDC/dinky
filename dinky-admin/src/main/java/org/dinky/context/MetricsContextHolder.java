@@ -43,26 +43,26 @@ public class MetricsContextHolder {
     private final List<MetricsVO> metricsVOS = new CopyOnWriteArrayList<>();
     private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
 
-    public static MetricsContextHolder getInstances() {
+    public static MetricsContextHolder getInstance() {
         return instance;
     }
-    // 创建具有自定义命名的ThreadFactory
+    // Create a ThreadFactory with custom naming
     ThreadFactory namedThreadFactory =
             new ThreadFactoryBuilder().setNameFormat("metrics-send-thread-%d").build();
 
-    // 创建自定义的ThreadPoolExecutor
+    // Create a custom ThreadPoolExecutor
     ExecutorService pool = new ThreadPoolExecutor(
-            5, // 核心线程池大小
-            10, // 最大线程池大小，允许线程池按需扩展
-            60L, // 空闲线程的存活时间
-            TimeUnit.SECONDS, // 存活时间的单位
-            new LinkedBlockingQueue<Runnable>(10), // 使用更大的队列容纳多余任务
+            5, // Core pool size
+            10, // Maximum pool size, allows the pool to expand as needed
+            60L, // Keep alive time for idle threads
+            TimeUnit.SECONDS, // Unit of keep alive time
+            new LinkedBlockingQueue<Runnable>(10), // Use a larger queue to hold excess tasks
             namedThreadFactory);
 
     public void sendAsync(String key, MetricsVO o) {
         Object content = o.getContent();
         if (content == null || (content instanceof ConcurrentHashMap && ((ConcurrentHashMap) content).isEmpty())) {
-            return; // 提前返回，避免不必要的操作
+            return; // Return early to avoid unnecessary operations
         }
         pool.execute(() -> {
             metricsVOS.add(o);
@@ -72,7 +72,7 @@ public class MetricsContextHolder {
             // when metricsVOS data reaches 1000 or the time exceeds 15 seconds
             if (metricsVOS.size() >= 1000 || duration >= 15000) {
                 List<MetricsVO> snapshot;
-                synchronized (this) { // 仅在需要操作时才进入同步块
+                synchronized (this) { // Enter synchronized block only when necessary
                     snapshot = new ArrayList<>(metricsVOS);
                     metricsVOS.clear();
                     lastDumpTime.set(current);
@@ -80,7 +80,9 @@ public class MetricsContextHolder {
                 PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, snapshot, MetricsVO.class);
             }
             String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-            SseSessionContextHolder.sendTopic(topic, o); // 确保只有成功添加的指标才发送
+            SseSessionContextHolder.sendTopic(topic, o); // Ensure only successfully added metrics are sent
         });
     }
 }
+
+
