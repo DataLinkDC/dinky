@@ -61,8 +61,8 @@ export const JobConfigInfo: React.FC<JobDetailInfoModelProps> = (props) => {
           {row?.clusterId
             ? l('pages.datastudio.label.history.clusterInstance')
             : row?.clusterConfigurationId
-            ? l('pages.datastudio.label.history.clusterConfig')
-            : l('pages.datastudio.label.history.local')}
+              ? l('pages.datastudio.label.history.clusterConfig')
+              : l('pages.datastudio.label.history.local')}
         </ProDescriptions.Item>
 
         <ProDescriptions.Item

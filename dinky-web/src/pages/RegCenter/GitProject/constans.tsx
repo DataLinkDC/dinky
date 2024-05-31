@@ -134,14 +134,14 @@ export const renderBranchesTagColor = (item: string) => {
   return item.includes('dev')
     ? 'processing'
     : item.includes('test')
-    ? 'warning'
-    : item.includes('release')
-    ? 'success'
-    : item.includes('master')
-    ? 'success'
-    : item.includes('main')
-    ? 'success'
-    : 'default';
+      ? 'warning'
+      : item.includes('release')
+        ? 'success'
+        : item.includes('master')
+          ? 'success'
+          : item.includes('main')
+            ? 'success'
+            : 'default';
 };
 
 /**

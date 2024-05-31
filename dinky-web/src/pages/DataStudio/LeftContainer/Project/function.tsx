@@ -338,8 +338,8 @@ export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
   return isFlinkJob(jobType)
     ? RightMenuKey.JOB_CONFIG_KEY
     : isSql(jobType)
-    ? RightMenuKey.PREVIEW_CONFIG_KEY
-    : RightMenuKey.JOB_INFO_KEY;
+      ? RightMenuKey.PREVIEW_CONFIG_KEY
+      : RightMenuKey.JOB_INFO_KEY;
 }
 
 export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {
