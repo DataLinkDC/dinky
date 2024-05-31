@@ -84,5 +84,3 @@ public class MetricsContextHolder {
         });
     }
 }
-
-
