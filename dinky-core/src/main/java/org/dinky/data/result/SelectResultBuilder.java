@@ -22,6 +22,9 @@ package org.dinky.data.result;
 import org.dinky.assertion.Asserts;
 
 import org.apache.flink.table.api.TableResult;
+import org.dinky.job.JobHandler;
+
+import java.util.Objects;
 
 /**
  * SelectBuilder
@@ -50,6 +53,33 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
             ResultRunnable runnable =
                     new ResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
+            Thread thread = new Thread(runnable, jobId);
+            thread.start();
+            return SelectResult.buildSuccess(jobId);
+        } else {
+            return SelectResult.buildFailed();
+        }
+    }
+
+    /**
+     * Get the results and store them persistently.
+     *
+     * @param tableResult table result
+     * @param jobHandler  job handler
+     * @return IResult
+     */
+    @Override
+    public IResult getResultWithPersistence(TableResult tableResult, JobHandler jobHandler) {
+        if (Objects.isNull(tableResult)) {
+            return SelectResult.buildFailed();
+        }
+        if (tableResult.getJobClient().isPresent()) {
+            String jobId = tableResult.getJobClient().get().getJobID().toHexString();
+            ResultRunnable runnable =
+                    new ResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
+            runnable.registerCallback((s, selectResult) -> {
+                jobHandler.persistResultData();
+            });
             Thread thread = new Thread(runnable, jobId);
             thread.start();
             return SelectResult.buildSuccess(jobId);

@@ -19,11 +19,13 @@
 
 package org.dinky.job.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.constant.MysqlConstant;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobStatus;
@@ -34,8 +36,11 @@ import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
+import org.dinky.data.result.ResultPool;
+import org.dinky.data.result.SelectResult;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.Job;
+import org.dinky.job.JobReadHandler;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -44,6 +49,7 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.springframework.context.annotation.DependsOn;
 
@@ -52,6 +58,7 @@ import org.springframework.context.annotation.DependsOn;
  *
  * @since 2021/6/27 0:04
  */
+@Slf4j
 @DependsOn("springContextUtils")
 public class Job2MysqlHandler extends AbsJobHandler {
 
@@ -229,5 +236,29 @@ public class Job2MysqlHandler extends AbsJobHandler {
     @Override
     public boolean close() {
         return true;
+    }
+
+    /**
+     * Persistent storage of result data into mysql.
+     */
+    @Override
+    public void persistResultData() {
+        Integer jobId = job.getId();
+        SelectResult selectResult = ResultPool.get(String.valueOf(jobId));
+        if (Objects.isNull(selectResult) || selectResult.isDestroyed()) {
+            log.info("The result data does not exist or has been destroyed, Job id: {}", jobId);
+            return;
+        }
+        String resultJsonStr = selectResult.toTruncateJson(MysqlConstant.MEDIUMTEXT_MAX_LENGTH);
+        History history = new History();
+        history.setId(jobId);
+        history.setResult(resultJsonStr);
+        historyService.updateById(history);
+        log.info("The result data persistence to MySQL was successful. Job id: {}", jobId);
+    }
+
+    @Override
+    public JobReadHandler getReadHandler() {
+        return new JobReadMysqlHandler();
     }
 }

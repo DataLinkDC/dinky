@@ -44,6 +44,19 @@ public interface JobHandler {
 
     boolean close();
 
+    /**
+     * Persistent storage of result data.
+     */
+    void persistResultData();
+
+    /**
+     * Get the read handler.
+     * Each handler that executes a job should have a corresponding read handler.
+     *
+     * @return JobReadHandler
+     */
+    JobReadHandler getReadHandler();
+
     static JobHandler build() {
         ServiceLoader<JobHandler> jobHandlers = ServiceLoader.load(JobHandler.class);
         for (JobHandler jobHandler : jobHandlers) {
