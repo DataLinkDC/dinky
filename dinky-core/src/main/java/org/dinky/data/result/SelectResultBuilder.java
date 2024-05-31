@@ -20,9 +20,9 @@
 package org.dinky.data.result;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.job.JobHandler;
 
 import org.apache.flink.table.api.TableResult;
-import org.dinky.job.JobHandler;
 
 import java.util.Objects;
 

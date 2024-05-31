@@ -38,5 +38,4 @@ public interface JobReadHandler {
      * @return result data
      */
     SelectResult readResultDataFromStorage(Integer jobId);
-
 }

@@ -27,5 +27,4 @@ package org.dinky.data.constant;
 public class MysqlConstant {
 
     public static final Long MEDIUMTEXT_MAX_LENGTH = 16777215L;
-
 }

@@ -19,7 +19,6 @@
 
 package org.dinky.job.handler;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
@@ -52,6 +51,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 import org.springframework.context.annotation.DependsOn;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Job2MysqlHandler

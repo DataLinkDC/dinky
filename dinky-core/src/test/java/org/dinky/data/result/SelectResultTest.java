@@ -19,14 +19,16 @@
 
 package org.dinky.data.result;
 
-import cn.hutool.json.JSONUtil;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SelectResultTest.
@@ -74,9 +76,7 @@ public class SelectResultTest {
                 ImmutableMap.of("name", "zhangsan5", "age", 18, "class", "class1", "location", "xxxxxx beijing 222"),
                 ImmutableMap.of("name", "zhangsan6", "age", 18, "class", "class1", "location", "xxxxxx beijing 222"),
                 ImmutableMap.of("name", "zhangsan7", "age", 18, "class", "class1", "location", "xxxxxx beijing 222"),
-                ImmutableMap.of("name", "zhangsan8", "age", 18, "class", "class1", "location", "xxxxxx beijing 222")
-        ));
+                ImmutableMap.of("name", "zhangsan8", "age", 18, "class", "class1", "location", "xxxxxx beijing 222")));
         return selectResult;
     }
-
 }

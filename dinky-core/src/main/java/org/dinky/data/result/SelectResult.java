@@ -24,10 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Sets;
+
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.json.JSONUtil;
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -105,8 +106,11 @@ public class SelectResult extends AbstractResult implements IResult {
             this.columns = Sets.newHashSet();
             String finalJsonStr = JSONUtil.toJsonStr(this);
             if (finalJsonStr.length() > length) {
-                log.warn("The row data and columns is empty, but still exceeds the length limit. " +
-                        "Json: {}, length: {}", finalJsonStr, length);
+                log.warn(
+                        "The row data and columns is empty, but still exceeds the length limit. "
+                                + "Json: {}, length: {}",
+                        finalJsonStr,
+                        length);
                 return "{}";
             }
             return finalJsonStr;

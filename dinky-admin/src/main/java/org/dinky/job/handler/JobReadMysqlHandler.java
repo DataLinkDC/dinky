@@ -19,17 +19,20 @@
 
 package org.dinky.job.handler;
 
-import cn.hutool.json.JSONUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.data.model.job.History;
 import org.dinky.data.result.SelectResult;
 import org.dinky.job.JobReadHandler;
-import org.dinky.service.*;
-import org.springframework.context.annotation.DependsOn;
+import org.dinky.service.HistoryService;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
+
+import org.springframework.context.annotation.DependsOn;
+
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobReadMysqlHandler.
@@ -64,5 +67,4 @@ public class JobReadMysqlHandler implements JobReadHandler {
         }
         return JSONUtil.toBean(result, SelectResult.class);
     }
-
 }
