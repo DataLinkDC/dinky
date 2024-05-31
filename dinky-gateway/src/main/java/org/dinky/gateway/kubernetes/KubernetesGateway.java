@@ -93,10 +93,10 @@ public abstract class KubernetesGateway extends AbstractGateway {
             logger.warn("load locale config yaml failed：{},Skip config it", e.getMessage());
         }
 
-        //-------------------Note: the sequence can not be changed, priority problem----------------
+        // -------------------Note: the sequence can not be changed, priority problem----------------
         addConfigParas(k8sConfig.getConfiguration());
         addConfigParas(flinkConfig.getConfiguration());
-        //-------------------------------------------
+        // -------------------------------------------
         addConfigParas(DeploymentOptions.TARGET, getType().getLongValue());
         addConfigParas(KubernetesConfigOptions.CLUSTER_ID, flinkConfig.getJobName());
         addConfigParas(
