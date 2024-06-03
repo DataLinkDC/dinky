@@ -95,6 +95,7 @@ public class ResultRunnable implements Runnable {
                     if (isAutoCancel) {
                         cancelJob();
                     }
+                    ResultPool.get(id).setDestroyed(Boolean.TRUE);
                     if (Objects.nonNull(callback)) {
                         callback.accept(id, ResultPool.get(id));
                     }

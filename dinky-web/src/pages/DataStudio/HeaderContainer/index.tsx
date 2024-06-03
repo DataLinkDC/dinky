@@ -269,10 +269,12 @@ const HeaderContainer = (props: connect) => {
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;
-      if (currentTab) currentTab.console.results = res.data.results;
+      // trigger console refresh
+      if (currentTab) currentTab.console.refresh = !currentTab.console.refresh;
     } else {
       currentData.status = res.data.status;
-      if (currentTab) currentTab.console.result = res.data.result;
+      // trigger console refresh
+      if (currentTab) currentTab.console.refresh = !currentTab.console.refresh;
     }
     saveTabs({ ...props.tabs });
   };

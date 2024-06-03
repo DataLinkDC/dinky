@@ -67,7 +67,7 @@ public class SelectResultTest {
     private SelectResult prepareData() {
         String jobId = "111";
         SelectResult selectResult = SelectResult.buildSuccess(jobId);
-        selectResult.setColumns(Sets.newHashSet("name", "age", "class", "location"));
+        selectResult.setColumns(Sets.newLinkedHashSet(Lists.newArrayList("name", "age", "class", "location")));
         selectResult.setRowData(Lists.newArrayList(
                 ImmutableMap.of("name", "zhangsan1", "age", 18, "class", "class1", "location", "xxxxxx beijing 222"),
                 ImmutableMap.of("name", "zhangsan2", "age", 18, "class", "class1", "location", "xxxxxx beijing 222"),

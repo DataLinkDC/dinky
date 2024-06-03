@@ -20,6 +20,7 @@
 package org.dinky.data.result;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class SelectResult extends AbstractResult implements IResult {
     private List<Map<String, Object>> rowData;
     private Integer total;
     private Integer currentCount;
-    private Set<String> columns;
+    private LinkedHashSet<String> columns;
     private boolean isDestroyed;
     private boolean truncationFlag = false;
 
@@ -55,7 +56,7 @@ public class SelectResult extends AbstractResult implements IResult {
             List<Map<String, Object>> rowData,
             Integer total,
             Integer currentCount,
-            Set<String> columns,
+            LinkedHashSet<String> columns,
             String jobID,
             boolean success) {
         this.rowData = rowData;
@@ -68,7 +69,7 @@ public class SelectResult extends AbstractResult implements IResult {
         this.isDestroyed = false;
     }
 
-    public SelectResult(String jobID, List<Map<String, Object>> rowData, Set<String> columns) {
+    public SelectResult(String jobID, List<Map<String, Object>> rowData, LinkedHashSet<String> columns) {
         this.jobID = jobID;
         this.rowData = rowData;
         this.total = rowData.size();
@@ -103,7 +104,7 @@ public class SelectResult extends AbstractResult implements IResult {
         }
         this.truncationFlag = true;
         if (CollectionUtil.isEmpty(rowData)) {
-            this.columns = Sets.newHashSet();
+            this.columns = Sets.newLinkedHashSet();
             String finalJsonStr = JSONUtil.toJsonStr(this);
             if (finalJsonStr.length() > length) {
                 log.warn(

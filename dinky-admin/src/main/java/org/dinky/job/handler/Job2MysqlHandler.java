@@ -246,8 +246,8 @@ public class Job2MysqlHandler extends AbsJobHandler {
     public void persistResultData() {
         Integer jobId = job.getId();
         SelectResult selectResult = ResultPool.get(String.valueOf(jobId));
-        if (Objects.isNull(selectResult) || selectResult.isDestroyed()) {
-            log.info("The result data does not exist or has been destroyed, Job id: {}", jobId);
+        if (Objects.isNull(selectResult)) {
+            log.info("The result data does not exist. Job id: {}", jobId);
             return;
         }
         String resultJsonStr = selectResult.toTruncateJson(MysqlConstant.MEDIUMTEXT_MAX_LENGTH);
