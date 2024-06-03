@@ -78,7 +78,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const route: ButtonRoute[] = [
     {
       text: (
-        <span style={{ backgroundColor: token.colorPrimary ,width:90,textAlign:"center"}}>
+        <span style={{ backgroundColor: token.colorPrimary, width: 90, textAlign: 'center' }}>
           <div
             style={{
               width:
