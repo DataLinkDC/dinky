@@ -19,6 +19,8 @@
 
 package org.dinky.function.constant;
 
+import org.apache.flink.table.catalog.FunctionLanguage;
+
 import java.io.File;
 
 import cn.hutool.core.util.StrUtil;
@@ -58,12 +60,12 @@ public class PathConstant {
         return StrUtil.join(File.separator, path) + File.separator;
     }
 
-    public static String getUdfCompilerJavaPath(Integer missionId, Object... path) {
-        return getPath(UDF_PATH, missionId, COMPILER, "java", path);
+    public static String getUdfCompilerPath(FunctionLanguage language, String fileName) {
+        return getPath(UDF_PATH, COMPILER, language.name(), fileName);
     }
 
-    public static String getUdfCompilerPythonPath(Integer missionId, Object... path) {
-        return getPath(UDF_PATH, missionId, COMPILER, "python", path);
+    public static String getUdfCompilerPath(FunctionLanguage language) {
+        return getPath(UDF_PATH, COMPILER, language.name());
     }
 
     public static String getUdfPackagePath(Integer missionId, Object... path) {

@@ -70,6 +70,8 @@ public class JobUDFBuilder extends JobBuilder {
         List<File> jarFiles =
                 new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
 
+        String[] userCustomUdfJarPath = UDFUtil.initJavaUDF(udfList, taskId);
+
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
                 .map(File::getAbsolutePath)
                 .toArray(String[]::new);
@@ -77,17 +79,28 @@ public class JobUDFBuilder extends JobBuilder {
         if (GATEWAY_TYPE_MAP.get(SESSION).contains(runMode)) {
             config.setJarFiles(jarPaths);
         }
+        if (ArrayUtil.isNotEmpty(userCustomUdfJarPath)) {
+            config.setJarFiles(ArrayUtil.append(jarPaths, userCustomUdfJarPath));
+        }
 
         // 2.Compile Python
         String[] pyPaths = UDFUtil.initPythonUDF(
                 udfList, runMode, config.getTaskId(), executor.getTableConfig().getConfiguration());
 
+        executor.initUDF(userCustomUdfJarPath);
         executor.initUDF(jarPaths);
 
         if (ArrayUtil.isNotEmpty(pyPaths)) {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {
                     jobManager.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
+                }
+            }
+        }
+        if (ArrayUtil.isNotEmpty(userCustomUdfJarPath)) {
+            for (String jarPath : userCustomUdfJarPath) {
+                if (StrUtil.isNotBlank(jarPath)) {
+                    jobManager.getUdfPathContextHolder().addUdfPath(new File(jarPath));
                 }
             }
         }
@@ -111,6 +124,7 @@ public class JobUDFBuilder extends JobBuilder {
         } catch (Exception e) {
             throw new RuntimeException("add configuration failed: ", e);
         }
+        executor.addJar(jobManager.getUdfPathContextHolder().getAllFileSet().toArray(new File[0]));
 
         log.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size() + pyUdfFile.size()));
         log.info("Initializing Flink UDF...Finish");

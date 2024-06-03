@@ -78,7 +78,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const route: ButtonRoute[] = [
     {
       text: (
-        <span style={{ backgroundColor: token.colorBgContainer }}>
+        <span style={{ backgroundColor: token.colorPrimary ,width:90,textAlign:"center"}}>
           <div
             style={{
               width:
@@ -86,7 +86,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
                   parseInt(memDetailInfo.split('/')[0]) / parseInt(memDetailInfo.split('/')[1])) *
                   100 +
                 '%',
-              backgroundColor: token.colorFill
+              backgroundColor: token.colorBgContainer
             }}
           >
             {memDetailInfo}
