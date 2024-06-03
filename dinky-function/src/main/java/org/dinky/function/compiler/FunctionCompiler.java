@@ -25,7 +25,9 @@ import org.dinky.function.exception.UDFCompilerException;
 
 import org.apache.flink.configuration.ReadableConfig;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
@@ -33,6 +35,7 @@ import cn.hutool.core.util.StrUtil;
 /** @since 0.6.8 */
 public interface FunctionCompiler {
 
+    Set<String> COMPILER_CACHE = new HashSet<>();
     /**
      * 函数代码在线动态编译
      *
@@ -54,6 +57,10 @@ public interface FunctionCompiler {
     static boolean getCompiler(UDF udf, ReadableConfig conf, Integer missionId) {
         Asserts.checkNull(udf, "udf为空");
         Asserts.checkNull(udf.getCode(), "udf 代码为空");
+        String key = udf.getClassName() + udf.getFunctionLanguage();
+        if (COMPILER_CACHE.contains(key)) {
+            return true;
+        }
         boolean success;
         switch (udf.getFunctionLanguage()) {
             case JAVA:
@@ -68,6 +75,9 @@ public interface FunctionCompiler {
             default:
                 throw UDFCompilerException.notSupportedException(
                         udf.getFunctionLanguage().name());
+        }
+        if (success) {
+            COMPILER_CACHE.add(key);
         }
         return success;
     }

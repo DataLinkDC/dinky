@@ -23,6 +23,7 @@ import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 
 import org.apache.flink.configuration.ReadableConfig;
+import org.apache.flink.table.catalog.FunctionLanguage;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +48,7 @@ public class JavaCompiler implements FunctionCompiler {
         // TODO 改为ProcessStep注释
         log.info("正在编译 java 代码 , class: " + udf.getClassName());
         CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(udf.getCode());
-        boolean res = compiler.compilerToTmpPath(PathConstant.getUdfCompilerJavaPath(missionId));
+        boolean res = compiler.compilerToTmpPath(PathConstant.getUdfCompilerPath(FunctionLanguage.JAVA));
         String className = compiler.getFullClassName();
         if (res) {
             log.info("class编译成功:" + className);

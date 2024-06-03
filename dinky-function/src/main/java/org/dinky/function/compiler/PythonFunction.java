@@ -69,7 +69,8 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
         log.info("正在编译 python 代码 , class: " + udf.getClassName());
         File pyFile = FileUtil.writeUtf8String(
                 udf.getCode(),
-                PathConstant.getUdfCompilerPythonPath(missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
+                PathConstant.getUdfCompilerPath(
+                        FunctionLanguage.PYTHON, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
         File zipFile = ZipUtil.zip(pyFile);
         FileUtil.del(pyFile);
         try {
@@ -112,8 +113,8 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
                 .map(udf -> {
                     File file = FileUtil.writeUtf8String(
                             udf.getCode(),
-                            PathConstant.getUdfCompilerPythonPath(
-                                    missionId, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
+                            PathConstant.getUdfCompilerPath(
+                                    FunctionLanguage.PYTHON, UDFUtil.getPyFileName(udf.getClassName()) + ".py"));
                     return FileUtil.getInputStream(file);
                 })
                 .toArray(InputStream[]::new);

@@ -57,7 +57,7 @@ public class JVMPackage implements FunctionPackage {
         for (int i = 0; i < classNameList.size(); i++) {
             String className = classNameList.get(i);
             String classFile = StrUtil.replace(className, ".", "/") + ".class";
-            String absoluteFilePath = PathConstant.getUdfCompilerJavaPath(missionId, classFile);
+            String absoluteFilePath = PathConstant.getUdfCompilerPath(FunctionLanguage.JAVA, classFile);
 
             clazzs[i] = classFile;
             fileInputStreams[i] = FileUtil.getInputStream(absoluteFilePath);
