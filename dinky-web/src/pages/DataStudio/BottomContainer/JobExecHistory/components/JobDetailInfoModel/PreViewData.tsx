@@ -23,7 +23,7 @@ import { FireOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { Tag } from 'antd';
 import React from 'react';
-import Result from "@/pages/DataStudio/BottomContainer/Result";
+import Result from '@/pages/DataStudio/BottomContainer/Result';
 
 type PreViewDataProps = {
   row: JobExecutionHistory | undefined;

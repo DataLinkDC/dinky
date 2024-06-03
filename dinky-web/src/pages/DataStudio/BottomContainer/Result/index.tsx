@@ -236,13 +236,16 @@ const Result = (props: any) => {
     return (
       <>
         {current?.jobInstanceId && data.truncationFlag ? (
-          <Tooltip placement="top" title={l('pages.datastudio.label.result.query.latest.data.truncate')}>
+          <Tooltip
+            placement='top'
+            title={l('pages.datastudio.label.result.query.latest.data.truncate')}
+          >
             <QuestionCircleOutlined />
           </Tooltip>
         ) : undefined}
       </>
     );
-  }
+  };
 
   return (
     <div style={{ width: '100%' }}>
