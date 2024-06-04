@@ -29,11 +29,10 @@ import Heap from '@/pages/Metrics/Server/Heap';
 import NonHeap from '@/pages/Metrics/Server/OutHeap';
 import Thread from '@/pages/Metrics/Server/Thread';
 import { useModel } from '@@/exports';
+import { LineOptions } from '@ant-design/plots/lib/core';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import {Chart} from "@ant-design/plots/es/interface";
-import {LineOptions} from "@ant-design/plots/lib/core";
 
 export const imgStyle = {
   display: 'block',
@@ -83,11 +82,11 @@ const Server: React.FC<ServerProp> = (props) => {
     autoFit: true,
     animation: {
       update: {
-        type:false
+        type: false
       }
     },
     yField: 'value',
-    xField: (d) => new Date(d.time),
+    xField: (d) => new Date(d.time)
   };
   const jvmMetric = jvmData[jvmData.length - 1];
   const showLastData: JvmDataRecord = jvmMetric
@@ -129,9 +128,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).cpuLastValue}
-                    bodyStyle={{paddingBlock:0,height:200}}
-
-          colSpan={"25%"}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <CPU data={jvmData} chartConfig={commonConfig} />
         </ProCard>
@@ -143,8 +141,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).heapLastValue}
-          bodyStyle={{paddingBlock:0,height:200}}
-          colSpan={"25%"}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <Heap data={jvmData} max={showLastData.heapMax} chartConfig={commonConfig} />
         </ProCard>
@@ -156,9 +154,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).threadCount}
-                    bodyStyle={{paddingBlock:0,height:200}}
-
-          colSpan={"25%"}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <Thread data={jvmData} chartConfig={commonConfig} />
         </ProCard>
@@ -170,9 +167,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).nonHeapLastValue}
-                    bodyStyle={{paddingBlock:0,height:200}}
-
-          colSpan={"25%"}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <NonHeap data={jvmData} max={showLastData.nonHeapMax} chartConfig={commonConfig} />
         </ProCard>

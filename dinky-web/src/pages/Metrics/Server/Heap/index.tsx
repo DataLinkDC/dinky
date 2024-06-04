@@ -19,8 +19,8 @@
 
 import { JVMMetric } from '@/pages/Metrics/Server/data';
 import { Area, AreaConfig } from '@ant-design/plots';
+import { Chart } from '@ant-design/plots/es/interface';
 import React from 'react';
-import {Chart} from "@ant-design/plots/es/interface";
 
 type HeapProps = {
   data: JVMMetric[];
@@ -44,10 +44,10 @@ const Heap: React.FC<HeapProps> = (props) => {
     ...chartConfig,
     data: dataList,
     tooltip: {
-      name : "Heap Memory",
+      name: 'Heap Memory',
       channel: 'y',
       valueFormat: (datum: Number) => {
-        return datum + ' MB' ;
+        return datum + ' MB';
       }
     }
   };
