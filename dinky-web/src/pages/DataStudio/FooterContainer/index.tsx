@@ -64,12 +64,12 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     eventSource.onmessage = (event) => {
       const respData = JSON.parse(event.data);
       const data = respData.data;
-      if (respData['topic']!="HEART_BEAT") {
+      if (respData['topic'] != 'HEART_BEAT') {
         setMemDetailInfo(
           Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
-          '/' +
-          Number(data['max'] / 1024 / 1024).toFixed(0) +
-          'M'
+            '/' +
+            Number(data['max'] / 1024 / 1024).toFixed(0) +
+            'M'
         );
       }
     };

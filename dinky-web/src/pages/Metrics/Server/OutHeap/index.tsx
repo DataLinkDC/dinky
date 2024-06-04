@@ -17,10 +17,10 @@
  *
  */
 
-import {JVMMetric} from '@/pages/Metrics/Server/data';
-import {Area, AreaConfig} from '@ant-design/plots';
+import { JVMMetric } from '@/pages/Metrics/Server/data';
+import { Area, AreaConfig } from '@ant-design/plots';
 import React from 'react';
-import {Chart} from "@ant-design/plots/es/interface";
+import { Chart } from '@ant-design/plots/es/interface';
 
 type NonHeapProps = {
   data: JVMMetric[];
@@ -32,7 +32,7 @@ type NonHeap = {
   value: number;
 };
 const NonHeap: React.FC<NonHeapProps> = (props) => {
-  const {data, max, chartConfig} = props;
+  const { data, max, chartConfig } = props;
   const dataList: NonHeap[] = data.map((x) => {
     return {
       time: x.time,
@@ -50,7 +50,7 @@ const NonHeap: React.FC<NonHeapProps> = (props) => {
       }
     },
     tooltip: {
-      name: "NonHeap Memory",
+      name: 'NonHeap Memory',
       channel: 'y',
       valueFormat: (datum: Number) => {
         return datum + ' MB';

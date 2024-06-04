@@ -20,7 +20,7 @@
 import { JVMMetric } from '@/pages/Metrics/Server/data';
 import { Area, AreaConfig } from '@ant-design/plots';
 import React from 'react';
-import {Chart} from "@ant-design/plots/es/interface";
+import { Chart } from '@ant-design/plots/es/interface';
 
 type ThreadProps = {
   data: JVMMetric[];

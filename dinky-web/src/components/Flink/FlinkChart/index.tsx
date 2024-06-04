@@ -19,7 +19,7 @@
 
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import { differenceDays } from '@/utils/function';
-import {Line, LineConfig} from '@ant-design/charts';
+import { Line, LineConfig } from '@ant-design/charts';
 import { ExpandOutlined } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { Col, Modal, Radio, Segmented, Space } from 'antd';
@@ -69,21 +69,21 @@ const FlinkChart = (props: FlinkChartProps) => {
     }
   };
 
-  const config :LineConfig= {
+  const config: LineConfig = {
     animation: false,
     data: data,
     smooth: true,
     xField: 'time',
     yField: 'value',
-    xField: (d:ChartData) => new Date(d.time),
-    axis:{
-        x:{
-          tickCount: 10,
-          mask: getLineTimeMask(data),
-        }
-      },
-      ...chartOptions
-    };
+    xField: (d: ChartData) => new Date(d.time),
+    axis: {
+      x: {
+        tickCount: 10,
+        mask: getLineTimeMask(data)
+      }
+    },
+    ...chartOptions
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -165,7 +165,7 @@ const FlinkChart = (props: FlinkChartProps) => {
         ) : (
           <StatisticCard.Group
             style={{
-              marginTop:"5%",
+              marginTop: '5%',
               minHeight: '95%',
               minWidth: '100%',
               display: 'flex',
@@ -174,7 +174,8 @@ const FlinkChart = (props: FlinkChartProps) => {
             }}
           >
             <StatisticCard statistic={{ value: data ? data[data.length - 1]?.value : 0 }} />
-          </StatisticCard.Group>)}
+          </StatisticCard.Group>
+        )}
       </ProCard>
 
       <Modal
