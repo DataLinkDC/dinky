@@ -48,7 +48,7 @@ import { WarningOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
 import { useAsyncEffect } from 'ahooks';
-import {Button, Modal, Result} from 'antd';
+import { Button, Modal, Result } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
@@ -246,7 +246,6 @@ const ResourceOverView: React.FC<connect> = (props) => {
         await refreshTree();
       }
     });
-
   };
 
   /**
@@ -398,8 +397,8 @@ const ResourceOverView: React.FC<connect> = (props) => {
                 editModal === 'createFolder'
                   ? l('right.menu.createFolder')
                   : editModal === 'rename'
-                  ? l('right.menu.rename')
-                  : ''
+                    ? l('right.menu.rename')
+                    : ''
               }
               formValues={resourceState.value}
               onOk={handleModalSubmit}

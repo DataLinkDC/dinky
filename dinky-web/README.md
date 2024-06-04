@@ -7,7 +7,7 @@ This project uses [Ant Design Pro](https://pro.ant.design) for initialization. H
 ## Environment preparation
 
 | Environment | Version | Remarks |
-|-------------|---------|---------|
+| ----------- | ------- | ------- |
 | node        | 18+     |         |
 | npm         | 10+     |         |
 
