@@ -1,6 +1,6 @@
 ---
-sidebar_position: 4
-position: 4
+sidebar_position: 2
+position: 2
 id: upgrade_075to100
 title: 0.7.5 升级到 1.0.0
 ---
