@@ -19,13 +19,14 @@
 
 package org.dinky.data.result;
 
-import com.google.common.collect.Lists;
 import org.dinky.assertion.Asserts;
 import org.dinky.job.JobHandler;
 
 import org.apache.flink.table.api.TableResult;
 
 import java.util.Objects;
+
+import com.google.common.collect.Lists;
 
 /**
  * SelectBuilder

@@ -19,14 +19,17 @@
 
 package org.dinky.job;
 
-import cn.hutool.core.collection.CollectionUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.result.ResultPool;
-import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import javax.annotation.PreDestroy;
-import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobShutdownConfig.
@@ -51,5 +54,4 @@ public class JobShutdownConfig {
         TenantContextHolder.ignoreTenant();
         jobHandler.persistResultData(jobIds);
     }
-
 }

@@ -19,7 +19,6 @@
 
 package org.dinky.job.handler;
 
-import cn.hutool.core.collection.CollectionUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
@@ -55,6 +54,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.DependsOn;
 
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -263,7 +263,8 @@ public class Job2MysqlHandler extends AbsJobHandler {
                     history.setId(jobId);
                     history.setResult(resultJsonStr);
                     return history;
-                }).filter(Objects::nonNull)
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
         historyService.updateBatchById(historyList);
         log.info("The result data persistence to MySQL was successful. Job ids: {}", jobIds);
