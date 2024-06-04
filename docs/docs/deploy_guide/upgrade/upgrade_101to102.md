@@ -2,7 +2,7 @@
 sidebar_position: 3
 position: 3
 id: upgrade_101to102
-title: 0.7.5 升级到 1.0.0
+title: 1.0.1 升级到 1.0.2
 ---
 
 :::warning 说明
