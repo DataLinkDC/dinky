@@ -49,7 +49,7 @@ const Result = (props: any) => {
   const {
     tabs: { panes, activeKey },
     historyExecId,
-    initIsRefresh,
+    initIsRefresh
   } = props;
   const [data, setData] = useState<Data>({});
   const [dataList, setDataList] = useState<DataList>([]);
