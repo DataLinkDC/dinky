@@ -17,196 +17,53 @@
 
 name: Docker Build
 
-
-
 on:
   workflow_dispatch:
     inputs:
-      version:
+      dinky_version:
         description: 'dinky version'
         required: true
+      docker_space:
+              description: 'docker space(eg: dinky)'
+              required: true
 
 jobs:
   build_releases:
     name: build releases
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      # maven编译
-      - name: Set up JDK 8
-        uses: actions/setup-java@v2
-        with:
-          java-version: 8
-          distribution: 'adopt'
-      - name: Cache local Maven repository
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2/repository/*/*/*
-          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      #      - name: Check Style
-      #        run: |
-      #          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check
-      - name: Build and Package
-        run: |
-          ./mvnw -B clean install \
-                 -Dmaven.test.skip=true \
-                 -Dspotless.check.skip=true \
-                 -P prod,scala-2.12,flink-all,web,maven-central,fast \
-                 --no-snapshot-updates
-      - name: Upload release file
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-file
-          path: ./build/dinky-release-*.tar.gz
-  dinky_mysql_image:
-    name: dinky mysql image
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-        include:
-          - url: registry.cn-hangzhou.aliyuncs.com
-            namespace: dinky
-          - url: docker.io
-            namespace: dinkydocker
+        flink: [1.14,1.15,1.16,1.17,1.18,1.19]
     steps:
-      - uses: actions/checkout@v3
-      - name: Log in to the Container registry,url -> ${{ matrix.url }}
-        if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
-        uses: docker/login-action@v2
+      # git checkout 代码
+      - name: Checkout
+        uses: actions/checkout@v4
+      # 设置 QEMU, 后面 docker buildx 依赖此.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      # 设置 Docker buildx, 方便构建 Multi platform 镜像
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      # 登录 docker hub
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
         with:
-          registry: ${{ matrix.url }}
-          username: ${{ secrets.DOCKER_ALIYUN_USER }}
-          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
-      - name: Log in to the Container registry,url -> ${{ matrix.url }}
-        if: ${{ matrix.url == 'docker.io'}}
-        uses: docker/login-action@v2
+          # GitHub Repo => Settings => Secrets 增加 docker hub 登录密钥信息
+          # DOCKERHUB_USERNAME 是 docker hub 账号名.
+          # DOCKERHUB_TOKEN: docker hub => Account Setting => Security 创建.
+          username: ${{ secrets.DOCKER_IO_USER  }}
+          password: ${{ secrets.DOCKER_IO_PASS  }}
+      # 构建 Docker 并推送到 Docker hub
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v5
         with:
-          registry: ${{ matrix.url }}
-          username: ${{ secrets.DOCKER_IO_USER }}
-          password: ${{ secrets.DOCKER_IO_PASS }}
-      - name: push docker dinky mysql image
-        uses: docker/build-push-action@v2
-        with:
-          file: docker/DockerfileMysql
-          context: .
+          file: ./deploy/docker/Dockerfile
+          # 是否 docker push
           push: true
-          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-mysql-server:${{ inputs.version }}
-
-  dinky_image:
-    name: docker dinky image
-    runs-on: ubuntu-latest
-    needs: [build_releases]
-    strategy:
-      fail-fast: true
-      matrix:
-        url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-        include:
-          - url: registry.cn-hangzhou.aliyuncs.com
-            namespace: dinky
-          - url: docker.io
-            namespace: dinkydocker
-    steps:
-      - uses: actions/checkout@v3
-      - name: Move Dockerfile
-        run: |
-          cp -r ./docker/Dockerfile* ./
-      - name: Download math result for job 1
-        uses: actions/download-artifact@v3
-        with:
-          name: release-file
-          path: ./build/
-      - name: Log in to the Container registry,url -> ${{ matrix.url }}
-        if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ matrix.url }}
-          username: ${{ secrets.DOCKER_ALIYUN_USER }}
-          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
-      - name: Log in to the Container registry,url -> ${{ matrix.url }}
-        if: ${{ matrix.url == 'docker.io'}}
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ matrix.url }}
-          username: ${{ secrets.DOCKER_IO_USER }}
-          password: ${{ secrets.DOCKER_IO_PASS }}
-      - name: push docker dinky image
-        uses: docker/build-push-action@v2
-        with:
           build-args: |
-            DINKY_VERSION=${{ inputs.version }}
-          file: Dockerfile
-          context: .
-          push: true
-          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}
-
-
-  dinky_flink_image:
-    name: docker dinky flink image
-    runs-on: ubuntu-latest
-    needs: [ dinky_image ]
-    strategy:
-      fail-fast: true
-      matrix:
-        url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-        FLINK_VERSION: [1.14.6 , 1.15.4 , 1.16.3, 1.17.2, 1.18.1, 1.19.0]
-        include:
-          - url: registry.cn-hangzhou.aliyuncs.com
-            namespace: dinky
-          - url: docker.io
-            namespace: dinkydocker
-          - FLINK_VERSION: 1.14.6
-            FLINK_BIG_VERSION: 1.14
-          - FLINK_VERSION: 1.15.4
-            FLINK_BIG_VERSION: 1.15
-          - FLINK_VERSION: 1.16.3
-            FLINK_BIG_VERSION: 1.16
-          - FLINK_VERSION : 1.17.2
-            FLINK_BIG_VERSION: 1.17
-          - FLINK_VERSION: 1.18.1
-            FLINK_BIG_VERSION: 1.18
-          - FLINK_VERSION: 1.19.0
-            FLINK_BIG_VERSION: 1.19
-    steps:
-      - uses: actions/checkout@v3
-      - name: Move Dockerfile
-        run: |
-          cp -r ./docker/Dockerfile* ./
-      - uses: actions/checkout@v3
-      - name: set the flink_big_version
-        run: |
-          echo FLINK_BIG_VERSION=${FLINK_VERSION%.*} >> $GITHUB_ENV
-      - name: Download math result for job 1
-        uses: actions/download-artifact@v3
-        with:
-          name: release-file
-          path: ./build/
-      - name: Log in to the Container registry,url -> ${{ matrix.url }}
-        if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ matrix.url }}
-          username: ${{ secrets.DOCKER_ALIYUN_USER }}
-          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
-      - name: Log in to the Container registry,url -> ${{ matrix.url }}
-        if: ${{ matrix.url == 'docker.io'}}
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ matrix.url }}
-          username: ${{ secrets.DOCKER_IO_USER }}
-          password: ${{ secrets.DOCKER_IO_PASS }}
-      - name: push docker dinky image
-        uses: docker/build-push-action@v2
-        with:
-          build-args: |
-            FLINK_VERSION=${{ matrix.FLINK_VERSION }}
-            DINKY_IMAGE=${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}
-            FLINK_BIG_VERSION=${{ matrix.FLINK_BIG_VERSION }}
-          file: DockerfileDinkyFlink
-          context: .
-          push: true
-          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}-flink-${{matrix.FLINK_BIG_VERSION }}
+            FLINK_VERSION=${{ matrix.flink }}
+            DINKY_VERSION=${{ inputs.dinky_version }}
+          tags: |
+            ${{inputs.docker_space}}/dinky:${{ inputs.dinky_version }}-flink${{ matrix.flink }}

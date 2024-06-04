@@ -1,44 +1,35 @@
 version: "3.9"
 
 services:
-  mysql:
-    image: "dinky-mysql-server:${DINKY_VERSION}"
-    ports:
-      - "3308:3306"
-    networks:
-      - dinky-net
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-    restart: unless-stopped
-
-  standalone:
-    image: "dinky-standalone-server:${DINKY_VERSION}-flink-${FLINK_BIG_VERSION}"
-    environment:
-      - MYSQL_ADDR=mysql:3306
+  dinky:
+    image: "ikiler/dinky:${DINKY_VERSION}-flink${FLINK_VERSION}"
     ports:
       - "8888:8888"
-      - "8081:8081"
-      - "8889:8889"
+    env_file: .env
     networks:
-      - dinky-net
-    restart: unless-stopped
-    depends_on:
-      mysql:
-        condition: service_healthy
+      - dinky
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/dinky/customJar/
 
-  web:
-    image: "dinky-web:${DINKY_VERSION}"
+  jobmanager:
+    image: flink:${FLINK_VERSION}-scala_2.12-java8
     ports:
-      - "80:80"
-    depends_on:
-      - standalone
+      - "8081:8081"
+    command: jobmanager
+    env_file: .env
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/flink/lib/customJar/
     networks:
-      - dinky-net
-    profiles:
-      - web
-    restart: unless-stopped
+      - dinky
+
+  taskmanager:
+    image: flink:${FLINK_VERSION}-scala_2.12-java8
+    command: taskmanager
+    env_file: .env
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/flink/lib/customJar/
+    networks:
+      - dinky
 
 networks:
-  dinky-net:
+  dinky:
