@@ -133,7 +133,8 @@ export type ConsoleType = {
   result: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
   chart: {};
-  refresh: boolean;
+  refreshResults: object[];
+  refreshResult: object;
 };
 export type MetadataParams = {
   queryParams: QueryParams;

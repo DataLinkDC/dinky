@@ -48,7 +48,8 @@ type DataList = Data[];
 const Result = (props: any) => {
   const {
     tabs: { panes, activeKey },
-    historyExecId
+    historyExecId,
+    initIsRefresh,
   } = props;
   const [data, setData] = useState<Data>({});
   const [dataList, setDataList] = useState<DataList>([]);
@@ -176,8 +177,8 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     setDataList([]);
-    loadData(true);
-  }, [currentTabs?.console?.refresh]);
+    loadData(initIsRefresh);
+  }, [currentTabs?.console?.refreshResult, currentTabs?.console?.refreshResults]);
 
   const getColumns = (columns: string[] = []) => {
     return columns?.map((item) => {

@@ -41,7 +41,7 @@ export const PreViewData: React.FC<PreViewDataProps> = (props) => {
           </Tag>
         </ProDescriptions.Item>
         <ProDescriptions.Item span={2}>
-          <Result historyExecId={row?.id} />
+          <Result historyExecId={row?.id} initIsRefresh={true} />
         </ProDescriptions.Item>
       </ProDescriptions>
     </>
