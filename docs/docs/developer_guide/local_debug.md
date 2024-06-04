@@ -12,7 +12,8 @@ title: 本地调试
 - Flink, Java, Maven, Node, React, Ant Design Pro
 - MySQL/PostgreSQL/H2
 - IntelliJ IDEA
-  :::
+
+:::
 
 ## 前置条件
 
