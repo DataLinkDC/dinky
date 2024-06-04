@@ -21,6 +21,7 @@ package org.dinky.job;
 
 import org.dinky.data.exception.JobException;
 
+import java.util.List;
 import java.util.ServiceLoader;
 
 /**
@@ -47,7 +48,7 @@ public interface JobHandler {
     /**
      * Persistent storage of result data.
      */
-    void persistResultData();
+    void persistResultData(List<String> jobIds);
 
     /**
      * Get the read handler.

@@ -19,6 +19,7 @@
 
 package org.dinky.data.result;
 
+import com.google.common.collect.Lists;
 import org.dinky.assertion.Asserts;
 import org.dinky.job.JobHandler;
 
@@ -78,7 +79,7 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
             ResultRunnable runnable =
                     new ResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
             runnable.registerCallback((s, selectResult) -> {
-                jobHandler.persistResultData();
+                jobHandler.persistResultData(Lists.newArrayList(s));
             });
             Thread thread = new Thread(runnable, jobId);
             thread.start();

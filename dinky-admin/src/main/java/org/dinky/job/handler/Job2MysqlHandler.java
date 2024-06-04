@@ -19,6 +19,7 @@
 
 package org.dinky.job.handler;
 
+import cn.hutool.core.collection.CollectionUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
@@ -48,7 +49,9 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.DependsOn;
 
@@ -243,19 +246,27 @@ public class Job2MysqlHandler extends AbsJobHandler {
      * Persistent storage of result data into mysql.
      */
     @Override
-    public void persistResultData() {
-        Integer jobId = job.getId();
-        SelectResult selectResult = ResultPool.get(String.valueOf(jobId));
-        if (Objects.isNull(selectResult)) {
-            log.info("The result data does not exist. Job id: {}", jobId);
+    public void persistResultData(List<String> jobIds) {
+        if (CollectionUtil.isEmpty(jobIds)) {
             return;
         }
-        String resultJsonStr = selectResult.toTruncateJson(MysqlConstant.MEDIUMTEXT_MAX_LENGTH);
-        History history = new History();
-        history.setId(jobId);
-        history.setResult(resultJsonStr);
-        historyService.updateById(history);
-        log.info("The result data persistence to MySQL was successful. Job id: {}", jobId);
+        List<History> historyList = jobIds.stream()
+                .map(jobIdStr -> {
+                    Integer jobId = Integer.parseInt(jobIdStr);
+                    SelectResult selectResult = ResultPool.get(jobIdStr);
+                    if (Objects.isNull(selectResult)) {
+                        log.info("The result data does not exist. Job id: {}", jobId);
+                        return null;
+                    }
+                    String resultJsonStr = selectResult.toTruncateJson(MysqlConstant.MEDIUMTEXT_MAX_LENGTH);
+                    History history = new History();
+                    history.setId(jobId);
+                    history.setResult(resultJsonStr);
+                    return history;
+                }).filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        historyService.updateBatchById(historyList);
+        log.info("The result data persistence to MySQL was successful. Job ids: {}", jobIds);
     }
 
     @Override
