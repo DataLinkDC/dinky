@@ -178,7 +178,7 @@ const Result = (props: any) => {
     setData({});
     setDataList([]);
     loadData(initIsRefresh);
-  }, [currentTabs?.console?.refreshResult, currentTabs?.console?.refreshResults]);
+  }, [currentTabs?.console?.refreshResult, currentTabs?.console?.refreshResults, currentTabs?.id]);
 
   const getColumns = (columns: string[] = []) => {
     return columns?.map((item) => {
