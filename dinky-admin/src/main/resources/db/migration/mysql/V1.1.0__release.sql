@@ -79,6 +79,8 @@ ALTER TABLE dinky_alert_template MODIFY COLUMN `name` varchar(20) CHARACTER SET 
 
 ALTER TABLE dinky_history CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'statement set';
 
+ALTER TABLE dinky_history CHANGE COLUMN `result` `result` mediumtext DEFAULT NULL COMMENT 'result set';
+
 ALTER TABLE dinky_task CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'sql statement';
 
 ALTER TABLE dinky_task_version CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'flink sql statement';
