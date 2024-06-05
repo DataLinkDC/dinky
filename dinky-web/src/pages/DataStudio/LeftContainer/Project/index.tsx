@@ -197,8 +197,8 @@ const Project: React.FC = (props: connect) => {
       options.parentId = projectState.isCreateTask
         ? projectState.value.id
         : projectState.isEdit
-        ? projectState.value.parentId
-        : options.parentId;
+          ? projectState.value.parentId
+          : options.parentId;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }

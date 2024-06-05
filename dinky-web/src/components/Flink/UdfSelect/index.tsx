@@ -17,29 +17,28 @@
  *
  */
 
-import {ProFormSelect} from '@ant-design/pro-components';
-import {ProFormSelectProps} from '@ant-design/pro-form/es/components/Select';
-import {Divider} from 'antd';
-import React from "react";
+import { ProFormSelect } from '@ant-design/pro-components';
+import { ProFormSelectProps } from '@ant-design/pro-form/es/components/Select';
+import { Divider } from 'antd';
+import React from 'react';
 
 export type FlinkUdfOptionsProps = ProFormSelectProps & {};
 
 const FlinkUdfOptionsSelect = (props: FlinkUdfOptionsProps) => {
-
   const renderTemplateDropDown = (item: any) => {
     return (
-        <>
-          <Divider style={{ margin: '8px 0' }} />
-          {item}
-        </>
+      <>
+        <Divider style={{ margin: '8px 0' }} />
+        {item}
+      </>
     );
   };
 
   return (
-      <ProFormSelect
-          {...props}
-          fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item), ...props.fieldProps}}
-      />
+    <ProFormSelect
+      {...props}
+      fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item), ...props.fieldProps }}
+    />
   );
 };
 
