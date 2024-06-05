@@ -68,9 +68,11 @@ import lombok.extern.slf4j.Slf4j;
 public class APIController {
 
     private final TaskService taskService;
+
     private final JobInstanceService jobInstanceService;
+
     @Autowired
-    private APIService apiService;
+    private final APIService apiService;
 
     @GetMapping("/version")
     @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")

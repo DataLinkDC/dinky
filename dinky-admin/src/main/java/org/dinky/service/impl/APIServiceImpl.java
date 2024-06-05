@@ -49,8 +49,10 @@ import lombok.extern.slf4j.Slf4j;
 public class APIServiceImpl implements APIService {
     @Autowired
     private TaskService taskService;
+
     @Autowired
     private SchedulerService schedulerService;
+
     @Autowired
     private CatalogueService catalogueService;
 
