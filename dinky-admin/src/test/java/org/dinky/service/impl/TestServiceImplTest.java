@@ -32,6 +32,7 @@ import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +60,10 @@ public class TestServiceImplTest {
     @Ignore
     public void testCreateCatalogueAndTask() throws SqlExplainExcepition {
         CreatingCatalogueTaskDTO dto = new CreatingCatalogueTaskDTO();
-        List<String> catalogueNames = List.of("DDP", "test1", "test3");
+        List<String> catalogueNames = new ArrayList<>();
+        catalogueNames.add("test");
+        catalogueNames.add("test2");
+        catalogueNames.add("test3");
         dto.setCatalogueNames(catalogueNames);
         int parentId = 0;
         for (String catalogueName : catalogueNames) {
