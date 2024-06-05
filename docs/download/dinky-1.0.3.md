@@ -30,6 +30,7 @@ title: 1.0.3 release
 - 修复 Flink 1.19 的支持中 Yarn Application 模式无法执行任务的问题
 - 修复启停脚本存在的问题,适配 jdk 11 的 GC 参数
 - 修复 UDF 发布后无法找到类的问题
+- 修复 在Application 任务  SQL 内,set 函数无法覆盖的优先级问题
 
 ### 优化
 - 优化 Dinky 服务在监控时导致 CPU 负载过高,线程不释放的问题
