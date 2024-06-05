@@ -160,6 +160,11 @@ const JobMetricsList = (props: MetricsProps) => {
                           split
                           onFinish={async (values) => setFilter(values)}
                           onReset={async () => {
+                            // 清空筛选条件
+                            setFilter({
+                              vertices: '',
+                              metrics: ''
+                            });
                             await refreshMetricsData();
                             await refreshMetricsLayout();
                           }}

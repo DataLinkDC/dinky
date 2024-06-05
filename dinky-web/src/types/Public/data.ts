@@ -20,7 +20,9 @@
 export const THEME = {
   NAV_THEME: 'navTheme',
   dark: 'realDark',
-  light: 'light'
+  light: 'light',
+  CHART_THEME_DARK: 'classicDark',
+  CHART_THEME_LIGHT: 'classic'
 };
 
 /**

@@ -120,7 +120,14 @@ const JobChart = (props: JobChartProps) => {
                   defaultCollapsed
                   split
                   onFinish={async (values) => setFilter(values)}
-                  onReset={async () => await refreshMetricsData()}
+                  onReset={async () =>{
+                    // 清空筛选条件
+                    setFilter({
+                      vertices: '',
+                      metrics: ''
+                    });
+                    await refreshMetricsData();
+                  }}
                 >
                   <ProFormSelect
                     name='vertices'

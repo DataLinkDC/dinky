@@ -33,6 +33,7 @@ import { LineOptions } from '@ant-design/plots/lib/core';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {getChartThemeColor} from "@/utils/function";
 
 export const imgStyle = {
   display: 'block',
@@ -46,6 +47,7 @@ type ServerProp = {
 
 const Server: React.FC<ServerProp> = (props) => {
   const { timeRange } = props;
+  const [themeColor, setThemeColor] = useState<string>(getChartThemeColor());
 
   const [jvmData, setJvmData] = useState<JVMMetric[]>([]);
 
@@ -77,9 +79,15 @@ const Server: React.FC<ServerProp> = (props) => {
     }
   }, [timeRange]);
 
+  useEffect(() => {
+    setThemeColor(getChartThemeColor())
+  }, [ getChartThemeColor()]);
+
+
   const commonConfig: LineOptions = {
     data: [],
     autoFit: true,
+    theme: themeColor,
     animation: {
       update: {
         type: false

@@ -133,6 +133,20 @@ export function setLocalThemeToStorage(defaultTheme?: string) {
   localStorage.setItem(THEME.NAV_THEME, defaultTheme ?? getLocalTheme());
 }
 
+
+/**
+ * get chart theme color by localStorage's theme
+ */
+export function getChartThemeColor() {
+  const theme = getLocalTheme();
+  if (theme && theme === THEME.dark) {
+    return THEME.CHART_THEME_DARK
+  } else {
+    return THEME.CHART_THEME_LIGHT
+  }
+}
+
+
 /**
  * register editor key binding | 注册编辑器快捷键
  *
