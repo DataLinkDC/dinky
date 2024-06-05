@@ -79,6 +79,7 @@ const FlinkChart = (props: FlinkChartProps) => {
 
   const config: LineConfig = {
     animation: true,
+    autoFit: true,
     data: data,
     smooth: true,
     theme: themeColor,

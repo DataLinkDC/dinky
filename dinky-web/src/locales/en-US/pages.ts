@@ -361,7 +361,7 @@ export default {
   'metrics.flink.subTask.placeholder': 'Please select a SubTask Name',
   'metrics.flink.taskId': 'Dinky Job ID',
   'metrics.dinky.not.open':
-    'Dinky Server monitoring is not enabled, please go to the Setting Center -> Global Settings -> Metrics Configuration -> Dinky JVM Monitor switch to open',
+    'The monitoring function is not enabled, and the Dinky Server and Flink task monitoring functions cannot be used. \nPlease go to the Configuration Center -> Global Configuration -> Metrics Configuration -> Dinky JVM Monitor switch to enable it',
   'metrics.flink.deleteConfirm':
     'Are you sure to delete the monitoring data under this task? \nAttention: This operation will synchronously affect the monitoring data of the operation and maintenance center for this task!! \nPlease operate with caution, this operation is irreversible!',
 

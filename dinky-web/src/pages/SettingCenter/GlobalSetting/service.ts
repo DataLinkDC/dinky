@@ -20,6 +20,10 @@
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 
+export async function queryConfigByKeyword(keyword: string) {
+  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
+}
+
 export async function queryDsConfig(keyword: string) {
   return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
 }

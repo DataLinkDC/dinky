@@ -18,63 +18,67 @@
  */
 
 import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
-import useHookRequest from '@/hooks/useHookRequest';
-import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
+import {MetricsTimeFilter} from '@/pages/DevOps/JobDetail/data';
 import JobMetricsList from '@/pages/Metrics/JobMetricsList';
 import Server from '@/pages/Metrics/Server';
-import { getAllConfig } from '@/pages/Metrics/service';
-import { l } from '@/utils/intl';
-import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { Alert } from 'antd';
-import { useState } from 'react';
+import {l} from '@/utils/intl';
+import {PageContainer, ProCard} from '@ant-design/pro-components';
+import {Divider, Result} from 'antd';
+import React, {memo, useEffect, useState} from 'react';
+import {CONFIG_MODEL_ASYNC, SysConfigStateType} from "@/pages/SettingCenter/GlobalSetting/model";
+import {connect} from "@umijs/max";
+import {SettingConfigKeyEnum} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/constants";
+import MarqueeAlert from "@/components/MarqueeAlert";
 
-export default () => {
+const Metrics: React.FC<connect> = (props) => {
   const [timeRange, setTimeRange] = useState<MetricsTimeFilter>({
     startTime: new Date().getTime() - 2 * 60 * 1000,
     endTime: new Date().getTime(),
     isReal: true
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const showServer = useHookRequest(getAllConfig, {
-    defaultParams: [],
-    onSuccess: (res: any) => {
-      for (const config of res.metrics) {
-        if (config.key === 'sys.metrics.settings.sys.enable') {
-          return config.value;
-        }
-      }
-      return false;
-    }
-  });
+  const {dispatch, enableMetricMonitor} = props;
+
+  useEffect(() => {
+    setLoading(true);
+    dispatch({
+      type: CONFIG_MODEL_ASYNC.queryMetricConfig,
+      payload: SettingConfigKeyEnum.METRIC.toLowerCase()
+    })
+    setLoading(false);
+  }, []);
+
 
   const onTimeSelectChange = (filter: MetricsTimeFilter) => {
     setTimeRange(filter);
   };
 
   return (
-    <div>
-      <PageContainer
-        fixedHeader={true}
-        //todo 后面title改为下拉列表，用户自定义选择展示哪些layout，而不是全部展示
-        loading={showServer.loading}
-        subTitle={
-          !showServer.data && (
-            <Alert message={l('metrics.dinky.not.open')} type={'warning'} banner showIcon />
-          )
-        }
-        header={{ extra: [<MetricsFilter key={''} onTimeSelect={onTimeSelectChange} />] }}
-        content={
-          <>
-            {showServer.data && (
-              <ProCard collapsible title={'Dinky Server'} ghost bordered hoverable>
-                <Server timeRange={timeRange} />
-              </ProCard>
-            )}
-            {/*<Job />*/}
-            <JobMetricsList timeRange={timeRange} />
+    <PageContainer
+      fixedHeader={true}
+      loading={loading}
+      header={{extra: [<MetricsFilter key={'filter'} onTimeSelect={onTimeSelectChange}/>]}}
+      content={
+        <>
+          {enableMetricMonitor ? <>
+            <ProCard collapsible title={'Dinky Server'} ghost bordered hoverable>
+              <Server timeRange={timeRange}/>
+            </ProCard>
+            <Divider/>
+            <JobMetricsList timeRange={timeRange}/>
+          </> :<>
+            <Result status={'warning'} title={<span className={'needWrap'}>{l('metrics.dinky.not.open')}</span>} />
           </>
-        }
-      ></PageContainer>
-    </div>
+          }
+        </>
+      }
+    />
   );
 };
+
+export default connect(
+  ({SysConfig}: { SysConfig: SysConfigStateType }) => ({
+    enableMetricMonitor: SysConfig.enableMetricMonitor
+  })
+)(memo(Metrics));
