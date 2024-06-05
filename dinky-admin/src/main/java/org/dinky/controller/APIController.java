@@ -216,6 +216,7 @@ public class APIController {
     public Result createTaskAndSend2Ds(@RequestBody CreatingCatalogueTaskDTO dto) {
         return Result.succeed(apiService.createTaskAndSend2Ds(dto));
     }
+
     @PostMapping("/saveTask")
     @ApiOperation("Save a task")
     @Log(title = "Save a task", businessType = BusinessType.OTHER)
