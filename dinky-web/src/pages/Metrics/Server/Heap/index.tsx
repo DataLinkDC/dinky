@@ -19,14 +19,13 @@
 
 import { JVMMetric } from '@/pages/Metrics/Server/data';
 import { Area, AreaConfig } from '@ant-design/plots';
-import { Datum } from '@antv/g2plot';
-import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import { Chart } from '@ant-design/plots/es/interface';
 import React from 'react';
 
 type HeapProps = {
   data: JVMMetric[];
   max: number;
-  chartConfig: G2plotConfig;
+  chartConfig: Chart;
 };
 type Heap = {
   time: Date;
@@ -44,13 +43,11 @@ const Heap: React.FC<HeapProps> = (props) => {
   const config: AreaConfig = {
     ...chartConfig,
     data: dataList,
-    yAxis: {
-      min: 0,
-      max: max
-    },
     tooltip: {
-      formatter: (datum: Datum) => {
-        return { name: 'Heap Memory', value: datum.value + ' MB' };
+      name: 'Heap Memory',
+      channel: 'y',
+      valueFormat: (datum: Number) => {
+        return datum + ' MB';
       }
     }
   };

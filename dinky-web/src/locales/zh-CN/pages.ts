@@ -194,6 +194,8 @@ export default {
   'devops.jobinfo.job.keyConfirm': '确定 {key} 该作业吗？',
   'devops.jobinfo.metrics.configMetrics': '任务监控配置',
   'devops.jobinfo.metrics.metricsItems': '监控项列表',
+  'devops.jobinfo.metrics.vertices': '顶点',
+  'devops.jobinfo.metrics.name': '监控项名称',
   'devops.jobinfo.metrics.selected': '已选择',
   'devops.jobinfo.offline': '下线',
   'devops.jobinfo.recently.job.status': '查看最近保存的作业状态信息',
@@ -346,7 +348,7 @@ export default {
   'metrics.flink.subTask.placeholder': '请选择子任务名称',
   'metrics.flink.taskId': 'Dinky 任务ID',
   'metrics.dinky.not.open':
-    '暂未开启 Dinky Server 监控, 请前往 配置中心 -> 全局配置 -> Metrics 配置 -> Dinky JVM Monitor 开关 进行开启',
+    '未开启监控功能,Dinky Server 和 Flink 任务监控功能无法使用. \n请前往 配置中心 -> 全局配置 -> Metrics 配置 -> Dinky JVM Monitor 开关 进行开启',
   'metrics.flink.deleteConfirm':
     '确认删除该任务下的监控数据吗? \n注意:该操作会同步影响运维中心该任务的监控数据!!\n请谨慎操作,该操作不可撤消!',
   /**

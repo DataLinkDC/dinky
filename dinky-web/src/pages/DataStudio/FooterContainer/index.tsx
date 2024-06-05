@@ -62,13 +62,16 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   useEffect(() => {
     const eventSource = getSseData(API_CONSTANTS.BASE_URL + API_CONSTANTS.GET_JVM_INFO);
     eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data).data;
-      setMemDetailInfo(
-        Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
-          '/' +
-          Number(data['max'] / 1024 / 1024).toFixed(0) +
-          'M'
-      );
+      const respData = JSON.parse(event.data);
+      const data = respData.data;
+      if (respData['topic'] != 'HEART_BEAT') {
+        setMemDetailInfo(
+          Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
+            '/' +
+            Number(data['max'] / 1024 / 1024).toFixed(0) +
+            'M'
+        );
+      }
     };
     return () => {
       eventSource.close();

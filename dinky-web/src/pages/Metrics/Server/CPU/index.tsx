@@ -19,13 +19,12 @@
 
 import { JVMMetric } from '@/pages/Metrics/Server/data';
 import { Area, AreaConfig } from '@ant-design/plots';
-import { Datum } from '@antv/g2plot';
-import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import { Chart } from '@ant-design/plots/es/interface';
 import React from 'react';
 
 type CpuProps = {
   data: JVMMetric[];
-  chartConfig: G2plotConfig;
+  chartConfig: Chart;
 };
 type Cpu = {
   time: Date;
@@ -41,13 +40,17 @@ const CPU: React.FC<CpuProps> = (props) => {
   const config: AreaConfig = {
     ...chartConfig,
     data: dataList,
-    yAxis: {
-      min: 0,
-      max: 100
+    axis: {
+      y: {
+        min: 0,
+        max: 100
+      }
     },
     tooltip: {
-      formatter: (datum: Datum) => {
-        return { name: 'Cpu Used', value: datum.value + ' %' };
+      name: 'Cpu Used',
+      channel: 'y',
+      valueFormatter: (num: Number) => {
+        return num + ' %';
       }
     }
   };

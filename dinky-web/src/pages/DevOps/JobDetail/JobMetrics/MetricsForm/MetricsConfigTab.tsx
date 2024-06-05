@@ -19,7 +19,7 @@
 
 import useHookRequest from '@/hooks/useHookRequest';
 import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
-import { getFLinkVertices } from '@/pages/DevOps/JobDetail/srvice';
+import { getFLinkVertices } from '@/pages/DevOps/JobDetail/service';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { Transfer } from 'antd';

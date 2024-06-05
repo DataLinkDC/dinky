@@ -19,12 +19,12 @@
 
 import { JVMMetric } from '@/pages/Metrics/Server/data';
 import { Area, AreaConfig } from '@ant-design/plots';
-import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import { Chart } from '@ant-design/plots/es/interface';
 import React from 'react';
 
 type ThreadProps = {
   data: JVMMetric[];
-  chartConfig: G2plotConfig;
+  chartConfig: Chart;
 };
 type Thread = {
   time: Date;
@@ -44,8 +44,9 @@ const Thread: React.FC<ThreadProps> = (props) => {
   const config: AreaConfig = {
     ...chartConfig,
     data: dataListAll,
-    seriesField: 'name',
-    isStack: false,
+    colorField: 'name',
+    shapeField: 'name',
+    stack: false,
     tooltip: {}
   };
 

@@ -18,13 +18,14 @@
  */
 
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
-import { differenceDays } from '@/utils/function';
-import { Line } from '@ant-design/charts';
+import { THEME } from '@/types/Public/data';
+import { differenceDays, getChartThemeColor } from '@/utils/function';
+import { Line, LineConfig } from '@ant-design/charts';
 import { ExpandOutlined } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { Col, Modal, Radio, Segmented, Space } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type FlinkChartProps = {
   title: string;
@@ -51,6 +52,7 @@ const FlinkChart = (props: FlinkChartProps) => {
     titleWidth: '60%'
   });
 
+  const [themeColor, setThemeColor] = useState<string>(THEME.CHART_THEME_LIGHT);
   const [showExtra, setShowExtra] = useState<boolean>(false);
 
   const getLineTimeMask = (charData: ChartData[]) => {
@@ -69,16 +71,23 @@ const FlinkChart = (props: FlinkChartProps) => {
     }
   };
 
-  const config = {
-    animation: false,
+  useEffect(() => {
+    setThemeColor(getChartThemeColor());
+  }, [getChartThemeColor()]);
+
+  const config: LineConfig = {
+    animation: true,
+    autoFit: true,
     data: data,
     smooth: true,
-    xField: 'time',
+    theme: themeColor,
     yField: 'value',
-    xAxis: {
-      type: 'time',
-      mask: getLineTimeMask(data),
-      tickCount: 40
+    xField: (d: ChartData) => new Date(d.time),
+    axis: {
+      x: {
+        tickCount: 10,
+        mask: getLineTimeMask(data)
+      }
     },
     ...chartOptions
   };
@@ -163,7 +172,8 @@ const FlinkChart = (props: FlinkChartProps) => {
         ) : (
           <StatisticCard.Group
             style={{
-              minHeight: '100%',
+              marginTop: '5%',
+              minHeight: '95%',
               minWidth: '100%',
               display: 'flex',
               justifyContent: 'center',

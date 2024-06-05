@@ -203,6 +203,8 @@ export default {
   'devops.jobinfo.job.keyConfirm': '{key} this Job？',
   'devops.jobinfo.metrics.configMetrics': 'Metrics Config',
   'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
+  'devops.jobinfo.metrics.vertices': 'Vertices',
+  'devops.jobinfo.metrics.name': 'Metrics Name',
   'devops.jobinfo.metrics.selected': 'Selected',
   'devops.jobinfo.offline': 'Offline',
   'devops.jobinfo.recently.job.status': 'View recently saved job status information',
@@ -359,7 +361,7 @@ export default {
   'metrics.flink.subTask.placeholder': 'Please select a SubTask Name',
   'metrics.flink.taskId': 'Dinky Job ID',
   'metrics.dinky.not.open':
-    'Dinky Server monitoring is not enabled, please go to the Setting Center -> Global Settings -> Metrics Configuration -> Dinky JVM Monitor switch to open',
+    'The monitoring function is not enabled, and the Dinky Server and Flink task monitoring functions cannot be used. \nPlease go to the Configuration Center -> Global Configuration -> Metrics Configuration -> Dinky JVM Monitor switch to enable it',
   'metrics.flink.deleteConfirm':
     'Are you sure to delete the monitoring data under this task? \nAttention: This operation will synchronously affect the monitoring data of the operation and maintenance center for this task!! \nPlease operate with caution, this operation is irreversible!',
 

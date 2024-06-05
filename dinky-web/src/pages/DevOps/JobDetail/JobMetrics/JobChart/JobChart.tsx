@@ -18,15 +18,19 @@
  */
 
 import FlinkChart from '@/components/Flink/FlinkChart';
+import ListPagination from '@/components/Flink/ListPagination';
 import useHookRequest from '@/hooks/useHookRequest';
 import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
-import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/service';
+import { Filter, isBlank } from '@/pages/Metrics/JobMetricsList';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import { MetricsDataType } from '@/pages/Metrics/Server/data';
 import { Jobs } from '@/types/DevOps/data';
-import { Empty, Row, Spin } from 'antd';
+import { l } from '@/utils/intl';
+import { ProFormSelect, ProFormText, QueryFilter } from '@ant-design/pro-components';
+import { Empty, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useModel } from 'umi';
 
@@ -44,7 +48,7 @@ const JobChart = (props: JobChartProps) => {
     subscribeTopic: model.subscribeTopic
   }));
 
-  const { loading } = useHookRequest(getMetricsData, {
+  const { loading, refresh: refreshMetricsData } = useHookRequest(getMetricsData, {
     defaultParams: [timeRange, jobDetail.instance.jid],
     refreshDeps: [timeRange, metricsList],
     onSuccess: (result) => {
@@ -102,7 +106,62 @@ const JobChart = (props: JobChartProps) => {
   };
   return (
     <Spin spinning={loading} delay={500}>
-      <Row gutter={[8, 16]}>{renderMetricsCardList(metricsList ?? {}, chartDatas)}</Row>
+      {metricsList && (
+        <ListPagination<JobMetricsItem, Filter>
+          data={metricsList}
+          layout={(data) => renderMetricsCardList(data, chartDatas)}
+          defaultPageSize={12}
+          filter={{
+            content: (data: JobMetricsItem[], setFilter) => {
+              return (
+                <QueryFilter<Filter>
+                  labelWidth={'auto'}
+                  span={8}
+                  defaultCollapsed
+                  split
+                  onFinish={async (values) => setFilter(values)}
+                  onReset={async () => {
+                    // 清空筛选条件
+                    setFilter({
+                      vertices: '',
+                      metrics: ''
+                    });
+                    await refreshMetricsData();
+                  }}
+                >
+                  <ProFormSelect
+                    name='vertices'
+                    colProps={{ md: 12, xl: 8 }}
+                    label={l('devops.jobinfo.metrics.vertices')}
+                    valueEnum={[...new Set(data.map((item) => item.vertices))].reduce(
+                      (accumulator, item) => {
+                        accumulator[item] = item;
+                        return accumulator;
+                      },
+                      {} as Record<string, string>
+                    )}
+                  />
+                  <ProFormText
+                    colProps={{ md: 12, xl: 8 }}
+                    name='metrics'
+                    label={l('devops.jobinfo.metrics.name')}
+                  />
+                </QueryFilter>
+              );
+            },
+            filter: (item: JobMetricsItem, filter: Filter) => {
+              let rule = true;
+              if (!isBlank(filter.vertices)) {
+                rule = rule && item.vertices.includes(filter.vertices);
+              }
+              if (!isBlank(filter.metrics)) {
+                rule = rule && item.metrics.includes(filter.metrics);
+              }
+              return rule;
+            }
+          }}
+        />
+      )}
     </Spin>
   );
 };

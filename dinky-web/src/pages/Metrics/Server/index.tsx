@@ -22,15 +22,16 @@ import useHookRequest from '@/hooks/useHookRequest';
 import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
-import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/service';
 import CPU from '@/pages/Metrics/Server/CPU';
 import { JvmDataRecord, JVMMetric, MetricsDataType } from '@/pages/Metrics/Server/data';
 import Heap from '@/pages/Metrics/Server/Heap';
 import NonHeap from '@/pages/Metrics/Server/OutHeap';
 import Thread from '@/pages/Metrics/Server/Thread';
+import { getChartThemeColor } from '@/utils/function';
 import { useModel } from '@@/exports';
+import { LineOptions } from '@ant-design/plots/lib/core';
 import { ProCard } from '@ant-design/pro-components';
-import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
 import { Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 
@@ -46,6 +47,7 @@ type ServerProp = {
 
 const Server: React.FC<ServerProp> = (props) => {
   const { timeRange } = props;
+  const [themeColor, setThemeColor] = useState<string>(getChartThemeColor());
 
   const [jvmData, setJvmData] = useState<JVMMetric[]>([]);
 
@@ -77,17 +79,21 @@ const Server: React.FC<ServerProp> = (props) => {
     }
   }, [timeRange]);
 
-  const commonConfig: G2plotConfig = {
+  useEffect(() => {
+    setThemeColor(getChartThemeColor());
+  }, [getChartThemeColor()]);
+
+  const commonConfig: LineOptions = {
     data: [],
-    autoFit: false,
-    animation: false,
-    height: 150,
+    autoFit: true,
+    theme: themeColor,
+    animation: {
+      update: {
+        type: false
+      }
+    },
     yField: 'value',
-    xField: 'time',
-    xAxis: {
-      type: 'time',
-      mask: 'HH:mm:ss'
-    }
+    xField: (d) => new Date(d.time)
   };
   const jvmMetric = jvmData[jvmData.length - 1];
   const showLastData: JvmDataRecord = jvmMetric
@@ -129,6 +135,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).cpuLastValue}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <CPU data={jvmData} chartConfig={commonConfig} />
         </ProCard>
@@ -140,6 +148,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).heapLastValue}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <Heap data={jvmData} max={showLastData.heapMax} chartConfig={commonConfig} />
         </ProCard>
@@ -151,6 +161,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).threadCount}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <Thread data={jvmData} chartConfig={commonConfig} />
         </ProCard>
@@ -162,6 +174,8 @@ const Server: React.FC<ServerProp> = (props) => {
             </Space>
           }
           extra={extraDataBuilder(showLastData).nonHeapLastValue}
+          bodyStyle={{ paddingBlock: 0, height: 200 }}
+          colSpan={'25%'}
         >
           <NonHeap data={jvmData} max={showLastData.nonHeapMax} chartConfig={commonConfig} />
         </ProCard>

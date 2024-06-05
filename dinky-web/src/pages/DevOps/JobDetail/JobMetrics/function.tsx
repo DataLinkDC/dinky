@@ -17,7 +17,7 @@
  *
  */
 
-import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
+import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data.d';
 
 /**
  * Checks if a job status indicates that the job is done.
@@ -25,7 +25,7 @@ import { JobMetricsItem } from '@/pages/DevOps/JobDetail/data';
  * @returns {boolean} - True if the job status indicates that the job is done, false otherwise.
  * @param list
  */
-export function buildMetricsTarget(list?: JobMetricsItem[]) {
+export function buildMetricsTarget(list: JobMetricsItem[] = []) {
   if (!list) return {};
   const result: Record<string, JobMetricsItem[]> = {};
   list.forEach((metrics) => {
