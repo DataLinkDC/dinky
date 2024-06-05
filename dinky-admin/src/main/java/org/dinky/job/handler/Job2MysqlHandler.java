@@ -270,6 +270,12 @@ public class Job2MysqlHandler extends AbsJobHandler {
         log.info("The result data persistence to MySQL was successful. Job ids: {}", jobIds);
     }
 
+    /**
+     * Get the read handler.
+     * Each handler that executes a job should have a corresponding read handler.
+     *
+     * @return JobReadHandler
+     */
     @Override
     public JobReadHandler getReadHandler() {
         return new JobReadMysqlHandler();
