@@ -55,6 +55,7 @@
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "million": "^2.6.4",
+    "jquery": "^3.7.1",
     "moment": "^2.29.4",
     "monaco-editor": "^0.44.0",
     "omit.js": "^2.0.2",
