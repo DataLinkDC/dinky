@@ -99,9 +99,10 @@ public class ResultRunnable implements Runnable {
                     if (Objects.nonNull(callback)) {
                         callback.accept(id, ResultPool.get(id));
                     }
-                    ResultPool.remove(id);
                 } catch (Exception e) {
                     log.error(String.format(e.toString()));
+                } finally {
+                    ResultPool.remove(id);
                 }
             });
         } catch (Exception e) {
