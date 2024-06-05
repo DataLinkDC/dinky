@@ -58,6 +58,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     @Override
     protected void initTypeConverterList() {
         typeConverterList = Arrays.asList(
+                this::convertVarCharType,
                 this::convertDateType,
                 this::convertTimestampType,
                 this::convertFloatType,

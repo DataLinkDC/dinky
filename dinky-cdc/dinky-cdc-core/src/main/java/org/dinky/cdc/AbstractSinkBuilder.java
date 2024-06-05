@@ -404,7 +404,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 return Optional.of(((Integer) value).longValue());
             }
 
-            return Optional.of(value);
+            return Optional.of(Long.parseLong(value.toString()));
         }
         return Optional.empty();
     }
@@ -484,7 +484,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected Optional<Object> convertVarCharType(Object target, LogicalType logicalType) {
         if (logicalType instanceof VarCharType) {
-            return Optional.of(StringData.fromString((String) target));
+            return Optional.of((String) target);
         }
         return Optional.empty();
     }
