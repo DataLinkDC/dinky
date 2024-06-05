@@ -27,7 +27,7 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
 import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.service.APIService;
-import org.dinky.service.CatalogueService;
+import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.service.TaskService;
 
