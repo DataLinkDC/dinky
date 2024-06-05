@@ -22,7 +22,7 @@ import useHookRequest from '@/hooks/useHookRequest';
 import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
-import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/service';
 import CPU from '@/pages/Metrics/Server/CPU';
 import { JvmDataRecord, JVMMetric, MetricsDataType } from '@/pages/Metrics/Server/data';
 import Heap from '@/pages/Metrics/Server/Heap';

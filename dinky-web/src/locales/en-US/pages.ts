@@ -203,6 +203,8 @@ export default {
   'devops.jobinfo.job.keyConfirm': '{key} this Job？',
   'devops.jobinfo.metrics.configMetrics': 'Metrics Config',
   'devops.jobinfo.metrics.metricsItems': 'Metrics Items',
+  'devops.jobinfo.metrics.vertices': 'Vertices',
+  'devops.jobinfo.metrics.name': 'Metrics Name',
   'devops.jobinfo.metrics.selected': 'Selected',
   'devops.jobinfo.offline': 'Offline',
   'devops.jobinfo.recently.job.status': 'View recently saved job status information',

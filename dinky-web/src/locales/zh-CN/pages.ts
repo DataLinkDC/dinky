@@ -194,6 +194,8 @@ export default {
   'devops.jobinfo.job.keyConfirm': '确定 {key} 该作业吗？',
   'devops.jobinfo.metrics.configMetrics': '任务监控配置',
   'devops.jobinfo.metrics.metricsItems': '监控项列表',
+  'devops.jobinfo.metrics.vertices': '顶点',
+  'devops.jobinfo.metrics.name': '监控项名称',
   'devops.jobinfo.metrics.selected': '已选择',
   'devops.jobinfo.offline': '下线',
   'devops.jobinfo.recently.job.status': '查看最近保存的作业状态信息',

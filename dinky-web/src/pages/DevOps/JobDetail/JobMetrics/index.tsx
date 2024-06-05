@@ -23,7 +23,7 @@ import { JOB_STATUS } from '@/pages/DevOps/constants';
 import { JobMetricsItem, JobProps, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { buildMetricsTarget } from '@/pages/DevOps/JobDetail/JobMetrics/function';
 import MonitorConfigForm from '@/pages/DevOps/JobDetail/JobMetrics/MetricsForm/MetricsConfigForm';
-import { getMetricsLayout, putMetricsLayout } from '@/pages/DevOps/JobDetail/srvice';
+import { getMetricsLayout, putMetricsLayout } from '@/pages/DevOps/JobDetail/service';
 import { Space } from 'antd';
 import { useState } from 'react';
 import JobChart from './JobChart/JobChart';
@@ -41,7 +41,8 @@ const JobMetrics = (props: JobProps) => {
   const layoutData = useHookRequest(getMetricsLayout, { defaultParams: [layoutName] });
   const saveLayout = useHookRequest(putMetricsLayout, {
     manual: true,
-    defaultParams: [layoutName, []]
+    defaultParams: [layoutName, []],
+    refreshDeps: [layoutName]
   });
 
   const onTimeSelectChange = (filter: MetricsTimeFilter) => {
@@ -52,7 +53,8 @@ const JobMetrics = (props: JobProps) => {
     let params: JobMetricsItem[] = [];
     Object.values(targetKeys).forEach((i) => params.push(...i));
     await saveLayout.run(layoutName, params);
-    layoutData.run(layoutName);
+    await layoutData.run(layoutName);
+    await layoutData.refresh();
     return true;
   };
 
@@ -64,13 +66,13 @@ const JobMetrics = (props: JobProps) => {
           <MonitorConfigForm
             onSelectChange={onSelectMetricsChange}
             jobDetail={jobDetail}
-            initSelected={buildMetricsTarget(layoutData.data)}
+            initSelected={buildMetricsTarget(layoutData.data as JobMetricsItem[])}
           />
         ) : (
           <></>
         )}
       </Space>
-      <JobChart metricsList={layoutData.data} jobDetail={jobDetail} timeRange={timeRange} />
+      <JobChart metricsList={layoutData.data as JobMetricsItem[]} jobDetail={jobDetail} timeRange={timeRange} />
     </>
   );
 };

@@ -28,7 +28,7 @@ import JobMetrics from '@/pages/DevOps/JobDetail/JobMetrics';
 import JobOperator from '@/pages/DevOps/JobDetail/JobOperator/JobOperator';
 import JobConfigTab from '@/pages/DevOps/JobDetail/JobOverview/JobOverview';
 import JobVersionTab from '@/pages/DevOps/JobDetail/JobVersion/JobVersionTab';
-import { refeshJobInstance } from '@/pages/DevOps/JobDetail/srvice';
+import { refeshJobInstance } from '@/pages/DevOps/JobDetail/service';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { history } from '@@/core/history';

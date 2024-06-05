@@ -23,15 +23,16 @@ import useHookRequest from '@/hooks/useHookRequest';
 import { SseData } from '@/models/Sse';
 import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
-import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
+import { getMetricsData } from '@/pages/DevOps/JobDetail/service';
 import { Filter, isBlank } from '@/pages/Metrics/JobMetricsList';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import { MetricsDataType } from '@/pages/Metrics/Server/data';
 import { Jobs } from '@/types/DevOps/data';
-import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import {ProForm, ProFormSelect, ProFormText, QueryFilter} from '@ant-design/pro-components';
 import { Empty, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { useModel } from 'umi';
+import {l} from "@/utils/intl";
 
 export type JobChartProps = {
   jobDetail: Jobs.JobInfoDetail;
@@ -47,7 +48,7 @@ const JobChart = (props: JobChartProps) => {
     subscribeTopic: model.subscribeTopic
   }));
 
-  const { loading } = useHookRequest(getMetricsData, {
+  const { loading,refresh : refreshMetricsData } = useHookRequest(getMetricsData, {
     defaultParams: [timeRange, jobDetail.instance.jid],
     refreshDeps: [timeRange, metricsList],
     onSuccess: (result) => {
@@ -113,20 +114,17 @@ const JobChart = (props: JobChartProps) => {
           filter={{
             content: (data: JobMetricsItem[], setFilter) => {
               return (
-                <ProForm<Filter>
-                  layout={'horizontal'}
-                  grid
-                  rowProps={{
-                    gutter: [16, 0]
-                  }}
-                  onFinish={async (values) => {
-                    setFilter(values);
-                  }}
+                <QueryFilter<Filter>
+                  labelWidth={'auto'}
+                  span={8}
+                  defaultCollapsed split
+                  onFinish={async (values) =>  setFilter(values)}
+                  onReset={ async () => await refreshMetricsData()}
                 >
                   <ProFormSelect
-                    colProps={{ md: 12, xl: 8 }}
                     name='vertices'
-                    label='边'
+                    colProps={{md: 12, xl: 8}}
+                    label={l('devops.jobinfo.metrics.vertices')}
                     valueEnum={[...new Set(data.map((item) => item.vertices))].reduce(
                       (accumulator, item) => {
                         accumulator[item] = item;
@@ -135,8 +133,8 @@ const JobChart = (props: JobChartProps) => {
                       {} as Record<string, string>
                     )}
                   />
-                  <ProFormText colProps={{ md: 12, xl: 8 }} name='metrics' label='节点名' />
-                </ProForm>
+                  <ProFormText colProps={{ md: 12, xl: 8 }} name='metrics' label={l('devops.jobinfo.metrics.name')}/>
+                </QueryFilter>
               );
             },
             filter: (item: JobMetricsItem, filter: Filter) => {
