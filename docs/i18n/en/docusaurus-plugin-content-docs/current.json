@@ -1,6 +1,6 @@
 {
   "version.label": {
-    "message": "1.0",
+    "message": "Dev",
     "description": "The label for version current"
   },
   "sidebar.tutorialSidebar.category.deploy_guide": {
@@ -102,10 +102,6 @@
   "sidebar.tutorialSidebar.category.quick_use": {
     "message": "Quick Use",
     "description": "The label for category Quick Use in sidebar tutorialSidebar"
-  },
-  "sidebar.tutorialSidebar.category.快速使用": {
-    "message": "快速使用",
-    "description": "The label for category 快速使用 in sidebar tutorialSidebar"
   },
   "sidebar.tutorialSidebar.category.upgrade": {
     "message": "Upgrade",
