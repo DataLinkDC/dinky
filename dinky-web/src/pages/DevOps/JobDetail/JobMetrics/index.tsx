@@ -38,7 +38,7 @@ const JobMetrics = (props: JobProps) => {
     isReal: true
   });
 
-  const layoutData = useHookRequest(getMetricsLayout, { defaultParams: [layoutName] });
+  const layoutData = useHookRequest(getMetricsLayout, { defaultParams: [layoutName],refreshDeps: [layoutName, timeRange, jobDetail.instance] });
   const saveLayout = useHookRequest(putMetricsLayout, {
     manual: true,
     defaultParams: [layoutName, []],

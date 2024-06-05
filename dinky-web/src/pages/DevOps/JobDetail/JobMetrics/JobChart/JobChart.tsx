@@ -109,7 +109,7 @@ const JobChart = (props: JobChartProps) => {
       {metricsList && (
         <ListPagination<JobMetricsItem, Filter>
           data={metricsList}
-          layount={(data1) => renderMetricsCardList(data1, chartDatas)}
+          layout={(data) => renderMetricsCardList(data, chartDatas)}
           defaultPageSize={12}
           filter={{
             content: (data: JobMetricsItem[], setFilter) => {

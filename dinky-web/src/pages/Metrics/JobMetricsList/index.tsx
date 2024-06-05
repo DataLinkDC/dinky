@@ -141,7 +141,7 @@ const JobMetricsList = (props: MetricsProps) => {
               >
                 <ListPagination<JobMetricsItem, Filter>
                   data={lo.metrics}
-                  layount={(data1) => renderFlinkChartGroup(lo.flinkJobId, data1)}
+                  layout={(data1) => renderFlinkChartGroup(lo.flinkJobId, data1)}
                   defaultPageSize={12}
                   filter={{
                     content: (data: JobMetricsItem[], setFilter) => {
