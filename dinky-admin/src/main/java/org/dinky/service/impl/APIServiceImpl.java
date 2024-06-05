@@ -27,16 +27,15 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
 import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.service.APIService;
-
 import org.dinky.service.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.service.TaskService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 
 /**
  * APIServiceImpl
@@ -91,7 +90,7 @@ public class APIServiceImpl implements APIService {
         // 发布任务
         try {
             taskService.changeTaskLifeRecyle(catalogue.getTaskId(), JobLifeCycle.PUBLISH);
-        } catch(Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }

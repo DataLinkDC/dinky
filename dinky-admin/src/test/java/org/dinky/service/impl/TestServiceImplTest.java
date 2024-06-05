@@ -30,6 +30,11 @@ import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.service.TaskService;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,17 +43,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Dinky.class)
 public class TestServiceImplTest {
     @Autowired
     private CatalogueService catalogueService;
+
     @Autowired
     private TaskService taskService;
+
     @Autowired
     SchedulerService schedulerService;
 
