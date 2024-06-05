@@ -23,7 +23,7 @@ import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
 import { Button, Tabs } from 'antd';
-import React, {Key, useState} from 'react';
+import { useState } from 'react';
 
 export type MetricsConfigFormProps = {
   jobDetail: Jobs.JobInfoDetail;

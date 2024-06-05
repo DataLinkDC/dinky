@@ -72,7 +72,11 @@ const JobMetrics = (props: JobProps) => {
           <></>
         )}
       </Space>
-      <JobChart metricsList={layoutData.data as JobMetricsItem[]} jobDetail={jobDetail} timeRange={timeRange} />
+      <JobChart
+        metricsList={layoutData.data as JobMetricsItem[]}
+        jobDetail={jobDetail}
+        timeRange={timeRange}
+      />
     </>
   );
 };
