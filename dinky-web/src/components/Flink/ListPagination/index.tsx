@@ -17,8 +17,8 @@
  *
  */
 
-import {Pagination, Row} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { Pagination, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 type ListPaginationProps<T, F> = {
   data: T[];
@@ -57,13 +57,14 @@ const ListPagination = <T, F>(props: ListPaginationProps<T, F>) => {
       {props.filter && props.filter.content(props.data, setFilter)}
       <Row gutter={[8, 16]}>{props.layout(currentData)}</Row>
       <Pagination
-        style={{textAlign: 'center',marginTop: '16px'}}
+        style={{ textAlign: 'center', marginTop: '16px' }}
         showTitle
         total={data.length}
         hideOnSinglePage
         showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} Items`}
         defaultPageSize={props.defaultPageSize}
-        responsive showLessItems
+        responsive
+        showLessItems
         defaultCurrent={currentPage}
         onChange={(page, pageSize) => {
           setCurrentPage(page);
