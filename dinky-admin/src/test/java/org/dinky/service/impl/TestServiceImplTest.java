@@ -27,9 +27,9 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.model.Catalogue;
 import org.dinky.scheduler.model.DinkyTaskRequest;
-import org.dinky.service.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.service.TaskService;
+import org.dinky.service.catalogue.CatalogueService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
