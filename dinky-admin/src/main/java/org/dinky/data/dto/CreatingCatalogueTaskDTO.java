@@ -19,10 +19,11 @@
 
 package org.dinky.data.dto;
 
-import lombok.Data;
 import org.dinky.scheduler.model.DinkyTaskRequest;
 
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class CreatingCatalogueTaskDTO {
