@@ -28,12 +28,12 @@ import { JvmDataRecord, JVMMetric, MetricsDataType } from '@/pages/Metrics/Serve
 import Heap from '@/pages/Metrics/Server/Heap';
 import NonHeap from '@/pages/Metrics/Server/OutHeap';
 import Thread from '@/pages/Metrics/Server/Thread';
+import { getChartThemeColor } from '@/utils/function';
 import { useModel } from '@@/exports';
 import { LineOptions } from '@ant-design/plots/lib/core';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import {getChartThemeColor} from "@/utils/function";
 
 export const imgStyle = {
   display: 'block',
@@ -80,9 +80,8 @@ const Server: React.FC<ServerProp> = (props) => {
   }, [timeRange]);
 
   useEffect(() => {
-    setThemeColor(getChartThemeColor())
-  }, [ getChartThemeColor()]);
-
+    setThemeColor(getChartThemeColor());
+  }, [getChartThemeColor()]);
 
   const commonConfig: LineOptions = {
     data: [],
