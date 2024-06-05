@@ -18,14 +18,14 @@
  */
 
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
-import {differenceDays, getChartThemeColor, getLocalTheme} from '@/utils/function';
+import { THEME } from '@/types/Public/data';
+import { differenceDays, getChartThemeColor } from '@/utils/function';
 import { Line, LineConfig } from '@ant-design/charts';
 import { ExpandOutlined } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { Col, Modal, Radio, Segmented, Space } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
-import {useCallback, useEffect, useState} from 'react';
-import {THEME} from "@/types/Public/data";
+import { useEffect, useState } from 'react';
 
 type FlinkChartProps = {
   title: string;
@@ -71,11 +71,9 @@ const FlinkChart = (props: FlinkChartProps) => {
     }
   };
 
-
   useEffect(() => {
-    setThemeColor(getChartThemeColor())
+    setThemeColor(getChartThemeColor());
   }, [getChartThemeColor()]);
-
 
   const config: LineConfig = {
     animation: true,

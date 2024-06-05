@@ -120,7 +120,7 @@ const JobChart = (props: JobChartProps) => {
                   defaultCollapsed
                   split
                   onFinish={async (values) => setFilter(values)}
-                  onReset={async () =>{
+                  onReset={async () => {
                     // 清空筛选条件
                     setFilter({
                       vertices: '',
