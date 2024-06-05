@@ -27,9 +27,9 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
 import org.dinky.scheduler.model.DinkyTaskRequest;
 import org.dinky.service.APIService;
-import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.service.SchedulerService;
 import org.dinky.service.TaskService;
+import org.dinky.service.catalogue.CatalogueService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
