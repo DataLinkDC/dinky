@@ -70,10 +70,10 @@ public class JobUDFBuilder extends JobBuilder {
         List<File> jarFiles =
                 new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
 
+        String[] userCustomUdfJarPath = UDFUtil.initJavaUDF(udfList, taskId);
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
                 .map(File::getAbsolutePath)
                 .toArray(String[]::new);
-
         if (GATEWAY_TYPE_MAP.get(SESSION).contains(runMode)) {
             config.setJarFiles(jarPaths);
         }
@@ -82,12 +82,20 @@ public class JobUDFBuilder extends JobBuilder {
         String[] pyPaths = UDFUtil.initPythonUDF(
                 udfList, runMode, config.getTaskId(), executor.getTableConfig().getConfiguration());
 
+        executor.initUDF(userCustomUdfJarPath);
         executor.initUDF(jarPaths);
 
         if (ArrayUtil.isNotEmpty(pyPaths)) {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {
                     jobManager.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
+                }
+            }
+        }
+        if (ArrayUtil.isNotEmpty(userCustomUdfJarPath)) {
+            for (String jarPath : userCustomUdfJarPath) {
+                if (StrUtil.isNotBlank(jarPath)) {
+                    jobManager.getUdfPathContextHolder().addUdfPath(new File(jarPath));
                 }
             }
         }

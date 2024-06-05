@@ -90,3 +90,64 @@ export interface LogInfo {
   children: LogInfo[];
   leaf: boolean;
 }
+
+/**
+ * 任务责任人锁定策略
+ */
+export enum TaskOwnerLockingStrategy {
+  OWNER = 'OWNER', // 只有责任人可以操作
+  OWNER_AND_MAINTAINER = 'OWNER_AND_MAINTAINER', // 责任人和维护人都可以操作
+  ALL = 'ALL' // 责任人和维护人都可以操作
+}
+
+/**
+ * 全局配置所有的 key
+ */
+export enum GLOBAL_SETTING_KEYS {
+  SYS_FLINK_SETTINGS_USE_REST_API = 'sys.flink.settings.useRestAPI',
+  SYS_FLINK_SETTINGS_JOB_ID_WAIT = 'sys.flink.settings.jobIdWait',
+  SYS_MAVEN_SETTINGS_SETTINGS_FILE_PATH = 'sys.maven.settings.settingsFilePath',
+  SYS_MAVEN_SETTINGS_REPOSITORY = 'sys.maven.settings.repository',
+  SYS_MAVEN_SETTINGS_REPOSITORY_USER = 'sys.maven.settings.repositoryUser',
+  SYS_MAVEN_SETTINGS_REPOSITORY_PASSWORD = 'sys.maven.settings.repositoryPassword',
+  SYS_ENV_SETTINGS_PYTHON_HOME = 'sys.env.settings.pythonHome',
+  SYS_ENV_SETTINGS_DINKY_ADDR = 'sys.env.settings.dinkyAddr',
+  SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND = 'sys.env.settings.jobResendDiffSecond',
+  SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT = 'sys.env.settings.diffMinuteMaxSendCount',
+  SYS_ENV_SETTINGS_MAX_RETAIN_DAYS = 'sys.env.settings.maxRetainDays',
+  SYS_ENV_SETTINGS_MAX_RETAIN_COUNT = 'sys.env.settings.maxRetainCount',
+  SYS_ENV_SETTINGS_EXPRESSION_VARIABLE = 'sys.env.settings.expressionVariable',
+  SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY = 'sys.env.settings.taskOwnerLockStrategy',
+  SYS_DOLPHINSETTINGS_ENABLE = 'sys.dolphinscheduler.settings.enable',
+  SYS_DOLPHINSETTINGS_URL = 'sys.dolphinscheduler.settings.url',
+  SYS_DOLPHINSETTINGS_TOKEN = 'sys.dolphinscheduler.settings.token',
+  SYS_DOLPHINSETTINGS_PROJECTNAME = 'sys.dolphinscheduler.settings.projectName',
+  SYS_LDAP_SETTINGS_URL = 'sys.ldap.settings.url',
+  SYS_LDAP_SETTINGS_USER_DN = 'sys.ldap.settings.userDn',
+  SYS_LDAP_SETTINGS_USER_PASSWORD = 'sys.ldap.settings.userPassword',
+  SYS_LDAP_SETTINGS_TIME_LIMIT = 'sys.ldap.settings.timeLimit',
+  SYS_LDAP_SETTINGS_BASE_DN = 'sys.ldap.settings.baseDn',
+  SYS_LDAP_SETTINGS_FILTER = 'sys.ldap.settings.filter',
+  SYS_LDAP_SETTINGS_AUTOLOAD = 'sys.ldap.settings.autoload',
+  SYS_LDAP_SETTINGS_DEFAULT_TENANT = 'sys.ldap.settings.defaultTeant',
+  SYS_LDAP_SETTINGS_CAST_USERNAME = 'sys.ldap.settings.castUsername',
+  SYS_LDAP_SETTINGS_CAST_NICKNAME = 'sys.ldap.settings.castNickname',
+  SYS_LDAP_SETTINGS_ENABLE = 'sys.ldap.settings.enable',
+  SYS_METRICS_SETTINGS_SYS_ENABLE = 'sys.metrics.settings.sys.enable',
+  SYS_METRICS_SETTINGS_SYS_GATHER_TIMING = 'sys.metrics.settings.sys.gatherTiming',
+  SYS_METRICS_SETTINGS_FLINK_GATHER_TIMING = 'sys.metrics.settings.flink.gatherTiming',
+  SYS_METRICS_SETTINGS_FLINK_GATHER_TIMEOUT = 'sys.metrics.settings.flink.gatherTimeout',
+  SYS_RESOURCE_SETTINGS_BASE_ENABLE = 'sys.resource.settings.base.enable',
+  SYS_RESOURCE_SETTINGS_BASE_UPLOAD_BASE_PATH = 'sys.resource.settings.base.upload.base.path',
+  SYS_RESOURCE_SETTINGS_BASE_MODEL = 'sys.resource.settings.base.model',
+  SYS_RESOURCE_SETTINGS_OSS_ENDPOINT = 'sys.resource.settings.oss.endpoint',
+  SYS_RESOURCE_SETTINGS_OSS_ACCESS_KEY = 'sys.resource.settings.oss.accessKey',
+  SYS_RESOURCE_SETTINGS_OSS_SECRET_KEY = 'sys.resource.settings.oss.secretKey',
+  SYS_RESOURCE_SETTINGS_OSS_BUCKET_NAME = 'sys.resource.settings.oss.bucketName',
+  SYS_RESOURCE_SETTINGS_OSS_REGION = 'sys.resource.settings.oss.region',
+  SYS_RESOURCE_SETTINGS_OSS_PATH_STYLE_ACCESS = 'sys.resource.settings.oss.pathStyleAccess',
+  SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER = 'sys.resource.settings.hdfs.root.user',
+  SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULT_FS = 'sys.resource.settings.hdfs.fs.defaultFS',
+  SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE = 'sys.resource.settings.hdfs.core.site',
+  SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE = 'sys.resource.settings.hdfs.hdfs.site'
+}

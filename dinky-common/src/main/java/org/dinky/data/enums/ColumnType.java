@@ -38,6 +38,7 @@ public enum ColumnType {
     INT("int", "INT NOT NULL"),
     JAVA_LANG_LONG("java.lang.Long", "BIGINT"),
     LONG("long", "BIGINT NOT NULL"),
+    BIG_INTEGER("java.math.BigInteger", "BIGINT"),
     JAVA_LANG_FLOAT("java.lang.Float", "FLOAT"),
     FLOAT("float", "FLOAT NOT NULL"),
     JAVA_LANG_DOUBLE("java.lang.Double", "DOUBLE"),

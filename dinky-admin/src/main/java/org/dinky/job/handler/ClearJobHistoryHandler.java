@@ -98,7 +98,7 @@ public class ClearJobHistoryHandler {
                     clusterDeleteWrapper
                             .lambda()
                             .in(true, ClusterInstance::getId, clusterDeleteIds)
-                            .eq(ClusterInstance::getAutoRegisters, true);
+                            .eq(ClusterInstance::isAutoRegisters, true);
                     clusterService.remove(clusterDeleteWrapper);
                 }
             }

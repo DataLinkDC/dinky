@@ -73,7 +73,7 @@ public class JobMetricsHandler {
             metricsVO.setHeartTime(LocalDateTime.now());
             metricsVO.setModel(jobId);
             metricsVO.setDate(TimeUtil.nowStr("yyyy-MM-dd"));
-            MetricsContextHolder.getInstances().sendAsync(metricsVO.getModel(), metricsVO);
+            MetricsContextHolder.getInstance().sendAsync(metricsVO.getModel(), metricsVO);
         } catch (Exception e) {
             log.error("Get and save Flink metrics error", e);
         }

@@ -21,8 +21,8 @@ import { l } from '@/utils/intl';
 
 export const PARAM_DIFF_TABLE_COL = [
   { title: l('pages.datastudio.sql.configItem'), key: 'key', dataIndex: 'key' },
-  { title: l('pages.datastudio.sql.cacheConfigItem'), key: 'cache', dataIndex: 'cache' },
-  { title: l('pages.datastudio.sql.serverConfigItem'), key: 'server', dataIndex: 'server' }
+  { title: l('pages.datastudio.sql.serverConfigItem'), key: 'server', dataIndex: 'server' },
+  { title: l('pages.datastudio.sql.cacheConfigItem'), key: 'cache', dataIndex: 'cache' }
 ];
 
 export const DIFF_EDITOR_PARAMS = {
@@ -58,5 +58,7 @@ export const TASK_VAR_FILTER = [
   'envName',
   'alertGroupName',
   'variables',
-  'alertGroup'
+  'alertGroup',
+  'firstLevelOwner',
+  'secondLevelOwners'
 ];

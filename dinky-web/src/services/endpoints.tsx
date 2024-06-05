@@ -164,6 +164,7 @@ export enum API_CONSTANTS {
   UDF_RESOURCES_LIST = '/api/udf/udfResourcesList',
   UDF_ADD = '/api/udf/addOrUpdateByResourceId',
   UDF_UPDATE = '/api/udf/update',
+  ALL_UDF_LIST = '/api/udf/getAllUdfs',
 
   // ------------------------------------ udf template ------------------------------------
   UDF_TEMPLATE = '/api/udf/template/list',
@@ -186,6 +187,7 @@ export enum API_CONSTANTS {
   // ------------------------------------ system process  ------------------------------------
   PROCESS_LIST = '/api/process/listAllProcess',
   PROCESS_LOG = '/api/process/getProcess',
+  KILL_PROCESS = '/api/process/killProcess',
   PROCESS_LOG_CLEAR = '/api/process/clearProcessLog',
 
   /** ------------------------------------------------ Devops center  ------------------------------------ */
@@ -266,6 +268,7 @@ export enum API_CONSTANTS {
   SUBMIT_TASK = '/api/task/submitTask',
   CHANGE_TASK_LIFE = '/api/task/changeTaskLife',
   CATALOGUE_GET_CATALOGUE_TREE_DATA = '/api/catalogue/getCatalogueTreeData',
+  CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA = '/api/catalogue/getCatalogueSortType',
   GET_JOB_VERSION = '/api/task/version',
   RESTART_TASK = '/api/task/restartTask',
   SAVEPOINT = '/api/task/savepoint',

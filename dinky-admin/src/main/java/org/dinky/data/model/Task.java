@@ -21,9 +21,12 @@ package org.dinky.data.model;
 
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
 import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -52,6 +55,7 @@ public class Task extends SuperEntity<Task> {
     @ApiModelProperty(value = "Dialect", dataType = "String", notes = "Dialect for the task")
     private String dialect;
 
+    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(
             value = "Tenant ID",
             dataType = "Integer",
@@ -157,6 +161,9 @@ public class Task extends SuperEntity<Task> {
             notes = "ID of the version associated with the task")
     private Integer versionId;
 
+    @ApiModelProperty(value = "Enabled", dataType = "Boolean", example = "true", notes = "Whether the task is enabled")
+    private Boolean enabled;
+
     @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
     private String statement;
 
@@ -167,6 +174,20 @@ public class Task extends SuperEntity<Task> {
             example = "1001",
             notes = "ID of the user who created the task")
     private Integer operator;
+
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "List",
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
 
     public Task(Integer id, Integer jobInstanceId) {
         this.jobInstanceId = jobInstanceId;
