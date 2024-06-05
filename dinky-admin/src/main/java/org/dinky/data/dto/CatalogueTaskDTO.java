@@ -20,6 +20,11 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.model.ext.TaskExtConfig;
+import org.dinky.data.typehandler.ListTypeHandler;
+
+import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -80,6 +85,20 @@ public class CatalogueTaskDTO {
             dataType = "TaskExtConfig",
             notes = "The task's extended configuration in JSON format")
     private TaskExtConfig configJson;
+
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "List",
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
 
     @ApiModelProperty(value = "Task", dataType = "TaskDTO", notes = "The task information")
     private TaskDTO task;

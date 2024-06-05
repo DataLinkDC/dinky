@@ -43,10 +43,10 @@ const DagDataNode = (props: any) => {
                 ratio > 0.75
                   ? '#cf1322'
                   : ratio > 0.5
-                  ? '#d46b08'
-                  : ratio > 0.25
-                  ? '#d4b106'
-                  : '#3f8600',
+                    ? '#d46b08'
+                    : ratio > 0.25
+                      ? '#d4b106'
+                      : '#3f8600',
               fontSize: 10
             }}
           />
@@ -65,10 +65,10 @@ const DagDataNode = (props: any) => {
               ratio > 0.75
                 ? '#3f8600'
                 : ratio > 0.5
-                ? '#d4b106'
-                : ratio > 0.25
-                ? '#d46b08'
-                : '#cf1322',
+                  ? '#d4b106'
+                  : ratio > 0.25
+                    ? '#d46b08'
+                    : '#cf1322',
             fontSize: 10
           }}
         />

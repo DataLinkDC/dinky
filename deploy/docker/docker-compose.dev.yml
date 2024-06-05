@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  dinky:
+    build:
+      context: ../..
+      dockerfile: ${PWD:-.}/Dockerfile
+      args:
+        - FLINK_VERSION
+        - DINKY_VERSION
+    ports:
+      - "8888:8888"
+    env_file: .env
+    networks:
+      - dinky
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/dinky/customJar/
+
+  jobmanager:
+    image: flink:${FLINK_VERSION}-scala_2.12-java8
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    env_file: .env
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/flink/lib/customJar/
+    networks:
+      - dinky
+
+  taskmanager:
+    image: flink:${FLINK_VERSION}-scala_2.12-java8
+    command: taskmanager
+    env_file: .env
+    volumes:
+      - ${CUSTOM_JAR_PATH}:/opt/flink/lib/customJar/
+    networks:
+      - dinky
+
+networks:
+  dinky:

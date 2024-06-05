@@ -49,6 +49,7 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.utils.Serialization;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -132,6 +133,7 @@ public class K8sClientHelper {
         resources.forEach(resource ->
                 resource.getMetadata().setOwnerReferences(Collections.singletonList(deploymentOwnerReference)));
         // create resources
+        resources.forEach(resource -> log.info(Serialization.asYaml(resource)));
         kubernetesClient.resourceList(resources).createOrReplace();
         return deployment;
     }

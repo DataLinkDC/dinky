@@ -93,7 +93,6 @@ public class SystemInit implements ApplicationRunner {
     private final TenantService tenantService;
     private final GitProjectService gitProjectService;
     private final ScheduleThreadPool schedule;
-
     private static Project project;
 
     @Override

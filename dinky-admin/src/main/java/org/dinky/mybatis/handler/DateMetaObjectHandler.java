@@ -19,6 +19,7 @@
 
 package org.dinky.mybatis.handler;
 
+import org.dinky.context.TenantContextHolder;
 import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
 import org.apache.ibatis.reflection.MetaObject;
@@ -29,6 +30,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.Opt;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -57,7 +59,6 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-
         Object createTime = getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
         Object updateTime = getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
         if (createTime == null) {
@@ -83,6 +84,7 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
         Object creator = getFieldValByName(mybatisPlusFillProperties.getCreatorField(), metaObject);
         Object updater = getFieldValByName(mybatisPlusFillProperties.getUpdaterField(), metaObject);
         Object operator = getFieldValByName(mybatisPlusFillProperties.getOperatorField(), metaObject);
+        Object tenantId = getFieldValByName(mybatisPlusFillProperties.getTenantIdField(), metaObject);
 
         if (creator == null) {
             setFieldValByName(mybatisPlusFillProperties.getCreatorField(), userId, metaObject);
@@ -92,6 +94,20 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
         }
         if (operator == null) {
             setFieldValByName(mybatisPlusFillProperties.getOperatorField(), userId, metaObject);
+        }
+        if (tenantId == null) {
+            try {
+                Opt<Object> loginTenantId = Opt.ofNullable(TenantContextHolder.get());
+                loginTenantId.ifPresent(loginTenantId1 -> {
+                    if (loginTenantId1 instanceof Integer) {
+                        setFieldValByName(mybatisPlusFillProperties.getTenantIdField(), loginTenantId1, metaObject);
+                    }
+                });
+            } catch (Exception e) {
+                log.warn(
+                        "Ignore set tenantId filed, because tenantId cant't get, Please check if your account is logged in normally or if it has been taken offline",
+                        e);
+            }
         }
     }
 

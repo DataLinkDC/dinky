@@ -157,6 +157,11 @@ export default [
             path: '/registration/alert/template',
             name: 'template',
             component: './RegCenter/Alert/AlertTemplate'
+          },
+          {
+            path: '/registration/alert/rule',
+            name: 'rule',
+            component: './RegCenter/Alert/AlertRule'
           }
         ]
       },
@@ -270,12 +275,6 @@ export default [
       //   icon: 'ReconciliationOutlined',
       //   component: './SettingCenter/Process'
       // },
-      {
-        path: '/settings/alertrule',
-        name: 'alertrule',
-        icon: 'ReconciliationOutlined',
-        component: './SettingCenter/AlertRule'
-      },
       {
         path: '/settings/classloaderjars',
         name: 'classloaderjars',

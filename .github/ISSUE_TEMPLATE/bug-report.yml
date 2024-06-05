@@ -95,6 +95,7 @@ body:
         Which version of Dinky are you running? We only accept bugs report from the LTS projects.
       options:
         - dev
+        - 1.0.2
         - 1.0.1
         - 1.0.0
         - 0.7.5(Archived, Not Maintained)

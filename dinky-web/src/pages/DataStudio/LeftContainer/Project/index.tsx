@@ -59,7 +59,9 @@ const Project: React.FC = (props: connect) => {
     dispatch,
     project: { expandKeys, selectKey },
     tabs: { panes, activeKey },
-    tabs
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    tabs,
+    users
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
@@ -195,8 +197,8 @@ const Project: React.FC = (props: connect) => {
       options.parentId = projectState.isCreateTask
         ? projectState.value.id
         : projectState.isEdit
-        ? projectState.value.parentId
-        : options.parentId;
+          ? projectState.value.parentId
+          : options.parentId;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
@@ -210,7 +212,7 @@ const Project: React.FC = (props: connect) => {
       },
       () => {},
       () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
         if (values.type && values.type.toLowerCase() === DIALECT.FLINKSQLENV) {
           dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
         }
@@ -224,6 +226,8 @@ const Project: React.FC = (props: connect) => {
             const { taskData } = params as DataStudioParams;
             if (taskData) {
               taskData.name = values.name;
+              taskData.firstLevelOwner = values.firstLevelOwner;
+              taskData.secondLevelOwners = values.secondLevelOwners;
             }
           }
           dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
@@ -255,7 +259,7 @@ const Project: React.FC = (props: connect) => {
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
       });
       return;
     }
@@ -284,7 +288,7 @@ const Project: React.FC = (props: connect) => {
             dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
           }
         });
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
       }
     });
   };
@@ -321,7 +325,8 @@ const Project: React.FC = (props: connect) => {
       API_CONSTANTS.COPY_TASK_URL,
       l('right.menu.copy'),
       { ...projectState.value },
-      () => dispatch({ type: STUDIO_MODEL_ASYNC.queryProject })
+      () =>
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData })
     );
     handleContextCancel();
   };
@@ -358,7 +363,7 @@ const Project: React.FC = (props: connect) => {
         }));
       }
     );
-    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
     handleContextCancel();
   };
 
@@ -456,6 +461,7 @@ const Project: React.FC = (props: connect) => {
         title={l('right.menu.createTask')}
         values={{}}
         modalVisible={projectState.isCreateTask}
+        users={users}
         onCancel={() =>
           setProjectState((prevState) => ({
             ...prevState,
@@ -471,6 +477,7 @@ const Project: React.FC = (props: connect) => {
           title={l('button.edit')}
           values={projectState.value}
           modalVisible={projectState.isEdit}
+          users={users}
           onCancel={() =>
             setProjectState((prevState) => ({
               ...prevState,
@@ -487,5 +494,7 @@ const Project: React.FC = (props: connect) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
-  project: Studio.project
+  project: Studio.project,
+  selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData,
+  users: Studio.users
 }))(Project);

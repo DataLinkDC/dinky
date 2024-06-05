@@ -49,6 +49,7 @@ public class FreeMarkerHolder {
      */
     public FreeMarkerHolder() {
         configuration.setTemplateLoader(stringLoader);
+        configuration.setNumberFormat("computer");
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     }
