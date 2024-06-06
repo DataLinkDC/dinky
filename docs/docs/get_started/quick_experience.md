@@ -44,7 +44,7 @@ docker run -p 8888:8888 \
 
 :::tip 注意
 默认使用h2作为数据库，开箱即用，您不需要额外附加数据库。仅限于快速体验，
-生产环境请使用MySQL或Postgres，更多参数配置请参考[Docker部署](../deploy_guide/docker_deploy)
+生产环境请使用MySQL或Postgres，更多参数配置请参考[Docker部署](../../deploy_guide/docker_deploy)
 章节获取详细内容，
 :::
 

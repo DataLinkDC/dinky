@@ -30,12 +30,12 @@ docker run --restart=always -p 8888:8888 \
   -e MYSQL_DATABASE=dinky \ 
   -e MYSQL_USERNAME=dinky \
   -e MYSQL_PASSWORD=dinky \
-  -v /opt/lib:/opt/flink/lib/customJar/ \ 
+  -v /opt/lib:/opt/dinky/customJar/ \ 
   dinky dinkydocker/dinky-standalone-server:1.0.3-flink1.17
 
 ```
 :::tip 说明
-由于mysql与Apache 2.0协议不兼容，dinky无法默认提供mysql驱动，所以需要您手动提供mysql依赖并放到`/opt/flink/lib/customJar/`
+由于mysql与Apache 2.0协议不兼容，dinky无法默认提供mysql驱动，所以需要您手动提供mysql依赖并放到`/opt/dinky/customJar/`
 下面，上面已经给出了映射，如果你有自己的依赖目录，修改即可
 :::
 
@@ -48,7 +48,7 @@ docker run --restart=always -p 8888:8888 \
   -e POSTGRES_DATABASE=dinky \ 
   -e POSTGRES_USERNAME=dinky \
   -e POSTGRES_PASSWORD=dinky \
-  -v /opt/lib:/opt/flink/lib/customJar/ \ 
+  -v /opt/lib:/opt/dinky/customJar/ \ 
   dinky dinkydocker/dinky-standalone-server:1.0.3-flink1.17
 ```
 ---
