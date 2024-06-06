@@ -84,20 +84,26 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
-                    lastVersion: 'current',
+                    includeCurrentVersion: true,
+                    lastVersion: '1.0',
                     versions: {
                         current: {
-                            label: '1.0',
+                            label: 'Dev',
                             path: '/next',
+                            banner: 'unreleased',
                         },
-                        0.6: {
-                            label: '0.6',
-                            path: '/0.6',
-                            banner: 'unmaintained',
+                        '1.0': {
+                            label: '1.0',
+                            path: '/1.0',
                         },
                         0.7: {
                             label: '0.7',
                             path: '/0.7',
+                            banner: 'unmaintained',
+                        },
+                        0.6: {
+                            label: '0.6',
+                            path: '/0.6',
                             banner: 'unmaintained',
                         },
                     },

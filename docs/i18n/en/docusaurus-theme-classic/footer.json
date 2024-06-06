@@ -13,11 +13,11 @@
   },
   "link.item.label.doc_home": {
     "message": "Doc Home",
-    "description": "The label of footer link with label=doc_home linking to /docs/next/platform_intro/overview"
+    "description": "The label of footer link with label=doc_home linking to /docs/next/get_started/overview"
   },
   "link.item.label.openapi": {
     "message": "Open Api",
-    "description": "The label of footer link with label=openapi linking to /docs/next/openapi"
+    "description": "The label of footer link with label=openapi linking to /docs/next/openapi/openapi_overview"
   },
   "link.item.label.issue": {
     "message": "Issue",
