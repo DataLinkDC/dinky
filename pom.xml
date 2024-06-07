@@ -111,7 +111,6 @@
         <reflections.version>0.10.2</reflections.version>
         <revision>1.1.0-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
-        <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
@@ -153,7 +152,7 @@
                 <artifactId>smiley-http-proxy-servlet</artifactId>
                 <version>${smily.version}</version>
             </dependency>
-            <!--easy-rules 执行引擎-->
+            <!--easy-rules Execution engine-->
             <dependency>
                 <groupId>org.jeasy</groupId>
                 <artifactId>easy-rules-core</artifactId>
@@ -283,20 +282,20 @@
                 <version>${javax.annotation-api.version}</version>
             </dependency>
 
-            <!--解决mysql与phoenix依赖冲突-->
+            <!--Resolve MySQL and Phoenix dependency conflicts-->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf-java.version}</version>
             </dependency>
 
-            <!-- hutool java工具类库  -->
+            <!-- hutool Java Tool Class Library  -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!-- druid 官方 starter -->
+            <!-- druid Official starter -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
@@ -1012,25 +1011,6 @@
             </activation>
             <properties>
                 <scope.runtime>provided</scope.runtime>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>scala-2.11</id>
-            <properties>
-                <scala.binary.version>2.11</scala.binary.version>
-                <scala.version>2.11.7</scala.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>scala-2.12</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <scala.binary.version>2.12</scala.binary.version>
-                <scala.version>2.12.10</scala.version>
             </properties>
         </profile>
 
