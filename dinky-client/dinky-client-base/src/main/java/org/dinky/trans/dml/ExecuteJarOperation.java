@@ -95,8 +95,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                 tEnv.addJar(file);
             } else {
                 // python submit
-                submitParam.setArgs("--python " + file.getAbsolutePath() + " "
-                        + submitArgs);
+                submitParam.setArgs("--python " + file.getAbsolutePath() + " " + submitArgs);
                 file = null;
             }
 
