@@ -24,11 +24,28 @@ BEGIN
           AND table_name = tableName
           AND column_name = columnName
     ) THEN
+        -- 判断 afterColumnName 是否存在该表内,并赋值给afterColumnNameExists , 不存在结束存储过程并抛出异常 | Determine whether afterColumnName exists in the table, if not end the stored procedure and throw an exception
+        IF (afterColumnName IS NOT NULL) THEN
+            SET @afterColumnNameExists = (
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = DATABASE()
+                  AND table_name = tableName
+                  AND column_name = afterColumnName
+            );
+            IF (@afterColumnNameExists IS NULL) THEN
+                SIGNAL SQLSTATE '02000'
+                    SET MESSAGE_TEXT = 'The afterColumnName does not exist in the table';
+            END IF;
+        END IF;
+
+
+        -- 拼接sql语句,初始 sql | Splice SQL statement initialization sql
+        SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinitionType, ' DEFAULT ', columnDefinitionDefaultValue, ' COMMENT ' , '\'', columnDefinitionComment ,'\'' );
+
         -- 判断 afterColumnName 入参是否 有值, 如果有值则拼接 afterColumnName 和 columnName 之间的关系 | Determine whether afterColumnName parameter has a value. If there is a value, the relationship between afterColumnName and columnName is spliced
-        IF (afterColumnName IS NOT NULL OR afterColumnName <> '') THEN
-            SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinitionType, ' DEFAULT ', columnDefinitionDefaultValue, " COMMENT '", columnDefinitionComment, "' AFTER ", afterColumnName);
-        ELSE
-            SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinitionType, ' DEFAULT ', columnDefinitionDefaultValue, " COMMENT '", columnDefinitionComment , "'");
+        IF (afterColumnName IS NOT NULL and @afterColumnNameExists is not null) THEN
+            SET @sql = CONCAT(@sql, ' AFTER '  , afterColumnName);
         END IF;
         -- 查看拼接的sql语句 | View the spliced SQL statement
         SELECT @sql AS executeSqlStatement;
@@ -68,8 +85,8 @@ where `id` = 119;
 ALTER TABLE dinky_udf_manage CHANGE COLUMN class_name class_name VARCHAR(100) null DEFAULT null COMMENT 'Complete class name';
 
 
-CALL add_column_if_not_exists('dinky_task', 'first_level_owner', 'int', 'NULL', 'primary responsible person id' ,'');
-CALL add_column_if_not_exists('dinky_task', 'second_level_owners', 'varchar(128)', 'NULL', 'list of secondary responsible persons ids' , '');
+CALL add_column_if_not_exists('dinky_task', 'first_level_owner', 'int', 'NULL', 'primary responsible person id' ,null);
+CALL add_column_if_not_exists('dinky_task', 'second_level_owners', 'varchar(128)', 'NULL', 'list of secondary responsible persons ids' , null);
 
 
 update dinky_task set first_level_owner = creator;
