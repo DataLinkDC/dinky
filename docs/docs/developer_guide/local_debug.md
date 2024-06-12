@@ -12,7 +12,8 @@ title: 本地调试
 - Flink, Java, Maven, Node, React, Ant Design Pro
 - MySQL/PostgreSQL/H2
 - IntelliJ IDEA
-  :::
+
+:::
 
 ## 前置条件
 
@@ -99,6 +100,8 @@ Install/Package 过程中报错代码格式化问题,请参考 [代码格式化]
 
 ### Profile 说明
 
+> 注意: scale 相关 profile 从 Dinky v1.1.0 版本移除,默认使用 scala 2.12 版本(Flink 1.15 及以上版本不再单独支持 scala 2.11)
+
 |       Profile        |                                         说明                                         |
 |:--------------------:|:----------------------------------------------------------------------------------:|
 |         dev          |                     开发环境/本地调试，默认不选中,此功能主要用于本地调试或者二次开发,用于加载相关依赖                     |
@@ -116,8 +119,6 @@ Install/Package 过程中报错代码格式化问题,请参考 [代码格式化]
 |         mac          |                                 用于适配在 mac 系统上进行调试                                  |            
 |    maven-central     |                                 用于指定 maven 仓库为中央仓库                                 |  
 |         prod         |             生产环境，默认选中,此功能主要用于编译打包,此 profile 会将部分依赖排除掉,不会打进最终 tar.gz 包内             |
-|      scala-2.11      |                              用于指定 Scala 版本为 2.11,只能单选                              |
-|      scala-2.12      |                              用于指定 Scala 版本为 2.12,只能单选                              |
 |         web          |                                    打包前端资源,需要勾选                                     |
 
 :::warning 注意
@@ -157,8 +158,7 @@ Dinky开发环境配置有两种模式，分别是 provided 环境和 compile �
 
 ### 修改配置文件
 
-> 以 MySQL 为例, 如果使用 PostgreSQL/H2 请自行修改,注意: 使用 H2
-> 数据库时无需修改如下配置,直接进行 [启动后端服务](#启动后端服务)
+> 以 MySQL 为例, 如果使用 PostgresSQL/H2 请自行修改,注意: 默认使用 H2 数据库时无需修改如下配置,直接 [启动后端服务](#启动后端服务)
 
 - 修改 dinky-admin/src/main/resources/application-mysql.yml 文件,配置相应的数据库连接信息
 
