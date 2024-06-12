@@ -41,7 +41,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
+            <artifactId>flink-table-planner_2.12</artifactId>
             <version>${flink.version}</version>
             <exclusions>
                 <exclusion>
@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-runtime_${scala.binary.version}</artifactId>
+            <artifactId>flink-table-runtime_2.12</artifactId>
             <version>${flink.version}</version>
             <exclusions>
                 <exclusion>
@@ -67,7 +67,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-clients_${scala.binary.version}</artifactId>
+            <artifactId>flink-clients_2.12</artifactId>
             <version>${flink.version}</version>
             <exclusions>
                 <exclusion>
@@ -78,27 +78,27 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+            <artifactId>flink-streaming-java_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-yarn_${scala.binary.version}</artifactId>
+            <artifactId>flink-yarn_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-kubernetes_${scala.binary.version}</artifactId>
+            <artifactId>flink-kubernetes_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-python_${scala.binary.version}</artifactId>
+            <artifactId>flink-python_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-kafka_${scala.binary.version}</artifactId>
+            <artifactId>flink-connector-kafka_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
@@ -154,7 +154,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
+            <artifactId>flink-connector-jdbc_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
@@ -168,13 +168,13 @@
         </dependency>
         <dependency>
             <groupId>org.apache.doris</groupId>
-            <artifactId>flink-doris-connector-1.14_${scala.binary.version}</artifactId>
+            <artifactId>flink-doris-connector-1.14_2.12</artifactId>
             <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.starrocks</groupId>
             <artifactId>flink-connector-starrocks</artifactId>
-            <version>1.2.3_flink-1.14_${scala.binary.version}</version>
+            <version>1.2.3_flink-1.14_2.12</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.jsqlparser</groupId>
@@ -189,12 +189,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-runtime-web_${scala.binary.version}</artifactId>
+            <artifactId>flink-runtime-web_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-state-processor-api_${scala.binary.version}</artifactId>
+            <artifactId>flink-state-processor-api_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
