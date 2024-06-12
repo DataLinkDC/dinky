@@ -69,7 +69,7 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  'checkpoint' = '3000',
  'scan.startup.mode' = 'initial',
  'parallelism' = '1',
- 'table-name' = 'bigdata\.products,bigdata\.orders',
+ 'table-name' = 'bigdata\.t_example_a,bigdata\.example_b',
  'debezium.skipped.operations'='d',
  'sink.connector' = 'jdbc',
  'sink.url' = 'jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&useSSL=false',
@@ -102,7 +102,7 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  'checkpoint' = '3000',
  'scan.startup.mode' = 'initial',
  'parallelism' = '1',
- 'table-name' = 'bigdata\.products,bigdata\.orders',
+ 'table-name' = 'bigdata\.t_example_a,bigdata\.example_b',
  'debezium.skipped.operations'='d',
  'sink.connector' = 'jdbc',
  'sink.url' = 'jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&useSSL=false',
@@ -112,7 +112,7 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  -- 映射表名 原表 t_example_a 替换成 test_example_a ，多张表通过逗号分割
  'sink.table.mapping-routes' = 't_example_a:test_example_a,example_b:t_example_b',
  -- 正则匹配表名，进行替换
- 'sink.table.replace.pattern' = 't_(.*?)_',
+ 'sink.table.replace.pattern' = 't_(.*?)_', -- replace t_example_b -> ods_example_b , test_example_a 则不会变成 ods_example_a ，因为 table.mapping-routes 优先级较高
  'sink.table.replace.with' = 'ods_$1_',
  'sink.table.lower' = 'true',
  'sink.table-name' = '#{tableName}',
