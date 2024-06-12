@@ -18,7 +18,7 @@
  */
 
 import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
-import {assert, lockTask, showAllOwners} from '@/pages/DataStudio/function';
+import { assert, lockTask, showAllOwners } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';

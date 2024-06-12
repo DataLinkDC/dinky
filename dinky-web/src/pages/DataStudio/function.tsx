@@ -211,7 +211,12 @@ export function isProjectTabs(panes: TabsItemType[], activeKey: string): boolean
 }
 
 export function isShowRightTabsJobConfig(dialect: string): boolean {
-  return assert( dialect , [DIALECT.JAVA, DIALECT.PYTHON_LONG, DIALECT.SCALA, DIALECT.FLINKSQLENV] , true ,'includes');
+  return assert(
+    dialect,
+    [DIALECT.JAVA, DIALECT.PYTHON_LONG, DIALECT.SCALA, DIALECT.FLINKSQLENV],
+    true,
+    'includes'
+  );
 }
 
 export function getTabByTaskId(
@@ -327,7 +332,6 @@ export const lockTask = (
   }
 };
 
-
 /**
  * 断言 断言类型值是否在断言类型值列表中 | assert whether the assertion type value is in the assertion type value list
  * @param needAssertTypeValue
@@ -337,10 +341,10 @@ export const lockTask = (
  */
 export const assert = (
   needAssertTypeValue: string = '',
-  assertTypeValueList: string[] | string = [] ,
+  assertTypeValueList: string[] | string = [],
   needAssertTypeValueLowerCase = false,
-  assertType:  'notIncludes' | 'includes' |  'notEqual' | 'equal'  = 'includes'
-): boolean  => {
+  assertType: 'notIncludes' | 'includes' | 'notEqual' | 'equal' = 'includes'
+): boolean => {
   // 如果 needAssertTypeValue 为空, 则直接返回 false 不需要断言 | if needAssertTypeValue is empty, return false directly
   if (isEmpty(needAssertTypeValue)) {
     return false;
@@ -371,7 +375,7 @@ export const assert = (
     return assertTypeValueList.every((item) => item === needAssertTypeValue);
   }
   return false;
-}
+};
 
 /**
  * 判断 不为空或者不为 undefined | determine whether it is not empty or not undefined
@@ -379,7 +383,7 @@ export const assert = (
  */
 export const isNotEmpty = (value: any): boolean => {
   return value !== '' && value !== undefined && value !== null;
-}
+};
 
 /**
  * 判断为空或者为 undefined | determine whether it is empty or undefined
@@ -387,4 +391,4 @@ export const isNotEmpty = (value: any): boolean => {
  */
 export const isEmpty = (value: any): boolean => {
   return !isNotEmpty(value);
-}
+};

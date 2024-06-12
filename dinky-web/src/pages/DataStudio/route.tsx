@@ -57,7 +57,7 @@ import {
 } from '@ant-design/icons';
 import { TabPaneProps } from 'antd';
 import React, { ReactNode } from 'react';
-import {assert} from "@/pages/DataStudio/function";
+import { assert } from '@/pages/DataStudio/function';
 
 export const LeftSide: TabProp[] = [
   {
@@ -74,8 +74,13 @@ export const LeftSide: TabProp[] = [
     label: l(LeftMenuKey.CATALOG_KEY),
     children: <Catalog />,
     isShow: (type, subType) =>
-      assert(type, [ TabsPageType.project, TabsPageType.metadata], true, 'includes')
-      && assert(subType, [ DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG,DIALECT.FLINKSQLENV,DIALECT.FLINKJAR], true, 'notIncludes')
+      assert(type, [TabsPageType.project, TabsPageType.metadata], true, 'includes') &&
+      assert(
+        subType,
+        [DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV, DIALECT.FLINKJAR],
+        true,
+        'notIncludes'
+      )
   },
   {
     auth: PermissionConstants.DATASTUDIO_LEFT_DATASOURCE,
@@ -93,7 +98,7 @@ export const LeftSide: TabProp[] = [
     isShow: (type, subType) =>
       assert(type, TabsPageType.project, true, 'equal') &&
       !isSql(subType) &&
-      assert(subType, [ DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
+      assert(subType, [DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
   }
 ];
 
@@ -106,7 +111,7 @@ export const RightSide: TabProp[] = [
     children: <JobConfig />,
     isShow: (type, subType) =>
       assert(type, TabsPageType.project, true, 'equal') &&
-        assert(subType, [ TabsPageSubType.flinkSql,TabsPageSubType.flinkJar], true, 'includes')
+      assert(subType, [TabsPageSubType.flinkSql, TabsPageSubType.flinkJar], true, 'includes')
   },
   {
     auth: PermissionConstants.DATASTUDIO_RIGHT_PREVIEW_CONFIG,
@@ -115,10 +120,9 @@ export const RightSide: TabProp[] = [
     label: l(RightMenuKey.PREVIEW_CONFIG_KEY),
     children: <PreViewConfig />,
     isShow: (type, subType) =>
-      (
-        assert(type, TabsPageType.project, true, 'equal') &&
-        assert(subType, [ TabsPageSubType.flinkSql], true, 'includes')
-        ) || isSql(subType)
+      (assert(type, TabsPageType.project, true, 'equal') &&
+        assert(subType, [TabsPageSubType.flinkSql], true, 'includes')) ||
+      isSql(subType)
   },
   {
     auth: PermissionConstants.DATASTUDIO_RIGHT_SAVE_POINT,
@@ -127,7 +131,7 @@ export const RightSide: TabProp[] = [
     label: l(RightMenuKey.SAVEPOINT_KEY),
     children: <SavePoints />,
     isShow: (type, subType) =>
-      assert(type, TabsPageType.project, true, 'equal')  &&
+      assert(type, TabsPageType.project, true, 'equal') &&
       assert(subType, TabsPageSubType.flinkSql, true, 'equal')
   },
   {
@@ -137,8 +141,8 @@ export const RightSide: TabProp[] = [
     label: l(RightMenuKey.HISTORY_VISION_KEY),
     children: <HistoryVersion />,
     isShow: (type, subType) =>
-      assert(type, TabsPageType.project, true, 'equal')
-      && assert(subType, TabsPageSubType.flinkSql, true, 'equal')
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(subType, TabsPageSubType.flinkSql, true, 'equal')
   },
   {
     auth: PermissionConstants.DATASTUDIO_RIGHT_JOB_INFO,
@@ -146,7 +150,7 @@ export const RightSide: TabProp[] = [
     icon: <InfoCircleOutlined />,
     label: l(RightMenuKey.JOB_INFO_KEY),
     children: <JobInfo />,
-    isShow: (type) =>  assert(type, TabsPageType.project, true, 'equal')
+    isShow: (type) => assert(type, TabsPageType.project, true, 'equal')
   }
 ];
 
@@ -159,7 +163,12 @@ export const LeftBottomSide: TabProp[] = [
     children: <Console />,
     isShow: (type, subType) =>
       assert(type, TabsPageType.project, true, 'equal') &&
-      assert(subType, [ DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
     auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_RESULT,
@@ -169,7 +178,12 @@ export const LeftBottomSide: TabProp[] = [
     children: <Result />,
     isShow: (type, subType) =>
       assert(type, TabsPageType.project, true, 'equal') &&
-      assert(subType, [ DIALECT.FLINKSQLENV,DIALECT.FLINKJAR, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.FLINKJAR, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
     auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_LINEAGE,
@@ -179,7 +193,12 @@ export const LeftBottomSide: TabProp[] = [
     children: <Lineage />,
     isShow: (type, subType) =>
       assert(type, TabsPageType.project, true, 'equal') &&
-      assert(subType, [ DIALECT.FLINKSQLENV,DIALECT.FLINKJAR, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.FLINKJAR, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
     auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_HISTORY,
@@ -190,7 +209,12 @@ export const LeftBottomSide: TabProp[] = [
     isShow: (type, subType) =>
       assert(type, TabsPageType.project, true, 'equal') &&
       !isSql(subType) &&
-      assert(subType, [ DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
     auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_TABLE_DATA,
@@ -200,7 +224,7 @@ export const LeftBottomSide: TabProp[] = [
     children: <></>,
     isShow: (type, subType) =>
       assert(type, TabsPageType.project, true, 'equal') &&
-      assert(subType, [ DIALECT.FLINK_SQL], true, 'includes')
+      assert(subType, [DIALECT.FLINK_SQL], true, 'includes')
   },
   {
     auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_TOOL,

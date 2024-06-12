@@ -18,7 +18,7 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
-import {assert, getTabByTaskId} from '@/pages/DataStudio/function';
+import { assert, getTabByTaskId } from '@/pages/DataStudio/function';
 import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import {
   FOLDER_RIGHT_MENU,
@@ -26,7 +26,8 @@ import {
 } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import {
-  getRightSelectKeyFromNodeClickJobType, isUDF
+  getRightSelectKeyFromNodeClickJobType,
+  isUDF
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
@@ -149,15 +150,13 @@ const Project: React.FC = (props: connect) => {
         payload: getRightSelectKeyFromNodeClickJobType(type)
       });
       // 如果是 udf 或者 是env 则需要更新 bottom key 为空|| if is udf or is env then update bottom key to empty
-      if (isUDF(type) || assert(type , [DIALECT.FLINKSQLENV] , true ,'includes')) {
+      if (isUDF(type) || assert(type, [DIALECT.FLINKSQLENV], true, 'includes')) {
         dispatch({
           type: STUDIO_MODEL.updateSelectBottomKey,
           payload: ''
         });
       }
-
     }
-
 
     dispatch({
       type: STUDIO_MODEL.addTab,
@@ -224,7 +223,7 @@ const Project: React.FC = (props: connect) => {
       () => {},
       () => {
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
-        if (assert(values.type , [DIALECT.FLINKSQLENV] , true ,'includes')) {
+        if (assert(values.type, [DIALECT.FLINKSQLENV], true, 'includes')) {
           dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
         }
         if (projectState.isEdit) {

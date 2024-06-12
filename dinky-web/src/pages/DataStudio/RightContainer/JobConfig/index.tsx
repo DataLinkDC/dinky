@@ -318,7 +318,7 @@ const JobConfig = (props: any) => {
           </>
         )}
 
-        {assert( current?.dialect , [DIALECT.FLINK_SQL] , true ,'includes') && (
+        {assert(current?.dialect, [DIALECT.FLINK_SQL], true, 'includes') && (
           <ProFormSelect
             name='envId'
             label={l('pages.datastudio.label.jobConfig.flinksql.env')}

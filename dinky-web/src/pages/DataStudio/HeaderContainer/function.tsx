@@ -20,7 +20,7 @@
 import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { DIALECT } from '@/services/constants';
-import {assert} from "@/pages/DataStudio/function";
+import { assert } from '@/pages/DataStudio/function';
 
 /**
  * @description: 生成面包屑
@@ -46,7 +46,13 @@ export const isOnline = (data: TaskDataType | undefined) => {
 
 export const isCanPushDolphin = (data: TaskDataType | undefined) => {
   return data
-    ? JOB_LIFE_CYCLE.PUBLISH === data.step && assert(data?.dialect, [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
+    ? JOB_LIFE_CYCLE.PUBLISH === data.step &&
+        assert(
+          data?.dialect,
+          [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+          true,
+          'notIncludes'
+        )
     : false;
 };
 
