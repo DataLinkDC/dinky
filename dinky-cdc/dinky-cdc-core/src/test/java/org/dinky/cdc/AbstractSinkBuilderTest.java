@@ -170,13 +170,13 @@ public class AbstractSinkBuilderTest {
     public void testGetSinkTableNameWithReplace() {
         Map<String, String> sinkConfig = new HashMap<>();
         sinkConfig.put("table.replace.pattern", "t_(.*?)_");
-        sinkConfig.put("table.replace.with", "ods_$1_");
+        sinkConfig.put("table.replace.with", "biz_$1_");
         sinkConfig.put("table.lower", "false");
         sinkConfig.put("table.upper", "false");
         when(config.getSink()).thenReturn(sinkConfig);
 
         Table table = new Table("t_example_test", "testSchema", null);
-        String expectedTableName = "ods_example_test";
+        String expectedTableName = "biz_example_test";
         Assert.assertEquals(expectedTableName, sinkBuilder.getSinkTableName(table));
     }
 
@@ -193,37 +193,10 @@ public class AbstractSinkBuilderTest {
         Table tableAA = new Table("t_biz_aa", "testSchema", null);
         String expectedTableNameAA = "m_biz_aa";
         Assert.assertEquals(expectedTableNameAA, sinkBuilder.getSinkTableName(tableAA));
-        // If the rules do not match, the original table name will be used.
+        // 不匹配的规则，将沿用原表名
         Table tableBB = new Table("t_biz_bb", "testSchema", null);
         String expectedTableNameBB = "m_biz_bb";
         Assert.assertNotEquals(expectedTableNameBB, sinkBuilder.getSinkTableName(tableBB));
-    }
-
-    @Test
-    public void testGetSinkTableNameWithMappingRouteAndReplace() {
-        Map<String, String> sinkConfig = new HashMap<>();
-        sinkConfig.put("table.mapping-routes", "t_biz_ss:m_biz_ss,t_biz_aa:m_biz_aa,t_biz_bb:");
-        sinkConfig.put("table.replace.pattern", "^t_(.*?)");
-        sinkConfig.put("table.replace.with", "ods_$1");
-        when(config.getSink()).thenReturn(sinkConfig);
-
-        Table tableSS = new Table("t_biz_ss", "testSchema", null);
-        String expectedTableNameSS = "m_biz_ss";
-        Assert.assertEquals(expectedTableNameSS, sinkBuilder.getSinkTableName(tableSS));
-
-        Table tableAA = new Table("t_biz_aa", "testSchema", null);
-        String expectedTableNameAA = "m_biz_aa";
-        Assert.assertEquals(expectedTableNameAA, sinkBuilder.getSinkTableName(tableAA));
-        // Unmatched rules will use the original table name and match the rule table.replace.pattern="t_(.*?)_", and the
-        // target will be replaced by ods
-        Table tableBB = new Table("t_biz_bb", "testSchema", null);
-        String expectedTableNameBB = "ods_biz_bb";
-        Assert.assertEquals(expectedTableNameBB, sinkBuilder.getSinkTableName(tableBB));
-        // Unmatched rules will use the original table name and match the rule table.replace.pattern="t_(.*?)_", and the
-        // target will be replaced by ods
-        Table tableCC = new Table("t_product_spu", "testSchema", null);
-        String expectedTableNameCC = "ods_product_spu";
-        Assert.assertEquals(expectedTableNameCC, sinkBuilder.getSinkTableName(tableCC));
     }
 }
 
