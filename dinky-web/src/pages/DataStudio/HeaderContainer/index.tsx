@@ -17,13 +17,15 @@
  *
  */
 
-import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
-import { PushpinIcon } from '@/components/Icons/CustomIcons';
-import { FlexCenterDiv } from '@/components/StyledComponents';
-import { LeftBottomKey } from '@/pages/DataStudio/data.d';
+import {LoadingBtn} from '@/components/CallBackButton/LoadingBtn';
+import {PushpinIcon} from '@/components/Icons/CustomIcons';
+import {FlexCenterDiv} from '@/components/StyledComponents';
+import {LeftBottomKey} from '@/pages/DataStudio/data.d';
 import {
+  assert,
   getCurrentData,
   getCurrentTab,
+  isNotEmpty,
   lockTask,
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
@@ -44,28 +46,17 @@ import {
   executeSql,
   getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
-import {
-  DataStudioTabsItemType,
-  StateType,
-  TabsPageType,
-  TaskDataType,
-  VIEW
-} from '@/pages/DataStudio/model';
-import { JOB_LIFE_CYCLE, JOB_STATUS } from '@/pages/DevOps/constants';
-import { isStatusDone } from '@/pages/DevOps/function';
-import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
-import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import { handleOption, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
-import { DIALECT } from '@/services/constants';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { Jobs } from '@/types/DevOps/data.d';
-import {
-  ButtonRoute,
-  DolphinTaskDefinition,
-  DolphinTaskGroupInfo,
-  DolphinTaskMinInfo
-} from '@/types/Studio/data.d';
-import { l } from '@/utils/intl';
+import {DataStudioTabsItemType, StateType, TabsPageType, TaskDataType, VIEW} from '@/pages/DataStudio/model';
+import {JOB_LIFE_CYCLE, JOB_STATUS} from '@/pages/DevOps/constants';
+import {isStatusDone} from '@/pages/DevOps/function';
+import {SysConfigStateType} from '@/pages/SettingCenter/GlobalSetting/model';
+import {SettingConfigKeyEnum} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
+import {handleOption, handlePutDataJson, queryDataByParams} from '@/services/BusinessCrud';
+import {DIALECT} from '@/services/constants';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {Jobs} from '@/types/DevOps/data.d';
+import {ButtonRoute, DolphinTaskDefinition, DolphinTaskGroupInfo, DolphinTaskMinInfo} from '@/types/Studio/data.d';
+import {l} from '@/utils/intl';
 import {
   ApartmentOutlined,
   BugOutlined,
@@ -79,9 +70,9 @@ import {
   SaveOutlined,
   ScheduleOutlined
 } from '@ant-design/icons';
-import { connect, useModel } from '@umijs/max';
-import { Breadcrumb, Descriptions, Modal, Space } from 'antd';
-import React, { memo, useEffect, useState } from 'react';
+import {connect, useModel} from '@umijs/max';
+import {Breadcrumb, Descriptions, Modal, Space} from 'antd';
+import React, {memo, useEffect, useState} from 'react';
 
 const headerStyle: React.CSSProperties = {
   display: 'inline-flex',
@@ -97,14 +88,14 @@ const HeaderContainer = (props: connect) => {
   const {
     size,
     activeBreadcrumbTitle,
-    tabs: { panes, activeKey },
+    tabs: {panes, activeKey},
     saveTabs,
     updateJobRunningMsg,
     updateSelectBottomKey,
     queryDsConfig,
     queryTaskData,
     enabledDs,
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData: {data: selectCatalogueSortTypeData},
     taskOwnerLockingStrategy
   } = props;
 
@@ -130,7 +121,7 @@ const HeaderContainer = (props: connect) => {
     formValuesInfo: {}
   });
 
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const {initialState, setInitialState} = useModel('@@initialState');
 
   useEffect(() => {
     queryDsConfig(SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase());
@@ -150,7 +141,7 @@ const HeaderContainer = (props: connect) => {
     const dinkyTaskId = currentData?.id;
     const dolphinTaskList: DolphinTaskMinInfo[] | undefined = await queryDataByParams<
       DolphinTaskMinInfo[]
-    >(API_CONSTANTS.SCHEDULER_QUERY_UPSTREAM_TASKS, { dinkyTaskId });
+    >(API_CONSTANTS.SCHEDULER_QUERY_UPSTREAM_TASKS, {dinkyTaskId});
     const dolphinTaskDefinition: DolphinTaskDefinition | undefined =
       await queryDataByParams<DolphinTaskDefinition>(
         API_CONSTANTS.SCHEDULER_QUERY_TASK_DEFINITION,
@@ -198,7 +189,7 @@ const HeaderContainer = (props: connect) => {
 
   const handleSave = async () => {
     const saved = await handlePutDataJson(API_CONSTANTS.TASK, currentData);
-    saveTabs({ ...props.tabs });
+    saveTabs({...props.tabs});
     if (currentTab) currentTab.isModified = false;
     return saved;
   };
@@ -221,7 +212,7 @@ const HeaderContainer = (props: connect) => {
         onOk: async () => {
           await cancelTask(l('pages.datastudio.editor.stop.job'), currentData.id).then(() => {
             currentData.status = JOB_STATUS.CANCELED;
-            saveTabs({ ...props.tabs });
+            saveTabs({...props.tabs});
           });
           resolve(true);
         },
@@ -249,8 +240,8 @@ const HeaderContainer = (props: connect) => {
     }
 
     const res = await debugTask(
-      l('pages.datastudio.editor.debugging', '', { jobName: currentData.name }),
-      { ...currentData, statement: selectSql }
+      l('pages.datastudio.editor.debugging', '', {jobName: currentData.name}),
+      {...currentData, statement: selectSql}
     );
 
     if (!res) {
@@ -274,7 +265,7 @@ const HeaderContainer = (props: connect) => {
       currentData.status = res.data.status;
       if (currentTab) currentTab.console.result = res.data.result;
     }
-    saveTabs({ ...props.tabs });
+    saveTabs({...props.tabs});
   };
 
   const handlerSubmit = async () => {
@@ -285,7 +276,7 @@ const HeaderContainer = (props: connect) => {
     if (!saved) return;
 
     const res = await executeSql(
-      l('pages.datastudio.editor.submitting', '', { jobName: currentData.name }),
+      l('pages.datastudio.editor.submitting', '', {jobName: currentData.name}),
       currentData.id
     );
 
@@ -305,7 +296,7 @@ const HeaderContainer = (props: connect) => {
     if (isSql(currentData.dialect)) {
       updateSelectBottomKey(LeftBottomKey.RESULT_KEY);
     }
-    saveTabs({ ...props.tabs });
+    saveTabs({...props.tabs});
   };
 
   const handleChangeJobLife = async () => {
@@ -328,8 +319,8 @@ const HeaderContainer = (props: connect) => {
         currentData.step = JOB_LIFE_CYCLE.PUBLISH;
       }
     }
-    saveTabs({ ...props.tabs });
-    await queryTaskData({ payload: selectCatalogueSortTypeData });
+    saveTabs({...props.tabs});
+    await queryTaskData({payload: selectCatalogueSortTypeData});
   };
 
   const showDagGraph = async () => {
@@ -339,8 +330,8 @@ const HeaderContainer = (props: connect) => {
         title: l('pages.datastudio.editor.explan.tip'),
         width: '100%',
         icon: null,
-        content: <FlinkGraph data={result.data} />,
-        cancelButtonProps: { style: { display: 'none' } }
+        content: <FlinkGraph data={result.data}/>,
+        cancelButtonProps: {style: {display: 'none'}}
       });
     }
   };
@@ -350,8 +341,8 @@ const HeaderContainer = (props: connect) => {
       title: l('pages.datastudio.explain.validate.msg'),
       width: '100%',
       icon: null,
-      content: <Explain />,
-      cancelButtonProps: { style: { display: 'none' } }
+      content: <Explain/>,
+      cancelButtonProps: {style: {display: 'none'}}
     });
   };
 
@@ -361,7 +352,7 @@ const HeaderContainer = (props: connect) => {
       hotKey: (e: KeyboardEvent) => (e.ctrlKey && e.key === 's') || (e.metaKey && e.key === 's'),
       hotKeyDesc: 'Ctrl/Command +S',
       isShow: projectCommonShow(currentTab?.type),
-      icon: <SaveOutlined />,
+      icon: <SaveOutlined/>,
       title: l('button.save'),
       click: () => handleSave(),
       props: {
@@ -370,12 +361,11 @@ const HeaderContainer = (props: connect) => {
     },
     {
       // 执行图按钮
-      icon: <ApartmentOutlined />,
+      icon: <ApartmentOutlined/>,
       title: l('button.graph'),
       isShow:
         (projectCommonShow(currentTab?.type) &&
-          currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
-        currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
+          assert(currentTab?.subType, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')),
       click: async () => showDagGraph(),
       props: {
         disabled: isLockTask
@@ -383,7 +373,7 @@ const HeaderContainer = (props: connect) => {
     },
     {
       // 检查 sql按钮
-      icon: <ScheduleOutlined />,
+      icon: <ScheduleOutlined/>,
       hotKey: (e: KeyboardEvent) =>
         (e.altKey && e.code === 'Digit2') || (e.altKey && e.key === '@'),
       hotKeyDesc: 'Alt+2/@',
@@ -391,16 +381,15 @@ const HeaderContainer = (props: connect) => {
       click: () => showExplain(),
       isShow:
         projectCommonShow(currentTab?.type) &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG,
+        assert(currentTab?.subType, [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG], true, 'notIncludes')
+       && !isSql(currentTab?.subType),
       props: {
         disabled: isLockTask
       }
     },
     {
       // 推送海豚, 此处需要将系统设置中的 ds 的配置拿出来做判断 启用才展示
-      icon: <PushpinIcon loading={pushDolphinState.buttonLoading} className={'blue-icon'} />,
+      icon: <PushpinIcon loading={pushDolphinState.buttonLoading} className={'blue-icon'}/>,
       title: l('button.push'),
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 'e',
       hotKeyDesc: 'Ctrl+E',
@@ -412,9 +401,9 @@ const HeaderContainer = (props: connect) => {
     },
     {
       // 发布按钮
-      icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
+      icon: isOnline(currentData) ? <MergeCellsOutlined/> : <FundOutlined/>,
       title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
-      isShow: currentTab?.type == TabsPageType.project,
+      isShow: assert(currentTab?.type, TabsPageType.project, true, 'equal'),
       click: () => handleChangeJobLife(),
       props: {
         disabled: isLockTask
@@ -422,18 +411,17 @@ const HeaderContainer = (props: connect) => {
     },
     {
       // flink jobdetail跳转 运维
-      icon: <RotateRightOutlined />,
+      icon: <RotateRightOutlined/>,
       title: l('pages.datastudio.to.jobDetail'),
-      isShow:
-        currentTab?.type == TabsPageType.project &&
-        currentData?.jobInstanceId &&
-        (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
-          currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
+      isShow: isNotEmpty(currentData?.jobInstanceId)
+        &&  !isSql(currentTab?.subType)
+        && assert(currentTab?.subType, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')
+        && assert(currentTab?.type, TabsPageType.project, true, 'equal'),
       props: {
         onClick: async () => {
           const dataByParams = await queryDataByParams<Jobs.JobInstance>(
             API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
-            { taskId: currentData?.id }
+            {taskId: currentData?.id}
           );
           if (dataByParams) {
             window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
@@ -445,60 +433,57 @@ const HeaderContainer = (props: connect) => {
     },
     {
       // 执行按钮
-      icon: <CaretRightFilled />,
+      icon: <CaretRightFilled/>,
       title: l('pages.datastudio.editor.exec'),
       click: handlerSubmit,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
       isShow:
-        currentTab?.type == TabsPageType.project &&
+        assert(currentTab?.type, TabsPageType.project, true, 'equal') &&
         isStatusDone(currentData?.status) &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.FLINKSQLENV,
+        assert(currentTab?.subType, [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV], true, 'notIncludes'),
       props: {
-        style: { background: '#52c41a' },
+        style: {background: '#52c41a'},
         type: 'primary',
         disabled: isLockTask
       }
     },
     {
       // Debug button
-      icon: <BugOutlined />,
+      icon: <BugOutlined/>,
       title: l('pages.datastudio.editor.debug'),
       click: handlerDebug,
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F9',
       hotKeyDesc: 'Shift+F9',
       isShow:
-        currentTab?.type == TabsPageType.project &&
-        isStatusDone(currentData?.status) &&
-        (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          isSql(currentTab?.subType?.toLowerCase() ?? '')),
+        assert(currentTab?.type, TabsPageType.project, true, 'equal') &&
+        isStatusDone(currentData?.status) && !isSql(currentTab?.subType) &&
+        assert(currentTab?.subType, [DIALECT.FLINK_SQL], true, 'includes'),
       props: {
-        style: { background: '#52c41a' },
+        style: {background: '#52c41a'},
         type: 'primary',
         disabled: isLockTask
       }
     },
     {
       // 停止按钮
-      icon: <PauseOutlined />,
+      icon: <PauseOutlined/>,
       title: l('pages.datastudio.editor.stop'),
       click: handlerStop,
-      isShow: currentTab?.type == TabsPageType.project && !isStatusDone(currentData?.status),
+      isShow:  assert(currentTab?.type, TabsPageType.project, true, 'equal') && !isStatusDone(currentData?.status),
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
       props: {
         type: 'primary',
-        style: { background: '#FF4D4F' },
+        style: {background: '#FF4D4F'},
         disabled: isLockTask
       }
     },
     {
-      icon: <MoreOutlined />,
+      icon: <MoreOutlined/>,
       title: '',
-      click: () => {},
+      click: () => {
+      },
       isShow: true
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     }
@@ -511,18 +496,18 @@ const HeaderContainer = (props: connect) => {
     if (!activeBreadcrumbTitle) {
       return (
         <Space>
-          <EnvironmentOutlined />
+          <EnvironmentOutlined/>
           <span>Guide Page</span>
         </Space>
       );
     }
 
     return (
-      <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
+      <FlexCenterDiv style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
         {/*<Breadcrumb itemRender={(item, params, items, paths)=><span>{item.title}</span>} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />*/}
-        <EnvironmentOutlined style={{ paddingRight: 20 }} />
+        <EnvironmentOutlined style={{paddingRight: 20}}/>
         <Breadcrumb
-          style={{ fontSize: 12, lineHeight: VIEW.headerHeight + 'px' }}
+          style={{fontSize: 12, lineHeight: VIEW.headerHeight + 'px'}}
           separator={'/'}
           items={buildBreadcrumbItems(activeBreadcrumbTitle)}
         />
@@ -544,7 +529,7 @@ const HeaderContainer = (props: connect) => {
    */
   const renderRightButtons = () => {
     return (
-      <div style={{ padding: '4px' }}>
+      <div style={{padding: '4px'}}>
         <Space size={'small'} align={'center'} direction={'horizontal'} wrap>
           {routes
             .filter((x) => x.isShow)
@@ -558,7 +543,7 @@ const HeaderContainer = (props: connect) => {
   };
 
   const handlePushDolphinSubmit = async (value: DolphinTaskDefinition) => {
-    setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
+    setPushDolphinState((prevState) => ({...prevState, loading: true}));
     await handleOption(
       API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
       `推送任务[${currentData?.name}]至 DolphinScheduler`,
@@ -573,7 +558,7 @@ const HeaderContainer = (props: connect) => {
   return (
     <Descriptions column={2} size={'middle'} layout={'horizontal'} key={'h'} style={headerStyle}>
       <Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>
-      <Descriptions.Item contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}>
+      <Descriptions.Item contentStyle={{display: 'flex', flexDirection: 'row-reverse'}}>
         {renderRightButtons()}
         {pushDolphinState.modalVisible && (
           <PushDolphin
@@ -594,7 +579,7 @@ const HeaderContainer = (props: connect) => {
 };
 
 export default connect(
-  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+  ({Studio, SysConfig}: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     tabs: Studio.tabs,
     dsConfig: SysConfig.dsConfig,
     enabledDs: SysConfig.enabledDs,
