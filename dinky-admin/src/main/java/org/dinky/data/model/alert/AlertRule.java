@@ -42,7 +42,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "AlertRule", description = "AlertRule")
 public class AlertRule extends SuperEntity<AlertRule> {
 
-    @ApiModelProperty(value = "rule", required = true, dataType = "List<AlertRuleConditions>", example = "rule")
+    @ApiModelProperty(value = "rule", required = true, dataType = "List<AlertTriggerRule>", example = "rule")
     @TableField(typeHandler = ListTypeHandler.class)
     List<AlertTriggerRule> rule;
 
