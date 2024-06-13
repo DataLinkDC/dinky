@@ -203,8 +203,8 @@ public class AbstractSinkBuilderTest {
     public void testGetSinkTableNameWithMappingRouteAndReplace() {
         Map<String, String> sinkConfig = new HashMap<>();
         sinkConfig.put("table.mapping-routes", "t_biz_ss:m_biz_ss,t_biz_aa:m_biz_aa,t_biz_bb:");
-        sinkConfig.put("table.replace.pattern", "t_(.*?)_");
-        sinkConfig.put("table.replace.with", "ods_$1_");
+        sinkConfig.put("table.replace.pattern", "^t_(.*?)");
+        sinkConfig.put("table.replace.with", "ods_$1");
         when(config.getSink()).thenReturn(sinkConfig);
 
         Table tableSS = new Table("t_biz_ss", "testSchema", null);
@@ -214,10 +214,16 @@ public class AbstractSinkBuilderTest {
         Table tableAA = new Table("t_biz_aa", "testSchema", null);
         String expectedTableNameAA = "m_biz_aa";
         Assert.assertEquals(expectedTableNameAA, sinkBuilder.getSinkTableName(tableAA));
-        // Unmatched rules will use the original table name and match the rule table.replace.pattern="t_(.*?)_", and the target will be replaced by ods
+        // Unmatched rules will use the original table name and match the rule table.replace.pattern="t_(.*?)_", and the
+        // target will be replaced by ods
         Table tableBB = new Table("t_biz_bb", "testSchema", null);
         String expectedTableNameBB = "ods_biz_bb";
         Assert.assertEquals(expectedTableNameBB, sinkBuilder.getSinkTableName(tableBB));
+        // Unmatched rules will use the original table name and match the rule table.replace.pattern="t_(.*?)_", and the
+        // target will be replaced by ods
+        Table tableCC = new Table("t_product_spu", "testSchema", null);
+        String expectedTableNameCC = "ods_product_spu";
+        Assert.assertEquals(expectedTableNameCC, sinkBuilder.getSinkTableName(tableCC));
     }
 }
 
