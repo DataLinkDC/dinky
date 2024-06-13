@@ -33,7 +33,8 @@ export const AlertRulesOption = () => {
     res.push({
       // @ts-ignore
       label: v.label,
-      value: k
+      value: k,
+      key: k,
     });
   }
   return res;
@@ -62,18 +63,22 @@ export const buildValueItem = (key: string, isSystem: boolean) => {
             name={'ruleValue'}
             fieldProps={{ precision: 0 }}
             placeholder={plh}
-            width={'sm'}
+            width={'md'}
           />
         );
       case OperatorType.STR_VALUE:
         return (
-          <ProFormText width={'sm'} disabled={isSystem} name={'ruleValue'} placeholder={plh} />
+          <ProFormText width={'md'} disabled={isSystem} name={'ruleValue'} placeholder={plh} />
         );
       case OperatorType.OPTIONS_SEL:
         return (
           <ProFormSelect
-            width={'sm'}
+            width={'md'}
             disabled={isSystem}
+            fieldProps={{
+              defaultActiveFirstOption: true,
+              showSearch: true,
+            }}
             name='ruleValue'
             mode={'single'}
             placeholder={plh}

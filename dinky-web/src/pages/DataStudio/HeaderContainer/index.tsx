@@ -22,8 +22,10 @@ import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { FlexCenterDiv } from '@/components/StyledComponents';
 import { LeftBottomKey } from '@/pages/DataStudio/data.d';
 import {
+  assert,
   getCurrentData,
   getCurrentTab,
+  isNotEmpty,
   lockTask,
   mapDispatchToProps
 } from '@/pages/DataStudio/function';
@@ -373,9 +375,8 @@ const HeaderContainer = (props: connect) => {
       icon: <ApartmentOutlined />,
       title: l('button.graph'),
       isShow:
-        (projectCommonShow(currentTab?.type) &&
-          currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL) ||
-        currentTab?.subType?.toLowerCase() === DIALECT.FLINKJAR,
+        projectCommonShow(currentTab?.type) &&
+        assert(currentTab?.subType, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes'),
       click: async () => showDagGraph(),
       props: {
         disabled: isLockTask
@@ -391,9 +392,13 @@ const HeaderContainer = (props: connect) => {
       click: () => showExplain(),
       isShow:
         projectCommonShow(currentTab?.type) &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG,
+        assert(
+          currentTab?.subType,
+          [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG],
+          true,
+          'notIncludes'
+        ) &&
+        !isSql(currentTab?.subType),
       props: {
         disabled: isLockTask
       }
@@ -414,7 +419,7 @@ const HeaderContainer = (props: connect) => {
       // 发布按钮
       icon: isOnline(currentData) ? <MergeCellsOutlined /> : <FundOutlined />,
       title: isOnline(currentData) ? l('button.offline') : l('button.publish'),
-      isShow: currentTab?.type == TabsPageType.project,
+      isShow: assert(currentTab?.type, TabsPageType.project, true, 'equal'),
       click: () => handleChangeJobLife(),
       props: {
         disabled: isLockTask
@@ -425,10 +430,10 @@ const HeaderContainer = (props: connect) => {
       icon: <RotateRightOutlined />,
       title: l('pages.datastudio.to.jobDetail'),
       isShow:
-        currentTab?.type == TabsPageType.project &&
-        currentData?.jobInstanceId &&
-        (currentTab?.subType?.toLowerCase() == DIALECT.FLINK_SQL ||
-          currentTab?.subType?.toLowerCase() == DIALECT.FLINKJAR),
+        isNotEmpty(currentData?.jobInstanceId) &&
+        !isSql(currentTab?.subType) &&
+        assert(currentTab?.subType, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes') &&
+        assert(currentTab?.type, TabsPageType.project, true, 'equal'),
       props: {
         onClick: async () => {
           const dataByParams = await queryDataByParams<Jobs.JobInstance>(
@@ -451,12 +456,14 @@ const HeaderContainer = (props: connect) => {
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
       isShow:
-        currentTab?.type == TabsPageType.project &&
+        assert(currentTab?.type, TabsPageType.project, true, 'equal') &&
         isStatusDone(currentData?.status) &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.JAVA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.SCALA &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-        currentTab?.subType?.toLowerCase() !== DIALECT.FLINKSQLENV,
+        assert(
+          currentTab?.subType,
+          [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV],
+          true,
+          'notIncludes'
+        ),
       props: {
         style: { background: '#52c41a' },
         type: 'primary',
@@ -471,10 +478,10 @@ const HeaderContainer = (props: connect) => {
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F9',
       hotKeyDesc: 'Shift+F9',
       isShow:
-        currentTab?.type == TabsPageType.project &&
+        assert(currentTab?.type, TabsPageType.project, true, 'equal') &&
         isStatusDone(currentData?.status) &&
-        (currentTab?.subType?.toLowerCase() === DIALECT.FLINK_SQL ||
-          isSql(currentTab?.subType?.toLowerCase() ?? '')),
+        !isSql(currentTab?.subType) &&
+        assert(currentTab?.subType, [DIALECT.FLINK_SQL], true, 'includes'),
       props: {
         style: { background: '#52c41a' },
         type: 'primary',
@@ -486,7 +493,9 @@ const HeaderContainer = (props: connect) => {
       icon: <PauseOutlined />,
       title: l('pages.datastudio.editor.stop'),
       click: handlerStop,
-      isShow: currentTab?.type == TabsPageType.project && !isStatusDone(currentData?.status),
+      isShow:
+        assert(currentTab?.type, TabsPageType.project, true, 'equal') &&
+        !isStatusDone(currentData?.status),
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
       props: {

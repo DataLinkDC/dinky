@@ -18,7 +18,7 @@
  */
 
 import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
-import { lockTask, showAllOwners } from '@/pages/DataStudio/function';
+import { assert, lockTask, showAllOwners } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
@@ -323,15 +323,11 @@ export const buildProjectTree = (
     : [];
 
 export const isUDF = (jobType: string): boolean => {
-  return (
-    jobType.toLowerCase() === DIALECT.SCALA ||
-    jobType.toLowerCase() === DIALECT.PYTHON_LONG ||
-    jobType.toLowerCase() === DIALECT.JAVA
-  );
+  return assert(jobType, [DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.JAVA], true, 'includes');
 };
 
 export const isFlinkJob = (jobType: string): boolean => {
-  return jobType.toLowerCase() === DIALECT.FLINK_SQL || jobType.toLowerCase() === DIALECT.FLINKJAR;
+  return assert(jobType, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes');
 };
 
 export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {

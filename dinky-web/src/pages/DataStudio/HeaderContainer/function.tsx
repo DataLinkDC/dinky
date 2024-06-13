@@ -20,6 +20,7 @@
 import { TabsPageType, TaskDataType } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { DIALECT } from '@/services/constants';
+import { assert } from '@/pages/DataStudio/function';
 
 /**
  * @description: 生成面包屑
@@ -46,15 +47,22 @@ export const isOnline = (data: TaskDataType | undefined) => {
 export const isCanPushDolphin = (data: TaskDataType | undefined) => {
   return data
     ? JOB_LIFE_CYCLE.PUBLISH === data.step &&
-        data?.dialect?.toLowerCase() !== DIALECT.FLINKSQLENV &&
-        data?.dialect?.toLowerCase() !== DIALECT.SCALA &&
-        data?.dialect?.toLowerCase() !== DIALECT.JAVA &&
-        data?.dialect?.toLowerCase() !== DIALECT.PYTHON_LONG
+        assert(
+          data?.dialect,
+          [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+          true,
+          'notIncludes'
+        )
     : false;
 };
 
-export const isSql = (dialect: string, includedFlinkSQL: boolean = false) => {
-  if (!dialect) {
+/**
+ * @description: 判断是否为 SQL 方言 | assert is sql dialect
+ * @param dialect
+ * @param includedFlinkSQL
+ */
+export const isSql = (dialect: string = '', includedFlinkSQL: boolean = false) => {
+  if (!dialect || dialect === '') {
     return false;
   }
   switch (dialect.toLowerCase()) {
