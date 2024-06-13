@@ -52,7 +52,7 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
 )
 ```
 
-## 示例二：使用  `sink.table.mapping-routes` 进行表名和目标表名进行映射替换   'password' = '123456',
+## 示例二：使用  `sink.table.mapping-routes` 进行表名和目标表名进行映射替换 
  'checkpoint' = '3000',
  'scan.startup.mode' = 'initial',
  'parallelism' = '1',
