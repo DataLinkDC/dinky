@@ -55,9 +55,17 @@ export type AlertRule = {
   description: string;
   ruleType: string;
   triggerConditions: string;
-  rule: any;
+  rule: AlertRuleCondition[];
   enabled: boolean;
 };
+
+// [{"ruleKey":"jobStatus","ruleOperator":"EQ","ruleValue":"'FAILED'","rulePriority":"1"}]
+export type AlertRuleCondition = {
+  ruleKey: string;
+  ruleOperator: string;
+  ruleValue: string;
+  rulePriority?: number;
+}
 
 // ============================  System Settings ============================
 export type Settings = {

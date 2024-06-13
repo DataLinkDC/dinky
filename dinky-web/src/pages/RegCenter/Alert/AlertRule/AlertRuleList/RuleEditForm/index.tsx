@@ -17,23 +17,20 @@
  *
  */
 
-import { Authorized } from '@/hooks/useAccess';
+import {Authorized} from '@/hooks/useAccess';
 
-import {
-  RuleType,
-  TriggerType
-} from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants';
+import {RuleType, TriggerType} from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants';
 import {
   AlertRulesOption,
   buildValueItem,
   getOperatorOptions
 } from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/function';
-import { getData } from '@/services/api';
-import { SWITCH_OPTIONS } from '@/services/constants';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { Alert } from '@/types/RegCenter/data';
-import { AlertRule } from '@/types/SettingCenter/data';
-import { l } from '@/utils/intl';
+import {getData} from '@/services/api';
+import {SWITCH_OPTIONS} from '@/services/constants';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {Alert} from '@/types/RegCenter/data';
+import {AlertRule, AlertRuleCondition} from '@/types/SettingCenter/data';
+import {l} from '@/utils/intl';
 import {
   DrawerForm,
   ProCard,
@@ -46,10 +43,10 @@ import {
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
-import { ProFormDependency } from '@ant-design/pro-form';
-import { Button, Divider, Form, Space, Typography } from 'antd';
+import {ProFormDependency} from '@ant-design/pro-form';
+import {Button, Divider, Form, Space, Typography} from 'antd';
 
-const { Link } = Typography;
+const {Link} = Typography;
 
 type AlertRuleFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -59,111 +56,112 @@ type AlertRuleFormProps = {
 };
 
 const RuleEditForm = (props: AlertRuleFormProps) => {
-  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
+    const {onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values} = props;
 
-  // if is system rule disable edit
-  const isSystem = values.ruleType == RuleType.SYSTEM;
+    // if is system rule disable edit
+    const isSystem = values.ruleType == RuleType.SYSTEM;
 
-  const [form] = Form.useForm<AlertRule>();
+    const [form] = Form.useForm<AlertRule>();
 
-  const getAlertTemplate = async () => {
-    const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).data;
-    return template.map((t) => ({ label: t.name, value: t.id }));
-  };
+    const getAlertTemplate = async () => {
+      const template: Alert.AlertTemplate[] = (await getData(API_CONSTANTS.ALERT_TEMPLATE)).data;
+      return template.map((t) => ({label: t.name, value: t.id}));
+    };
 
-  const submit = async () => {
-    const fieldsValue = await form.validateFields();
-    return handleSubmit({ ...fieldsValue, rule: JSON.stringify(fieldsValue.rule) });
-  };
+    const submit = async () => {
+      const fieldsValue = await form.validateFields();
+      return handleSubmit({...values,...fieldsValue});
+    };
 
-  const renderTemplateDropDown = (item: any) => {
+    const renderTemplateDropDown = (item: any) => {
+      return (
+        <>
+          {item}
+          <Authorized key='create' path='/registration/alert/template/add'>
+            <>
+              <Divider style={{margin: '8px 0'}}/>
+              <Link href={'#/registration/alert/template'}>+ {l('rc.alert.template.new')}</Link>
+            </>
+          </Authorized>
+        </>
+      );
+    };
+
+    const renderFooter = () => {
+      return [
+        <Button key={'RuleCancel'} onClick={() => handleModalVisible(false)}>
+          {l('button.cancel')}
+        </Button>,
+        <Button
+          key={'RuleFinish'}
+          type='primary'
+          htmlType={'submit'}
+          autoFocus
+          onClick={() => submit()}
+        >
+          {l('button.finish')}
+        </Button>
+      ];
+    };
+
     return (
-      <>
-        {item}
-        <Authorized key='create' path='/registration/alert/template/add'>
-          <>
-            <Divider style={{ margin: '8px 0' }} />
-            <Link href={'#/registration/alert/template'}>+ {l('rc.alert.template.new')}</Link>
-          </>
-        </Authorized>
-      </>
-    );
-  };
-
-  const renderFooter = () => {
-    return [
-      <Button key={'RuleCancel'} onClick={() => handleModalVisible(false)}>
-        {l('button.cancel')}
-      </Button>,
-      <Button
-        key={'RuleFinish'}
-        type='primary'
-        htmlType={'submit'}
-        autoFocus
-        onClick={() => submit()}
+      <DrawerForm
+        layout={'vertical'}
+        form={form}
+        width={'40%'}
+        open={modalVisible}
+        submitter={{render: () => [...renderFooter()]}}
+        drawerProps={{
+          onClose: () => handleModalVisible(false),
+          destroyOnClose: true
+        }}
+        initialValues={values}
       >
-        {l('button.finish')}
-      </Button>
-    ];
-  };
+        <ProFormGroup>
+          <ProFormText name='id' hidden={true}/>
+          <ProFormText name='ruleType' hidden={true}/>
+          <ProFormText
+            disabled={isSystem}
+            rules={[{required: true}]}
+            name='name'
+            width='md'
+            label={l('sys.alert.rule.name')}
+            placeholder={l('sys.alert.rule.name')}
+          />
 
-  return (
-    <DrawerForm
-      layout={'vertical'}
-      form={form}
-      open={modalVisible}
-      submitter={{ render: () => [...renderFooter()] }}
-      drawerProps={{
-        onClose: () => handleModalVisible(false),
-        destroyOnClose: true
-      }}
-      initialValues={values}
-    >
-      <ProFormGroup>
-        <ProFormText name='id' hidden={true} />
-        <ProFormText name='ruleType' hidden={true} />
-        <ProFormText
+          <ProFormSelect
+            label={l('sys.alert.rule.template')}
+            width='md'
+            name='templateId'
+            request={async () => getAlertTemplate()}
+            placeholder={l('sys.alert.rule.template')}
+            rules={[{required: true, message: l('sys.alert.rule.template')}]}
+            fieldProps={{dropdownRender: (item) => renderTemplateDropDown(item)}}
+          />
+        </ProFormGroup>
+
+        <ProFormGroup>
+          <ProFormTextArea width='md' name='description' label={l('global.table.note')}/>
+          <ProFormSwitch name='enabled' {...SWITCH_OPTIONS()} label={l('global.table.isEnable')}/>
+        </ProFormGroup>
+
+        <Divider orientation={'left'}>{l('sys.alert.rule.trigger')}</Divider>
+
+        <ProFormRadio.Group
           disabled={isSystem}
-          rules={[{ required: true }]}
-          name='name'
-          width='md'
-          label={l('sys.alert.rule.name')}
-          placeholder={l('sys.alert.rule.name')}
+          name='triggerConditions'
+          label={l('sys.alert.rule.triggerConditions')}
+          rules={[{required: true}]}
+          options={TriggerType}
         />
 
-        <ProFormSelect
-          label={l('sys.alert.rule.template')}
-          width='md'
-          name='templateId'
-          request={async () => getAlertTemplate()}
-          placeholder={l('sys.alert.rule.template')}
-          rules={[{ required: true, message: l('sys.alert.rule.template') }]}
-          fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item) }}
-        />
-      </ProFormGroup>
-
-      <ProFormGroup>
-        <ProFormTextArea width='md' name='description' label={l('global.table.note')} />
-        <ProFormSwitch name='enabled' {...SWITCH_OPTIONS()} label={l('global.table.isEnable')} />
-      </ProFormGroup>
-
-      <Divider orientation={'left'}>{l('sys.alert.rule.trigger')}</Divider>
-
-      <ProFormRadio.Group
-        disabled={isSystem}
-        name='triggerConditions'
-        label={l('sys.alert.rule.triggerConditions')}
-        rules={[{ required: true }]}
-        options={TriggerType}
-      />
-
-      <ProFormList
-        name='rule'
-        label={l('sys.alert.rule.triggerRule')}
-        creatorButtonProps={
-          isSystem
-            ? false
-            : {
+        <ProFormList<AlertRuleCondition>
+          name='rule'
+          label={l('sys.alert.rule.triggerRule')}
+          creatorButtonProps={
+            isSystem
+              ? false
+              : {
                 creatorButtonText: l('sys.alert.rule.addRule')
               }
         }
