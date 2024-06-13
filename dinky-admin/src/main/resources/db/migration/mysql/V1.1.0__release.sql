@@ -15,7 +15,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS add_column_if_not_exists$$
-CREATE PROCEDURE if not exists add_column_if_not_exists(IN tableName VARCHAR(64), IN columnName VARCHAR(64), IN columnDefinitionType VARCHAR(64), IN columnDefinitionDefaultValue VARCHAR(128), IN columnDefinitionComment VARCHAR(255), in afterColumnName VARCHAR(64))
+CREATE PROCEDURE add_column_if_not_exists(IN tableName VARCHAR(64), IN columnName VARCHAR(64), IN columnDefinitionType VARCHAR(64), IN columnDefinitionDefaultValue VARCHAR(128), IN columnDefinitionComment VARCHAR(255), in afterColumnName VARCHAR(64))
 BEGIN
     IF NOT EXISTS (
         SELECT *
