@@ -176,7 +176,7 @@ public class AbstractSinkBuilderTest {
         when(config.getSink()).thenReturn(sinkConfig);
 
         Table table = new Table("t_example_test", "testSchema", null);
-        String expectedTableName = "biz_example_test";
+        String expectedTableName = "ods_example_test";
         Assert.assertEquals(expectedTableName, sinkBuilder.getSinkTableName(table));
     }
 
@@ -193,7 +193,7 @@ public class AbstractSinkBuilderTest {
         Table tableAA = new Table("t_biz_aa", "testSchema", null);
         String expectedTableNameAA = "m_biz_aa";
         Assert.assertEquals(expectedTableNameAA, sinkBuilder.getSinkTableName(tableAA));
-        // 不匹配的规则，将沿用原表名
+        // If the rules do not match, the original table name will be used.
         Table tableBB = new Table("t_biz_bb", "testSchema", null);
         String expectedTableNameBB = "m_biz_bb";
         Assert.assertNotEquals(expectedTableNameBB, sinkBuilder.getSinkTableName(tableBB));
@@ -214,7 +214,7 @@ public class AbstractSinkBuilderTest {
         Table tableAA = new Table("t_biz_aa", "testSchema", null);
         String expectedTableNameAA = "m_biz_aa";
         Assert.assertEquals(expectedTableNameAA, sinkBuilder.getSinkTableName(tableAA));
-        // 不匹配的规则，将沿用原表名 同时 匹配  规则table.replace.pattern="t_(.*?)_" , 目标替换成 ods
+        // Unmatched rules will use the original table name and match the rule table.replace.pattern="t_(.*?)_", and the target will be replaced by ods
         Table tableBB = new Table("t_biz_bb", "testSchema", null);
         String expectedTableNameBB = "ods_biz_bb";
         Assert.assertEquals(expectedTableNameBB, sinkBuilder.getSinkTableName(tableBB));
