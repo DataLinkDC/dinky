@@ -507,7 +507,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         String tableName = table.getName();
         Map<String, String> sink = config.getSink();
 
-        // 添加表名映射逻辑
+        // Add table name mapping logic
         String mappingRoute = sink.get(FlinkCDCConfig.TABLE_MAPPING_ROUTES);
         if (mappingRoute != null) {
             Map<String, String> mappingRules = parseMappingRoute(mappingRoute);
@@ -519,7 +519,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         tableName = sink.getOrDefault(FlinkCDCConfig.TABLE_PREFIX, "")
                 + tableName
                 + sink.getOrDefault(FlinkCDCConfig.TABLE_SUFFIX, "");
-        // table.lower 和 table.upper 不能同时为 true
+        // table.lower and table.upper can not be true at the same time
         if (Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_LOWER))
                 && Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_UPPER))) {
             throw new IllegalArgumentException("table.lower and table.upper can not be true at the same time");
@@ -532,7 +532,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         if (Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_LOWER))) {
             tableName = tableName.toLowerCase();
         }
-        // 通过 sink.table.replace.pattern 和 table.replace.with 实现正则表达式来替换表名
+        // Implement regular expressions to replace table names through sink.table.replace.pattern and table.replace.with
         String replacePattern = sink.get(FlinkCDCConfig.TABLE_REPLACE_PATTERN);
         String replaceWith = sink.get(FlinkCDCConfig.TABLE_REPLACE_WITH);
         if (replacePattern != null && replaceWith != null) {
@@ -541,7 +541,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             tableName = matcher.replaceAll(replaceWith);
         }
 
-        // 兜底 add schema
+        // add schema
         if (Boolean.parseBoolean(sink.get("table.prefix.schema"))) {
             tableName = table.getSchema() + "_" + tableName;
         }
@@ -550,7 +550,12 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     /**
-     * 映射表名 原表名:目标表名 ，多个表名之间通过 映射方式实现
+     * Mapping table name Original table name: target table name, multiple table names are implemented through mapping
+     * <pre>
+     *   k is original table name, v is target table name
+     *   Single table name mapping via k:v format
+     *   Multiple table names are mapped in k:v,k:v format. Note: use commas to separate them.
+     * </pre>
      *
      * @param mappingRoute sink.table.mapping-route
      * @return Map<String, String> key is original table name, value is target table name
