@@ -40,8 +40,8 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  'sink.password' = '123456',
  'sink.sink.db' = 'test',
  -- 正则匹配表名，进行替换
- 'sink.table.replace.pattern' = 't_(.*?)_',
- 'sink.table.replace.with' = 'ods_$1_',
+ 'sink.table.replace.pattern' = 't_(.*?)',
+ 'sink.table.replace.with' = 'ods_$1',
  'sink.table.lower' = 'true',
  'sink.table-name' = '#{tableName}',
  'sink.driver' = 'com.mysql.jdbc.Driver',
@@ -112,8 +112,8 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  -- 映射表名 原表 t_example_a 替换成 test_example_a ，多张表通过逗号分割
  'sink.table.mapping-routes' = 't_example_a:test_example_a,example_b:t_example_b',
  -- 正则匹配表名，进行替换
- 'sink.table.replace.pattern' = 't_(.*?)_', -- replace t_example_b -> ods_example_b , test_example_a 则不会变成 ods_example_a ，因为 table.mapping-routes 优先级较高
- 'sink.table.replace.with' = 'ods_$1_',
+ 'sink.table.replace.pattern' = 't_(.*?)', -- replace t_example_b -> ods_example_b , test_example_a 则不会变成 ods_example_a ，因为 table.mapping-routes 优先级较高
+ 'sink.table.replace.with' = 'ods_$1',
  'sink.table.lower' = 'true',
  'sink.table-name' = '#{tableName}',
  'sink.driver' = 'com.mysql.jdbc.Driver',
