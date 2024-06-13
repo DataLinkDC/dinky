@@ -28,7 +28,6 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  'connector' = 'mysql-cdc',
  'hostname' = '127.0.0.1',
  'port' = '3306',
- 'username' = 'root',
  'password' = '123456',
  'checkpoint' = '3000',
  'scan.startup.mode' = 'initial',
@@ -38,6 +37,7 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  'sink.url' = 'jdbc:mysql://127.0.0.1:3306/test?characterEncoding=utf-8&useSSL=false',
  'sink.username' = 'root',
  'sink.password' = '123456',
+ 'username' = 'root',
  'sink.sink.db' = 'test',
  -- 正则匹配表名，进行替换
  'sink.table.replace.pattern' = 't_(.*?)',
@@ -47,25 +47,12 @@ EXECUTE CDCSOURCE cdc_mysql WITH (
  'sink.driver' = 'com.mysql.jdbc.Driver',
  'sink.sink.buffer-flush.interval' = '2s',
  'sink.sink.buffer-flush.max-rows' = '100',
- 'sink.sink.max-retries' = '5',
+ 'sink.sink.max-retries' = '5',.
  'sink.auto.create' = 'true'
 )
 ```
 
-## 示例二：使用  `sink.table.mapping-routes` 进行表名和目标表名进行映射替换 
-
-> 使用 `sink.table.mapping-routes` 进行表名和目标表名进行映射替换。
-
-**注意：原表和目标表名格式,`k1:v1,k2:v2` 键值对，多张表通过逗号分割。**
-
-
-```sql showLineNumbers
-EXECUTE CDCSOURCE cdc_mysql WITH (
- 'connector' = 'mysql-cdc',
- 'hostname' = '127.0.0.1',
- 'port' = '3306',
- 'username' = 'root',
- 'password' = '123456',
+## 示例二：使用  `sink.table.mapping-routes` 进行表名和目标表名进行映射替换   'password' = '123456',
  'checkpoint' = '3000',
  'scan.startup.mode' = 'initial',
  'parallelism' = '1',
