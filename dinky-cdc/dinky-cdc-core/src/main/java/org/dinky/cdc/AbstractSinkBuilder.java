@@ -532,7 +532,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         if (Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_LOWER))) {
             tableName = tableName.toLowerCase();
         }
-        // Implement regular expressions to replace table names through sink.table.replace.pattern and table.replace.with
+        // Implement regular expressions to replace table names through
+        // sink.table.replace.pattern and table.replace.with
         String replacePattern = sink.get(FlinkCDCConfig.TABLE_REPLACE_PATTERN);
         String replaceWith = sink.get(FlinkCDCConfig.TABLE_REPLACE_WITH);
         if (replacePattern != null && replaceWith != null) {
