@@ -25,6 +25,7 @@ ALTER TABLE dinky_task DROP COLUMN `first_level_owner`;
 ALTER TABLE dinky_task DROP COLUMN `second_level_owners`;
 
 ALTER TABLE dinky_history CHANGE COLUMN `statement` `statement` longtext DEFAULT NULL COMMENT 'statement set';
+ALTER TABLE dinky_history CHANGE COLUMN `result` `result` text DEFAULT NULL COMMENT 'result set';
 ALTER TABLE dinky_task CHANGE COLUMN `statement` `statement` longtext DEFAULT NULL COMMENT 'sql statement';
 ALTER TABLE dinky_task_version CHANGE COLUMN `statement` `statement` longtext DEFAULT NULL COMMENT 'flink sql statement';
 

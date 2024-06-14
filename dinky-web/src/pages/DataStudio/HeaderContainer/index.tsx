@@ -271,10 +271,16 @@ const HeaderContainer = (props: connect) => {
     // Common sql task is synchronized, so it needs to automatically update the status to finished.
     if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;
-      if (currentTab) currentTab.console.results = res.data.results;
+      if (currentTab) {
+        currentTab.console.results = res.data.results;
+        currentTab.console.refreshResults = res.data.results;
+      }
     } else {
       currentData.status = res.data.status;
-      if (currentTab) currentTab.console.result = res.data.result;
+      if (currentTab) {
+        currentTab.console.result = res.data.result;
+        currentTab.console.refreshResult = res.data.result;
+      }
     }
     saveTabs({ ...props.tabs });
   };
@@ -303,7 +309,10 @@ const HeaderContainer = (props: connect) => {
     if (isSql(currentData.dialect)) {
       currentData.status = JOB_STATUS.FINISHED;
     }
-    if (currentTab) currentTab.console.result = res.data.result;
+    if (currentTab) {
+      currentTab.console.result = res.data.result;
+      currentTab.console.refreshResult = res.data.result;
+    }
     if (isSql(currentData.dialect)) {
       updateSelectBottomKey(LeftBottomKey.RESULT_KEY);
     }
