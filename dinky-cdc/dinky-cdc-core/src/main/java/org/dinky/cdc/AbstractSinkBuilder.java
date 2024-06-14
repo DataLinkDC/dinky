@@ -553,8 +553,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     /**
      * Mapping table name Original table name: target table name, multiple table names are implemented through mapping
      * <pre>
-     *   k is original table name, v is target table name
-     *   Single table name mapping via k:v format
+     *   k is original table name, v is target table name.
+     *   Single table name mapping via k:v format.
      *   Multiple table names are mapped in k:v,k:v format. Note: use commas to separate them.
      * </pre>
      *
