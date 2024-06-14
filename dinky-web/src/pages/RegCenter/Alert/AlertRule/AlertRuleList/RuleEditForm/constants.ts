@@ -22,6 +22,7 @@ import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
 import { CheckboxOptionType } from 'antd/es/checkbox/Group';
 import { DefaultOptionType } from 'antd/es/select';
+import {RUN_MODE} from "@/services/constants";
 
 export enum RuleType {
   SYSTEM = 'SYSTEM',
@@ -40,19 +41,19 @@ export const TriggerType: CheckboxOptionType[] = [
 ];
 
 export const AllRuleOperator: DefaultOptionType[] = [
-  { label: '>', value: 'GT' },
-  { label: '<', value: 'LT' },
-  { label: '=', value: 'EQ' },
-  { label: '!=', value: 'NE' },
-  { label: '>=', value: 'GE' },
-  { label: '<=', value: 'LE' }
+  { label: '>', value: 'GT' , key: 'GT'},
+  { label: '<', value: 'LT' , key: 'LT' },
+  { label: '=', value: 'EQ' , key: 'EQ' },
+  { label: '!=', value: 'NE' , key: 'NE' },
+  { label: '>=', value: 'GE' , key: 'GE' },
+  { label: '<=', value: 'LE' , key: 'LE'}
 ];
 
-export const EqRuleOperator: DefaultOptionType[] = [{ label: '=', value: 'EQ' }];
+export const EqRuleOperator: DefaultOptionType[] = [{ label: '=', value: 'EQ' , key: 'EQ' }];
 
 export const BOOLEAN_VALUE_ENUM: DefaultOptionType[] = [
-  { label: 'True', value: 'true' },
-  { label: 'False', value: 'false' }
+  { label: 'True', value: 'true' , key: 'true' },
+  { label: 'False', value: 'false' , key: 'false'  }
 ];
 
 export const AlertRules: any = {
@@ -77,7 +78,7 @@ export const AlertRules: any = {
   clusterType: {
     label: l('sys.alert.rule.label.jobType'),
     valueType: OperatorType.OPTIONS_SEL,
-    valueEnum: Object.values(ClusterType).map((t) => `'${t}'`)
+    valueEnum: Object.values(RUN_MODE).map((t) => `'${t}'`)
   },
   checkpointCostTime: {
     label: l('sys.alert.rule.label.checkpointTime'),
