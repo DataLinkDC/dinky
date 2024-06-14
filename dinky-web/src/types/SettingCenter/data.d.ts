@@ -65,7 +65,7 @@ export type AlertRuleCondition = {
   ruleOperator: string;
   ruleValue: string;
   rulePriority?: number;
-}
+};
 
 // ============================  System Settings ============================
 export type Settings = {
