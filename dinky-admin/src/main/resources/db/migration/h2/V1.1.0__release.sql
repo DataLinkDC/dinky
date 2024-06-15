@@ -39,6 +39,8 @@ update dinky_task set first_level_owner = creator;
 
 ALTER TABLE dinky_history ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;
 
+ALTER TABLE dinky_history ALTER COLUMN result SET DATA TYPE LONGVARCHAR ;
+
 ALTER TABLE dinky_task ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;
 
 ALTER TABLE dinky_task_version ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;

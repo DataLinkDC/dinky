@@ -34,7 +34,7 @@ export const AlertRulesOption = () => {
       // @ts-ignore
       label: v.label,
       value: k,
-      key: k,
+      key: k
     });
   }
   return res;
@@ -77,7 +77,7 @@ export const buildValueItem = (key: string, isSystem: boolean) => {
             disabled={isSystem}
             fieldProps={{
               defaultActiveFirstOption: true,
-              showSearch: true,
+              showSearch: true
             }}
             name='ruleValue'
             mode={'single'}

@@ -474,6 +474,7 @@ export default {
   'pages.datastudio.label.jobInfo.firstLevelOwner': '责任人',
   'pages.datastudio.label.jobInfo.secondLevelOwners': '维护人',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
+  'pages.datastudio.label.result.query.latest.data.truncate': '数据过长无法全部显示',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',
   'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间',

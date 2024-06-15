@@ -15,7 +15,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS add_column_if_not_exists$$
-CREATE PROCEDURE if not exists add_column_if_not_exists(IN tableName VARCHAR(64), IN columnName VARCHAR(64), IN columnDefinitionType VARCHAR(64), IN columnDefinitionDefaultValue VARCHAR(128), IN columnDefinitionComment VARCHAR(255), in afterColumnName VARCHAR(64))
+CREATE PROCEDURE add_column_if_not_exists(IN tableName VARCHAR(64), IN columnName VARCHAR(64), IN columnDefinitionType VARCHAR(64), IN columnDefinitionDefaultValue VARCHAR(128), IN columnDefinitionComment VARCHAR(255), in afterColumnName VARCHAR(64))
 BEGIN
     IF NOT EXISTS (
         SELECT *
@@ -95,6 +95,8 @@ ALTER TABLE dinky_alert_template MODIFY COLUMN `name` varchar(20) CHARACTER SET 
 
 
 ALTER TABLE dinky_history CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'statement set';
+
+ALTER TABLE dinky_history CHANGE COLUMN `result` `result` mediumtext DEFAULT NULL COMMENT 'result set';
 
 ALTER TABLE dinky_task CHANGE COLUMN `statement` `statement` mediumtext DEFAULT NULL COMMENT 'sql statement';
 

@@ -1184,7 +1184,7 @@ CREATE TABLE `dinky_history`  (
                                 `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'job type',
                                 `statement` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'statement set',
                                 `error` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'error message',
-                                `result` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'result set',
+                                `result` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'result set',
                                 `config_json` json NULL COMMENT 'config json',
                                 `start_time` datetime(0) NULL DEFAULT NULL COMMENT 'job start time',
                                 `end_time` datetime(0) NULL DEFAULT NULL COMMENT 'job end time',
