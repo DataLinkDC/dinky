@@ -295,14 +295,14 @@ export default [
     name: 'dashboard',
     icon: 'DashboardOutlined',
     footerRender: false,
-    component: './Dashboard',
+    component: './Dashboard'
   },
   {
     path: '/dashboard/dashboard-layout/:layoutId',
     name: 'dashboard-layout',
     hideInMenu: true,
     footerRender: false,
-    component: './Dashboard/DashboardLayout',
+    component: './Dashboard/DashboardLayout'
   },
   // {
   //   path: '/about',

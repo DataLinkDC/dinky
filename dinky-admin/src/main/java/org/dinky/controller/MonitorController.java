@@ -19,22 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.lang.Tuple;
-import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.json.JSONObject;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.MetricsLayoutDTO;
@@ -47,6 +31,15 @@ import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,13 +50,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.lang.Tuple;
+import cn.hutool.extra.spring.SpringUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -79,8 +81,8 @@ public class MonitorController {
     @GetMapping("/getSysData")
     @ApiOperation("Get System Data")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
-            @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long")
+        @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
+        @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long")
     })
     public Result<List<MetricsVO>> getData(@RequestParam Long startTime, Long endTime) {
         List<MetricsVO> data = monitorService.getData(
@@ -93,9 +95,9 @@ public class MonitorController {
     @GetMapping("/getFlinkData")
     @ApiOperation("Get Flink Data")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
-            @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long"),
-            @ApiImplicitParam(name = "taskIds", value = "Task Ids", required = true, dataType = "String")
+        @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
+        @ApiImplicitParam(name = "endTime", value = "End Time", required = false, dataType = "Long"),
+        @ApiImplicitParam(name = "taskIds", value = "Task Ids", required = true, dataType = "String")
     })
     public Result<List<MetricsVO>> getFlinkData(@RequestParam Long startTime, Long endTime, String flinkJobIds) {
         return Result.succeed(monitorService.getData(
@@ -107,25 +109,31 @@ public class MonitorController {
     @GetMapping("/getFlinkDataByDashboard")
     @ApiOperation("Get Flink Data")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
-            @ApiImplicitParam(name = "endTime", value = "End Time", dataType = "Long"),
-            @ApiImplicitParam(name = "flinkMetricsIdList", value = "Task Ids", required = true, dataType = "String")
+        @ApiImplicitParam(name = "startTime", value = "Start Time", required = true, dataType = "Long"),
+        @ApiImplicitParam(name = "endTime", value = "End Time", dataType = "Long"),
+        @ApiImplicitParam(name = "flinkMetricsIdList", value = "Task Ids", required = true, dataType = "String")
     })
-    public Result<Map<Integer, List<Dict>>> getFlinkDataByDashboard(@RequestParam Long startTime, Long endTime, String flinkMetricsIdList) {
+    public Result<Map<Integer, List<Dict>>> getFlinkDataByDashboard(
+            @RequestParam Long startTime, Long endTime, String flinkMetricsIdList) {
         Map<Integer, String> cacheMap = new HashMap<>();
         List<Metrics> metrics = monitorService.listByIds(Arrays.asList(flinkMetricsIdList.split(",")));
         metrics.forEach(x -> {
-            String jid = cacheMap.computeIfAbsent(x.getTaskId(), k -> SpringUtil.getBean(JobInstanceService.class).getJobInstanceByTaskId(42).getJid());
+            String jid = cacheMap.computeIfAbsent(x.getTaskId(), k -> SpringUtil.getBean(JobInstanceService.class)
+                    .getJobInstanceByTaskId(42)
+                    .getJid());
             x.setJobId(jid);
         });
 
-        List<String> flinkJobIdList = metrics.stream().map(Metrics::getJobId).distinct().collect(Collectors.toList());
+        List<String> flinkJobIdList =
+                metrics.stream().map(Metrics::getJobId).distinct().collect(Collectors.toList());
 
         Map<String, Map<String, List<Tuple>>> map = metrics.stream()
-                .collect(Collectors.groupingBy(Metrics::getJobId,
-                        Collectors.toMap(Metrics::getVertices, x -> Collections.singletonList(new Tuple(x.getMetrics(), x.getId()))
-                                , CollUtil::unionAll
-                        )));
+                .collect(Collectors.groupingBy(
+                        Metrics::getJobId,
+                        Collectors.toMap(
+                                Metrics::getVertices,
+                                x -> Collections.singletonList(new Tuple(x.getMetrics(), x.getId())),
+                                CollUtil::unionAll)));
 
         Map<Integer, List<Dict>> resultData = new HashMap<>();
         List<MetricsVO> data = monitorService.getData(
@@ -140,8 +148,7 @@ public class MonitorController {
                 for (Tuple tuple : tupleList) {
                     String metricsName = tuple.get(0);
                     String d = jsonObject.get(metricsName).asText();
-                    Dict dict = Dict.create().set("time", x.getHeartTime())
-                            .set("value", d);
+                    Dict dict = Dict.create().set("time", x.getHeartTime()).set("value", d);
                     Integer id = tuple.get(1);
                     resultData.computeIfAbsent(id, k -> new ArrayList<>()).add(dict);
                 }
@@ -155,12 +162,12 @@ public class MonitorController {
     @ApiOperation("Save Flink Metrics")
     @Log(title = "Save Flink Metrics", businessType = BusinessType.INSERT)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "layout", value = "Layout Name", required = true, dataType = "String"),
-            @ApiImplicitParam(
-                    name = "metricsList",
-                    value = "Metrics List",
-                    required = true,
-                    dataType = "List<MetricsLayoutDTO>")
+        @ApiImplicitParam(name = "layout", value = "Layout Name", required = true, dataType = "String"),
+        @ApiImplicitParam(
+                name = "metricsList",
+                value = "Metrics List",
+                required = true,
+                dataType = "List<MetricsLayoutDTO>")
     })
     public Result<Void> saveFlinkMetricLayout(
             @PathVariable(value = "layout") String layoutName, @RequestBody List<MetricsLayoutDTO> metricsList) {
@@ -180,29 +187,31 @@ public class MonitorController {
     @ApiOperation("Get Metrics Layout to Display By Cascader")
     public Result<List<CascaderVO>> getMetricsLayoutByCascader() {
         List<MetricsLayoutVo> metricsLayout = monitorService.getMetricsLayout();
-        List<CascaderVO> voList = metricsLayout.stream().map(x -> {
-            CascaderVO cascaderVO = new CascaderVO();
-            cascaderVO.setLabel(x.getLayoutName());
-            cascaderVO.setValue(x.getLayoutName());
-            cascaderVO.setChildren(new ArrayList<>());
+        List<CascaderVO> voList = metricsLayout.stream()
+                .map(x -> {
+                    CascaderVO cascaderVO = new CascaderVO();
+                    cascaderVO.setLabel(x.getLayoutName());
+                    cascaderVO.setValue(x.getLayoutName());
+                    cascaderVO.setChildren(new ArrayList<>());
 
-            List<List<Metrics>> vertices = CollUtil.groupByField(x.getMetrics(), "vertices");
-            vertices.forEach(y -> {
-                CascaderVO cascader1 = new CascaderVO();
-                cascader1.setLabel(y.get(0).getVertices());
-                cascader1.setValue(y.get(0).getVertices());
-                cascader1.setChildren(new ArrayList<>());
+                    List<List<Metrics>> vertices = CollUtil.groupByField(x.getMetrics(), "vertices");
+                    vertices.forEach(y -> {
+                        CascaderVO cascader1 = new CascaderVO();
+                        cascader1.setLabel(y.get(0).getVertices());
+                        cascader1.setValue(y.get(0).getVertices());
+                        cascader1.setChildren(new ArrayList<>());
 
-                cascaderVO.getChildren().add(cascader1);
-                y.forEach(z -> {
-                    CascaderVO cascader2 = new CascaderVO();
-                    cascader2.setLabel(z.getMetrics());
-                    cascader2.setValue(z.getId().toString());
-                    cascader1.getChildren().add(cascader2);
-                });
-            });
-            return cascaderVO;
-        }).collect(Collectors.toList());
+                        cascaderVO.getChildren().add(cascader1);
+                        y.forEach(z -> {
+                            CascaderVO cascader2 = new CascaderVO();
+                            cascader2.setLabel(z.getMetrics());
+                            cascader2.setValue(z.getId().toString());
+                            cascader1.getChildren().add(cascader2);
+                        });
+                    });
+                    return cascaderVO;
+                })
+                .collect(Collectors.toList());
         return Result.succeed(voList);
     }
 

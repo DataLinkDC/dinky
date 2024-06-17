@@ -85,9 +85,10 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             int heartTime = p.indexOf("heart_time");
             Predicate greaterOrEqual = p.greaterOrEqual(heartTime, startTS);
             Predicate lessOrEqual = p.lessOrEqual(heartTime, endTS);
-            Predicate local =
-                    p.in(p.indexOf("model"), models.stream().map(BinaryString::fromString).collect(Collectors.toList()));
-            return CollUtil.newArrayList(PredicateBuilder.and(local,greaterOrEqual, lessOrEqual));
+            Predicate local = p.in(
+                    p.indexOf("model"),
+                    models.stream().map(BinaryString::fromString).collect(Collectors.toList()));
+            return CollUtil.newArrayList(PredicateBuilder.and(local, greaterOrEqual, lessOrEqual));
         };
         List<MetricsVO> metricsVOList =
                 PaimonUtil.batchReadTable(PaimonTableConstant.DINKY_METRICS, MetricsVO.class, filter);
