@@ -501,6 +501,8 @@ export default {
   'pages.datastudio.label.jobInfo.firstLevelOwner': 'Owner',
   'pages.datastudio.label.jobInfo.secondLevelOwners': 'Maintainer',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
+  'pages.datastudio.label.result.query.latest.data.truncate':
+    'The data is too long to be displayed in full',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',
   'pages.datastudio.label.version.leftTitle': 'Version number',

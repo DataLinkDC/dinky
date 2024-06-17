@@ -451,7 +451,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             isSuccess = true;
         } catch (Exception e) {
-            log.warn("Stop with savcePoint failed: {}, will try normal rest api stop", e.getMessage());
+            log.warn("Stop with savePoint failed: {}, will try normal rest api stop", e.getMessage());
             isSuccess = jobManager.cancelNormal(jobInstance.getJid());
         }
         jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);

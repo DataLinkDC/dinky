@@ -23,6 +23,7 @@ import { FireOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { Tag } from 'antd';
 import React from 'react';
+import Result from '@/pages/DataStudio/BottomContainer/Result';
 
 type PreViewDataProps = {
   row: JobExecutionHistory | undefined;
@@ -40,8 +41,7 @@ export const PreViewData: React.FC<PreViewDataProps> = (props) => {
           </Tag>
         </ProDescriptions.Item>
         <ProDescriptions.Item span={2}>
-          {/*todo: 预览数据组件*/}
-          {/*<StudioPreview result={result} style={{width: '100%'}}/>*/}
+          <Result historyExecId={row?.id} initIsRefresh={true} />
         </ProDescriptions.Item>
       </ProDescriptions>
     </>
