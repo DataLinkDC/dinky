@@ -19,8 +19,6 @@
 
 package org.dinky.data.model;
 
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -31,51 +29,28 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 /** @TableName dinky_metrics */
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "dinky_metrics")
+@TableName(value = "dinky_dashboard")
 @Data
-@ApiModel(value = "Metrics", description = "Metrics Information")
-public class Metrics extends Model<Metrics> {
+@ApiModel(value = "Dashboard", description = "Dashboard Information")
+public class Dashboard extends Model<Dashboard> {
 
     @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the metrics")
     private Integer id;
 
-    @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "1001", notes = "ID of the associated task")
-    private Integer taskId;
-
-    @ApiModelProperty(value = "Vertices", dataType = "String", notes = "Vertices information")
-    private String vertices;
-
-    @ApiModelProperty(value = "Vertices Title", dataType = "String", notes = "Vertices information")
-    private String verticesTitle;
-
-
-    @ApiModelProperty(value = "Metrics Data", dataType = "String", notes = "Metrics data")
-    private String metrics;
-
-
-    @ApiModelProperty(value = "Position", dataType = "Integer", example = "1", notes = "Position of the metrics")
-    private Integer position;
-
-    @ApiModelProperty(value = "Show Type", dataType = "String", notes = "Type of display for the metrics")
-    private String showType;
-
-    @ApiModelProperty(value = "Show Size", dataType = "String", notes = "Size of display for the metrics")
-    private String showSize;
-
-    @ApiModelProperty(value = "Title", dataType = "String", notes = "Title for the metrics")
-    private String title;
-
-    @ApiModelProperty(value = "Layout Name", dataType = "String", notes = "Name of the layout")
-    private String layoutName;
+    private String name;
+    private String remark;
+    private String chartTheme;
+    private String layouts;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -94,11 +69,4 @@ public class Metrics extends Model<Metrics> {
             dataType = "String",
             notes = "Timestamp indicating the last update time of the metrics")
     private LocalDateTime updateTime;
-
-    @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
-
-    @ApiModelProperty(value = "Job ID", dataType = "String", notes = "ID of the associated job")
-    @TableField(exist = false)
-    private String jobId;
 }

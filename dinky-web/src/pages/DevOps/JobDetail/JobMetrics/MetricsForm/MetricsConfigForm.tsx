@@ -46,6 +46,7 @@ const MetricsConfigForm = (props: MetricsConfigFormProps) => {
         [vertice.id]: keys.map((key) => ({
           taskId: jobDetail.instance.taskId,
           vertices: vertice.id,
+          verticesTitle: vertice.name,
           metrics: key,
           title: vertice.name,
           showType: 'Chart',

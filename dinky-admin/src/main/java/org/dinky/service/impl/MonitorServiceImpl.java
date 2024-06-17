@@ -82,15 +82,17 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         }
 
         Function<PredicateBuilder, List<Predicate>> filter = p -> {
-            Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
-            Predicate lessOrEqual = p.lessOrEqual(0, endTS);
+            int heartTime = p.indexOf("heart_time");
+            Predicate greaterOrEqual = p.greaterOrEqual(heartTime, startTS);
+            Predicate lessOrEqual = p.lessOrEqual(heartTime, endTS);
             Predicate local =
-                    p.in(1, models.stream().map(BinaryString::fromString).collect(Collectors.toList()));
-            return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
+                    p.in(p.indexOf("model"), models.stream().map(BinaryString::fromString).collect(Collectors.toList()));
+            return CollUtil.newArrayList(PredicateBuilder.and(local,greaterOrEqual, lessOrEqual));
         };
         List<MetricsVO> metricsVOList =
                 PaimonUtil.batchReadTable(PaimonTableConstant.DINKY_METRICS, MetricsVO.class, filter);
         return metricsVOList.stream()
+                // todo 这里再次过滤，是因为paimon查询的bug问题导致
                 .filter(x -> x.getHeartTime().isAfter(startTS.toLocalDateTime()))
                 .filter(x -> x.getHeartTime().isBefore(endTS.toLocalDateTime()))
                 .peek(vo -> vo.setContent(JsonUtils.parseObject(vo.getContent().toString())))

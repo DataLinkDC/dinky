@@ -290,6 +290,20 @@ export default [
     footerRender: false,
     component: './Metrics'
   },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    icon: 'DashboardOutlined',
+    footerRender: false,
+    component: './Dashboard',
+  },
+  {
+    path: '/dashboard/dashboard-layout/:layoutId',
+    name: 'dashboard-layout',
+    hideInMenu: true,
+    footerRender: false,
+    component: './Dashboard/DashboardLayout',
+  },
   // {
   //   path: '/about',
   //   name: 'about',

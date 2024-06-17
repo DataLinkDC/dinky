@@ -106,4 +106,19 @@ ALTER TABLE dinky_resources CHANGE COLUMN `file_name` `file_name` text DEFAULT N
 
 CALL add_column_if_not_exists('dinky_udf_manage', 'language', 'varchar(10)', 'NULL', 'udf language' , 'class_name');
 
+-- update dashboard
+ALTER TABLE `dinky_metrics` ADD COLUMN `vertices_title` varchar(255) NULL COMMENT 'vertices title' AFTER `vertices`;
+
+CREATE TABLE `dinky_dashboard` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT,
+                                   `name` varchar(255) DEFAULT NULL,
+                                   `remark` text,
+                                   `chart_theme` varchar(255) DEFAULT NULL,
+                                   `layouts` longtext,
+                                   `create_time` datetime DEFAULT NULL,
+                                   `update_time` datetime DEFAULT NULL,
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
 SET FOREIGN_KEY_CHECKS = 1;

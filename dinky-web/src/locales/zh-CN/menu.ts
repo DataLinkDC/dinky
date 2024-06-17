@@ -85,6 +85,7 @@ export default {
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
   'menu.metrics': '监控',
+  'menu.dashboard': '看板',
   'menu.about': '关于',
   'menu.version': '版本：{version}',
 
