@@ -48,6 +48,7 @@ import {
 } from '@/pages/Dashboard/data';
 import { getData } from '@/services/api';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
+import ChartShow from "@/pages/Dashboard/DashboardLayout/ChartShow";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -255,46 +256,15 @@ export default (props: DashboardProps) => {
                 </Flex>
               ]}
             >
-              {chartDatum[0]?.type !== 'Statistic' && (
-                <ReactECharts
-                  option={chartOptions}
-                  notMerge={true}
-                  lazyUpdate={true}
-                  theme={chartTheme}
-                  style={{ height: '100%', width: '100%', zIndex: 99 }}
-                />
-              )}
-              {chartDatum[0]?.type === 'Statistic' && (
-                <Flex
-                  justify={'center'}
-                  align={'center'}
-                  style={{ width: 'inherit', height: 'inherit' }}
-                >
-                  <Statistic
-                    value={chartDatum[0].data?.slice(-1)[0]?.value}
-                    valueStyle={{ fontSize: (l.h * config.rowHeight) / 4 - 10 }}
-                  />
-                </Flex>
+              {(
+                <ChartShow  chartTheme={chartTheme} chartOptions={chartOptions}
+                            value={chartDatum[0].data?.slice(-1)[0]?.value} type={chartDatum[0]?.type} fontSize={(l.h * config.rowHeight) / 4}/>
               )}
             </ProCard>
           )}
-          {(!isUpdate || !isShowEditCard) && chartDatum[0]?.type !== 'Statistic' && (
-            <ReactECharts
-              option={chartOptions}
-              notMerge={true}
-              lazyUpdate={true}
-              theme={chartTheme}
-              style={{ height: '100%', width: '100%', zIndex: 99 }}
-            />
-          )}
-          {(!isUpdate || !isShowEditCard) && chartDatum[0]?.type === 'Statistic' && (
-            <Flex justify={'center'} align={'center'} style={{ width: 'inherit' }}>
-              <Statistic
-                title={title}
-                value={chartDatum[0].data?.slice(-1)[0]?.value}
-                valueStyle={{ fontSize: (l.h * config.rowHeight) / 4 }}
-              />
-            </Flex>
+          {(
+            <ChartShow show={!isUpdate || !isShowEditCard} chartTheme={chartTheme} chartOptions={chartOptions}
+             title={title} value={chartDatum[0].data?.slice(-1)[0]?.value} type={chartDatum[0]?.type} fontSize={(l.h * config.rowHeight) / 4}/>
           )}
         </div>
       );

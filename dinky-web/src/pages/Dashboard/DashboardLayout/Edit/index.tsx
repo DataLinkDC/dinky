@@ -17,27 +17,17 @@
  *
  */
 
-import { CascaderProps, Modal } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
-import { DefaultOptionType } from 'antd/es/select';
-import { Option } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import {CascaderProps, Modal} from 'antd';
+import React, {useEffect, useRef, useState} from 'react';
+import {DefaultOptionType} from 'antd/es/select';
+import {Option} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import useHookRequest from '@/hooks/useHookRequest';
-import { getMetricsLayoutByCascader } from '@/pages/Dashboard/service';
-import { ProFormCascader } from '@ant-design/pro-form/lib';
-import {
-  ProForm,
-  ProFormInstance,
-  ProFormSegmented,
-  ProFormText
-} from '@ant-design/pro-components';
-import { EchartsOptions, getRandomData, LayoutChartData, Options } from '@/pages/Dashboard/data';
-import {
-  AreaChartOutlined,
-  BarChartOutlined,
-  FieldNumberOutlined,
-  LineChartOutlined
-} from '@ant-design/icons';
-import ReactECharts from 'echarts-for-react';
+import {getMetricsLayoutByCascader} from '@/pages/Dashboard/service';
+import {ProFormCascader} from '@ant-design/pro-form/lib';
+import {ProForm, ProFormInstance, ProFormSegmented, ProFormText} from '@ant-design/pro-components';
+import {EchartsOptions, getRandomData, LayoutChartData, Options} from '@/pages/Dashboard/data';
+import {AreaChartOutlined, BarChartOutlined, FieldNumberOutlined, LineChartOutlined} from '@ant-design/icons';
+import ChartShow from "@/pages/Dashboard/DashboardLayout/ChartShow";
 
 interface EditProps {
   open: boolean;
@@ -52,13 +42,13 @@ interface EditProps {
 }
 
 export default (props: EditProps) => {
-  const { open = true, chartTheme = 'dark', defaultValue } = props;
+  const {open = true, chartTheme = 'dark', defaultValue} = props;
 
   const filter = (inputValue: string, path: DefaultOptionType[]) =>
     path.some(
       (option) => (option.label as string).toLowerCase().indexOf(inputValue.toLowerCase()) > -1
     );
-  const { data, refresh, loading } = useHookRequest<any, any>(getMetricsLayoutByCascader, {
+  const {data, refresh, loading} = useHookRequest<any, any>(getMetricsLayoutByCascader, {
     defaultParams: []
   });
 
@@ -71,7 +61,14 @@ export default (props: EditProps) => {
 
   useEffect(() => {
     setTitle(defaultValue?.title || '');
-    setSelectOptions(defaultValue?.layouts || []);
+
+    setSelectOptions(defaultValue?.layouts
+      .map((x) => {
+        return {
+          ...x,
+          data: getRandomData(5)
+        };
+      }) || []);
     form?.current?.setFieldsValue({
       title: defaultValue?.title || '',
       layouts: defaultValue?.layouts?.map((x) => getAllPath(data, x.id)) || []
@@ -79,18 +76,18 @@ export default (props: EditProps) => {
   }, [defaultValue]);
 
   const options = [
-    { label: '', value: 'Line', icon: <LineChartOutlined /> },
-    { label: '', value: 'Area', icon: <AreaChartOutlined /> },
-    { label: '', value: 'Bar', icon: <BarChartOutlined /> }
+    {label: '', value: 'Line', icon: <LineChartOutlined/>},
+    {label: '', value: 'Area', icon: <AreaChartOutlined/>},
+    {label: '', value: 'Bar', icon: <BarChartOutlined/>}
   ];
   if (selectOptions.length < 2) {
-    options.push({ label: '', value: 'Statistic', icon: <FieldNumberOutlined /> });
+    options.push({label: '', value: 'Statistic', icon: <FieldNumberOutlined/>});
   }
 
   const onChange: CascaderProps<Option>['onChange'] = (value, selectedOptions) => {
-    // @ts-ignore
     setSelectOptions(
       selectedOptions
+        // @ts-ignore
         .filter((x) => x.length === 3)
         .map((x) => {
           // @ts-ignore
@@ -115,7 +112,7 @@ export default (props: EditProps) => {
           await props.onOk({
             title: title,
             layouts: selectOptions.map((x) => {
-              return { type: x.type, name: x.name, id: x.id };
+              return {type: x.type, name: x.name, id: x.id};
             })
           })
         }
@@ -142,7 +139,7 @@ export default (props: EditProps) => {
             name={'layouts'}
             onChange={onChange}
             placeholder='Please select'
-            showSearch={{ filter }}
+            showSearch={{filter}}
           />
           {selectOptions.length > 0 && (
             <>
@@ -167,13 +164,14 @@ export default (props: EditProps) => {
                 );
               })}
               <p>以下数据为随机生成，不是真实数据</p>
-              <ReactECharts
-                option={EchartsOptions(selectOptions, title)}
-                notMerge={true}
-                lazyUpdate={true}
-                theme={chartTheme}
-                style={{ height: '30vh', width: '100%', zIndex: 99 }}
-              />
+              {(
+                <div style={{height: '30vh', width: '100%'}}>
+                  <ChartShow chartTheme={chartTheme} chartOptions={EchartsOptions(selectOptions, title)}
+                             title={title} value={selectOptions[0].data?.slice(-1)[0]?.value}
+                             type={selectOptions[0]?.type}
+                             fontSize={30}/>
+                </div>
+              )}
             </>
           )}
         </ProForm>
