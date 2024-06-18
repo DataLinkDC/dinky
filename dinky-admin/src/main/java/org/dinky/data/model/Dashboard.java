@@ -49,10 +49,13 @@ public class Dashboard extends Model<Dashboard> {
 
     @ApiModelProperty(value = "Name", dataType = "String", example = "Metrics", notes = "Name of the metrics")
     private String name;
+
     @ApiModelProperty(value = "Remark", dataType = "String", example = "Metrics", notes = "Remark of the metrics")
     private String remark;
+
     @ApiModelProperty(value = "Chart Theme", dataType = "String", example = "dark", notes = "Theme of the chart")
     private String chartTheme;
+
     @ApiModelProperty(value = "Layouts", dataType = "String", example = "[]", notes = "Layouts of the metrics")
     private String layouts;
 
