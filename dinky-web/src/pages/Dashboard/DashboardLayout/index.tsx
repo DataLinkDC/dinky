@@ -49,6 +49,8 @@ import {
 import { getData } from '@/services/api';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
+import {API_CONSTANTS} from "@/services/endpoints";
+import {l} from "@/utils/intl";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -104,7 +106,7 @@ export default (props: DashboardProps) => {
   useEffect(() => {
     const d = Object.values(chartData);
     if (d.length > 0) {
-      getData('/api/monitor/getFlinkDataByDashboard', {
+      getData(API_CONSTANTS.GET_FLINK_DAT_BY_DASHBOARD, {
         startTime: new Date().getTime() - 20 * 1000,
         flinkMetricsIdList: d
           .flatMap((x) => x.chartData)
@@ -180,12 +182,12 @@ export default (props: DashboardProps) => {
       const chartOptions = EchartsOptions(chartDatum, isShowEditCard ? '' : title);
 
       const options = [
-        { label: '', value: 'Line', icon: <LineChartOutlined /> },
-        { label: '', value: 'Area', icon: <AreaChartOutlined /> },
-        { label: '', value: 'Bar', icon: <BarChartOutlined /> }
+        { label: 'Line', value: 'Line', icon: <LineChartOutlined /> },
+        { label: 'Area', value: 'Area', icon: <AreaChartOutlined /> },
+        { label: 'Bar', value: 'Bar', icon: <BarChartOutlined /> }
       ];
       if (chartDatum.length < 2) {
-        options.push({ label: '', value: 'Statistic', icon: <FieldNumberOutlined /> });
+        options.push({ label: 'Statistic', value: 'Statistic', icon: <FieldNumberOutlined /> });
       }
 
       return (
@@ -395,7 +397,7 @@ export default (props: DashboardProps) => {
       <Edit
         chartTheme={chartTheme}
         open={openChange}
-        title={editIsUpdate ? 'Update' : 'Add'}
+        title={editIsUpdate ? l('dashboard.update') : l('dashboard.add')}
         onCancel={() => setOpenChange(false)}
         onOk={onAddLayout}
         defaultValue={

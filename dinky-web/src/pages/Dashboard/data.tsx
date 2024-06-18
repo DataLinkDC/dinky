@@ -121,9 +121,3 @@ export const getRandomData = (num: number) => {
     };
   });
 };
-
-export interface Options {
-  label: string;
-  value: string;
-  children?: Options[];
-}

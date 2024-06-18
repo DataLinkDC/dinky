@@ -203,7 +203,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         List<Metrics> metrics = listByIds(Arrays.asList(flinkMetricsIdList.split(",")));
         metrics.forEach(x -> {
             String jid = cacheMap.computeIfAbsent(x.getTaskId(), k -> SpringUtil.getBean(JobInstanceService.class)
-                    .getJobInstanceByTaskId(42)
+                    .getJobInstanceByTaskId(k)
                     .getJid());
             x.setJobId(jid);
         });

@@ -33,21 +33,10 @@ import { ProFormInstance } from '@ant-design/pro-form/lib';
 import { addOrUpdate, deleteData, getDataList } from '@/pages/Dashboard/service';
 import useHookRequest from '@/hooks/useHookRequest';
 import { getMetricsLayout } from '@/pages/Metrics/service';
-
-// const dataSource = [{
-//   id: 1,
-//   name: "test",
-//   remark: "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-//   chartTheme: "roma",
-// }, {
-//   id: 2,
-//   name: "test2",
-//   remark: "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-//   chartTheme: "dark"
-// }] as DashboardData[]
+import {l} from "@/utils/intl";
 
 const echartsThemeOptions = EchartsTheme.map((x) => {
-  return { label: x, value: x };
+  return { label: l(`dashboard.theme.${x}`), value: x };
 });
 export default () => {
   const { data, refresh, loading } = useHookRequest<any, any>(getDataList, { defaultParams: [] });
@@ -69,6 +58,20 @@ export default () => {
 
   const action = useRef<ActionType>();
 
+  const handleDelete = async (id: number) => {
+    Modal.confirm({
+      title: l('dashboard.delete'),
+      content: l('dashboard.deleteConfirm'),
+      okText: l('button.delete'),
+      cancelText: l('button.cancel'),
+      async onOk() {
+        await deleteData(id);
+        await refresh();
+      }
+    })
+  }
+
+
   return (
     <>
       <ProList<any>
@@ -76,33 +79,47 @@ export default () => {
         rowKey='name'
         actionRef={action}
         dataSource={data}
+        bordered
         editable={{
           onSave: async (_, row) => {
             await addOrUpdate(row);
             await refresh();
-          }
+          },
         }}
         metas={{
           title: {
-            dataIndex: 'name'
+            dataIndex: 'name',
+            title: l('dashboard.name'),
+            key: 'title',
+            fieldProps: {
+              width: '10%',            },
+            render: (text, row) => {
+              return (
+                <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('dashboard.name')}: {text}</Link>
+              );
+            }
           },
           description: {
             dataIndex: 'remark',
-            key: 'desc'
+            title: l('dashboard.remark'),
+            key: 'desc',
+            fieldProps: {
+              width: '10%',
+            }
           },
           content: {
             dataIndex: 'chartTheme',
             valueType: 'select',
             fieldProps: {
-              showSearch: true,
+              width: '10%',              showSearch: true,
               placement: 'bottomRight',
               options: echartsThemeOptions
             },
-            render: (text) => <> charts Theme: {text}</>
+            render: (text) => <> {l('dashboard.chartTheme')}: {text}</>
           },
           actions: {
             render: (text, row) => [
-              <Link to={`/dashboard/dashboard-layout/${row.id}`}>打开</Link>,
+              <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('button.open')}</Link>,
               <a
                 href={row.html_url}
                 target='_blank'
@@ -112,18 +129,15 @@ export default () => {
                   action.current?.startEditable(row.name);
                 }}
               >
-                编辑
+                {l('button.edit')}
               </a>,
               <a
                 target='_blank'
                 rel='noopener noreferrer'
-                key='view'
-                onClick={async () => {
-                  await deleteData(row.id);
-                  await refresh();
-                }}
+                key='delete'
+                onClick={async () => handleDelete(row.id)}
               >
-                删除
+                {l('button.delete')}
               </a>
             ]
           }
@@ -137,21 +151,37 @@ export default () => {
           },
           actions: [
             <Button type='primary' key='primary' onClick={() => setOpenCreate(true)}>
-              Create new layout
+            {l('dashboard.create')}
             </Button>
           ]
         }}
       />
       <Modal
         open={openCreate}
+        width={'30%'}
         onCancel={onCloseCreate}
         onClose={onCloseCreate}
         onOk={onAddOrUpdate}
       >
         <ProForm<DashboardData> params={{}} submitter={false} formRef={formRef}>
-          <ProFormText name='name' label='名称' tooltip='最长为 24 位' placeholder='请输入名称' />
-          <ProFormTextArea name='remark' label='描述' placeholder='请输入描述' />
-          <ProFormSelect name='chartTheme' label='chart主题' options={echartsThemeOptions} />
+          <ProFormText
+            name='name'
+            label={l('dashboard.name')}
+            tooltip={l('dashboard.name.maxLength')}
+            placeholder={l('dashboard.namePlaceholder')}
+            rules={[{ required: true, message: l('dashboard.namePlaceholder') }]}
+          />
+          <ProFormTextArea
+            name='remark'
+            label={l('dashboard.remark')}
+            placeholder={l('dashboard.remarkPlaceholder')}
+          />
+          <ProFormSelect
+            name='chartTheme'
+            label={l('dashboard.chartTheme')}
+            rules={[{ required: true, message: l('dashboard.selectChartTheme') }]}
+            options={echartsThemeOptions}
+          />
         </ProForm>
       </Modal>
     </>

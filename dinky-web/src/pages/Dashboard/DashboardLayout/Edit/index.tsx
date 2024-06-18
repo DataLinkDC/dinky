@@ -20,7 +20,6 @@
 import { CascaderProps, Modal } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { DefaultOptionType } from 'antd/es/select';
-import { Option } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import useHookRequest from '@/hooks/useHookRequest';
 import { getMetricsLayoutByCascader } from '@/pages/Dashboard/service';
 import { ProFormCascader } from '@ant-design/pro-form/lib';
@@ -30,7 +29,7 @@ import {
   ProFormSegmented,
   ProFormText
 } from '@ant-design/pro-components';
-import { EchartsOptions, getRandomData, LayoutChartData, Options } from '@/pages/Dashboard/data';
+import { EchartsOptions, getRandomData, LayoutChartData } from '@/pages/Dashboard/data';
 import {
   AreaChartOutlined,
   BarChartOutlined,
@@ -38,6 +37,7 @@ import {
   LineChartOutlined
 } from '@ant-design/icons';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
+import {l} from "@/utils/intl";
 
 interface EditProps {
   open: boolean;
@@ -52,7 +52,7 @@ interface EditProps {
 }
 
 export default (props: EditProps) => {
-  const { open = true, chartTheme = 'dark', defaultValue } = props;
+  const { open = true, title: defaultTitle ,chartTheme = 'dark', defaultValue,onCancel, onOk } = props;
 
   const filter = (inputValue: string, path: DefaultOptionType[]) =>
     path.some(
@@ -87,18 +87,17 @@ export default (props: EditProps) => {
   }, [defaultValue]);
 
   const options = [
-    { label: '', value: 'Line', icon: <LineChartOutlined /> },
-    { label: '', value: 'Area', icon: <AreaChartOutlined /> },
-    { label: '', value: 'Bar', icon: <BarChartOutlined /> }
+    { label: 'Line', value: 'Line', icon: <LineChartOutlined /> },
+    { label: 'Area', value: 'Area', icon: <AreaChartOutlined /> },
+    { label: 'Bar', value: 'Bar', icon: <BarChartOutlined /> }
   ];
   if (selectOptions.length < 2) {
-    options.push({ label: '', value: 'Statistic', icon: <FieldNumberOutlined /> });
+    options.push({ label: 'Statistic', value: 'Statistic', icon: <FieldNumberOutlined /> });
   }
 
-  const onChange: CascaderProps<Option>['onChange'] = (value, selectedOptions) => {
+  const onChange: CascaderProps<DefaultOptionType>['onChange'] = (value, selectedOptions) => {
     setSelectOptions(
       selectedOptions
-        // @ts-ignore
         .filter((x) => x.length === 3)
         .map((x) => {
           // @ts-ignore
@@ -118,22 +117,23 @@ export default (props: EditProps) => {
       <Modal
         open={open}
         loading={loading}
-        title={props.title}
+        width={'60%'}
+        title={defaultTitle}
         onOk={async () =>
-          await props.onOk({
+          await onOk({
             title: title,
             layouts: selectOptions.map((x) => {
               return { type: x.type, name: x.name, id: x.id };
             })
           })
         }
-        onCancel={props.onCancel}
-        onClose={props.onCancel}
+        onCancel={onCancel}
+        onClose={onCancel}
       >
         <ProForm formRef={form} submitter={false} layout={'horizontal'}>
           <ProFormText
             label={'title'}
-            name={'title'}
+            name={l('dashboard.chart.name')}
             fieldProps={{
               defaultValue: title,
               onChange: (v) => {
@@ -143,14 +143,12 @@ export default (props: EditProps) => {
           />
           <ProFormCascader
             fieldProps={{
-              // @ts-ignore
-              multiple: true,
+              onChange: onChange,
+              showSearch: { filter },
               options: data
             }}
             name={'layouts'}
-            onChange={onChange}
-            placeholder='Please select'
-            showSearch={{ filter }}
+            label={l('dashboard.chart.select')}
           />
           {selectOptions.length > 0 && (
             <>
@@ -195,7 +193,7 @@ export default (props: EditProps) => {
   );
 };
 
-const getAllPath = (data: Options[], id: number | string) => {
+const getAllPath = (data: DefaultOptionType[], id: number | string) => {
   for (const d1 of data) {
     for (const d2 of d1.children || []) {
       for (const d3 of d2.children || []) {

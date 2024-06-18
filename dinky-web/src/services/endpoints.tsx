@@ -247,6 +247,7 @@ export enum API_CONSTANTS {
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
   GET_METRICS_LAYOUT_CASCADER = '/api/monitor/getMetricsLayoutByCascader',
   GET_JVM_INFO = '/api/monitor/getJvmInfo',
+  GET_FLINK_DAT_BY_DASHBOARD = '/api/monitor/getFlinkDataByDashboard',
 
   // ------------------------------------ flink ------------------------------------
   FLINK_PROXY = '/api/flink',
