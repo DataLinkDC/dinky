@@ -37,7 +37,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/** @TableName dinky_metrics */
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "dinky_dashboard")
 @Data
@@ -48,9 +47,13 @@ public class Dashboard extends Model<Dashboard> {
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the metrics")
     private Integer id;
 
+    @ApiModelProperty(value = "Name", dataType = "String", example = "Metrics", notes = "Name of the metrics")
     private String name;
+    @ApiModelProperty(value = "Remark", dataType = "String", example = "Metrics", notes = "Remark of the metrics")
     private String remark;
+    @ApiModelProperty(value = "Chart Theme", dataType = "String", example = "dark", notes = "Theme of the chart")
     private String chartTheme;
+    @ApiModelProperty(value = "Layouts", dataType = "String", example = "[]", notes = "Layouts of the metrics")
     private String layouts;
 
     @TableField(fill = FieldFill.INSERT)

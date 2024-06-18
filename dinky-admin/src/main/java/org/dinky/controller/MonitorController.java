@@ -115,47 +115,7 @@ public class MonitorController {
     })
     public Result<Map<Integer, List<Dict>>> getFlinkDataByDashboard(
             @RequestParam Long startTime, Long endTime, String flinkMetricsIdList) {
-        Map<Integer, String> cacheMap = new HashMap<>();
-        List<Metrics> metrics = monitorService.listByIds(Arrays.asList(flinkMetricsIdList.split(",")));
-        metrics.forEach(x -> {
-            String jid = cacheMap.computeIfAbsent(x.getTaskId(), k -> SpringUtil.getBean(JobInstanceService.class)
-                    .getJobInstanceByTaskId(42)
-                    .getJid());
-            x.setJobId(jid);
-        });
-
-        List<String> flinkJobIdList =
-                metrics.stream().map(Metrics::getJobId).distinct().collect(Collectors.toList());
-
-        Map<String, Map<String, List<Tuple>>> map = metrics.stream()
-                .collect(Collectors.groupingBy(
-                        Metrics::getJobId,
-                        Collectors.toMap(
-                                Metrics::getVertices,
-                                x -> Collections.singletonList(new Tuple(x.getMetrics(), x.getId())),
-                                CollUtil::unionAll)));
-
-        Map<Integer, List<Dict>> resultData = new HashMap<>();
-        List<MetricsVO> data = monitorService.getData(
-                DateUtil.date(startTime),
-                DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime())),
-                flinkJobIdList);
-        data.forEach(x -> {
-            Map<String, List<Tuple>> tupleMap = map.get(x.getModel());
-            tupleMap.keySet().forEach(y -> {
-                JsonNode jsonObject = ((ObjectNode) x.getContent()).get(y);
-                List<Tuple> tupleList = tupleMap.get(y);
-                for (Tuple tuple : tupleList) {
-                    String metricsName = tuple.get(0);
-                    String d = jsonObject.get(metricsName).asText();
-                    Dict dict = Dict.create().set("time", x.getHeartTime()).set("value", d);
-                    Integer id = tuple.get(1);
-                    resultData.computeIfAbsent(id, k -> new ArrayList<>()).add(dict);
-                }
-            });
-        });
-
-        return Result.succeed(resultData);
+        return Result.succeed(monitorService.getFlinkDataByDashboard(startTime, endTime, flinkMetricsIdList));
     }
 
     @PutMapping("/saveFlinkMetrics/{layout}")
@@ -186,33 +146,7 @@ public class MonitorController {
     @GetMapping("/getMetricsLayoutByCascader")
     @ApiOperation("Get Metrics Layout to Display By Cascader")
     public Result<List<CascaderVO>> getMetricsLayoutByCascader() {
-        List<MetricsLayoutVo> metricsLayout = monitorService.getMetricsLayout();
-        List<CascaderVO> voList = metricsLayout.stream()
-                .map(x -> {
-                    CascaderVO cascaderVO = new CascaderVO();
-                    cascaderVO.setLabel(x.getLayoutName());
-                    cascaderVO.setValue(x.getLayoutName());
-                    cascaderVO.setChildren(new ArrayList<>());
-
-                    List<List<Metrics>> vertices = CollUtil.groupByField(x.getMetrics(), "vertices");
-                    vertices.forEach(y -> {
-                        CascaderVO cascader1 = new CascaderVO();
-                        cascader1.setLabel(y.get(0).getVertices());
-                        cascader1.setValue(y.get(0).getVertices());
-                        cascader1.setChildren(new ArrayList<>());
-
-                        cascaderVO.getChildren().add(cascader1);
-                        y.forEach(z -> {
-                            CascaderVO cascader2 = new CascaderVO();
-                            cascader2.setLabel(z.getMetrics());
-                            cascader2.setValue(z.getId().toString());
-                            cascader1.getChildren().add(cascader2);
-                        });
-                    });
-                    return cascaderVO;
-                })
-                .collect(Collectors.toList());
-        return Result.succeed(voList);
+        return Result.succeed(monitorService.getMetricsLayoutByCascader());
     }
 
     @GetMapping("/getMetricsLayoutByName")

@@ -109,7 +109,7 @@ CALL add_column_if_not_exists('dinky_udf_manage', 'language', 'varchar(10)', 'NU
 -- update dashboard
 ALTER TABLE `dinky_metrics` ADD COLUMN `vertices_title` varchar(255) NULL COMMENT 'vertices title' AFTER `vertices`;
 
-CREATE TABLE `dinky_dashboard` (
+CREATE TABLE IF NOT EXISTS `dinky_dashboard` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT,
                                    `name` varchar(255) DEFAULT NULL,
                                    `remark` text,
@@ -118,7 +118,7 @@ CREATE TABLE `dinky_dashboard` (
                                    `create_time` datetime DEFAULT NULL,
                                    `update_time` datetime DEFAULT NULL,
                                    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='dashboard';
 
 
 SET FOREIGN_KEY_CHECKS = 1;

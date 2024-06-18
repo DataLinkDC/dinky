@@ -19,6 +19,14 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Tuple;
+import cn.hutool.extra.spring.SpringUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.constant.PaimonTableConstant;
@@ -27,6 +35,7 @@ import org.dinky.data.exception.DinkyException;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.mapper.MetricsMapper;
 import org.dinky.service.JobInstanceService;
@@ -181,4 +190,90 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                 metricsList.stream().map(Metrics::getId).collect(Collectors.toList()));
         return deleted > 0;
     }
+
+    /**
+     * @param startTime
+     * @param endTime
+     * @param flinkMetricsIdList
+     * @return
+     */
+    @Override
+    public Map<Integer, List<Dict>> getFlinkDataByDashboard(Long startTime, Long endTime, String flinkMetricsIdList) {
+        Map<Integer, String> cacheMap = new HashMap<>();
+        List<Metrics> metrics = listByIds(Arrays.asList(flinkMetricsIdList.split(",")));
+        metrics.forEach(x -> {
+            String jid = cacheMap.computeIfAbsent(x.getTaskId(), k -> SpringUtil.getBean(JobInstanceService.class)
+                    .getJobInstanceByTaskId(42)
+                    .getJid());
+            x.setJobId(jid);
+        });
+
+        List<String> flinkJobIdList =
+                metrics.stream().map(Metrics::getJobId).distinct().collect(Collectors.toList());
+
+        Map<String, Map<String, List<Tuple>>> map = metrics.stream()
+                .collect(Collectors.groupingBy(
+                        Metrics::getJobId,
+                        Collectors.toMap(
+                                Metrics::getVertices,
+                                x -> Collections.singletonList(new Tuple(x.getMetrics(), x.getId())),
+                                CollUtil::unionAll)));
+
+        Map<Integer, List<Dict>> resultData = new HashMap<>();
+        List<MetricsVO> data = getData(
+                DateUtil.date(startTime),
+                DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime())),
+                flinkJobIdList);
+        data.forEach(x -> {
+            Map<String, List<Tuple>> tupleMap = map.get(x.getModel());
+            tupleMap.keySet().forEach(y -> {
+                JsonNode jsonObject = ((ObjectNode) x.getContent()).get(y);
+                List<Tuple> tupleList = tupleMap.get(y);
+                for (Tuple tuple : tupleList) {
+                    String metricsName = tuple.get(0);
+                    String d = jsonObject.get(metricsName).asText();
+                    Dict dict = Dict.create().set("time", x.getHeartTime()).set("value", d);
+                    Integer id = tuple.get(1);
+                    resultData.computeIfAbsent(id, k -> new ArrayList<>()).add(dict);
+                }
+            });
+        });
+        return resultData;
+
+    }
+
+    /**
+     * Get the metrics layout by cascader.
+     *
+     * @return the list of cascader vo
+     */
+    @Override
+    public List<CascaderVO> getMetricsLayoutByCascader() {
+        return getMetricsLayout().stream()
+                .map(x -> {
+                    CascaderVO cascaderVO = new CascaderVO();
+                    cascaderVO.setLabel(x.getLayoutName());
+                    cascaderVO.setValue(x.getLayoutName());
+                    cascaderVO.setChildren(new ArrayList<>());
+
+                    List<List<Metrics>> vertices = CollUtil.groupByField(x.getMetrics(), "vertices");
+                    vertices.forEach(y -> {
+                        CascaderVO cascader1 = new CascaderVO();
+                        cascader1.setLabel(y.get(0).getVertices());
+                        cascader1.setValue(y.get(0).getVertices());
+                        cascader1.setChildren(new ArrayList<>());
+
+                        cascaderVO.getChildren().add(cascader1);
+                        y.forEach(z -> {
+                            CascaderVO cascader2 = new CascaderVO();
+                            cascader2.setLabel(z.getMetrics());
+                            cascader2.setValue(z.getId().toString());
+                            cascader1.getChildren().add(cascader2);
+                        });
+                    });
+                    return cascaderVO;
+                })
+                .collect(Collectors.toList());
+    }
+
 }
