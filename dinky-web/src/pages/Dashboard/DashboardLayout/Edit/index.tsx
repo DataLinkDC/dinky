@@ -37,7 +37,7 @@ import {
   LineChartOutlined
 } from '@ant-design/icons';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
 
 interface EditProps {
   open: boolean;
@@ -52,7 +52,14 @@ interface EditProps {
 }
 
 export default (props: EditProps) => {
-  const { open = true, title: defaultTitle ,chartTheme = 'dark', defaultValue,onCancel, onOk } = props;
+  const {
+    open = true,
+    title: defaultTitle,
+    chartTheme = 'dark',
+    defaultValue,
+    onCancel,
+    onOk
+  } = props;
 
   const filter = (inputValue: string, path: DefaultOptionType[]) =>
     path.some(

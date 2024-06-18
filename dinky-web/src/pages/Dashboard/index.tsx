@@ -62,9 +62,8 @@ export default () => {
         await deleteData(id);
         await refresh();
       }
-    })
-  }
-
+    });
+  };
 
   return (
     <>
@@ -78,7 +77,7 @@ export default () => {
           onSave: async (_, row) => {
             await addOrUpdate(row);
             await refresh();
-          },
+          }
         }}
         metas={{
           title: {
@@ -90,7 +89,9 @@ export default () => {
             },
             render: (text, row) => {
               return (
-                <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('dashboard.name')}: {text}</Link>
+                <Link to={`/dashboard/dashboard-layout/${row.id}`}>
+                  {l('dashboard.name')}: {text}
+                </Link>
               );
             }
           },
@@ -99,7 +100,7 @@ export default () => {
             title: l('dashboard.remark'),
             key: 'desc',
             fieldProps: {
-              width: '10%',
+              width: '10%'
             }
           },
           content: {
@@ -110,7 +111,12 @@ export default () => {
               placement: 'bottomRight',
               options: echartsThemeOptions
             },
-            render: (text) => <> {l('dashboard.chartTheme')}: {text}</>
+            render: (text) => (
+              <>
+                {' '}
+                {l('dashboard.chartTheme')}: {text}
+              </>
+            )
           },
           actions: {
             render: (text, row) => [

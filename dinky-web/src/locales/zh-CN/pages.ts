@@ -1244,6 +1244,5 @@ export default {
   'dashboard.theme.shine': '明亮',
   'dashboard.theme.vintage': '复古',
   'dashboard.theme.westeros': '西部',
-  'dashboard.theme.wonderland': '奇幻',
-
+  'dashboard.theme.wonderland': '奇幻'
 };
