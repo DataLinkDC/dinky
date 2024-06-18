@@ -49,8 +49,8 @@ import {
 import { getData } from '@/services/api';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
-import {API_CONSTANTS} from "@/services/endpoints";
-import {l} from "@/utils/intl";
+import { API_CONSTANTS } from '@/services/endpoints';
+import { l } from '@/utils/intl';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 

@@ -33,7 +33,7 @@ import { ProFormInstance } from '@ant-design/pro-form/lib';
 import { addOrUpdate, deleteData, getDataList } from '@/pages/Dashboard/service';
 import useHookRequest from '@/hooks/useHookRequest';
 import { getMetricsLayout } from '@/pages/Metrics/service';
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
 
 const echartsThemeOptions = EchartsTheme.map((x) => {
   return { label: l(`dashboard.theme.${x}`), value: x };
@@ -68,9 +68,8 @@ export default () => {
         await deleteData(id);
         await refresh();
       }
-    })
-  }
-
+    });
+  };
 
   return (
     <>
@@ -84,7 +83,7 @@ export default () => {
           onSave: async (_, row) => {
             await addOrUpdate(row);
             await refresh();
-          },
+          }
         }}
         metas={{
           title: {
@@ -92,10 +91,13 @@ export default () => {
             title: l('dashboard.name'),
             key: 'title',
             fieldProps: {
-              width: '10%',            },
+              width: '10%'
+            },
             render: (text, row) => {
               return (
-                <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('dashboard.name')}: {text}</Link>
+                <Link to={`/dashboard/dashboard-layout/${row.id}`}>
+                  {l('dashboard.name')}: {text}
+                </Link>
               );
             }
           },
@@ -104,18 +106,24 @@ export default () => {
             title: l('dashboard.remark'),
             key: 'desc',
             fieldProps: {
-              width: '10%',
+              width: '10%'
             }
           },
           content: {
             dataIndex: 'chartTheme',
             valueType: 'select',
             fieldProps: {
-              width: '10%',              showSearch: true,
+              width: '10%',
+              showSearch: true,
               placement: 'bottomRight',
               options: echartsThemeOptions
             },
-            render: (text) => <> {l('dashboard.chartTheme')}: {text}</>
+            render: (text) => (
+              <>
+                {' '}
+                {l('dashboard.chartTheme')}: {text}
+              </>
+            )
           },
           actions: {
             render: (text, row) => [
@@ -151,7 +159,7 @@ export default () => {
           },
           actions: [
             <Button type='primary' key='primary' onClick={() => setOpenCreate(true)}>
-            {l('dashboard.create')}
+              {l('dashboard.create')}
             </Button>
           ]
         }}

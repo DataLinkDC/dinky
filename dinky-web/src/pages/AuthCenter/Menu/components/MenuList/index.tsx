@@ -257,7 +257,7 @@ const MenuList: React.FC = () => {
       );
     }
     // add
-    if (addedOpen ) {
+    if (addedOpen) {
       return (
         <>
           <MenuForm
