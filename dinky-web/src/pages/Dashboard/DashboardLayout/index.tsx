@@ -48,7 +48,7 @@ import {
 } from '@/pages/Dashboard/data';
 import { getData } from '@/services/api';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
-import ChartShow from "@/pages/Dashboard/DashboardLayout/ChartShow";
+import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -256,16 +256,28 @@ export default (props: DashboardProps) => {
                 </Flex>
               ]}
             >
-              {(
-                <ChartShow  chartTheme={chartTheme} chartOptions={chartOptions}
-                            value={chartDatum[0].data?.slice(-1)[0]?.value} type={chartDatum[0]?.type} fontSize={(l.h * config.rowHeight) / 4}/>
-              )}
+              {
+                <ChartShow
+                  chartTheme={chartTheme}
+                  chartOptions={chartOptions}
+                  value={chartDatum[0].data?.slice(-1)[0]?.value}
+                  type={chartDatum[0]?.type}
+                  fontSize={(l.h * config.rowHeight) / 4}
+                />
+              }
             </ProCard>
           )}
-          {(
-            <ChartShow show={!isUpdate || !isShowEditCard} chartTheme={chartTheme} chartOptions={chartOptions}
-             title={title} value={chartDatum[0].data?.slice(-1)[0]?.value} type={chartDatum[0]?.type} fontSize={(l.h * config.rowHeight) / 4}/>
-          )}
+          {
+            <ChartShow
+              show={!isUpdate || !isShowEditCard}
+              chartTheme={chartTheme}
+              chartOptions={chartOptions}
+              title={title}
+              value={chartDatum[0].data?.slice(-1)[0]?.value}
+              type={chartDatum[0]?.type}
+              fontSize={(l.h * config.rowHeight) / 4}
+            />
+          }
         </div>
       );
     });
