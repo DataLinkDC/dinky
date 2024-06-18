@@ -24,6 +24,7 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.job.handler.JobAlertHandler;
 import org.dinky.job.handler.JobMetricsHandler;
@@ -103,7 +104,9 @@ public class FlinkJobTask implements DaemonTask {
         boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
         if (Asserts.isAllNotNull(jobInfoDetail.getClusterInstance())) {
             JobAlertHandler.getInstance().check(jobInfoDetail);
-            JobMetricsHandler.refeshAndWriteFlinkMetrics(jobInfoDetail, verticesAndMetricsMap);
+            if (SystemConfiguration.getInstances().getMetricsSysEnable().getValue()) {
+                JobMetricsHandler.refeshAndWriteFlinkMetrics(jobInfoDetail, verticesAndMetricsMap);
+            }
         }
         return isDone;
     }

@@ -59,10 +59,11 @@
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <dinky.flink.version>1.18</dinky.flink.version>
         <docker.java.version>3.2.14</docker.java.version>
-        <druid-starter>1.2.8</druid-starter>
+        <druid-starter>1.2.15</druid-starter>
         <easy.rules.version>4.1.0</easy.rules.version>
         <fastjson2.version>2.0.41</fastjson2.version>
         <flink.version>1.18.1</flink.version>
+        <flyway.version>10.10.12</flyway.version>
         <guava.version>32.1.3-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
         <hamcrest.version>1.3</hamcrest.version>
@@ -108,9 +109,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <reflections.version>0.10.2</reflections.version>
-        <revision>1.0.2</revision>
+        <revision>1.1.0-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
-        <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
@@ -119,7 +119,7 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
         <spotless.version>2.27.1</spotless.version>
-        <spring-boot-dependencies.version>2.7.11</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
         <spring.ldap.version>3.1.0</spring.ldap.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
@@ -152,7 +152,7 @@
                 <artifactId>smiley-http-proxy-servlet</artifactId>
                 <version>${smily.version}</version>
             </dependency>
-            <!--easy-rules 执行引擎-->
+            <!--easy-rules Execution engine-->
             <dependency>
                 <groupId>org.jeasy</groupId>
                 <artifactId>easy-rules-core</artifactId>
@@ -282,20 +282,20 @@
                 <version>${javax.annotation-api.version}</version>
             </dependency>
 
-            <!--解决mysql与phoenix依赖冲突-->
+            <!--Resolve MySQL and Phoenix dependency conflicts-->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf-java.version}</version>
             </dependency>
 
-            <!-- hutool java工具类库  -->
+            <!-- hutool Java Tool Class Library  -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!-- druid 官方 starter -->
+            <!-- druid Official starter -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
@@ -1011,25 +1011,6 @@
             </activation>
             <properties>
                 <scope.runtime>provided</scope.runtime>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>scala-2.11</id>
-            <properties>
-                <scala.binary.version>2.11</scala.binary.version>
-                <scala.version>2.11.7</scala.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>scala-2.12</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <scala.binary.version>2.12</scala.binary.version>
-                <scala.version>2.12.10</scala.version>
             </properties>
         </profile>
 

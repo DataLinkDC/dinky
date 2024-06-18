@@ -18,6 +18,7 @@
  */
 
 import {
+  assert,
   getCurrentData,
   getCurrentTab,
   isDataStudioTabsItemType,
@@ -30,9 +31,9 @@ import { DIALECT } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { SearchOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Input, InputRef, Space, Table, Tabs } from 'antd';
+import { Button, Empty, Input, InputRef, Space, Table, Tabs, Tooltip } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
@@ -47,7 +48,9 @@ type Data = {
 type DataList = Data[];
 const Result = (props: any) => {
   const {
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey },
+    historyExecId,
+    initIsRefresh
   } = props;
   const [data, setData] = useState<Data>({});
   const [dataList, setDataList] = useState<DataList>([]);
@@ -135,16 +138,21 @@ const Result = (props: any) => {
     } else if (consoleData.results && !isRefresh) {
       setDataList(consoleData.results);
     } else {
-      if (current?.dialect && current?.dialect?.toLowerCase() == DIALECT.FLINK_SQL) {
+      if (assert(current?.dialect, [DIALECT.FLINK_SQL], true, 'includes')) {
         // flink sql
         // to do: get job data by history id list, not flink jid
         if (current?.id) {
-          const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
-            id: current.id
-          });
-          const historyData = res.data;
-          if (historyData) {
-            const historyId = historyData.id;
+          let historyId = historyExecId;
+          if (!historyId) {
+            const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
+              id: current.id
+            });
+            const historyData = res.data;
+            if (historyData) {
+              historyId = historyData.id;
+            }
+          }
+          if (historyId) {
             const tableData = await handleGetOption(
               API_CONSTANTS.GET_JOB_DATA,
               l('global.getdata.tips'),
@@ -170,8 +178,8 @@ const Result = (props: any) => {
   useEffect(() => {
     setData({});
     setDataList([]);
-    loadData();
-  }, [currentTabs?.console?.result, currentTabs?.console?.results]);
+    loadData(initIsRefresh);
+  }, [currentTabs?.console?.refreshResult, currentTabs?.console?.refreshResults, currentTabs?.id]);
 
   const getColumns = (columns: string[] = []) => {
     return columns?.map((item) => {
@@ -193,7 +201,7 @@ const Result = (props: any) => {
   const renderFlinkSQLContent = () => {
     return (
       <>
-        {current?.jobInstanceId ? (
+        {current?.jobInstanceId && !data.destroyed ? (
           <>
             <Space>
               <Button
@@ -226,9 +234,25 @@ const Result = (props: any) => {
     return undefined;
   };
 
+  const renderTips = () => {
+    return (
+      <>
+        {current?.jobInstanceId && data.truncationFlag ? (
+          <Tooltip
+            placement='top'
+            title={l('pages.datastudio.label.result.query.latest.data.truncate')}
+          >
+            <QuestionCircleOutlined />
+          </Tooltip>
+        ) : undefined}
+      </>
+    );
+  };
+
   return (
     <div style={{ width: '100%' }}>
       <div style={{ direction: 'rtl' }}>
+        {renderTips()}
         {renderDownloadButton()}
         {current && isSql(current?.dialect, true) && renderFlinkSQLContent()}
       </div>
@@ -250,6 +274,7 @@ const Result = (props: any) => {
                 <Table
                   columns={getColumns(data.columns)}
                   size='small'
+                  scroll={{ x: 'max-content' }}
                   dataSource={data.rowData?.map((item: any, index: number) => {
                     return { ...item, key: index };
                   })}

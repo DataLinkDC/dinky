@@ -93,6 +93,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -421,7 +422,12 @@ public class JobManager {
     }
 
     public static SelectResult getJobData(String jobId) {
-        return ResultPool.get(jobId);
+        SelectResult selectResult = ResultPool.get(jobId);
+        if (Objects.isNull(selectResult) || selectResult.isDestroyed()) {
+            JobReadHandler readHandler = JobHandler.build().getReadHandler();
+            return readHandler.readResultDataFromStorage(Integer.parseInt(jobId));
+        }
+        return selectResult;
     }
 
     public ExplainResult explainSql(String statement) {

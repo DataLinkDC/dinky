@@ -449,6 +449,14 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',
   'pages.datastudio.label.jobConfig.addConfig.value': 'value',
+  'pages.datastudio.label.udf': 'Udf Item',
+  'pages.datastudio.label.udf.tip':
+    'Inject UDF item, Automatically add statement `create temporary function [functionName] as [className]` at the beginning of the SQL statement',
+  'pages.datastudio.label.udf.duplicate.tip':
+    'The class [className] selected this time already exists and duplicate injection is not allowed. Please reselect or cancel injection (delete and change line).',
+  'pages.datastudio.label.udf.injectUdf': 'Inject UDF item',
+  'pages.datastudio.label.udf.name': 'function name',
+  'pages.datastudio.label.udf.className': 'class name',
   'pages.datastudio.label.jobConfig.alertGroup': 'Alarm Group',
   'pages.datastudio.label.jobConfig.alertGroup.tip': 'Select alert group',
   'pages.datastudio.label.jobConfig.batchmode': 'Batch Mode',
@@ -459,7 +467,7 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available/Is it in an enabled state',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
   'pages.datastudio.label.jobConfig.watermark':
@@ -472,12 +480,11 @@ export default {
   'pages.datastudio.label.jobConfig.fragment': 'Global variables',
   'pages.datastudio.label.jobConfig.fragment.tip':
     '[Enhanced Features] Enable FlinkSql global variables, use "',
-  'pages.datastudio.label.jobConfig.insert': 'Insert StatementSet',
-  'pages.datastudio.label.jobConfig.insert.tip':
-    '[Enhanced Features] Enable the statement set mechanism, multiple Insert statements will be combined into one JobGraph before submission, and the Select statement is invalid',
   'pages.datastudio.label.jobConfig.other': 'Other Config',
   'pages.datastudio.label.jobConfig.other.tip':
     'Other Config items will be applied to the execution environment, such as pipeline.name',
+  'pages.datastudio.label.jobConfig.udf': 'UDF injected',
+  'pages.datastudio.label.jobConfig.udf.tip': 'Automatically inject UDF',
   'pages.datastudio.label.jobConfig.parallelism': 'Parallelism',
   'pages.datastudio.label.jobConfig.parallelism.tip':
     'Set the parallelism of Flink tasks, the minimum value is 1',
@@ -494,6 +501,8 @@ export default {
   'pages.datastudio.label.jobInfo.firstLevelOwner': 'Owner',
   'pages.datastudio.label.jobInfo.secondLevelOwners': 'Maintainer',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
+  'pages.datastudio.label.result.query.latest.data.truncate':
+    'The data is too long to be displayed in full',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',
   'pages.datastudio.label.version.leftTitle': 'Version number',
@@ -566,7 +575,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': 'Please enter AccessKeySecret',
   'rc.ai.action': 'Interface method',
   'rc.ai.actionPleaseHolder': 'Please enter the interface method',
-  'rc.ai.agentId': 'AgentId',
+  'rc.ai.agentId': 'App ID(AgentId)',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
   'rc.ai.sendUrl': 'QiWei Send Addr',
   'rc.ai.sendUrlPleaseHolder': 'Please enter the sending address or the proxy address',
@@ -1001,6 +1010,8 @@ export default {
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
+  'rc.resource.sync.confirm':
+    'Please note that this operation will delete all records in the database and will affect running jobs as well as corresponding resource files referenced in UDF management, resulting in job failure. And UDF cannot be used in UDF management Please operate with caution!! Please confirm if you want to continue?',
   'rc.resource.copy_to_add_custom_jar': 'Copy as ADD CUSTOMJAR syntax',
   'rc.resource.copy_to_add_jar': 'Copy as ADD JAR syntax',
   'rc.resource.copy_to_add_file': 'Copy as ADD FILE syntax',

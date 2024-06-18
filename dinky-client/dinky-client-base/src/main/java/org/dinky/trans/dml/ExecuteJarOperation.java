@@ -26,7 +26,6 @@ import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.URLUtils;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.client.program.PackagedProgram;
 import org.apache.flink.client.program.PackagedProgramUtils;
@@ -91,12 +90,12 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
             Configuration configuration = tEnv.getConfig().getConfiguration();
             File file =
                     Opt.ofBlankAble(submitParam.getUri()).map(URLUtils::toFile).orElse(null);
+            String submitArgs = Opt.ofBlankAble(submitParam.getArgs()).orElse("");
             if (!PackagedProgramUtils.isPython(submitParam.getMainClass())) {
                 tEnv.addJar(file);
             } else {
                 // python submit
-                submitParam.setArgs("--python " + file.getAbsolutePath() + " "
-                        + Opt.ofBlankAble(submitParam.getArgs()).orElse(""));
+                submitParam.setArgs("--python " + file.getAbsolutePath() + " " + submitArgs);
                 file = null;
             }
 
@@ -105,7 +104,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                     .setEntryPointClassName(submitParam.getMainClass())
                     .setConfiguration(configuration)
                     .setSavepointRestoreSettings(savepointRestoreSettings)
-                    .setArguments(extractArgs(submitParam.getArgs().trim()).toArray(new String[0]))
+                    .setArguments(extractArgs(submitArgs.trim()).toArray(new String[0]))
                     .setUserClassPaths(classpaths)
                     .build();
             int parallelism = StrUtil.isNumeric(submitParam.getParallelism())
@@ -134,7 +133,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
 
     public static List<String> extractArgs(String args) {
         List<String> programArgs = new ArrayList<>();
-        if (StringUtils.isNotEmpty(args)) {
+        if (StrUtil.isNotEmpty(args)) {
             String[] array = args.split("\\s+");
             Iterator<String> iter = Arrays.asList(array).iterator();
             while (iter.hasNext()) {

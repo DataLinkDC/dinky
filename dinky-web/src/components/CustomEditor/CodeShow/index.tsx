@@ -49,6 +49,7 @@ export type CodeShowFormProps = {
   enableAutoScroll?: boolean;
   style?: CSSProperties;
   clearContent?: () => void;
+  btnExtraContent?: any;
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
@@ -78,7 +79,8 @@ const CodeShow = (props: CodeShowFormProps) => {
     fullScreenBtn = false,
     enableMiniMap = false,
     enableAutoScroll = false,
-    clearContent
+    clearContent,
+    btnExtraContent
   } = props;
 
   const { ScrollType } = editor;
@@ -208,7 +210,8 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleDownScroll,
     handleDownloadLog,
     handleWrap,
-    clearContent
+    clearContent,
+    btnExtraContent
   };
 
   /**

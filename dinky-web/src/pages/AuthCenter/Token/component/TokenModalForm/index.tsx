@@ -87,11 +87,11 @@ const TokenModalForm: React.FC<TokenModalFormProps & connect> = (props) => {
         value.expireType === 2
           ? parseDateStringToDate(value.expireEndTime)
           : value.expireType === 3
-          ? [
-              parseDateStringToDate(value.expireStartTime),
-              parseDateStringToDate(value.expireEndTime)
-            ]
-          : undefined
+            ? [
+                parseDateStringToDate(value.expireStartTime),
+                parseDateStringToDate(value.expireEndTime)
+              ]
+            : undefined
     });
   }, [visible, value, form, selectUserId]);
 

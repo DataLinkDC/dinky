@@ -30,6 +30,7 @@ public class UDFManageVO implements Serializable {
     private String name;
     private Boolean enabled;
     private String className;
+    private String language;
     private Integer taskId;
     private Integer resourcesId;
     /**

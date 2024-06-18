@@ -17,6 +17,7 @@
  *
  */
 
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getCurrentData } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
@@ -74,7 +75,7 @@ const Catalog: React.FC = (props: connect) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [columnData, setColumnData] = useState([]);
   const btnDispatch = useTasksDispatch();
-  const currentTabName = 'menu.datastudio.catalog';
+  const currentTabName = LeftMenuKey.CATALOG_KEY;
   const btnEvent = [...BtnRoute[currentTabName]];
 
   btnEvent[0].onClick = () => {

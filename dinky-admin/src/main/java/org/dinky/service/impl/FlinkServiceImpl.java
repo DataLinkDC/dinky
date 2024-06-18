@@ -49,14 +49,15 @@ public class FlinkServiceImpl implements FlinkService {
             List<FlinkConfigOption> flinkConfigOptions = FlinkConfigOptionsUtils.loadOptionsByClassName(name);
             String binlogGroup = FlinkConfigOptionsUtils.parsedBinlogGroup(name);
             List<CascaderVO> child = flinkConfigOptions.stream()
-                    .map(conf -> new CascaderVO(conf.getKey()))
+                    .map(conf -> new CascaderVO(conf.getKey(), conf.getKey()))
                     .collect(Collectors.toList());
             CascaderVO cascaderVO = new CascaderVO(binlogGroup, child);
             dataList.add(cascaderVO);
         }
 
         List<CascaderVO> voList = documentService.lambdaQuery().eq(Document::getType, "FLINK_OPTIONS").list().stream()
-                .map(d -> new CascaderVO(d.getName().replace("set ", "")))
+                .map(d -> new CascaderVO(
+                        d.getName().replace("set ", ""), d.getName().replace("set ", "")))
                 .collect(Collectors.toList());
 
         CascaderVO cascaderVO = new CascaderVO();

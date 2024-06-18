@@ -1,12 +1,16 @@
 #!/bin/bash
 
+# debug mode
+#set -x
+
 FLINK_VERSION=${2}
 
 DINKY_HOME=${DINKY_HOME:-$(cd `dirname $0`; pwd)}
+JAVA_VERSION=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}' | awk -F'.' '{print $1"."$2}')
 
 APP_HOME="${DINKY_HOME}"
 
-DINKY_LOG_PATH="${APP_HOME}/logs/"
+DINKY_LOG_PATH="${APP_HOME}/logs"
 if [ ! -d "${DINKY_LOG_PATH}" ]; then
   mkdir -p "${DINKY_LOG_PATH}"
 fi
@@ -30,6 +34,8 @@ if [ -z "${FLINK_VERSION}" ]; then
   fi
 fi
 
+echo "DINKY_HOME : ${DINKY_HOME} , JAVA_VERSION : ${JAVA_VERSION} , FLINK_VERSION : ${FLINK_VERSION}"
+
 # Check whether the flink version is specified
 assertIsInputVersion() {
   # If FLINK_VERSION is still empty, prompt the user to enter the Flink version
@@ -40,13 +46,19 @@ assertIsInputVersion() {
 }
 
 # Use FLINK_HOME:
-CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${CUSTOMER_JAR_PATH}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${CUSTOMER_JAR_PATH}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/flink/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
 PID_FILE="dinky.pid"
 
 # Log configuration file path
 LOG_CONFIG=${APP_HOME}/config/log4j2.xml
-# JVM options G1GC and OOM dump ; Note: Do not set the DisableExplicitGC parameter. Because there is a call to System. gc() in the code.
-GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -XX:+PrintGCCause -Xloggc:${APP_HOME}/logs/gc-%t.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=20M"
+
+if [ ${JAVA_VERSION} == "1.8" ];then
+  # JVM options G1GC and OOM dump ; Note: Do not set the DisableExplicitGC parameter. Because there is a call to System. gc() in the code.
+   GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -XX:+PrintGCCause -Xloggc:${APP_HOME}/logs/gc-%t.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=20M"
+else
+   GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -Xloggc:${APP_HOME}/logs/gc-%t.log"
+fi
+
 # OOM dump path
 OOM_OPT="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${APP_HOME}/logs/heapdump.hprof"
 # JVM parameters and log path
@@ -90,10 +102,10 @@ start() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > /dev/null 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     echo $! >"${PID_PATH}"/${PID_FILE}
-    echo "FLINK VERSION : $FLINK_VERSION"
-    echo "........................................Start Dinky Successfully........................................"
+    echo "........................................Start Dinky Done........................................"
+    echo "current log path : ${DINKY_LOG_PATH}/dinky-start.log , you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
   fi
@@ -114,7 +126,7 @@ startWithJmx() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}   > /dev/null 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
 #    echo $! >"${PID_PATH}"/${PID_FILE}
     updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................

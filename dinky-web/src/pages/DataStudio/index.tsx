@@ -99,8 +99,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
     const newBottomHeight = !isProject
       ? 0
       : bottomContainer.selectKey === ''
-      ? 0
-      : bottomContainer.height;
+        ? 0
+        : bottomContainer.height;
     const centerContentHeight = getClientSize().contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
@@ -127,8 +127,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
     const newBottomHeight = !isProject
       ? 0
       : bottomContainer.selectKey === ''
-      ? 0
-      : bottomContainer.height;
+        ? 0
+        : bottomContainer.height;
     const centerContentHeight = size.contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);

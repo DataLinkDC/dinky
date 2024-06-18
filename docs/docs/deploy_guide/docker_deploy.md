@@ -5,59 +5,107 @@ id: docker_deploy
 title: Docker 部署
 ---
 
-:::danger 注意
-
-Dinky v1.0.0 的 Docker 镜像正在开发中，敬请期待。以下步骤目前由于镜像未发布，无法使用。请耐心等待。如您对 Docker 镜像有兴趣，欢迎加入我们的开发群，一起参与开发。
-
-:::
-
 
 ## Docker 快速使用教程
 本教程使用三种不同的方式通过 Docker 完成 Dinky 的部署，如果你想要快速体验，推荐使用 standalone-server 镜像， 如果你想要体验比较完整的服务，推荐使用 docker-compose 启动服务。如果你已经有自己的数据库服务 你想要沿用这些基础服务，你可以参考沿用已有的 Mysql 、 Hadoop 和 Flink  服务完成部署。
 
 ## 前置条件
 - Docker 1.13.1+
-- Docker Compose 1.28.0+
+- Docker Compose 1.28.0+（可选）
 
-##  启动服务
-
-### 使用 standalone-server 镜像
-使用 standalone-server 镜像启动一个 Dinky standalone-server 容器应该是最快体验 Dinky 的方法。通过这个方式 你可以最快速的体验到 Dinky 的大部分功能，了解主要和概念和内容。
-
+##  Docker启动
+使用 H2 本地数据库快速启动
 ```shell
-# 启动 dinky mysql 镜像服务
-docker run --name dinky-mysql dinkydocker/dinky-mysql-server:0.7.2
-
-# 启动 dinky 镜像服务
-docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=dinky-mysql:3306 --name dinky --link dinky-mysql:dinky-mysql dinkydocker/dinky-standalone-server:0.7.2-flink14
-
-
-#注意：如果你有 mysql 服务，请执行对应版本的 SQL 文件。假如你的 mysql地址为 10.255.7.3 端口为33006，执行命令如下
-
-docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:3306 --name dinky dinkydocker/dinky-standalone-server:0.7.2-flink14
+docker run --restart=always -p 8888:8888 \
+  --name dinky \
+  dinky dinkydocker/dinky-standalone-server:1.0.3-flink1.17
 
 ```
+使用 外部mysql数据库
+```bash
+docker run --restart=always -p 8888:8888 \
+  --name dinky \
+  -e DB_ACTIVE=mysql \
+  -e MYSQL_ADDR=127.0.0.1:3306 \ 
+  -e MYSQL_DATABASE=dinky \ 
+  -e MYSQL_USERNAME=dinky \
+  -e MYSQL_PASSWORD=dinky \
+  -v /opt/lib:/opt/dinky/customJar/ \ 
+  dinky dinkydocker/dinky-standalone-server:1.0.3-flink1.17
 
+```
 :::tip 说明
-如果 `docker image` 需要加速，请把 `dinkydocker` 替换成 `registry.cn-hangzhou.aliyuncs.com/dinky`
-
-默认用户名/密码: admin/dinky123!@# ,如需修改,请使用默认用户名/密码登录后,在`认证中心`->`用户`中修改
+由于mysql与Apache 2.0协议不兼容，dinky无法默认提供mysql驱动，所以需要您手动提供mysql依赖并放到`/opt/dinky/customJar/`
+下面，上面已经给出了映射，如果你有自己的依赖目录，修改即可
 :::
 
-### 环境变量
-* MYSQL_ADDR ： mysql地址，如 127.0.0.1:3306
-* MYSQL_DATABASE ： 数据库名
-* MYSQL_USERNAME ： 用户名
-* MYSQL_PASSWORD ： 密码
-
+使用 外部postgres数据库
+```bash
+docker run --restart=always -p 8888:8888 \
+  --name dinky \
+  -e DB_ACTIVE=pgsql \
+  -e POSTGRES_ADDR=127.0.0.1:5432 \ 
+  -e POSTGRES_DATABASE=dinky \ 
+  -e POSTGRES_USERNAME=dinky \
+  -e POSTGRES_PASSWORD=dinky \
+  -v /opt/lib:/opt/dinky/customJar/ \ 
+  dinky dinkydocker/dinky-standalone-server:1.0.3-flink1.17
+```
 ---
 ### 使用docker-compose 
+docker-compose可快速帮你搭建起来dinky与flink集群环境，
+下载dinky源码后，在 `deploy/docker` 下面即可找到`docker-compose.yml`和 `.env` 文件，
+```bash
+cd deploy/docker/
+ls -al
+-rwxrwxrwx 1 root root  765 May 29 11:29 docker-compose.dev.yml
+-rwxrwxrwx 1 root root  699 May 29 11:29 docker-compose.yml
+-rwxrwxrwx 1 root root 1603 May 29 11:29 Dockerfile
+-rwxrwxrwx 1 root root 1718 May 29 11:46 .env
 
-#### 本地docker-compose
-在开发环境,在完成mvn package的情况下
-```shell
-./mvnw -B clean package -Dmaven.test.skip=true -Dspotless.check.skip=true -P prod,scala-2.12,flink-all,web,fast
 ```
+编辑 `.env` 文件，修改你想要的配置，如果只是快速体验，无需修改任何内容
+```shell
+#定义dinky版本号
+DINKY_VERSION=1.0.3
+#定义Flink版本（不要写小版本号）
+FLINK_VERSION=1.17
+
+# 自定义jar包依赖本地路径（例如：mysql驱动）
+CUSTOM_JAR_PATH=/opt/dinky/extends/
+
+# 使用那种数据库，默认h2
+DB_ACTIVE=h2
+# h2数据库持久化文件路径
+H2_DB=./tmp/db/h2
+
+## 使用mysql数据库时打开注释并填写内容
+## 如果 DB_ACTIVE 配置为mysaql，请修改下面配置，否则忽略
+##MYSQL_ADDR=127.0.0.1:3306
+#MYSQL_DATABASE=dinky
+#MYSQL_USERNAME=dinky
+#MYSQL_PASSWORD=dinky
+
+## 使用pg数据库时打开注释并填写内容
+## 如果 DB_ACTIVE 配置为pgsql，请修改下面配置，否则忽略
+##POSTGRES_USER=dinky
+#POSTGRES_PASSWORD=dinky
+#POSTGRES_ADDR=localhost:5432
+#POSTGRES_DB=dinky
+
+# 时区
+TZ=Asia/Shanghai
+# 自带Flink集群配置，一般不用改
+FLINK_PROPERTIES="jobmanager.rpc.address: jobmanager"
+
+```
+启动集群
+```shell
+docker-compose up -d
+```
+
+
+## 本地开发
 
 可使用
 ```shell

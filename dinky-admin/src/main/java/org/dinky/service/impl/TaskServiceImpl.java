@@ -59,7 +59,9 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.sqllineage.SQLLineageBuilder;
+import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
+import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -82,9 +84,11 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
+import org.dinky.service.UDFService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.resource.ResourcesService;
 import org.dinky.service.task.BaseTask;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
@@ -101,11 +105,13 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -153,6 +159,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final DataSourceProperties dsProperties;
     private final UserService userService;
     private final ApplicationContext applicationContext;
+    private final UDFService udfService;
+    private final ResourcesService resourcesService;
 
     @Resource
     @Lazy
@@ -443,7 +451,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             isSuccess = true;
         } catch (Exception e) {
-            log.warn("Stop with savcePoint failed: {}, will try normal rest api stop", e.getMessage());
+            log.warn("Stop with savePoint failed: {}, will try normal rest api stop", e.getMessage());
             isSuccess = jobManager.cancelNormal(jobInstance.getJid());
         }
         jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
@@ -561,7 +569,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
             task.setVersionId(taskVersionId);
             if (Dialect.isUDF(task.getDialect())) {
-                UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task.buildTask()));
+                // compile udf class
+                UDF udf = UDFUtils.taskToUDF(task.buildTask());
+                try {
+                    FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
+                } catch (Throwable e) {
+                    throw new BusException(
+                            "UDF compilation failed and cannot be published. The error message is as follows:"
+                                    + e.getMessage());
+                }
+                UdfCodePool.addOrUpdate(udf);
             }
         } else {
             if (Dialect.isUDF(task.getDialect())
@@ -705,20 +722,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public List<Task> getAllUDF() {
-        return list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq("enabled", 1)
-                .isNotNull("save_point_path"));
-    }
-
-    @Override
     public List<Task> getReleaseUDF() {
         return list(new LambdaQueryWrapper<Task>()
-                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq(Task::getEnabled, 1)
-                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue())
-                .isNotNull(Task::getSavePointPath));
+                        .in(
+                                Task::getDialect,
+                                Dialect.JAVA.getValue(),
+                                Dialect.SCALA.getValue(),
+                                Dialect.PYTHON.getValue())
+                        .eq(Task::getEnabled, 1)
+                        .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
+                .stream()
+                .filter(task -> Asserts.isNotNullString(
+                        task.getConfigJson().getUdfConfig().getClassName()))
+                .collect(Collectors.toList());
     }
 
     @Override

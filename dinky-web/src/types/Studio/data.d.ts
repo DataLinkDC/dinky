@@ -44,12 +44,18 @@ export type TaskUdfConfig = {
   className: string;
 };
 
+export type TaskUdfRefer = {
+  name: string;
+  className: string;
+};
+
 export type ConfigItem = {
   key: string;
   value: string;
 };
 
 export type TaskExtConfig = {
+  udfRefer: List<TaskUdfRefer>;
   udfConfig: TaskUdfConfig;
   customConfig: List<Map<string, object>>;
 };

@@ -428,6 +428,14 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',
   'pages.datastudio.label.jobConfig.addConfig.value': '值',
+  'pages.datastudio.label.udf': '注入UDF算子',
+  'pages.datastudio.label.udf.tip':
+    '注入UDF算子, 自动在所有语句前注入`create temporary function [functionName] as [className]` 语句',
+  'pages.datastudio.label.udf.duplicate.tip':
+    '此次选择的类[className]已经存在,不允许重复注入,请重新选择,或者取消注入(删除改行即可)。',
+  'pages.datastudio.label.udf.injectUdf': '注入UDF',
+  'pages.datastudio.label.udf.name': '函数名称',
+  'pages.datastudio.label.udf.className': '类名',
   'pages.datastudio.label.jobConfig.alertGroup': '告警组',
   'pages.datastudio.label.jobConfig.alertGroup.tip': '选择告警组',
   'pages.datastudio.label.jobConfig.batchmode': '批模式',
@@ -438,7 +446,7 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     '选择Flink集群配置进行【{type}】模式的远程提交任务',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
+    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态/是否为启用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
   'pages.datastudio.label.jobConfig.watermark': '当前任务已发布，配置禁止修改，如需修改，请先下线',
   'pages.datastudio.label.jobConfig.lock':
@@ -447,12 +455,11 @@ export default {
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',
   'pages.datastudio.label.jobConfig.fragment': '全局变量',
-  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量，使用“',
-  'pages.datastudio.label.jobConfig.insert': 'Insert语句集',
-  'pages.datastudio.label.jobConfig.insert.tip':
-    '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
+  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量',
   'pages.datastudio.label.jobConfig.other': '其他配置',
   'pages.datastudio.label.jobConfig.other.tip': '其他配置项，将被应用于执行环境，如 pipeline.name',
+  'pages.datastudio.label.jobConfig.udf': 'UDF注入',
+  'pages.datastudio.label.jobConfig.udf.tip': '自动注入UDF算子',
   'pages.datastudio.label.jobConfig.parallelism': '任务并行度',
   'pages.datastudio.label.jobConfig.parallelism.tip': '设置Flink任务的并行度，最小为 1',
   'pages.datastudio.label.jobConfig.savePointStrategy': 'Savepoint策略',
@@ -467,6 +474,7 @@ export default {
   'pages.datastudio.label.jobInfo.firstLevelOwner': '责任人',
   'pages.datastudio.label.jobInfo.secondLevelOwners': '维护人',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
+  'pages.datastudio.label.result.query.latest.data.truncate': '数据过长无法全部显示',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',
   'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间',
@@ -538,7 +546,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': '请输入AccessKeySecret',
   'rc.ai.action': '接口方法',
   'rc.ai.actionPleaseHolder': '请输入接口方法',
-  'rc.ai.agentId': '代理ID',
+  'rc.ai.agentId': '应用ID（AgentId）',
   'rc.ai.agentIdPleaseHolder': '请输入 AgentId',
   'rc.ai.sendUrl': '企微发送地址',
   'rc.ai.sendUrlPleaseHolder': '请输入发送地址可输入代理地址',
@@ -957,6 +965,8 @@ export default {
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
   'rc.resource.filelist': '文件列表',
   'rc.resource.sync': '同步目录结构',
+  'rc.resource.sync.confirm':
+    '请注意: 该操作会删除数据库内的所有记录,且会关系到运行中的作业,以及UDF管理中引用的对应资源文件.从而导致作业运行失败。以及在 UDF管理中的 UDF 无法被使用. 请谨慎操作!! 请确认是否继续? ',
   'rc.resource.copy_to_add_custom_jar': '复制为 ADD CUSTOMJAR 语法',
   'rc.resource.copy_to_add_jar': '复制为 ADD JAR 语法',
   'rc.resource.copy_to_add_file': '复制为 ADD FILE 语法',
