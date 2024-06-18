@@ -19,6 +19,9 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.DashboardDTO;
 import org.dinky.data.model.Dashboard;
 import org.dinky.data.result.Result;
@@ -52,6 +55,9 @@ public class DashboardController {
     @RequestMapping(
             value = "/saveOrUpdate",
             method = {RequestMethod.POST, RequestMethod.PUT})
+    @SaCheckPermission(
+            value = {PermissionConstants.DASHBOARD_ADD, PermissionConstants.DASHBOARD_EDIT},
+            mode = SaMode.OR)
     public Result<Void> saveOrUpdate(@RequestBody @Validated DashboardDTO dashboard) {
         dashboardService.saveOrUpdate(BeanUtil.toBean(dashboard, Dashboard.class));
         return Result.succeed();
@@ -63,11 +69,13 @@ public class DashboardController {
     }
 
     @GetMapping("/getDashboardById")
+    @SaCheckPermission(PermissionConstants.DASHBOARD_VIEW)
     public Result<Dashboard> getDashboardById(Integer id) {
         return Result.succeed(dashboardService.getById(id));
     }
 
     @DeleteMapping("/delete")
+    @SaCheckPermission(PermissionConstants.DASHBOARD_DELETE)
     public Result<Void> delete(Integer id) {
         dashboardService.removeById(id);
         return Result.succeed();

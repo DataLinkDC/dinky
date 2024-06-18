@@ -20,6 +20,7 @@
 import { DashboardData } from '@/pages/Dashboard/data';
 import { addOrUpdateData, getData, removeById, removeData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
+import {handleDeleteOperation} from "@/services/BusinessCrud";
 
 export const addOrUpdate = (data: DashboardData) => {
   return addOrUpdateData('/api/Dashboard/saveOrUpdate', data);
@@ -31,7 +32,7 @@ export const getDataDetailById = (id: number) => {
   return getData('/api/Dashboard/getDashboardById', { id });
 };
 export const deleteData = (id: number) => {
-  return removeById('/api/Dashboard/delete', { id });
+  return handleDeleteOperation('/api/Dashboard/delete', { id } ,'Dashboard');
 };
 
 export async function getMetricsLayoutByCascader() {

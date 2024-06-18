@@ -51,6 +51,7 @@ import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
 import {API_CONSTANTS} from "@/services/endpoints";
 import {l} from "@/utils/intl";
+import {queryDataByParams} from "@/services/BusinessCrud";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -106,14 +107,14 @@ export default (props: DashboardProps) => {
   useEffect(() => {
     const d = Object.values(chartData);
     if (d.length > 0) {
-      getData(API_CONSTANTS.GET_FLINK_DAT_BY_DASHBOARD, {
+      queryDataByParams(API_CONSTANTS.GET_FLINK_DAT_BY_DASHBOARD, {
         startTime: new Date().getTime() - 20 * 1000,
         flinkMetricsIdList: d
           .flatMap((x) => x.chartData)
           .map((x) => x.id)
           .join()
       }).then((d) => {
-        setCData(d.data);
+        setCData(d);
       });
     }
   }, [chartData]);
@@ -303,7 +304,7 @@ export default (props: DashboardProps) => {
         </div>
         {isUpdate && (
           <Space size={10}>
-            <Tooltip title='add'>
+            <Tooltip title={l('button.add')}>
               <Button
                 type='primary'
                 ghost
@@ -314,7 +315,7 @@ export default (props: DashboardProps) => {
                 }}
               />
             </Tooltip>
-            <Tooltip title='finish'>
+            <Tooltip title={l('button.finish')}>
               <Button
                 type='primary'
                 ghost
@@ -343,7 +344,7 @@ export default (props: DashboardProps) => {
               />
             </Tooltip>
 
-            <Tooltip title='cancle'>
+            <Tooltip title={l('button.cancel')}>
               <Button
                 type='primary'
                 danger
@@ -360,7 +361,7 @@ export default (props: DashboardProps) => {
         )}
 
         {!isUpdate && (
-          <Tooltip title='edit'>
+          <Tooltip title={l('button.edit')}>
             <Button
               type='primary'
               danger

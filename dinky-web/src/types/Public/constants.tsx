@@ -248,5 +248,16 @@ export enum PermissionConstants {
    * system log
    */
   SYSTEM_SETTING_INFO_LOG_LIST = '/settings/systemlog/loglist',
-  SYSTEM_SETTING_INFO_ROOT_LOG = '/settings/systemlog/rootlog'
+  SYSTEM_SETTING_INFO_ROOT_LOG = '/settings/systemlog/rootlog',
+
+  /**
+   * dashboard
+   */
+  DASHBOARD_ADD = '/dashboard/add',
+  DASHBOARD_EDIT = '/dashboard/edit',
+  DASHBOARD_DELETE = '/dashboard/delete',
+  DASHBOARD_VIEW = '/dashboard/view',
+
+
+
 }

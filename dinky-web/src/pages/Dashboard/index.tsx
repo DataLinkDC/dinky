@@ -17,29 +17,23 @@
  *
  */
 
-import {
-  ActionType,
-  ProForm,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-  ProList
-} from '@ant-design/pro-components';
-import React, { useCallback, useRef, useState } from 'react';
-import { DashboardData, EchartsTheme } from '@/pages/Dashboard/data';
-import { Link } from '@umijs/max';
-import { Button, Modal } from 'antd';
-import { ProFormInstance } from '@ant-design/pro-form/lib';
-import { addOrUpdate, deleteData, getDataList } from '@/pages/Dashboard/service';
+import {ActionType, ProForm, ProFormSelect, ProFormText, ProFormTextArea, ProList} from '@ant-design/pro-components';
+import React, {useCallback, useRef, useState} from 'react';
+import {DashboardData, EchartsTheme} from '@/pages/Dashboard/data';
+import {Link} from '@umijs/max';
+import {Button, Modal} from 'antd';
+import {ProFormInstance} from '@ant-design/pro-form/lib';
+import {addOrUpdate, deleteData, getDataList} from '@/pages/Dashboard/service';
 import useHookRequest from '@/hooks/useHookRequest';
-import { getMetricsLayout } from '@/pages/Metrics/service';
 import {l} from "@/utils/intl";
+import {PermissionConstants} from "@/types/Public/constants";
+import {Authorized} from "@/hooks/useAccess";
 
 const echartsThemeOptions = EchartsTheme.map((x) => {
-  return { label: l(`dashboard.theme.${x}`), value: x };
+  return {label: l(`dashboard.theme.${x}`), value: x};
 });
 export default () => {
-  const { data, refresh, loading } = useHookRequest<any, any>(getDataList, { defaultParams: [] });
+  const {data, refresh, loading} = useHookRequest<any, any>(getDataList, {defaultParams: []});
 
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1');
 
@@ -92,7 +86,8 @@ export default () => {
             title: l('dashboard.name'),
             key: 'title',
             fieldProps: {
-              width: '10%',            },
+              width: '10%',
+            },
             render: (text, row) => {
               return (
                 <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('dashboard.name')}: {text}</Link>
@@ -111,7 +106,7 @@ export default () => {
             dataIndex: 'chartTheme',
             valueType: 'select',
             fieldProps: {
-              width: '10%',              showSearch: true,
+              width: '10%', showSearch: true,
               placement: 'bottomRight',
               options: echartsThemeOptions
             },
@@ -119,26 +114,34 @@ export default () => {
           },
           actions: {
             render: (text, row) => [
-              <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('button.open')}</Link>,
-              <a
-                href={row.html_url}
-                target='_blank'
-                rel='noopener noreferrer'
-                key='link'
-                onClick={() => {
-                  action.current?.startEditable(row.name);
-                }}
-              >
-                {l('button.edit')}
-              </a>,
-              <a
-                target='_blank'
-                rel='noopener noreferrer'
-                key='delete'
-                onClick={async () => handleDelete(row.id)}
-              >
-                {l('button.delete')}
-              </a>
+              <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_VIEW}>
+                <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('button.open')}</Link>
+              </Authorized>
+              ,
+              <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_EDIT}>
+                <a
+                  href={row.html_url}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  key='link'
+                  onClick={() => {
+                    action.current?.startEditable(row.name);
+                  }}
+                >
+                  {l('button.edit')}
+                </a>
+              </Authorized>
+              ,
+              <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_DELETE}>
+                <a
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  key='delete'
+                  onClick={async () => handleDelete(row.id)}
+                >
+                  {l('button.delete')}
+                </a>
+              </Authorized>
             ]
           }
         }}
@@ -150,9 +153,11 @@ export default () => {
             }
           },
           actions: [
-            <Button type='primary' key='primary' onClick={() => setOpenCreate(true)}>
-            {l('dashboard.create')}
-            </Button>
+            <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_ADD}>
+              <Button type='primary' key='primary' onClick={() => setOpenCreate(true)}>
+                {l('dashboard.create')}
+              </Button>
+            </Authorized>
           ]
         }}
       />
@@ -169,7 +174,7 @@ export default () => {
             label={l('dashboard.name')}
             tooltip={l('dashboard.name.maxLength')}
             placeholder={l('dashboard.namePlaceholder')}
-            rules={[{ required: true, message: l('dashboard.namePlaceholder') }]}
+            rules={[{required: true, message: l('dashboard.namePlaceholder')}]}
           />
           <ProFormTextArea
             name='remark'
@@ -179,7 +184,7 @@ export default () => {
           <ProFormSelect
             name='chartTheme'
             label={l('dashboard.chartTheme')}
-            rules={[{ required: true, message: l('dashboard.selectChartTheme') }]}
+            rules={[{required: true, message: l('dashboard.selectChartTheme')}]}
             options={echartsThemeOptions}
           />
         </ProForm>
