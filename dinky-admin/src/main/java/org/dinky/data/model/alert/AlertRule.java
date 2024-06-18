@@ -19,8 +19,12 @@
 
 package org.dinky.data.model.alert;
 
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
+import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
@@ -38,8 +42,9 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "AlertRule", description = "AlertRule")
 public class AlertRule extends SuperEntity<AlertRule> {
 
-    @ApiModelProperty(value = "rule", required = true, dataType = "String", example = "rule")
-    String rule;
+    @ApiModelProperty(value = "rule", required = true, dataType = "List<AlertTriggerRule>", example = "rule")
+    @TableField(typeHandler = ListTypeHandler.class)
+    List<AlertTriggerRule> rule;
 
     @ApiModelProperty(value = "templateId", required = true, dataType = "int", example = "1")
     int templateId;

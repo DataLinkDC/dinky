@@ -52,8 +52,8 @@ const JobRunningModal: React.FC<JobRunningModalProps> = (props) => {
                   ? value?.jobState === 'RUNNING'
                     ? 50
                     : value?.jobState === 'FINISHED'
-                    ? 100
-                    : 0
+                      ? 100
+                      : 0
                   : 0
               }
               status='active'

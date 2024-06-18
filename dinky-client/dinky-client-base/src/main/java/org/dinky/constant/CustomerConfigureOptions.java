@@ -56,4 +56,9 @@ public class CustomerConfigureOptions {
             .defaultValue("/opt/dinky/sql-exec/")
             .withDescription(
                     "The dinky configuration directory. It is used to mount the ConfigMap to the Flink container.");
+
+    public static final ConfigOption<String> YARN_APPLICATION_USER = key("yarn.application.user")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("A custom user for your YARN application.");
 }

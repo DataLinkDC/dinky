@@ -36,35 +36,44 @@ export const buildRunModelOptions = () => {
   resultReturn.push(
     {
       label: 'Local',
-      value: RUN_MODE.LOCAL
+      value: RUN_MODE.LOCAL,
+      key: RUN_MODE.LOCAL
     },
     {
       label: 'Standalone',
-      value: RUN_MODE.STANDALONE
+      value: RUN_MODE.STANDALONE,
+      key: RUN_MODE.STANDALONE
     },
     {
       label: 'Yarn Session',
-      value: RUN_MODE.YARN_SESSION
+      value: RUN_MODE.YARN_SESSION,
+      key: RUN_MODE.YARN_SESSION
     },
     {
-      label: 'Yarn Per-Job',
-      value: RUN_MODE.YARN_PER_JOB
+      // flink弃用了 yarn per-job 模式 在这写个标签 带横线的 | flink deprecated yarn per-job mode, write a label here with a horizontal line
+      label: <del>Yarn Per-Job (Deprecated)</del>,
+      value: RUN_MODE.YARN_PER_JOB,
+      key: RUN_MODE.YARN_PER_JOB
     },
     {
       label: 'Yarn Application',
-      value: RUN_MODE.YARN_APPLICATION
+      value: RUN_MODE.YARN_APPLICATION,
+      key: RUN_MODE.YARN_APPLICATION
     },
     {
       label: 'Kubernetes Session',
-      value: RUN_MODE.KUBERNETES_SESSION
+      value: RUN_MODE.KUBERNETES_SESSION,
+      key: RUN_MODE.KUBERNETES_SESSION
     },
     {
       label: 'Kubernetes Application',
-      value: RUN_MODE.KUBERNETES_APPLICATION
+      value: RUN_MODE.KUBERNETES_APPLICATION,
+      key: RUN_MODE.KUBERNETES_APPLICATION
     },
     {
       label: 'Kubernetes Operator Application',
-      value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
+      value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR,
+      key: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
     }
   );
 
@@ -96,6 +105,7 @@ export const buildClusterOptions = (
     );
     sessionClusterOptions.push({
       label: tag,
+      title: item.name,
       value: item.id,
       key: item.id
     });
@@ -135,6 +145,7 @@ export const buildClusterConfigOptions = (
     );
     clusterConfigOptions.push({
       label: tag,
+      title: item.name,
       value: item.id,
       key: item.id
     });
@@ -154,6 +165,7 @@ export const buildEnvOptions = (env: TaskInfo[] = []) => {
           {l('button.disable')}
         </Space>
       ),
+      title: l('button.disable'),
       value: -1,
       key: -1
     }
@@ -173,6 +185,7 @@ export const buildEnvOptions = (env: TaskInfo[] = []) => {
 
     envList.push({
       label: tag,
+      title: item.name,
       value: item.id,
       key: item.id,
       disabled: !item.enabled
@@ -193,6 +206,7 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[] = []) => 
           {l('button.disable')}
         </TagAlignLeft>
       ),
+      title: l('button.disable'),
       value: -1,
       key: -1
     }
@@ -206,6 +220,7 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[] = []) => 
         </TagAlignLeft>
       ),
       value: item.id,
+      title: item.name,
       key: item.id
     });
   });

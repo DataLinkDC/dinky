@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpRequest;
@@ -42,6 +43,7 @@ import lombok.SneakyThrows;
 @Controller
 @Api(tags = "Flink Proxy Controller", hidden = true, description = "Flink Proxy API")
 @RequestMapping(FlinkProxyController.API)
+@SaCheckLogin
 public class FlinkProxyController {
     public static final String API = "/api/flink/";
 

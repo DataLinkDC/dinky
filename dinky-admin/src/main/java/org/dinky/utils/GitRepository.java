@@ -32,6 +32,7 @@ import java.util.function.Consumer;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LsRemoteCommand;
+import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -95,7 +96,6 @@ public class GitRepository {
         FileUtil.mkdir(targetFile);
         File writeFile = new File(targetFile, branch);
 
-        Git git;
         try {
 
             CloneCommand cloneCommand =
@@ -109,30 +109,33 @@ public class GitRepository {
                         .readEnvironment()
                         .findGitDir()
                         .build();
-                git = new Git(repository);
-                git.pull()
-                        .setProgressMonitor(new TextProgressMonitor(new StringWriter() {
-                            @Override
-                            public void write(String str) {
-                                if (logFile != null) {
-                                    FileUtil.appendUtf8String(str, logFile);
-                                }
-                                if (consumer != null) {
-                                    consumer.accept(str);
-                                }
-                                System.out.println(str);
-                                super.write(str);
+                try (Git git = new Git(repository)) {
+                    PullCommand pullCommand = git.pull().setProgressMonitor(new TextProgressMonitor(new StringWriter() {
+                        @Override
+                        public void write(String str) {
+                            if (logFile != null) {
+                                FileUtil.appendUtf8String(str, logFile);
                             }
-                        }))
-                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password))
-                        .call();
-                git.close();
+                            if (consumer != null) {
+                                consumer.accept(str);
+                            }
+                            log.info(str);
+                            super.write(str);
+                        }
+                    }));
+                    if (!StrUtil.hasBlank(username, password)) {
+                        pullCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
+                    }
+
+                    pullCommand.call();
+                }
+
             } else {
                 cloneCommand.call().close();
             }
             return writeFile;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("", e);
             throw new DinkyException(e);
         }
     }

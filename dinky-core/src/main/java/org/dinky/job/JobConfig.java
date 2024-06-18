@@ -92,6 +92,13 @@ public class JobConfig {
     private Map<String, String> configJson;
 
     @ApiModelProperty(
+            value = "UDF configuration",
+            dataType = "Map<String, String>",
+            example = "{\"udf1\": \"value1\", \"udf2\": \"value2\"}",
+            notes = "UDF (User-Defined Function) configuration")
+    private Map<String, String> udfRefer;
+
+    @ApiModelProperty(
             value = "Flag indicating whether to use the result",
             dataType = "boolean",
             example = "true",

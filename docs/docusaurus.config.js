@@ -84,20 +84,26 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
-                    lastVersion: 'current',
+                    includeCurrentVersion: true,
+                    lastVersion: '1.0',
                     versions: {
                         current: {
-                            label: '1.0',
+                            label: 'Dev',
                             path: '/next',
+                            banner: 'unreleased',
                         },
-                        0.6: {
-                            label: '0.6',
-                            path: '/0.6',
-                            banner: 'unmaintained',
+                        '1.0': {
+                            label: '1.0',
+                            path: '/1.0',
                         },
                         0.7: {
                             label: '0.7',
                             path: '/0.7',
+                            banner: 'unmaintained',
+                        },
+                        0.6: {
+                            label: '0.6',
+                            path: '/0.6',
                             banner: 'unmaintained',
                         },
                     },
@@ -135,12 +141,12 @@ const config = {
     themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
-            announcementBar: {
-                id: 'announcementBar-2', // Increment on change
-                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="https://www.dinky.org.cn">www.dinky.org.cn</a>`,
-                backgroundColor: "#BBDFFF",
-                isCloseable: false,
-            },
+            // announcementBar: {
+            //     id: 'announcementBar-2', // Increment on change
+            //     content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="https://www.dinky.org.cn">www.dinky.org.cn</a>`,
+            //     backgroundColor: "#BBDFFF",
+            //     isCloseable: false,
+            // },
             hideOnScroll: false, // 滚动时是否隐藏 | Whether to hide the sidebar on scroll
             docs: {
                 sidebar: {
@@ -270,6 +276,7 @@ const config = {
             },
         }),
     plugins: [
+        './src/plugin/wwads-plugin.ts',
         'docusaurus-plugin-less',
         [
             '@docusaurus/plugin-content-docs',
@@ -308,11 +315,12 @@ const config = {
                 steps: 2, // 在 min 和 max 之间最多生成的图片数量（包含两端点）
                 disableInDev: false,
             },
-        ],
+        ]
     ],
     scripts: [
         // 统计 pv
-        {src: 'https://hm.baidu.com/hm.js?7f2b5e6f354b8ae1cdec43ba108936f7',  async: true}
+        {src: 'https://hm.baidu.com/hm.js?7f2b5e6f354b8ae1cdec43ba108936f7', async: true},
+        {src: 'https://cdn.wwads.cn/js/makemoney.js', async: true},
     ]
 };
 

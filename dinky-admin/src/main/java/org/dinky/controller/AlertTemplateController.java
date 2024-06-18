@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
@@ -48,6 +49,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/alertTemplate")
 @Api(tags = "Alert Template Controller")
+@SaCheckLogin
 public class AlertTemplateController {
 
     private final AlertTemplateService alertTemplateService;

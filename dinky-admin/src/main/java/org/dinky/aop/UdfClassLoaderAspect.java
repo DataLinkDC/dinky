@@ -55,10 +55,9 @@ public class UdfClassLoaderAspect {
             proceed = proceedingJoinPoint.proceed();
         } catch (Throwable e) {
             if (!(e instanceof DinkyException)) {
-                throw new DinkyException(e);
+                throw new RuntimeException(e);
             }
-            e.printStackTrace();
-            throw (DinkyException) e;
+            throw (RuntimeException) e;
         } finally {
             if (contextClassLoader != Thread.currentThread().getContextClassLoader()) {
                 Thread.currentThread().setContextClassLoader(contextClassLoader);

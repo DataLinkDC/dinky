@@ -49,7 +49,7 @@ public class SystemMetricsHandler {
         metrics.setHeartTime(now);
         metrics.setModel(MetricsType.LOCAL.getType());
         metrics.setDate(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        MetricsContextHolder.getInstances().sendAsync(metrics.getModel(), metrics);
+        MetricsContextHolder.getInstance().sendAsync(metrics.getModel(), metrics);
 
         log.debug("Collecting jvm information ends.");
     }

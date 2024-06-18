@@ -65,11 +65,15 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
@@ -103,6 +107,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         typeConverterList = Lists.newArrayList(
                 this::convertVarCharType,
                 this::convertDateType,
+                this::convertTimeType,
                 this::convertVarBinaryType,
                 this::convertBigIntType,
                 this::convertFloatType,
@@ -272,15 +277,30 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         config.getSink().remove("timezone");
         if (Asserts.isNotNullString(timeZone)) {
             sinkTimeZone = ZoneId.of(timeZone);
+            logger.info("Sink timezone is {}", sinkTimeZone);
         }
 
         final List<Schema> schemaList = config.getSchemaList();
+        if (Asserts.isNullCollection(schemaList)) {
+            logger.warn("Schema list is empty, please check your configuration and try again.");
+            return dataStreamSource;
+        }
+
         final String schemaFieldName = config.getSchemaFieldName();
 
         if (Asserts.isNotNullCollection(schemaList)) {
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
             for (Schema schema : schemaList) {
-                for (Table table : schema.getTables()) {
+                if (Asserts.isNullCollection(schema.getTables())) {
+                    // if schema tables is empty, throw exception
+                    throw new IllegalArgumentException(
+                            "Schema tables is empty, please check your configuration or check your database permission and try again.");
+                }
+                // if schema tables is not empty, sort by table name
+                List<Table> tableList = schema.getTables().stream()
+                        .sorted(Comparator.comparing(Table::getName))
+                        .collect(Collectors.toList());
+                for (Table table : tableList) {
                     SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
 
                     List<String> columnNameList = new ArrayList<>();
@@ -307,8 +327,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     public LogicalType getLogicalType(Column column) {
         switch (column.getJavaType()) {
-            case STRING:
-                return new VarCharType();
             case BOOLEAN:
             case JAVA_LANG_BOOLEAN:
                 return new BooleanType();
@@ -351,6 +369,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 }
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
+            case STRING:
             default:
                 return new VarCharType();
         }
@@ -456,6 +475,16 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return Optional.empty();
     }
 
+    protected Optional<Object> convertTimeType(Object target, LogicalType logicalType) {
+        if (logicalType instanceof TimeType) {
+            return Optional.of(StringData.fromString(Instant.ofEpochMilli((long) target)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalTime()
+                    .toString()));
+        }
+        return Optional.empty();
+    }
+
     protected Optional<Object> convertVarCharType(Object target, LogicalType logicalType) {
         if (logicalType instanceof VarCharType) {
             return Optional.of(StringData.fromString((String) target));
@@ -477,20 +506,71 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     public String getSinkTableName(Table table) {
         String tableName = table.getName();
         Map<String, String> sink = config.getSink();
+
+        // Add table name mapping logic
+        String mappingRoute = sink.get(FlinkCDCConfig.TABLE_MAPPING_ROUTES);
+        if (mappingRoute != null) {
+            Map<String, String> mappingRules = parseMappingRoute(mappingRoute);
+            if (mappingRules.containsKey(tableName)) {
+                tableName = mappingRules.get(tableName);
+            }
+        }
+
+        tableName = sink.getOrDefault(FlinkCDCConfig.TABLE_PREFIX, "")
+                + tableName
+                + sink.getOrDefault(FlinkCDCConfig.TABLE_SUFFIX, "");
+        // table.lower and table.upper can not be true at the same time
+        if (Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_LOWER))
+                && Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_UPPER))) {
+            throw new IllegalArgumentException("table.lower and table.upper can not be true at the same time");
+        }
+
+        if (Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_UPPER))) {
+            tableName = tableName.toUpperCase();
+        }
+
+        if (Boolean.parseBoolean(sink.get(FlinkCDCConfig.TABLE_LOWER))) {
+            tableName = tableName.toLowerCase();
+        }
+        // Implement regular expressions to replace table names through
+        // sink.table.replace.pattern and table.replace.with
+        String replacePattern = sink.get(FlinkCDCConfig.TABLE_REPLACE_PATTERN);
+        String replaceWith = sink.get(FlinkCDCConfig.TABLE_REPLACE_WITH);
+        if (replacePattern != null && replaceWith != null) {
+            Pattern pattern = Pattern.compile(replacePattern);
+            Matcher matcher = pattern.matcher(tableName);
+            tableName = matcher.replaceAll(replaceWith);
+        }
+
+        // add schema
         if (Boolean.parseBoolean(sink.get("table.prefix.schema"))) {
             tableName = table.getSchema() + "_" + tableName;
         }
 
-        tableName = sink.getOrDefault("table.prefix", "") + tableName + sink.getOrDefault("table.suffix", "");
-
-        if (Boolean.parseBoolean(sink.get("table.lower"))) {
-            tableName = tableName.toLowerCase();
-        }
-
-        if (Boolean.parseBoolean(sink.get("table.upper"))) {
-            tableName = tableName.toUpperCase();
-        }
         return tableName;
+    }
+
+    /**
+     * Mapping table name Original table name: target table name, multiple table names are implemented through mapping
+     * <pre>
+     *   k is original table name, v is target table name.
+     *   Single table name mapping via k:v format.
+     *   Multiple table names are mapped in k:v,k:v format. Note: use commas to separate them.
+     * </pre>
+     *
+     * @param mappingRoute sink.table.mapping-route
+     * @return Map<String, String> key is original table name, value is target table name
+     */
+    private Map<String, String> parseMappingRoute(String mappingRoute) {
+        Map<String, String> mappingRules = new HashMap<>();
+        String[] mappings = mappingRoute.split(",");
+        for (String mapping : mappings) {
+            String[] parts = mapping.split(":");
+            if (parts.length == 2) {
+                mappingRules.put(parts[0], parts[1]);
+            }
+        }
+        return mappingRules;
     }
 
     protected List<String> getPKList(Table table) {

@@ -25,11 +25,20 @@ import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import cn.hutool.core.text.StrFormatter;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -39,38 +48,48 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetricsContextHolder {
 
+    @Getter
     protected static final MetricsContextHolder instance = new MetricsContextHolder();
 
-    public static MetricsContextHolder getInstances() {
-        return instance;
-    }
+    private final List<MetricsVO> metricsVOS = new CopyOnWriteArrayList<>();
+    private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
 
-    /**
-     * Temporary cache monitoring information, mainly to prevent excessive buffering of write IO,
-     * when metricsVOS data reaches 1000 or the time exceeds 5 seconds
-     */
-    private final List<MetricsVO> metricsVOS = Collections.synchronizedList(new ArrayList<>());
+    // Create a ThreadFactory with custom naming
+    ThreadFactory namedThreadFactory =
+            new ThreadFactoryBuilder().setNameFormat("metrics-send-thread-%d").build();
 
-    private final Long lastDumpTime = System.currentTimeMillis();
+    // Create a custom ThreadPoolExecutor
+    ExecutorService pool = new ThreadPoolExecutor(
+            5, // Core pool size
+            10, // Maximum pool size, allows the pool to expand as needed
+            60L, // Keep alive time for idle threads
+            TimeUnit.SECONDS, // Unit of keep alive time
+            new LinkedBlockingQueue<Runnable>(10), // Use a larger queue to hold excess tasks
+            namedThreadFactory);
 
     public void sendAsync(String key, MetricsVO o) {
-        CompletableFuture.runAsync(() -> {
-                    Thread.currentThread().setContextClassLoader(MetricsContextHolder.class.getClassLoader());
-                    metricsVOS.add(o);
-                    long duration = System.currentTimeMillis() - lastDumpTime;
-                    synchronized (metricsVOS) {
-                        if (metricsVOS.size() > 1000 || duration > 1000 * 5) {
-                            PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, metricsVOS, MetricsVO.class);
-                            metricsVOS.clear();
-                        }
-                    }
-                    String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-                    SseSessionContextHolder.sendTopic(topic, o);
-                })
-                .whenComplete((v, t) -> {
-                    if (t != null) {
-                        log.error("send metrics async error", t);
-                    }
-                });
+        Object content = o.getContent();
+        if (content == null
+                || (content instanceof ConcurrentHashMap && ((ConcurrentHashMap<?, ?>) content).isEmpty())) {
+            return; // Return early to avoid unnecessary operations
+        }
+        pool.execute(() -> {
+            metricsVOS.add(o);
+            long current = System.currentTimeMillis();
+            long duration = current - lastDumpTime.get();
+            // Temporary cache monitoring information, mainly to prevent excessive buffering of write IO,
+            // when metricsVOS data reaches 1000 or the time exceeds 15 seconds
+            if (metricsVOS.size() >= 1000 || duration >= 15000) {
+                List<MetricsVO> snapshot;
+                synchronized (this) { // Enter synchronized block only when necessary
+                    snapshot = new ArrayList<>(metricsVOS);
+                    metricsVOS.clear();
+                    lastDumpTime.set(current);
+                }
+                PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, snapshot, MetricsVO.class);
+            }
+            String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
+            SseSessionContextHolder.sendTopic(topic, o); // Ensure only successfully added metrics are sent
+        });
     }
 }

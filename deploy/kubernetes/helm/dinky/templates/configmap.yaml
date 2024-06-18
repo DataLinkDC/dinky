@@ -1,0 +1,82 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+{{- if .Values.dinkyDefaultConfiguration.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dinky-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+  {{- include "dinky.labels" . | nindent 4 }}
+data:
+  application.yml: |+
+{{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/application.yml"  | nindent 4 -}}
+{{- end }}
+{{- if index (.Values.dinkyDefaultConfiguration) "application.yml" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "application.yml" | nindent 4 -}}
+{{- end }}
+  application-h2.yml: |+
+{{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/application-h2.yml"  | nindent 4 -}}
+{{- end }}
+{{- if index (.Values.dinkyDefaultConfiguration) "application-h2.yml" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "application-h2.yml" | nindent 4 -}}
+{{- end }}
+  application-mysql.yml: |+
+{{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/application-mysql.yml"  | nindent 4 -}}
+{{- end }}
+{{- if index (.Values.dinkyDefaultConfiguration) "application-mysql.yml" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "application-mysql.yml" | nindent 4 -}}
+{{- end }}
+  application-pgsql.yml: |+
+{{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/application-pgsql.yml"  | nindent 4 -}}
+{{- end }}
+{{- if index (.Values.dinkyDefaultConfiguration) "application-pgsql.yml" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "application-pgsql.yml" | nindent 4 -}}
+{{- end }}
+  application-jmx.yml: |+
+    {{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/application-jmx.yml"  | nindent 4 -}}
+    {{- end }}
+    {{- if index (.Values.dinkyDefaultConfiguration) "application-jmx.yml" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "application-jmx.yml" | nindent 4 -}}
+    {{- end }}
+  application.properties: |+
+    {{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/application.properties"  | nindent 4 -}}
+    {{- end }}
+    {{- if index (.Values.dinkyDefaultConfiguration) "application.properties" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "application.properties" | nindent 4 -}}
+    {{- end }}
+  log4j2.xml: |+
+    {{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/log4j2.xml"  | nindent 4 -}}
+    {{- end }}
+    {{- if index (.Values.dinkyDefaultConfiguration) "log4j2.xml" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "log4j2.xml" | nindent 4 -}}
+    {{- end }}
+  jmx_exporter_config.yaml: |+
+    {{- if .Values.dinkyDefaultConfiguration.append }}
+    {{- $.Files.Get "conf/jmx/jmx_exporter_config.yaml"  | nindent 4 -}}
+    {{- end }}
+    {{- if index (.Values.dinkyDefaultConfiguration) "jmx_exporter_config.yaml" }}
+    {{- index (.Values.dinkyDefaultConfiguration) "jmx_exporter_config.yaml" | nindent 4 -}}
+    {{- end }}
+{{- end }}

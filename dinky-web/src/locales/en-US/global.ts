@@ -138,6 +138,8 @@ export default {
   'global.table.endTime': 'End Time',
   'global.table.finishTime': 'Finished Time',
   'global.table.useTime': 'Duration',
+  'global.table.firstLevelOwner': 'Owner',
+  'global.table.secondLevelOwners': 'Maintainer',
 
   'global.table.registType': 'Regist Type',
   'global.table.registType.manual': 'Manual',
@@ -230,5 +232,8 @@ export default {
   'global.job.status.reconciling': 'Reconciling',
   'global.job.status.reconnecting': 'Reconnecting',
   'global.job.status.unknown': 'Unknown',
-  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name'
+  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name',
+
+  'global.operation.unable': 'Unable to operate',
+  'global.operation.able': 'Can operate'
 };

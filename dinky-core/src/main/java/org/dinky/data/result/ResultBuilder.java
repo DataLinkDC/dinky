@@ -19,6 +19,7 @@
 
 package org.dinky.data.result;
 
+import org.dinky.job.JobHandler;
 import org.dinky.parser.SqlType;
 
 import org.apache.flink.table.api.TableResult;
@@ -53,4 +54,15 @@ public interface ResultBuilder {
     }
 
     IResult getResult(TableResult tableResult);
+
+    /**
+     * Get the results and store them persistently.
+     *
+     * @param tableResult table result
+     * @param jobHandler  job handler
+     * @return IResult
+     */
+    default IResult getResultWithPersistence(TableResult tableResult, JobHandler jobHandler) {
+        return getResult(tableResult);
+    }
 }

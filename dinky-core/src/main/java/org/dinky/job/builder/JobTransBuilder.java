@@ -172,7 +172,7 @@ public class JobTransBuilder extends JobBuilder {
                             config.isUseChangeLog(),
                             config.isUseAutoCancel(),
                             executor.getTimeZone())
-                    .getResult(tableResult);
+                    .getResultWithPersistence(tableResult, jobManager.getHandler());
             job.setResult(result);
         }
     }

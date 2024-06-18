@@ -178,7 +178,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         ClusterInstance clusterInstance = getById(id);
         // if cluster instance is not null and cluster instance is health, can not delete, must kill cluster instance
         // first
-        if (Asserts.isNotNull(clusterInstance) && checkHealth(clusterInstance)) {
+        if (Asserts.isNotNull(clusterInstance) && checkHealth(clusterInstance) && clusterInstance.isAutoRegisters()) {
             throw new BusException(Status.CLUSTER_INSTANCE_HEALTH_NOT_DELETE);
         }
         return removeById(id);
@@ -258,7 +258,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     public List<ClusterInstance> selectListByKeyWord(String searchKeyWord, boolean isAutoCreate) {
         return getBaseMapper()
                 .selectList(new LambdaQueryWrapper<ClusterInstance>()
-                        .and(true, i -> i.eq(ClusterInstance::getAutoRegisters, isAutoCreate))
+                        .and(true, i -> i.eq(ClusterInstance::isAutoRegisters, isAutoCreate))
                         .and(true, i -> i.like(ClusterInstance::getName, searchKeyWord)
                                 .or()
                                 .like(ClusterInstance::getAlias, searchKeyWord)

@@ -10,10 +10,13 @@
         <where>
             1=1
             <if test='param.username!=null and param.username!=""'>
-                and a.username like "%${param.username}%"
+                and a.username like concat('%',#{param.username},'%')
             </if>
             <if test='param.nickname!=null and param.nickname!=""'>
-                and a.nickname like "%${param.nickname}%"
+                and a.nickname like concat('%',#{param.nickname},'%')
+            </if>
+            <if test='param.worknum!=null and param.worknum!=""'>
+                and a.worknum like concat('%',#{param.worknum},'%')
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')

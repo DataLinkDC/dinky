@@ -138,6 +138,9 @@ add customjar 'flink-sql-connector-mysql-cdc-2.3.0.jar'
 | sink.table.suffix              | 否    | 无             | 目标表的表名后缀                                                                                                                           |
 | sink.table.upper               | 否    | false         | 目标表的表名全大写                                                                                                                          |
 | sink.table.lower               | 否    | false         | 目标表的表名全小写                                                                                                                          |
+| sink.table.replace.pattern     | 否    | false         | 正则表达式，用于匹配原表名，如: t_biz_b `'sink.table.replace.pattern' = 't_(.*?)_'` **必须搭配：sink.table.replace.with 一起使用**                         |
+| sink.table.replace.with        | 否    | false         | 替换成目标表名格式, 如: `'sink.table.replace.with' = '$1_new'` or `'sink.table.replace.with' = 'ods_$1_'`                                    |
+| sink.table.mapping-routes      | 否    | false         | 表名映射，`原表名:映射表名`。使用方式: `'sink.table.mapping-routes' = 't_biz_a:ods_biz_a,t_biz_b:ods_biz_b'`，多张表参数逗号','分割。**注：如果原表命名过长，可以通过表名映射解决**     |
 | sink.auto.create               | 否    | false         | 目标数据源自动建表，目前只支持 Mysql，其他可自行扩展                                                                                                      |
 | sink.timezone                  | 否    | UTC           | 指定目标数据源的时区，在数据类型转换时自动生效                                                                                                            |
 | sink.column.replace.line-break | 否    | false         | 指定是否去除换行符，即在数据转换中进行 REGEXP_REPLACE(column, '\\n', '')                                                                              |
