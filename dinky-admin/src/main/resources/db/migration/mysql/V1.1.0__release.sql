@@ -121,4 +121,10 @@ CREATE TABLE IF NOT EXISTS `dinky_dashboard` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='dashboard';
 
 
+INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`) VALUES (164, -1, '看板', '/dashboard', './Dashboard', 'dashboard', 'DashboardOutlined', 'C', 0, 162, '2024-06-18 22:04:34', '2024-06-18 22:04:34', NULL);
+INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`) VALUES (165, 164, '创建仪表盘', '/dashboard/add', NULL, 'dashboard:add', 'AppstoreAddOutlined', 'F', 0, 163, '2024-06-18 22:05:50', '2024-06-18 22:05:50', NULL);
+INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`) VALUES (166, 164, '修改仪表盘', '/dashboard/edit', NULL, 'dashboard:edit', 'EditFilled', 'F', 0, 164, '2024-06-18 22:06:44', '2024-06-18 22:06:44', NULL);
+INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`) VALUES (167, 164, '删除仪表盘', '/dashboard/delete', NULL, 'dashboard:delete', 'DeleteOutlined', 'F', 0, 165, '2024-06-18 22:07:04', '2024-06-18 22:07:04', NULL);
+
+
 SET FOREIGN_KEY_CHECKS = 1;
