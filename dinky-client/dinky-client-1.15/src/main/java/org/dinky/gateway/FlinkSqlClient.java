@@ -19,24 +19,10 @@
 
 package org.dinky.gateway;
 
-import org.dinky.utils.CloseUtil;
-
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
-import org.apache.flink.core.plugin.PluginUtils;
-import org.apache.flink.table.client.SqlClientException;
-import org.apache.flink.table.client.cli.CliClient;
-import org.apache.flink.table.client.gateway.Executor;
-import org.apache.flink.table.client.gateway.SingleSessionManager;
-import org.apache.flink.table.gateway.api.endpoint.SqlGatewayEndpointFactoryUtils;
-import org.apache.flink.util.NetUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import org.jline.terminal.Terminal;
@@ -44,7 +30,7 @@ import org.jline.terminal.Terminal;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class FlinkSqlClient implements Closeable,ISqlClient {
+public class FlinkSqlClient implements Closeable, ISqlClient {
 
     public static final String CLI_NAME = "Dinky Flink SQL WEB CLI";
     private final Supplier<Terminal> terminalFactory;
@@ -62,8 +48,5 @@ public class FlinkSqlClient implements Closeable,ISqlClient {
         }
     }
 
-
-    public void close() {
-
-    }
+    public void close() {}
 }

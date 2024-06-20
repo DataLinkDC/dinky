@@ -56,7 +56,7 @@ const TerminalContent: React.FC<TermProps> = (props) => {
         data = String.fromCharCode(KeyCode.Backspace);
       }
     }
-    console.log(data)
+    console.log(data);
     if (data.charCodeAt(0) === AsciiCode.EndOfText) {
       data = String.fromCharCode(AsciiCode.Substitute);
     }
@@ -110,7 +110,7 @@ const TerminalContent: React.FC<TermProps> = (props) => {
         }
       } else {
         //预留接口
-        term.write(e.data.replace('\r','\n\n'));
+        term.write(e.data.replace('\r', '\n\n'));
       }
     };
   };

@@ -47,7 +47,7 @@ import org.jline.terminal.Terminal;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class FlinkSqlClient implements Closeable,ISqlClient {
+public class FlinkSqlClient implements Closeable, ISqlClient {
 
     public static final String CLI_NAME = "Dinky Flink SQL WEB CLI";
 
