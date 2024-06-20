@@ -77,7 +77,10 @@
     "sql-formatter": "^15.3.1",
     "styled-components": "^6.1.1",
     "use-sse": "^2.0.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "websocket": "^1.0.35",
+    "@xterm/xterm": "^5.5.0",
+    "xterm-addon-fit": "^0.8.0"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^3.2.1",
