@@ -140,7 +140,7 @@ const TerminalTab = () => {
             <Form.Item label={l('datastudio.middle.terminal.mode')} name='mode' required>
               <Radio.Group onChange={(e) => setCurrentMode(e.target.value)}>
                 <Radio.Button value='MODE_EMBEDDED'>Embedded</Radio.Button>
-                <Radio.Button value='MODE_GATEWAY'>SQL Gateway</Radio.Button>
+                <Radio.Button value='MODE_GATEWAY' disabled>SQL Gateway</Radio.Button>
               </Radio.Group>
             </Form.Item>
 
