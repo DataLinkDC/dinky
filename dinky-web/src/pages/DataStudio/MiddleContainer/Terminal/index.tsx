@@ -45,6 +45,7 @@ import {
   TermProps
 } from '@/pages/DataStudio/MiddleContainer/Terminal/TerminalConfig';
 import TerminalContent from '@/pages/DataStudio/MiddleContainer/Terminal/TerminalContent';
+import {l} from "@/utils/intl";
 
 const TerminalTab = () => {
   // const [form] = Form.useForm();
@@ -136,14 +137,14 @@ const TerminalTab = () => {
             style={{ maxWidth: 800 }}
             requiredMark={'optional'}
           >
-            <Form.Item label='连接方式' name='mode' required>
+            <Form.Item label={l('datastudio.middle.terminal.mode')} name='mode' required>
               <Radio.Group onChange={(e) => setCurrentMode(e.target.value)}>
                 <Radio.Button value='MODE_EMBEDDED'>Embedded</Radio.Button>
                 <Radio.Button value='MODE_GATEWAY'>SQL Gateway</Radio.Button>
               </Radio.Group>
             </Form.Item>
 
-            <Form.Item label='dinky后端' required>
+            <Form.Item label={l('datastudio.middle.terminal.websocket')} required>
               <Row gutter={24}>
                 <Col span={21}>
                   <Form.Item
@@ -154,7 +155,7 @@ const TerminalTab = () => {
                     <Input disabled={disableUrlEditable} />
                   </Form.Item>
                   <Typography.Text type='secondary' italic style={{ fontSize: 'small' }}>
-                    一般情况下无需改动，如果您有自定义nginx配置，请修改此地址
+                    {l('datastudio.middle.terminal.websocket.tip')}
                   </Typography.Text>
                 </Col>
                 <Col span={1}>
@@ -163,7 +164,7 @@ const TerminalTab = () => {
               </Row>
             </Form.Item>
 
-            <Form.Item label='Flink 集群' required>
+            <Form.Item label={l('datastudio.middle.terminal.cluster')} required>
               <Form.Item
                 name='connectAddress'
                 noStyle
@@ -177,8 +178,7 @@ const TerminalTab = () => {
                 ></Select>
               </Form.Item>
               <Typography.Text type='secondary' italic style={{ fontSize: 'small' }}>
-                {' '}
-                需要提前在注册中心添加对应集群,仅展示手动注册集群
+                {l('datastudio.middle.terminal.cluster.tip')}
               </Typography.Text>
             </Form.Item>
 
@@ -186,31 +186,30 @@ const TerminalTab = () => {
               <Input />
             </Form.Item>
 
-            <Form.Item name='initSql' label='ENV环境'>
-              <Select placeholder='前置SQL' options={envData.data} allowClear></Select>
+            <Form.Item name='initSql' label='Init Sql'>
+              <Select placeholder='Init SQL' options={envData.data} allowClear></Select>
             </Form.Item>
 
             <Form.Item
               rules={[{ required: true, message: 'Font Size is required!' }]}
               name='fontSize'
-              label='字体大小'
+              label={l('datastudio.middle.terminal.fontSize')}
             >
               <InputNumber min={1} max={100} />
             </Form.Item>
 
-            <Form.Item required label='回退字符转换'>
+            <Form.Item required label={l('datastudio.middle.terminal.backspaceAsCtrlH')}>
               <Form.Item name='backspaceAsCtrlH' noStyle required>
                 <Switch />
               </Form.Item>
               <Typography.Text type='secondary' italic style={{ fontSize: 'small' }}>
-                {' '}
-                如果回退删除显示异常，修改此选项
+                {l('datastudio.middle.terminal.backspaceAsCtrlH.tip')}
               </Typography.Text>
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
               <Button type='primary' htmlType='submit'>
-                连接
+                {l('datastudio.middle.terminal.connect')}
               </Button>
             </Form.Item>
           </Form>
