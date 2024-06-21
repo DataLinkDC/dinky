@@ -19,12 +19,13 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.annotations.TaskId;
+
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.dinky.data.annotations.TaskId;
 
 /** @description: 任务回滚DTO */
 @Data

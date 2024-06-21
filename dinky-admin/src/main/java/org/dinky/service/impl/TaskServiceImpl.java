@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -131,6 +130,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
@@ -1012,8 +1012,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public Boolean checkTaskOperatePermission(Integer taskId) {
         TaskDTO taskDTO = getTaskInfoById(taskId);
         if (Objects.nonNull(taskDTO)) {
-            return hasTaskOperatePermission(
-                    taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners());
+            return hasTaskOperatePermission(taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners());
         }
         return null;
     }
