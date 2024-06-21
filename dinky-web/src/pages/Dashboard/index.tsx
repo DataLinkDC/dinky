@@ -17,30 +17,37 @@
  *
  */
 
-import {ActionType, ProForm, ProFormSelect, ProFormText, ProFormTextArea, ProList} from '@ant-design/pro-components';
-import React, {useCallback, useRef, useState} from 'react';
-import {DashboardData, EchartsTheme} from '@/pages/Dashboard/data';
-import {Link} from '@umijs/max';
-import {Button, Modal} from 'antd';
-import {ProFormInstance} from '@ant-design/pro-form/lib';
-import {addOrUpdate, deleteData, getDataList} from '@/pages/Dashboard/service';
+import {
+  ActionType,
+  ProForm,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea,
+  ProList
+} from '@ant-design/pro-components';
+import React, { useCallback, useRef, useState } from 'react';
+import { DashboardData, EchartsTheme } from '@/pages/Dashboard/data';
+import { Link } from '@umijs/max';
+import { Button, Modal } from 'antd';
+import { ProFormInstance } from '@ant-design/pro-form/lib';
+import { addOrUpdate, deleteData, getDataList } from '@/pages/Dashboard/service';
 import useHookRequest from '@/hooks/useHookRequest';
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
 import { history } from '@umijs/max';
-import {PermissionConstants} from "@/types/Public/constants";
-import {Authorized} from "@/hooks/useAccess";
-import {Layout} from "react-grid-layout";
-import DashboardLayout from "@/pages/Dashboard/DashboardLayout";
+import { PermissionConstants } from '@/types/Public/constants';
+import { Authorized } from '@/hooks/useAccess';
+import { Layout } from 'react-grid-layout';
+import DashboardLayout from '@/pages/Dashboard/DashboardLayout';
 
 const echartsThemeOptions = EchartsTheme.map((x) => {
-  return {label: l(`dashboard.theme.${x}`), value: x};
+  return { label: l(`dashboard.theme.${x}`), value: x };
 });
 export default () => {
-  const {data, refresh, loading} = useHookRequest<any, any>(getDataList, {defaultParams: []});
+  const { data, refresh, loading } = useHookRequest<any, any>(getDataList, { defaultParams: [] });
 
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1');
 
-  const [openDetailPage , setOpenDetailPage] = useState(false);
+  const [openDetailPage, setOpenDetailPage] = useState(false);
   const [detailPageData, setDetailPageData] = useState<Partial<Layout>>({});
   const [openCreate, setOpenCreate] = useState(false);
   const formRef = useRef<ProFormInstance>();
@@ -90,7 +97,7 @@ export default () => {
             title: l('dashboard.name'),
             key: 'title',
             fieldProps: {
-              width: '10%',
+              width: '10%'
             },
             render: (text, row) => {
               return (
@@ -112,7 +119,8 @@ export default () => {
             dataIndex: 'chartTheme',
             valueType: 'select',
             fieldProps: {
-              width: '10%', showSearch: true,
+              width: '10%',
+              showSearch: true,
               placement: 'bottomRight',
               options: echartsThemeOptions
             },
@@ -131,15 +139,14 @@ export default () => {
                   rel='noopener noreferrer'
                   key='link'
                   onClick={() => {
-                    setDetailPageData(row)
+                    setDetailPageData(row);
                     history.push(`/dashboard/dashboard-layout?layoutId=${row.id}`);
                     setOpenDetailPage(true);
                   }}
                 >
                   {l('button.open')}
                 </a>
-              </Authorized>
-              ,
+              </Authorized>,
               <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_EDIT}>
                 <a
                   href={row.html_url}
@@ -152,8 +159,7 @@ export default () => {
                 >
                   {l('button.edit')}
                 </a>
-              </Authorized>
-              ,
+              </Authorized>,
               <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_DELETE}>
                 <a
                   target='_blank'
@@ -196,7 +202,7 @@ export default () => {
             label={l('dashboard.name')}
             tooltip={l('dashboard.name.maxLength')}
             placeholder={l('dashboard.namePlaceholder')}
-            rules={[{required: true, message: l('dashboard.namePlaceholder')}]}
+            rules={[{ required: true, message: l('dashboard.namePlaceholder') }]}
           />
           <ProFormTextArea
             name='remark'
@@ -206,16 +212,16 @@ export default () => {
           <ProFormSelect
             name='chartTheme'
             label={l('dashboard.chartTheme')}
-            rules={[{required: true, message: l('dashboard.selectChartTheme')}]}
+            rules={[{ required: true, message: l('dashboard.selectChartTheme') }]}
             options={echartsThemeOptions}
           />
         </ProForm>
       </Modal>
-      {
-        openDetailPage && <>
-        <DashboardLayout data={detailPageData} />
+      {openDetailPage && (
+        <>
+          <DashboardLayout data={detailPageData} />
         </>
-      }
+      )}
     </>
   );
 };

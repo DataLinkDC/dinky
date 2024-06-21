@@ -20,9 +20,21 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import './index.less';
-import {Button, Empty, Flex, Input, Segmented, Space, Spin, Statistic, Switch, Tooltip} from 'antd';
 import {
-  AreaChartOutlined, BackwardOutlined,
+  Button,
+  Empty,
+  Flex,
+  Input,
+  Segmented,
+  Space,
+  Spin,
+  Statistic,
+  Switch,
+  Tooltip
+} from 'antd';
+import {
+  AreaChartOutlined,
+  BackwardOutlined,
   BarChartOutlined,
   CheckOutlined,
   CloseOutlined,
@@ -36,7 +48,7 @@ import * as echarts from 'echarts';
 import { ProCard } from '@ant-design/pro-components';
 import { SetOutline } from 'antd-mobile-icons';
 import ReactECharts from 'echarts-for-react';
-import {history, useLocation, useParams} from '@@/exports';
+import { history, useLocation, useParams } from '@@/exports';
 import useHookRequest from '@/hooks/useHookRequest';
 import { addOrUpdate, getDataDetailById } from '@/pages/Dashboard/service';
 import Edit from '@/pages/Dashboard/DashboardLayout/Edit';
@@ -49,13 +61,13 @@ import {
 import { getData } from '@/services/api';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
-import {API_CONSTANTS} from "@/services/endpoints";
-import {l} from "@/utils/intl";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {PermissionConstants} from "@/types/Public/constants";
-import {Authorized} from "@/hooks/useAccess";
-import {useHistory} from "react-router";
-import {getUrlParam} from "@/utils/function";
+import { API_CONSTANTS } from '@/services/endpoints';
+import { l } from '@/utils/intl';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { PermissionConstants } from '@/types/Public/constants';
+import { Authorized } from '@/hooks/useAccess';
+import { useHistory } from 'react-router';
+import { getUrlParam } from '@/utils/function';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -70,11 +82,10 @@ type DashboardProps = {
 
 // todo 当添加或更新时，需要刷新数据，其次还差值范围获取
 export default (props: DashboardProps) => {
-
   const location = useLocation();
   const layoutId = getUrlParam(location.search, 'layoutId');
 
-  console.log('layoutId', layoutId, location)
+  console.log('layoutId', layoutId, location);
 
   const { data, refresh, loading } = useHookRequest<any, any>(getDataDetailById, {
     defaultParams: [layoutId]
@@ -87,7 +98,6 @@ export default (props: DashboardProps) => {
   const [cData, setCData] = useState<Record<number | string, ChartData[]>>({});
   const [updateModel, setUpdateModel] = useState('');
   const [editIsUpdate, setEditIsUpdate] = useState(false);
-
 
   const onAddLayout = async (d: { title: string; layouts: LayoutChartData[] }) => {
     if (editIsUpdate) {
@@ -182,7 +192,7 @@ export default (props: DashboardProps) => {
   };
 
   const generateDOM = () => {
-    console.log('generateDOM', chartData, items)
+    console.log('generateDOM', chartData, items);
     if (items.length === 0) {
       return <Empty description={l('dashboard.empty')} />;
     }
@@ -210,7 +220,11 @@ export default (props: DashboardProps) => {
           <div
             key={i}
             data-grid={l}
-            style={{paddingBottom: 10, display: 'flex', border: isUpdate ? '1px solid black' : ''}}
+            style={{
+              paddingBottom: 10,
+              display: 'flex',
+              border: isUpdate ? '1px solid black' : ''
+            }}
           >
             {isUpdate && (
               <Button
@@ -223,7 +237,7 @@ export default (props: DashboardProps) => {
                 type='primary'
                 danger
                 ghost
-                icon={<CloseOutlined/>}
+                icon={<CloseOutlined />}
                 onClick={() => onRemoveItem(l.i)}
               />
             )}
@@ -236,7 +250,7 @@ export default (props: DashboardProps) => {
                     onChange={(value) => {
                       setChartData((v) => {
                         v[l.i].title = value.currentTarget.value;
-                        return {...v};
+                        return { ...v };
                       });
                     }}
                   />
@@ -248,7 +262,7 @@ export default (props: DashboardProps) => {
                 extra={
                   <Button
                     type={'text'}
-                    icon={<SetOutline fontSize={24}/>}
+                    icon={<SetOutline fontSize={24} />}
                     onClick={() => {
                       setUpdateModel(l.i);
                       setEditIsUpdate(true);
@@ -266,7 +280,7 @@ export default (props: DashboardProps) => {
                           v[l.i].chartData.forEach((x) => {
                             x.type = value;
                           });
-                          return {...v};
+                          return { ...v };
                         });
                       }}
                       options={options}
@@ -312,7 +326,7 @@ export default (props: DashboardProps) => {
       <Flex wrap gap='small' justify={'space-between'}>
         <Button
           size={'middle'}
-          icon={<BackwardOutlined/>}
+          icon={<BackwardOutlined />}
           type='primary'
           onClick={handleBackClick}
         >
@@ -339,7 +353,7 @@ export default (props: DashboardProps) => {
                 <Button
                   type='primary'
                   ghost
-                  icon={<PlusOutlined/>}
+                  icon={<PlusOutlined />}
                   onClick={() => {
                     setEditIsUpdate(false);
                     setOpenChange(true);
@@ -351,7 +365,7 @@ export default (props: DashboardProps) => {
               <Button
                 type='primary'
                 ghost
-                icon={<CheckOutlined/>}
+                icon={<CheckOutlined />}
                 onClick={async () => {
                   const layoutData = items.map((item) => {
                     return {
@@ -381,7 +395,7 @@ export default (props: DashboardProps) => {
                 type='primary'
                 danger
                 ghost
-                icon={<CloseOutlined/>}
+                icon={<CloseOutlined />}
                 onClick={async () => {
                   setIsUpdate(false);
                   setIsShowEditCard(false);
@@ -394,15 +408,15 @@ export default (props: DashboardProps) => {
 
         {!isUpdate && (
           <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_CHART_EDIT}>
-          <Tooltip title={l('button.edit')}>
-            <Button
-              type='primary'
-              danger
-              ghost
-              icon={<EditOutlined />}
-              onClick={() => setIsUpdate(true)}
-            />
-          </Tooltip>
+            <Tooltip title={l('button.edit')}>
+              <Button
+                type='primary'
+                danger
+                ghost
+                icon={<EditOutlined />}
+                onClick={() => setIsUpdate(true)}
+              />
+            </Tooltip>
           </Authorized>
         )}
       </Flex>

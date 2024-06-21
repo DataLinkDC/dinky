@@ -143,7 +143,7 @@ export default (props: EditProps) => {
             name={'title'}
             fieldProps={{
               defaultValue: title,
-              onChange: (v) =>  setTitle(v.currentTarget.value)
+              onChange: (v) => setTitle(v.currentTarget.value)
             }}
           />
           <ProFormCascader

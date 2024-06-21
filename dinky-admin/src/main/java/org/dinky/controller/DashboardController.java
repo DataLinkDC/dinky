@@ -19,8 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.annotation.SaMode;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.DashboardDTO;
 import org.dinky.data.model.Dashboard;
@@ -38,6 +36,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;

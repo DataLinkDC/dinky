@@ -36,7 +36,7 @@ import { connect, history } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'umi';
-import {getUrlParam} from "@/utils/function";
+import { getUrlParam } from '@/utils/function';
 
 const DataSourceDetail = (props: connect) => {
   const access = useAccess();

@@ -25,8 +25,8 @@ import {
   handleAddOrUpdate,
   handleDeleteOperation,
   queryDataByParams
-} from "@/services/BusinessCrud";
-import {saveOrUpdateHandle} from "@/pages/RegCenter/DataSource/service";
+} from '@/services/BusinessCrud';
+import { saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
 
 export const addOrUpdate = (data: DashboardData) => {
   return handleAddOrUpdate(API_CONSTANTS.SAVE_DASHBOARD, data);
@@ -38,7 +38,7 @@ export const getDataDetailById = (id: number) => {
   return getDataByParamsReturnResult(API_CONSTANTS.GET_DASHBOARD_BY_ID, { id });
 };
 export const deleteData = (id: number) => {
-  return handleDeleteOperation(API_CONSTANTS.DELETE_DASHBOARD, { id } ,'Dashboard');
+  return handleDeleteOperation(API_CONSTANTS.DELETE_DASHBOARD, { id }, 'Dashboard');
 };
 
 export async function getMetricsLayoutByCascader() {

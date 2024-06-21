@@ -259,8 +259,5 @@ export enum PermissionConstants {
   DASHBOARD_VIEW = '/dashboard/list/view',
   DASHBOARD_CHART_EDIT = '/dashboard/chart/edit',
   DASHBOARD_CHART_ADD = '/dashboard/chart/add',
-  DASHBOARD_CHART_DELETE = '/dashboard/chart/delete',
-
-
-
+  DASHBOARD_CHART_DELETE = '/dashboard/chart/delete'
 }
