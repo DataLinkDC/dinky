@@ -19,7 +19,6 @@
 
 package org.dinky.job;
 
-import cn.hutool.core.lang.Assert;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
 import org.dinky.data.enums.GatewayType;
@@ -37,6 +36,7 @@ import org.apache.flink.configuration.RestOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hutool.core.lang.Assert;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

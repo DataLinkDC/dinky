@@ -20,7 +20,6 @@
 package org.dinky.gateway.config;
 
 import org.dinky.data.enums.GatewayType;
-import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
 import cn.hutool.core.bean.BeanUtil;
