@@ -253,10 +253,13 @@ export enum PermissionConstants {
   /**
    * dashboard
    */
-  DASHBOARD_ADD = '/dashboard/add',
-  DASHBOARD_EDIT = '/dashboard/edit',
-  DASHBOARD_DELETE = '/dashboard/delete',
-  DASHBOARD_VIEW = '/dashboard/view',
+  DASHBOARD_ADD = '/dashboard/list/add',
+  DASHBOARD_EDIT = '/dashboard/list/edit',
+  DASHBOARD_DELETE = '/dashboard/list/delete',
+  DASHBOARD_VIEW = '/dashboard/list/view',
+  DASHBOARD_CHART_EDIT = '/dashboard/chart/edit',
+  DASHBOARD_CHART_ADD = '/dashboard/chart/add',
+  DASHBOARD_CHART_DELETE = '/dashboard/chart/delete',
 
 
 

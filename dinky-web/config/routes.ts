@@ -290,19 +290,30 @@ export default [
     footerRender: false,
     component: './Metrics'
   },
+
   {
     path: '/dashboard',
     name: 'dashboard',
     icon: 'DashboardOutlined',
     footerRender: false,
-    component: './Dashboard'
-  },
-  {
-    path: '/dashboard/dashboard-layout/:layoutId',
-    name: 'dashboard-layout',
-    hideInMenu: true,
-    footerRender: false,
-    component: './Dashboard/DashboardLayout'
+    routes: [
+      {
+        path: '/dashboard',
+        redirect: '/dashboard/list'
+      },
+      {
+        path: '/dashboard/list',
+        name: 'list',
+        hideInMenu: true,
+        component: './Dashboard'
+      },
+      {
+        path: '/dashboard/dashboard-layout',
+        name: 'chart',
+        hideInMenu: true,
+        component: './Dashboard/DashboardLayout'
+      }
+    ]
   },
   // {
   //   path: '/about',

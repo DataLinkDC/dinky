@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @Api(tags = "ClusterInstance Instance Controller")
-@RequestMapping("/api/Dashboard")
+@RequestMapping("/api/dashboard")
 @SaCheckLogin
 @AllArgsConstructor
 public class DashboardController {
@@ -56,7 +56,7 @@ public class DashboardController {
             value = "/saveOrUpdate",
             method = {RequestMethod.POST, RequestMethod.PUT})
     @SaCheckPermission(
-            value = {PermissionConstants.DASHBOARD_ADD, PermissionConstants.DASHBOARD_EDIT},
+            value = {PermissionConstants.DASHBOARD_LIST_ADD, PermissionConstants.DASHBOARD_LIST_EDIT},
             mode = SaMode.OR)
     public Result<Void> saveOrUpdate(@RequestBody @Validated DashboardDTO dashboard) {
         dashboardService.saveOrUpdate(BeanUtil.toBean(dashboard, Dashboard.class));
@@ -69,13 +69,13 @@ public class DashboardController {
     }
 
     @GetMapping("/getDashboardById")
-    @SaCheckPermission(PermissionConstants.DASHBOARD_VIEW)
+    @SaCheckPermission(PermissionConstants.DASHBOARD_LIST_VIEW)
     public Result<Dashboard> getDashboardById(Integer id) {
         return Result.succeed(dashboardService.getById(id));
     }
 
     @DeleteMapping("/delete")
-    @SaCheckPermission(PermissionConstants.DASHBOARD_DELETE)
+    @SaCheckPermission(PermissionConstants.DASHBOARD_LIST_DELETE)
     public Result<Void> delete(Integer id) {
         dashboardService.removeById(id);
         return Result.succeed();

@@ -26,8 +26,11 @@ import {ProFormInstance} from '@ant-design/pro-form/lib';
 import {addOrUpdate, deleteData, getDataList} from '@/pages/Dashboard/service';
 import useHookRequest from '@/hooks/useHookRequest';
 import {l} from "@/utils/intl";
+import { history } from '@umijs/max';
 import {PermissionConstants} from "@/types/Public/constants";
 import {Authorized} from "@/hooks/useAccess";
+import {Layout} from "react-grid-layout";
+import DashboardLayout from "@/pages/Dashboard/DashboardLayout";
 
 const echartsThemeOptions = EchartsTheme.map((x) => {
   return {label: l(`dashboard.theme.${x}`), value: x};
@@ -37,6 +40,8 @@ export default () => {
 
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1');
 
+  const [openDetailPage , setOpenDetailPage] = useState(false);
+  const [detailPageData, setDetailPageData] = useState<Partial<Layout>>({});
   const [openCreate, setOpenCreate] = useState(false);
   const formRef = useRef<ProFormInstance>();
 
@@ -121,7 +126,18 @@ export default () => {
           actions: {
             render: (text, row) => [
               <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_VIEW}>
-                <Link to={`/dashboard/dashboard-layout/${row.id}`}>{l('button.open')}</Link>
+                <a
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  key='link'
+                  onClick={() => {
+                    setDetailPageData(row)
+                    history.push(`/dashboard/dashboard-layout?layoutId=${row.id}`);
+                    setOpenDetailPage(true);
+                  }}
+                >
+                  {l('button.open')}
+                </a>
               </Authorized>
               ,
               <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_EDIT}>
@@ -195,6 +211,11 @@ export default () => {
           />
         </ProForm>
       </Modal>
+      {
+        openDetailPage && <>
+        <DashboardLayout data={detailPageData} />
+        </>
+      }
     </>
   );
 };

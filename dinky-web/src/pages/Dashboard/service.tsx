@@ -20,21 +20,27 @@
 import { DashboardData } from '@/pages/Dashboard/data';
 import { addOrUpdateData, getData, removeById, removeData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
-import {handleDeleteOperation} from "@/services/BusinessCrud";
+import {
+  getDataByParamsReturnResult,
+  handleAddOrUpdate,
+  handleDeleteOperation,
+  queryDataByParams
+} from "@/services/BusinessCrud";
+import {saveOrUpdateHandle} from "@/pages/RegCenter/DataSource/service";
 
 export const addOrUpdate = (data: DashboardData) => {
-  return addOrUpdateData('/api/Dashboard/saveOrUpdate', data);
+  return handleAddOrUpdate(API_CONSTANTS.SAVE_DASHBOARD, data);
 };
 export const getDataList = () => {
-  return getData('/api/Dashboard/getDashboardList');
+  return getDataByParamsReturnResult(API_CONSTANTS.GET_DASHBOARD_LIST);
 };
 export const getDataDetailById = (id: number) => {
-  return getData('/api/Dashboard/getDashboardById', { id });
+  return getDataByParamsReturnResult(API_CONSTANTS.GET_DASHBOARD_BY_ID, { id });
 };
 export const deleteData = (id: number) => {
-  return handleDeleteOperation('/api/Dashboard/delete', { id } ,'Dashboard');
+  return handleDeleteOperation(API_CONSTANTS.DELETE_DASHBOARD, { id } ,'Dashboard');
 };
 
 export async function getMetricsLayoutByCascader() {
-  return getData(API_CONSTANTS.GET_METRICS_LAYOUT_CASCADER);
+  return getDataByParamsReturnResult(API_CONSTANTS.GET_METRICS_LAYOUT_CASCADER);
 }

@@ -139,13 +139,11 @@ export default (props: EditProps) => {
       >
         <ProForm formRef={form} submitter={false} layout={'horizontal'}>
           <ProFormText
-            label={'title'}
-            name={l('dashboard.chart.name')}
+            label={l('dashboard.chart.name')}
+            name={'title'}
             fieldProps={{
               defaultValue: title,
-              onChange: (v) => {
-                setTitle(v.currentTarget.value);
-              }
+              onChange: (v) =>  setTitle(v.currentTarget.value)
             }}
           />
           <ProFormCascader

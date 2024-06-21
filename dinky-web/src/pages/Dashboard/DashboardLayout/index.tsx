@@ -20,9 +20,9 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import './index.less';
-import { Button, Flex, Input, Segmented, Space, Spin, Statistic, Switch, Tooltip } from 'antd';
+import {Button, Empty, Flex, Input, Segmented, Space, Spin, Statistic, Switch, Tooltip} from 'antd';
 import {
-  AreaChartOutlined,
+  AreaChartOutlined, BackwardOutlined,
   BarChartOutlined,
   CheckOutlined,
   CloseOutlined,
@@ -36,7 +36,7 @@ import * as echarts from 'echarts';
 import { ProCard } from '@ant-design/pro-components';
 import { SetOutline } from 'antd-mobile-icons';
 import ReactECharts from 'echarts-for-react';
-import { useParams } from '@@/exports';
+import {history, useLocation, useParams} from '@@/exports';
 import useHookRequest from '@/hooks/useHookRequest';
 import { addOrUpdate, getDataDetailById } from '@/pages/Dashboard/service';
 import Edit from '@/pages/Dashboard/DashboardLayout/Edit';
@@ -52,6 +52,10 @@ import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
 import {API_CONSTANTS} from "@/services/endpoints";
 import {l} from "@/utils/intl";
 import {queryDataByParams} from "@/services/BusinessCrud";
+import {PermissionConstants} from "@/types/Public/constants";
+import {Authorized} from "@/hooks/useAccess";
+import {useHistory} from "react-router";
+import {getUrlParam} from "@/utils/function";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -60,11 +64,18 @@ type ChartComponentData = {
   chartData: LayoutChartData[];
 };
 
-type DashboardProps = {};
+type DashboardProps = {
+  data: any;
+};
 
 // todo 当添加或更新时，需要刷新数据，其次还差值范围获取
 export default (props: DashboardProps) => {
-  const { layoutId } = useParams();
+
+  const location = useLocation();
+  const layoutId = getUrlParam(location.search, 'layoutId');
+
+  console.log('layoutId', layoutId, location)
+
   const { data, refresh, loading } = useHookRequest<any, any>(getDataDetailById, {
     defaultParams: [layoutId]
   });
@@ -72,13 +83,12 @@ export default (props: DashboardProps) => {
 
   const [openChange, setOpenChange] = useState(false);
   const [items, setItems] = useState<Layout[]>([]);
-
   const [chartData, setChartData] = useState<Record<string, ChartComponentData>>({});
-
   const [cData, setCData] = useState<Record<number | string, ChartData[]>>({});
-
   const [updateModel, setUpdateModel] = useState('');
   const [editIsUpdate, setEditIsUpdate] = useState(false);
+
+
   const onAddLayout = async (d: { title: string; layouts: LayoutChartData[] }) => {
     if (editIsUpdate) {
       chartData[updateModel] = {
@@ -114,7 +124,7 @@ export default (props: DashboardProps) => {
           .map((x) => x.id)
           .join()
       }).then((d) => {
-        setCData(d);
+        setCData(d as any);
       });
     }
   }, [chartData]);
@@ -172,6 +182,10 @@ export default (props: DashboardProps) => {
   };
 
   const generateDOM = () => {
+    console.log('generateDOM', chartData, items)
+    if (items.length === 0) {
+      return <Empty description={l('dashboard.empty')} />;
+    }
     return items.map((l, i) => {
       const chartDatum = chartData[l.i].chartData;
       chartDatum.forEach((v) => {
@@ -192,109 +206,125 @@ export default (props: DashboardProps) => {
       }
 
       return (
-        <div
-          key={i}
-          data-grid={l}
-          style={{ paddingBottom: 10, display: 'flex', border: isUpdate ? '1px solid black' : '' }}
-        >
-          {isUpdate && (
-            <Button
-              style={{
-                position: 'absolute',
-                right: 10,
-                top: 10,
-                zIndex: 999
-              }}
-              type='primary'
-              danger
-              ghost
-              icon={<CloseOutlined />}
-              onClick={() => onRemoveItem(l.i)}
-            />
-          )}
+        <>
+          <div
+            key={i}
+            data-grid={l}
+            style={{paddingBottom: 10, display: 'flex', border: isUpdate ? '1px solid black' : ''}}
+          >
+            {isUpdate && (
+              <Button
+                style={{
+                  position: 'absolute',
+                  right: 10,
+                  top: 10,
+                  zIndex: 999
+                }}
+                type='primary'
+                danger
+                ghost
+                icon={<CloseOutlined/>}
+                onClick={() => onRemoveItem(l.i)}
+              />
+            )}
 
-          {isUpdate && isShowEditCard && (
-            <ProCard
-              title={
-                <Input
-                  defaultValue={title}
-                  onChange={(value) => {
-                    setChartData((v) => {
-                      v[l.i].title = value.currentTarget.value;
-                      return { ...v };
-                    });
-                  }}
-                />
-              }
-              style={{
-                flex: 1,
-                zIndex: 1000
-              }}
-              extra={
-                <Button
-                  type={'text'}
-                  icon={<SetOutline fontSize={24} />}
-                  onClick={() => {
-                    setUpdateModel(l.i);
-                    setEditIsUpdate(true);
-                    setOpenChange(true);
-                  }}
-                />
-              }
-              bordered
-              actions={[
-                <Flex align={'center'} justify={'center'}>
-                  <Segmented
-                    defaultValue={chartDatum[0].type}
+            {isUpdate && isShowEditCard && (
+              <ProCard
+                title={
+                  <Input
+                    defaultValue={title}
                     onChange={(value) => {
                       setChartData((v) => {
-                        v[l.i].chartData.forEach((x) => {
-                          x.type = value;
-                        });
-                        return { ...v };
+                        v[l.i].title = value.currentTarget.value;
+                        return {...v};
                       });
                     }}
-                    options={options}
                   />
-                </Flex>
-              ]}
-            >
-              {
-                <ChartShow
-                  chartTheme={chartTheme}
-                  chartOptions={chartOptions}
-                  value={chartDatum[0].data?.slice(-1)[0]?.value}
-                  type={chartDatum[0]?.type}
-                  fontSize={(l.h * config.rowHeight) / 4}
-                />
-              }
-            </ProCard>
-          )}
-          {
-            <ChartShow
-              show={!isUpdate || !isShowEditCard}
-              chartTheme={chartTheme}
-              chartOptions={chartOptions}
-              title={title}
-              value={chartDatum[0].data?.slice(-1)[0]?.value}
-              type={chartDatum[0]?.type}
-              fontSize={(l.h * config.rowHeight) / 4}
-            />
-          }
-        </div>
+                }
+                style={{
+                  flex: 1,
+                  zIndex: 1000
+                }}
+                extra={
+                  <Button
+                    type={'text'}
+                    icon={<SetOutline fontSize={24}/>}
+                    onClick={() => {
+                      setUpdateModel(l.i);
+                      setEditIsUpdate(true);
+                      setOpenChange(true);
+                    }}
+                  />
+                }
+                bordered
+                actions={[
+                  <Flex align={'center'} justify={'center'}>
+                    <Segmented
+                      defaultValue={chartDatum[0].type}
+                      onChange={(value) => {
+                        setChartData((v) => {
+                          v[l.i].chartData.forEach((x) => {
+                            x.type = value;
+                          });
+                          return {...v};
+                        });
+                      }}
+                      options={options}
+                    />
+                  </Flex>
+                ]}
+              >
+                {
+                  <ChartShow
+                    chartTheme={chartTheme}
+                    chartOptions={chartOptions}
+                    value={chartDatum[0].data?.slice(-1)[0]?.value}
+                    type={chartDatum[0]?.type}
+                    fontSize={(l.h * config.rowHeight) / 4}
+                  />
+                }
+              </ProCard>
+            )}
+            {
+              <ChartShow
+                show={!isUpdate || !isShowEditCard}
+                chartTheme={chartTheme}
+                chartOptions={chartOptions}
+                title={title}
+                value={chartDatum[0].data?.slice(-1)[0]?.value}
+                type={chartDatum[0]?.type}
+                fontSize={(l.h * config.rowHeight) / 4}
+              />
+            }
+          </div>
+        </>
       );
     });
   };
+
+  const handleBackClick = () => {
+    // go back
+    history.push(`/dashboard`);
+  };
+
   return (
     <>
       <Flex wrap gap='small' justify={'space-between'}>
+        <Button
+          size={'middle'}
+          icon={<BackwardOutlined/>}
+          type='primary'
+          onClick={handleBackClick}
+        >
+          {l('button.back')}
+        </Button>
         <div>
           {isUpdate && (
             <>
               <Tooltip title='add'>
                 <Switch
-                  checkedChildren='on'
-                  unCheckedChildren='off'
+                  checkedChildren='开启'
+                  unCheckedChildren='关闭'
                   defaultValue={isShowEditCard}
                   onChange={setIsShowEditCard}
                 />
@@ -304,22 +334,24 @@ export default (props: DashboardProps) => {
         </div>
         {isUpdate && (
           <Space size={10}>
-            <Tooltip title={l('button.add')}>
-              <Button
-                type='primary'
-                ghost
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  setEditIsUpdate(false);
-                  setOpenChange(true);
-                }}
-              />
-            </Tooltip>
+            <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_CHART_ADD}>
+              <Tooltip title={l('button.add')}>
+                <Button
+                  type='primary'
+                  ghost
+                  icon={<PlusOutlined/>}
+                  onClick={() => {
+                    setEditIsUpdate(false);
+                    setOpenChange(true);
+                  }}
+                />
+              </Tooltip>
+            </Authorized>
             <Tooltip title={l('button.finish')}>
               <Button
                 type='primary'
                 ghost
-                icon={<CheckOutlined />}
+                icon={<CheckOutlined/>}
                 onClick={async () => {
                   const layoutData = items.map((item) => {
                     return {
@@ -349,7 +381,7 @@ export default (props: DashboardProps) => {
                 type='primary'
                 danger
                 ghost
-                icon={<CloseOutlined />}
+                icon={<CloseOutlined/>}
                 onClick={async () => {
                   setIsUpdate(false);
                   setIsShowEditCard(false);
@@ -361,6 +393,7 @@ export default (props: DashboardProps) => {
         )}
 
         {!isUpdate && (
+          <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_CHART_EDIT}>
           <Tooltip title={l('button.edit')}>
             <Button
               type='primary'
@@ -370,6 +403,7 @@ export default (props: DashboardProps) => {
               onClick={() => setIsUpdate(true)}
             />
           </Tooltip>
+          </Authorized>
         )}
       </Flex>
 
