@@ -93,11 +93,6 @@ public class GatewayConfig {
         Assert.notNull(config);
         GatewayConfig gatewayConfig = new GatewayConfig();
         BeanUtil.copyProperties(config, gatewayConfig);
-        for (CustomConfig customConfig : config.getFlinkConfig().getFlinkConfigList()) {
-            Assert.notNull(customConfig.getName(), "Custom flink config has null key");
-            Assert.notNull(customConfig.getValue(), "Custom flink config has null value");
-            gatewayConfig.getFlinkConfig().getConfiguration().put(customConfig.getName(), customConfig.getValue());
-        }
         return gatewayConfig;
     }
 }
