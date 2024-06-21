@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -36,6 +37,7 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
@@ -1004,5 +1006,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             treeNodes.add(new TreeNode<>(catalogue.getId(), catalogue.getParentId(), catalogue.getName(), i + 1));
         }
         return treeNodes;
+    }
+
+    @Override
+    public Boolean checkTaskOperatePermission(Integer taskId) {
+        TaskDTO taskDTO = getTaskInfoById(taskId);
+        if (Objects.nonNull(taskDTO)) {
+            return hasTaskOperatePermission(
+                    taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners());
+        }
+        return null;
+    }
+
+    private Boolean hasTaskOperatePermission(Integer firstLevelOwner, List<Integer> secondLevelOwners) {
+        boolean isFirstLevelOwner = firstLevelOwner != null && firstLevelOwner == StpUtil.getLoginIdAsInt();
+        if (TaskOwnerLockStrategyEnum.OWNER.equals(
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+            return isFirstLevelOwner;
+        } else if (TaskOwnerLockStrategyEnum.OWNER_AND_MAINTAINER.equals(
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+            return isFirstLevelOwner
+                    || (secondLevelOwners != null && secondLevelOwners.contains(StpUtil.getLoginIdAsInt()));
+        }
+        return true;
     }
 }

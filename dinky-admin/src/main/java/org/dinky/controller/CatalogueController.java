@@ -19,8 +19,10 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotations.CatalogueId;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.Log;
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.enums.BusinessType;
@@ -165,7 +167,7 @@ public class CatalogueController {
             required = true,
             dataType = "CatalogueTaskDTO",
             dataTypeClass = CatalogueTaskDTO.class)
-    @CheckTaskOwner(serviceType = TaskService.class)
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         if (catalogueService.checkCatalogueTaskNameIsExistById(catalogueTaskDTO.getName(), catalogueTaskDTO.getId())) {
             return Result.failed(Status.TASK_IS_EXIST);
@@ -201,9 +203,9 @@ public class CatalogueController {
                 dataType = "Integer",
                 dataTypeClass = Integer.class)
     })
-    @CheckTaskOwner(serviceType = CatalogueService.class)
+    @CheckTaskOwner(checkParam = CatalogueId.class, checkInterface = CatalogueService.class)
     public Result<Boolean> moveCatalogue(
-            @RequestParam("originCatalogueId") Integer originCatalogueId,
+            @CatalogueId @RequestParam("originCatalogueId") Integer originCatalogueId,
             @RequestParam("targetParentId") Integer targetParentId) {
         if (catalogueService.moveCatalogue(originCatalogueId, targetParentId)) {
             return Result.succeed(true, Status.MOVE_SUCCESS);
@@ -226,7 +228,7 @@ public class CatalogueController {
             dataType = "Catalogue",
             dataTypeClass = Catalogue.class)
     @ApiOperation("Copy Task")
-    @CheckTaskOwner(serviceType = TaskService.class)
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Void> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
             return Result.succeed(Status.COPY_SUCCESS);
@@ -244,8 +246,8 @@ public class CatalogueController {
     @Log(title = "Delete Catalogue By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete Catalogue By Id")
     @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Integer", dataTypeClass = Integer.class)
-    @CheckTaskOwner(serviceType = CatalogueService.class)
-    public Result<Void> deleteCatalogueById(@RequestParam Integer id) {
+    @CheckTaskOwner(checkParam = CatalogueId.class, checkInterface = CatalogueService.class)
+    public Result<Void> deleteCatalogueById(@CatalogueId @RequestParam Integer id) {
         return catalogueService.deleteCatalogueById(id);
     }
 }

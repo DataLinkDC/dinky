@@ -288,4 +288,12 @@ public interface TaskService extends ISuperService<Task> {
      * @return
      */
     JobConfig buildJobSubmitConfig(TaskDTO task);
+
+    /**
+     * Check task operate permission.
+     * Contains reflection invocation. Please do not delete.
+     * @param taskId
+     * @return
+     */
+    Boolean checkTaskOperatePermission(Integer taskId);
 }
