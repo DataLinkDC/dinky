@@ -116,6 +116,7 @@ public class TaskOperationPermissionAspect {
                     if (field.isAnnotationPresent(paramAnno)) {
                         field.setAccessible(true);
                         paramObj = field.get(param);
+                        break;
                     }
                 }
             }
