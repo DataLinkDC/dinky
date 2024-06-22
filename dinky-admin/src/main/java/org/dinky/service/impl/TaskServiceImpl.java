@@ -226,6 +226,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             log.info("Init savePoint");
             config.setSavePointPath(savepoints.getPath());
             config.getConfigJson().put("execution.savepoint.path", savepoints.getPath()); // todo: 写工具类处理相关配置
+        } else {
+            // When disabling checkpoints, delete the checkpoint path
+            config.setSavePointPath(null);
         }
         if (GatewayType.get(task.getType()).isDeployCluster()) {
             log.info("Init gateway config, type:{}", task.getType());
