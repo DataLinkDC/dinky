@@ -38,6 +38,8 @@ import org.dinky.shaded.paimon.predicate.PredicateBuilder;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.PaimonUtil;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +49,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.dinky.utils.SqliteUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -74,27 +77,25 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             throw new DinkyException("Please provide at least one monitoring ID");
         }
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
-        Timestamp startTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(startTime));
-        Timestamp endTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(endTime));
-
         if (endTime.compareTo(startTime) < 1) {
             throw new DinkyException("The end date must be greater than the start date!");
         }
 
-        Function<PredicateBuilder, List<Predicate>> filter = p -> {
-            Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
-            Predicate lessOrEqual = p.lessOrEqual(0, endTS);
-            Predicate local =
-                    p.in(1, models.stream().map(BinaryString::fromString).collect(Collectors.toList()));
-            return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
-        };
-        List<MetricsVO> metricsVOList =
-                PaimonUtil.batchReadTable(PaimonTableConstant.DINKY_METRICS, MetricsVO.class, filter);
-        return metricsVOList.stream()
-                .filter(x -> x.getHeartTime().isAfter(startTS.toLocalDateTime()))
-                .filter(x -> x.getHeartTime().isBefore(endTS.toLocalDateTime()))
-                .peek(vo -> vo.setContent(JsonUtils.parseObject(vo.getContent().toString())))
-                .collect(Collectors.toList());
+        String condition = startTime.getTime() + " <= heart_time AND heart_time <= " + endTime.getTime();
+        List<MetricsVO> metricsVOList = new ArrayList<>();
+        try(ResultSet read = SqliteUtil.INSTANCE.read(PaimonTableConstant.DINKY_METRICS, condition)) {
+            while (read.next()) {
+                MetricsVO metricsVO = new MetricsVO();
+                metricsVO.setHeartTime(read.getTimestamp("heart_time").toLocalDateTime());
+                metricsVO.setModel(read.getString("model"));
+                metricsVO.setContent(read.getString("content"));
+                metricsVO.setDate(read.getString("date"));
+                metricsVOList.add(metricsVO);
+            }
+        } catch (SQLException e) {
+            log.error("Failed to read metrics data from sqlite: " + e.getMessage());
+        }
+        return metricsVOList;
     }
 
     @Override

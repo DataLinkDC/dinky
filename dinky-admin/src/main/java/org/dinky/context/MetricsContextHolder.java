@@ -19,13 +19,21 @@
 
 package org.dinky.context;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.hadoop.metrics2.util.SampleQuantiles;
 import org.dinky.data.constant.PaimonTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -40,6 +48,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import cn.hutool.core.text.StrFormatter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.dinky.utils.SqliteUtil;
 
 /**
  * The MetricsContextHolder class is used to manage the metric context,
@@ -47,6 +56,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MetricsContextHolder {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Getter
     protected static final MetricsContextHolder instance = new MetricsContextHolder();
@@ -64,7 +74,7 @@ public class MetricsContextHolder {
             10, // Maximum pool size, allows the pool to expand as needed
             60L, // Keep alive time for idle threads
             TimeUnit.SECONDS, // Unit of keep alive time
-            new LinkedBlockingQueue<Runnable>(10), // Use a larger queue to hold excess tasks
+            new LinkedBlockingQueue<>(10), // Use a larger queue to hold excess tasks
             namedThreadFactory);
 
     public void sendAsync(String key, MetricsVO o) {
@@ -91,5 +101,48 @@ public class MetricsContextHolder {
             String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
             SseSessionContextHolder.sendTopic(topic, o); // Ensure only successfully added metrics are sent
         });
+    }
+
+    public void saveToSqlite(String key, MetricsVO o) {
+        Object content = o.getContent();
+        if (content == null
+                || (content instanceof ConcurrentHashMap && ((ConcurrentHashMap<?, ?>) content).isEmpty())) {
+            return;
+        }
+
+        metricsVOS.add(o);
+        long current = System.currentTimeMillis();
+        long duration = current - lastDumpTime.get();
+        if (metricsVOS.size() >= 1000 || duration >= 15000) {
+            lastDumpTime.set(current);
+            final List<String> columns = Arrays.asList("job_id", "value", "heart_time,date");
+            List<String> values = convertMetricsVOsToStringList(metricsVOS);
+            try {
+                SqliteUtil.INSTANCE.write(PaimonTableConstant.DINKY_METRICS, columns, values);
+            } catch (SQLException e) {
+                log.error("Failed to write metrics to SQLite", e);
+                return;
+            }
+            metricsVOS.clear();
+        }
+        String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
+        SseSessionContextHolder.sendTopic(topic, o);
+    }
+
+    public List<String> convertMetricsVOsToStringList(List<MetricsVO> metricsVOS) {
+        List<String> result = new ArrayList<>();
+
+        for (MetricsVO metricsVO : metricsVOS) {
+            Map<String, Object> content = (Map<String, Object>) metricsVO.getContent();
+            try {
+                String serializedContent = objectMapper.writeValueAsString(content);
+                String keyValueString = metricsVO.getModel() + "," + serializedContent + "," + metricsVO.getHeartTime() + "," + metricsVO.getDate();
+                result.add(keyValueString);
+            } catch (JsonProcessingException e) {
+                log.error("Failed to serialize content of MetricsVO: {}", metricsVO, e);
+            }
+        }
+
+        return result;
     }
 }
