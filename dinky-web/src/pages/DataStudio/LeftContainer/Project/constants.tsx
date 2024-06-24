@@ -174,6 +174,10 @@ export const JOB_TYPE: DefaultOptionType[] = [
       {
         value: 'Presto',
         label: 'Presto'
+      },
+      {
+        value: 'Kyuubi',
+        label: 'Kyuubi'
       }
     ]
   },

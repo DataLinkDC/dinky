@@ -135,6 +135,9 @@ public class PaimonUtil {
                     DataType type = dataField.type();
                     String fieldName = StrUtil.toCamelCase(dataField.name());
                     Object fieldValue = ReflectUtil.getFieldValue(t, fieldName);
+                    if (fieldValue == null){
+                        continue;
+                    }
                     try {
                         // TODO BinaryWriter.write已被废弃，后续可以考虑改成这种方式
                         // BinaryWriter.createValueSetter(type).setValue(writer, i, fieldValue);

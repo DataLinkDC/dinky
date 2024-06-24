@@ -24,16 +24,18 @@ import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.metadata.config.AbstractJdbcConfig;
-import org.dinky.metadata.constant.HiveConstant;
-import org.dinky.metadata.convert.HiveTypeConvert;
+import org.dinky.metadata.constant.KyuubiConstant;
+import org.dinky.metadata.convert.KyuubiTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.enums.DriverType;
-import org.dinky.metadata.query.HiveQuery;
 import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.query.KyuubiQueryFactory;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.LogUtil;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,11 +48,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class KyuubiDriver extends AbstractJdbcDriver implements Driver {
+    protected static final Logger logger = LoggerFactory.getLogger(KyuubiDriver.class);
 
-public class HiveDriver extends AbstractJdbcDriver implements Driver {
-    protected static final Logger logger = LoggerFactory.getLogger(HiveDriver.class);
     @Override
     public Table getTable(String schemaName, String tableName) {
         List<Table> tables = listTables(schemaName);
@@ -75,17 +75,9 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         IDBQuery dbQuery = getDBQuery();
         String sql = dbQuery.tablesSql(schemaName);
         try {
-            execute(String.format(HiveConstant.USE_DB, schemaName));
+            execute(String.format(KyuubiConstant.USE_DB, schemaName));
             preparedStatement = conn.get().prepareStatement(sql);
             results = preparedStatement.executeQuery();
-
-            ResultSetMetaData rsmd = results.getMetaData();
-            int columnCount = rsmd.getColumnCount();
-            for (int i = 1; i <= columnCount; i++ ) {
-                String name = rsmd.getColumnName(i);
-                logger.info("listTables {}",name);
-            }
-
             ResultSetMetaData metaData = results.getMetaData();
             List<String> columnList = new ArrayList<>();
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
@@ -135,19 +127,11 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         try {
             preparedStatement = conn.get().prepareStatement(schemasSql);
             results = preparedStatement.executeQuery();
-            ResultSetMetaData rsmd = results.getMetaData();
-            int columnCount = rsmd.getColumnCount();
-            for (int i = 1; i <= columnCount; i++ ) {
-                String name = rsmd.getColumnName(i);
-                logger.info("xxxlistSchemas {}",name);
-            }
-
             while (results.next()) {
-
                 String schemaName = results.getString(getDBQuery().schemaName());
                 if (Asserts.isNotNullString(schemaName)) {
                     Schema schema = new Schema(schemaName);
-                    if (execute(String.format(HiveConstant.USE_DB, schemaName))) {
+                    if (execute(String.format(KyuubiConstant.USE_DB, schemaName))) {
                         schema.setTables(listTables(schema.getName()));
                     }
                     schemas.add(schema);
@@ -172,15 +156,6 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
             preparedStatement = conn.get().prepareStatement(tableFieldsSql);
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
-
-            ResultSetMetaData rsmd = results.getMetaData();
-            int columnCount = rsmd.getColumnCount();
-            for (int i = 1; i <= columnCount; i++ ) {
-                String name = rsmd.getColumnName(i);
-                logger.info("listColumns {}",name);
-            }
-
-
             List<String> columnList = new ArrayList<>();
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 columnList.add(metaData.getColumnLabel(i));
@@ -313,12 +288,13 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
 
     @Override
     public IDBQuery getDBQuery() {
-        return new HiveQuery();
+        logger.info("xxxxxx connector config is  {}",config.getConnectConfig().toString());
+        return KyuubiQueryFactory.getKyuubiQuery("Spark");
     }
 
     @Override
     public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
-        return new HiveTypeConvert();
+        return new KyuubiTypeConvert();
     }
 
     @Override
@@ -326,14 +302,22 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         return "org.apache.hive.jdbc.HiveDriver";
     }
 
+    //todo 选择不同引擎传入不同的 type antspark hive , trino,flink,
+    //todo 不同引擎通过页面来选择，验证是否可以动态传参
+    //考虑切换引擎时的 connection 维护
     @Override
     public String getType() {
-        return DriverType.HIVE.getValue();
+        return DriverType.KYUUBI.getValue();
+    }
+
+    public String getCustomDbType(){
+        //druid  暂时不支持 其它类型的database 比如spark,就先返回hive 
+        return  "hive";
     }
 
     @Override
     public String getName() {
-        return "Hive";
+        return "Kyuubi";
     }
 
     @Override

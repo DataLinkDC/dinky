@@ -946,9 +946,42 @@
     </scm>
     <repositories>
         <repository>
-            <snapshots />
-            <id>apache-snapshots</id>
+            <id>aliyun-central</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </repository>
+        <repository>
+            <id>aliyun-public</id>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </repository>
+        <repository>
+            <id>aliyun-snapshots</id>
             <url>https://maven.aliyun.com/repository/apache-snapshots</url>
+        </repository>
+        <repository>
+            <id>apache-spring-plugin</id>
+            <url>https://maven.aliyun.com/repository/spring-plugin</url>
+        </repository>
+        <repository>
+            <id>aliyun-spring</id>
+            <url>https://maven.aliyun.com/repository/spring</url>
+        </repository>
+        <repository>
+            <id>aliyun-google</id>
+            <url>https://maven.aliyun.com/repository/google</url>
+        </repository>
+        <repository>
+            <id>aliyun-gradle-plugin</id>
+            <url>https://maven.aliyun.com/repository/gradle-plugin</url>
+        </repository>
+
+        <repository>
+            <id>aliyun-jcenter</id>
+            <url>https://maven.aliyun.com/repository/jcenter</url>
+        </repository>
+
+        <repository>
+            <id>aliyun-releases</id>
+            <url>https://maven.aliyun.com/repository/releases</url>
         </repository>
     </repositories>
 
