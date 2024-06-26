@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class SqlClientOptions {
-    private SQL_GATEWAY_MODE mode;
+    private SQL_CLI_MODE mode;
     private String sessionId;
     private String connectAddress;
     private String initSql;

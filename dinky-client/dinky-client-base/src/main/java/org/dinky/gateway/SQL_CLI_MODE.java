@@ -21,11 +21,11 @@ package org.dinky.gateway;
 
 import cn.hutool.core.lang.Assert;
 
-public enum SQL_GATEWAY_MODE {
+public enum SQL_CLI_MODE {
     MODE_EMBEDDED,
     MODE_GATEWAY;
 
-    public static SQL_GATEWAY_MODE fromString(String mode) {
+    public static SQL_CLI_MODE fromString(String mode) {
         Assert.notNull(mode, "sql client mode is null,please check parameters");
         if (mode.equals("MODE_EMBEDDED")) {
             return MODE_EMBEDDED;
