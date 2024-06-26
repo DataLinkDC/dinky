@@ -26,6 +26,7 @@ import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointStrategy;
+import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
 import org.apache.flink.configuration.Configuration;
@@ -35,6 +36,7 @@ import org.apache.flink.configuration.RestOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hutool.core.lang.Assert;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -227,6 +229,13 @@ public class JobConfig {
 
     public void buildGatewayConfig(FlinkClusterConfig config) {
         FlinkConfig flinkConfig = config.getFlinkConfig();
+        // Prioritize loading custom Flink configuration content in the cluster configuration
+        for (CustomConfig customConfig : flinkConfig.getFlinkConfigList()) {
+            Assert.notNull(customConfig.getName(), "Custom flink config has null key");
+            Assert.notNull(customConfig.getValue(), "Custom flink config has null value");
+            flinkConfig.getConfiguration().put(customConfig.getName(), customConfig.getValue());
+        }
+        // Load job configuration content afterwards
         flinkConfig.getConfiguration().putAll(getConfigJson());
         flinkConfig.getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
         flinkConfig.setJobName(getJobName());
