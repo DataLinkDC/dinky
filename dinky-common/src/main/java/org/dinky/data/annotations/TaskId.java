@@ -17,29 +17,15 @@
  *
  */
 
-package org.dinky.data.dto;
+package org.dinky.data.annotations;
 
-import org.dinky.data.annotations.TaskId;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.io.Serializable;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
-/** @description: 任务回滚DTO */
-@Data
-@ApiModel(value = "TaskRollbackVersionDTO", description = "DTO for rolling back a task to a specific version")
-public class TaskRollbackVersionDTO implements Serializable {
-
-    @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "The identifier of the task")
-    @TaskId
-    private Integer taskId;
-
-    @ApiModelProperty(
-            value = "Version ID",
-            dataType = "Integer",
-            example = "2",
-            notes = "The identifier of the version to rollback to")
-    private Integer versionId;
-}
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface TaskId {}
