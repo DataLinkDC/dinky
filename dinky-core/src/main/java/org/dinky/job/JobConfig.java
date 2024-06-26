@@ -213,6 +213,12 @@ public class JobConfig {
     }
 
     public ExecutorConfig getExecutorSetting() {
+        Map<String, String> config = new HashMap<>(32);
+        if (GatewayType.isDeployCluster(type) && gatewayConfig != null && gatewayConfig.getFlinkConfig() != null) {
+            config.putAll(gatewayConfig.getFlinkConfig().getConfiguration());
+        } else {
+            config.putAll(configJson);
+        }
         return ExecutorConfig.build(
                 type,
                 address,
@@ -223,7 +229,7 @@ public class JobConfig {
                 batchModel,
                 savePointPath,
                 jobName,
-                configJson,
+                config,
                 variables);
     }
 
