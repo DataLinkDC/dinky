@@ -25,8 +25,8 @@ import {
   KeyCode,
   TerminalEvent
 } from '@/pages/DataStudio/MiddleContainer/Terminal/TerminalConfig';
-import { FitAddon } from 'xterm-addon-fit';
-import { Terminal } from 'xterm';
+import { FitAddon } from '@xterm/addon-fit';
+import { Terminal } from '@xterm/xterm';
 import { TermProps } from '@/pages/DataStudio/MiddleContainer/Terminal/TerminalConfig';
 import './xterm.css';
 
