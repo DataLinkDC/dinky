@@ -155,6 +155,11 @@
             <artifactId>flink-s3-fs-presto</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-sql-client</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
     </dependencies>
 
     <repositories>

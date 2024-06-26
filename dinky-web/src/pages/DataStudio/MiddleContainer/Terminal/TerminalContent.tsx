@@ -28,7 +28,7 @@ import {
 import { FitAddon } from 'xterm-addon-fit';
 import { Terminal } from 'xterm';
 import { TermProps } from '@/pages/DataStudio/MiddleContainer/Terminal/TerminalConfig';
-import 'xterm/css/xterm.css';
+import './xterm.css';
 
 const TerminalContent: React.FC<TermProps> = (props) => {
   const { mode, wsUrl, backspaceAsCtrlH, fontSize, initSql, sessionId, connectAddress } = props;
@@ -56,7 +56,6 @@ const TerminalContent: React.FC<TermProps> = (props) => {
         data = String.fromCharCode(KeyCode.Backspace);
       }
     }
-    console.log(data);
     if (data.charCodeAt(0) === AsciiCode.EndOfText) {
       data = String.fromCharCode(AsciiCode.Substitute);
     }
