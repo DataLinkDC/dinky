@@ -29,5 +29,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface CheckTaskOwner {
-    Class serviceType();
+    Class checkParam();
+
+    String checkMethod() default "checkTaskOperatePermission";
+
+    Class checkInterface();
 }
