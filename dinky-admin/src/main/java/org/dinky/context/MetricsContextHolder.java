@@ -64,6 +64,10 @@ public class MetricsContextHolder {
     private final List<MetricsVO> metricsVOS = new CopyOnWriteArrayList<>();
     private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
 
+    static  {
+        SqliteUtil.INSTANCE.createTable(PaimonTableConstant.DINKY_METRICS, "job_id BIGINT, value TEXT, heart_time TEXT, date TEXT");
+    }
+
     // Create a ThreadFactory with custom naming
     ThreadFactory namedThreadFactory =
             new ThreadFactoryBuilder().setNameFormat("metrics-send-thread-%d").build();
@@ -115,8 +119,8 @@ public class MetricsContextHolder {
         long duration = current - lastDumpTime.get();
         if (metricsVOS.size() >= 1000 || duration >= 15000) {
             lastDumpTime.set(current);
-            final List<String> columns = Arrays.asList("job_id", "value", "heart_time,date");
-            List<String> values = convertMetricsVOsToStringList(metricsVOS);
+            final List<String> columns = Arrays.asList("job_id", "value", "heart_time","date");
+            List<List<String>> values = convertMetricsVOsToStringList(metricsVOS);
             try {
                 SqliteUtil.INSTANCE.write(PaimonTableConstant.DINKY_METRICS, columns, values);
             } catch (SQLException e) {
@@ -129,15 +133,19 @@ public class MetricsContextHolder {
         SseSessionContextHolder.sendTopic(topic, o);
     }
 
-    public List<String> convertMetricsVOsToStringList(List<MetricsVO> metricsVOS) {
-        List<String> result = new ArrayList<>();
+    public List<List<String>> convertMetricsVOsToStringList(List<MetricsVO> metricsVOS) {
+        List<List<String>> result = new ArrayList<>();
 
         for (MetricsVO metricsVO : metricsVOS) {
             Map<String, Object> content = (Map<String, Object>) metricsVO.getContent();
             try {
                 String serializedContent = objectMapper.writeValueAsString(content);
-                String keyValueString = metricsVO.getModel() + "," + serializedContent + "," + metricsVO.getHeartTime() + "," + metricsVO.getDate();
-                result.add(keyValueString);
+                List<String> row = new ArrayList<>();
+                row.add(metricsVO.getModel());
+                row.add(serializedContent);
+                row.add(metricsVO.getHeartTime().toString());
+                row.add(metricsVO.getDate());
+                result.add(row);
             } catch (JsonProcessingException e) {
                 log.error("Failed to serialize content of MetricsVO: {}", metricsVO, e);
             }
