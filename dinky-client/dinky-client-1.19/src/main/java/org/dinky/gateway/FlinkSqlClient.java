@@ -65,11 +65,11 @@ public class FlinkSqlClient implements Closeable, ISqlClient {
     public void startCli(Configuration configuration) {
         InetSocketAddress inetSocketAddress;
         DefaultContext context = createDefaultContext(configuration);
-        if (sqlClientOptions.getMode() == SQL_CLI_MODE.MODE_EMBEDDED) {
+        if (sqlClientOptions.getMode() == SqlCliMode.MODE_EMBEDDED) {
             embeddedGateway = EmbeddedGateway.create(context);
             inetSocketAddress =
                     InetSocketAddress.createUnresolved(embeddedGateway.getAddress(), embeddedGateway.getPort());
-        } else if (sqlClientOptions.getMode() == SQL_CLI_MODE.MODE_GATEWAY) {
+        } else if (sqlClientOptions.getMode() == SqlCliMode.MODE_GATEWAY) {
             inetSocketAddress = sqlClientOptions
                     .buildConnectAddress()
                     .orElseThrow(() -> new SqlClientException("Gateway address is not set."));

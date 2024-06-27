@@ -19,7 +19,7 @@
 
 package org.dinky.context;
 
-import org.dinky.gateway.SQL_CLI_MODE;
+import org.dinky.gateway.SqlCliMode;
 import org.dinky.gateway.SqlClientOptions;
 import org.dinky.gateway.sqlgateway.cli.SqlClientAdapter;
 import org.dinky.utils.CloseUtil;
@@ -119,7 +119,7 @@ public class SqlGatewayWsContext {
                 new SqlClientOptions.TerminalSize(Integer.parseInt(cols), Integer.parseInt(rows));
 
         SqlClientOptions options = SqlClientOptions.builder()
-                .mode(SQL_CLI_MODE.fromString(getParameter("mode", true)))
+                .mode(SqlCliMode.fromString(getParameter("mode", true)))
                 .sessionId(getParameter("sessionId"))
                 .connectAddress(getParameter("connectAddress", true))
                 .initSql(getParameter("initSql"))
