@@ -17,21 +17,10 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
-import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
+import React, {useEffect, useState} from 'react';
+import {Layout, Responsive, WidthProvider} from 'react-grid-layout';
 import './index.less';
-import {
-  Button,
-  Empty,
-  Flex,
-  Input,
-  Segmented,
-  Space,
-  Spin,
-  Statistic,
-  Switch,
-  Tooltip
-} from 'antd';
+import {Button, Empty, Flex, Input, Segmented, Space, Spin, Switch, Tooltip} from 'antd';
 import {
   AreaChartOutlined,
   BackwardOutlined,
@@ -45,29 +34,21 @@ import {
 } from '@ant-design/icons';
 import _ from 'lodash';
 import * as echarts from 'echarts';
-import { ProCard } from '@ant-design/pro-components';
-import { SetOutline } from 'antd-mobile-icons';
-import ReactECharts from 'echarts-for-react';
-import { history, useLocation, useParams } from '@@/exports';
+import {ProCard} from '@ant-design/pro-components';
+import {SetOutline} from 'antd-mobile-icons';
+import {history, useLocation} from '@@/exports';
 import useHookRequest from '@/hooks/useHookRequest';
-import { addOrUpdate, getDataDetailById } from '@/pages/Dashboard/service';
+import {addOrUpdate, getDataDetailById} from '@/pages/Dashboard/service';
 import Edit from '@/pages/Dashboard/DashboardLayout/Edit';
-import {
-  deleteKeyFromRecord,
-  EchartsOptions,
-  LayoutChartData,
-  LayoutData
-} from '@/pages/Dashboard/data';
-import { getData } from '@/services/api';
-import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
+import {deleteKeyFromRecord, EchartsOptions, LayoutChartData, LayoutData} from '@/pages/Dashboard/data';
+import {ChartData} from '@/pages/Metrics/JobMetricsList/data';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { l } from '@/utils/intl';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { PermissionConstants } from '@/types/Public/constants';
-import { Authorized } from '@/hooks/useAccess';
-import { useHistory } from 'react-router';
-import { getUrlParam } from '@/utils/function';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {l} from '@/utils/intl';
+import {queryDataByParams} from '@/services/BusinessCrud';
+import {PermissionConstants} from '@/types/Public/constants';
+import {Authorized} from '@/hooks/useAccess';
+import {getUrlParam} from '@/utils/function';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -84,10 +65,9 @@ type DashboardProps = {
 export default (props: DashboardProps) => {
   const location = useLocation();
   const layoutId = getUrlParam(location.search, 'layoutId');
-
   console.log('layoutId', layoutId, location);
 
-  const { data, refresh, loading } = useHookRequest<any, any>(getDataDetailById, {
+  const {data, refresh, loading} = useHookRequest<any, any>(getDataDetailById, {
     defaultParams: [layoutId]
   });
   const chartTheme = data?.chartTheme ?? 'roma';
@@ -121,7 +101,7 @@ export default (props: DashboardProps) => {
       };
     }
     setItems([...items]);
-    setChartData({ ...chartData });
+    setChartData({...chartData});
     setOpenChange(false);
   };
   useEffect(() => {
@@ -159,7 +139,7 @@ export default (props: DashboardProps) => {
         })
       };
     });
-    setChartData({ ...chartData });
+    setChartData({...chartData});
     setItems(
       layout.map((x: any) => {
         return {
@@ -176,7 +156,7 @@ export default (props: DashboardProps) => {
   const config = {
     className: 'layout',
     rowHeight: 200,
-    cols: { lg: 6, md: 6, sm: 6, xs: 6, xxs: 6 }
+    cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
   };
   const [isUpdate, setIsUpdate] = useState(false);
   const [isShowEditCard, setIsShowEditCard] = useState(false);
@@ -187,14 +167,13 @@ export default (props: DashboardProps) => {
   });
 
   const onRemoveItem = (i: string) => {
-    setItems(_.reject(items, { i: i }));
+    setItems(_.reject(items, {i: i}));
     setChartData(deleteKeyFromRecord(chartData, i));
   };
 
   const generateDOM = () => {
-    console.log('generateDOM', chartData, items);
     if (items.length === 0) {
-      return <Empty description={l('dashboard.empty')} />;
+      return <Empty description={l('dashboard.empty')}/>;
     }
     return items.map((l, i) => {
       const chartDatum = chartData[l.i].chartData;
@@ -207,111 +186,109 @@ export default (props: DashboardProps) => {
       const chartOptions = EchartsOptions(chartDatum, isShowEditCard ? '' : title);
 
       const options = [
-        { label: 'Line', value: 'Line', icon: <LineChartOutlined /> },
-        { label: 'Area', value: 'Area', icon: <AreaChartOutlined /> },
-        { label: 'Bar', value: 'Bar', icon: <BarChartOutlined /> }
+        {label: 'Line', value: 'Line', icon: <LineChartOutlined/>},
+        {label: 'Area', value: 'Area', icon: <AreaChartOutlined/>},
+        {label: 'Bar', value: 'Bar', icon: <BarChartOutlined/>}
       ];
       if (chartDatum.length < 2) {
-        options.push({ label: 'Statistic', value: 'Statistic', icon: <FieldNumberOutlined /> });
+        options.push({label: 'Statistic', value: 'Statistic', icon: <FieldNumberOutlined/>});
       }
 
       return (
-        <>
-          <div
-            key={i}
-            data-grid={l}
-            style={{
-              paddingBottom: 10,
-              display: 'flex',
-              border: isUpdate ? '1px solid black' : ''
-            }}
-          >
-            {isUpdate && (
-              <Button
-                style={{
-                  position: 'absolute',
-                  right: 10,
-                  top: 10,
-                  zIndex: 999
-                }}
-                type='primary'
-                danger
-                ghost
-                icon={<CloseOutlined />}
-                onClick={() => onRemoveItem(l.i)}
-              />
-            )}
+        <div
+          key={i}
+          data-grid={l}
+          style={{
+            paddingBottom: 10,
+            display: 'flex',
+            border: isUpdate ? '1px solid black' : ''
+          }}
+        >
+          {isUpdate && (
+            <Button
+              style={{
+                position: 'absolute',
+                right: 10,
+                top: 10,
+                zIndex: 999
+              }}
+              type='primary'
+              danger
+              ghost
+              icon={<CloseOutlined/>}
+              onClick={() => onRemoveItem(l.i)}
+            />
+          )}
 
-            {isUpdate && isShowEditCard && (
-              <ProCard
-                title={
-                  <Input
-                    defaultValue={title}
+          {isUpdate && isShowEditCard && (
+            <ProCard
+              title={
+                <Input
+                  defaultValue={title}
+                  onChange={(value) => {
+                    setChartData((v) => {
+                      v[l.i].title = value.currentTarget.value;
+                      return {...v};
+                    });
+                  }}
+                />
+              }
+              style={{
+                flex: 1,
+                zIndex: 1000
+              }}
+              extra={
+                <Button
+                  type={'text'}
+                  icon={<SetOutline fontSize={24}/>}
+                  onClick={() => {
+                    setUpdateModel(l.i);
+                    setEditIsUpdate(true);
+                    setOpenChange(true);
+                  }}
+                />
+              }
+              bordered
+              actions={[
+                <Flex align={'center'} justify={'center'}>
+                  <Segmented
+                    defaultValue={chartDatum[0].type}
                     onChange={(value) => {
                       setChartData((v) => {
-                        v[l.i].title = value.currentTarget.value;
-                        return { ...v };
+                        v[l.i].chartData.forEach((x) => {
+                          x.type = value;
+                        });
+                        return {...v};
                       });
                     }}
+                    options={options}
                   />
-                }
-                style={{
-                  flex: 1,
-                  zIndex: 1000
-                }}
-                extra={
-                  <Button
-                    type={'text'}
-                    icon={<SetOutline fontSize={24} />}
-                    onClick={() => {
-                      setUpdateModel(l.i);
-                      setEditIsUpdate(true);
-                      setOpenChange(true);
-                    }}
-                  />
-                }
-                bordered
-                actions={[
-                  <Flex align={'center'} justify={'center'}>
-                    <Segmented
-                      defaultValue={chartDatum[0].type}
-                      onChange={(value) => {
-                        setChartData((v) => {
-                          v[l.i].chartData.forEach((x) => {
-                            x.type = value;
-                          });
-                          return { ...v };
-                        });
-                      }}
-                      options={options}
-                    />
-                  </Flex>
-                ]}
-              >
-                {
-                  <ChartShow
-                    chartTheme={chartTheme}
-                    chartOptions={chartOptions}
-                    value={chartDatum[0].data?.slice(-1)[0]?.value}
-                    type={chartDatum[0]?.type}
-                    fontSize={(l.h * config.rowHeight) / 4}
-                  />
-                }
-              </ProCard>
-            )}
-            {
-              <ChartShow
-                show={!isUpdate || !isShowEditCard}
-                chartTheme={chartTheme}
-                chartOptions={chartOptions}
-                title={title}
-                value={chartDatum[0].data?.slice(-1)[0]?.value}
-                type={chartDatum[0]?.type}
-                fontSize={(l.h * config.rowHeight) / 4}
-              />
-            }
-          </div>
-        </>
+                </Flex>
+              ]}
+            >
+              {
+                <ChartShow
+                  chartTheme={chartTheme}
+                  chartOptions={chartOptions}
+                  value={chartDatum[0].data?.slice(-1)[0]?.value}
+                  type={chartDatum[0]?.type}
+                  fontSize={(l.h * config.rowHeight) / 4}
+                />
+              }
+            </ProCard>
+          )}
+          {
+            <ChartShow
+              show={!isUpdate || !isShowEditCard}
+              chartTheme={chartTheme}
+              chartOptions={chartOptions}
+              title={title}
+              value={chartDatum[0].data?.slice(-1)[0]?.value}
+              type={chartDatum[0]?.type}
+              fontSize={(l.h * config.rowHeight) / 4}
+            />
+          }
+        </div>
       );
     });
   };
@@ -326,7 +303,7 @@ export default (props: DashboardProps) => {
       <Flex wrap gap='small' justify={'space-between'}>
         <Button
           size={'middle'}
-          icon={<BackwardOutlined />}
+          icon={<BackwardOutlined/>}
           type='primary'
           onClick={handleBackClick}
         >
@@ -353,7 +330,7 @@ export default (props: DashboardProps) => {
                 <Button
                   type='primary'
                   ghost
-                  icon={<PlusOutlined />}
+                  icon={<PlusOutlined/>}
                   onClick={() => {
                     setEditIsUpdate(false);
                     setOpenChange(true);
@@ -365,7 +342,7 @@ export default (props: DashboardProps) => {
               <Button
                 type='primary'
                 ghost
-                icon={<CheckOutlined />}
+                icon={<CheckOutlined/>}
                 onClick={async () => {
                   const layoutData = items.map((item) => {
                     return {
@@ -395,7 +372,7 @@ export default (props: DashboardProps) => {
                 type='primary'
                 danger
                 ghost
-                icon={<CloseOutlined />}
+                icon={<CloseOutlined/>}
                 onClick={async () => {
                   setIsUpdate(false);
                   setIsShowEditCard(false);
@@ -413,7 +390,7 @@ export default (props: DashboardProps) => {
                 type='primary'
                 danger
                 ghost
-                icon={<EditOutlined />}
+                icon={<EditOutlined/>}
                 onClick={() => setIsUpdate(true)}
               />
             </Tooltip>
@@ -425,6 +402,7 @@ export default (props: DashboardProps) => {
       <Spin spinning={loading}>
         <ResponsiveReactGridLayout
           {...config}
+          // layouts={{"lg":items}}
           // WidthProvider option
           measureBeforeMount={false}
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
@@ -443,7 +421,7 @@ export default (props: DashboardProps) => {
           {Object.values(chartData).length === items.length && generateDOM()}
         </ResponsiveReactGridLayout>
       </Spin>
-      <Edit
+      {openChange &&(<Edit
         chartTheme={chartTheme}
         open={openChange}
         title={editIsUpdate ? l('dashboard.update') : l('dashboard.add')}
@@ -452,12 +430,12 @@ export default (props: DashboardProps) => {
         defaultValue={
           editIsUpdate
             ? {
-                title: chartData[updateModel].title,
-                layouts: chartData[updateModel].chartData
-              }
-            : { title: '', layouts: [] }
+              title: chartData[updateModel].title,
+              layouts: chartData[updateModel].chartData
+            }
+            : {title: '', layouts: []}
         }
-      />
+      />)}
     </>
   );
 };

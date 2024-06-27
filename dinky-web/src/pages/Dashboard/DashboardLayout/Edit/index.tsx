@@ -107,7 +107,6 @@ export default (props: EditProps) => {
       selectedOptions
         .filter((x) => x.length === 3)
         .map((x) => {
-          // @ts-ignore
           const d = x[x.length - 1];
           return {
             type: 'Line',
@@ -150,7 +149,9 @@ export default (props: EditProps) => {
             fieldProps={{
               onChange: onChange,
               showSearch: { filter },
-              options: data
+              options: data,
+              // @ts-ignore
+              multiple:true
             }}
             name={'layouts'}
             label={l('dashboard.chart.select')}
