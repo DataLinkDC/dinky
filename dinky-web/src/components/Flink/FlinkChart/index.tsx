@@ -73,7 +73,6 @@ const FlinkChart = (props: FlinkChartProps) => {
     animation: false,
     data: data,
     smooth: true,
-    xField: 'time',
     yField: 'value',
     xField: (d: ChartData) => new Date(d.time),
     axis: {
