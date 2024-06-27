@@ -1268,5 +1268,31 @@ export default {
   'lineage.refresh': 'Refresh',
 
   'sys.classLoaderJars.tips':
-    'The following content shows the list of jar packages loaded by the system class loader inside the Dinky service. In this way, you can visually view all Jar files that have been loaded inside the service to help troubleshoot Jar package conflicts and other issues.'
+    'The following content shows the list of jar packages loaded by the system class loader inside the Dinky service. In this way, you can visually view all Jar files that have been loaded inside the service to help troubleshoot Jar package conflicts and other issues.',
+
+  'dashboard.create': 'Create Dashboard',
+  'dashboard.add': 'Add Chart',
+  'dashboard.chart.name': 'Chart Name',
+  'dashboard.chart.select': 'Please select a chart',
+  'dashboard.update': 'Edit Chart',
+  'dashboard.name': 'Dashboard Name',
+  'dashboard.name.maxLength': 'The maximum length is 32 characters',
+  'dashboard.namePlaceholder': 'Please enter the dashboard name',
+  'dashboard.remark': 'Description',
+  'dashboard.remarkPlaceholder': 'Please enter the description',
+  'dashboard.chartTheme': 'Chart Theme',
+  'dashboard.selectChartTheme': 'Please select a Chart theme',
+  'dashboard.delete': 'Delete Dashboard',
+  'dashboard.deleteConfirm': 'Are you sure to delete this Dashboard？',
+  'dashboard.theme.chalk': 'Chalk',
+  'dashboard.theme.dark': 'Dark',
+  'dashboard.theme.essos': 'Essos',
+  'dashboard.theme.infographic': 'Infographic',
+  'dashboard.theme.macarons': 'Macarons',
+  'dashboard.theme.purple-passion': 'Purple-Passion',
+  'dashboard.theme.roma': 'Roma',
+  'dashboard.theme.shine': 'Purple',
+  'dashboard.theme.vintage': 'Vintage',
+  'dashboard.theme.westeros': 'Westeros',
+  'dashboard.theme.wonderland': 'Wonderland'
 };

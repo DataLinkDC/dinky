@@ -40,6 +40,7 @@ export default {
   'button.config': 'Config',
   'button.modify': 'Modify',
   'button.edit': 'Edit',
+  'button.open': 'Open',
   'button.start': 'Start',
   'button.stop': 'Stop',
   'button.publish': 'Publish',

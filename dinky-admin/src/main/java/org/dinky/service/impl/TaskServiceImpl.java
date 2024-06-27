@@ -36,6 +36,7 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
@@ -129,6 +130,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
@@ -1007,5 +1009,27 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             treeNodes.add(new TreeNode<>(catalogue.getId(), catalogue.getParentId(), catalogue.getName(), i + 1));
         }
         return treeNodes;
+    }
+
+    @Override
+    public Boolean checkTaskOperatePermission(Integer taskId) {
+        TaskDTO taskDTO = getTaskInfoById(taskId);
+        if (Objects.nonNull(taskDTO)) {
+            return hasTaskOperatePermission(taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners());
+        }
+        return null;
+    }
+
+    private Boolean hasTaskOperatePermission(Integer firstLevelOwner, List<Integer> secondLevelOwners) {
+        boolean isFirstLevelOwner = firstLevelOwner != null && firstLevelOwner == StpUtil.getLoginIdAsInt();
+        if (TaskOwnerLockStrategyEnum.OWNER.equals(
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+            return isFirstLevelOwner;
+        } else if (TaskOwnerLockStrategyEnum.OWNER_AND_MAINTAINER.equals(
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+            return isFirstLevelOwner
+                    || (secondLevelOwners != null && secondLevelOwners.contains(StpUtil.getLoginIdAsInt()));
+        }
+        return true;
     }
 }
