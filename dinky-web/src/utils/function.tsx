@@ -649,3 +649,15 @@ export async function handleCopyToClipboard(copyText: string) {
   }
   await SuccessMessage(l('rc.resource.copy_success', '', { fillValue: copyText }));
 }
+
+/**
+ * 获取请求参数中的 keu 对应的 value
+ * @param allParams
+ * @param key
+ * @returns
+ */
+export function getUrlParam(allParams = window.location.search, key: string) {
+  const params = new URLSearchParams(allParams);
+  const result = params.get(key);
+  return result ?? '';
+}

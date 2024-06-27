@@ -35,7 +35,6 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
-import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.parser.SqlType;
 import org.dinky.resource.BaseResourceManager;
 import org.dinky.trans.Operations;
@@ -252,9 +251,8 @@ public class Submitter {
         Optional<JobClient> jobClient = Optional.empty();
 
         for (String statement : statements) {
-            String sqlStatement = executor.pretreatStatement(statement);
-            if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
-                ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(sqlStatement);
+            if (ExecuteJarParseStrategy.INSTANCE.match(statement)) {
+                ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(statement);
                 Pipeline pipeline = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
                 ReadableConfig configuration =
                         executor.getStreamExecutionEnvironment().getConfiguration();
@@ -285,14 +283,14 @@ public class Submitter {
                 jobClient = Optional.of(client);
                 break;
             }
-            if (Operations.getOperationType(sqlStatement) == SqlType.ADD) {
-                File[] info = AddJarSqlParseStrategy.getInfo(sqlStatement);
+            if (Operations.getOperationType(statement) == SqlType.ADD) {
+                File[] info = AddJarSqlParseStrategy.getInfo(statement);
                 Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addOtherPlugins);
                 if (GatewayType.get(type).isKubernetesApplicationMode()) {
                     executor.addJar(info);
                 }
-            } else if (Operations.getOperationType(sqlStatement) == SqlType.ADD_FILE) {
-                File[] info = AddFileSqlParseStrategy.getInfo(sqlStatement);
+            } else if (Operations.getOperationType(statement) == SqlType.ADD_FILE) {
+                File[] info = AddFileSqlParseStrategy.getInfo(statement);
                 Arrays.stream(info).forEach(executor.getDinkyClassLoader().getUdfPathContextHolder()::addFile);
                 if (GatewayType.get(type).isKubernetesApplicationMode()) {
                     executor.addJar(info);
@@ -311,24 +309,23 @@ public class Submitter {
         List<StatementParam> execute = new ArrayList<>();
 
         for (String item : statements) {
-            String statement = FlinkInterceptor.pretreatStatement(executor, item);
-            if (statement.isEmpty()) {
+            if (item.isEmpty()) {
                 continue;
             }
 
-            SqlType operationType = Operations.getOperationType(statement);
+            SqlType operationType = Operations.getOperationType(item);
             if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
-                trans.add(new StatementParam(statement, operationType));
+                trans.add(new StatementParam(item, operationType));
                 if (!executorConfig.isUseStatementSet()) {
                     break;
                 }
             } else if (operationType.equals(SqlType.EXECUTE)) {
-                execute.add(new StatementParam(statement, operationType));
+                execute.add(new StatementParam(item, operationType));
                 if (!executorConfig.isUseStatementSet()) {
                     break;
                 }
             } else {
-                ddl.add(new StatementParam(statement, operationType));
+                ddl.add(new StatementParam(item, operationType));
             }
         }
 

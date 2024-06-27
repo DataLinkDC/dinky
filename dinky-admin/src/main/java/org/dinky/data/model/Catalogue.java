@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import org.dinky.data.annotations.TaskId;
 import org.dinky.mybatis.model.SuperEntity;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class Catalogue extends SuperEntity<Catalogue> {
     private Integer tenantId;
 
     @ApiModelProperty(value = "Task ID", required = true, dataType = "Integer", example = "1")
+    @TaskId
     private Integer taskId;
 
     @ApiModelProperty(value = "Type", required = true, dataType = "String", example = "Flinksql")

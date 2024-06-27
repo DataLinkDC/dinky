@@ -19,7 +19,7 @@
 
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import { differenceDays } from '@/utils/function';
-import { Line } from '@ant-design/charts';
+import { Line, LineConfig } from '@ant-design/charts';
 import { ExpandOutlined } from '@ant-design/icons';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import { Col, Modal, Radio, Segmented, Space } from 'antd';
@@ -69,17 +69,16 @@ const FlinkChart = (props: FlinkChartProps) => {
     }
   };
 
-  const config = {
+  const config: LineConfig = {
     animation: false,
     data: data,
-    shapeField: 'smooth',
-    xField: 'time',
+    smooth: true,
     yField: 'value',
+    xField: (d: ChartData) => new Date(d.time),
     axis: {
       x: {
-        type: 'time',
-        mask: getLineTimeMask(data),
-        tickCount: 40
+        tickCount: 10,
+        mask: getLineTimeMask(data)
       }
     },
     ...chartOptions
@@ -165,7 +164,8 @@ const FlinkChart = (props: FlinkChartProps) => {
         ) : (
           <StatisticCard.Group
             style={{
-              minHeight: '100%',
+              marginTop: '5%',
+              minHeight: '95%',
               minWidth: '100%',
               display: 'flex',
               justifyContent: 'center',

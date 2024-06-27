@@ -20,6 +20,7 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
@@ -50,6 +51,7 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
     @ProcessId
+    @TaskId
     private Integer id;
 
     @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
