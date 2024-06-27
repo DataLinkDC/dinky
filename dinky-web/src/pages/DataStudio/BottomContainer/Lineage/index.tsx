@@ -78,7 +78,7 @@ const Lineage: React.FC<connect> = (props) => {
         <LineageGraph lineageData={lineageData} refreshCallBack={queryLineageData} />
       ) : (
         <Result
-          style={{ height: bottomHeight - 120 }}
+          style={{ height: 'inherit' }}
           status='warning'
           title={l('lineage.getError')}
         />
