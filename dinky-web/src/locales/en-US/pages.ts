@@ -85,6 +85,19 @@ export default {
    *
    * */
 
+  'datastudio.middle.terminal.mode': 'Connect Mode',
+  'datastudio.middle.terminal.websocket': 'dinky backend',
+  'datastudio.middle.terminal.websocket.tip':
+    'In general, no modifications are required. If you have custom Nginx configurations, please edit this address.',
+  'datastudio.middle.terminal.cluster': 'Flink Cluster',
+  'datastudio.middle.terminal.cluster.tip':
+    'It is necessary to pre-register the corresponding cluster in the registry. Only manually registered clusters will be displayed.',
+  'datastudio.middle.terminal.fontSize': 'Font Size',
+  'datastudio.middle.terminal.backspaceAsCtrlH': 'Backspace As CtrlH',
+  'datastudio.middle.terminal.backspaceAsCtrlH.tip':
+    'If issues with display arise following a rollback deletion, modify this ',
+  'datastudio.middle.terminal.connect': 'Connect',
+
   'datastudio.middle.qg': 'Quick Guide',
   'datastudio.middle.qg.alertGroup': 'Register Alert Group',
   'datastudio.middle.qg.alertInstance': 'Register Alert Instance',

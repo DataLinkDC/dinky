@@ -27,6 +27,7 @@ export enum ClusterType {
   KUBERNETES_APPLICATION = 'kubernetes-application',
   KUBERNETES_OPERATOR = 'kubernetes-application-operator',
   YARN_APPLICATION = 'yarn-application',
+  SQL_GATEWAY = 'sql-gateway',
   LOCAL = 'local'
 }
 

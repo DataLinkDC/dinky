@@ -163,6 +163,7 @@ export type DataStudioParams = {
 export enum TabsPageType {
   None = '',
   metadata = 'metadata',
+  terminal = 'terminal',
   project = 'project'
 }
 

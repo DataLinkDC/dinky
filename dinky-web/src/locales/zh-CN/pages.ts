@@ -80,6 +80,17 @@ export default {
    * */
 
   'datastudio.middle.qg': '快捷引导',
+  'datastudio.middle.terminal.mode': '连接方式',
+  'datastudio.middle.terminal.websocket': 'dinky后端',
+  'datastudio.middle.terminal.websocket.tip':
+    '一般情况下无需改动，如果您有自定义nginx配置，请修改此地址',
+  'datastudio.middle.terminal.cluster': 'Flink 集群',
+  'datastudio.middle.terminal.cluster.tip': '需要提前在注册中心添加对应集群,仅展示手动注册集群',
+  'datastudio.middle.terminal.fontSize': '字体大小',
+  'datastudio.middle.terminal.backspaceAsCtrlH': '回退字符转换',
+  'datastudio.middle.terminal.backspaceAsCtrlH.tip': '如果回退删除显示异常，修改此选项',
+  'datastudio.middle.terminal.connect': '连接',
+
   'datastudio.middle.qg.alertGroup': '注册告警组',
   'datastudio.middle.qg.alertInstance': '注册告警实例',
   'datastudio.middle.qg.clusterConfiguration': '注册集群配置',

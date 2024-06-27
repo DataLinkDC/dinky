@@ -81,7 +81,10 @@
     "echarts": "^5.5.0",
     "echarts-for-react": "^3.0.2",
     "react-grid-layout": "^1.4.4",
-    "@babel/runtime": "^7.24.7"
+    "@babel/runtime": "^7.24.7",
+    "websocket": "^1.0.35",
+    "@xterm/xterm": "^5.5.0",
+    "@xterm/addon-fit": "^0.10.0"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^3.2.1",
