@@ -40,6 +40,7 @@ export default {
   'button.config': '配置',
   'button.modify': '修改',
   'button.edit': '编辑',
+  'button.open': '打开',
   'button.start': '启动',
   'button.stop': '停止',
   'button.publish': '发布',
