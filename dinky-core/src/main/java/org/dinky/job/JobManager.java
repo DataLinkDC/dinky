@@ -264,72 +264,13 @@ public class JobManager {
         statement = String.join(";\n", statements);
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
-        JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
-        Pipeline pipeline = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
-        Configuration configuration =
-                executor.getCustomTableEnvironment().getConfig().getConfiguration();
-        if (pipeline instanceof StreamGraph) {
-            if (Asserts.isNotNullString(config.getSavePointPath())) {
-                ((StreamGraph) pipeline)
-                        .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                                config.getSavePointPath(),
-                                configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
-            }
-        }
         try {
-            if (!useGateway) {
-                JobClient jobClient =
-                        FlinkStreamEnvironmentUtil.executeAsync(pipeline, executor.getStreamExecutionEnvironment());
-                if (Asserts.isNotNull(jobClient)) {
-                    job.setJobId(jobClient.getJobID().toHexString());
-                    job.setJids(new ArrayList<String>() {
-
-                        {
-                            add(job.getJobId());
-                        }
-                    });
-                    job.setStatus(Job.JobStatus.SUCCESS);
-                    success();
-                } else {
-                    job.setStatus(Job.JobStatus.FAILED);
-                    failed();
-                }
+            JobJarStreamGraphBuilder.build(this).run();
+            if (job.isFailed()) {
+                failed();
             } else {
-                GatewayResult gatewayResult;
-                config.addGatewayConfig(configuration);
-                if (runMode.isApplicationMode()) {
-                    config.getGatewayConfig().setSql(statement);
-                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
-                } else {
-                    if (pipeline instanceof StreamGraph) {
-                        ((StreamGraph) pipeline).setJobName(config.getJobName());
-                    } else if (pipeline instanceof Plan) {
-                        ((Plan) pipeline).setJobName(config.getJobName());
-                    }
-                    JobGraph jobGraph = FlinkStreamEnvironmentUtil.getJobGraph(pipeline, configuration);
-                    GatewayConfig gatewayConfig = config.getGatewayConfig();
-                    List<String> uriList = jobJarStreamGraphBuilder.getUris(statement);
-                    String[] jarPaths = uriList.stream()
-                            .map(URLUtils::toFile)
-                            .map(File::getAbsolutePath)
-                            .toArray(String[]::new);
-                    gatewayConfig.setJarPaths(jarPaths);
-                    gatewayResult = Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
-                }
-                job.setResult(InsertResult.success(gatewayResult.getId()));
-                job.setJobId(gatewayResult.getId());
-                job.setJids(gatewayResult.getJids());
-                job.setJobManagerAddress(URLUtils.formatAddress(gatewayResult.getWebURL()));
-
-                if (gatewayResult.isSuccess()) {
-                    job.setStatus(Job.JobStatus.SUCCESS);
-                    success();
-                } else {
-                    job.setStatus(Job.JobStatus.FAILED);
-                    job.setError(gatewayResult.getError());
-                    log.error(gatewayResult.getError());
-                    failed();
-                }
+                job.setStatus(Job.JobStatus.SUCCESS);
+                success();
             }
         } catch (Exception e) {
             String error =
