@@ -151,7 +151,7 @@ export default (props: EditProps) => {
               showSearch: { filter },
               options: data,
               // @ts-ignore
-              multiple:true
+              multiple: true
             }}
             name={'layouts'}
             label={l('dashboard.chart.select')}
