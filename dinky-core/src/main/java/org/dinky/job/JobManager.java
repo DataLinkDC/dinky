@@ -34,7 +34,6 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ErrorResult;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
-import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
 import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
@@ -67,19 +66,15 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
-import org.apache.flink.api.common.Plan;
 import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
-import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
@@ -88,7 +83,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -264,72 +258,13 @@ public class JobManager {
         statement = String.join(";\n", statements);
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
-        JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
-        Pipeline pipeline = jobJarStreamGraphBuilder.getJarStreamGraph(statement, getDinkyClassLoader());
-        Configuration configuration =
-                executor.getCustomTableEnvironment().getConfig().getConfiguration();
-        if (pipeline instanceof StreamGraph) {
-            if (Asserts.isNotNullString(config.getSavePointPath())) {
-                ((StreamGraph) pipeline)
-                        .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                                config.getSavePointPath(),
-                                configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
-            }
-        }
         try {
-            if (!useGateway) {
-                JobClient jobClient =
-                        FlinkStreamEnvironmentUtil.executeAsync(pipeline, executor.getStreamExecutionEnvironment());
-                if (Asserts.isNotNull(jobClient)) {
-                    job.setJobId(jobClient.getJobID().toHexString());
-                    job.setJids(new ArrayList<String>() {
-
-                        {
-                            add(job.getJobId());
-                        }
-                    });
-                    job.setStatus(Job.JobStatus.SUCCESS);
-                    success();
-                } else {
-                    job.setStatus(Job.JobStatus.FAILED);
-                    failed();
-                }
+            JobJarStreamGraphBuilder.build(this).run();
+            if (job.isFailed()) {
+                failed();
             } else {
-                GatewayResult gatewayResult;
-                config.addGatewayConfig(configuration);
-                if (runMode.isApplicationMode()) {
-                    config.getGatewayConfig().setSql(statement);
-                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(getUdfPathContextHolder());
-                } else {
-                    if (pipeline instanceof StreamGraph) {
-                        ((StreamGraph) pipeline).setJobName(config.getJobName());
-                    } else if (pipeline instanceof Plan) {
-                        ((Plan) pipeline).setJobName(config.getJobName());
-                    }
-                    JobGraph jobGraph = FlinkStreamEnvironmentUtil.getJobGraph(pipeline, configuration);
-                    GatewayConfig gatewayConfig = config.getGatewayConfig();
-                    List<String> uriList = jobJarStreamGraphBuilder.getUris(statement);
-                    String[] jarPaths = uriList.stream()
-                            .map(URLUtils::toFile)
-                            .map(File::getAbsolutePath)
-                            .toArray(String[]::new);
-                    gatewayConfig.setJarPaths(jarPaths);
-                    gatewayResult = Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
-                }
-                job.setResult(InsertResult.success(gatewayResult.getId()));
-                job.setJobId(gatewayResult.getId());
-                job.setJids(gatewayResult.getJids());
-                job.setJobManagerAddress(URLUtils.formatAddress(gatewayResult.getWebURL()));
-
-                if (gatewayResult.isSuccess()) {
-                    job.setStatus(Job.JobStatus.SUCCESS);
-                    success();
-                } else {
-                    job.setStatus(Job.JobStatus.FAILED);
-                    job.setError(gatewayResult.getError());
-                    log.error(gatewayResult.getError());
-                    failed();
-                }
+                job.setStatus(Job.JobStatus.SUCCESS);
+                success();
             }
         } catch (Exception e) {
             String error =
