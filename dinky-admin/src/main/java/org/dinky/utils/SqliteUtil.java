@@ -34,7 +34,7 @@ public enum SqliteUtil {
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(sql);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             log.error("Failed to create table: " + e.getMessage());
         }
     }
@@ -84,9 +84,8 @@ public enum SqliteUtil {
     public ResultSet read(String tableName, String condition) throws SQLException {
         String sql = String.format("SELECT * FROM %s where %s;", tableName, condition);
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            return pstmt.executeQuery();
-        }
+        PreparedStatement pstmt = connection.prepareStatement(sql);
+        return pstmt.executeQuery();
     }
 
     public void close() throws SQLException {

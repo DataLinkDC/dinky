@@ -40,6 +40,10 @@ import org.dinky.utils.PaimonUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,14 +85,14 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             throw new DinkyException("The end date must be greater than the start date!");
         }
 
-        String condition = startTime.getTime() + " <= heart_time AND heart_time <= " + endTime.getTime();
+        String condition = getUtcCondition(startTime, endTime);
         List<MetricsVO> metricsVOList = new ArrayList<>();
-        try(ResultSet read = SqliteUtil.INSTANCE.read(PaimonTableConstant.DINKY_METRICS, condition)) {
+        try (ResultSet read = SqliteUtil.INSTANCE.read(PaimonTableConstant.DINKY_METRICS, condition)) {
             while (read.next()) {
                 MetricsVO metricsVO = new MetricsVO();
-                metricsVO.setHeartTime(read.getTimestamp("heart_time").toLocalDateTime());
-                metricsVO.setModel(read.getString("model"));
-                metricsVO.setContent(read.getString("content"));
+                metricsVO.setModel(read.getString("job_id"));
+                metricsVO.setContent(read.getString("value"));
+                metricsVO.setHeartTime(convertToLocalDateTime(read.getString("heart_time")));
                 metricsVO.setDate(read.getString("date"));
                 metricsVOList.add(metricsVO);
             }
@@ -96,6 +100,18 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
             log.error("Failed to read metrics data from sqlite: " + e.getMessage());
         }
         return metricsVOList;
+    }
+
+    public static LocalDateTime convertToLocalDateTime(String dateTimeString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+        return LocalDateTime.parse(dateTimeString, formatter);
+    }
+
+    public static String getUtcCondition(Date startTime, Date endTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+        LocalDateTime startLdt = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
+        LocalDateTime endLdt = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
+        return String.format("'%s' <= heart_time AND heart_time <= '%s'", startLdt.format(formatter), endLdt.format(formatter));
     }
 
     @Override

@@ -65,7 +65,7 @@ public class MetricsContextHolder {
     private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
 
     static  {
-        SqliteUtil.INSTANCE.createTable(PaimonTableConstant.DINKY_METRICS, "job_id BIGINT, value TEXT, heart_time TEXT, date TEXT");
+        SqliteUtil.INSTANCE.createTable(PaimonTableConstant.DINKY_METRICS, "job_id BIGINT, value TEXT, heart_time TEXT, date INTEGER");
     }
 
     // Create a ThreadFactory with custom naming
@@ -139,10 +139,9 @@ public class MetricsContextHolder {
         for (MetricsVO metricsVO : metricsVOS) {
             Map<String, Object> content = (Map<String, Object>) metricsVO.getContent();
             try {
-                String serializedContent = objectMapper.writeValueAsString(content);
                 List<String> row = new ArrayList<>();
                 row.add(metricsVO.getModel());
-                row.add(serializedContent);
+                row.add(objectMapper.writeValueAsString(content));
                 row.add(metricsVO.getHeartTime().toString());
                 row.add(metricsVO.getDate());
                 result.add(row);
