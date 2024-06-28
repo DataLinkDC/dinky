@@ -19,6 +19,8 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.annotations.TaskId;
+
 import java.io.Serializable;
 
 import io.swagger.annotations.ApiModel;
@@ -31,6 +33,7 @@ import lombok.Data;
 public class TaskRollbackVersionDTO implements Serializable {
 
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "The identifier of the task")
+    @TaskId
     private Integer taskId;
 
     @ApiModelProperty(

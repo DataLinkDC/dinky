@@ -36,6 +36,7 @@ import { connect, history } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'umi';
+import { getUrlParam } from '@/utils/function';
 
 const DataSourceDetail = (props: connect) => {
   const access = useAccess();
@@ -56,7 +57,7 @@ const DataSourceDetail = (props: connect) => {
   const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.id === selectDatabaseId)[0];
 
   const location = useLocation();
-  const paramsId = location.search.split('=')[1];
+  const paramsId = getUrlParam(location.search, 'id');
 
   const handleBackClick = () => {
     // go back
