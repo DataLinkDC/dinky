@@ -85,6 +85,9 @@ export default {
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
   'menu.metrics': 'Metrics',
+  'menu.dashboard': 'Dashboard',
+  'menu.dashboard.list': 'Dashboard',
+  'menu.dashboard.chart': 'Dashboard-Chart',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
 

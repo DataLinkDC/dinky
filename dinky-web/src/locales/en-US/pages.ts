@@ -85,6 +85,19 @@ export default {
    *
    * */
 
+  'datastudio.middle.terminal.mode': 'Connect Mode',
+  'datastudio.middle.terminal.websocket': 'dinky backend',
+  'datastudio.middle.terminal.websocket.tip':
+    'In general, no modifications are required. If you have custom Nginx configurations, please edit this address.',
+  'datastudio.middle.terminal.cluster': 'Flink Cluster',
+  'datastudio.middle.terminal.cluster.tip':
+    'It is necessary to pre-register the corresponding cluster in the registry. Only manually registered clusters will be displayed.',
+  'datastudio.middle.terminal.fontSize': 'Font Size',
+  'datastudio.middle.terminal.backspaceAsCtrlH': 'Backspace As CtrlH',
+  'datastudio.middle.terminal.backspaceAsCtrlH.tip':
+    'If issues with display arise following a rollback deletion, modify this ',
+  'datastudio.middle.terminal.connect': 'Connect',
+
   'datastudio.middle.qg': 'Quick Guide',
   'datastudio.middle.qg.alertGroup': 'Register Alert Group',
   'datastudio.middle.qg.alertInstance': 'Register Alert Instance',
@@ -1268,5 +1281,31 @@ export default {
   'lineage.refresh': 'Refresh',
 
   'sys.classLoaderJars.tips':
-    'The following content shows the list of jar packages loaded by the system class loader inside the Dinky service. In this way, you can visually view all Jar files that have been loaded inside the service to help troubleshoot Jar package conflicts and other issues.'
+    'The following content shows the list of jar packages loaded by the system class loader inside the Dinky service. In this way, you can visually view all Jar files that have been loaded inside the service to help troubleshoot Jar package conflicts and other issues.',
+
+  'dashboard.create': 'Create Dashboard',
+  'dashboard.add': 'Add Chart',
+  'dashboard.chart.name': 'Chart Name',
+  'dashboard.chart.select': 'Please select a chart',
+  'dashboard.update': 'Edit Chart',
+  'dashboard.name': 'Dashboard Name',
+  'dashboard.name.maxLength': 'The maximum length is 32 characters',
+  'dashboard.namePlaceholder': 'Please enter the dashboard name',
+  'dashboard.remark': 'Description',
+  'dashboard.remarkPlaceholder': 'Please enter the description',
+  'dashboard.chartTheme': 'Chart Theme',
+  'dashboard.selectChartTheme': 'Please select a Chart theme',
+  'dashboard.delete': 'Delete Dashboard',
+  'dashboard.deleteConfirm': 'Are you sure to delete this Dashboard？',
+  'dashboard.theme.chalk': 'Chalk',
+  'dashboard.theme.dark': 'Dark',
+  'dashboard.theme.essos': 'Essos',
+  'dashboard.theme.infographic': 'Infographic',
+  'dashboard.theme.macarons': 'Macarons',
+  'dashboard.theme.purple-passion': 'Purple-Passion',
+  'dashboard.theme.roma': 'Roma',
+  'dashboard.theme.shine': 'Purple',
+  'dashboard.theme.vintage': 'Vintage',
+  'dashboard.theme.westeros': 'Westeros',
+  'dashboard.theme.wonderland': 'Wonderland'
 };

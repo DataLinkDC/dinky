@@ -27,6 +27,7 @@ export type JobMetricsItem = {
   id?: string;
   taskId: number;
   vertices: string;
+  verticesTitle: string;
   metrics: string;
   position?: string;
   showType: string;

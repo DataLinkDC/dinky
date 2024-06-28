@@ -245,7 +245,13 @@ export enum API_CONSTANTS {
   JOB_METRICS = '/api/monitor/jobMetrics',
   SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
+  GET_METRICS_LAYOUT_CASCADER = '/api/monitor/getMetricsLayoutByCascader',
   GET_JVM_INFO = '/api/monitor/getJvmInfo',
+  GET_FLINK_DAT_BY_DASHBOARD = '/api/monitor/getFlinkDataByDashboard',
+  SAVE_DASHBOARD = '/api/dashboard/saveOrUpdate',
+  GET_DASHBOARD_LIST = '/api/dashboard/getDashboardList',
+  GET_DASHBOARD_BY_ID = '/api/dashboard/getDashboardById',
+  DELETE_DASHBOARD = '/api/dashboard/delete',
 
   // ------------------------------------ flink ------------------------------------
   FLINK_PROXY = '/api/flink',

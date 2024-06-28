@@ -134,3 +134,5 @@ SET
     FROM dinky_resources r
 WHERE
     duml.resources_id = r.id;
+
+-- todo dashboard还未迁移

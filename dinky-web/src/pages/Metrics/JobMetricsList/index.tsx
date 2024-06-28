@@ -31,9 +31,10 @@ import { handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
-import { ProCard } from '@ant-design/pro-components';
-import { Empty, Row, Spin } from 'antd';
-import { useEffect, useState } from 'react';
+import { ProCard, ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { Empty, Pagination, Row, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
+import ListPagination from '@/components/Flink/ListPagination';
 
 export type MetricsProps = {
   timeRange: MetricsTimeFilter;
@@ -96,7 +97,7 @@ const JobMetricsList = (props: MetricsProps) => {
   }, [data]);
 
   const renderFlinkChartGroup = (flinkJobId: string, metricsList: JobMetricsItem[]) => {
-    if (metricsList && metricsList.length > 0) {
+    if (metricsList && metricsList?.length > 0) {
       return metricsList?.map((item) => {
         const key = `${flinkJobId}-${item.vertices}-${item.metrics}`;
         return (
@@ -110,7 +111,7 @@ const JobMetricsList = (props: MetricsProps) => {
         );
       });
     }
-    return <Empty className={'code-content-empty'} />;
+    return [<Empty className={'code-content-empty'} />];
   };
 
   return (
@@ -126,7 +127,7 @@ const JobMetricsList = (props: MetricsProps) => {
                 title={lo.layoutName}
                 collapsible
                 ghost
-                gutter={[0, 8]}
+                gutter={[8, 16]}
                 subTitle={
                   <PopconfirmDeleteBtn
                     onClick={async () => {
@@ -140,7 +141,51 @@ const JobMetricsList = (props: MetricsProps) => {
                   />
                 }
               >
-                <Row gutter={[8, 16]}>{renderFlinkChartGroup(lo.flinkJobId, lo.metrics)}</Row>
+                <ListPagination<JobMetricsItem, Filter>
+                  data={lo.metrics}
+                  layount={(data1) => renderFlinkChartGroup(lo.flinkJobId, data1)}
+                  defaultPageSize={12}
+                  filter={{
+                    content: (data: JobMetricsItem[], setFilter) => {
+                      return (
+                        <ProForm<Filter>
+                          layout={'horizontal'}
+                          grid
+                          rowProps={{
+                            gutter: [16, 0]
+                          }}
+                          onFinish={async (values) => {
+                            setFilter(values);
+                          }}
+                        >
+                          <ProFormSelect
+                            colProps={{ md: 12, xl: 8 }}
+                            name='vertices'
+                            label='边'
+                            valueEnum={[...new Set(data.map((item) => item.vertices))].reduce(
+                              (accumulator, item) => {
+                                accumulator[item] = item;
+                                return accumulator;
+                              },
+                              {} as Record<string, string>
+                            )}
+                          />
+                          <ProFormText colProps={{ md: 12, xl: 8 }} name='metrics' label='节点名' />
+                        </ProForm>
+                      );
+                    },
+                    filter: (item: JobMetricsItem, filter: Filter) => {
+                      let rule = true;
+                      if (!isBlank(filter.vertices)) {
+                        rule = rule && item.vertices.includes(filter.vertices);
+                      }
+                      if (!isBlank(filter.metrics)) {
+                        rule = rule && item.metrics.includes(filter.metrics);
+                      }
+                      return rule;
+                    }
+                  }}
+                />
               </ProCard>
             </Spin>
           );
@@ -149,6 +194,18 @@ const JobMetricsList = (props: MetricsProps) => {
       <br />
     </>
   );
+};
+export type Filter = {
+  vertices: string;
+  metrics: string;
+};
+export const isBlank = (str: string) => {
+  if (str) {
+    return false;
+  } else if (str == '') {
+    return true;
+  }
+  return true;
 };
 
 export default JobMetricsList;

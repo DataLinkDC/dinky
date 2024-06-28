@@ -223,7 +223,8 @@ export const DIALECT = {
   HIVE: 'hive',
   PHOENIX: 'phoenix',
   STARROCKS: 'starrocks',
-  PRESTO: 'presto'
+  PRESTO: 'presto',
+  TERMINAL: 'terminal'
 };
 
 export const RUN_MODE = {
