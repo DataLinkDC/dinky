@@ -21,7 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.MetricsLayoutVo;
-import org.dinky.data.constant.PaimonTableConstant;
+import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.metrics.Jvm;
@@ -32,19 +32,14 @@ import org.dinky.data.vo.MetricsVO;
 import org.dinky.mapper.MetricsMapper;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
-import org.dinky.shaded.paimon.data.BinaryString;
-import org.dinky.shaded.paimon.data.Timestamp;
-import org.dinky.shaded.paimon.predicate.Predicate;
-import org.dinky.shaded.paimon.predicate.PredicateBuilder;
-import org.dinky.utils.JsonUtils;
-import org.dinky.utils.PaimonUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.dinky.utils.SqliteUtil;
@@ -77,6 +71,8 @@ import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 
+import static org.dinky.data.constant.MonitorTableConstant.HEART_TIME;
+
 @Service
 @RequiredArgsConstructor
 public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> implements MonitorService {
@@ -96,31 +92,41 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
 
         String condition = getUtcCondition(startTime, endTime);
         List<MetricsVO> metricsVOList = new ArrayList<>();
-        try (ResultSet read = SqliteUtil.INSTANCE.read(PaimonTableConstant.DINKY_METRICS, condition)) {
+        try (SqliteUtil.PreparedResultSet ps = SqliteUtil.INSTANCE.read(MonitorTableConstant.DINKY_METRICS, condition)) {
+            ResultSet read = ps.getRs();
             while (read.next()) {
                 MetricsVO metricsVO = new MetricsVO();
-                metricsVO.setModel(read.getString("job_id"));
-                metricsVO.setContent(read.getString("value"));
-                metricsVO.setHeartTime(convertToLocalDateTime(read.getString("heart_time")));
-                metricsVO.setDate(read.getString("date"));
+                metricsVO.setModel(read.getString(MonitorTableConstant.JOB_ID));
+                metricsVO.setContent(read.getString(MonitorTableConstant.VALUE));
+                metricsVO.setHeartTime(convertToLocalDateTime(read.getString(HEART_TIME)));
+                metricsVO.setDate(read.getString(MonitorTableConstant.DATE));
                 metricsVOList.add(metricsVO);
             }
+
         } catch (SQLException e) {
-            log.error("Failed to read metrics data from sqlite: " + e.getMessage());
+            throw new DinkyException("Failed to get data from the database");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return metricsVOList;
     }
 
     public static LocalDateTime convertToLocalDateTime(String dateTimeString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
-        return LocalDateTime.parse(dateTimeString, formatter);
+        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+        try {
+            return LocalDateTime.parse(dateTimeString, formatter1);
+        } catch (DateTimeParseException e) {
+            return LocalDateTime.parse(dateTimeString, formatter2);
+        }
     }
 
     public static String getUtcCondition(Date startTime, Date endTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
         LocalDateTime startLdt = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
         LocalDateTime endLdt = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
-        return String.format("'%s' <= heart_time AND heart_time <= '%s'", startLdt.format(formatter), endLdt.format(formatter));
+        return MessageFormat.format("''{0}'' <= {2} AND {2} <= ''{1}''", startLdt.format(formatter), endLdt.format(formatter), HEART_TIME);
     }
 
     @Override
@@ -246,7 +252,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                 for (Tuple tuple : tupleList) {
                     String metricsName = tuple.get(0);
                     String d = jsonObject.get(metricsName).asText();
-                    Dict dict = Dict.create().set("time", x.getHeartTime()).set("value", d);
+                    Dict dict = Dict.create().set("time", x.getHeartTime()).set(MonitorTableConstant.VALUE, d);
                     Integer id = tuple.get(1);
                     resultData.computeIfAbsent(id, k -> new ArrayList<>()).add(dict);
                 }

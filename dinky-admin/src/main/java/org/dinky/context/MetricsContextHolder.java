@@ -21,9 +21,7 @@ package org.dinky.context;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.hadoop.metrics2.util.SampleQuantiles;
-import org.dinky.data.constant.PaimonTableConstant;
+import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
@@ -31,7 +29,6 @@ import org.dinky.utils.PaimonUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,6 +47,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.dinky.utils.SqliteUtil;
 
+import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
+
 /**
  * The MetricsContextHolder class is used to manage the metric context,
  * including operations such as storing and sending metric data.
@@ -64,8 +63,9 @@ public class MetricsContextHolder {
     private final List<MetricsVO> metricsVOS = new CopyOnWriteArrayList<>();
     private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
 
-    static  {
-        SqliteUtil.INSTANCE.createTable(PaimonTableConstant.DINKY_METRICS, "job_id BIGINT, value TEXT, heart_time TEXT, date INTEGER");
+    static {
+        String sql = String.format("%s BIGINT, %s TEXT, %s TEXT, %s INTEGER", JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
+        SqliteUtil.INSTANCE.createTable(MonitorTableConstant.DINKY_METRICS, sql);
     }
 
     // Create a ThreadFactory with custom naming
@@ -100,7 +100,7 @@ public class MetricsContextHolder {
                     metricsVOS.clear();
                     lastDumpTime.set(current);
                 }
-                PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, snapshot, MetricsVO.class);
+                PaimonUtil.write(MonitorTableConstant.DINKY_METRICS, snapshot, MetricsVO.class);
             }
             String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
             SseSessionContextHolder.sendTopic(topic, o); // Ensure only successfully added metrics are sent
@@ -119,10 +119,10 @@ public class MetricsContextHolder {
         long duration = current - lastDumpTime.get();
         if (metricsVOS.size() >= 1000 || duration >= 15000) {
             lastDumpTime.set(current);
-            final List<String> columns = Arrays.asList("job_id", "value", "heart_time","date");
             List<List<String>> values = convertMetricsVOsToStringList(metricsVOS);
             try {
-                SqliteUtil.INSTANCE.write(PaimonTableConstant.DINKY_METRICS, columns, values);
+                final List<String> columns = Arrays.asList(JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
+                SqliteUtil.INSTANCE.write(MonitorTableConstant.DINKY_METRICS, columns, values);
             } catch (SQLException e) {
                 log.error("Failed to write metrics to SQLite", e);
                 return;

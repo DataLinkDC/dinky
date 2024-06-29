@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import static org.dinky.data.constant.PaimonTableConstant.DINKY_DB;
+import static org.dinky.data.constant.MonitorTableConstant.DINKY_DB;
 
 import org.dinky.data.annotations.paimon.Option;
 import org.dinky.data.annotations.paimon.Options;

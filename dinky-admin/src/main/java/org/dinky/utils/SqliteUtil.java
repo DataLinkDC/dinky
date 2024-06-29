@@ -81,16 +81,40 @@ public enum SqliteUtil {
         return String.format("INSERT INTO %s (%s) VALUES (%s);", tableName, columnNames, placeholders);
     }
 
-    public ResultSet read(String tableName, String condition) throws SQLException {
+    public PreparedResultSet read(String tableName, String condition) throws SQLException {
         String sql = String.format("SELECT * FROM %s where %s;", tableName, condition);
 
         PreparedStatement pstmt = connection.prepareStatement(sql);
-        return pstmt.executeQuery();
+        ResultSet rs = pstmt.executeQuery();
+        return new PreparedResultSet(pstmt, rs);
     }
 
     public void close() throws SQLException {
         if (connection != null) {
             connection.close();
+        }
+    }
+
+    public static class PreparedResultSet implements AutoCloseable {
+        private final PreparedStatement pstmt;
+        private final ResultSet rs;
+
+        public PreparedResultSet(PreparedStatement pstmt, ResultSet rs) {
+            this.pstmt = pstmt;
+            this.rs = rs;
+        }
+
+        public PreparedStatement getPstmt() {
+            return pstmt;
+        }
+
+        public ResultSet getRs() {
+            return rs;
+        }
+
+        @Override
+        public void close() throws Exception {
+            pstmt.close();
         }
     }
 }
