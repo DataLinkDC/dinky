@@ -98,7 +98,6 @@ public class PaimonUtil {
         }
     }
 
-
     public static <T> void write(String table, List<T> dataList, Class<?> clazz) {
         if (CollUtil.isEmpty(dataList)) {
             return;

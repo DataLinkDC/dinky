@@ -19,12 +19,13 @@
 
 package org.dinky.context;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
+
 import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
+import org.dinky.utils.SqliteUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,14 +41,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import cn.hutool.core.text.StrFormatter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.dinky.utils.SqliteUtil;
-
-import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 
 /**
  * The MetricsContextHolder class is used to manage the metric context,
@@ -64,7 +64,9 @@ public class MetricsContextHolder {
     private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
 
     static {
-        String sql = String.format("%s BIGINT, %s TEXT, %s TEXT, %s INTEGER", JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
+        String sql = String.format(
+                "%s BIGINT, %s TEXT, %s TEXT, %s INTEGER",
+                JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
         SqliteUtil.INSTANCE.createTable(MonitorTableConstant.DINKY_METRICS, sql);
     }
 
@@ -121,7 +123,8 @@ public class MetricsContextHolder {
             lastDumpTime.set(current);
             List<List<String>> values = convertMetricsVOsToStringList(metricsVOS);
             try {
-                final List<String> columns = Arrays.asList(JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
+                final List<String> columns = Arrays.asList(
+                        JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
                 SqliteUtil.INSTANCE.write(MonitorTableConstant.DINKY_METRICS, columns, values);
             } catch (SQLException e) {
                 log.error("Failed to write metrics to SQLite", e);

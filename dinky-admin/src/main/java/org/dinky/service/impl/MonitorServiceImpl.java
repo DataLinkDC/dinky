@@ -19,6 +19,8 @@
 
 package org.dinky.service.impl;
 
+import static org.dinky.data.constant.MonitorTableConstant.HEART_TIME;
+
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.constant.MonitorTableConstant;
@@ -32,6 +34,7 @@ import org.dinky.data.vo.MetricsVO;
 import org.dinky.mapper.MetricsMapper;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
+import org.dinky.utils.SqliteUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,7 +54,6 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
-import org.dinky.utils.SqliteUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -70,8 +72,6 @@ import cn.hutool.core.lang.Tuple;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
-
-import static org.dinky.data.constant.MonitorTableConstant.HEART_TIME;
 
 @Service
 @RequiredArgsConstructor
@@ -92,7 +92,8 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
 
         String condition = getUtcCondition(startTime, endTime);
         List<MetricsVO> metricsVOList = new ArrayList<>();
-        try (SqliteUtil.PreparedResultSet ps = SqliteUtil.INSTANCE.read(MonitorTableConstant.DINKY_METRICS, condition)) {
+        try (SqliteUtil.PreparedResultSet ps =
+                SqliteUtil.INSTANCE.read(MonitorTableConstant.DINKY_METRICS, condition)) {
             ResultSet read = ps.getRs();
             while (read.next()) {
                 MetricsVO metricsVO = new MetricsVO();
@@ -126,7 +127,8 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
         LocalDateTime startLdt = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
         LocalDateTime endLdt = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
-        return MessageFormat.format("''{0}'' <= {2} AND {2} <= ''{1}''", startLdt.format(formatter), endLdt.format(formatter), HEART_TIME);
+        return MessageFormat.format(
+                "''{0}'' <= {2} AND {2} <= ''{1}''", startLdt.format(formatter), endLdt.format(formatter), HEART_TIME);
     }
 
     @Override
