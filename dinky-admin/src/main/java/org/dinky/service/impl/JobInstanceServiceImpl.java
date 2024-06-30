@@ -170,7 +170,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 ClusterConfiguration clusterConfig =
                         clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId());
-                jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+                if (clusterConfig != null) {
+                    jobInfoDetail.setClusterConfiguration(ClusterConfigurationDTO.fromBean(clusterConfig));
+                }
             }
         }
 
@@ -218,7 +220,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public boolean hookJobDone(String jobId, Integer taskId) {
         LambdaQueryWrapper<JobInstance> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(JobInstance::getJid, jobId).eq(JobInstance::getTaskId, taskId);
+        queryWrapper
+                .eq(JobInstance::getJid, jobId)
+                .eq(JobInstance::getTaskId, taskId)
+                .orderByDesc(JobInstance::getCreateTime)
+                .last("limit 1");
         JobInstance instance = baseMapper.selectOne(queryWrapper);
         if (instance == null) {
             // Not having a corresponding jobinstance means that this may not have succeeded in running,

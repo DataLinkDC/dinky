@@ -28,7 +28,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
     title: 'Dinky',  //网站标题 | Site title
     tagline: 'Dinky 为 Apache Flink 而生，让 Flink SQL 纵享丝滑', // 网站标语 | Tagline for your website
-    url: 'http://www.dinky.org.cn/', // 网站网址 | Your website's URL
+    url: 'https://www.dinky.org.cn/', // 网站网址 | Your website's URL
     baseUrl: '/', // 站点的相对路径 可将其视为是主机名后的路径 | Path to your website
     staticDirectories: ['static/img', 'blog/blog_img'], // 静态文件目录 | Path to static files
     // trailingSlash: true, //此选项允许您自定义 URL/链接后是否添加结尾斜杠 | Whether to append a trailing slash to the URL when rendering URLs
@@ -84,19 +84,27 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
-                    lastVersion: 'current',
+                    includeCurrentVersion: true,
+                    lastVersion: '1.0',
                     versions: {
                         current: {
-                            label: '1.0.0',
+                            label: 'Dev',
                             path: '/next',
+                            banner: 'unreleased',
                         },
-                        0.6: {
-                            label: '0.6',
-                            path: '/0.6',
+                        '1.0': {
+                            label: '1.0',
+                            path: '/1.0',
                         },
                         0.7: {
                             label: '0.7',
                             path: '/0.7',
+                            banner: 'unmaintained',
+                        },
+                        0.6: {
+                            label: '0.6',
+                            path: '/0.6',
+                            banner: 'unmaintained',
                         },
                     },
                     sidebarPath: require.resolve('./sidebars.js'),
@@ -133,12 +141,12 @@ const config = {
     themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
-            announcementBar: {
-                id: 'announcementBar-2', // Increment on change
-                content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="http://www.dinky.org.cn">www.dinky.org.cn</a>`,
-                backgroundColor: "#BBDFFF",
-                isCloseable: false,
-            },
+            // announcementBar: {
+            //     id: 'announcementBar-2', // Increment on change
+            //     content: `⭐️ &nbsp; If you like Dinky , give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/DataLinkDC/dinky">GitHub</a> . Domain name will be migrated soon , The new domain name is  <a target="_blank" rel="noopener noreferrer" href="https://www.dinky.org.cn">www.dinky.org.cn</a>`,
+            //     backgroundColor: "#BBDFFF",
+            //     isCloseable: false,
+            // },
             hideOnScroll: false, // 滚动时是否隐藏 | Whether to hide the sidebar on scroll
             docs: {
                 sidebar: {
@@ -222,11 +230,11 @@ const config = {
                         items: [
                             {
                                 label: 'doc_home',
-                                to: '/docs/next/platform_intro/overview',
+                                to: '/docs/next/get_started/overview',
                             },
                             {
                                 label: 'openapi',
-                                to: '/docs/next/openapi',
+                                to: '/docs/next/openapi/openapi_overview',
                             },
                         ],
                     },
@@ -268,6 +276,7 @@ const config = {
             },
         }),
     plugins: [
+        './src/plugin/wwads-plugin.ts',
         'docusaurus-plugin-less',
         [
             '@docusaurus/plugin-content-docs',
@@ -306,7 +315,12 @@ const config = {
                 steps: 2, // 在 min 和 max 之间最多生成的图片数量（包含两端点）
                 disableInDev: false,
             },
-        ],
+        ]
+    ],
+    scripts: [
+        // 统计 pv
+        {src: 'https://hm.baidu.com/hm.js?7f2b5e6f354b8ae1cdec43ba108936f7', async: true},
+        {src: 'https://cdn.wwads.cn/js/makemoney.js', async: true},
     ]
 };
 

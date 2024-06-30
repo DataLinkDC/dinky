@@ -19,7 +19,9 @@
 
 package org.dinky.controller;
 
+import org.dinky.DinkyVersion;
 import org.dinky.data.annotations.Log;
+import org.dinky.data.dto.APISavePointTaskDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.BusinessType;
@@ -65,18 +67,10 @@ public class APIController {
     private final TaskService taskService;
     private final JobInstanceService jobInstanceService;
 
-    // Interface compatible with DolphinScheduler
-    @GetMapping("/submitTask")
-    @ApiOperation("Submit Task")
-    public Result<JobResult> submitTask(@RequestParam Integer id) throws Exception {
-        taskService.initTenantByTaskId(id);
-        JobResult jobResult =
-                taskService.submitTask(TaskSubmitDto.builder().id(id).build());
-        if (jobResult.isSuccess()) {
-            return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
-        } else {
-            return Result.failed(jobResult, jobResult.getError());
-        }
+    @GetMapping("/version")
+    @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
+    public Result<String> getVersionInfo() {
+        return Result.succeed(DinkyVersion.getVersion(), Status.QUERY_SUCCESS);
     }
 
     @PostMapping("/submitTask")
@@ -92,13 +86,25 @@ public class APIController {
         }
     }
 
+    @PostMapping("/savepointTask")
+    public Result savepointTask(@RequestBody APISavePointTaskDTO apiSavePointTaskDTO) {
+        return Result.succeed(
+                taskService.savepointTaskJob(
+                        taskService.getTaskInfoById(apiSavePointTaskDTO.getTaskId()),
+                        SavePointType.get(apiSavePointTaskDTO.getType())),
+                Status.EXECUTE_SUCCESS);
+    }
+
     @GetMapping("/cancel")
     //    @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
     public Result<Boolean> cancel(
-            @RequestParam Integer id, @RequestParam(defaultValue = "false") boolean withSavePoint) {
+            @RequestParam Integer id,
+            @RequestParam(defaultValue = "false") boolean withSavePoint,
+            @RequestParam(defaultValue = "true") boolean forceCancel) {
         return Result.succeed(
-                taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint), Status.EXECUTE_SUCCESS);
+                taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint, forceCancel),
+                Status.EXECUTE_SUCCESS);
     }
 
     /**
@@ -194,6 +200,6 @@ public class APIController {
             dataTypeClass = Integer.class)
     public Result getTaskLineage(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(taskService.getTaskLineage(id), "获取成功");
+        return Result.succeed(taskService.getTaskLineage(id), Status.QUERY_SUCCESS);
     }
 }

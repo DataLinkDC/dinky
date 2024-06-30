@@ -21,19 +21,22 @@ package org.dinky.job;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
+import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hutool.core.lang.Assert;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -89,6 +92,13 @@ public class JobConfig {
             example = "{\"config1\": \"value1\", \"config2\": \"value2\"}",
             notes = "JSON configuration")
     private Map<String, String> configJson;
+
+    @ApiModelProperty(
+            value = "UDF configuration",
+            dataType = "Map<String, String>",
+            example = "{\"udf1\": \"value1\", \"udf2\": \"value2\"}",
+            notes = "UDF (User-Defined Function) configuration")
+    private Map<String, String> udfRefer;
 
     @ApiModelProperty(
             value = "Flag indicating whether to use the result",
@@ -203,6 +213,12 @@ public class JobConfig {
     }
 
     public ExecutorConfig getExecutorSetting() {
+        Map<String, String> config = new HashMap<>(32);
+        if (GatewayType.isDeployCluster(type) && gatewayConfig != null && gatewayConfig.getFlinkConfig() != null) {
+            config.putAll(gatewayConfig.getFlinkConfig().getConfiguration());
+        } else {
+            config.putAll(configJson);
+        }
         return ExecutorConfig.build(
                 type,
                 address,
@@ -213,12 +229,19 @@ public class JobConfig {
                 batchModel,
                 savePointPath,
                 jobName,
-                configJson,
+                config,
                 variables);
     }
 
     public void buildGatewayConfig(FlinkClusterConfig config) {
         FlinkConfig flinkConfig = config.getFlinkConfig();
+        // Prioritize loading custom Flink configuration content in the cluster configuration
+        for (CustomConfig customConfig : flinkConfig.getFlinkConfigList()) {
+            Assert.notNull(customConfig.getName(), "Custom flink config has null key");
+            Assert.notNull(customConfig.getValue(), "Custom flink config has null value");
+            flinkConfig.getConfiguration().put(customConfig.getName(), customConfig.getValue());
+        }
+        // Load job configuration content afterwards
         flinkConfig.getConfiguration().putAll(getConfigJson());
         flinkConfig.getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
         flinkConfig.setJobName(getJobName());
@@ -235,6 +258,13 @@ public class JobConfig {
         for (Map.Entry<String, String> entry : config.entrySet()) {
             gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue());
         }
+    }
+
+    public void addGatewayConfig(Configuration config) {
+        if (Asserts.isNull(gatewayConfig)) {
+            gatewayConfig = new GatewayConfig();
+        }
+        gatewayConfig.getFlinkConfig().getConfiguration().putAll(config.toMap());
     }
 
     public boolean isUseRemote() {

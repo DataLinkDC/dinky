@@ -23,10 +23,11 @@ import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
+import org.dinky.service.TaskService;
 import org.dinky.service.impl.TaskServiceImpl;
 import org.dinky.utils.JsonUtils;
 
@@ -68,7 +69,7 @@ public class FlinkSqlTask extends BaseTask {
     }
 
     protected JobManager getJobManager() {
-        TaskServiceImpl taskService = SpringUtil.getBean(TaskServiceImpl.class);
+        TaskService taskService = SpringUtil.getBean(TaskServiceImpl.class);
         return JobManager.build(taskService.buildJobSubmitConfig(task));
     }
 

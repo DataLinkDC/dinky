@@ -25,3 +25,7 @@ export const l = (id: string, defaultMessage?: string, value?: {}): string => {
   }
   return getIntl().formatMessage({ id, defaultMessage }, value);
 };
+
+export const parseSplitI18nToWaterMarkList = (i18nMsg: string, splitter: string): string[] => {
+  return i18nMsg.split(splitter);
+};

@@ -1,0 +1,22 @@
+{{- if .Values.externalDatabase.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}-external-svc
+spec:
+  clusterIP: {{ .Values.externalDatabaseService.clusterIP }}
+  ports:
+    - port: {{ .Values.externalDatabaseService.port }}
+      targetPort: {{ .Values.externalDatabaseService.port }}
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ .Values.service.name }}-external-svc
+subsets:
+  - addresses:
+      - ip: {{ .Values.externalDatabaseEndpoints.ip }}
+    ports:
+      - port: {{ .Values.externalDatabaseEndpoints.port }}
+{{- end }}

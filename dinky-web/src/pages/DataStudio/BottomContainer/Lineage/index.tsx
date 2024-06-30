@@ -73,15 +73,11 @@ const Lineage: React.FC<connect> = (props) => {
   }, [activeKey]);
 
   return (
-    <Card hoverable bodyStyle={{ height: bottomHeight - 50 }} style={{ height: bottomHeight }}>
+    <Card hoverable bodyStyle={{ height: bottomHeight - 50 }} style={{ height: 'inherit' }}>
       {lineageData && (lineageData.tables.length !== 0 || lineageData.relations.length !== 0) ? (
         <LineageGraph lineageData={lineageData} refreshCallBack={queryLineageData} />
       ) : (
-        <Result
-          style={{ height: bottomHeight - 120 }}
-          status='warning'
-          title={l('lineage.getError')}
-        />
+        <Result style={{ height: 'inherit' }} status='warning' title={l('lineage.getError')} />
       )}
     </Card>
   );

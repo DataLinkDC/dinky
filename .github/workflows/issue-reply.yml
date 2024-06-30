@@ -1,0 +1,79 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Issue Reply Check
+
+on:
+  issues:
+    types: [ labeled ]
+
+jobs:
+  reply-help:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Need Provide Reproduce Steps
+        if: github.event.label.name == 'Need Reproduce'
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello @${{ github.event.issue.user.login }}, we need you to provide reproduction steps so that we can help you troubleshoot the problem. Issues are marked \`Need Reproduce\`.
+
+            你好 @${{ github.event.issue.user.login }}, 我们需要你提供复现步骤以便于我们帮你排查问题，Issues 标注为 \`Need Reproduce\` 。
+
+      - name: Action Duplicate Issue
+        if: github.event.label.name == 'Duplicate'
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello @${{ github.event.issue.user.login }}, thank you for your feedback, but this issue has been reported before. You can search for keywords in the Issue list to view it. Issues are marked as \`Duplicate\`.
+
+            你好 @${{ github.event.issue.user.login }}, 感谢你的反馈, 但是此问题已经被反馈过了，你可以在 Issue 列表中搜索关键字来查看, Issues 标注为 \`Duplicate\` 。
+
+      - name: Action Fixed Issue
+        if: github.event.label.name == 'Fixed'
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello @${{ github.event.issue.user.login }}, thank you for your feedback, but this issue has been fixed. You can search for keywords in the Issue list to view it. Issues are marked as \`Fixed\`.
+
+            你好 @${{ github.event.issue.user.login }}, 感谢你的反馈, 但是此问题已经被修复了，你可以在 Issue 列表中搜索关键字来查看, Issues 标注为 \`Fixed\` 。
+
+      - name: Action Supported Issue
+        if: github.event.label.name == 'Supported'
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello @${{ github.event.issue.user.login }}, thank you for your suggestion, but this function has been implemented. You can search for keywords in the Issue list to view it. Issues are marked \`Supported\`
+
+            你好 @${{ github.event.issue.user.login }}, 感谢你的建议, 但是此功能已经实现了，你可以在 Issue 列表中搜索关键字来查看, Issues 标注为 \`Supported\` 。
+
+      - name: Action Wont Fix Issue
+        if: github.event.label.name == 'Wont Fix'
+        uses: actions-cool/issues-helper@v1.7
+        with:
+          actions: 'create-comment'
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello @${{ github.event.issue.user.login }}, thank you for your feedback, but this issue will not be fixed. You can search for keywords in the Issue list to view it. Issues are marked \`Wont Fix\`
+            
+            你好 @${{ github.event.issue.user.login }}, 感谢你的反馈, 但是此问题不会被修复，你可以在 Issue 列表中搜索关键字来查看, Issues 标注为 \`Wont Fix\` 。

@@ -20,17 +20,24 @@
 import { LeftBottomKey, LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { getFooterValue, isDataStudioTabsItemType } from '@/pages/DataStudio/function';
 import { getDataSourceList } from '@/pages/DataStudio/LeftContainer/DataSource/service';
-import { getTaskData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import {
+  getTaskData,
+  getTaskSortTypeData,
+  getUserData
+} from '@/pages/DataStudio/LeftContainer/Project/service';
 import {
   getClusterConfigurationData,
   getEnvData,
   getFlinkConfigs,
+  getFlinkUdfOptions,
   getSessionData,
-  querySuggessionData
+  querySuggestionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { SuggestionInfo } from '@/types/Public/data';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
+import { TaskInfo } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect, Reducer } from '@@/plugin-dva/types';
@@ -52,8 +59,8 @@ export const VIEW = {
   marginTop: 84,
   topHeight: 35.6,
   bottomHeight: 100,
-  rightMargin: 32,
-  leftMargin: 36,
+  rightMargin: 42,
+  leftMargin: 42,
   midMargin: 44,
   otherHeight: 0,
   paddingInline: 50
@@ -78,6 +85,12 @@ export type EnvType = {
   id?: number;
   name?: string;
   fragment?: boolean;
+};
+
+export type TreeVo = {
+  name: string;
+  value: string;
+  children?: TreeVo[];
 };
 
 export type TaskType = {
@@ -120,6 +133,8 @@ export type ConsoleType = {
   result: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
   chart: {};
+  refreshResults: object[];
+  refreshResult: object;
 };
 export type MetadataParams = {
   queryParams: QueryParams;
@@ -138,7 +153,7 @@ export type TaskDataBaseType = {
   envId?: number;
 };
 
-export type TaskDataType = TaskDataBaseType & Record<string, any>;
+export type TaskDataType = TaskDataBaseType & TaskInfo & Record<string, any>;
 
 export type DataStudioParams = {
   taskId: number;
@@ -148,6 +163,7 @@ export type DataStudioParams = {
 export enum TabsPageType {
   None = '',
   metadata = 'metadata',
+  terminal = 'terminal',
   project = 'project'
 }
 
@@ -233,19 +249,6 @@ export type BottomContainerContent = {
   console: string;
 };
 
-export type SessionType = {
-  session?: string;
-  sessionConfig?: {
-    type?: string;
-    clusterId?: number;
-    clusterName?: string;
-    address?: string;
-  };
-  createUser?: string;
-  createTime?: string;
-  connectors: ConnectorType[];
-};
-
 /**
  * job running type msg
  */
@@ -291,14 +294,25 @@ export type StateType = {
     expandKeys: [];
     selectKey: [];
   };
+  catalogueSortType: {
+    data: TreeVo[];
+  };
+  selectCatalogueSortTypeData: {
+    data: {
+      sortValue: string;
+      sortType: string;
+    };
+  };
   sessionCluster: Cluster.Instance[];
   clusterConfiguration: Cluster.Config[];
   flinkConfigOptions: DefaultOptionType[];
+  flinkUdfOptions: DefaultOptionType[];
   env: EnvType[];
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
   footContainer: FooterType;
   suggestions: SuggestionInfo[];
+  users: UserBaseInfo.User[];
 };
 
 export type ModelType = {
@@ -307,12 +321,15 @@ export type ModelType = {
   effects: {
     queryProject: Effect;
     queryFlinkConfigOptions: Effect;
+    queryFlinkUdfOptions: Effect;
     querySuggestions: Effect;
     queryEnv: Effect;
     queryDatabaseList: Effect;
     queryTaskData: Effect;
+    queryTaskSortTypeData: Effect;
     querySessionData: Effect;
     queryClusterConfigurationData: Effect;
+    queryUserData: Effect;
   };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
@@ -326,6 +343,7 @@ export type ModelType = {
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     saveProject: Reducer<StateType>;
+    saveCatalogueSortType: Reducer<StateType>;
     updateProjectExpandKey: Reducer<StateType>;
     updateProjectSelectKey: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
@@ -346,7 +364,10 @@ export type ModelType = {
     saveFooterValue: Reducer<StateType>;
     updateJobRunningMsg: Reducer<StateType>;
     saveFlinkConfigOptions: Reducer<StateType>;
+    saveFlinkUdfOptions: Reducer<StateType>;
     updateSuggestions: Reducer<StateType>;
+    saveTaskSortTypeData: Reducer<StateType>;
+    saveUserData: Reducer<StateType>;
   };
 };
 
@@ -385,6 +406,15 @@ const Model: ModelType = {
       expandKeys: [],
       selectKey: []
     },
+    catalogueSortType: {
+      data: []
+    },
+    selectCatalogueSortTypeData: {
+      data: {
+        sortValue: '',
+        sortType: ''
+      }
+    },
     tabs: {
       activeBreadcrumbTitle: '',
       activeKey: '0',
@@ -396,6 +426,7 @@ const Model: ModelType = {
     sessionCluster: [],
     clusterConfiguration: [],
     flinkConfigOptions: [],
+    flinkUdfOptions: [],
     env: [],
     footContainer: {
       codePosition: [1, 1],
@@ -411,7 +442,8 @@ const Model: ModelType = {
         runningLog: ''
       }
     },
-    suggestions: []
+    suggestions: [],
+    users: []
   },
   effects: {
     *queryProject({ payload }, { call, put }) {
@@ -435,8 +467,15 @@ const Model: ModelType = {
         payload: response
       });
     },
+    *queryFlinkUdfOptions({ payload }, { call, put }) {
+      const response: [] = yield call(getFlinkUdfOptions, payload);
+      yield put({
+        type: 'saveFlinkUdfOptions',
+        payload: response
+      });
+    },
     *querySuggestions({ payload }, { call, put }) {
-      const response: SuggestionInfo[] = yield call(querySuggessionData, payload);
+      const response: SuggestionInfo[] = yield call(querySuggestionData, payload);
       yield put({
         type: 'updateSuggestions',
         payload: response
@@ -456,8 +495,15 @@ const Model: ModelType = {
         payload: response
       });
     },
+    *queryTaskSortTypeData({ payload }, { call, put }) {
+      const response: TreeVo[] = yield call(getTaskSortTypeData, payload);
+      yield put({
+        type: 'saveCatalogueSortType',
+        payload: response
+      });
+    },
     *querySessionData({ payload }, { call, put }) {
-      const response: SessionType = yield call(getSessionData, payload);
+      const response: Cluster.Instance[] = yield call(getSessionData, payload);
       yield put({
         type: 'saveSession',
         payload: response
@@ -467,6 +513,13 @@ const Model: ModelType = {
       const response: Cluster.Config[] = yield call(getClusterConfigurationData, payload);
       yield put({
         type: 'saveClusterConfiguration',
+        payload: response
+      });
+    },
+    *queryUserData({ payload }, { call, put }) {
+      const response: Cluster.Config[] = yield call(getUserData, payload);
+      yield put({
+        type: 'saveUserData',
         payload: response
       });
     }
@@ -614,6 +667,18 @@ const Model: ModelType = {
         project: { ...state.project, data: payload }
       };
     },
+    saveCatalogueSortType(state, { payload }) {
+      return {
+        ...state,
+        catalogueSortType: { data: payload }
+      };
+    },
+    saveTaskSortTypeData(state, { payload }) {
+      return {
+        ...state,
+        selectCatalogueSortTypeData: { data: payload }
+      };
+    },
 
     updateProjectExpandKey(state, { payload }) {
       return {
@@ -635,6 +700,15 @@ const Model: ModelType = {
       return {
         ...state,
         flinkConfigOptions: payload
+      };
+    },
+    /**
+     * udf options
+     */
+    saveFlinkUdfOptions(state, { payload }) {
+      return {
+        ...state,
+        flinkUdfOptions: payload
       };
     },
     /**
@@ -927,6 +1001,15 @@ const Model: ModelType = {
       return {
         ...state,
         suggestions: payload
+      };
+    },
+    saveUserData(state, { payload }) {
+      const users = payload.users.filter((user: UserBaseInfo.User) => {
+        return payload.userIds.includes(user.id);
+      });
+      return {
+        ...state,
+        users: users
       };
     }
   }

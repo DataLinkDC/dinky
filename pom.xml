@@ -50,7 +50,7 @@
 
     <properties>
         <assertj.version>3.21.0</assertj.version>
-        <aws-java-sdk-s3.version>1.12.589</aws-java-sdk-s3.version>
+        <aws-java-sdk-s3.version>1.12.645</aws-java-sdk-s3.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <commons-email>1.5</commons-email>
@@ -59,16 +59,17 @@
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <dinky.flink.version>1.18</dinky.flink.version>
         <docker.java.version>3.2.14</docker.java.version>
-        <druid-starter>1.2.8</druid-starter>
+        <druid-starter>1.2.15</druid-starter>
         <easy.rules.version>4.1.0</easy.rules.version>
         <fastjson2.version>2.0.41</fastjson2.version>
-        <flink.version>1.18.0</flink.version>
-        <guava.version>31.1-jre</guava.version>
+        <flink.version>1.18.1</flink.version>
+        <flyway.version>10.10.12</flyway.version>
+        <guava.version>32.1.3-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
         <hamcrest.version>1.3</hamcrest.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <hutool.version>5.8.24</hutool.version>
+        <hutool.version>5.8.27</hutool.version>
         <jackson.version>2.14.1</jackson.version>
         <jakarta.ws.rs-api.version>2.1.6</jakarta.ws.rs-api.version>
         <jasypt.version>1.9.3</jasypt.version>
@@ -77,7 +78,7 @@
         <javax.mail>1.6.2</javax.mail>
         <jaxb.version>2.3.0</jaxb.version>
         <jedis.version>2.9.0</jedis.version>
-        <jgit.version>5.13.1.202206130422-r</jgit.version>
+        <jgit.version>5.13.3.202401111512-r</jgit.version>
         <junit5.version>5.9.1</junit5.version>
         <knife4j.version>4.1.0</knife4j.version>
         <kubernetes-client.version>5.12.4</kubernetes-client.version>
@@ -108,24 +109,30 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <reflections.version>0.10.2</reflections.version>
-        <revision>1.0.0-rc2</revision>
+        <revision>1.1.0-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
-        <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
         <smily.version>1.12.1</smily.version>
+        <sms4j-spring-boot-starter.version>3.0.1</sms4j-spring-boot-starter.version>
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
         <spotless.version>2.27.1</spotless.version>
-        <spring-boot-dependencies.version>2.7.11</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
         <spring.ldap.version>3.1.0</spring.ldap.version>
+        <sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite-jdbc.version}</version>
+            </dependency>
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>kubernetes-client</artifactId>
@@ -151,7 +158,7 @@
                 <artifactId>smiley-http-proxy-servlet</artifactId>
                 <version>${smily.version}</version>
             </dependency>
-            <!--easy-rules 执行引擎-->
+            <!--easy-rules Execution engine-->
             <dependency>
                 <groupId>org.jeasy</groupId>
                 <artifactId>easy-rules-core</artifactId>
@@ -281,20 +288,20 @@
                 <version>${javax.annotation-api.version}</version>
             </dependency>
 
-            <!--解决mysql与phoenix依赖冲突-->
+            <!--Resolve MySQL and Phoenix dependency conflicts-->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf-java.version}</version>
             </dependency>
 
-            <!-- hutool java工具类库  -->
+            <!-- hutool Java Tool Class Library  -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!-- druid 官方 starter -->
+            <!-- druid Official starter -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
@@ -318,6 +325,11 @@
                 <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.dromara.sms4j</groupId>
+                <artifactId>sms4j-spring-boot-starter</artifactId>
+                <version>${sms4j-spring-boot-starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -421,6 +433,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.19</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-catalog-mysql-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -442,6 +459,11 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-catalog-mysql-1.18</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-mysql-1.19</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -602,12 +624,17 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.19</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-cdc-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-cdc-doris</artifactId>
+                <artifactId>dinky-cdc-plus</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -671,7 +698,11 @@
                 <artifactId>spring-boot-starter-data-ldap</artifactId>
                 <version>${spring.ldap.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>1.1.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -990,25 +1021,6 @@
         </profile>
 
         <profile>
-            <id>scala-2.11</id>
-            <properties>
-                <scala.binary.version>2.11</scala.binary.version>
-                <scala.version>2.11.7</scala.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>scala-2.12</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <scala.binary.version>2.12</scala.binary.version>
-                <scala.version>2.12.10</scala.version>
-            </properties>
-        </profile>
-
-        <profile>
             <id>flink-1.14</id>
             <properties>
                 <dinky.flink.version>1.14</dinky.flink.version>
@@ -1044,6 +1056,13 @@
             <id>flink-1.18</id>
             <properties>
                 <dinky.flink.version>1.18</dinky.flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.19</id>
+            <properties>
+                <dinky.flink.version>1.19</dinky.flink.version>
             </properties>
         </profile>
 

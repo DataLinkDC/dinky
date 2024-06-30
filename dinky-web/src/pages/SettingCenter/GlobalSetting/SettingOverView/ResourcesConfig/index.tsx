@@ -18,7 +18,7 @@
  */
 
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter/data.d';
 import { l } from '@/utils/intl';
 import { RadioChangeEvent, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -26,6 +26,7 @@ import React, { useEffect, useState } from 'react';
 interface ResourcesConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
+  auth: string;
 }
 
 const ModelType = {
@@ -39,7 +40,7 @@ type ResourceConfig = {
   oss: BaseConfigProperties[];
 };
 
-export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
+export const ResourcesConfig = ({ data, onSave, auth }: ResourcesConfigProps) => {
   const [loading, setLoading] = React.useState(false);
   const [model, setModel] = React.useState('hdfs');
   const [filterData, setFilterData] = useState<ResourceConfig>({
@@ -61,13 +62,13 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
     );
     setFilterData({ base, hdfs, oss });
     // 获取当前的 model
-    const currentModel = base.find((d) => d.key === 'sys.resource.settings.base.model')?.value;
+    const currentModel = base.find(
+      (d) => d.key === GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_MODEL
+    )?.value;
     if (currentModel) {
       setModel(currentModel);
     }
   }, [data]);
-
-  const modelKey: string = 'sys.resource.settings.base.model';
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
     setLoading(true);
@@ -81,7 +82,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
       name: '',
       example: [],
       frontType: '',
-      key: modelKey,
+      key: GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_MODEL,
       note: '',
       value: value.toString().toLocaleUpperCase()
     });
@@ -90,6 +91,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
     <>
       <GeneralConfig
         loading={loading}
+        auth={auth}
         onSave={onSaveHandler}
         tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
         data={filterData.base}
@@ -98,6 +100,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
       {model.toLocaleUpperCase() === ModelType.HDFS && (
         <GeneralConfig
           loading={loading}
+          auth={auth}
           onSave={onSaveHandler}
           tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
           data={filterData.hdfs}
@@ -106,6 +109,7 @@ export const ResourcesConfig = ({ data, onSave }: ResourcesConfigProps) => {
       {model.toLocaleUpperCase() === ModelType.OSS && (
         <GeneralConfig
           loading={loading}
+          auth={auth}
           onSave={onSaveHandler}
           tag={<Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>}
           data={filterData.oss}

@@ -45,4 +45,20 @@ public class CustomerConfigureOptions {
 
     public static final ConfigOption<Integer> DINKY_PORT =
             key("dinky.dinkyPort").intType().defaultValue(7125).withDescription("dinky local port");
+
+    public static final ConfigOption<String> EXEC_SQL_FILE = key("dinky.sql.file")
+            .stringType()
+            .defaultValue("job.sql")
+            .withDescription("dinky exec sql file name at application model");
+
+    public static final ConfigOption<String> DINKY_CONF_DIR = key("kubernetes.dinky.conf.dir")
+            .stringType()
+            .defaultValue("/opt/dinky/sql-exec/")
+            .withDescription(
+                    "The dinky configuration directory. It is used to mount the ConfigMap to the Flink container.");
+
+    public static final ConfigOption<String> YARN_APPLICATION_USER = key("yarn.application.user")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("A custom user for your YARN application.");
 }

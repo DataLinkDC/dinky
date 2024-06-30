@@ -22,7 +22,6 @@ package org.dinky.aop.exception;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.result.Result;
-import org.dinky.utils.I18n;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,7 +46,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -64,9 +62,6 @@ public class WebExceptionHandler {
     @ResponseBody
     public Result<Void> busException(BusException e) {
         log.error("BusException:", e);
-        if (StrUtil.isEmpty(e.getMsg())) {
-            return Result.failed(I18n.getMessage(e.getCode(), e.getMessage()));
-        }
         return Result.failed(e.getMsg());
     }
 
@@ -82,6 +77,7 @@ public class WebExceptionHandler {
 
     @ExceptionHandler
     @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<Void> notLoginException(NotLoginException notLoginException) {
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -96,7 +92,7 @@ public class WebExceptionHandler {
     }
 
     /**
-     * 参数异常处理程序 设置状态码为 400
+     * Parameter exception handler sets status code to 400
      *
      * @param e e
      * @return {@link Result}<{@link String}>
@@ -106,11 +102,12 @@ public class WebExceptionHandler {
     @ResponseBody
     public Result<String> paramExceptionHandler(MethodArgumentNotValidException e) {
         BindingResult exceptions = e.getBindingResult();
-        // 判断异常中是否有错误信息，如果存在就使用异常中的消息，否则使用默认消息
+        // Check if there is any error message in the exception. If there is, use the message in the exception.
+        // Otherwise, use the default message
         if (exceptions.hasErrors()) {
             List<ObjectError> errors = exceptions.getAllErrors();
             if (!errors.isEmpty()) {
-                // 这里列出了全部错误参数，按正常逻辑，只需要第一条错误即可
+                // All incorrect parameters are listed here. According to normal logic, only the first error is needed
                 FieldError fieldError = (FieldError) errors.get(0);
                 if (StringUtils.isNotBlank(fieldError.getDefaultMessage())) {
                     return Result.paramsError(

@@ -19,9 +19,11 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.annotations.ProcessId;
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSaveDTO;
@@ -39,10 +41,12 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
+import org.dinky.mybatis.annotation.Save;
 import org.dinky.service.TaskService;
 
 import java.util.List;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -55,6 +59,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.lang.tree.Tree;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -66,6 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Api(tags = "Task Controller")
 @RequestMapping("/api/task")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class TaskController {
 
@@ -75,7 +81,8 @@ public class TaskController {
     @ApiOperation("Submit Task")
     @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
-    public Result<JobResult> submitTask(@ProcessId @RequestParam Integer id) throws Exception {
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
+    public Result<JobResult> submitTask(@TaskId @ProcessId @RequestParam Integer id) throws Exception {
         JobResult jobResult =
                 taskService.submitTask(TaskSubmitDto.builder().id(id).build());
         if (jobResult.isSuccess()) {
@@ -95,6 +102,7 @@ public class TaskController {
             dataType = "DebugDTO",
             paramType = "body")
     @ExecuteProcess(type = ProcessType.FLINK_SUBMIT)
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<JobResult> debugTask(@RequestBody TaskDTO task) throws Exception {
         JobResult result = taskService.debugTask(task);
         if (result.isSuccess()) {
@@ -106,8 +114,12 @@ public class TaskController {
     @GetMapping("/cancel")
     @Log(title = "Cancel Flink Job", businessType = BusinessType.TRIGGER)
     @ApiOperation("Cancel Flink Job")
-    public Result<Void> cancel(@RequestParam Integer id, @RequestParam(defaultValue = "false") boolean withSavePoint) {
-        if (taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint)) {
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
+    public Result<Void> cancel(
+            @TaskId @RequestParam Integer id,
+            @RequestParam(defaultValue = "false") boolean withSavePoint,
+            @RequestParam(defaultValue = "false") boolean forceCancel) {
+        if (taskService.cancelTaskJob(taskService.getTaskInfoById(id), withSavePoint, forceCancel)) {
             return Result.succeed(Status.EXECUTE_SUCCESS);
         } else {
             return Result.failed(Status.EXECUTE_FAILED);
@@ -120,7 +132,8 @@ public class TaskController {
     @GetMapping(value = "/restartTask")
     @ApiOperation("Restart Task")
     @Log(title = "Restart Task", businessType = BusinessType.REMOTE_OPERATION)
-    public Result<JobResult> restartTask(@RequestParam Integer id, String savePointPath) throws Exception {
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
+    public Result<JobResult> restartTask(@TaskId @RequestParam Integer id, String savePointPath) throws Exception {
         JobResult jobResult = taskService.restartTask(id, savePointPath);
         if (jobResult.isSuccess()) {
             return Result.succeed(jobResult, Status.RESTART_SUCCESS);
@@ -131,7 +144,8 @@ public class TaskController {
     @GetMapping("/savepoint")
     @Log(title = "Savepoint Trigger", businessType = BusinessType.TRIGGER)
     @ApiOperation("Savepoint Trigger")
-    public Result<SavePointResult> savepoint(@RequestParam Integer taskId, @RequestParam String savePointType) {
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
+    public Result<SavePointResult> savepoint(@TaskId @RequestParam Integer taskId, @RequestParam String savePointType) {
         return Result.succeed(
                 taskService.savepointTaskJob(
                         taskService.getTaskInfoById(taskId), SavePointType.valueOf(savePointType.toUpperCase())),
@@ -141,7 +155,8 @@ public class TaskController {
     @GetMapping("/changeTaskLife")
     @Log(title = "changeTaskLife", businessType = BusinessType.TRIGGER)
     @ApiOperation("changeTaskLife")
-    public Result<Boolean> changeTaskLife(@RequestParam Integer taskId, @RequestParam Integer lifeCycle)
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
+    public Result<Boolean> changeTaskLife(@TaskId @RequestParam Integer taskId, @RequestParam Integer lifeCycle)
             throws SqlExplainExcepition {
         if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
             return Result.succeed(lifeCycle == 2 ? Status.PUBLISH_SUCCESS : Status.OFFLINE_SUCCESS);
@@ -152,6 +167,7 @@ public class TaskController {
 
     @PostMapping("/explainSql")
     @ApiOperation("Explain Sql")
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<List<SqlExplainResult>> explainSql(@RequestBody TaskDTO taskDTO) throws NotSupportExplainExcepition {
         return Result.succeed(taskService.explainTask(taskDTO), Status.EXECUTE_SUCCESS);
     }
@@ -159,6 +175,7 @@ public class TaskController {
     @PostMapping("/getJobPlan")
     @ApiOperation("Get Job Plan")
     @ExecuteProcess(type = ProcessType.FLINK_JOB_PLAN)
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<ObjectNode> getJobPlan(@RequestBody TaskDTO taskDTO) {
         ObjectNode jobPlan = null;
         jobPlan = taskService.getJobPlan(taskDTO);
@@ -175,7 +192,8 @@ public class TaskController {
             dataType = "TaskSaveDTO",
             paramType = "body",
             dataTypeClass = TaskSaveDTO.class)
-    public Result<Void> saveOrUpdateTask(@RequestBody TaskSaveDTO task) {
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
+    public Result<Void> saveOrUpdateTask(@Validated({Save.class}) @RequestBody TaskSaveDTO task) {
         if (taskService.saveOrUpdateTask(task.toTaskEntity())) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -218,6 +236,7 @@ public class TaskController {
     @PostMapping("/rollbackTask")
     @ApiOperation("Rollback Task")
     @Log(title = "Rollback Task", businessType = BusinessType.UPDATE)
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Void> rollbackTask(@RequestBody TaskRollbackVersionDTO dto) {
         if (taskService.rollbackTask(dto)) {
             return Result.succeed(Status.VERSION_ROLLBACK_SUCCESS);

@@ -44,11 +44,17 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-admin/target/classes/static</directory>
+            <outputDirectory>html</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-admin/target/classes</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
                 <include>**/dinky-loader/FlinkConfClass</include>
-                <include>**/dinky-loader/ExpressionVariableClass</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -110,6 +116,14 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>extends/flink1.19/dinky</outputDirectory>
+            <includes>
+                <include>dinky-catalog-mysql-1.19-${project.version}.jar</include>
+                <include>dinky-client-1.19-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
             <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dinky-client-base-${project.version}.jar</include>
@@ -120,6 +134,14 @@
             <outputDirectory>jar</outputDirectory>
             <includes>
                 <include>%regex[dinky-app-1.\d+-${project.version}-jar-with-dependencies.jar]</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dinky-cdc/dinky-cdc-plus/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-cdc-plus-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -256,6 +278,13 @@
             <outputDirectory>jar</outputDirectory>
             <includes>
                 <include>Dockerfile</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/deploy</directory>
+            <outputDirectory>deploy</outputDirectory>
+            <includes>
+                <include>**/**</include>
             </includes>
         </fileSet>
         <!--<fileSet>

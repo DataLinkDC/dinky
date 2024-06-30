@@ -32,6 +32,11 @@ declare namespace Alert {
     note: string;
   };
 
+  export enum AlertInstanceOfWechatSubType {
+    WECHAT = 'wechat',
+    APP = 'app'
+  }
+
   /**
    * alert instance params sub type
    */
@@ -267,9 +272,9 @@ declare namespace DataSources {
    * table columns info
    */
   export type SqlGeneration = {
-    flinkSqlCreate: string;
-    sqlSelect: string;
-    sqlCreate: string;
+    flinkSqlCreate: string | '';
+    sqlSelect: string | '';
+    sqlCreate: string | '';
   };
 }
 
@@ -341,6 +346,7 @@ export interface UDFRegisterInfo {
   resourcesId: number;
   name: string;
   className: string;
+  language: string;
   enable: boolean;
   dialect: string;
   source: string;

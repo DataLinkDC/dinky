@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
@@ -33,9 +34,9 @@ import org.dinky.function.compiler.CustomStringScalaCompiler;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
+import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
@@ -95,7 +96,7 @@ import cn.hutool.json.JSONUtil;
 public class UDFUtil {
 
     public static final String FUNCTION_SQL_REGEX =
-            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s+)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
+            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s*)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*(?:,\\s*JAR\\s+'(\\S+)'\\s*)*)?";
     public static final Pattern PATTERN = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
 
     public static final String SESSION = "SESSION";
@@ -118,7 +119,7 @@ public class UDFUtil {
      */
     protected static final Map<String, Integer> UDF_MD5_MAP = new HashMap<>();
 
-    public static final String PYTHON_UDF_ATTR = "(\\S)\\s+=\\s+ud(?:f|tf|af|taf)";
+    public static final String PYTHON_UDF_ATTR = "(\\S+)\\s*=\\s*ud(?:f|tf|af|taf)";
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
     public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
     public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
@@ -153,7 +154,7 @@ public class UDFUtil {
         }
     }
 
-    public static String[] initJavaUDF(List<UDF> udf, GatewayType gatewayType, Integer missionId) {
+    public static String[] initJavaUDF(List<UDF> udf, Integer missionId) {
         return FunctionFactory.initUDF(
                         CollUtil.newArrayList(
                                 CollUtil.filterNew(udf, x -> x.getFunctionLanguage() != FunctionLanguage.PYTHON)),
@@ -213,7 +214,7 @@ public class UDFUtil {
                 }
             } else if (udf.getFunctionLanguage() == FunctionLanguage.SCALA) {
                 String className = udf.getClassName();
-                if (CustomStringScalaCompiler.getInterpreter(null).compileString(udf.getCode())) {
+                if (CustomStringScalaCompiler.getInterpreter().compileString(udf.getCode())) {
                     log.info("scala class compile successful:{}", className);
                     ClassPool.push(ClassEntity.build(className, udf.getCode()));
                     successList.add(className);
@@ -343,7 +344,7 @@ public class UDFUtil {
             String gitPackage = UdfCodePool.getGitPackage(className);
 
             if (StrUtil.isNotBlank(gitPackage) && FileUtil.exist(gitPackage)) {
-                if (FileUtil.getSuffix(gitPackage).equals("jar")) {
+                if ("jar".equals(FileUtil.getSuffix(gitPackage))) {
                     udfPathContextHolder.addUdfPath(new File(gitPackage));
                 } else {
                     udfPathContextHolder.addPyUdfPath(new File(gitPackage));
@@ -365,10 +366,10 @@ public class UDFUtil {
         });
 
         UdfCodePool.getGitPool().values().forEach(gitPackage -> {
-            if (FileUtil.getSuffix(gitPackage).equals("jar")) {
-                udfPathContextHolder.addUdfPath(new File(gitPackage));
+            if ("jar".equals(FileUtil.getSuffix(gitPackage))) {
+                udfPathContextHolder.addUdfPath(URLUtils.toFile(gitPackage));
             } else {
-                udfPathContextHolder.addPyUdfPath(new File(gitPackage));
+                udfPathContextHolder.addPyUdfPath(URLUtils.toFile(gitPackage));
             }
         });
         return udfPathContextHolder;

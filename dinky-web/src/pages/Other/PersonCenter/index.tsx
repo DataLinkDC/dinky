@@ -17,7 +17,7 @@
  *
  */
 
-import Pop from '@/components/Animation/Pop';
+import FadeIn from '@/components/Animation/FadeIn';
 import { LogSvg } from '@/components/Icons/CodeLanguageIcon';
 import { loginOut } from '@/components/RightContent/AvatarDropdown';
 import PasswordForm from '@/pages/AuthCenter/User/components/PasswordModal/PasswordForm';
@@ -169,7 +169,7 @@ const PersonCenter = () => {
    * render
    */
   return (
-    <Pop>
+    <FadeIn>
       <PageContainer title={false}>
         <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
           <ProCard
@@ -208,7 +208,7 @@ const PersonCenter = () => {
           />
         </ProCard>
       </PageContainer>
-    </Pop>
+    </FadeIn>
   );
 };
 

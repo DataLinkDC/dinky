@@ -24,11 +24,14 @@ import org.dinky.function.data.model.UDF;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
+
 /**
  * JobParam
  *
  * @since 2021/11/16
  */
+@Data
 public class JobParam {
 
     private List<String> statements;
@@ -36,6 +39,7 @@ public class JobParam {
     private List<StatementParam> trans;
     private List<StatementParam> execute;
     private List<UDF> udfList;
+    private String parsedSql;
 
     public JobParam(List<UDF> udfList) {
         this.udfList = udfList;
@@ -62,12 +66,14 @@ public class JobParam {
             List<StatementParam> ddl,
             List<StatementParam> trans,
             List<StatementParam> execute,
-            List<UDF> udfList) {
+            List<UDF> udfList,
+            String parsedSql) {
         this.statements = statements;
         this.ddl = ddl;
         this.trans = trans;
         this.execute = execute;
         this.udfList = udfList;
+        this.parsedSql = parsedSql;
     }
 
     public List<String> getStatements() {

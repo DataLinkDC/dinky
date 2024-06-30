@@ -62,7 +62,7 @@ export default () => {
             <Alert message={l('metrics.dinky.not.open')} type={'warning'} banner showIcon />
           )
         }
-        header={{ extra: [<MetricsFilter onTimeSelect={onTimeSelectChange} />] }}
+        header={{ extra: [<MetricsFilter key={''} onTimeSelect={onTimeSelectChange} />] }}
         content={
           <>
             {showServer.data && (

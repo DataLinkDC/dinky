@@ -69,22 +69,10 @@ public class SinkBuilderFactory {
             sinkBuilders.add(factory);
         }
 
-        Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
-                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
+        Map<String, Supplier<SinkBuilder>> plusSinkBuilder =
+                sinkBuilders.stream().collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, x -> () -> x));
         map.putAll(plusSinkBuilder);
         return map;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Supplier<SinkBuilder> getSupplier(SinkBuilder clazz) {
-        return () -> {
-            try {
-                return SinkBuilder.class.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                logger.warn("Could not get constructor supplier : {}", e.getMessage());
-            }
-            return null;
-        };
     }
 
     public static String getKeyWord(SinkBuilder c) {

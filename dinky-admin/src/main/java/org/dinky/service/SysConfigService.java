@@ -41,9 +41,21 @@ public interface SysConfigService extends ISuperService<SysConfig> {
     Map<String, List<Configuration<?>>> getAll();
 
     /**
+     * Get one configuration by key.
+     *
+     * @return A map of string keys to lists of {@link Configuration} objects.
+     */
+    Configuration<Object> getOneConfigByKey(String key);
+
+    /**
      * Initialize system configurations.
      */
     void initSysConfig();
+
+    /**
+     * Initialize expression variables.
+     */
+    void initExpressionVariables();
 
     /**
      * Update system configurations by key-value pairs.

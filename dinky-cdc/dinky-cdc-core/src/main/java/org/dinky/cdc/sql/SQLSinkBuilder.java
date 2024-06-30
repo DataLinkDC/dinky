@@ -21,7 +21,6 @@ package org.dinky.cdc.sql;
 
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
-import org.dinky.data.model.Column;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
@@ -39,13 +38,11 @@ import org.apache.flink.types.Row;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
 
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -60,7 +57,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
     @Override
     protected void initTypeConverterList() {
-        typeConverterList = Lists.newArrayList(
+        typeConverterList = Arrays.asList(
                 this::convertDateType,
                 this::convertTimestampType,
                 this::convertFloatType,
@@ -73,9 +70,8 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
         // 上游表名称
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
-        List<String> columnNameList =
-                table.getColumns().stream().map(Column::getName).collect(Collectors.toList());
-        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, columnNameList);
+        customTableEnvironment.createTemporaryView(
+                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
         return viewName;
     }

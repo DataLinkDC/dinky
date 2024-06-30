@@ -23,6 +23,7 @@ import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.ext.FileNode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * SystemService
@@ -45,4 +46,6 @@ public interface SystemService {
      * @return {@link String}
      */
     String readFile(String path);
+
+    Map<String, List<String>> queryAllClassLoaderJarFiles();
 }

@@ -17,6 +17,7 @@
  *
  */
 
+import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { FormContextValue } from '@/components/Context/FormContext';
 import { STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import ConfigurationForm from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm';
@@ -32,9 +33,10 @@ type ConfigurationModalProps = {
   onClose: () => void;
   value: Partial<Cluster.Config>;
   onSubmit: (values: Partial<Cluster.Config>) => void;
+  onHeartBeat: (values: Partial<Cluster.Config>) => void;
 };
 const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) => {
-  const { visible, onClose, onSubmit, value, dispatch } = props;
+  const { visible, onClose, onSubmit, value, onHeartBeat, dispatch } = props;
 
   /**
    * init form
@@ -83,6 +85,14 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
   };
 
   /**
+   * handle test connect
+   * */
+  const handleTestConnect = async () => {
+    const fieldsValue = await form.validateFields();
+    await onHeartBeat(fieldsValue);
+  };
+
+  /**
    * render footer
    * @returns {[JSX.Element, JSX.Element]}
    */
@@ -91,6 +101,16 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
+      <LoadingBtn
+        key={'test'}
+        props={{
+          size: 'middle',
+          type: 'primary',
+          style: { background: '#52c41a' }
+        }}
+        click={handleTestConnect}
+        title={l('button.test.connection')}
+      />,
       <Button
         key={'finish'}
         loading={submitting}
@@ -99,7 +119,7 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
         autoFocus
         onClick={() => submitForm()}
       >
-        {l('button.finish')}
+        {l('button.save')}
       </Button>
     ];
   };

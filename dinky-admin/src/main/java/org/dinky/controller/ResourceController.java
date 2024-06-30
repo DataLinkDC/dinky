@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -53,8 +54,20 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Resource Controller")
 @RequestMapping("/api/resource")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class ResourceController {
     private final ResourcesService resourcesService;
+
+    @GetMapping("/syncRemoteDirectory")
+    @ApiOperation("Sync Remote Directory Structure")
+    @Log(title = "Sync Remote Directory Structure", businessType = BusinessType.INSERT)
+    @SaCheckPermission(PermissionConstants.REGISTRATION_RESOURCE_UPLOAD)
+    public Result<TreeNodeDTO> syncRemoteDirectoryStructure() {
+        if (resourcesService.syncRemoteDirectoryStructure()) {
+            return Result.succeed(Status.SUCCESS);
+        }
+        return Result.failed(Status.FAILED);
+    }
 
     @PostMapping("/createFolder")
     @ApiOperation("Create Folder")

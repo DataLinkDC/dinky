@@ -43,6 +43,22 @@ public class SqlUtilTest {
 
         String removedNoteSql = SqlUtil.removeNote(testSql);
         Assertions.assertThat(removedNoteSql).isNotNull();
-        Assertions.assertThat(removedNoteSql).isNotEqualTo(testSql);
+        Assertions.assertThat(removedNoteSql)
+                .isEqualTo("//test2\n" + "\n"
+                        + "\n"
+                        + "select 1 \n"
+                        + " from test # test9\n"
+                        + " where '1'  <> '-- ::.' //test6\n"
+                        + " and 1=1 \n"
+                        + " and 'zz' <> null;");
+    }
+
+    @Test
+    public void getStatements() {
+        String sql = "set 'state.savepoints.dir' = 'hdfs://namenode:9000/tmp/checkpoint'; --ddd\n"
+                + "set 'state.checkpoints.dir' = 'hdfs://namenode:9000/tmp/checkpoint'; --dd \n"
+                + "create table abc ;\n";
+        String[] statements = SqlUtil.getStatements(sql, ";\\s*(?:\\n|--.*)");
+        Assertions.assertThat(statements.length).isEqualTo(3);
     }
 }

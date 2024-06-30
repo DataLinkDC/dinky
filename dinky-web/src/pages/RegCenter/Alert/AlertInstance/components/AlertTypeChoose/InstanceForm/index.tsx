@@ -91,9 +91,7 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
     <>
       <ProForm
         form={form}
-        onValuesChange={(changedValues, allValues) =>
-          setFormValues((prevState) => ({ ...prevState, ...allValues, ...changedValues }))
-        }
+        onValuesChange={(changedValues, allValues) => setFormValues(allValues)}
         submitter={false}
       >
         <ProForm.Group>

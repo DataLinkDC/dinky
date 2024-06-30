@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,6 +53,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Jar Controller")
 @RequestMapping("/api/jar")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class JarController {
 
     private final TaskService taskService;
@@ -59,11 +61,11 @@ public class JarController {
     @PostMapping("/udf/generateJar")
     @ApiOperation("Generate jar")
     public Result<Map<String, List<String>>> generateJar() {
-        List<Task> allUDF = taskService.getAllUDF();
+        List<Task> allUDF = taskService.getReleaseUDF();
         List<UDF> udfCodes = allUDF.stream()
                 .map(task -> UDF.builder()
                         .code(task.getStatement())
-                        .className(task.getSavePointPath())
+                        .className(task.getConfigJson().getUdfConfig().getClassName())
                         .functionLanguage(
                                 FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                         .build())

@@ -75,6 +75,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * UserServiceImpl
@@ -83,6 +84,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
 
     private static final String DEFAULT_PASSWORD = "123456";
@@ -141,7 +143,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO) {
         User user = getById(modifyPasswordDTO.getId());
         if (Asserts.isNull(user)) {
-            return Result.failed(Status.USER_NOT_EXIST);
+            return Result.authorizeFailed(Status.USER_NOT_EXIST, modifyPasswordDTO.getUsername());
         }
         if (!Asserts.isEquals(SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
             return Result.failed(Status.USER_OLD_PASSWORD_INCORRECT);
@@ -180,7 +182,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
         } catch (AuthException e) {
             // Handle authentication exceptions and return the corresponding error status
-            return Result.authorizeFailed(e.getStatus() + e.getMessage());
+            return Result.authorizeFailed(e.getStatus());
         }
 
         // Check if the user is enabled
@@ -247,7 +249,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
             // User doesn't exist
-            throw new AuthException(Status.USER_NOT_EXIST);
+            throw new AuthException(Status.USER_NOT_EXIST, loginDTO.getUsername());
         }
 
         String userPassword = user.getPassword();
@@ -276,7 +278,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             // User doesn't exist locally
             // Check if LDAP user autoload is enabled
             if (!SystemConfiguration.getInstances().getLdapAutoload().getValue()) {
-                loginLogService.saveLoginLog(userFromLocal, Status.USER_NAME_PASSWD_ERROR);
                 throw new AuthException(Status.LDAP_USER_AUTOLOAD_FORBAID);
             }
 
@@ -285,7 +286,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     SystemConfiguration.getInstances().getLdapDefaultTeant().getValue();
             Tenant tenant = tenantService.getTenantByTenantCode(defaultTeantCode);
             if (Asserts.isNull(tenant)) {
-                loginLogService.saveLoginLog(userFromLocal, Status.LDAP_DEFAULT_TENANT_NOFOUND);
                 throw new AuthException(Status.LDAP_DEFAULT_TENANT_NOFOUND);
             }
 
@@ -363,13 +363,18 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result<UserDTO> queryCurrentUserInfo() {
+    public Result<UserDTO> queryCurrentUserInfo(Integer tenantId) {
         UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
+        chooseTenant(tenantId);
 
         if (Asserts.isNotNull(userInfo)) {
             UserDTO userInfoDto = buildUserInfo(userInfo.getUser().getId());
             if (userInfoDto != null) {
-                userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+                Tenant currentTenant = userInfo.getCurrentTenant();
+                if (Asserts.isNull(currentTenant)) {
+                    currentTenant = tenantService.getById(tenantId);
+                }
+                userInfoDto.setCurrentTenant(currentTenant);
             }
             UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfoDto);
             return Result.succeed(userInfoDto);
@@ -466,8 +471,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 userTenantService.list(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
         userTenants.forEach(userTenant -> {
             User user = getById(userTenant.getUserId());
-            user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
-            userList.add(user);
+            if (!Asserts.isNull(user)) {
+                user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+                userList.add(user);
+            } else {
+                log.error(
+                        "Unable to obtain user information, the user may have been deleted, please contact the administrator to verify, userId:[{}]",
+                        userTenant.getUserId());
+            }
         });
         return userList;
     }

@@ -21,7 +21,6 @@ package org.dinky.data.exception;
 
 import org.dinky.data.enums.Status;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,13 +42,13 @@ public class BusException extends RuntimeException {
     private static final long serialVersionUID = -2955156471454043812L;
 
     /** 异常信息的code码 */
-    private String code;
-
-    /** 如果有值得话，将不会取i18n里面的错误信息 */
-    private String msg;
+    private Status code;
 
     /** 异常信息的参数 */
     private Object[] errorArgs;
+
+    /** 如果有值得话，将不会取i18n里面的错误信息 */
+    private String msg;
 
     public BusException(String message) {
         super(message);
@@ -58,32 +57,30 @@ public class BusException extends RuntimeException {
 
     public BusException(Status status) {
         super(status.getMessage());
-        setCode(String.valueOf(status.getCode()));
+        setCode(status);
         setMsg(status.getMessage());
     }
 
     public BusException(Status status, Object... errorArgs) {
         super(status.getMessage());
-        setCode(String.valueOf(status.getCode()));
+        setCode(status);
         setMsg(StrUtil.format(status.getMessage(), errorArgs));
-    }
-
-    public BusException(String message, Object... args) {
-        super();
-        setCode(message);
-        setErrorArgs(args);
     }
 
     /**
      * An exception that gets the error message through i 18n
      *
-     * @param code code
+     * @param message code
      * @param e e
      * @return {@link BusException}
      */
-    public static BusException valueOf(String code, Throwable e) {
-        String errMsg = ExceptionUtil.stacktraceToString(e);
-        log.error(errMsg);
+    public static BusException valueOf(String message, Throwable e) {
+        log.error(message, e);
+        return new BusException(message + e.getMessage());
+    }
+
+    public static BusException valueOf(Status code, Throwable e) {
+        log.error(code.getMessage(), e);
         return new BusException(code, e.getMessage());
     }
 
@@ -94,7 +91,7 @@ public class BusException extends RuntimeException {
      * @param errorArgs errorArgs
      * @return {@link BusException}
      */
-    public static BusException valueOf(String code, Object... errorArgs) {
+    public static BusException valueOf(Status code, Object... errorArgs) {
         return new BusException(code, errorArgs);
     }
 
@@ -104,7 +101,7 @@ public class BusException extends RuntimeException {
      * @param msg msg
      * @return {@link BusException}
      */
-    public static BusException valueOfMsg(String msg) {
+    public static BusException valueOf(String msg) {
         return new BusException(msg);
     }
 }

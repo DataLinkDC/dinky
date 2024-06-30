@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.annotations.Api;
@@ -56,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "ClusterInstance Instance Controller")
 @RequestMapping("/api/cluster")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class ClusterInstanceController {
 
     private final ClusterInstanceService clusterInstanceService;
@@ -195,12 +197,8 @@ public class ClusterInstanceController {
     @Log(title = "Cluster Instance Heartbeat", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Heartbeat")
     @SaCheckPermission(value = {PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_HEARTBEATS})
-    public Result<Void> heartbeat() {
-        List<ClusterInstance> clusterInstances = clusterInstanceService.list();
-        for (ClusterInstance clusterInstance : clusterInstances) {
-            clusterInstanceService.registersCluster(clusterInstance);
-        }
-        return Result.succeed(Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
+    public Result<Long> heartbeat() {
+        return Result.succeed(clusterInstanceService.heartbeat(), Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
     }
 
     /**

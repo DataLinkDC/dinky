@@ -20,18 +20,25 @@
 package org.dinky.data.result;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import com.google.common.collect.Sets;
+
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SelectResult
  *
  * @since 2021/5/25 16:01
  */
+@Slf4j
 @Setter
 @Getter
 public class SelectResult extends AbstractResult implements IResult {
@@ -40,14 +47,15 @@ public class SelectResult extends AbstractResult implements IResult {
     private List<Map<String, Object>> rowData;
     private Integer total;
     private Integer currentCount;
-    private Set<String> columns;
+    private LinkedHashSet<String> columns;
     private boolean isDestroyed;
+    private boolean truncationFlag = false;
 
     public SelectResult(
             List<Map<String, Object>> rowData,
             Integer total,
             Integer currentCount,
-            Set<String> columns,
+            LinkedHashSet<String> columns,
             String jobID,
             boolean success) {
         this.rowData = rowData;
@@ -60,7 +68,7 @@ public class SelectResult extends AbstractResult implements IResult {
         this.isDestroyed = false;
     }
 
-    public SelectResult(String jobID, List<Map<String, Object>> rowData, Set<String> columns) {
+    public SelectResult(String jobID, List<Map<String, Object>> rowData, LinkedHashSet<String> columns) {
         this.jobID = jobID;
         this.rowData = rowData;
         this.total = rowData.size();
@@ -79,6 +87,48 @@ public class SelectResult extends AbstractResult implements IResult {
     @Override
     public String getJobId() {
         return jobID;
+    }
+
+    /**
+     * Get the json truncated to the specified length.
+     *
+     * @param length truncate length
+     * @return json string
+     */
+    public String toTruncateJson(Long length) {
+        String jsonStr = JSONUtil.toJsonStr(this);
+        long overLength = jsonStr.length() - length;
+        if (overLength <= 0) {
+            return jsonStr;
+        }
+        this.truncationFlag = true;
+        if (CollectionUtil.isEmpty(rowData)) {
+            this.columns = Sets.newLinkedHashSet();
+            String finalJsonStr = JSONUtil.toJsonStr(this);
+            if (finalJsonStr.length() > length) {
+                log.warn(
+                        "The row data and columns is empty, but still exceeds the length limit. "
+                                + "Json: {}, length: {}",
+                        finalJsonStr,
+                        length);
+                return "{}";
+            }
+            return finalJsonStr;
+        }
+        // Estimate the size of each row of data to determine how many rows should be removed.
+        String lineJsonStr = JSONUtil.toJsonStr(rowData.get(rowData.size() - 1));
+        int lineLength = lineJsonStr.length();
+        int removeLine = getRemoveLine(overLength, lineLength, rowData.size());
+        rowData = ListUtil.sub(rowData, 0, rowData.size() - removeLine);
+        return toTruncateJson(length);
+    }
+
+    private int getRemoveLine(long overLength, int lineLength, int rowDataSize) {
+        int removeLine = (int) (overLength / lineLength);
+        if (removeLine < 1) {
+            return 1;
+        }
+        return Math.min(removeLine, rowDataSize);
     }
 
     public static SelectResult buildDestruction(String jobID) {

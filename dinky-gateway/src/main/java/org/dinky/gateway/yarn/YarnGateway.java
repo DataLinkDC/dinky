@@ -20,9 +20,11 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
@@ -37,12 +39,16 @@ import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.FlinkJsonUtil;
 import org.dinky.utils.ThreadUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.ConfigConstants;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
+import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.configuration.SecurityOptions;
+import org.apache.flink.runtime.jobmanager.HighAvailabilityMode;
 import org.apache.flink.runtime.messages.webmonitor.JobDetails;
 import org.apache.flink.runtime.messages.webmonitor.MultipleJobsDetails;
 import org.apache.flink.runtime.rest.messages.JobsOverviewHeaders;
@@ -58,20 +64,26 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.service.Service;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
+import org.apache.hadoop.yarn.api.records.ContainerReport;
 import org.apache.hadoop.yarn.api.records.FinalApplicationStatus;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.client.api.YarnClient;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.zookeeper.ZooKeeper;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -80,12 +92,13 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
-
-    public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
+    private final String TMP_SQL_EXEC_DIR =
+            String.format("%s/tmp/sql-exec/%s", System.getProperty("user.dir"), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 
@@ -104,7 +117,8 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig() {
         final ClusterConfig clusterConfig = config.getClusterConfig();
-        configuration = GlobalConfiguration.loadConfiguration(clusterConfig.getFlinkConfigPath());
+        configuration = GlobalConfiguration.loadConfiguration(
+                clusterConfig.getFlinkConfigPath().trim());
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
@@ -121,14 +135,17 @@ public abstract class YarnGateway extends AbstractGateway {
         }
 
         if (Asserts.isNotNullString(clusterConfig.getHadoopConfigPath())) {
-            configuration.setString(HADOOP_CONFIG, clusterConfig.getHadoopConfigPath());
+            configuration.setString(
+                    ConfigConstants.PATH_HADOOP_CONFIG,
+                    FileUtil.file(clusterConfig.getHadoopConfigPath()).getAbsolutePath());
         }
 
         if (configuration.containsKey(SecurityOptions.KERBEROS_LOGIN_KEYTAB.key())) {
             try {
                 SecurityUtils.install(new SecurityConfiguration(configuration));
                 UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
-                logger.info("安全认证结束，用户和认证方式:" + currentUser.toString());
+                logger.info(
+                        "Security authentication completed, user and authentication method:{}", currentUser.toString());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -160,7 +177,28 @@ public abstract class YarnGateway extends AbstractGateway {
 
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);
-        yarnClient.start();
+
+        synchronized (YarnGateway.class) {
+            String hadoopUserName;
+            try {
+                hadoopUserName = UserGroupInformation.getLoginUser().getUserName();
+            } catch (Exception e) {
+                hadoopUserName = "hdfs";
+            }
+
+            // 设置 yarn 提交的用户名
+            String yarnUser = configuration.get(CustomerConfigureOptions.YARN_APPLICATION_USER);
+            if (StrUtil.isNotBlank(yarnUser)) {
+                UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser(yarnUser));
+            }
+            try {
+                yarnClient.start();
+            } finally {
+                if (StrUtil.isNotBlank(yarnUser)) {
+                    UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser(hadoopUserName));
+                }
+            }
+        }
     }
 
     private Path getYanConfigFilePath(String path) {
@@ -220,22 +258,22 @@ public abstract class YarnGateway extends AbstractGateway {
         try {
             initConfig();
         } catch (Exception e) {
-            logger.error("测试 Flink 配置失败：" + e.getMessage());
-            return TestResult.fail("测试 Flink 配置失败：" + e.getMessage());
+            logger.error("Failed to test Flink configuration：" + e.getMessage());
+            return TestResult.fail("Failed to test Flink configuration：" + e.getMessage());
         }
 
         try {
             initYarnClient();
             if (yarnClient.isInState(Service.STATE.STARTED)) {
-                logger.info("配置连接测试成功");
+                logger.info("Configuration connection test successful");
                 return TestResult.success();
             } else {
-                logger.error("该配置无对应 Yarn 集群存在");
-                return TestResult.fail("该配置无对应 Yarn 集群存在");
+                logger.error("This configuration does not have a corresponding Yarn cluster present");
+                return TestResult.fail("This configuration does not have a corresponding Yarn cluster present");
             }
         } catch (Exception e) {
-            logger.error("测试 Yarn 配置失败：" + e.getMessage());
-            return TestResult.fail("测试 Yarn 配置失败：" + e.getMessage());
+            logger.error("Test Yarn configuration failed: {}", e.getMessage());
+            return TestResult.fail("Test Yarn configuration failed:" + e.getMessage());
         }
     }
 
@@ -306,16 +344,16 @@ public abstract class YarnGateway extends AbstractGateway {
 
     protected YarnClusterDescriptor createYarnClusterDescriptorWithJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor();
-
+        ClusterDescriptorAdapterImpl clusterDescriptorAdapter = new ClusterDescriptorAdapterImpl(yarnClusterDescriptor);
         if (Asserts.isNotNull(config.getJarPaths())) {
-            yarnClusterDescriptor.addShipFiles(
+            clusterDescriptorAdapter.addShipFiles(
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
-            yarnClusterDescriptor.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
+            clusterDescriptorAdapter.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
         }
-        Set<File> otherPluginsFiles = udfPathContextHolder.getOtherPluginsFiles();
+        Set<File> otherPluginsFiles = udfPathContextHolder.getAllFileSet();
 
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
-            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
+            clusterDescriptorAdapter.addShipFiles(new ArrayList<>(otherPluginsFiles));
         }
         return yarnClusterDescriptor;
     }
@@ -339,32 +377,34 @@ public abstract class YarnGateway extends AbstractGateway {
                 && counts-- > 0) {
             Thread.sleep(1000);
         }
-        // 睡眠2秒，防止application快速识别抛出的错误
-        ThreadUtil.sleep(2000);
-        ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
-        if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
-            String logUrl = yarnClient
-                    .getContainers(applicationReport.getCurrentApplicationAttemptId())
-                    .get(0)
-                    .getLogUrl();
-            String log = ReUtil.getGroup1(HTML_TAG_REGEX, HttpUtil.get(logUrl + "/jobmanager.log?start=-10000"));
-            logger.error("\n\nHistory log url is: {}\n\n ", logUrl);
-            throw new RuntimeException(
-                    "Yarn application state is not running, please check yarn cluster status. Log content:\n" + log);
-        }
-        webUrl = applicationReport.getOriginalTrackingUrl();
+        webUrl = clusterClient.getWebInterfaceURL();
         final List<JobDetails> jobDetailsList = new ArrayList<>();
         while (jobDetailsList.isEmpty() && counts-- > 0) {
+            ApplicationReport applicationReport = yarnClient.getApplicationReport(clusterClient.getClusterId());
+            if (applicationReport.getYarnApplicationState() != YarnApplicationState.RUNNING) {
+                String log = getYarnContainerLog(applicationReport);
+                throw new RuntimeException(String.format(
+                        "Yarn application state is not running, please check yarn cluster status. Web URL is: %s , Log content: %s",
+                        webUrl, log));
+            }
+            // 睡眠1秒，防止flink因为依赖或其他问题导致任务秒挂
             Thread.sleep(1000);
-
             String url = yarnClient
                             .getApplicationReport(clusterClient.getClusterId())
                             .getTrackingUrl()
                     + JobsOverviewHeaders.URL.substring(1);
 
             String json = HttpUtil.get(url);
-            MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
-            jobDetailsList.addAll(jobsDetails.getJobs());
+            try {
+                MultipleJobsDetails jobsDetails = FlinkJsonUtil.toBean(json, JobsOverviewHeaders.getInstance());
+                jobDetailsList.addAll(jobsDetails.getJobs());
+            } catch (Exception e) {
+                Thread.sleep(1000);
+                String log = getYarnContainerLog(applicationReport);
+                logger.error(
+                        "Yarn application state is not running, please check yarn cluster status. Log content: {}",
+                        log);
+            }
             if (!jobDetailsList.isEmpty()) {
                 break;
             }
@@ -378,5 +418,119 @@ public abstract class YarnGateway extends AbstractGateway {
             result.setJids(jobIds);
         }
         return webUrl;
+    }
+
+    protected String getYarnContainerLog(ApplicationReport applicationReport) throws YarnException, IOException {
+        // Wait for up to 2.5 s. If the history log is not found yet, a prompt message will be returned.
+        int counts = 5;
+        while (yarnClient
+                        .getContainers(applicationReport.getCurrentApplicationAttemptId())
+                        .isEmpty()
+                && counts-- > 0) {
+            ThreadUtil.sleep(500);
+        }
+        List<ContainerReport> containers = yarnClient.getContainers(applicationReport.getCurrentApplicationAttemptId());
+        if (CollUtil.isNotEmpty(containers)) {
+            String logUrl = containers.get(0).getLogUrl();
+            String content = HttpUtil.get(logUrl + "/jobmanager.log?start=-10000");
+            return ReUtil.getGroup1(HTML_TAG_REGEX, content);
+        }
+        return "No history log found yet. so can't get log url, please check yarn cluster status or check if the flink job is running in yarn cluster or please go to yarn interface to view the log.";
+    }
+
+    protected File preparSqlFile() {
+        File tempSqlFile = new File(
+                String.format("%s/%s", TMP_SQL_EXEC_DIR, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE)));
+        logger.info("Temp sql file path : {}", tempSqlFile.getAbsolutePath());
+        String sql = config == null ? "" : config.getSql();
+        FileUtil.writeString(Optional.ofNullable(sql).orElse(""), tempSqlFile.getAbsolutePath(), "UTF-8");
+        return tempSqlFile;
+    }
+
+    public boolean close() {
+        return FileUtil.del(TMP_SQL_EXEC_DIR);
+    }
+
+    @Override
+    public String getLatestJobManageHost(String appId, String oldJobManagerHost) {
+        initConfig();
+
+        HighAvailabilityMode highAvailabilityMode = HighAvailabilityMode.fromConfig(configuration);
+
+        if (HighAvailabilityMode.ZOOKEEPER == highAvailabilityMode) {
+            configuration.setString(HighAvailabilityOptions.HA_CLUSTER_ID, appId);
+            String zkQuorum = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM);
+
+            if (zkQuorum == null || StringUtils.isBlank(zkQuorum)) {
+                throw new RuntimeException("No valid ZooKeeper quorum has been specified. "
+                        + "You can specify the quorum via the configuration key '"
+                        + HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM.key()
+                        + "'.");
+            }
+            int sessionTimeout = configuration.getInteger(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT);
+            String root = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
+            String namespace = configuration.getValue(HighAvailabilityOptions.HA_CLUSTER_ID);
+
+            ZooKeeper zooKeeper = null;
+            try {
+                zooKeeper = new ZooKeeper(zkQuorum, sessionTimeout, watchedEvent -> {});
+                String path = generateZookeeperPath(root, namespace, "leader", "rest_server", "connection_info");
+                byte[] data = zooKeeper.getData(path, false, null);
+                if (data != null && data.length > 0) {
+                    ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                    ObjectInputStream ois = new ObjectInputStream(bais);
+
+                    final String leaderAddress = ois.readUTF();
+                    if (Asserts.isNotNullString(leaderAddress)) {
+                        String hosts = leaderAddress.substring(7);
+                        if (!oldJobManagerHost.equals(hosts)) {
+                            return hosts;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (Asserts.isNotNull(zooKeeper)) {
+                    try {
+                        zooKeeper.close();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Creates a ZooKeeper path of the form "/a/b/.../z".
+     */
+    private static String generateZookeeperPath(String... paths) {
+        final String result = Arrays.stream(paths)
+                .map(YarnGateway::trimSlashes)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining("/", "/", ""));
+
+        return result;
+    }
+
+    private static String trimSlashes(String input) {
+        int left = 0;
+        int right = input.length() - 1;
+
+        while (left <= right && input.charAt(left) == '/') {
+            left++;
+        }
+
+        while (right >= left && input.charAt(right) == '/') {
+            right--;
+        }
+
+        if (left <= right) {
+            return input.substring(left, right + 1);
+        } else {
+            return "";
+        }
     }
 }

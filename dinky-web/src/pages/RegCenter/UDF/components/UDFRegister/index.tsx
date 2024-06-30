@@ -132,6 +132,12 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
         width: '15%'
       },
       {
+        title: l('rc.udf.register.language'),
+        dataIndex: 'language',
+        readonly: true,
+        width: '15%'
+      },
+      {
         title: l('global.table.updateTime'),
         dataIndex: 'updateTime',
         readonly: true,
@@ -175,7 +181,6 @@ const UDFRegister: React.FC<UDFRegisterProps> = (props) => {
       <ProTable
         rowKey={'id'}
         columns={columns}
-        headerTitle={false}
         search={false}
         options={false}
         dataSource={groupData[expandedRow.fileName]}

@@ -19,14 +19,20 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotations.CatalogueId;
+import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.Log;
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.dto.CatalogueTaskDTO;
+import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.TreeVo;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.service.CatalogueService;
+import org.dinky.service.TaskService;
+import org.dinky.service.catalogue.CatalogueService;
 
 import java.io.File;
 import java.util.List;
@@ -41,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
 import io.swagger.annotations.Api;
@@ -60,6 +67,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Catalogue Controller")
 @RequestMapping("/api/catalogue")
 @RequiredArgsConstructor
+@SaCheckLogin
 public class CatalogueController {
 
     private final CatalogueService catalogueService;
@@ -123,13 +131,26 @@ public class CatalogueController {
 
     /**
      * query catalogue tree data
+     *
+     * @param catalogueTreeQueryDto {@link CatalogueTreeQueryDTO}
      * @return {@link Result}< {@link List}< {@link Catalogue}>>}
      */
     @PostMapping("/getCatalogueTreeData")
     @ApiOperation("Get Catalogue Tree Data")
-    public Result<List<Catalogue>> getCatalogueTree() {
-        List<Catalogue> catalogues = catalogueService.getCatalogueTree();
+    public Result<List<Catalogue>> getCatalogueTree(@RequestBody CatalogueTreeQueryDTO catalogueTreeQueryDto) {
+        List<Catalogue> catalogues = catalogueService.getCatalogueTree(catalogueTreeQueryDto);
         return Result.succeed(catalogues);
+    }
+
+    /**
+     * query catalogue sort type
+     * @return {@link Result}< {@link List}< {@link TreeVo}>>}
+     */
+    @PostMapping("/getCatalogueSortType")
+    @ApiOperation("Get Catalogue Sort Type")
+    public Result<List<TreeVo>> getCatalogueSortType() {
+        List<TreeVo> catalogueSortType = catalogueService.getCatalogueSortType();
+        return Result.succeed(catalogueSortType);
     }
 
     /**
@@ -146,6 +167,7 @@ public class CatalogueController {
             required = true,
             dataType = "CatalogueTaskDTO",
             dataTypeClass = CatalogueTaskDTO.class)
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         if (catalogueService.checkCatalogueTaskNameIsExistById(catalogueTaskDTO.getName(), catalogueTaskDTO.getId())) {
             return Result.failed(Status.TASK_IS_EXIST);
@@ -181,8 +203,9 @@ public class CatalogueController {
                 dataType = "Integer",
                 dataTypeClass = Integer.class)
     })
+    @CheckTaskOwner(checkParam = CatalogueId.class, checkInterface = CatalogueService.class)
     public Result<Boolean> moveCatalogue(
-            @RequestParam("originCatalogueId") Integer originCatalogueId,
+            @CatalogueId @RequestParam("originCatalogueId") Integer originCatalogueId,
             @RequestParam("targetParentId") Integer targetParentId) {
         if (catalogueService.moveCatalogue(originCatalogueId, targetParentId)) {
             return Result.succeed(true, Status.MOVE_SUCCESS);
@@ -205,6 +228,7 @@ public class CatalogueController {
             dataType = "Catalogue",
             dataTypeClass = Catalogue.class)
     @ApiOperation("Copy Task")
+    @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Void> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
             return Result.succeed(Status.COPY_SUCCESS);
@@ -222,7 +246,8 @@ public class CatalogueController {
     @Log(title = "Delete Catalogue By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete Catalogue By Id")
     @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Integer", dataTypeClass = Integer.class)
-    public Result<Void> deleteCatalogueById(@RequestParam Integer id) {
+    @CheckTaskOwner(checkParam = CatalogueId.class, checkInterface = CatalogueService.class)
+    public Result<Void> deleteCatalogueById(@CatalogueId @RequestParam Integer id) {
         return catalogueService.deleteCatalogueById(id);
     }
 }

@@ -33,18 +33,22 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SplitUtil {
+    public static final String ENABLE = "enable";
+    public static final String MATCH_NUMBER_REGEX = "match_number_regex";
+    public static final String MAX_MATCH_VALUE = "max_match_value";
+    public static final String MATCH_WAY = "match_way";
 
     public static boolean contains(String regex, String sourceData) {
         return Pattern.matches(regex, sourceData);
     }
 
     public static boolean isSplit(String value, Map<String, String> splitConfig) {
-        String matchNumberRegex = splitConfig.get("match_number_regex");
+        String matchNumberRegex = splitConfig.get(MATCH_NUMBER_REGEX);
         Pattern pattern = Pattern.compile(matchNumberRegex);
         Matcher matcher = pattern.matcher(value);
         if (matcher.find()) {
             long splitNum = Long.parseLong(matcher.group(0).replaceFirst("_", ""));
-            long maxMatchValue = Long.parseLong(splitConfig.get("max_match_value"));
+            long maxMatchValue = Long.parseLong(splitConfig.get(MAX_MATCH_VALUE));
             return splitNum <= maxMatchValue;
         }
         return false;
@@ -53,8 +57,8 @@ public class SplitUtil {
     public static String getReValue(String value, Map<String, String> splitConfig) {
         if (isEnabled(splitConfig)) {
             try {
-                String matchNumberRegex = splitConfig.get("match_number_regex");
-                String matchWay = splitConfig.get("match_way");
+                String matchNumberRegex = splitConfig.get(MATCH_NUMBER_REGEX);
+                String matchWay = splitConfig.get(MATCH_WAY);
                 Pattern pattern = Pattern.compile(matchNumberRegex);
                 Matcher matcher = pattern.matcher(value);
                 // Determine whether it is a prefix or a suffix
@@ -62,7 +66,7 @@ public class SplitUtil {
                     if (matcher.find()) {
                         String num = matcher.group(0);
                         long splitNum = Long.parseLong(num.replaceFirst("_", ""));
-                        long maxMatchValue = Long.parseLong(splitConfig.get("max_match_value"));
+                        long maxMatchValue = Long.parseLong(splitConfig.get(MAX_MATCH_VALUE));
                         if (splitNum <= maxMatchValue) {
                             return value.substring(0, value.lastIndexOf(num));
                         }
@@ -76,7 +80,7 @@ public class SplitUtil {
                         return value;
                     }
                     long splitNum = Long.parseLong(num.replaceFirst("_", ""));
-                    long maxMatchValue = Long.parseLong(splitConfig.get("max_match_value"));
+                    long maxMatchValue = Long.parseLong(splitConfig.get(MAX_MATCH_VALUE));
                     if (splitNum <= maxMatchValue) {
                         return value.substring(0, value.lastIndexOf(num));
                     }
@@ -90,6 +94,6 @@ public class SplitUtil {
     }
 
     public static boolean isEnabled(Map<String, String> split) {
-        return Boolean.parseBoolean(split.get("enable"));
+        return Boolean.parseBoolean(split.get(ENABLE));
     }
 }

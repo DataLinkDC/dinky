@@ -37,6 +37,7 @@ import JobInfo from '@/pages/DataStudio/RightContainer/JobInfo';
 import PreViewConfig from '@/pages/DataStudio/RightContainer/PreViewConfig';
 import SavePoints from '@/pages/DataStudio/RightContainer/SavePoints';
 import { DIALECT } from '@/services/constants';
+import { PermissionConstants } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import {
   ApartmentOutlined,
@@ -56,167 +57,177 @@ import {
 } from '@ant-design/icons';
 import { TabPaneProps } from 'antd';
 import React, { ReactNode } from 'react';
+import { assert } from '@/pages/DataStudio/function';
 
 export const LeftSide: TabProp[] = [
   {
-    auth: '/datastudio/left/project',
+    auth: PermissionConstants.DATA_STUDIO_LEFT_PROJECT,
     key: LeftMenuKey.PROJECT_KEY,
     icon: <ConsoleSqlOutlined />,
     label: l(LeftMenuKey.PROJECT_KEY),
     children: <Project />
   },
   {
-    auth: '/datastudio/left/catalog',
+    auth: PermissionConstants.DATASTUDIO_LEFT_CATALOG,
     key: LeftMenuKey.CATALOG_KEY,
     icon: <TableOutlined />,
     label: l(LeftMenuKey.CATALOG_KEY),
     children: <Catalog />,
     isShow: (type, subType) =>
-      (type === TabsPageType.project || type === TabsPageType.metadata) &&
-      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
-      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase() !== DIALECT.SCALA &&
-      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase() !== DIALECT.JAVA &&
-      subType?.toLowerCase() !== DIALECT.FLINKSQLENV
+      assert(type, [TabsPageType.project, TabsPageType.metadata], true, 'includes') &&
+      assert(
+        subType,
+        [DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV, DIALECT.FLINKJAR],
+        true,
+        'notIncludes'
+      )
   },
   {
-    auth: '/datastudio/left/datasource',
+    auth: PermissionConstants.DATASTUDIO_LEFT_DATASOURCE,
     key: LeftMenuKey.DATASOURCE_KEY,
     icon: <DatabaseOutlined />,
     label: l(LeftMenuKey.DATASOURCE_KEY),
     children: <DataSource />
   },
   {
-    auth: '/datastudio/left/globalVariable',
+    auth: PermissionConstants.DATASTUDIO_LEFT_GLOBAL_VARIABLE,
     key: LeftMenuKey.FRAGMENT_KEY,
     icon: <FunctionOutlined />,
     label: l(LeftMenuKey.FRAGMENT_KEY),
     children: <GlobalVariable />,
     isShow: (type, subType) =>
-      type === TabsPageType.project &&
-      !isSql(subType ?? '') &&
-      subType?.toLowerCase() !== DIALECT.SCALA &&
-      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase() !== DIALECT.JAVA
+      assert(type, TabsPageType.project, true, 'equal') &&
+      !isSql(subType) &&
+      assert(subType, [DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG], true, 'notIncludes')
   }
 ];
 
 export const RightSide: TabProp[] = [
   {
-    auth: '/datastudio/right/jobConfig',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_JOB_CONFIG,
     key: RightMenuKey.JOB_CONFIG_KEY,
     icon: <SettingOutlined />,
     label: l(RightMenuKey.JOB_CONFIG_KEY),
     children: <JobConfig />,
     isShow: (type, subType) =>
-      type === TabsPageType.project &&
-      (TabsPageSubType.flinkSql === subType || TabsPageSubType.flinkJar === subType)
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(subType, [TabsPageSubType.flinkSql, TabsPageSubType.flinkJar], true, 'includes')
   },
   {
-    auth: '/datastudio/right/previewConfig',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_PREVIEW_CONFIG,
     key: RightMenuKey.PREVIEW_CONFIG_KEY,
     icon: <InsertRowRightOutlined />,
     label: l(RightMenuKey.PREVIEW_CONFIG_KEY),
     children: <PreViewConfig />,
     isShow: (type, subType) =>
-      (type === TabsPageType.project && TabsPageSubType.flinkSql === subType) ||
-      isSql(subType ?? '')
+      (assert(type, TabsPageType.project, true, 'equal') &&
+        assert(subType, [TabsPageSubType.flinkSql], true, 'includes')) ||
+      isSql(subType)
   },
   {
-    auth: '/datastudio/right/savePoint',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_SAVE_POINT,
     key: RightMenuKey.SAVEPOINT_KEY,
     icon: <FolderOutlined />,
     label: l(RightMenuKey.SAVEPOINT_KEY),
     children: <SavePoints />,
-    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
+    isShow: (type, subType) =>
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(subType, TabsPageSubType.flinkSql, true, 'equal')
   },
   {
-    auth: '/datastudio/right/historyVision',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_HISTORY_VISION,
     key: RightMenuKey.HISTORY_VISION_KEY,
     icon: <HistoryOutlined />,
     label: l(RightMenuKey.HISTORY_VISION_KEY),
     children: <HistoryVersion />,
-    isShow: (type, subType) => type === TabsPageType.project && TabsPageSubType.flinkSql === subType
+    isShow: (type, subType) =>
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(subType, TabsPageSubType.flinkSql, true, 'equal')
   },
   {
-    auth: '/datastudio/right/jobInfo',
+    auth: PermissionConstants.DATASTUDIO_RIGHT_JOB_INFO,
     key: RightMenuKey.JOB_INFO_KEY,
     icon: <InfoCircleOutlined />,
     label: l(RightMenuKey.JOB_INFO_KEY),
     children: <JobInfo />,
-    isShow: (type) => type === TabsPageType.project
+    isShow: (type) => assert(type, TabsPageType.project, true, 'equal')
   }
 ];
 
 export const LeftBottomSide: TabProp[] = [
   {
-    auth: '/datastudio/bottom/console',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_CONSOLE,
     key: LeftBottomKey.CONSOLE_KEY,
     icon: <RightSquareOutlined />,
     label: l(LeftBottomKey.CONSOLE_KEY),
     children: <Console />,
     isShow: (type, subType) =>
-      type === TabsPageType.project &&
-      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase() !== DIALECT.SCALA &&
-      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase() !== DIALECT.JAVA
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
-    auth: '/datastudio/bottom/result',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_RESULT,
     key: LeftBottomKey.RESULT_KEY,
     icon: <MonitorOutlined />,
     label: l(LeftBottomKey.RESULT_KEY),
     children: <Result />,
     isShow: (type, subType) =>
-      type === TabsPageType.project &&
-      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
-      subType?.toLowerCase() !== DIALECT.SCALA &&
-      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase() !== DIALECT.JAVA
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.FLINKJAR, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
-    auth: '/datastudio/bottom/lineage',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_LINEAGE,
     key: LeftBottomKey.LINEAGE_KEY,
     icon: <ApartmentOutlined />,
     label: l(LeftBottomKey.LINEAGE_KEY),
     children: <Lineage />,
     isShow: (type, subType) =>
-      type === TabsPageType.project &&
-      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
-      subType?.toLowerCase() !== DIALECT.SCALA &&
-      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase() !== DIALECT.JAVA
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.FLINKJAR, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
-    auth: '/datastudio/bottom/history',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_HISTORY,
     key: LeftBottomKey.HISTORY_KEY,
     icon: <HistoryOutlined />,
     label: l(LeftBottomKey.HISTORY_KEY),
     children: <JobExecHistory />,
     isShow: (type, subType) =>
-      type === TabsPageType.project &&
-      !isSql(subType ?? '') &&
-      subType?.toLowerCase() !== DIALECT.FLINKSQLENV &&
-      subType?.toLowerCase() !== DIALECT.FLINKJAR &&
-      subType?.toLowerCase() !== DIALECT.SCALA &&
-      subType?.toLowerCase() !== DIALECT.PYTHON_LONG &&
-      subType?.toLowerCase() !== DIALECT.JAVA
+      assert(type, TabsPageType.project, true, 'equal') &&
+      !isSql(subType) &&
+      assert(
+        subType,
+        [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+        true,
+        'notIncludes'
+      )
   },
   {
-    auth: '/datastudio/bottom/table-data',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_TABLE_DATA,
     key: LeftBottomKey.TABLE_DATA_KEY,
     icon: <TableOutlined />,
     label: l(LeftBottomKey.TABLE_DATA_KEY),
     children: <></>,
     isShow: (type, subType) =>
-      type === TabsPageType.project && subType?.toLowerCase() === DIALECT.FLINK_SQL
+      assert(type, TabsPageType.project, true, 'equal') &&
+      assert(subType, [DIALECT.FLINK_SQL], true, 'includes')
   },
   {
-    auth: '/datastudio/bottom/tool',
+    auth: PermissionConstants.DATASTUDIO_LEFT_BOTTOM_TOOL,
     key: LeftBottomKey.TOOLS_KEY,
     icon: <ToolOutlined />,
     label: l(LeftBottomKey.TOOLS_KEY),

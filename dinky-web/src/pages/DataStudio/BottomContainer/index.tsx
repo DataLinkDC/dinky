@@ -300,7 +300,6 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         zIndex: 999,
         height: height,
         marginTop: 0,
-        backgroundColor: '#fff',
         position: 'fixed',
         bottom: VIEW.footerHeight
       }}

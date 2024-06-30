@@ -53,6 +53,7 @@ export default {
    * */
 
   'catalog.name': '作业名称',
+  'catalog.useTemplate': '使用模板',
   'catalog.name.placeholder': '请输入作业名称',
   'catalog.name.validate.error': '作业名称不允许出现 _ 字符,K8s 命名规范',
   'catalog.name.tip': '此名称可作为 FlinkSql 任务的 JobName',
@@ -65,6 +66,13 @@ export default {
   'catalog.udf.className.placeholder': '请输入类或方法名',
   'catalog.udf.templateId': 'UDF 模板',
   'catalog.udf.templateId.placeholder': '请选择 UDF 模板',
+  'catalog.firstLevelOwner': '责任人',
+  'catalog.firstLevelOwner.tip1': '请选择任务责任人',
+  'catalog.firstLevelOwner.tip2': '选择任务责任人，对任务负有直接责任',
+  'catalog.secondLevelOwners': '维护人',
+  'catalog.secondLevelOwners.tip1': '请选择任务维护人',
+  'catalog.secondLevelOwners.tip2': '选择任务维护人，对任务负有间接责任',
+
   /**
    *
    * datastudio
@@ -72,6 +80,17 @@ export default {
    * */
 
   'datastudio.middle.qg': '快捷引导',
+  'datastudio.middle.terminal.mode': '连接方式',
+  'datastudio.middle.terminal.websocket': 'dinky后端',
+  'datastudio.middle.terminal.websocket.tip':
+    '一般情况下无需改动，如果您有自定义nginx配置，请修改此地址',
+  'datastudio.middle.terminal.cluster': 'Flink 集群',
+  'datastudio.middle.terminal.cluster.tip': '需要提前在注册中心添加对应集群,仅展示手动注册集群',
+  'datastudio.middle.terminal.fontSize': '字体大小',
+  'datastudio.middle.terminal.backspaceAsCtrlH': '回退字符转换',
+  'datastudio.middle.terminal.backspaceAsCtrlH.tip': '如果回退删除显示异常，修改此选项',
+  'datastudio.middle.terminal.connect': '连接',
+
   'datastudio.middle.qg.alertGroup': '注册告警组',
   'datastudio.middle.qg.alertInstance': '注册告警实例',
   'datastudio.middle.qg.clusterConfiguration': '注册集群配置',
@@ -81,9 +100,16 @@ export default {
   'datastudio.middle.qg.fragment': '全局变量',
   'datastudio.middle.qg.gitprojects': 'Git 项目',
   'datastudio.middle.qg.resource': '资源',
+  'datastudio.middle.qg.alertRule': '告警策略',
+  'datastudio.middle.qg.alertTemplate': '注册告警模板',
+  'datastudio.middle.qg.accountCenter': '个人中心',
+  'datastudio.middle.qg.globalsetting': '全局配置',
+  'datastudio.middle.qg.rootLog': '查看系统日志',
   'datastudio.middle.qg.udf': 'UDF',
-  'datastudio.header.pushdolphin.title': '将任务 [ {name} ]推送至 DolphinScheduler',
+  'datastudio.header.pushdolphin.title': '将任务 [ {name} ] 推送至 DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky任务编码',
+  'datastudio.header.pushdolphin.taskGroup': '任务组',
+  'datastudio.header.pushdolphin.taskGroupPriority': '组内优先级',
   'datastudio.header.pushdolphin.taskName': 'Task名称: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task类型: {type} 所属进程定义: {processDefinitionName}',
@@ -99,7 +125,7 @@ export default {
   'datastudio.header.pushdolphin.timeoutFlag': '超时告警',
   'datastudio.header.pushdolphin.timeoutFlag.warn': '超时告警',
   'datastudio.header.pushdolphin.timeoutFlag.failed': '超时失败',
-  'datastudio.header.pushdolphin.timeoutFlagTip': '请选择超时警告',
+  'datastudio.header.pushdolphin.timeoutFlagTip': '请选择超时告警',
   'datastudio.header.pushdolphin.flag': '运行标志',
   'datastudio.header.pushdolphin.flagTip': '请选择运行标志',
   'datastudio.header.pushdolphin.isCache': '缓存执行',
@@ -176,14 +202,14 @@ export default {
   'devops.jobinfo.config.RestartStrategy': '重启策略',
   'devops.jobinfo.config.UserCustomConf': '用户自定义配置',
   'devops.jobinfo.config.execmode': '执行模式',
-  'devops.jobinfo.config.savePointPath': 'savePoint路径',
+  'devops.jobinfo.config.savePointPath': 'Savepoint路径',
   'devops.jobinfo.config.startFromSavePoint': '从Savepoint启动',
   'devops.jobinfo.config.submitType': '提交模式',
   'devops.jobinfo.config.taskId': 'Dinky作业ID',
   'devops.jobinfo.config.useSqlFragment': '语句集',
   'devops.jobinfo.job.key': '{key} 任务',
   'devops.jobinfo.job.key.success': '{key} 成功',
-  'devops.jobinfo.job.keyConfirm': '确定{key} 该作业吗？',
+  'devops.jobinfo.job.keyConfirm': '确定 {key} 该作业吗？',
   'devops.jobinfo.metrics.configMetrics': '任务监控配置',
   'devops.jobinfo.metrics.metricsItems': '监控项列表',
   'devops.jobinfo.metrics.selected': '已选择',
@@ -213,6 +239,8 @@ export default {
   'devops.jobinfo.remap.cluster.title': '集群实例映射信息',
   'devops.jobinfo.remap.cluster.title.help': ' (注意：此操作会同步修改集群实例配置)',
   'devops.jobinfo.remap.job.title': 'Job映射信息',
+  'devops.joblist.clear.filter': '取消选择',
+  'devops.joblist.clear.filtertips': '清除选择的任务,并不是清除其他得筛选条件',
 
   'devops.joblist.detail': '详情',
   'devops.joblist.history': '历史',
@@ -269,8 +297,8 @@ export default {
    * */
 
   'login.chooseTenant': '请选择租户',
-  'login.chooseTenantFailed': '租户选择失败，请检查。。。',
-  'login.chooseTenantSuccess': '{msg}，使用【 {tenantCode} 】进入系统，加载中。。。',
+  'login.chooseTenantFailed': '租户选择失败，请检查...',
+  'login.chooseTenantSuccess': '{msg}，使用【 {tenantCode} 】进入系统，加载中...',
   'login.ldapLogin': 'LDAP登录',
   'login.notbindtenant': '您还没有绑定租户，请联系管理员',
   'login.password.placeholder': '密码',
@@ -279,6 +307,7 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': '用户名',
   'login.username.required': '用户名是必填项！',
+  'login.token.error': '无法获取token信息/会话已过期，即将跳转到登录页,请重新登录...',
   /**
    *
    * menu
@@ -305,7 +334,7 @@ export default {
   'menu.tips.2': '添加根菜单',
   'menu.tips.3': '新增/删除子菜单',
   'menu.type': '菜单类型',
-  'menu.type.button': '按钮',
+  'menu.type.button': '按钮/区块',
   'menu.type.dir': '目录',
   'menu.type.menu': '菜单',
   'menu.typePlaceholder': '请选择菜单类型',
@@ -337,7 +366,7 @@ export default {
   'metrics.dinky.not.open':
     '暂未开启 Dinky Server 监控, 请前往 配置中心 -> 全局配置 -> Metrics 配置 -> Dinky JVM Monitor 开关 进行开启',
   'metrics.flink.deleteConfirm':
-    '确认删除该任务下的监控数据吗? \n注意:该操作会同步影响运维中心该任务的监控数据!!\n请谨慎操作,该操作不可撤销!',
+    '确认删除该任务下的监控数据吗? \n注意:该操作会同步影响运维中心该任务的监控数据!!\n请谨慎操作,该操作不可撤消!',
   /**
    *
    * pages
@@ -345,12 +374,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': '检查',
-  'pages.datastudio.editor.debug': '预览',
+  'pages.datastudio.editor.debug': '查询',
   'pages.datastudio.editor.exec': '运行',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.debug.error': '任务【{jobName}】调试失败',
-  'pages.datastudio.editor.debug.success': '调试成功',
-  'pages.datastudio.editor.exec.success': '执行成功',
+  'pages.datastudio.editor.debug.success': '查询成功',
+  'pages.datastudio.editor.exec.success': '提交成功',
   'pages.datastudio.editor.execute.warn':
     '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
   'pages.datastudio.editor.explan': '获取当前的 FlinkSql 的执行图',
@@ -358,10 +387,13 @@ export default {
   'pages.datastudio.editor.stop': '停止',
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
+  'pages.datastudio.editor.stop.force.jobConfirm':
+    '当前作业【{jobName}】连接到集群获取信息失败，无法进行停止操作，确定强制修改状态吗？',
   'pages.datastudio.editor.submitting': '新任务【{jobName}】正在执行',
   'pages.datastudio.editor.checking': '任务【{jobName}】正在检查',
   'pages.datastudio.editor.debugging': '新任务【{jobName}】正在调试',
   'pages.datastudio.editor.onlyread': '任务已发布，禁止修改，请先下线任务',
+  'pages.datastudio.editor.onlyread.lock': '无任务操作权限，请联系任务责任人获取',
   'pages.datastudio.editor.notsave': '当前修改内容未保存！',
   'pages.datastudio.editor.notsave.note': '继续将抛弃所修改内容，确定继续吗？',
   'pages.datastudio.to.jobDetail': '运维',
@@ -407,8 +439,16 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',
   'pages.datastudio.label.jobConfig.addConfig.value': '值',
-  'pages.datastudio.label.jobConfig.alertGroup': '报警组',
-  'pages.datastudio.label.jobConfig.alertGroup.tip': '选择报警组',
+  'pages.datastudio.label.udf': '注入UDF算子',
+  'pages.datastudio.label.udf.tip':
+    '注入UDF算子, 自动在所有语句前注入`create temporary function [functionName] as [className]` 语句',
+  'pages.datastudio.label.udf.duplicate.tip':
+    '此次选择的类[className]已经存在,不允许重复注入,请重新选择,或者取消注入(删除改行即可)。',
+  'pages.datastudio.label.udf.injectUdf': '注入UDF',
+  'pages.datastudio.label.udf.name': '函数名称',
+  'pages.datastudio.label.udf.className': '类名',
+  'pages.datastudio.label.jobConfig.alertGroup': '告警组',
+  'pages.datastudio.label.jobConfig.alertGroup.tip': '选择告警组',
   'pages.datastudio.label.jobConfig.batchmode': '批模式',
   'pages.datastudio.label.jobConfig.batchmode.tip': '使用批模式',
   'pages.datastudio.label.jobConfig.cluster': 'Flink集群',
@@ -417,30 +457,35 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     '选择Flink集群配置进行【{type}】模式的远程提交任务',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态',
+    '如下拉框无数据,请先配置/新建集群实例,或者检查集群配置/集群实例是否为健康可用状态/是否为启用状态',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
+  'pages.datastudio.label.jobConfig.watermark': '当前任务已发布，配置禁止修改，如需修改，请先下线',
+  'pages.datastudio.label.jobConfig.lock':
+    '当前任务无权限，配置禁止修改，如需修改，请联系任务责任人获取权限',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',
   'pages.datastudio.label.jobConfig.fragment': '全局变量',
-  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量，使用“',
-  'pages.datastudio.label.jobConfig.insert': 'Insert语句集',
-  'pages.datastudio.label.jobConfig.insert.tip':
-    '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
+  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量',
   'pages.datastudio.label.jobConfig.other': '其他配置',
   'pages.datastudio.label.jobConfig.other.tip': '其他配置项，将被应用于执行环境，如 pipeline.name',
+  'pages.datastudio.label.jobConfig.udf': 'UDF注入',
+  'pages.datastudio.label.jobConfig.udf.tip': '自动注入UDF算子',
   'pages.datastudio.label.jobConfig.parallelism': '任务并行度',
   'pages.datastudio.label.jobConfig.parallelism.tip': '设置Flink任务的并行度，最小为 1',
   'pages.datastudio.label.jobConfig.savePointStrategy': 'Savepoint策略',
   'pages.datastudio.label.jobConfig.savePointStrategy.tip': '指定 Savepoint 策略，默认为禁用',
   'pages.datastudio.label.jobConfig.savePointpath': 'Savepoint路径',
   'pages.datastudio.label.jobConfig.savePointpath.tip1': '从SavepointPath恢复Flink任务',
-  'pages.datastudio.label.jobConfig.savePointpath.tip2': 'hdfs',
+  'pages.datastudio.label.jobConfig.savePointpath.tip2': 'HDFS',
   'pages.datastudio.label.jobInfo.dialect': '方言',
   'pages.datastudio.label.jobInfo.id': '任务ID',
   'pages.datastudio.label.jobInfo.name': '任务名称',
   'pages.datastudio.label.jobInfo.versionId': '版本号',
+  'pages.datastudio.label.jobInfo.firstLevelOwner': '责任人',
+  'pages.datastudio.label.jobInfo.secondLevelOwners': '维护人',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
+  'pages.datastudio.label.result.query.latest.data.truncate': '数据过长无法全部显示',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',
   'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间',
@@ -512,7 +557,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': '请输入AccessKeySecret',
   'rc.ai.action': '接口方法',
   'rc.ai.actionPleaseHolder': '请输入接口方法',
-  'rc.ai.agentId': '代理ID',
+  'rc.ai.agentId': '应用ID（AgentId）',
   'rc.ai.agentIdPleaseHolder': '请输入 AgentId',
   'rc.ai.sendUrl': '企微发送地址',
   'rc.ai.sendUrlPleaseHolder': '请输入发送地址可输入代理地址',
@@ -696,7 +741,7 @@ export default {
   'rc.cc.flinkConfig': 'Flink 配置',
   'rc.cc.flinkConfigPath': 'Flink 配置文件路径',
   'rc.cc.flinkConfigPathHelp':
-    '仅指定到文件夹，dinky会自行读取文件夹下的配置文件，k8s模式下此参数可选填',
+    '仅指定到文件夹，dinky会自行读取文件夹下的配置文件，K8s模式下此参数可选填',
   'rc.cc.flinkConfigPathPlaceholder': '请输入 flink-conf.yaml 路径！值如 /opt/module/flink/conf ',
   'rc.cc.hadoop.defineConfig': 'Hadoop 自定义配置（高优先级）',
   'rc.cc.hadoopConfig': 'Hadoop 配置',
@@ -727,7 +772,7 @@ export default {
   'rc.cc.key': '配置项',
   'rc.cc.libPath': 'Flink Lib 路径',
   'rc.cc.libPathHelp': '指定 lib 的 hdfs 路径（末尾无/），需要包含 Flink 运行时的依赖',
-  'rc.cc.libPathPlaceholder': '请输入 lib 的 hdfs 路径！值如 hdfs',
+  'rc.cc.libPathPlaceholder': '请输入 lib 的 HDFS 路径！值如 hdfs',
   'rc.cc.management': '集群配置管理',
   'rc.cc.modify': '修改集群配置',
   'rc.cc.name': '集群配置名称',
@@ -738,8 +783,10 @@ export default {
   'rc.cc.sqlSubmitJarPath': 'Jar 文件路径',
   'rc.cc.sqlSubmitJarPathHelp':
     '请输入 Jar 文件路径! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelpTips':
+    'Yarn 模式下此参数可以设置为: hdfs:///dinky/dinky-app-1.17-with-dependencies.jar 或者 rs:/dinky/dinky-app-1.17-with-dependencies.jar 如果设置为 rs:/ 协议,则需要将该jar包上传到 Dinky 的资源中心中,然后填写该路径。K8s 模式下仅支持 local:// 协议',
   'rc.cc.start': '启动 Session 集群',
-  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项 (Application 模式必填)',
+  'rc.cc.submitSqlConfig': '提交 FlinkSQL 配置项',
   'rc.cc.tmHeap': 'TaskManager 堆内存',
   'rc.cc.tmHeapHelp': '请输入 TaskManager 堆内存大小! 此参数配置项为',
   'rc.cc.tmMem': 'TaskManager 内存',
@@ -762,10 +809,10 @@ export default {
     '确定停止该 Flink 实例吗? 请注意,停止后将无法恢复!关联的任务将会收到影响,请谨慎操作!',
   'rc.ci.heartbeat': '心跳检测',
   'rc.ci.kill': '停止 Flink 实例',
-  'rc.ci.jma': 'JobManger 地址',
-  'rc.ci.jmha': 'JobManger 高可用地址',
+  'rc.ci.jma': 'JobManager 地址',
+  'rc.ci.jmha': 'JobManager 高可用地址',
   'rc.ci.jmha.tips':
-    '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101',
+    '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081',
   'rc.ci.jmha.validate.port': '不符合规则! 端口号区间[0-65535]',
   'rc.ci.jmha.validate.slash': '不符合规则! 不能包含/',
   'rc.ci.jmhaPlaceholder': '请输入 JobManager HA 地址!',
@@ -773,7 +820,7 @@ export default {
   'rc.ci.modify': '修改集群',
   'rc.ci.name': '实例名称',
   'rc.ci.autoRegisterCannotModify':
-    '自动注册的实例仅能修改 `JobManger高可用地址` 属性,其他无法修改!',
+    '自动注册的实例仅能修改 `JobManager高可用地址` 属性,其他无法修改!',
   'rc.ci.namePlaceholder': '请输入名称!',
   'rc.ci.recycle': '回收 Flink 实例',
   'rc.ci.recycleConfirm': '确定回收所有自动创建且过期的 Flink 实例吗？',
@@ -820,6 +867,7 @@ export default {
   'rc.ds.delete': '删除数据源',
   'rc.ds.deleteConfirm': '确定删除该数据源吗？',
   'rc.ds.detail.tag.console': '控制台',
+  'rc.ds.detail.tag.console.clear.log': '清除日志...',
   'rc.ds.detail.tag.desc': '描述',
   'rc.ds.detail.tag.gensql': '生成 SQL',
   'rc.ds.detail.tag.query': '查询',
@@ -852,7 +900,7 @@ export default {
   'rc.ds.type': '数据源类型',
   'rc.ds.typePlaceholder': '请选择数据源类型! 输入关键词搜索',
   'rc.ds.url': '数据库连接 URL',
-  'rc.ds.urlPlaceholder': '请输入格式正确的 url 连接!',
+  'rc.ds.urlPlaceholder': '请输入格式正确的 URL 连接!',
   'rc.ds.username': '用户名',
   'rc.ds.usernamePlaceholder': '请输入用户名!',
   'rc.ds.warehouse': '数仓',
@@ -926,6 +974,19 @@ export default {
   'rc.resource.upload.fail': '文件 【{fileName}】 上传失败',
   'rc.resource.upload.tip1': '点击或拖拽文件到此区域上传',
   'rc.resource.upload.tip2': '支持单个或批量上传。严禁上传公司数据或其他禁止上传的文件。',
+  'rc.resource.filelist': '文件列表',
+  'rc.resource.sync': '同步目录结构',
+  'rc.resource.sync.confirm':
+    '请注意: 该操作会删除数据库内的所有记录,且会关系到运行中的作业,以及UDF管理中引用的对应资源文件.从而导致作业运行失败。以及在 UDF管理中的 UDF 无法被使用. 请谨慎操作!! 请确认是否继续? ',
+  'rc.resource.copy_to_add_custom_jar': '复制为 ADD CUSTOMJAR 语法',
+  'rc.resource.copy_to_add_jar': '复制为 ADD JAR 语法',
+  'rc.resource.copy_to_add_file': '复制为 ADD FILE 语法',
+  'rc.resource.copy_to_add_rs_path': '复制 RS 协议资源路径',
+  'rc.resource.copy_success':
+    '复制成功，值为：[{fillValue}] 已复制到剪贴板。请粘贴到需要的地方进行使用',
+  'rc.resource.enable': '未启用资源管理功能',
+  'rc.resource.enable.tips': '请前往 [配置中心 -> 全局配置 -> Resource 配置] 中启用资源管理功能!!!',
+
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',
   'rc.template.create': '创建 UDF 模板',
@@ -1031,7 +1092,7 @@ export default {
   'sys.setting.ds': 'DolphinScheduler 配置',
   'sys.setting.ds.tooltip': '海豚调度插件设置，可以让您把dinky任务丝滑推到海豚调度器工作流上',
   'sys.setting.flink': 'Flink 配置',
-  'sys.setting.flink.tooltip': 'Dinky对接 Flink 主要参数',
+  'sys.setting.flink.tooltip': 'Dinky 对接 Flink 主要参数',
   'sys.setting.ldap': 'LDAP 配置',
   'sys.setting.ldap.tooltip': 'LDAP统一认证配置',
   'sys.setting.maven': 'Maven 配置',
@@ -1048,6 +1109,7 @@ export default {
   'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
   'sys.ldap.settings.testLogin': '测试登录',
   'sys.ldap.settings.loadUser': '导入用户',
+  'sys.ldap.settings.keyword': '可输入用户名/昵称进行搜索,支持模糊查询,输入关键词后回车即可',
   'sys.ldap.settings.loadable': '是否可以导入',
   /**
    *
@@ -1164,5 +1226,34 @@ export default {
   'lineage.collapseUpstream': '收起上游(暂未实现)',
   'lineage.showMap': '显示小地图',
   'lineage.hideMap': '隐藏小地图',
-  'lineage.refresh': '刷新血缘'
+  'lineage.refresh': '刷新血缘',
+
+  'sys.classLoaderJars.tips':
+    '下述内容展示了 Dinky 服务内部的系统类加载器加载的 jar 包列表,可以通过此种方式直观的查看服务内部已经加载的所有 Jar 文件,以助于排查 Jar 包冲突等问题',
+
+  'dashboard.create': '创建仪表盘',
+  'dashboard.add': '添加 Chart',
+  'dashboard.update': '修改 Chart',
+  'dashboard.chart.name': 'Chart 名称',
+  'dashboard.chart.select': '请选择 Chart',
+  'dashboard.name': '仪表盘名称',
+  'dashboard.name.maxLength': '最大长度为 32 个字符',
+  'dashboard.namePlaceholder': '请输入仪表盘名称',
+  'dashboard.remark': '描述',
+  'dashboard.remarkPlaceholder': '请输入描述',
+  'dashboard.chartTheme': 'Chart 主题',
+  'dashboard.selectChartTheme': '请选择 Chart 主题',
+  'dashboard.delete': '删除仪表盘',
+  'dashboard.deleteConfirm': '您确定要删除此仪表盘吗？',
+  'dashboard.theme.chalk': '亮色',
+  'dashboard.theme.dark': '暗黑',
+  'dashboard.theme.essos': '魔王色',
+  'dashboard.theme.infographic': '信息图',
+  'dashboard.theme.macarons': '马卡龙',
+  'dashboard.theme.purple-passion': '紫罗兰',
+  'dashboard.theme.roma': '罗马',
+  'dashboard.theme.shine': '明亮',
+  'dashboard.theme.vintage': '复古',
+  'dashboard.theme.westeros': '西部',
+  'dashboard.theme.wonderland': '奇幻'
 };

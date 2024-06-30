@@ -63,7 +63,7 @@ const SavePoints = (props: any) => {
         actionRef={actionRef}
         rowKey='id'
         request={(params, sorter, filter) =>
-          postAll(API_CONSTANTS.GET_SAVEPOINT_LIST, { params, sorter, filter })
+          postAll(API_CONSTANTS.GET_SAVEPOINT_LIST, { ...params, sorter, filter })
         }
         params={{ taskId: current.id }}
         columns={columns as ProColumns<SavePoint>[]}

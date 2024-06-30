@@ -56,6 +56,7 @@ export default {
    * */
 
   'catalog.name': 'Job Name',
+  'catalog.useTemplate': 'Use Template',
   'catalog.name.placeholder': 'Please enter the job name',
   'catalog.name.validate.error': 'Job name cannot contain _ characters, K8s naming specification',
   'catalog.name.tip':
@@ -70,11 +71,32 @@ export default {
   'catalog.udf.className.placeholder': 'Please enter the class or method name',
   'catalog.udf.templateId': 'UDF Template',
   'catalog.udf.templateId.placeholder': 'Please select UDF template',
+  'catalog.firstLevelOwner': 'Owner',
+  'catalog.firstLevelOwner.tip1': 'Please select the person responsible for the task',
+  'catalog.firstLevelOwner.tip2':
+    'Select the person responsible for the task and have direct responsibility for the task',
+  'catalog.secondLevelOwners': 'maintainer',
+  'catalog.secondLevelOwners.tip1': 'Please select the task maintainer',
+  'catalog.secondLevelOwners.tip2':
+    'Choose a task maintainer who is indirectly responsible for the task',
   /**
    *
    * datastudio
    *
    * */
+
+  'datastudio.middle.terminal.mode': 'Connect Mode',
+  'datastudio.middle.terminal.websocket': 'dinky backend',
+  'datastudio.middle.terminal.websocket.tip':
+    'In general, no modifications are required. If you have custom Nginx configurations, please edit this address.',
+  'datastudio.middle.terminal.cluster': 'Flink Cluster',
+  'datastudio.middle.terminal.cluster.tip':
+    'It is necessary to pre-register the corresponding cluster in the registry. Only manually registered clusters will be displayed.',
+  'datastudio.middle.terminal.fontSize': 'Font Size',
+  'datastudio.middle.terminal.backspaceAsCtrlH': 'Backspace As CtrlH',
+  'datastudio.middle.terminal.backspaceAsCtrlH.tip':
+    'If issues with display arise following a rollback deletion, modify this ',
+  'datastudio.middle.terminal.connect': 'Connect',
 
   'datastudio.middle.qg': 'Quick Guide',
   'datastudio.middle.qg.alertGroup': 'Register Alert Group',
@@ -86,9 +108,16 @@ export default {
   'datastudio.middle.qg.fragment': 'Global Variables',
   'datastudio.middle.qg.gitprojects': 'Git Projects',
   'datastudio.middle.qg.resource': 'Resource',
+  'datastudio.middle.qg.alertRule': 'Alert Rule',
+  'datastudio.middle.qg.alertTemplate': 'Register Alert Template',
+  'datastudio.middle.qg.accountCenter': 'Account Center',
+  'datastudio.middle.qg.globalsetting': 'Global Settings',
+  'datastudio.middle.qg.rootLog': 'View Root Log',
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.header.pushdolphin.title': 'Push task [ {name} ] to DolphinScheduler',
   'datastudio.header.pushdolphin.taskId': 'Dinky task encoding',
+  'datastudio.header.pushdolphin.taskGroup': 'Task Group',
+  'datastudio.header.pushdolphin.taskGroupPriority': 'Task Group Priority',
   'datastudio.header.pushdolphin.taskName': 'Task name: {name}',
   'datastudio.header.pushdolphin.taskNameExt':
     'Task type: {type} Process definition: {processDefinitionName}',
@@ -226,7 +255,8 @@ export default {
   'devops.jobinfo.remap.cluster.title.help':
     '(Note: This operation will modify the configuration of the cluster instance simultaneously.)',
   'devops.jobinfo.remap.job.title': 'Job mapping information',
-
+  'devops.joblist.clear.filter': 'Cancel Selected',
+  'devops.joblist.clear.filtertips': 'Clear selected tasks, but not clear other filter conditions',
   'devops.joblist.detail': 'Job Detail',
   'devops.joblist.history': 'History',
   'devops.joblist.joblist': 'Job List',
@@ -292,6 +322,8 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': 'Username',
   'login.username.required': 'Please input your username!',
+  'login.token.error':
+    'Unable to get token information/session has expired, will jump to the login page, please re-login...',
   /**
    *
    * menu
@@ -318,7 +350,7 @@ export default {
   'menu.tips.2': 'Add Root Menu',
   'menu.tips.3': 'Add/Delete SubMenu',
   'menu.type': 'Menu Type',
-  'menu.type.button': 'Button',
+  'menu.type.button': 'Button/Area Block',
   'menu.type.dir': 'Directory',
   'menu.type.menu': 'Menu',
   'menu.typePlaceholder': 'Please select the menu type',
@@ -359,12 +391,12 @@ export default {
    * */
 
   'pages.datastudio.editor.check': 'Check',
-  'pages.datastudio.editor.debug': 'Preview',
+  'pages.datastudio.editor.debug': 'Search',
   'pages.datastudio.editor.exec': 'Execute',
   'pages.datastudio.editor.exec.error': 'Task [{jobName}] execution failed',
   'pages.datastudio.editor.debug.error': 'Task [{jobName}] debug failed',
-  'pages.datastudio.editor.exec.success': 'Execution succeeded',
-  'pages.datastudio.editor.debug.success': 'Debug succeeded',
+  'pages.datastudio.editor.exec.success': 'Submit succeeded',
+  'pages.datastudio.editor.debug.success': 'Search succeeded',
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
   'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
@@ -372,11 +404,15 @@ export default {
   'pages.datastudio.editor.stop': 'Stop',
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
+  'pages.datastudio.editor.stop.force.jobConfirm':
+    'The current job [{job name}] fails to connect to the cluster to obtain information and cannot be stopped. Change the status forced?',
   'pages.datastudio.editor.submitting': 'The new task [{jobName}] is executing',
   'pages.datastudio.editor.checking': 'The task [{jobName}] is checking',
   'pages.datastudio.editor.debugging': 'The new task [{jobName}] is debugging',
   'pages.datastudio.editor.onlyread':
     'Task has been published, modification is prohibited, please go offline first',
+  'pages.datastudio.editor.onlyread.lock':
+    'No permission for task operation. Please contact the task owner',
   'pages.datastudio.editor.notsave': 'Current changes are not saved! ',
   'pages.datastudio.editor.notsave.note':
     'Continue will discard the changes, are you sure to continue?',
@@ -426,6 +462,14 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',
   'pages.datastudio.label.jobConfig.addConfig.value': 'value',
+  'pages.datastudio.label.udf': 'Udf Item',
+  'pages.datastudio.label.udf.tip':
+    'Inject UDF item, Automatically add statement `create temporary function [functionName] as [className]` at the beginning of the SQL statement',
+  'pages.datastudio.label.udf.duplicate.tip':
+    'The class [className] selected this time already exists and duplicate injection is not allowed. Please reselect or cancel injection (delete and change line).',
+  'pages.datastudio.label.udf.injectUdf': 'Inject UDF item',
+  'pages.datastudio.label.udf.name': 'function name',
+  'pages.datastudio.label.udf.className': 'class name',
   'pages.datastudio.label.jobConfig.alertGroup': 'Alarm Group',
   'pages.datastudio.label.jobConfig.alertGroup.tip': 'Select alert group',
   'pages.datastudio.label.jobConfig.batchmode': 'Batch Mode',
@@ -436,21 +480,24 @@ export default {
   'pages.datastudio.label.jobConfig.clusterConfig.tip1':
     'Select Flink cluster Config for remote submission tasks in [{type}] mode',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2':
-    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available.',
+    'If there is no data in the drop-down box, please configure/create a new cluster instance first, or check whether the cluster configuration/cluster instance is healthy and available/Is it in an enabled state',
   'pages.datastudio.label.jobConfig.execmode.tip':
     'Specify the execution mode of the Flink task, the default is Local',
+  'pages.datastudio.label.jobConfig.watermark':
+    'Current task has published,Config cannot modified,If you need to modify, please offline first',
+  'pages.datastudio.label.jobConfig.lock':
+    'The current task has no permission and cannot be modified. If you need to modify the task, contact the task owner to obtain the permission',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL environment',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     'Select the FlinkSQL execution environment of the current task, and the environment statement will be executed in advance. The default is none. ',
   'pages.datastudio.label.jobConfig.fragment': 'Global variables',
   'pages.datastudio.label.jobConfig.fragment.tip':
     '[Enhanced Features] Enable FlinkSql global variables, use "',
-  'pages.datastudio.label.jobConfig.insert': 'Insert StatementSet',
-  'pages.datastudio.label.jobConfig.insert.tip':
-    '[Enhanced Features] Enable the statement set mechanism, multiple Insert statements will be combined into one JobGraph before submission, and the Select statement is invalid',
   'pages.datastudio.label.jobConfig.other': 'Other Config',
   'pages.datastudio.label.jobConfig.other.tip':
     'Other Config items will be applied to the execution environment, such as pipeline.name',
+  'pages.datastudio.label.jobConfig.udf': 'UDF injected',
+  'pages.datastudio.label.jobConfig.udf.tip': 'Automatically inject UDF',
   'pages.datastudio.label.jobConfig.parallelism': 'Parallelism',
   'pages.datastudio.label.jobConfig.parallelism.tip':
     'Set the parallelism of Flink tasks, the minimum value is 1',
@@ -464,7 +511,11 @@ export default {
   'pages.datastudio.label.jobInfo.id': 'Job ID',
   'pages.datastudio.label.jobInfo.name': 'Job name',
   'pages.datastudio.label.jobInfo.versionId': 'Version number',
+  'pages.datastudio.label.jobInfo.firstLevelOwner': 'Owner',
+  'pages.datastudio.label.jobInfo.secondLevelOwners': 'Maintainer',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
+  'pages.datastudio.label.result.query.latest.data.truncate':
+    'The data is too long to be displayed in full',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',
   'pages.datastudio.label.version.leftTitle': 'Version number',
@@ -537,7 +588,7 @@ export default {
   'rc.ai.accessKeySecretPleaseHolder': 'Please enter AccessKeySecret',
   'rc.ai.action': 'Interface method',
   'rc.ai.actionPleaseHolder': 'Please enter the interface method',
-  'rc.ai.agentId': 'AgentId',
+  'rc.ai.agentId': 'App ID(AgentId)',
   'rc.ai.agentIdPleaseHolder': 'Please enter AgentId',
   'rc.ai.sendUrl': 'QiWei Send Addr',
   'rc.ai.sendUrlPleaseHolder': 'Please enter the sending address or the proxy address',
@@ -770,8 +821,10 @@ export default {
   'rc.cc.sqlSubmitJarPath': 'Jar File Path',
   'rc.cc.sqlSubmitJarPathHelp':
     'Please enter the Jar file path! eg: hdfs:///dinky/dinky-app-1.16-with-dependencies.jar',
+  'rc.cc.sqlSubmitJarPathHelpTips':
+    'In Yarn mode, this parameter can be set to: hdfs:///dinky/dinky-app-1.17-with-dependencies.jar Alternatively, if rs:/dinky/inky app 1.17 with dependencies. jar is set to the rs:/ protocol, the jar package needs to be uploaded to Dinky`s resource center and the path filled in. In K8s mode, only the local://protocol is supported',
   'rc.cc.start': 'Start Session Cluster',
-  'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items (required in Application mode)',
+  'rc.cc.submitSqlConfig': 'Submit FlinkSQL Config items',
   'rc.cc.tmHeap': 'TaskManager Heap Memory',
   'rc.cc.tmHeapHelp':
     'Please enter the TaskManager heap memory size! This parameter configuration item is',
@@ -795,10 +848,10 @@ export default {
   'rc.ci.killConfirm':
     'Are you sure to stop this Flink Cluster instance?  Please note that after stopping, it will not be recovered! The associated task will affect, please be careful!',
   'rc.ci.kill': 'Stop Flink Cluster Instance',
-  'rc.ci.jma': 'JobManger Address',
-  'rc.ci.jmha': 'JobManger HA Address',
+  'rc.ci.jma': 'JobManager Address',
+  'rc.ci.jmha': 'JobManager HA Address',
   'rc.ci.jmha.tips':
-    'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example',
+    'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081',
   'rc.ci.jmha.validate.port': 'Does not meet the rules! Port number range [0-65535]',
   'rc.ci.jmha.validate.slash': 'Does not comply with the rules! Cannot contain /',
   'rc.ci.jmhaPlaceholder': 'Please enter the JobManager HA address!',
@@ -806,7 +859,7 @@ export default {
   'rc.ci.modify': 'Modify cluster Instance',
   'rc.ci.name': 'Name',
   'rc.ci.autoRegisterCannotModify':
-    'Automatically registered instances can only modify the `JobManger high-availability address` attribute, and others cannot be modified!',
+    'Automatically registered instances can only modify the `JobManager high-availability address` attribute, and others cannot be modified!',
   'rc.ci.namePlaceholder': 'Please enter a name!',
   'rc.ci.recycle': 'Recycle Flink Cluster Instances',
   'rc.ci.recycleConfirm':
@@ -849,6 +902,7 @@ export default {
   'rc.ds.search': 'Search Name/Note',
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
+  'rc.ds.detail.tag.console.clear.log': 'Clear Log...',
   'rc.ds.create': 'Create DataSource',
   'rc.ds.decimalDigits': 'Decimal Range',
   'rc.ds.default': 'Default Value',
@@ -967,6 +1021,20 @@ export default {
   'rc.resource.upload.tip1': 'Click or drag file to this area to upload',
   'rc.resource.upload.tip2':
     'Support for a single or bulk upload. Strictly prohibited from uploading company data or\n          other banned files.',
+  'rc.resource.filelist': 'File list',
+  'rc.resource.sync': 'Sync remote files',
+  'rc.resource.sync.confirm':
+    'Please note that this operation will delete all records in the database and will affect running jobs as well as corresponding resource files referenced in UDF management, resulting in job failure. And UDF cannot be used in UDF management Please operate with caution!! Please confirm if you want to continue?',
+  'rc.resource.copy_to_add_custom_jar': 'Copy as ADD CUSTOMJAR syntax',
+  'rc.resource.copy_to_add_jar': 'Copy as ADD JAR syntax',
+  'rc.resource.copy_to_add_file': 'Copy as ADD FILE syntax',
+  'rc.resource.copy_to_add_rs_path': 'Copy RS protocol resource path',
+  'rc.resource.copy_success':
+    'Copy successfully, The value is: [{fillValue}] has been copied to the clipboard. Please paste it to the desired location for use',
+  'rc.resource.enable': 'Resource management function is not enabled',
+  'rc.resource.enable.tips':
+    'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
+
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',
   'rc.template.create': 'Create UDF Template',
@@ -1090,6 +1158,8 @@ export default {
   'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
   'sys.ldap.settings.testLogin': 'Test Login',
   'sys.ldap.settings.loadUser': 'Load User',
+  'sys.ldap.settings.keyword':
+    'You can enter your username/nickname for search, support fuzzy queries, enter keywords and press enter to complete the search',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
   /**
    *
@@ -1208,5 +1278,34 @@ export default {
   'lineage.collapseUpstream': 'Collapse Upstream(UnSupported)',
   'lineage.showMap': 'Show Map',
   'lineage.hideMap': 'Hide Map',
-  'lineage.refresh': 'Refresh'
+  'lineage.refresh': 'Refresh',
+
+  'sys.classLoaderJars.tips':
+    'The following content shows the list of jar packages loaded by the system class loader inside the Dinky service. In this way, you can visually view all Jar files that have been loaded inside the service to help troubleshoot Jar package conflicts and other issues.',
+
+  'dashboard.create': 'Create Dashboard',
+  'dashboard.add': 'Add Chart',
+  'dashboard.chart.name': 'Chart Name',
+  'dashboard.chart.select': 'Please select a chart',
+  'dashboard.update': 'Edit Chart',
+  'dashboard.name': 'Dashboard Name',
+  'dashboard.name.maxLength': 'The maximum length is 32 characters',
+  'dashboard.namePlaceholder': 'Please enter the dashboard name',
+  'dashboard.remark': 'Description',
+  'dashboard.remarkPlaceholder': 'Please enter the description',
+  'dashboard.chartTheme': 'Chart Theme',
+  'dashboard.selectChartTheme': 'Please select a Chart theme',
+  'dashboard.delete': 'Delete Dashboard',
+  'dashboard.deleteConfirm': 'Are you sure to delete this Dashboard？',
+  'dashboard.theme.chalk': 'Chalk',
+  'dashboard.theme.dark': 'Dark',
+  'dashboard.theme.essos': 'Essos',
+  'dashboard.theme.infographic': 'Infographic',
+  'dashboard.theme.macarons': 'Macarons',
+  'dashboard.theme.purple-passion': 'Purple-Passion',
+  'dashboard.theme.roma': 'Roma',
+  'dashboard.theme.shine': 'Purple',
+  'dashboard.theme.vintage': 'Vintage',
+  'dashboard.theme.westeros': 'Westeros',
+  'dashboard.theme.wonderland': 'Wonderland'
 };

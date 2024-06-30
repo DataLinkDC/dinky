@@ -51,8 +51,9 @@ public class PostgreSqlQuery extends AbstractDBQuery {
     @Override
     public String columnsSql(String schemaName, String tableName) {
 
-        return "SELECT col.column_name                              as name\n"
-                + "     , col.character_maximum_length                 as length\n"
+        return "SELECT col.column_name                                 as name\n"
+                + "     , COALESCE(col.character_maximum_length,datetime_precision)"
+                + "                                                    as length\n"
                 + "     , col.is_nullable                              as is_nullable\n"
                 + "     , col.numeric_precision                        as numeric_precision\n"
                 + "     , col.numeric_scale                            as numeric_scale\n"
@@ -60,9 +61,9 @@ public class PostgreSqlQuery extends AbstractDBQuery {
                 + "     , col.udt_name                                 as type\n"
                 + "     , (CASE  WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum"
                 + " = ANY(PC.conkey) AND PC.contype = 'p' and PC.conrelid = c.oid) > 0 \n"
-                + "THEN 'PRI' ELSE '' END)                            AS key\n"
-                + "     , col_description(c.oid, col.ordinal_position) AS comment\n"
-                + "     , col.column_default                           AS column_default\n"
+                + "THEN 'PRI' ELSE '' END)                             as key\n"
+                + "     , col_description(c.oid, col.ordinal_position) as comment\n"
+                + "     , col.column_default                           as column_default\n"
                 + "FROM information_schema.columns AS col\n"
                 + "         LEFT JOIN pg_namespace ns ON ns.nspname = col.table_schema\n"
                 + "         LEFT JOIN pg_class c ON col.table_name = c.relname AND"

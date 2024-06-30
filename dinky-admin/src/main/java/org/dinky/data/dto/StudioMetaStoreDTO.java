@@ -19,7 +19,7 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.job.JobConfig;
 
 import io.swagger.annotations.ApiModel;
@@ -70,7 +70,7 @@ public class StudioMetaStoreDTO extends AbstractStatementDTO {
                 .useResult(true)
                 .useChangeLog(false)
                 .useAutoCancel(false)
-                .fragment(getFragment())
+                .fragment(isFragment())
                 .statementSet(false)
                 .batchModel(false)
                 .maxRowNum(0)

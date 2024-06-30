@@ -20,6 +20,7 @@
 import { StatusTagProps } from '@/components/JobTags/data';
 import { BackPressureStatus, JOB_STATUS } from '@/pages/DevOps/constants';
 import {
+  AlertTwoTone,
   CheckCircleOutlined,
   ClockCircleOutlined,
   InfoCircleOutlined,
@@ -52,7 +53,12 @@ const StatusTag = (props: StatusTagProps) => {
           color: 'blue',
           text: 'FINISHED'
         };
-
+      case JOB_STATUS.FAILED:
+        return {
+          icon: <AlertTwoTone twoToneColor={'red'} />,
+          color: 'red',
+          text: 'FAILED'
+        };
       case JOB_STATUS.CANCELED:
         return {
           icon: <MinusCircleOutlined />,
@@ -103,7 +109,7 @@ const StatusTag = (props: StatusTagProps) => {
         };
       default:
         return {
-          icon: <SyncOutlined spin />,
+          icon: <QuestionCircleOutlined />,
           color: 'default',
           text: 'UNKNOWN'
         };

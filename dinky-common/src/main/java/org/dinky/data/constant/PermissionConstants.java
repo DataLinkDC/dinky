@@ -56,6 +56,15 @@ public class PermissionConstants {
     public static final String REGISTRATION_ALERT_TEMPLATE_DELETE = "registration:alert:template:delete";
 
     /**
+     * alert 策略
+     */
+    public static final String REGISTRATION_ALERT_RULE_ADD = "registration:alert:rule:add";
+
+    public static final String REGISTRATION_ALERT_RULE_EDIT = "registration:alert:rule:edit";
+
+    public static final String REGISTRATION_ALERT_RULE_DELETE = "registration:alert:rule:delete";
+
+    /**
      * catalog
      * todo: add catalog permission
      */
@@ -90,16 +99,19 @@ public class PermissionConstants {
     /**
      * data source
      */
-    public static final String REGISTRATION_DATA_SOURCE_ADD = "registration:datasource:add";
+    public static final String REGISTRATION_DATA_SOURCE_LIST = "registration:datasource:list";
 
-    public static final String REGISTRATION_DATA_SOURCE_EDIT = "registration:datasource:edit";
-    public static final String REGISTRATION_DATA_SOURCE_DELETE = "registration:datasource:delete";
-    // copy
-    public static final String REGISTRATION_DATA_SOURCE_COPY = "registration:datasource:copy";
-    // checkHeartBeat
-    public static final String REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT = "registration:datasource:heartbeat";
-    // execSql
-    public static final String REGISTRATION_DATA_SOURCE_EXEC_SQL = "registration:datasource:execSql";
+    public static final String REGISTRATION_DATA_SOURCE_ADD = "registration:datasource:list:add";
+    public static final String REGISTRATION_DATA_SOURCE_EDIT = "registration:datasource:list:edit";
+    public static final String REGISTRATION_DATA_SOURCE_DELETE = "registration:datasource:list:delete";
+    public static final String REGISTRATION_DATA_SOURCE_COPY = "registration:datasource:list:copy";
+    public static final String REGISTRATION_DATA_SOURCE_CHECK_HEARTBEAT = "registration:datasource:list:heartbeat";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_TREE = "registration:datasource:detail:tree";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_DESC = "registration:datasource:detail:desc";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_QUERY = "registration:datasource:detail:query";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_GENSQL = "registration:datasource:detail:gensql";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_CONSOLE = "registration:datasource:detail:console";
+    public static final String REGISTRATION_DATA_SOURCE_DETAIL_REFRESH = "registration:datasource:detail:refresh";
 
     /**
      * document
@@ -230,11 +242,14 @@ public class PermissionConstants {
     public static final String SYSTEM_SETTING_INFO_ROOT_LOG = "settings:systemlog:rootlog";
 
     /**
-     * alert 策略
+     * dashboard
      */
-    public static final String SYSTEM_ALERT_RULE_ADD = "settings:alertrule:add";
+    public static final String DASHBOARD_LIST_ADD = "dashboard:list:add";
 
-    public static final String SYSTEM_ALERT_RULE_EDIT = "settings:alertrule:edit";
-
-    public static final String SYSTEM_ALERT_RULE_DELETE = "settings:alertrule:delete";
+    public static final String DASHBOARD_LIST_EDIT = "dashboard:list:edit";
+    public static final String DASHBOARD_LIST_DELETE = "dashboard:list:delete";
+    public static final String DASHBOARD_LIST_VIEW = "dashboard:list:view";
+    public static final String DASHBOARD_CHART_DELETE = "dashboard:chart:delete";
+    public static final String DASHBOARD_CHART_EDIT = "dashboard:chart:edit";
+    public static final String DASHBOARD_CHART_ADD = "dashboard:chart:add";
 }

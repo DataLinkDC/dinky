@@ -107,8 +107,6 @@ public class FlinkConfig {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static final String DEFAULT_SAVEPOINT_PREFIX = "hdfs:///flink/savepoints/";
-
     public FlinkConfig() {}
 
     public FlinkConfig(Map<String, String> configuration) {

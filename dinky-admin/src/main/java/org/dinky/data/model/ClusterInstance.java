@@ -21,8 +21,6 @@ package org.dinky.data.model;
 
 import org.dinky.mybatis.model.SuperEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
@@ -46,7 +44,6 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
     @ApiModelProperty(value = "name", required = true, dataType = "String", example = "test")
     private Integer tenantId;
 
-    @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(
             value = "alias",
             required = true,
@@ -99,7 +96,7 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
             dataType = "Boolean",
             example = "test",
             notes = "is auto registers, if this record from projob/application mode , it will be true")
-    private Boolean autoRegisters;
+    private boolean autoRegisters;
 
     @ApiModelProperty(
             value = "clusterConfigurationId",
@@ -111,18 +108,4 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
 
     @ApiModelProperty(value = "taskId", required = true, dataType = "Integer", example = "test", notes = "task id")
     private Integer taskId;
-
-    public static ClusterInstance autoRegistersCluster(
-            String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
-        ClusterInstance clusterInstance = new ClusterInstance();
-        clusterInstance.setName(name);
-        clusterInstance.setAlias(alias);
-        clusterInstance.setHosts(hosts);
-        clusterInstance.setType(type);
-        clusterInstance.setClusterConfigurationId(clusterConfigurationId);
-        clusterInstance.setTaskId(taskId);
-        clusterInstance.setAutoRegisters(true);
-        clusterInstance.setEnabled(true);
-        return clusterInstance;
-    }
 }

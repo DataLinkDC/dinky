@@ -34,10 +34,8 @@ import org.dinky.utils.URLUtils;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -70,20 +68,12 @@ public class JobUDFBuilder extends JobBuilder {
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
         List<File> jarFiles =
-                new ArrayList<>(jobManager.getUdfPathContextHolder().getUdfFile());
+                new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
 
-        Set<File> otherPluginsFiles = jobManager.getUdfPathContextHolder().getOtherPluginsFiles();
-        jarFiles.addAll(otherPluginsFiles);
-
-        List<File> udfJars = Arrays.stream(UDFUtil.initJavaUDF(udfList, runMode, taskId))
-                .map(File::new)
-                .collect(Collectors.toList());
-        jarFiles.addAll(udfJars);
-
+        String[] userCustomUdfJarPath = UDFUtil.initJavaUDF(udfList, taskId);
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
                 .map(File::getAbsolutePath)
                 .toArray(String[]::new);
-
         if (GATEWAY_TYPE_MAP.get(SESSION).contains(runMode)) {
             config.setJarFiles(jarPaths);
         }
@@ -92,12 +82,22 @@ public class JobUDFBuilder extends JobBuilder {
         String[] pyPaths = UDFUtil.initPythonUDF(
                 udfList, runMode, config.getTaskId(), executor.getTableConfig().getConfiguration());
 
+        executor.initUDF(userCustomUdfJarPath);
         executor.initUDF(jarPaths);
 
         if (ArrayUtil.isNotEmpty(pyPaths)) {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {
+                    jarFiles.add(new File(pyPath));
                     jobManager.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
+                }
+            }
+        }
+        if (ArrayUtil.isNotEmpty(userCustomUdfJarPath)) {
+            for (String jarPath : userCustomUdfJarPath) {
+                if (StrUtil.isNotBlank(jarPath)) {
+                    jarFiles.add(new File(jarPath));
+                    jobManager.getUdfPathContextHolder().addUdfPath(new File(jarPath));
                 }
             }
         }
@@ -117,7 +117,7 @@ public class JobUDFBuilder extends JobBuilder {
             UDFUtil.addConfigurationClsAndJars(
                     jobManager.getExecutor().getCustomTableEnvironment(),
                     jarList,
-                    CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
+                    CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
         } catch (Exception e) {
             throw new RuntimeException("add configuration failed: ", e);
         }

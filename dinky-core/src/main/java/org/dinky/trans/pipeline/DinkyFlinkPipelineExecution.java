@@ -32,12 +32,10 @@ public class DinkyFlinkPipelineExecution implements PipelineExecution {
 
     private final StreamExecutionEnvironment env;
     private final String jobName;
-    private final boolean isBlocking;
 
-    public DinkyFlinkPipelineExecution(StreamExecutionEnvironment env, String jobName, boolean isBlocking) {
+    public DinkyFlinkPipelineExecution(StreamExecutionEnvironment env, String jobName) {
         this.env = env;
         this.jobName = jobName;
-        this.isBlocking = isBlocking;
     }
 
     public StreamExecutionEnvironment getEnv() {
@@ -48,16 +46,11 @@ public class DinkyFlinkPipelineExecution implements PipelineExecution {
         return jobName;
     }
 
-    public boolean isBlocking() {
-        return isBlocking;
-    }
-
     @Override
     public ExecutionInfo execute() throws Exception {
+
         JobClient jobClient = env.executeAsync(jobName);
-        if (isBlocking) {
-            jobClient.getJobExecutionResult().get();
-        }
+        jobClient.getJobExecutionResult().get();
         return new ExecutionInfo(jobClient.getJobID().toString(), jobName);
     }
 }

@@ -17,7 +17,7 @@
 name: Document request
 description: Modify the document
 title: "[Document][doc] Document title"
-labels: [ "documentation", "Waiting for reply" ]
+labels: [ "Doc", "Waiting for reply" ]
 body:
   - type: markdown
     attributes:

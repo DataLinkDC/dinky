@@ -1,0 +1,25 @@
+name: PR Auto Assign Reviewer
+
+on:
+  pull_request_target:
+    types: [ opened ]
+
+jobs:
+  add-reviewer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add assignees
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'add-assignees'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          assignees: ${{ github.event.pull_request.user.login }}
+
+      - name: Add reviewers
+        uses: actions-cool/pr-welcome@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pr-emoji: '+1, rocket'
+          reviewers: 'zackyoungh,gaoyan1998,Zzm0809,aiwenmo'
+          review-creator: false

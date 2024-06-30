@@ -26,6 +26,7 @@ import static org.dinky.utils.SplitUtil.isSplit;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.TableType;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
@@ -207,6 +208,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (Exception e) {
             log.error("ListSchemas failed", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -252,6 +254,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                 String tableName = results.getString(dbQuery.tableName());
                 if (Asserts.isNotNullString(tableName)) {
                     Table tableInfo = new Table();
+                    tableInfo.setDriverType(getType());
                     tableInfo.setName(tableName);
                     if (columnList.contains(dbQuery.tableComment())) {
                         tableInfo.setComment(results.getString(dbQuery.tableComment()));
@@ -282,7 +285,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                 }
             }
         } catch (SQLException e) {
-            log.error("ListTables Failed", e);
+            log.error("ListTables error:", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -377,6 +381,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (SQLException e) {
             log.error("ListColumns error", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -455,6 +460,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (Exception e) {
             log.error("GetCreateTableSql Failed", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -600,8 +606,9 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         } catch (Exception e) {
             result.error(LogUtil.getError(e));
             log.error("Query failed", e);
+        } finally {
+            close(preparedStatement, results);
         }
-        close(preparedStatement, results);
         result.setRowData(datas);
         return result;
     }
@@ -766,6 +773,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             }
         } catch (SQLException e) {
             log.error("GetSplitSchemaList failed", e);
+            throw new BusException(e.getMessage());
         } finally {
             close(preparedStatement, results);
         }
@@ -799,6 +807,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     .stream()
                     .map(x -> {
                         Table tableInfo = new Table();
+                        tableInfo.setDriverType(getType());
                         tableInfo.setName(getReValue(x.get(dbQuery.tableName()), splitConfig));
                         tableInfo.setComment(x.get(dbQuery.tableComment()));
                         tableInfo.setSchema(getReValue(x.get(dbQuery.schemaName()), splitConfig));

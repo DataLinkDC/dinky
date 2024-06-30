@@ -20,7 +20,9 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.constant.CustomerConfigureOptions;
+import org.dinky.data.enums.GatewayType;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
 
@@ -66,6 +68,11 @@ public class YarnPerJobGateway extends YarnGateway {
 
         YarnResult result = YarnResult.build(getType());
         try (YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor()) {
+            ClusterDescriptorAdapterImpl clusterDescriptorAdapter =
+                    new ClusterDescriptorAdapterImpl(yarnClusterDescriptor);
+            clusterDescriptorAdapter.addShipFiles(Arrays.asList(preparSqlFile()));
+            addConfigParas(
+                    CustomerConfigureOptions.EXEC_SQL_FILE, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE));
             ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployJobCluster(
                     clusterSpecificationBuilder.createClusterSpecification(), jobGraph, true);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();

@@ -20,12 +20,13 @@
 package org.dinky.job.builder;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
 import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
@@ -104,14 +105,14 @@ public class JobTransBuilder extends JobBuilder {
     }
 
     private void processWithGateway(List<String> inserts) throws Exception {
-        jobManager.setCurrentSql(String.join(sqlSeparator, inserts));
+        jobManager.setCurrentSql(String.join(FlinkSQLConstant.SEPARATOR, inserts));
         GatewayResult gatewayResult = submitByGateway(inserts);
         setJobResultFromGatewayResult(gatewayResult);
     }
 
     private void processWithoutGateway(List<String> inserts) throws Exception {
         if (!inserts.isEmpty()) {
-            jobManager.setCurrentSql(String.join(sqlSeparator, inserts));
+            jobManager.setCurrentSql(String.join(FlinkSQLConstant.SEPARATOR, inserts));
             TableResult tableResult = executor.executeStatementSet(inserts);
             updateJobWithTableResult(tableResult);
         }
@@ -171,7 +172,7 @@ public class JobTransBuilder extends JobBuilder {
                             config.isUseChangeLog(),
                             config.isUseAutoCancel(),
                             executor.getTimeZone())
-                    .getResult(tableResult);
+                    .getResultWithPersistence(tableResult, jobManager.getHandler());
             job.setResult(result);
         }
     }
@@ -183,9 +184,9 @@ public class JobTransBuilder extends JobBuilder {
 
         GatewayResult gatewayResult = null;
 
-        // Use gateway need to build gateway config, include flink configeration.
-        config.addGatewayConfig(executor.getSetConfig());
-
+        // Use gateway need to build gateway config, include flink configuration.
+        config.addGatewayConfig(executor.getCustomTableEnvironment().getConfig().getConfiguration());
+        config.getGatewayConfig().setSql(jobParam.getParsedSql());
         if (runMode.isApplicationMode()) {
             // Application mode need to submit dinky-app.jar that in the hdfs or image.
             gatewayResult = Gateway.build(config.getGatewayConfig())

@@ -22,6 +22,7 @@ package org.dinky.metadata.driver;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.StarRocksTypeConvert;
+import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.StarRocksQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -52,7 +53,7 @@ public class StarRocksDriver extends AbstractJdbcDriver {
 
     @Override
     public String getType() {
-        return "StarRocks";
+        return DriverType.STARROCKS.getValue();
     }
 
     @Override

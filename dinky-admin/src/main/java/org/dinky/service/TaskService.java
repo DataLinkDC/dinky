@@ -35,6 +35,7 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -116,7 +117,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param task The {@link TaskDTO} object representing the task to cancel.
      * @return true if the task job is successfully cancelled, false otherwise.
      */
-    boolean cancelTaskJob(TaskDTO task, boolean withSavePoint);
+    boolean cancelTaskJob(TaskDTO task, boolean withSavePoint, boolean forceCancel);
 
     /**
      * Get the stream graph of the given task job.
@@ -190,11 +191,10 @@ public interface TaskService extends ISuperService<Task> {
     Task initDefaultFlinkSQLEnv(Integer tenantId);
 
     /**
-     * Get a list of all user-defined functions (UDFs) in the system.
-     *
-     * @return A list of {@link Task} objects representing the UDFs.
+     * Get a list of all release user-defined functions (UDFs) in the system.
+     * @return A list of {@link Task} objects representing the release UDFs.
      */
-    List<Task> getAllUDF();
+    List<Task> getReleaseUDF();
 
     /**
      * Get the API address of the given task.
@@ -281,4 +281,19 @@ public interface TaskService extends ISuperService<Task> {
      * @return A {@link LineageResult} object representing the found task lineage.
      */
     LineageResult getTaskLineage(Integer id);
+
+    /**
+     * Build the job submit config with the given task
+     * @param task
+     * @return
+     */
+    JobConfig buildJobSubmitConfig(TaskDTO task);
+
+    /**
+     * Check task operate permission.
+     * Contains reflection invocation. Please do not delete.
+     * @param taskId
+     * @return
+     */
+    Boolean checkTaskOperatePermission(Integer taskId);
 }

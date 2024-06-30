@@ -19,13 +19,14 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.ClusterConfigurationDTO;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.job.JobManager;
@@ -44,8 +45,6 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import cn.hutool.core.lang.Assert;
 
 /**
  * ClusterConfigServiceImpl
@@ -76,7 +75,7 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
     @Override
     public FlinkClusterConfig getFlinkClusterCfg(Integer id) {
         ClusterConfiguration cfg = this.getClusterConfigById(id);
-        Assert.notNull(cfg, "The clusterConfiguration not exists!");
+        DinkyAssert.checkNull(cfg, "The clusterConfiguration not exists!");
         return FlinkClusterConfig.create(cfg.getType(), cfg.getConfigJson());
     }
 

@@ -41,8 +41,13 @@ public class ScheduleThreadPool {
         getScheduleMap().put(task.getType(), schedule);
     }
 
-    public void removeSchedule(DaemonTask task) {
-        ScheduledFuture<?> scheduledFuture = getScheduleMap().get(task.getType());
+    public void addSchedule(String type, Runnable task, Trigger trigger) {
+        ScheduledFuture<?> schedule = threadPoolTaskScheduler.schedule(task, trigger);
+        getScheduleMap().put(type, schedule);
+    }
+
+    public void removeSchedule(String type) {
+        ScheduledFuture<?> scheduledFuture = getScheduleMap().get(type);
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }

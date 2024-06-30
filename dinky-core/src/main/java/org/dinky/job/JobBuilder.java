@@ -19,8 +19,8 @@
 
 package org.dinky.job;
 
+import org.dinky.data.enums.GatewayType;
 import org.dinky.executor.Executor;
-import org.dinky.gateway.enums.GatewayType;
 
 public abstract class JobBuilder {
 
@@ -31,7 +31,6 @@ public abstract class JobBuilder {
     protected Executor executor;
     protected boolean useStatementSet;
     protected boolean useGateway;
-    protected String sqlSeparator;
     protected Job job;
 
     public JobBuilder(JobManager jobManager) {
@@ -42,7 +41,6 @@ public abstract class JobBuilder {
         this.executor = jobManager.getExecutor();
         this.useStatementSet = jobManager.isUseStatementSet();
         this.useGateway = jobManager.isUseGateway();
-        this.sqlSeparator = jobManager.getSqlSeparator();
         this.job = jobManager.getJob();
     }
 

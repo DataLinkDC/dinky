@@ -173,6 +173,7 @@ public enum Status {
 
     DATASOURCE_EXIST_RELATIONSHIP(11006, "datasource.exist.relationship"),
 
+    DATASOURCE_CONNECT_ERROR(11007, "datasource.connect.error"),
     /**
      * job or task about
      */
@@ -188,6 +189,10 @@ public enum Status {
     TASK_IS_EXIST(12010, "task.is.existed"),
     TASK_IS_PUBLISH_CANNOT_DELETE(12011, "task.is.publish.cannot.delete"),
     TASK_IS_RUNNING_CANNOT_DELETE(12012, "task.is.running.cannot.delete"),
+    JOB_ALERT_MAX_SEND_COUNT(12013, "job.alert.max.send.count"),
+    MODE_IS_NOT_ALLOW_SELECT(12014, "mode.is.not.allow.select"),
+    OPERATE_NOT_SUPPORT_QUERY(12015, "operate.not.support.query"),
+    TASK_NOT_OPERATE_PERMISSION(12016, "task.not.operate.permission"),
 
     /**
      * alert instance
@@ -229,6 +234,7 @@ public enum Status {
     GIT_BRANCH_NOT_FOUND(16003, "git.branch.not.found"),
     GIT_BUILDING(16004, "git.building"),
     GIT_BUILD_SUCCESS(16005, "git.build.success"),
+    GIT_MAVEN_HOME_NOT_SET(16006, "git.maven.home.not.set"),
 
     /**
      * dolphin scheduler
@@ -258,6 +264,8 @@ public enum Status {
     LDAP_FILTER_INCORRECT(18006, "ldap.filter.incorrect"),
 
     LDAP_LOGIN_FORBID(18007, "ldap.login.forbid"),
+
+    LDAP_LOGIN_TEST_SUCCESS(18008, "ldap.login.test.success"),
 
     /**
      * datastudio about
@@ -295,6 +303,15 @@ public enum Status {
      */
     ROOT_DIR_NOT_ALLOW_DELETE(9031, "resource.root.dir.not.allow.delete"),
     RESOURCE_DIR_OR_FILE_NOT_EXIST(9032, "resource.dir.or.file.not.exist"),
+    RESOURCE_FILE_PATH_VISIT_FAILED(9033, "file.path.visit.failed"),
+    RESOURCE_HDFS_CONFIGURATION_ERROR(9034, "resource.hdfs.configuration.error"),
+    RESOURCE_FILE_UPLOAD_FAILED(9035, "file.upload.failed"),
+    RESOURCE_FILE_RENAME_FAILED(9036, "file.rename.failed"),
+    RESOURCE_FILE_DELETE_FAILED(9037, "file.delete.failed"),
+    RESOURCE_FILE_READ_FAILED(9038, "file.read.failed"),
+    RESOURCE_OSS_CONFIGURATION_ERROR(9039, "resource.oss.configuration.error"),
+    RESOURCE_ROOT_DIR_NOT_EXIST(9040, "resource.root.dir.not.exist"),
+    RESOURCE_FOLDER_EXISTS(9041, "resource.folder.exists"),
 
     /**
      * global exception
@@ -314,8 +331,6 @@ public enum Status {
      */
     SYS_FLINK_SETTINGS_USERESTAPI(100, "sys.flink.settings.useRestAPI"),
     SYS_FLINK_SETTINGS_USERESTAPI_NOTE(101, "sys.flink.settings.useRestAPI.note"),
-    SYS_FLINK_SETTINGS_SQLSEPARATOR(102, "sys.flink.settings.sqlSeparator"),
-    SYS_FLINK_SETTINGS_SQLSEPARATOR_NOTE(103, "sys.flink.settings.sqlSeparator.note"),
     SYS_FLINK_SETTINGS_JOBIDWAIT(104, "sys.flink.settings.jobIdWait"),
     SYS_FLINK_SETTINGS_JOBIDWAIT_NOTE(105, "sys.flink.settings.jobIdWait.note"),
     SYS_MAVEN_SETTINGS_SETTINGSFILEPATH(106, "sys.maven.settings.settingsFilePath"),
@@ -331,10 +346,20 @@ public enum Status {
     SYS_ENV_SETTINGS_PYTHONHOME_NOTE(115, "sys.env.settings.pythonHome.note"),
     SYS_ENV_SETTINGS_DINKYADDR(116, "sys.env.settings.dinkyAddr"),
     SYS_ENV_SETTINGS_DINKYADDR_NOTE(117, "sys.env.settings.dinkyAddr.note"),
+
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND(118, "sys.env.settings.jobResendDiffSecond"),
+    SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND_NOTE(119, "sys.env.settings.jobResendDiffSecond.note"),
+
+    SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT(120, "sys.env.settings.diffMinuteMaxSendCount"),
+    SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE(121, "sys.env.settings.diffMinuteMaxSendCount.note"),
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS(1171, "sys.env.settings.maxRetainDays"),
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE(1172, "sys.env.settings.maxRetainDays.note"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT(1173, "sys.env.settings.maxRetainCount"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT_NOTE(1174, "sys.env.settings.maxRetainCount.note"),
+    SYS_ENV_SETTINGS_EXPRESSION_VARIABLE(1175, "sys.env.settings.expressionVariable"),
+    SYS_ENV_SETTINGS_EXPRESSION_VARIABLE_NOTE(1176, "sys.env.settings.expressionVariable.note"),
+    SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY(1177, "sys.env.settings.taskOwnerLockStrategy"),
+    SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY_NOTE(1178, "sys.env.settings.taskOwnerLockStrategy.note"),
 
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE(118, "sys.dolphinscheduler.settings.enable"),
     SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE_NOTE(119, "sys.dolphinscheduler.settings.enable.note"),
@@ -394,6 +419,12 @@ public enum Status {
     SYS_RESOURCE_SETTINGS_HDFS_ROOT_USER_NOTE(173, "sys.resource.settings.hdfs.root.user.note"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS(174, "sys.resource.settings.hdfs.fs.defaultFS"),
     SYS_RESOURCE_SETTINGS_HDFS_FS_DEFAULTFS_NOTE(175, "sys.resource.settings.hdfs.fs.defaultFS.note"),
+
+    SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE(178, "sys.resource.settings.hdfs.core.site"),
+    SYS_RESOURCE_SETTINGS_HDFS_CORE_SITE_NOTE(179, "sys.resource.settings.hdfs.core.site.note"),
+    SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE(380, "sys.resource.settings.hdfs.hdfs.site"),
+    SYS_RESOURCE_SETTINGS_HDFS_HDFS_SITE_NOTE(381, "sys.resource.settings.hdfs.hdfs.site.note"),
+
     SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS(176, "sys.resource.settings.oss.path.style.access"),
     SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE(177, "sys.resource.settings.oss.path.style.access.note"),
 
@@ -413,6 +444,8 @@ public enum Status {
     PROCESS_SUBMIT_EXECUTECOMMSQL(194, "process.submit.execute.commSql"),
     PROCESS_SUBMIT_EXECUTEFLINKSQL(195, "process.submit.execute.flinkSql"),
     PROCESS_REGISTER_EXITS(196, "process.register.exits"),
+    PROCESS_CLEAR_LOG_SUCCESS(198, "process.clear.log.success"),
+    PROCESS_CLEAR_LOG_FAILED(199, "process.clear.log.failed"),
     ;
     private final int code;
     private final String key;

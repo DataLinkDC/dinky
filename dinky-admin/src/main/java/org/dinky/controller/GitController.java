@@ -53,6 +53,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.bean.BeanUtil;
@@ -71,6 +72,7 @@ import lombok.AllArgsConstructor;
 @Api(tags = "Git Project Controller")
 @RequestMapping("/api/git")
 @AllArgsConstructor
+@SaCheckLogin
 public class GitController {
     final GitProjectService gitProjectService;
 

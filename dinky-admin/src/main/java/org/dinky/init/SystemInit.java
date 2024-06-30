@@ -20,8 +20,8 @@
 package org.dinky.init;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.SseSessionContextHolder;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.pool.ScheduleThreadPool;
 import org.dinky.daemon.task.DaemonTask;
@@ -35,9 +35,9 @@ import org.dinky.data.model.rbac.Tenant;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
-import org.dinky.job.DynamicResizeFlinkJobPoolTask;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.SystemMetricsTask;
+import org.dinky.resource.BaseResourceManager;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -46,7 +46,6 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
-import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.UDFUtils;
@@ -94,7 +93,6 @@ public class SystemInit implements ApplicationRunner {
     private final TenantService tenantService;
     private final GitProjectService gitProjectService;
     private final ScheduleThreadPool schedule;
-
     private static Project project;
 
     @Override
@@ -103,6 +101,7 @@ public class SystemInit implements ApplicationRunner {
         initResources();
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
+        sysConfigService.initExpressionVariables();
 
         for (Tenant tenant : tenants) {
             taskService.initDefaultFlinkSQLEnv(tenant.getId());
@@ -126,13 +125,19 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesOssEndpoint(),
                         systemConfiguration.getResourcesHdfsUser(),
                         systemConfiguration.getResourcesHdfsDefaultFS(),
+                        systemConfiguration.getResourcesHdfsCoreSite(),
+                        systemConfiguration.getResourcesHdfsHdfsSite(),
                         systemConfiguration.getResourcesOssAccessKey(),
                         systemConfiguration.getResourcesOssRegion(),
                         systemConfiguration.getResourcesPathStyleAccess())
                 .forEach(x -> x.addParameterCheck(y -> {
                     if (Boolean.TRUE.equals(
                             systemConfiguration.getResourcesEnable().getValue())) {
-                        BaseResourceManager.initResourceManager();
+                        try {
+                            BaseResourceManager.initResourceManager();
+                        } catch (Exception e) {
+                            log.error("Init resource error: ", e);
+                        }
                     }
                 }));
     }
@@ -149,7 +154,7 @@ public class SystemInit implements ApplicationRunner {
         Configuration<Integer> sysGatherTiming = sysConfig.getMetricsSysGatherTiming();
         Consumer<Configuration<?>> metricsListener = c -> {
             c.addChangeEvent(x -> {
-                schedule.removeSchedule(sysMetricsTask);
+                schedule.removeSchedule(sysMetricsTask.getType());
                 PeriodicTrigger trigger = new PeriodicTrigger(sysGatherTiming.getValue());
                 if (metricsSysEnable.getValue()) schedule.addSchedule(sysMetricsTask, trigger);
             });
@@ -162,10 +167,6 @@ public class SystemInit implements ApplicationRunner {
         DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
         schedule.addSchedule(clearJobHistoryTask, new PeriodicTrigger(1, TimeUnit.HOURS));
 
-        // Init flink job dynamic pool task
-        DaemonTask flinkJobPoolTask = DaemonTask.build(new DaemonTaskConfig(DynamicResizeFlinkJobPoolTask.TYPE));
-        schedule.addSchedule(flinkJobPoolTask, new PeriodicTrigger(FlinkTaskConstant.POLLING_GAP));
-
         // Add flink running job task to flink job thread pool
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
         FlinkJobThreadPool flinkJobThreadPool = FlinkJobThreadPool.getInstance();
@@ -174,6 +175,7 @@ public class SystemInit implements ApplicationRunner {
             DaemonTask daemonTask = DaemonTask.build(config);
             flinkJobThreadPool.execute(daemonTask);
         }
+        SseSessionContextHolder.init(schedule);
     }
 
     /**
@@ -202,9 +204,7 @@ public class SystemInit implements ApplicationRunner {
                     project = projectClient.createDinkyProject();
                 }
             } catch (Exception e) {
-                log.error("Error in DolphinScheduler: ", e);
-                log.error(
-                        "get or create DolphinScheduler project failed, please check the config of DolphinScheduler!");
+                log.warn("Get or create DolphinScheduler project failed, please check the config of DolphinScheduler!");
             }
         }
     }
@@ -222,7 +222,7 @@ public class SystemInit implements ApplicationRunner {
     }
 
     public void registerUDF() {
-        List<Task> allUDF = taskService.getAllUDF();
+        List<Task> allUDF = taskService.getReleaseUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }

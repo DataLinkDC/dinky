@@ -22,20 +22,19 @@ import ContentScroll from '@/components/Scroll/ContentScroll';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
-import {
-  getCurrentTab,
-  isDataStudioTabsItemType,
-  isMetadataTabsItemType
-} from '@/pages/DataStudio/function';
-import {
-  getBottomSelectKeyFromNodeClickJobType,
-  getRightSelectKeyFromNodeClickJobType
-} from '@/pages/DataStudio/LeftContainer/Project/function';
+import { getCurrentTab } from '@/pages/DataStudio/function';
+import { getRightSelectKeyFromNodeClickJobType } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
 import StudioEditor from '@/pages/DataStudio/MiddleContainer/StudioEditor';
-import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
+import {
+  MetadataTabsItemType,
+  StateType,
+  STUDIO_MODEL,
+  TabsItemType,
+  TabsPageType
+} from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 import { ContextMenuPosition, InitContextMenuPosition } from '@/types/Public/state.d';
@@ -45,6 +44,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ConfigProvider, Divider, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { memo, useState } from 'react';
+import TerminalTab from '@/pages/DataStudio/MiddleContainer/Terminal';
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -136,12 +136,6 @@ const MiddleContainer = (props: any) => {
       payload: getRightSelectKeyFromNodeClickJobType(subType ?? '')
     });
 
-    // 根据 作业类型渲染 左下角选中菜单 key
-    dispatch({
-      type: STUDIO_MODEL.updateSelectBottomKey,
-      payload: getBottomSelectKeyFromNodeClickJobType(subType ?? '')
-    });
-
     // 这里如果加此项功能和定位功能重复 , 暂时注释
     // if (item.type === TabsPageType.project) {
     // 更新左侧树选中的 key
@@ -227,32 +221,33 @@ const MiddleContainer = (props: any) => {
    */
   const tabItems = panes.map((item: TabsItemType) => {
     const renderContent = () => {
-      if (isDataStudioTabsItemType(item)) {
-        if (parseInt(activeKey) < 0) {
-          return TabsPageType.None;
+      switch (item.type) {
+        case TabsPageType.terminal:
+          return <TerminalTab />;
+        case TabsPageType.metadata: {
+          const params = (item as MetadataTabsItemType).params;
+          return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
         }
-
-        return (
-          <StudioEditor
-            tabsItem={item}
-            monacoInstance={item.monacoInstance}
-            height={
-              activeKey === item.key
-                ? fullscreen
-                  ? document.body.clientHeight
-                  : props.centerContentHeight - 40
-                : 0
-            }
-          />
-        );
+        case TabsPageType.project:
+          if (parseInt(activeKey) < 0) {
+            return TabsPageType.None;
+          }
+          return (
+            <StudioEditor
+              tabsItem={item}
+              monacoInstance={item.monacoInstance}
+              height={
+                activeKey === item.key
+                  ? fullscreen
+                    ? document.body.clientHeight
+                    : props.centerContentHeight - 48
+                  : 0
+              }
+            />
+          );
+        default:
+          return <>The type {item.type} is unknown</>;
       }
-
-      if (isMetadataTabsItemType(item)) {
-        const params = item.params;
-        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
-      }
-
-      return <></>;
     };
 
     return {
@@ -266,7 +261,7 @@ const MiddleContainer = (props: any) => {
         >
           {getTabIcon(item.icon, 16)}
           <Text type={item.isModified ? 'success' : undefined}>
-            {item.label}
+            &zwj;{item.label}
             {item.isModified ? ' *' : ''}
           </Text>
         </Space>

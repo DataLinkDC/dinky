@@ -21,10 +21,8 @@ package org.dinky.gateway.kubernetes.operator;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
-import org.dinky.gateway.AbstractGateway;
-import org.dinky.gateway.config.FlinkConfig;
-import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.enums.UpgradeMode;
+import org.dinky.gateway.kubernetes.KubernetesGateway;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec.Resource;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
@@ -32,80 +30,57 @@ import org.dinky.gateway.kubernetes.operator.api.FlinkDeploymentSpec;
 import org.dinky.gateway.kubernetes.operator.api.JobSpec;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.CoreOptions;
-import org.apache.http.util.TextUtils;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class KubernetsOperatorGateway extends AbstractGateway {
+public abstract class KubernetsOperatorGateway extends KubernetesGateway {
 
     private Map<String, String> kubernetsConfiguration;
-    private K8sConfig k8sConfig;
-    private FlinkConfig flinkConfig;
     private FlinkDeployment flinkDeployment = new FlinkDeployment();
     private FlinkDeploymentSpec flinkDeploymentSpec = new FlinkDeploymentSpec();
-    private KubernetesClient kubernetesClient;
 
     private static final Logger logger = LoggerFactory.getLogger(KubernetsOperatorGateway.class);
 
     @Override
-    protected void init() {
-        initKubeClient();
+    public void init() {
+        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        initConfig();
         initBase();
         initMetadata();
         initSpec();
-        initResource(kubernetesClient);
+        initResource();
         initJob();
-    }
-
-    private void initKubeClient() {
-        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
-        flinkConfig = config.getFlinkConfig();
-        k8sConfig = config.getKubernetesConfig();
-        if (TextUtils.isEmpty(k8sConfig.getKubeConfig())) {
-            kubernetesClient = new DefaultKubernetesClient();
-        } else {
-            kubernetesClient = DefaultKubernetesClient.fromConfig(k8sConfig.getKubeConfig());
-        }
     }
 
     @Override
     public TestResult test() {
-
         kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
-        flinkConfig = config.getFlinkConfig();
-        config.getFlinkConfig().setJobName("test");
-        initKubeClient();
+        addConfigParas(KubernetesConfigOptions.CLUSTER_ID, UUID.randomUUID().toString());
+
+        initConfig();
         initBase();
         initMetadata();
         initSpec();
-        kubernetesClient.resource(flinkDeployment).fromServer();
+        getK8sClientHelper().getKubernetesClient().nodes().list();
         logger.info("配置连接测试成功");
         return TestResult.success();
     }
 
     @Override
     public boolean onJobFinishCallback(String status) {
-
-        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
-        initKubeClient();
         String jobName = config.getFlinkConfig().getJobName();
         if (status.equals(JobStatus.FINISHED.getValue())) {
             logger.info(
@@ -119,8 +94,10 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     }
 
     public boolean deleteCluster() {
+        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        initConfig();
         initMetadata();
-        kubernetesClient.resource(flinkDeployment).delete();
+        getK8sClientHelper().getKubernetesClient().resource(flinkDeployment).delete();
         return true;
     }
 
@@ -161,8 +138,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
         flinkDeploymentSpec.setJob(jobSpecBuilder.build());
     }
 
-    private void initResource(KubernetesClient kubernetesClient) {
-        Pod defaultPod;
+    private void initResource() {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
         String jbcpu = kubernetsConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
@@ -175,24 +151,9 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
 
-        if (!TextUtil.isEmpty(k8sConfig.getPodTemplate())) {
-            InputStream inputStream =
-                    new ByteArrayInputStream(k8sConfig.getPodTemplate().getBytes(StandardCharsets.UTF_8));
-            defaultPod = kubernetesClient.pods().load(inputStream).get();
-            flinkDeploymentSpec.setPodTemplate(defaultPod);
-        }
-        if (!TextUtil.isEmpty(k8sConfig.getJmPodTemplate())) {
-            InputStream inputStream =
-                    new ByteArrayInputStream(k8sConfig.getJmPodTemplate().getBytes(StandardCharsets.UTF_8));
-            Pod pod = kubernetesClient.pods().load(inputStream).get();
-            jobManagerSpec.setPodTemplate(pod);
-        }
-        if (!TextUtil.isEmpty(k8sConfig.getTmPodTemplate())) {
-            InputStream inputStream =
-                    new ByteArrayInputStream(k8sConfig.getTmPodTemplate().getBytes(StandardCharsets.UTF_8));
-            Pod pod = kubernetesClient.pods().load(inputStream).get();
-            taskManagerSpec.setPodTemplate(pod);
-        }
+        flinkDeploymentSpec.setPodTemplate(getDefaultPodTemplate());
+        jobManagerSpec.setPodTemplate(getJmPodTemplate());
+        taskManagerSpec.setPodTemplate(getTmPodTemplate());
         flinkDeploymentSpec.setJobManager(jobManagerSpec);
         flinkDeploymentSpec.setTaskManager(taskManagerSpec);
     }
@@ -200,7 +161,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     private void initSpec() {
         String flinkVersion = flinkConfig.getFlinkVersion();
         String image = kubernetsConfiguration.get("kubernetes.container.image");
-        String serviceAccount = kubernetsConfiguration.get("kubernetes.service.account");
+        String serviceAccount = kubernetsConfiguration.get("kubernetes.service-account");
 
         logger.info("\nflinkVersion is : {} \n image is : {}", flinkVersion, image);
 

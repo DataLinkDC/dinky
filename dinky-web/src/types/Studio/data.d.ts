@@ -18,6 +18,8 @@
  */
 
 import { List } from 'antd';
+import { ButtonProps } from 'antd/es/button/button';
+import React from 'react';
 
 export type Catalogue = {
   id: number;
@@ -32,11 +34,18 @@ export type Catalogue = {
   children: Catalogue[];
   configJson: TaskExtConfig;
   task: TaskInfo;
+  firstLevelOwner: number;
+  secondLevelOwners: number[];
 };
 
 export type TaskUdfConfig = {
   templateId: number;
   selectKeys: List<string | number>;
+  className: string;
+};
+
+export type TaskUdfRefer = {
+  name: string;
   className: string;
 };
 
@@ -46,6 +55,7 @@ export type ConfigItem = {
 };
 
 export type TaskExtConfig = {
+  udfRefer: List<TaskUdfRefer>;
   udfConfig: TaskUdfConfig;
   customConfig: List<Map<string, object>>;
 };
@@ -84,6 +94,8 @@ export type TaskInfo = {
   alertGroupName: string;
   createTime: Date;
   updateTime: Date;
+  firstLevelOwner: number;
+  secondLevelOwners: number[];
 };
 
 export type SavePoint = {
@@ -248,6 +260,19 @@ export interface DolphinTaskMinInfo {
   upstreamTaskName: string;
 }
 
+export interface DolphinTaskGroupInfo {
+  id: number;
+  name: string;
+  description: string;
+  groupSize: number;
+  useSize: number;
+  userId: number;
+  status: number;
+  createTime: Date;
+  updateTime: Date;
+  projectCode: number;
+}
+
 export interface TaskParamProperty {
   prop: string;
   direct: string;
@@ -308,4 +333,15 @@ export interface PushDolphinParams {
   isCache: boolean | string;
   timeoutNotifyStrategy: string[] | string;
   description: string;
+  taskGroupPriority: number;
 }
+
+export type ButtonRoute = {
+  icon?: React.ReactNode;
+  title?: string;
+  click?: () => any;
+  hotKey?: (e: KeyboardEvent) => boolean;
+  hotKeyDesc?: string;
+  isShow?: boolean;
+  props?: ButtonProps;
+};

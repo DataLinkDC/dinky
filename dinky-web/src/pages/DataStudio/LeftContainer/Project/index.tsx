@@ -18,8 +18,7 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
-import { LeftBottomKey } from '@/pages/DataStudio/data.d';
-import { getTabByTaskId } from '@/pages/DataStudio/function';
+import { assert, getTabByTaskId } from '@/pages/DataStudio/function';
 import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import {
   FOLDER_RIGHT_MENU,
@@ -27,8 +26,8 @@ import {
 } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import {
-  getBottomSelectKeyFromNodeClickJobType,
-  getRightSelectKeyFromNodeClickJobType
+  getRightSelectKeyFromNodeClickJobType,
+  isUDF
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
@@ -39,7 +38,6 @@ import {
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC
 } from '@/pages/DataStudio/model';
-import { LeftBottomMoreTabs } from '@/pages/DataStudio/route';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -64,7 +62,9 @@ const Project: React.FC = (props: connect) => {
     dispatch,
     project: { expandKeys, selectKey },
     tabs: { panes, activeKey },
-    tabs
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    tabs,
+    users
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
@@ -90,6 +90,11 @@ const Project: React.FC = (props: connect) => {
       event
     } = info;
 
+    // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 200px (需要根据具体的右键菜单数量合理设置)
+    if (event.clientY + 150 > window.innerHeight) {
+      event.clientY = window.innerHeight - 200;
+    }
+
     // 设置右键菜单
     setProjectState((prevState) => ({
       ...prevState,
@@ -101,7 +106,9 @@ const Project: React.FC = (props: connect) => {
       contextMenuPosition: {
         ...prevState.contextMenuPosition,
         top: event.clientY + 5,
-        left: event.clientX + 10
+        left: event.clientX + 10,
+        screenX: event.screenX,
+        screenY: event.screenY
       },
       selectedKeys: [key],
       rightClickedNode: { ...node, ...fullInfo },
@@ -142,15 +149,11 @@ const Project: React.FC = (props: connect) => {
         type: STUDIO_MODEL.updateSelectRightKey,
         payload: getRightSelectKeyFromNodeClickJobType(type)
       });
-      const bottomKey = getBottomSelectKeyFromNodeClickJobType(type);
-      dispatch({
-        type: STUDIO_MODEL.updateSelectBottomKey,
-        payload: bottomKey
-      });
-      if (bottomKey === LeftBottomKey.TOOLS_KEY) {
+      // 如果是 udf 或者 是env 则需要更新 bottom key 为空|| if is udf or is env then update bottom key to empty
+      if (isUDF(type) || assert(type, [DIALECT.FLINKSQLENV], true, 'includes')) {
         dispatch({
-          type: STUDIO_MODEL.updateSelectBottomSubKey,
-          payload: LeftBottomMoreTabs[bottomKey][0].key
+          type: STUDIO_MODEL.updateSelectBottomKey,
+          payload: ''
         });
       }
     }
@@ -204,8 +207,8 @@ const Project: React.FC = (props: connect) => {
       options.parentId = projectState.isCreateTask
         ? projectState.value.id
         : projectState.isEdit
-        ? projectState.value.parentId
-        : options.parentId;
+          ? projectState.value.parentId
+          : options.parentId;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
@@ -219,8 +222,8 @@ const Project: React.FC = (props: connect) => {
       },
       () => {},
       () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
-        if (values.type && values.type.toLowerCase() === DIALECT.FLINKSQLENV) {
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+        if (assert(values.type, [DIALECT.FLINKSQLENV], true, 'includes')) {
           dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
         }
         if (projectState.isEdit) {
@@ -233,6 +236,8 @@ const Project: React.FC = (props: connect) => {
             const { taskData } = params as DataStudioParams;
             if (taskData) {
               taskData.name = values.name;
+              taskData.firstLevelOwner = values.firstLevelOwner;
+              taskData.secondLevelOwners = values.secondLevelOwners;
             }
           }
           dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
@@ -264,7 +269,7 @@ const Project: React.FC = (props: connect) => {
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
       });
       return;
     }
@@ -293,7 +298,7 @@ const Project: React.FC = (props: connect) => {
             dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
           }
         });
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
       }
     });
   };
@@ -330,7 +335,8 @@ const Project: React.FC = (props: connect) => {
       API_CONSTANTS.COPY_TASK_URL,
       l('right.menu.copy'),
       { ...projectState.value },
-      () => dispatch({ type: STUDIO_MODEL_ASYNC.queryProject })
+      () =>
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData })
     );
     handleContextCancel();
   };
@@ -367,7 +373,7 @@ const Project: React.FC = (props: connect) => {
         }));
       }
     );
-    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
     handleContextCancel();
   };
 
@@ -465,6 +471,7 @@ const Project: React.FC = (props: connect) => {
         title={l('right.menu.createTask')}
         values={{}}
         modalVisible={projectState.isCreateTask}
+        users={users}
         onCancel={() =>
           setProjectState((prevState) => ({
             ...prevState,
@@ -480,6 +487,7 @@ const Project: React.FC = (props: connect) => {
           title={l('button.edit')}
           values={projectState.value}
           modalVisible={projectState.isEdit}
+          users={users}
           onCancel={() =>
             setProjectState((prevState) => ({
               ...prevState,
@@ -496,5 +504,7 @@ const Project: React.FC = (props: connect) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
-  project: Studio.project
+  project: Studio.project,
+  selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData,
+  users: Studio.users
 }))(Project);

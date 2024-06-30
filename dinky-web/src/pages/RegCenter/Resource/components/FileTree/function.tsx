@@ -79,7 +79,7 @@ function filterEmpty(
 }
 
 export const buildResourceTreeData = (
-  data: ResourceInfo[],
+  data: ResourceInfo[] = [],
   isFilterEmptyChildren = false,
   filterSuffixList: string[] = []
 ): any =>
@@ -90,13 +90,15 @@ export const buildResourceTreeData = (
         isLeaf: !item.isDirectory,
         name: item.fileName,
         parentId: item.pid,
-        label: item.fullName + '/' + item.fileName,
+        label: item.fileName,
         icon: <TagAlignCenter>{renderIcon(item.fileName, '.', item.isDirectory)}</TagAlignCenter>,
         path: item.fullName,
         title: buildTitleLabel(item),
         fullInfo: item,
         key: item.id,
         id: item.id,
-        children: item.children && buildResourceTreeData(item.children, isFilterEmptyChildren)
+        children:
+          item.children &&
+          buildResourceTreeData(item.children, isFilterEmptyChildren, filterSuffixList)
       };
     });

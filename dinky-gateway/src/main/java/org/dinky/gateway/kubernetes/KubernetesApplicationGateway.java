@@ -21,10 +21,12 @@ package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.config.AppConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.kubernetes.utils.IgnoreNullRepresenter;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 
@@ -36,6 +38,7 @@ import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
+import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.utils.Constants;
 import org.apache.flink.runtime.client.JobStatusMessage;
 
@@ -46,19 +49,18 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.Tag;
-import org.yaml.snakeyaml.representer.Representer;
 
 import cn.hutool.core.text.StrFormatter;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * KubernetesApplicationGateway
  */
+@Slf4j
 public class KubernetesApplicationGateway extends KubernetesGateway {
 
     /**
@@ -76,16 +78,16 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      */
     @Override
     public GatewayResult submitJar(FlinkUdfPathContextHolder udfPathContextHolder) {
-        try {
+        init();
+        try (KubernetesClient kubernetesClient = getK8sClientHelper().getKubernetesClient()) {
             logger.info("Start submit k8s application.");
-            ClusterClientProvider<String> clusterClient = deployApplication();
-            Deployment deployment = kubernetesClient
-                    .apps()
-                    .deployments()
-                    .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
-                    .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
-                    .get();
-            KubernetesResult kubernetesResult = waitForJmAndJobStart(deployment, clusterClient);
+
+            ClusterClientProvider<String> clusterClient =
+                    deployApplication(getK8sClientHelper().getClient());
+
+            Deployment deployment = getK8sClientHelper().createDinkyResource();
+
+            KubernetesResult kubernetesResult = waitForJmAndJobStart(kubernetesClient, deployment, clusterClient);
             kubernetesResult.success();
             return kubernetesResult;
         } catch (Exception ex) {
@@ -107,10 +109,11 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         Optional<ContainerStatus> flinContainer = pod.getStatus().getContainerStatuses().stream()
                 .filter(s -> s.getName().equals(Constants.MAIN_CONTAINER_NAME))
                 .findFirst();
-        ContainerStatus containerStatus =
-                flinContainer.orElseThrow(() -> new GatewayException("Deploy k8s failed, can't find flink container"));
-
-        Yaml yaml = new Yaml(new LogRepresenter());
+        if (!flinContainer.isPresent()) {
+            return false;
+        }
+        ContainerStatus containerStatus = flinContainer.get();
+        Yaml yaml = new Yaml(new IgnoreNullRepresenter());
         String logStr = StrFormatter.format(
                 "Got Flink Container State:\nPod: {},\tReady: {},\trestartCount: {},\timage: {}\n"
                         + "------CurrentState------\n{}\n------LastState------\n{}",
@@ -134,10 +137,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      * @return A ClusterClientProvider<String> object for accessing the Kubernetes cluster.
      * @throws ClusterDeploymentException if deployment to Kubernetes fails.
      */
-    public ClusterClientProvider<String> deployApplication() throws ClusterDeploymentException {
-        if (Asserts.isNull(client)) {
-            init();
-        }
+    public ClusterClientProvider<String> deployApplication(FlinkKubeClient client) throws ClusterDeploymentException {
         // Build the commit information
         AppConfig appConfig = config.getAppConfig();
         String[] userJarParas =
@@ -147,8 +147,9 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         // Deploy to k8s
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
+        ClusterDescriptorAdapterImpl clusterDescriptorAdapter = new ClusterDescriptorAdapterImpl();
         KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                new KubernetesClusterDescriptor(configuration, client);
+                clusterDescriptorAdapter.createKubernetesClusterDescriptor(configuration, client);
         return kubernetesClusterDescriptor.deployApplicationCluster(
                 clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
     }
@@ -161,7 +162,8 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      * @return A KubernetesResult object containing the Kubernetes gateway's Web URL, the Job ID, and the cluster ID.
      * @throws InterruptedException if waiting is interrupted.
      */
-    public KubernetesResult waitForJmAndJobStart(Deployment deployment, ClusterClientProvider<String> clusterClient)
+    public KubernetesResult waitForJmAndJobStart(
+            KubernetesClient kubernetesClient, Deployment deployment, ClusterClientProvider<String> clusterClient)
             throws InterruptedException {
         KubernetesResult result = KubernetesResult.build(getType());
         long waitSends = SystemConfiguration.getInstances().getJobIdWait() * 1000L;
@@ -206,29 +208,5 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         }
         throw new GatewayException(
                 "The number of retries exceeds the limit, check the K8S cluster for more information");
-    }
-
-    /**
-     * Represents Java Bean properties for YAML serialization with LogRepresenter.
-     * If the property value is null, it is ignored.
-     */
-    static class LogRepresenter extends Representer {
-        /**
-         * Represents the Java Bean property, ignoring null and empty values.
-         *
-         * @param javaBean      The Java Bean object.
-         * @param property      The property to represent.
-         * @param propertyValue The value of the property.
-         * @param tag           The custom tag.
-         * @return The represented node tuple, or null if the property value is null.
-         */
-        @Override
-        protected NodeTuple representJavaBeanProperty(
-                Object javaBean, Property property, Object propertyValue, Tag tag) {
-            if (propertyValue == null) {
-                return null;
-            }
-            return super.representJavaBeanProperty(javaBean, property, propertyValue, tag);
-        }
     }
 }

@@ -19,7 +19,7 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { useEditor } from '@/hooks/useEditor';
-import { getCurrentTab } from '@/pages/DataStudio/function';
+import { getCurrentTab, lockTask } from '@/pages/DataStudio/function';
 import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import { TASK_VAR_FILTER } from '@/pages/DataStudio/MiddleContainer/StudioEditor/constants';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
@@ -31,12 +31,14 @@ import {
   TaskDataType
 } from '@/pages/DataStudio/model';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { registerEditorKeyBindingAndAction } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { connect, useRequest } from '@@/exports';
 import { FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons';
 import { Monaco } from '@monaco-editor/react';
+import { useModel } from '@umijs/max';
 import { Button, Spin } from 'antd';
 import { editor } from 'monaco-editor';
 import React, { memo, useEffect, useRef, useState } from 'react';
@@ -47,9 +49,10 @@ export type EditorProps = {
 };
 
 const StudioEditor: React.FC<EditorProps & connect> = (props) => {
-  const { tabsItem, dispatch, height, tabs } = props;
+  const { tabsItem, dispatch, height, tabs, taskOwnerLockingStrategy } = props;
 
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>();
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   useEffect(() => {
     dispatch({
@@ -66,6 +69,13 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
 
   const currentData = tabsItem.params.taskData;
 
+  const isLockTask = lockTask(
+    currentData?.firstLevelOwner,
+    currentData?.secondLevelOwners,
+    initialState?.currentUser?.user,
+    taskOwnerLockingStrategy
+  );
+
   const loadTask = (cache: TaskDataType, serverParams: TaskDataType) => {
     if (!cache) {
       tabsItem.params.taskData = { ...serverParams, useResult: true, maxRowNum: 100 };
@@ -76,7 +86,13 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     Object.keys(serverParams).forEach((key) => {
       if (TASK_VAR_FILTER.includes(key)) {
         cache[key] = serverParams[key];
-      } else if (JSON.stringify(serverParams[key]) !== JSON.stringify(cache[key])) {
+      } else if (key == 'configJson') {
+        const cacheCj = JSON.stringify(cache[key]);
+        const serverCj = JSON.stringify(serverParams[key]);
+        if (cacheCj != serverCj) {
+          diff.push({ key: key, server: serverCj, cache: cacheCj });
+        }
+      } else if (serverParams[key] != cache[key]) {
         diff.push({ key: key, server: serverParams[key], cache: cache[key] });
       }
     });
@@ -111,10 +127,10 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
     tabsItem.monacoInstance = monaco;
 
     editor.onDidChangeCursorPosition((e) => {
-      props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
+      props.footContainerCacher.cache.codePosition = [e.position.lineNumber, e.position.column];
       dispatch({
         type: STUDIO_MODEL.saveFooterValue,
-        payload: { ...props.footContainer }
+        payload: { ...props.footContainerCacher.cache }
       });
     });
     registerEditorKeyBindingAndAction(editor);
@@ -152,8 +168,12 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
           onChange={handleEditChange}
           enableSuggestions={true}
           options={{
-            readOnlyMessage: { value: l('pages.datastudio.editor.onlyread') },
-            readOnly: currentData?.step == JOB_LIFE_CYCLE.PUBLISH,
+            readOnlyMessage: {
+              value: isLockTask
+                ? l('pages.datastudio.editor.onlyread.lock')
+                : l('pages.datastudio.editor.onlyread')
+            },
+            readOnly: currentData?.step == JOB_LIFE_CYCLE.PUBLISH || isLockTask,
             scrollBeyondLastLine: false,
             wordWrap: 'on'
           }}
@@ -199,7 +219,16 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
-  footContainer: Studio.footContainer
-}))(memo(StudioEditor));
+const footContainerCacher = { cache: {} as StateType['footContainer'] };
+
+export default connect(
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => {
+    footContainerCacher.cache = Studio.footContainer;
+
+    return {
+      tabs: Studio.tabs,
+      footContainerCacher,
+      taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
+    };
+  }
+)(memo(StudioEditor));

@@ -23,10 +23,15 @@ import org.dinky.data.dto.CommonDTO;
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.function.data.model.UDF;
+import org.dinky.service.TaskService;
 import org.dinky.service.UDFService;
+import org.dinky.utils.UDFUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +39,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,9 +52,11 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "UDF Controller")
 @RestController
 @RequestMapping("/api/udf")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class UDFController {
     private final UDFService udfService;
+    private final TaskService taskService;
 
     /**
      * update udf name by id
@@ -91,5 +100,18 @@ public class UDFController {
     public Result<Void> addOrUpdateByResourceId(@RequestBody CommonDTO<List<Integer>> dto) {
         udfService.addOrUpdateByResourceId(dto.getData());
         return Result.succeed();
+    }
+
+    /**
+     * get all udf and convert its to cascader
+     * @return {@link Result} of {@link List} of {@link CascaderVO}
+     */
+    @GetMapping("/getAllUdfs")
+    @ApiOperation("Get All UDFs")
+    public Result<List<CascaderVO>> getAllUdfsToCascader() {
+        // get all UDFs of dynamic UDFs(user defined UDFs in the task)
+        List<UDF> userDefinedReleaseUdfs =
+                taskService.getReleaseUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList());
+        return Result.succeed(udfService.getAllUdfsToCascader(userDefinedReleaseUdfs));
     }
 }

@@ -19,6 +19,7 @@
 
 package org.dinky.cdc.utils;
 
+import org.dinky.data.model.Column;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 import org.dinky.utils.SqlUtil;
@@ -33,22 +34,33 @@ public class FlinkStatementUtil {
 
     private FlinkStatementUtil() {}
 
-    public static String getCDCInsertSql(Table table, String targetName, String sourceName) {
+    public static String getCDCInsertSql(Table table, String targetName, String sourceName, FlinkCDCConfig config) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(targetName);
+        sb.append("`").append(targetName).append("`");
         sb.append(" SELECT\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(String.format("`%s`", table.getColumns().get(i).getName()))
-                    .append(" \n");
+            sb.append(getColumnProcessing(table.getColumns().get(i), config)).append(" \n");
         }
         sb.append(" FROM `");
         sb.append(sourceName);
         sb.append("`");
         return sb.toString();
+    }
+
+    public static String getColumnProcessing(Column column, FlinkCDCConfig config) {
+        String configType = config.getType();
+        String columnType = column.getType();
+        if (configType.contains("postgres-cdc")
+                && (columnType.contains("numeric") || columnType.contains("decimal"))
+                && column.getPrecision().intValue() > 38) {
+            return " CAST(" + column.getName() + " AS STRING) AS `" + column.getName() + "`";
+        } else {
+            return String.format("`%s`", column.getName());
+        }
     }
 
     public static String getFlinkDDL(
@@ -129,6 +141,9 @@ public class FlinkStatementUtil {
     private static String convertSinkColumnType(String type, FlinkCDCConfig config) {
         if (config.getSink().get("connector").equals("hudi") && (type.equals("TIMESTAMP"))) {
             return "TIMESTAMP(3)";
+        }
+        if (config.getSink().get("connector").equals("doris") && (type.equals("TIME"))) {
+            return "STRING";
         }
         return type;
     }

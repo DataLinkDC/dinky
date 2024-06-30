@@ -40,6 +40,7 @@ export default {
   'button.config': '配置',
   'button.modify': '修改',
   'button.edit': '编辑',
+  'button.open': '打开',
   'button.start': '启动',
   'button.stop': '停止',
   'button.publish': '发布',
@@ -63,6 +64,7 @@ export default {
   'button.collapse-all': '全部折叠',
   'button.position': '定位',
   'button.test': '测试',
+  'button.test.connection': '测试连接',
   'button.clear': '清除',
   'button.copy': '复制',
   'button.refreshData': '刷新数据',
@@ -133,6 +135,8 @@ export default {
   'global.table.endTime': '结束时间',
   'global.table.finishTime': '完成时间',
   'global.table.useTime': '耗时',
+  'global.table.firstLevelOwner': '责任人',
+  'global.table.secondLevelOwners': '维护人',
 
   'global.table.registType': '注册方式',
   'global.table.registType.manual': '手动',
@@ -225,5 +229,8 @@ export default {
   'global.job.status.reconciling': '调节中',
   'global.job.status.reconnecting': '重连中',
   'global.job.status.unknown': '未知',
-  'global.job.status.failed-tip': '未成功提交到集群,无法获取任务名称/作业ID'
+  'global.job.status.failed-tip': '未成功提交到集群,无法获取任务名称/作业ID',
+
+  'global.operation.unable': '无法操作',
+  'global.operation.able': '可以操作'
 };

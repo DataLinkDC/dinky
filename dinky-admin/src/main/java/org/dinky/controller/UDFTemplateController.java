@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.collection.CollUtil;
@@ -62,6 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "UDF Controller")
 @RestController
 @RequestMapping("/api/udf/template")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class UDFTemplateController {
 

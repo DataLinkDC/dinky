@@ -34,6 +34,9 @@ import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.LdapContextSource;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class LdapContext {
     private static final SystemConfiguration configuration = SystemConfiguration.getInstances();
 
@@ -65,7 +68,9 @@ public class LdapContext {
         return controls;
     }
 
-    /** Context mapper for LDAP user identification. */
+    /**
+     * Context mapper for LDAP user identification.
+     */
     public static class UserContextMapper implements ContextMapper<LdapUserIdentification> {
 
         /**
@@ -81,7 +86,9 @@ public class LdapContext {
         }
     }
 
-    /** Attributes mapper from LDAP user to Local user. */
+    /**
+     * Attributes mapper from LDAP user to Local user.
+     */
     public static class UserAttributesMapperMapper implements AttributesMapper<User> {
 
         /**
@@ -98,16 +105,19 @@ public class LdapContext {
             Attribute nicknameAttr =
                     attributes.get(configuration.getLdapCastNickname().getValue());
 
-            if (usernameAttr != null && nicknameAttr != null) {
+            if (usernameAttr != null) {
                 User user = new User();
                 user.setUsername(usernameAttr.get().toString());
-                user.setNickname(nicknameAttr.get().toString());
+                if (nicknameAttr != null) {
+                    user.setNickname(nicknameAttr.get().toString());
+                }
                 user.setUserType(UserType.LDAP.getCode());
                 user.setEnabled(true);
                 return user;
+            } else {
+                log.error("LDAP user mapping failed, username attribute is null");
+                return null;
             }
-
-            return null;
         }
     }
 }

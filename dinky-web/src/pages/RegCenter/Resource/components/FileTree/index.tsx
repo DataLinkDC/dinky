@@ -17,9 +17,11 @@
  *
  */
 
+import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { buildResourceTreeData } from '@/pages/RegCenter/Resource/components/FileTree/function';
 import { ResourceInfo } from '@/types/RegCenter/data';
-import { Empty, Tree } from 'antd';
+import { l } from '@/utils/intl';
+import { Divider, Empty, Flex, Tree, Typography } from 'antd';
 import React from 'react';
 
 const { DirectoryTree } = Tree;
@@ -28,21 +30,27 @@ type FileTreeProps = {
   treeData: ResourceInfo[];
   onNodeClick: (info: any) => void;
   onRightClick: (info: any) => void;
+  onSync: () => void;
   selectedKeys: string[];
 };
 
 const FileTree: React.FC<FileTreeProps> = (props) => {
-  const { treeData, selectedKeys, onNodeClick, onRightClick } = props;
+  const { treeData, selectedKeys, onNodeClick, onRightClick, onSync } = props;
 
   return (
     <>
+      <Flex justify={'space-between'} align={'center'}>
+        <Typography.Text>{l('rc.resource.filelist')}</Typography.Text>
+        <LoadingBtn props={{ type: 'link' }} click={onSync} title={l('rc.resource.sync')} />
+      </Flex>
+      <Divider style={{ margin: '8px' }} />
       {treeData.length > 0 ? (
         <DirectoryTree
           className={'treeList'}
           selectedKeys={selectedKeys}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={(info) => onRightClick(info)}
-          treeData={buildResourceTreeData(treeData)}
+          treeData={buildResourceTreeData(treeData, false, [])}
         />
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />

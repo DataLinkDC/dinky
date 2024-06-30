@@ -20,37 +20,33 @@
 package org.dinky.alert.rules;
 
 import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
+import org.dinky.utils.TimeUtil;
 
-import java.util.concurrent.TimeUnit;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class ExceptionRule {
-
-    private static final LoadingCache<String, Long> hisTime =
-            CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build(CacheLoader.from(key -> null));
 
     /**
      * Executes a certain operation based on the provided key and exceptions object.
      * This method is stored within the database, is called through SPEL, and is not an executable method
-     * @param jobinstanceId The key used to identify the operation.
      * @param exceptions The exceptions object containing relevant data.
      * @return True if the operation should be executed, false otherwise.
      */
-    public static Boolean isException(String jobinstanceId, FlinkJobExceptionsDetail exceptions) {
+    public static Boolean isException(FlinkJobExceptionsDetail exceptions) {
 
-        // If the exception is the same as the previous one, it will not be reported again
         if (exceptions.getTimestamp() == null) {
             return false;
         }
         long timestamp = exceptions.getTimestamp();
-        Long hisTimeIfPresent = hisTime.getIfPresent(jobinstanceId);
-        if (hisTimeIfPresent != null && hisTimeIfPresent == timestamp) {
+        LocalDateTime localDateTime = TimeUtil.toLocalDateTime(timestamp);
+        LocalDateTime now = LocalDateTime.now();
+        long diff = Duration.between(localDateTime, now).toMinutes();
+
+        // If the exception is older than 2 minutes, we don't care about it anymore.
+        if (diff >= 2) {
             return false;
         }
-        hisTime.put(jobinstanceId, timestamp);
         if (exceptions.getRootException() != null) {
             return !exceptions.getRootException().isEmpty();
         } else {

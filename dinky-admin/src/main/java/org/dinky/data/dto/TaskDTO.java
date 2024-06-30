@@ -20,12 +20,18 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.model.Task;
+import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 
 import cn.hutool.core.bean.BeanUtil;
 import io.swagger.annotations.ApiModel;
@@ -36,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * StudioExecuteDTO
- *
  */
 @Getter
 @Setter
@@ -46,6 +51,7 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
     @ProcessId
+    @TaskId
     private Integer id;
 
     @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
@@ -77,13 +83,6 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "Parallelism", dataType = "Integer", example = "4", notes = "The parallelism level")
     private Integer parallelism;
-
-    @ApiModelProperty(
-            value = "Fragment",
-            dataType = "Boolean",
-            example = "true",
-            notes = "Fragment option for the task")
-    private Boolean fragment;
 
     @ApiModelProperty(
             value = "Use Statement Set",
@@ -127,6 +126,9 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "ID of the alert group associated with the task")
     private Integer alertGroupId;
 
+    @ApiModelProperty(value = "Alert Group", dataType = "AlertGroup", notes = "Alert group associated with the task")
+    private AlertGroup alertGroup;
+
     @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes for the task")
     private String note;
 
@@ -156,9 +158,6 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
     private Boolean enabled;
-
-    @ApiModelProperty(value = "Statement", dataType = "String", notes = "SQL statement for the task")
-    private String statement;
 
     @ApiModelProperty(value = "ClusterInstance Name", dataType = "String", notes = "Name of the associated cluster")
     private String clusterName;
@@ -221,14 +220,29 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "The maximum number of rows to return")
     private Integer maxRowNum = 100;
 
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "List",
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
+
     public JobConfig getJobConfig() {
 
         Map<String, String> parsedConfig =
                 this.configJson == null ? new HashMap<>(0) : this.configJson.getCustomConfigMaps();
-
+        Map<String, String> udfRefers = this.configJson == null ? new HashMap<>(0) : this.configJson.getUdfReferMaps();
         JobConfig jobConfig = new JobConfig();
         BeanUtil.copyProperties(this, jobConfig);
         jobConfig.setConfigJson(parsedConfig);
+        jobConfig.setUdfRefer(udfRefers);
         jobConfig.setTaskId(id);
         jobConfig.setJobName(name);
 

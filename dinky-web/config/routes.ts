@@ -42,7 +42,13 @@ export default [
   },
   {
     path: '/',
-    redirect: '/datastudio'
+    redirect: '/redirect'
+  },
+  {
+    path: '/redirect',
+    component: './Other/Redirect',
+    layout: false,
+    hideInMenu: true
   },
   // {
   //   path: '/home',
@@ -113,10 +119,22 @@ export default [
         path: '/registration/datasource',
         name: 'datasource',
         icon: 'DatabaseOutlined',
-        component: './RegCenter/DataSource',
         routes: [
           {
-            path: '/registration/datasource/detail/:id'
+            path: '/registration/datasource',
+            redirect: '/registration/datasource/list'
+          },
+          {
+            path: '/registration/datasource/list',
+            name: 'list',
+            hideInMenu: true,
+            component: './RegCenter/DataSource'
+          },
+          {
+            path: '/registration/datasource/detail',
+            name: 'detail',
+            hideInMenu: true,
+            component: './RegCenter/DataSource/components/DataSourceDetail'
           }
         ]
       },
@@ -139,6 +157,11 @@ export default [
             path: '/registration/alert/template',
             name: 'template',
             component: './RegCenter/Alert/AlertTemplate'
+          },
+          {
+            path: '/registration/alert/rule',
+            name: 'rule',
+            component: './RegCenter/Alert/AlertRule'
           }
         ]
       },
@@ -253,10 +276,10 @@ export default [
       //   component: './SettingCenter/Process'
       // },
       {
-        path: '/settings/alertrulelist',
-        name: 'alertrulelist',
-        icon: 'ReconciliationOutlined',
-        component: './SettingCenter/AlertRule'
+        path: '/settings/classloaderjars',
+        name: 'classloaderjars',
+        icon: 'CodepenOutlined',
+        component: './SettingCenter/ClassLoaderJars'
       }
     ]
   },
@@ -266,6 +289,31 @@ export default [
     icon: 'DashboardOutlined',
     footerRender: false,
     component: './Metrics'
+  },
+
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    icon: 'DashboardOutlined',
+    footerRender: false,
+    routes: [
+      {
+        path: '/dashboard',
+        redirect: '/dashboard/list'
+      },
+      {
+        path: '/dashboard/list',
+        name: 'list',
+        hideInMenu: true,
+        component: './Dashboard'
+      },
+      {
+        path: '/dashboard/dashboard-layout',
+        name: 'chart',
+        hideInMenu: true,
+        component: './Dashboard/DashboardLayout'
+      }
+    ]
   },
   // {
   //   path: '/about',

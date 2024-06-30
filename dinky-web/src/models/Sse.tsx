@@ -20,6 +20,7 @@
 import { postAll } from '@/services/api';
 import { ErrorMessage } from '@/utils/messages';
 import { useEffect, useRef, useState } from 'react';
+// @ts-ignore
 import { v4 as uuidv4 } from 'uuid';
 
 const session_invalid_label = 'SESSION_INVALID';
@@ -34,8 +35,17 @@ export type SubscriberData = {
 
 export default () => {
   const uuidRef = useRef<string>(uuidv4());
+  const lastHeartTime = useRef<number>(0);
   const subscriberRef = useRef<SubscriberData[]>([]);
   const [eventSource, setEventSource] = useState<EventSource>();
+
+  const reconnectSse = () => {
+    lastHeartTime.current = Date.now();
+    uuidRef.current = uuidv4();
+    const sseUrl = 'api/sse/connect?sessionKey=' + uuidRef.current;
+    eventSource?.close();
+    setEventSource(new EventSource(sseUrl));
+  };
 
   const subscribe = async () => {
     const topics: string[] = [];
@@ -49,14 +59,13 @@ export default () => {
       })
       .catch((e) => ErrorMessage(e));
   };
-  const reconnectSse = () => {
-    const sseUrl = '/api/sse/connect?sessionKey=' + uuidRef.current;
-    eventSource?.close();
-    setEventSource(new EventSource(sseUrl));
-  };
 
   useEffect(() => {
-    reconnectSse();
+    setInterval(() => {
+      if (Date.now() - lastHeartTime.current > 20 * 1000) {
+        reconnectSse();
+      }
+    }, 5000);
   }, []);
 
   useEffect(() => {
@@ -65,9 +74,13 @@ export default () => {
       eventSource.onmessage = (e) => {
         try {
           const data: SseData = JSON.parse(e.data);
-          subscriberRef.current
-            .filter((sub) => sub.topic.includes(data.topic))
-            .forEach((sub) => sub.call(data));
+          if (data.topic === 'HEART_BEAT') {
+            lastHeartTime.current = Date.now();
+          } else {
+            subscriberRef.current
+              .filter((sub) => sub.topic.includes(data.topic))
+              .forEach((sub) => sub.call(data));
+          }
         } catch (e: any) {
           ErrorMessage(e);
         }

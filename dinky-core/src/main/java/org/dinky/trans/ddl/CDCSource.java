@@ -20,6 +20,7 @@
 package org.dinky.trans.ddl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.parser.SingleSqlParserFactory;
 
 import java.util.ArrayList;
@@ -220,6 +221,27 @@ public class CDCSource {
             }
         }
         return map;
+    }
+
+    public FlinkCDCConfig buildFlinkCDCConfig() {
+        return new FlinkCDCConfig(
+                connector,
+                hostname,
+                port,
+                username,
+                password,
+                checkpoint,
+                parallelism,
+                database,
+                schema,
+                table,
+                startupMode,
+                split,
+                debezium,
+                source,
+                sink,
+                sinks,
+                jdbc);
     }
 
     public String getConnector() {

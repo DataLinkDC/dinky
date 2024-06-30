@@ -97,7 +97,7 @@
         from dinky_role r
                  left join dinky_user_role urole on urole.role_id = r.id
                  left join dinky_user u on u.id = urole.user_id
-        WHERE r.is_delete = 0 and ur.user_id = #{userId}
+        WHERE r.is_delete = 0 and urole.user_id = #{userId}
     </select>
 
     <select id="selectRoleListByUserId" parameterType="Integer" resultType="Integer">

@@ -19,11 +19,12 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
+import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.data.dto.ClusterInstanceDTO;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
@@ -31,7 +32,6 @@ import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.GatewayResult;
@@ -48,6 +48,9 @@ import org.dinky.utils.URLUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -57,6 +60,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -84,14 +88,14 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
         // TODO 这里判空逻辑有问题，clusterInstance有可能为null
-        Assert.check(clusterInstance);
+        DinkyAssert.check(clusterInstance);
         FlinkClusterInfo info =
                 FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
         }
-        Assert.checkHost(host);
+        DinkyAssert.checkHost(host);
         if (!host.equals(clusterInstance.getJobManagerHost())) {
             clusterInstance.setJobManagerHost(host);
             updateById(clusterInstance);
@@ -174,7 +178,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         ClusterInstance clusterInstance = getById(id);
         // if cluster instance is not null and cluster instance is health, can not delete, must kill cluster instance
         // first
-        if (Asserts.isNotNull(clusterInstance) && checkHealth(clusterInstance)) {
+        if (Asserts.isNotNull(clusterInstance) && checkHealth(clusterInstance) && clusterInstance.isAutoRegisters()) {
             throw new BusException(Status.CLUSTER_INSTANCE_HEALTH_NOT_DELETE);
         }
         return removeById(id);
@@ -233,13 +237,15 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         if (gatewayResult.isSuccess()) {
             Asserts.checkNullString(gatewayResult.getWebURL(), "Unable to obtain Web URL.");
-            return registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
-                    gatewayResult.getWebURL().replace("http://", ""),
-                    gatewayResult.getId(),
-                    clusterCfg.getName() + "_" + LocalDateTime.now(),
-                    gatewayConfig.getType().getLongValue(),
-                    id,
-                    null));
+            return registersCluster(ClusterInstanceDTO.builder()
+                    .hosts(gatewayResult.getWebURL().replace("http://", ""))
+                    .name(gatewayResult.getId())
+                    .alias(clusterCfg.getName() + "_" + LocalDateTime.now())
+                    .type(gatewayConfig.getType().getLongValue())
+                    .clusterConfigurationId(id)
+                    .autoRegisters(true)
+                    .enabled(true)
+                    .build());
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());
     }
@@ -252,7 +258,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     public List<ClusterInstance> selectListByKeyWord(String searchKeyWord, boolean isAutoCreate) {
         return getBaseMapper()
                 .selectList(new LambdaQueryWrapper<ClusterInstance>()
-                        .and(true, i -> i.eq(ClusterInstance::getAutoRegisters, isAutoCreate))
+                        .and(true, i -> i.eq(ClusterInstance::isAutoRegisters, isAutoCreate))
                         .and(true, i -> i.like(ClusterInstance::getName, searchKeyWord)
                                 .or()
                                 .like(ClusterInstance::getAlias, searchKeyWord)
@@ -271,6 +277,17 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         return !taskService
                 .list(new LambdaQueryWrapper<Task>().eq(Task::getClusterId, id))
                 .isEmpty();
+    }
+
+    @Override
+    public Long heartbeat() {
+        List<ClusterInstance> clusterInstances = this.list();
+        ExecutorService executor = ThreadUtil.newExecutor(Math.min(clusterInstances.size(), 10));
+        List<CompletableFuture<Integer>> futures = clusterInstances.stream()
+                .map(c -> CompletableFuture.supplyAsync(
+                        () -> this.registersCluster(c).getStatus(), executor))
+                .collect(Collectors.toList());
+        return futures.stream().map(CompletableFuture::join).filter(x -> x == 1).count();
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {

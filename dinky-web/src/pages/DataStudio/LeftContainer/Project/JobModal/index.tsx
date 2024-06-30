@@ -20,13 +20,23 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import { isFlinkJob, isUDF } from '@/pages/DataStudio/LeftContainer/Project/function';
+import TemplateSelect from '@/pages/DataStudio/LeftContainer/Project/JobModal/components/TemplateSelect';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { RUN_MODE } from '@/services/constants';
+import { DIALECT, RUN_MODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
-import { ModalForm, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ModalForm,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components';
+import { ProFormDependency } from '@ant-design/pro-form';
 import { ProFormCascader } from '@ant-design/pro-form/lib';
+import { useModel } from '@umijs/max';
 import { Form } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import React, { useEffect } from 'react';
@@ -37,12 +47,15 @@ type JobModalProps = {
   modalVisible: boolean;
   title: React.ReactNode;
   values: Partial<Catalogue>;
+  users: UserBaseInfo.User[];
 };
 const JobModal: React.FC<JobModalProps> = (props) => {
-  const { onCancel, onSubmit, modalVisible, title, values } = props;
-  const [jobType, setJobType] = React.useState<string>(values.type || 'FlinkSql');
+  const { onCancel, onSubmit, modalVisible, title, values, users } = props;
+  const [jobType, setJobType] = React.useState<string>(values.type ?? DIALECT.FLINK_SQL);
   const [udfTemplate, setUdfTemplate] = React.useState<DefaultOptionType[]>([]);
+  const [sqlTemplate, setSqlTemplate] = React.useState<string>('');
   const [form] = Form.useForm<Catalogue>();
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   /**
    * init form context
@@ -53,11 +66,17 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     }),
     [form]
   );
+
   /**
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
-    const newValues = { ...values, configJson: values.task?.configJson };
+    const newValues = {
+      ...values,
+      configJson: values.task?.configJson,
+      firstLevelOwner: values.task?.firstLevelOwner,
+      secondLevelOwners: values.task?.secondLevelOwners
+    };
     if (modalVisible) form.resetFields();
     form.setFieldsValue(newValues);
   }, [open, values, form]);
@@ -87,6 +106,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    */
   const handleCancel = () => {
     formContext.resetForm();
+    setJobType('');
     onCancel();
   };
 
@@ -119,11 +139,22 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         step: 1, // default step is develop
         alertGroupId: -1, // -1 is disabled
         type: RUN_MODE.LOCAL, // default run mode is local
-        dialect: formData.type
+        dialect: formData.type,
+        statement: sqlTemplate,
+        firstLevelOwner: formData.firstLevelOwner,
+        secondLevelOwners: formData.secondLevelOwners
       };
       onSubmit({ ...values, ...formData, task: initTaskValue } as Catalogue);
     } else {
-      onSubmit({ ...values, ...formData } as Catalogue);
+      onSubmit({
+        ...values,
+        ...formData,
+        task: {
+          statement: sqlTemplate,
+          firstLevelOwner: formData.firstLevelOwner,
+          secondLevelOwners: formData.secondLevelOwners
+        }
+      } as Catalogue);
     }
   };
 
@@ -143,10 +174,32 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     }
   };
 
+  const buildUserOptions = (users: UserBaseInfo.User[] = []) => {
+    let resultReturn: DefaultOptionType[] = [];
+
+    users.forEach((user: UserBaseInfo.User) => {
+      resultReturn.push({
+        label: user.username,
+        value: user.id
+      });
+    });
+
+    return resultReturn;
+  };
+
   const renderForm = () => {
     return (
       <>
-        {!values.id && (
+        <ProFormGroup>
+          <ProFormText
+            name='name'
+            label={l('catalog.name')}
+            tooltip={l('catalog.name.tip')}
+            placeholder={l('catalog.name.placeholder')}
+            validateTrigger={['onBlur', 'onChange', 'onSubmit']}
+            rules={[{ required: true, validator: validateName }]}
+            width={'xl'}
+          />
           <ProFormSelect
             name={'type'}
             label={l('catalog.type')}
@@ -157,23 +210,53 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             placeholder={l('catalog.type.placeholder')}
             rules={[{ required: true, message: l('catalog.type.placeholder') }]}
             allowClear={false}
+            width={'lg'}
           />
-        )}
-        <ProFormText
-          name='name'
-          label={l('catalog.name')}
-          tooltip={l('catalog.name.tip')}
-          placeholder={l('catalog.name.placeholder')}
-          validateTrigger={['onBlur', 'onChange', 'onSubmit']}
-          rules={[{ required: true, validator: validateName }]}
-        />
-        <ProFormTextArea
-          name='note'
-          label={l('catalog.note')}
-          placeholder={l('catalog.note.placeholder')}
-        />
+        </ProFormGroup>
+        <ProFormGroup>
+          <ProFormSelect
+            label={l('catalog.firstLevelOwner')}
+            name='firstLevelOwner'
+            placeholder={l('catalog.firstLevelOwner.tip1')}
+            tooltip={l('catalog.firstLevelOwner.tip2')}
+            rules={[
+              {
+                required: true,
+                message: l('catalog.firstLevelOwner.tip1')
+              }
+            ]}
+            initialValue={initialState?.currentUser?.user.id}
+            options={buildUserOptions(users)}
+            allowClear={false}
+            showSearch
+            width={'xl'}
+          />
+          <ProFormSelect
+            label={l('catalog.secondLevelOwners')}
+            name='secondLevelOwners'
+            placeholder={l('catalog.secondLevelOwners.tip1')}
+            tooltip={l('catalog.secondLevelOwners.tip2')}
+            options={buildUserOptions(users)}
+            allowClear={true}
+            showSearch
+            mode='multiple'
+            width={'lg'}
+          />
+        </ProFormGroup>
         {isUDF(jobType) && (
-          <>
+          <ProFormGroup>
+            <ProFormText
+              name={['configJson', 'udfConfig', 'className']}
+              label={l('catalog.udf.className')}
+              placeholder={l('catalog.udf.className.placeholder')}
+              rules={[
+                {
+                  required: true,
+                  message: l('catalog.udf.className.placeholder')
+                }
+              ]}
+              width={'md'}
+            />
             <ProFormCascader
               name={['configJson', 'udfConfig', 'selectKeys']}
               label={l('catalog.udf.templateId')}
@@ -189,20 +272,21 @@ const JobModal: React.FC<JobModalProps> = (props) => {
                   message: l('catalog.udf.templateId.placeholder')
                 }
               ]}
+              width={'sm'}
             />
+          </ProFormGroup>
+        )}
+        <ProFormTextArea
+          name='note'
+          label={l('catalog.note')}
+          placeholder={l('catalog.note.placeholder')}
+        />
 
-            <ProFormText
-              name={['configJson', 'udfConfig', 'className']}
-              label={l('catalog.udf.className')}
-              placeholder={l('catalog.udf.className.placeholder')}
-              rules={[
-                {
-                  required: true,
-                  message: l('catalog.udf.className.placeholder')
-                }
-              ]}
-            />
-          </>
+        {/*不支持UDF模板*/}
+        {!isUDF(jobType) && !values.id && (
+          <ProFormDependency name={['type']}>
+            {({ type }) => <TemplateSelect type={type} onChange={(v) => setSqlTemplate(v)} />}
+          </ProFormDependency>
         )}
       </>
     );
@@ -212,10 +296,9 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     <ModalForm<Catalogue>
       title={title}
       form={form}
-      width={'30%'}
+      width={'60%'}
       initialValues={{ ...values }}
       open={modalVisible}
-      layout={'horizontal'}
       autoFocusFirstInput
       onValuesChange={onValuesChange}
       modalProps={{

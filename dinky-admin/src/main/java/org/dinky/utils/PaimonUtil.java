@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import static org.dinky.data.constant.PaimonTableConstant.DINKY_DB;
+import static org.dinky.data.constant.MonitorTableConstant.DINKY_DB;
 
 import org.dinky.data.annotations.paimon.Option;
 import org.dinky.data.annotations.paimon.Options;
@@ -74,31 +74,27 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Data
 public class PaimonUtil {
-    private static final Cache<Class<?>, Schema> SCHEMA_CACHE = CacheUtil.newLRUCache(100);
-    private static final CatalogContext CONTEXT =
-            CatalogContext.create(new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
-    private static final Catalog CATALOG = CatalogFactory.createCatalog(CONTEXT);
 
-    static {
+    private static PaimonUtil instance = new PaimonUtil();
+
+    private final Cache<Class<?>, Schema> schemaCache;
+    private final CatalogContext context;
+    private final Catalog catalog;
+
+    public PaimonUtil() {
+        schemaCache = CacheUtil.newLRUCache(100);
+        context = CatalogContext.create(new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
+        catalog = CatalogFactory.createCatalog(context);
         try {
-            CATALOG.createDatabase(DINKY_DB, true);
+            catalog.createDatabase(DINKY_DB, true);
         } catch (Catalog.DatabaseAlreadyExistException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    public static void dropTable(String table) {
-        Identifier identifier = Identifier.create(DINKY_DB, table);
-        if (CATALOG.tableExists(identifier)) {
-            try {
-                CATALOG.dropTable(identifier, true);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -122,6 +118,8 @@ public class PaimonUtil {
                     String fieldName = StrUtil.toCamelCase(dataField.name());
                     Object fieldValue = ReflectUtil.getFieldValue(t, fieldName);
                     try {
+                        // TODO BinaryWriter.write已被废弃，后续可以考虑改成这种方式
+                        // BinaryWriter.createValueSetter(type).setValue(writer, i, fieldValue);
                         if (type.getTypeRoot() == DataTypeRoot.VARCHAR) {
                             BinaryWriter.write(
                                     writer, i, BinaryString.fromString(JSONUtil.toJsonStr(fieldValue)), type, null);
@@ -155,10 +153,6 @@ public class PaimonUtil {
         }
     }
 
-    public static <T> List<T> batchReadTable(String table, Class<T> clazz) {
-        return batchReadTable(table, clazz, null);
-    }
-
     public static <T> List<T> batchReadTable(
             String table, Class<T> clazz, Function<PredicateBuilder, List<Predicate>> filter) {
         Identifier identifier = getIdentifier(table);
@@ -169,10 +163,10 @@ public class PaimonUtil {
 
         ReadBuilder readBuilder;
         try {
-            if (!CATALOG.tableExists(identifier)) {
+            if (!instance.getCatalog().tableExists(identifier)) {
                 return dataList;
             }
-            readBuilder = CATALOG.getTable(identifier).newReadBuilder();
+            readBuilder = instance.getCatalog().getTable(identifier).newReadBuilder();
             if (filter != null) {
                 List<Predicate> predicates = filter.apply(builder);
                 readBuilder.withFilter(predicates);
@@ -218,18 +212,18 @@ public class PaimonUtil {
     public static Table createOrGetTable(String tableName, Class<?> clazz) {
         try {
             Identifier identifier = Identifier.create(DINKY_DB, tableName);
-            if (CATALOG.tableExists(identifier)) {
-                return CATALOG.getTable(identifier);
+            if (instance.getCatalog().tableExists(identifier)) {
+                return instance.getCatalog().getTable(identifier);
             }
-            CATALOG.createTable(identifier, getSchemaByClass(clazz), false);
-            return CATALOG.getTable(identifier);
+            instance.getCatalog().createTable(identifier, getSchemaByClass(clazz), false);
+            return instance.getCatalog().getTable(identifier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public static Schema getSchemaByClass(Class<?> clazz) {
-        return SCHEMA_CACHE.get(clazz, () -> {
+        return instance.getSchemaCache().get(clazz, () -> {
             List<String> primaryKeys = new ArrayList<>();
             List<String> partitionKeys = new ArrayList<>();
             Schema.Builder builder = Schema.newBuilder();

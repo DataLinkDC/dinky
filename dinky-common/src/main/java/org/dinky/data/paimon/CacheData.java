@@ -40,8 +40,14 @@ import lombok.Setter;
 @Options({
     @Option(key = "file.format", value = "parquet"),
     @Option(key = "snapshot.time-retained", value = "10 s"),
+    @Option(key = "partition.expiration-time", value = "10min"),
+    @Option(key = "partition.expiration-check-interval", value = "2min"),
+    @Option(key = "partition.timestamp-formatter", value = "yyyy-MM-dd HH:mm"),
+    @Option(key = "partition.timestamp-pattern", value = "$cacheTime"),
 })
 public class CacheData implements Serializable {
+    @PartitionKey
+    private String cacheTime;
 
     @PartitionKey
     private String cacheName;

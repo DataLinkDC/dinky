@@ -45,6 +45,7 @@ import {
   StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { DIALECT } from '@/services/constants';
+import { CodeTwoTone } from '@ant-design/icons';
 
 export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
   switch (language.toLowerCase()) {
@@ -131,6 +132,8 @@ export const getTabIcon = (type: string, size?: number) => {
       return <StarRocksIcons size={size} />;
     case DIALECT.PRESTO:
       return <PrestoIcons size={size} />;
+    case DIALECT.TERMINAL:
+      return <CodeTwoTone size={size} />;
     default:
       return <FileIcon />;
   }

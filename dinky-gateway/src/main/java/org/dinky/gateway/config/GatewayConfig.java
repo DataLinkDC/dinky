@@ -19,8 +19,7 @@
 
 package org.dinky.gateway.config;
 
-import org.dinky.gateway.enums.GatewayType;
-import org.dinky.gateway.model.CustomConfig;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -46,6 +45,13 @@ public class GatewayConfig {
             example = "123",
             notes = "ID of the task")
     private Integer taskId;
+
+    @ApiModelProperty(
+            value = "SQL statement to be executed",
+            dataType = "String",
+            example = "SELECT * FROM table",
+            notes = "SQL statement")
+    private String sql;
 
     @ApiModelProperty(
             value = "Paths to the JAR files",
@@ -86,11 +92,6 @@ public class GatewayConfig {
         Assert.notNull(config);
         GatewayConfig gatewayConfig = new GatewayConfig();
         BeanUtil.copyProperties(config, gatewayConfig);
-        for (CustomConfig customConfig : config.getFlinkConfig().getFlinkConfigList()) {
-            Assert.notNull(customConfig.getName(), "Custom flink config has null key");
-            Assert.notNull(customConfig.getValue(), "Custom flink config has null value");
-            gatewayConfig.getFlinkConfig().getConfiguration().put(customConfig.getName(), customConfig.getValue());
-        }
         return gatewayConfig;
     }
 }

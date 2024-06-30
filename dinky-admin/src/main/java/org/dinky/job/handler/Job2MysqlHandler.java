@@ -24,7 +24,9 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.constant.MysqlConstant;
 import org.dinky.data.dto.ClusterInstanceDTO;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
@@ -33,9 +35,11 @@ import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
-import org.dinky.gateway.enums.GatewayType;
+import org.dinky.data.result.ResultPool;
+import org.dinky.data.result.SelectResult;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.Job;
+import org.dinky.job.JobReadHandler;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -44,14 +48,21 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.DependsOn;
+
+import cn.hutool.core.collection.CollectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Job2MysqlHandler
  *
  * @since 2021/6/27 0:04
  */
+@Slf4j
 @DependsOn("springContextUtils")
 public class Job2MysqlHandler extends AbsJobHandler {
 
@@ -132,26 +143,32 @@ public class Job2MysqlHandler extends AbsJobHandler {
         ClusterInstance clusterInstance;
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
-                    job.getJobManagerAddress(),
-                    job.getJobId(),
-                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
-                    job.getType().getLongValue(),
-                    clusterConfigurationId,
-                    taskId));
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.builder()
+                    .hosts(job.getJobManagerAddress())
+                    .name(job.getJobId())
+                    .alias(job.getJobConfig().getJobName() + "_" + LocalDateTime.now())
+                    .type(job.getType().getLongValue())
+                    .clusterConfigurationId(clusterConfigurationId)
+                    .taskId(taskId)
+                    .autoRegisters(true)
+                    .enabled(true)
+                    .build());
+
             if (Asserts.isNotNull(clusterInstance)) {
                 clusterId = clusterInstance.getId();
             }
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
                 && Asserts.isNotNullString(job.getJobManagerAddress())
                 && Asserts.isNotNullString(job.getJobId())) {
-            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.autoRegistersClusterDTO(
-                    job.getJobManagerAddress(),
-                    job.getJobId(),
-                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
-                    job.getType().getLongValue(),
-                    null,
-                    taskId));
+            clusterInstance = clusterInstanceService.registersCluster(ClusterInstanceDTO.builder()
+                    .hosts(job.getJobManagerAddress())
+                    .name(job.getJobId())
+                    .alias(job.getJobConfig().getJobName() + "_" + LocalDateTime.now())
+                    .type(job.getType().getLongValue())
+                    .taskId(taskId)
+                    .autoRegisters(true)
+                    .enabled(true)
+                    .build());
             if (Asserts.isNotNull(clusterInstance)) {
                 clusterId = clusterInstance.getId();
             }
@@ -223,5 +240,44 @@ public class Job2MysqlHandler extends AbsJobHandler {
     @Override
     public boolean close() {
         return true;
+    }
+
+    /**
+     * Persistent storage of result data into mysql.
+     */
+    @Override
+    public void persistResultData(List<String> jobIds) {
+        if (CollectionUtil.isEmpty(jobIds)) {
+            return;
+        }
+        List<History> historyList = jobIds.stream()
+                .map(jobIdStr -> {
+                    Integer jobId = Integer.parseInt(jobIdStr);
+                    SelectResult selectResult = ResultPool.get(jobIdStr);
+                    if (Objects.isNull(selectResult)) {
+                        log.info("The result data does not exist. Job id: {}", jobId);
+                        return null;
+                    }
+                    String resultJsonStr = selectResult.toTruncateJson(MysqlConstant.MEDIUMTEXT_MAX_LENGTH);
+                    History history = new History();
+                    history.setId(jobId);
+                    history.setResult(resultJsonStr);
+                    return history;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        historyService.updateBatchById(historyList);
+        log.info("The result data persistence to MySQL was successful. Job ids: {}", jobIds);
+    }
+
+    /**
+     * Get the read handler.
+     * Each handler that executes a job should have a corresponding read handler.
+     *
+     * @return JobReadHandler
+     */
+    @Override
+    public JobReadHandler getReadHandler() {
+        return new JobReadMysqlHandler();
     }
 }

@@ -50,5 +50,5 @@ public class MybatisPlusFillProperties {
 
     private String operatorField = "operator";
 
-    private String name = "name";
+    private String tenantIdField = "tenantId";
 }

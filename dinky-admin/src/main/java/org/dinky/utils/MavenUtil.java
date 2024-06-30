@@ -19,6 +19,8 @@
 
 package org.dinky.utils;
 
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.constant.PathConstant;
@@ -181,11 +183,8 @@ public class MavenUtil {
     public static String getMavenHome() {
         String mavenHome = SystemUtil.get("MAVEN_HOME");
         if (StrUtil.isNotBlank(mavenHome)) {
-            return mavenHome;
-        }
-        String searchCmd = SystemUtil.getOsInfo().isWindows() ? "where" : "which";
-        mavenHome = RuntimeUtil.execForStr(searchCmd + " " + EXECTOR).trim();
-        if (StrUtil.isNotBlank(mavenHome)) {
+            String searchCmd = SystemUtil.getOsInfo().isWindows() ? "where" : "which";
+            mavenHome = RuntimeUtil.execForStr(searchCmd + " " + EXECTOR).trim();
             try {
                 return new File(mavenHome)
                         .toPath()
@@ -194,11 +193,11 @@ public class MavenUtil {
                         .getParent()
                         .toString();
             } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+                throw new RuntimeException(e);
             }
+        } else {
+            throw new BusException(Status.GIT_MAVEN_HOME_NOT_SET);
         }
-        return null;
     }
 
     public static List<File> getJars(File pom) {

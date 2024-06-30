@@ -17,7 +17,7 @@
 name: Optimization request
 description: Suggest a optimization for this project
 title: "[Optimization][Module Name] Optimization title"
-labels: [ "optimization", "Waiting for reply" ]
+labels: [ "Optimization", "Waiting for reply" ]
 body:
   - type: markdown
     attributes:

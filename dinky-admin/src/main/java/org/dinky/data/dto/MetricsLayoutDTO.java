@@ -51,6 +51,13 @@ public class MetricsLayoutDTO {
     private String vertices;
 
     @ApiModelProperty(
+            value = "Vertices Title",
+            dataType = "String",
+            example = "vertex1,vertex2,vertex3",
+            notes = "The vertices title associated with the layout")
+    private String verticesTitle;
+
+    @ApiModelProperty(
             value = "Metrics",
             dataType = "String",
             example = "metric1,metric2,metric3",

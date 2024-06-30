@@ -76,6 +76,9 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
       param
     );
     result.then((res) => {
+      if (!res) {
+        return;
+      }
       const errorExplainData: [] = [];
       let errorCount: number = 0;
       if (!res.data) {
@@ -228,7 +231,7 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
           style={{ alignItems: 'inherit' }}
           code={explainInfo}
           language='java'
-          height='500px'
+          height='92vh'
         />
       </Drawer>
     </>

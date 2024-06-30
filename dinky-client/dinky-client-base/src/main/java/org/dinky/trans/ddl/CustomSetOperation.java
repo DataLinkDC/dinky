@@ -29,7 +29,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.operations.command.SetOperation;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +78,9 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
             if (null != Class.forName("org.apache.log4j.Logger")) {
-                tEnv.parseAndLoadConfiguration(statement, new HashMap<>());
+                if (this.isValid()) {
+                    callSet(new SetOperation(this.getKey(), this.getValue()), tEnv);
+                }
                 return Optional.of(TABLE_RESULT_OK);
             }
         } catch (ClassNotFoundException e) {
@@ -92,6 +96,27 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
             config.addConfiguration(configuration);
         }
         return Optional.of(TABLE_RESULT_OK);
+    }
+
+    private void callSet(SetOperation setOperation, CustomTableEnvironment environment) {
+        if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
+            return;
+        }
+
+        String key = setOperation.getKey().get().trim();
+        String value = setOperation.getValue().get().trim();
+        if (Asserts.isNullString(key) || Asserts.isNullString(value)) {
+            return;
+        }
+
+        setConfiguration(environment, Collections.singletonMap(key, value));
+    }
+
+    private void setConfiguration(CustomTableEnvironment environment, Map<String, String> config) {
+        Configuration configuration = Configuration.fromMap(config);
+        environment.getStreamExecutionEnvironment().getConfig().configure(configuration, null);
+        environment.getStreamExecutionEnvironment().getCheckpointConfig().configure(configuration);
+        environment.getConfig().addConfiguration(configuration);
     }
 
     @Override

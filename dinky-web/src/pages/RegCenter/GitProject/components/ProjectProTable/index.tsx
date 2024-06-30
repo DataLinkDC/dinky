@@ -49,6 +49,7 @@ import {
 } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { PermissionConstants } from '@/types/Public/constants';
 import { GitProject } from '@/types/RegCenter/data.d';
 import { InitGitProjectState } from '@/types/RegCenter/init.d';
 import { GitProjectState } from '@/types/RegCenter/state.d';
@@ -264,7 +265,7 @@ const ProjectProTable: React.FC = () => {
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
-            disabled={!HasAuthority('/registration/gitproject/edit')}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT)}
             onChange={() => handleChangeEnable(record)}
           />
         );
@@ -276,7 +277,10 @@ const ProjectProTable: React.FC = () => {
       width: '10%',
       fixed: 'right',
       render: (text: any, record: GitProject) => [
-        <Authorized key={`${record.id}_showLog`} path='/registration/gitproject/showLog'>
+        <Authorized
+          key={`${record.id}_showLog`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_SHOW_LOG}
+        >
           <ShowLogBtn
             disabled={record.buildStep === 0}
             key={`${record.id}_showLog`}
@@ -290,7 +294,10 @@ const ProjectProTable: React.FC = () => {
           icon={<ShowCodeTreeIcon />}
           onClick={() => handleShowCodeTree(record)}
         />,
-        <Authorized key={`${record.id}_build`} path='/registration/gitproject/build'>
+        <Authorized
+          key={`${record.id}_build`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_BUILD}
+        >
           <Popconfirm
             className={'options-button'}
             key={`${record.id}_build`}
@@ -310,10 +317,16 @@ const ProjectProTable: React.FC = () => {
             />
           </Popconfirm>
         </Authorized>,
-        <Authorized key={`${record.id}_edit`} path='/registration/gitproject/edit'>
+        <Authorized
+          key={`${record.id}_edit`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_EDIT}
+        >
           <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
         </Authorized>,
-        <Authorized key={`${record.id}_delete`} path='/registration/gitproject/delete'>
+        <Authorized
+          key={`${record.id}_delete`}
+          path={PermissionConstants.REGISTRATION_GIT_PROJECT_DELETE}
+        >
           <PopconfirmDeleteBtn
             key={`${record.id}_delete`}
             onClick={() => handleDeleteSubmit(record.id)}
@@ -377,7 +390,7 @@ const ProjectProTable: React.FC = () => {
         actionRef={actionRef}
         dragSortKey={'id'}
         toolBarRender={() => [
-          <Authorized key='create' path='/registration/gitproject/add'>
+          <Authorized key='create' path={PermissionConstants.REGISTRATION_GIT_PROJECT_ADD}>
             <CreateBtn
               key={'gittable'}
               onClick={() =>

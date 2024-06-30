@@ -24,11 +24,29 @@ public interface DorisConstant {
     /** 查询所有database */
     String QUERY_ALL_DATABASE = " show databases ";
     /** 查询所有schema下的所有表 */
-    String QUERY_TABLE_BY_SCHEMA =
-            " select TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `SCHEMA`,TABLE_COMMENT AS COMMENT, '' as"
-                    + " TYPE, '' as CATALOG, '' as ENGINE , '' as OPTIONS , 0 as `ROWS`, null as"
-                    + " CREATE_TIME, null as UPDATE_TIME from information_schema.tables where"
-                    + " TABLE_SCHEMA = '%s'  ";
+    String QUERY_TABLE_BY_SCHEMA = "select TABLE_NAME    AS `NAME`,\n" + "       TABLE_SCHEMA  AS `SCHEMA`,\n"
+            + "       TABLE_COMMENT AS COMMENT,\n"
+            + "       TABLE_TYPE            as TYPE,\n"
+            + "       TABLE_CATALOG            as CATALOG,\n"
+            + "       ENGINE            as ENGINE,\n"
+            + "       CREATE_OPTIONS            as OPTIONS,\n"
+            + "       TABLE_ROWS             as `ROWS`,\n"
+            + "       CREATE_TIME          as CREATE_TIME,\n"
+            + "       UPDATE_TIME          as UPDATE_TIME\n"
+            + "from information_schema.tables"
+            + " where"
+            + " TABLE_SCHEMA = '%s'  ";
     /** 查询指定schema.table下的所有列信息 */
     String QUERY_COLUMNS_BY_TABLE_AND_SCHEMA = "  show full columns from `%s`.`%s` ";
+
+    /** Max size of char type of Doris. */
+    int MAX_CHAR_SIZE = 255;
+
+    /** Max size of varchar type of Doris. */
+    int MAX_VARCHAR_SIZE = 65533;
+    /* Max precision of datetime type of Doris. */
+    int MAX_SUPPORTED_DATE_TIME_PRECISION = 6;
+
+    /* Max precision of timestamp type. */
+    int MAX_TIMESTAMP_PRECISION = 9;
 }

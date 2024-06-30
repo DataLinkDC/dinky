@@ -18,6 +18,7 @@
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
@@ -29,7 +30,7 @@ import { Key, ProForm, ProFormSelect } from '@ant-design/pro-components';
 import { connect } from '@umijs/max';
 import { Spin, Tag } from 'antd';
 import { useEffect, useState } from 'react';
-import { StateType, STUDIO_MODEL } from '../../model';
+import { StateType, STUDIO_MODEL, TabsPageType } from '../../model';
 import { clearDataSourceTable, getDataSourceList, showDataSourceTable } from './service';
 
 const DataSource = (props: any) => {
@@ -88,7 +89,7 @@ const DataSource = (props: any) => {
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
-  const currentTabName = 'menu.datastudio.datasource';
+  const currentTabName = LeftMenuKey.DATASOURCE_KEY;
 
   const btnEvent = [...BtnRoute[currentTabName]];
 
@@ -161,7 +162,7 @@ const DataSource = (props: any) => {
         breadcrumbLabel: [selectDb.type, selectDb.name].join('/'),
         label: schemaName + '.' + tableName,
         params: { queryParams: queryParams, tableInfo: fullInfo },
-        type: 'metadata'
+        type: TabsPageType.metadata
       }
     });
   };

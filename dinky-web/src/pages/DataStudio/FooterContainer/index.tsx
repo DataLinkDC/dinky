@@ -22,6 +22,7 @@ import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal'
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { getSseData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
@@ -59,15 +60,18 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
 
   useEffect(() => {
-    const eventSource = getSseData('/api/monitor/getJvmInfo');
+    const eventSource = getSseData(API_CONSTANTS.BASE_URL + API_CONSTANTS.GET_JVM_INFO);
     eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data).data;
-      setMemDetailInfo(
-        Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
-          '/' +
-          Number(data['max'] / 1024 / 1024).toFixed(0) +
-          'M'
-      );
+      const respData = JSON.parse(event.data);
+      const data = respData.data;
+      if (respData['topic'] != 'HEART_BEAT') {
+        setMemDetailInfo(
+          Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
+            '/' +
+            Number(data['max'] / 1024 / 1024).toFixed(0) +
+            'M'
+        );
+      }
     };
     return () => {
       eventSource.close();
@@ -183,7 +187,8 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
       </div>
       <JobRunningModal
         value={jobRunningMsg}
-        visible={viewJobRunning}
+        //TODO 目前实现不了，禁掉
+        visible={false}
         onCancel={() => setViewJobRunning(false)}
         onOk={() => setViewJobRunning(false)}
       />
