@@ -12,6 +12,9 @@ logs.zip
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# sqlite
+dinky.db
+
 # Package Files #
 *.jar
 *.war
