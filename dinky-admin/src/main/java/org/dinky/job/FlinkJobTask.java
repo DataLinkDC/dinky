@@ -105,7 +105,7 @@ public class FlinkJobTask implements DaemonTask {
         if (Asserts.isAllNotNull(jobInfoDetail.getClusterInstance())) {
             JobAlertHandler.getInstance().check(jobInfoDetail);
             if (SystemConfiguration.getInstances().getMetricsSysEnable().getValue()) {
-                JobMetricsHandler.refeshAndWriteFlinkMetrics(jobInfoDetail, verticesAndMetricsMap);
+                JobMetricsHandler.refreshAndWriteFlinkMetrics(jobInfoDetail, verticesAndMetricsMap);
             }
         }
         return isDone;

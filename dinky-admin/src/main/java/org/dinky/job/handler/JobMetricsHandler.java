@@ -54,7 +54,7 @@ public class JobMetricsHandler {
      * Send to MetricsContextHolder asynchronously at the end of the method.  </br>
      * Thus, the operation of writing the Flink indicator is completed. </br>
      */
-    public static void refeshAndWriteFlinkMetrics(
+    public static void refreshAndWriteFlinkMetrics(
             JobInfoDetail jobInfoDetail, Map<String, Map<String, String>> customMetricsList) {
         String[] jobManagerUrls =
                 jobInfoDetail.getClusterInstance().getJobManagerHost().split(",");
@@ -73,7 +73,7 @@ public class JobMetricsHandler {
             metricsVO.setHeartTime(LocalDateTime.now());
             metricsVO.setModel(jobId);
             metricsVO.setDate(TimeUtil.nowStr("yyyy-MM-dd"));
-            MetricsContextHolder.getInstance().sendAsync(metricsVO.getModel(), metricsVO);
+            MetricsContextHolder.getInstance().saveToSqlite(metricsVO.getModel(), metricsVO);
         } catch (Exception e) {
             log.error("Get and save Flink metrics error", e);
         }
