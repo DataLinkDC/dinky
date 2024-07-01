@@ -19,13 +19,19 @@
 
 package org.dinky.context;
 
-import org.dinky.data.constant.PaimonTableConstant;
+import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
+
+import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
+import org.dinky.utils.SqliteUtil;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -35,6 +41,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import cn.hutool.core.text.StrFormatter;
@@ -47,12 +55,20 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MetricsContextHolder {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Getter
     protected static final MetricsContextHolder instance = new MetricsContextHolder();
 
     private final List<MetricsVO> metricsVOS = new CopyOnWriteArrayList<>();
     private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
+
+    static {
+        String sql = String.format(
+                "%s BIGINT, %s TEXT, %s TEXT, %s INTEGER",
+                JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
+        SqliteUtil.INSTANCE.createTable(MonitorTableConstant.DINKY_METRICS, sql);
+    }
 
     // Create a ThreadFactory with custom naming
     ThreadFactory namedThreadFactory =
@@ -64,7 +80,7 @@ public class MetricsContextHolder {
             10, // Maximum pool size, allows the pool to expand as needed
             60L, // Keep alive time for idle threads
             TimeUnit.SECONDS, // Unit of keep alive time
-            new LinkedBlockingQueue<Runnable>(10), // Use a larger queue to hold excess tasks
+            new LinkedBlockingQueue<>(10), // Use a larger queue to hold excess tasks
             namedThreadFactory);
 
     public void sendAsync(String key, MetricsVO o) {
@@ -86,10 +102,57 @@ public class MetricsContextHolder {
                     metricsVOS.clear();
                     lastDumpTime.set(current);
                 }
-                PaimonUtil.write(PaimonTableConstant.DINKY_METRICS, snapshot, MetricsVO.class);
+                PaimonUtil.write(MonitorTableConstant.DINKY_METRICS, snapshot, MetricsVO.class);
             }
             String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
             SseSessionContextHolder.sendTopic(topic, o); // Ensure only successfully added metrics are sent
         });
+    }
+
+    public void saveToSqlite(String key, MetricsVO o) {
+        Object content = o.getContent();
+        if (content == null
+                || (content instanceof ConcurrentHashMap && ((ConcurrentHashMap<?, ?>) content).isEmpty())) {
+            return;
+        }
+
+        metricsVOS.add(o);
+        long current = System.currentTimeMillis();
+        long duration = current - lastDumpTime.get();
+        if (metricsVOS.size() >= 1000 || duration >= 15000) {
+            lastDumpTime.set(current);
+            List<List<String>> values = convertMetricsVOsToStringList(metricsVOS);
+            try {
+                final List<String> columns = Arrays.asList(
+                        JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
+                SqliteUtil.INSTANCE.write(MonitorTableConstant.DINKY_METRICS, columns, values);
+            } catch (SQLException e) {
+                log.error("Failed to write metrics to SQLite", e);
+                return;
+            }
+            metricsVOS.clear();
+        }
+        String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
+        SseSessionContextHolder.sendTopic(topic, o);
+    }
+
+    public List<List<String>> convertMetricsVOsToStringList(List<MetricsVO> metricsVOS) {
+        List<List<String>> result = new ArrayList<>();
+
+        for (MetricsVO metricsVO : metricsVOS) {
+            Map<String, Object> content = (Map<String, Object>) metricsVO.getContent();
+            try {
+                List<String> row = new ArrayList<>();
+                row.add(metricsVO.getModel());
+                row.add(objectMapper.writeValueAsString(content));
+                row.add(metricsVO.getHeartTime().toString());
+                row.add(metricsVO.getDate());
+                result.add(row);
+            } catch (JsonProcessingException e) {
+                log.error("Failed to serialize content of MetricsVO: {}", metricsVO, e);
+            }
+        }
+
+        return result;
     }
 }

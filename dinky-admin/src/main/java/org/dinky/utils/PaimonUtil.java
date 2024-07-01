@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import static org.dinky.data.constant.PaimonTableConstant.DINKY_DB;
+import static org.dinky.data.constant.MonitorTableConstant.DINKY_DB;
 
 import org.dinky.data.annotations.paimon.Option;
 import org.dinky.data.annotations.paimon.Options;
@@ -81,7 +81,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class PaimonUtil {
 
-    private static PaimonUtil instance;
+    private static PaimonUtil instance = new PaimonUtil();
 
     private final Cache<Class<?>, Schema> schemaCache;
     private final CatalogContext context;
@@ -95,24 +95,6 @@ public class PaimonUtil {
             catalog.createDatabase(DINKY_DB, true);
         } catch (Catalog.DatabaseAlreadyExistException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    public static synchronized PaimonUtil getInstance() {
-        if (instance == null) {
-            instance = new PaimonUtil();
-        }
-        return instance;
-    }
-
-    public static void dropTable(String table) {
-        Identifier identifier = Identifier.create(DINKY_DB, table);
-        if (getInstance().getCatalog().tableExists(identifier)) {
-            try {
-                getInstance().getCatalog().dropTable(identifier, true);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -171,10 +153,6 @@ public class PaimonUtil {
         }
     }
 
-    public static <T> List<T> batchReadTable(String table, Class<T> clazz) {
-        return batchReadTable(table, clazz, null);
-    }
-
     public static <T> List<T> batchReadTable(
             String table, Class<T> clazz, Function<PredicateBuilder, List<Predicate>> filter) {
         Identifier identifier = getIdentifier(table);
@@ -185,10 +163,10 @@ public class PaimonUtil {
 
         ReadBuilder readBuilder;
         try {
-            if (!getInstance().getCatalog().tableExists(identifier)) {
+            if (!instance.getCatalog().tableExists(identifier)) {
                 return dataList;
             }
-            readBuilder = getInstance().getCatalog().getTable(identifier).newReadBuilder();
+            readBuilder = instance.getCatalog().getTable(identifier).newReadBuilder();
             if (filter != null) {
                 List<Predicate> predicates = filter.apply(builder);
                 readBuilder.withFilter(predicates);
@@ -234,18 +212,18 @@ public class PaimonUtil {
     public static Table createOrGetTable(String tableName, Class<?> clazz) {
         try {
             Identifier identifier = Identifier.create(DINKY_DB, tableName);
-            if (getInstance().getCatalog().tableExists(identifier)) {
-                return getInstance().getCatalog().getTable(identifier);
+            if (instance.getCatalog().tableExists(identifier)) {
+                return instance.getCatalog().getTable(identifier);
             }
-            getInstance().getCatalog().createTable(identifier, getSchemaByClass(clazz), false);
-            return getInstance().getCatalog().getTable(identifier);
+            instance.getCatalog().createTable(identifier, getSchemaByClass(clazz), false);
+            return instance.getCatalog().getTable(identifier);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public static Schema getSchemaByClass(Class<?> clazz) {
-        return getInstance().getSchemaCache().get(clazz, () -> {
+        return instance.getSchemaCache().get(clazz, () -> {
             List<String> primaryKeys = new ArrayList<>();
             List<String> partitionKeys = new ArrayList<>();
             Schema.Builder builder = Schema.newBuilder();
