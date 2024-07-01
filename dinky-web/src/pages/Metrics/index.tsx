@@ -65,11 +65,6 @@ export default () => {
         header={{ extra: [<MetricsFilter key={''} onTimeSelect={onTimeSelectChange} />] }}
         content={
           <>
-            {showServer.data && (
-              <ProCard collapsible title={'Dinky Server'} ghost bordered hoverable>
-                <Server timeRange={timeRange} />
-              </ProCard>
-            )}
             {/*<Job />*/}
             <JobMetricsList timeRange={timeRange} />
           </>

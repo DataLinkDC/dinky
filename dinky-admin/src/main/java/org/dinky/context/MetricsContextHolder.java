@@ -24,7 +24,6 @@ import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
-import org.dinky.utils.PaimonUtil;
 import org.dinky.utils.SqliteUtil;
 
 import java.sql.SQLException;
@@ -90,20 +89,6 @@ public class MetricsContextHolder {
             return; // Return early to avoid unnecessary operations
         }
         pool.execute(() -> {
-            metricsVOS.add(o);
-            long current = System.currentTimeMillis();
-            long duration = current - lastDumpTime.get();
-            // Temporary cache monitoring information, mainly to prevent excessive buffering of write IO,
-            // when metricsVOS data reaches 1000 or the time exceeds 15 seconds
-            if (metricsVOS.size() >= 1000 || duration >= 15000) {
-                List<MetricsVO> snapshot;
-                synchronized (this) { // Enter synchronized block only when necessary
-                    snapshot = new ArrayList<>(metricsVOS);
-                    metricsVOS.clear();
-                    lastDumpTime.set(current);
-                }
-                PaimonUtil.write(MonitorTableConstant.DINKY_METRICS, snapshot, MetricsVO.class);
-            }
             String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
             SseSessionContextHolder.sendTopic(topic, o); // Ensure only successfully added metrics are sent
         });
