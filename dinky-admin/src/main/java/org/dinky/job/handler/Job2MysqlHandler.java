@@ -19,12 +19,6 @@
 
 package org.dinky.job.handler;
 
-import cn.hutool.core.collection.CollectionUtil;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
@@ -53,7 +47,16 @@ import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.DependsOn;
+
+import cn.hutool.core.collection.CollectionUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Job2MysqlHandler
@@ -209,7 +212,7 @@ public class Job2MysqlHandler extends AbsJobHandler {
                 .clusterConfigurationJson(
                         Asserts.isNotNull(clusterConfigurationId)
                                 ? ClusterConfigurationMapping.getClusterConfigurationMapping(
-                                clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
+                                        clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
                                 : null)
                 .build();
         jobHistoryService.save(jobHistory);
