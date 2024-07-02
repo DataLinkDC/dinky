@@ -22,6 +22,7 @@ package org.dinky.data.model;
 import org.dinky.context.EngineContextHolder;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.TaskOwnerAlertStrategyEnum;
 import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.properties.OssProperties;
 
@@ -138,6 +139,12 @@ public class SystemConfiguration {
                     .enumType(TaskOwnerLockStrategyEnum.class)
                     .defaultValue(TaskOwnerLockStrategyEnum.ALL)
                     .note(Status.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY_NOTE);
+
+    private final Configuration<TaskOwnerAlertStrategyEnum> taskOwnerAlertStrategy =
+            key(Status.SYS_ENV_SETTINGS_TASK_OWNER_ALERT_STRATEGY)
+                    .enumType(TaskOwnerAlertStrategyEnum.class)
+                    .defaultValue(TaskOwnerAlertStrategyEnum.NONE)
+                    .note(Status.SYS_ENV_SETTINGS_TASK_OWNER_ALERT_STRATEGY_NOTE);
 
     private final Configuration<Boolean> dolphinschedulerEnable = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_ENABLE)
             .booleanType()
