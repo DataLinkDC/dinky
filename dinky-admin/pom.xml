@@ -337,6 +337,14 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-dingtalk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-sms</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
