@@ -1216,6 +1216,7 @@ export default {
   'user.update': '修改用户',
   'user.username': '用户名',
   'user.usernamePlaceholder': '请输入用户名',
+  'user.phoneFormat': '手机号码格式不正确',
 
   'lineage.getError': '无法获取血缘',
   'lineage.expandField': '展开字段(暂未实现)',
