@@ -22,6 +22,8 @@ package org.dinky.job.handler;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
+import org.dinky.alert.dingtalk.DingTalkConstants;
+import org.dinky.alert.sms.SmsConstants;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FreeMarkerHolder;
 import org.dinky.context.SpringContextUtils;
@@ -30,6 +32,7 @@ import org.dinky.data.dto.AlertRuleDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.TaskOwnerAlertStrategyEnum;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SystemConfiguration;
@@ -38,16 +41,21 @@ import org.dinky.data.model.alert.AlertHistory;
 import org.dinky.data.model.alert.AlertInstance;
 import org.dinky.data.model.ext.JobAlertData;
 import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.options.JobAlertRuleOptions;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.service.TaskService;
+import org.dinky.service.UserService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.utils.JsonUtils;
+
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -65,6 +73,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.Data;
@@ -78,6 +87,7 @@ public class JobAlertHandler {
     private static final TaskService taskService;
     private static final AlertRuleServiceImpl alertRuleService;
     private static final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+    private static final UserService userService;
 
     /**
      * Rules for evaluating alert conditions.
@@ -103,12 +113,15 @@ public class JobAlertHandler {
      */
     private static LoadingCache<Integer, Map<Integer, Integer>> alertCache;
 
+    private static LoadingCache<Integer, User> userCache;
+
     private static volatile JobAlertHandler defaultJobAlertHandler;
 
     static {
         taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
         alertHistoryService = SpringContextUtils.getBean("alertHistoryServiceImpl", AlertHistoryService.class);
         alertRuleService = SpringContextUtils.getBean("alertRuleServiceImpl", AlertRuleServiceImpl.class);
+        userService = SpringContextUtils.getBean("userServiceImpl", UserService.class);
 
         Configuration<Integer> jobReSendDiffSecond = systemConfiguration.getJobReSendDiffSecond();
         jobReSendDiffSecond.addChangeEvent((c) -> {
@@ -118,6 +131,15 @@ public class JobAlertHandler {
                     .build(CacheLoader.from(() -> new HashMap<>()));
         });
         jobReSendDiffSecond.runChangeEvent();
+
+        userCache = CacheBuilder.newBuilder()
+                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .build(new CacheLoader<Integer, User>() {
+                    @Override
+                    public User load(Integer id) { // no checked exception
+                        return userService.getById(id);
+                    }
+                });
     }
 
     public static JobAlertHandler getInstance() {
@@ -228,12 +250,87 @@ public class JobAlertHandler {
         String alertContent = freeMarkerHolder.buildWithData(alertRuleDTO.getTemplateName(), dataModel);
 
         if (!Asserts.isNull(task.getAlertGroup())) {
+            // 获取任务的责任人和维护人对应的用户信息|Get the responsible person and maintainer of the task
+            User ownerInfo = userCache.get(task.getFirstLevelOwner());
+            List<User> maintainerInfo = task.getSecondLevelOwners().stream()
+                    .map(id -> {
+                        try {
+                            return userCache.get(id);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    })
+                    .collect(Collectors.toList());
             AlertGroup alertGroup = task.getAlertGroup();
             alertGroup.getInstances().stream()
                     .filter(Objects::nonNull)
                     .filter(AlertInstance::getEnabled)
-                    .forEach(alertInstance -> sendAlert(
-                            alertInstance, jobInstanceId, alertGroup.getId(), alertRuleDTO.getName(), alertContent));
+                    .forEach(alertInstance -> {
+                        addOwnerAlert(alertInstance, ownerInfo, maintainerInfo);
+                        sendAlert(
+                                alertInstance, jobInstanceId, alertGroup.getId(), alertRuleDTO.getName(), alertContent);
+                    });
+        }
+    }
+
+    /**
+     * Add the contact number of the task owner to the phone list of the alarm instance to alert the task owner
+     * @param alertInstance
+     * @param ownerInfo
+     * @param maintainerInfo
+     */
+    private void addOwnerAlert(AlertInstance alertInstance, User ownerInfo, List<User> maintainerInfo) {
+        List<String> extraMobileList = Lists.newArrayList();
+        TaskOwnerAlertStrategyEnum value =
+                SystemConfiguration.getInstances().getTaskOwnerAlertStrategy().getValue();
+        switch (value) {
+            case OWNER:
+                if (ownerInfo != null && ownerInfo.getMobile() != null) {
+                    extraMobileList.add(ownerInfo.getMobile());
+                }
+                break;
+            case OWNER_AND_MAINTAINER:
+                if (ownerInfo != null && ownerInfo.getMobile() != null) {
+                    extraMobileList.add(ownerInfo.getMobile());
+                }
+                extraMobileList.addAll(maintainerInfo.stream()
+                        .filter(user -> Objects.nonNull(user) && StrUtil.isNotBlank(user.getMobile()))
+                        .map(User::getMobile)
+                        .collect(Collectors.toList()));
+                break;
+            case NONE:
+            default:
+                log.error("Alert Strategy Type: {} is not supported", value);
+                return;
+        }
+        // 获取告警实例的配置参数|Get the configuration parameters of the alert instance
+        Map<String, Object> alertInstanceParams = alertInstance.getParams();
+        switch (alertInstance.getType()) {
+            case DingTalkConstants.TYPE:
+                Boolean atAll =
+                        (Boolean) alertInstanceParams.getOrDefault(DingTalkConstants.ALERT_TEMPLATE_AT_ALL, false);
+                if (!atAll) {
+                    // 重新构告警实例的告警人员|Rebuild the alert personnel of the alert instance
+                    List<String> atMobiles =
+                            (List<String>) alertInstanceParams.get(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES);
+                    atMobiles.addAll(extraMobileList.stream()
+                            .filter(mobile -> !atMobiles.contains(mobile))
+                            .collect(Collectors.toList()));
+                    alertInstanceParams.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES, atMobiles);
+                    alertInstance.setParams(alertInstanceParams);
+                }
+                break;
+            case SmsConstants.TYPE:
+                // 重新构告警实例的告警人员|Rebuild the alert personnel of the alert instance
+                List<String> phoneNumbers = (List<String>) alertInstanceParams.get(SmsConstants.PHONE_NUMBERS);
+                phoneNumbers.addAll(extraMobileList.stream()
+                        .filter(mobile -> !phoneNumbers.contains(mobile))
+                        .collect(Collectors.toList()));
+                alertInstanceParams.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES, phoneNumbers);
+                alertInstance.setParams(alertInstanceParams);
+                break;
+            default:
         }
     }
 
