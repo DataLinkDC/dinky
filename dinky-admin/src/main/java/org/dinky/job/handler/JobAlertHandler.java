@@ -265,52 +265,62 @@ public class JobAlertHandler {
                     .filter(Objects::nonNull)
                     .filter(AlertInstance::getEnabled)
                     .forEach( alertInstance -> {
-                        List<String> extraMobileList = Lists.newArrayList();
-                        TaskOwnerAlertStrategyEnum value = SystemConfiguration.getInstances().getTaskOwnerAlertStrategy().getValue();
-                        switch (value){
-                            case OWNER:
-                                if(ownerInfo!=null&&ownerInfo.getMobile()!=null){
-                                    extraMobileList.add(ownerInfo.getMobile());
-                                }
-                                break;
-                            case OWNER_AND_MAINTAINER:
-                                if(ownerInfo!=null&&ownerInfo.getMobile()!=null){
-                                    extraMobileList.add(ownerInfo.getMobile());
-                                }
-                                extraMobileList.addAll(maintainerInfo.stream().filter(user -> Objects.nonNull(user)&&StrUtil.isNotBlank(user.getMobile()))
-                                        .map(User::getMobile)
-                                        .collect(Collectors.toList()));
-                                break;
-                            case NONE:
-                                break;
-                            default:
-                                log.error("Alert Strategy Type: {} is not supported",value);
-                        }
-                        //获取告警实例的配置参数|Get the configuration parameters of the alert instance
-                        Map<String, Object> alertInstanceParams = alertInstance.getParams();
-                        switch (alertInstance.getType()) {
-                            case DingTalkConstants.TYPE:
-                                Boolean atAll = (Boolean)alertInstanceParams.getOrDefault( DingTalkConstants.ALERT_TEMPLATE_AT_ALL,false);
-                                if(!atAll){
-                                    // 重新构告警实例的告警人员|Rebuild the alert personnel of the alert instance
-                                    List<String> atMobiles = (List<String>) alertInstanceParams.get(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES);
-                                    atMobiles.addAll(extraMobileList.stream().filter(mobile->!atMobiles.contains(mobile)).collect(Collectors.toList()));
-                                    alertInstanceParams.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES, atMobiles);
-                                    alertInstance.setParams(alertInstanceParams);
-                                }
-                                break;
-                            case SmsConstants.TYPE:
-                                // 重新构告警实例的告警人员|Rebuild the alert personnel of the alert instance
-                                List<String> phoneNumbers = (List<String>) alertInstanceParams.get(SmsConstants.PHONE_NUMBERS);
-                                phoneNumbers.addAll(extraMobileList.stream().filter(mobile->!phoneNumbers.contains(mobile)).collect(Collectors.toList()));
-                                alertInstanceParams.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES, phoneNumbers);
-                                alertInstance.setParams(alertInstanceParams);
-                                break;
-                            default:
-                        }
+                        addOwnerAlert(alertInstance,ownerInfo,maintainerInfo);
                         sendAlert(
                                 alertInstance, jobInstanceId, alertGroup.getId(), alertRuleDTO.getName(), alertContent);
                     });
+        }
+    }
+
+    /**
+     * Add the contact number of the task owner to the phone list of the alarm instance to alert the task owner
+     * @param alertInstance
+     * @param ownerInfo
+     * @param maintainerInfo
+     */
+    private void addOwnerAlert(AlertInstance alertInstance,User ownerInfo,List<User> maintainerInfo){
+        List<String> extraMobileList = Lists.newArrayList();
+        TaskOwnerAlertStrategyEnum value = SystemConfiguration.getInstances().getTaskOwnerAlertStrategy().getValue();
+        switch (value){
+            case OWNER:
+                if(ownerInfo!=null&&ownerInfo.getMobile()!=null){
+                    extraMobileList.add(ownerInfo.getMobile());
+                }
+                break;
+            case OWNER_AND_MAINTAINER:
+                if(ownerInfo!=null&&ownerInfo.getMobile()!=null){
+                    extraMobileList.add(ownerInfo.getMobile());
+                }
+                extraMobileList.addAll(maintainerInfo.stream().filter(user -> Objects.nonNull(user)&&StrUtil.isNotBlank(user.getMobile()))
+                        .map(User::getMobile)
+                        .collect(Collectors.toList()));
+                break;
+            case NONE:
+            default:
+                log.error("Alert Strategy Type: {} is not supported",value);
+                return;
+        }
+        //获取告警实例的配置参数|Get the configuration parameters of the alert instance
+        Map<String, Object> alertInstanceParams = alertInstance.getParams();
+        switch (alertInstance.getType()) {
+            case DingTalkConstants.TYPE:
+                Boolean atAll = (Boolean)alertInstanceParams.getOrDefault( DingTalkConstants.ALERT_TEMPLATE_AT_ALL,false);
+                if(!atAll){
+                    // 重新构告警实例的告警人员|Rebuild the alert personnel of the alert instance
+                    List<String> atMobiles = (List<String>) alertInstanceParams.get(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES);
+                    atMobiles.addAll(extraMobileList.stream().filter(mobile->!atMobiles.contains(mobile)).collect(Collectors.toList()));
+                    alertInstanceParams.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES, atMobiles);
+                    alertInstance.setParams(alertInstanceParams);
+                }
+                break;
+            case SmsConstants.TYPE:
+                // 重新构告警实例的告警人员|Rebuild the alert personnel of the alert instance
+                List<String> phoneNumbers = (List<String>) alertInstanceParams.get(SmsConstants.PHONE_NUMBERS);
+                phoneNumbers.addAll(extraMobileList.stream().filter(mobile->!phoneNumbers.contains(mobile)).collect(Collectors.toList()));
+                alertInstanceParams.put(DingTalkConstants.ALERT_TEMPLATE_AT_MOBILES, phoneNumbers);
+                alertInstance.setParams(alertInstanceParams);
+                break;
+            default:
         }
     }
 
