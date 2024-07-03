@@ -1268,6 +1268,7 @@ export default {
   'user.update': 'Modify User',
   'user.username': 'User Name',
   'user.usernamePlaceholder': 'Please enter user name',
+  'user.phoneFormat': 'The format of the phone number is incorrect',
 
   'lineage.getError': 'Cannot Get Lineage',
   'lineage.expandField': 'Expand Field(UnSupported)',
