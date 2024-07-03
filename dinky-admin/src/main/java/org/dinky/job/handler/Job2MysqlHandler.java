@@ -28,6 +28,7 @@ import org.dinky.data.constant.MysqlConstant;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.job.History;
@@ -179,10 +180,12 @@ public class Job2MysqlHandler extends AbsJobHandler {
         history.setClusterId(clusterId);
         historyService.updateById(history);
 
-        if (Asserts.isNullCollection(job.getJids())
-                || (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
-                        && Asserts.isNullString(job.getJobManagerAddress()))) {
+        if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())) {
             return true;
+        }
+
+        if (Asserts.isNullCollection(job.getJids()) || Asserts.isNullString(job.getJobManagerAddress())) {
+            throw new BusException("The JobID or JobManagerAddress is null. ");
         }
 
         String jid = job.getJids().get(0);
