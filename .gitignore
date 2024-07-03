@@ -61,3 +61,5 @@ docs/*.log
 tmp/*
 extends/*
 /.run/
+
+.idea

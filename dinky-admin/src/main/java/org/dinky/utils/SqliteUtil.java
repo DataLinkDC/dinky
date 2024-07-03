@@ -27,8 +27,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -85,7 +83,7 @@ public enum SqliteUtil {
         }
     }
 
-    private static @NotNull String createInsertSql(String tableName, List<String> columns) {
+    private static String createInsertSql(String tableName, List<String> columns) {
         StringBuilder columnNames = new StringBuilder();
         StringBuilder placeholders = new StringBuilder();
         for (int i = 0; i < columns.size(); i++) {
