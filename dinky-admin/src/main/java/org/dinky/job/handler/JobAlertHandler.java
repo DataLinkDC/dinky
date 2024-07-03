@@ -19,8 +19,6 @@
 
 package org.dinky.job.handler;
 
-import cn.hutool.core.util.StrUtil;
-import org.apache.commons.compress.utils.Lists;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
@@ -51,11 +49,12 @@ import org.dinky.service.UserService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.utils.JsonUtils;
 
+import org.apache.commons.compress.utils.Lists;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -74,6 +73,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.Data;
@@ -250,16 +250,18 @@ public class JobAlertHandler {
         String alertContent = freeMarkerHolder.buildWithData(alertRuleDTO.getTemplateName(), dataModel);
 
         if (!Asserts.isNull(task.getAlertGroup())) {
-            //获取任务的责任人和维护人对应的用户信息|Get the responsible person and maintainer of the task
+            // 获取任务的责任人和维护人对应的用户信息|Get the responsible person and maintainer of the task
             User ownerInfo = userCache.get(task.getFirstLevelOwner());
-            List<User> maintainerInfo = task.getSecondLevelOwners().stream().map(id -> {
-                try {
-                    return userCache.get(id);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }).collect(Collectors.toList());
+            List<User> maintainerInfo = task.getSecondLevelOwners().stream()
+                    .map(id -> {
+                        try {
+                            return userCache.get(id);
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    })
+                    .collect(Collectors.toList());
             AlertGroup alertGroup = task.getAlertGroup();
             alertGroup.getInstances().stream()
                     .filter(Objects::nonNull)
