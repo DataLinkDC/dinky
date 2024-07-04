@@ -32,6 +32,13 @@ type UserFormProps = {
 const UserForm: React.FC<UserFormProps> = (props) => {
   const { values, form } = props;
 
+  const validatePhoneRules = [
+    {
+      pattern: /^1[3456789]\d{9}$/,
+      message: l('user.phoneFormat')
+    }
+  ];
+
   /**
    * user form render
    * @returns {JSX.Element}
@@ -71,6 +78,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
         <ProFormText
           name='mobile'
+          rules={validatePhoneRules}
           label={l('user.phone')}
           placeholder={l('user.phonePlaceholder')}
         />
