@@ -19,6 +19,12 @@
 
 package org.dinky.data.dto;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import java.time.LocalDateTime;
 import org.dinky.data.annotations.ProcessId;
 import org.dinky.data.annotations.TaskId;
 import org.dinky.data.model.Task;
@@ -234,6 +240,12 @@ public class TaskDTO extends AbstractStatementDTO {
     @TableField(typeHandler = ListTypeHandler.class)
     private List<Integer> secondLevelOwners;
 
+    @ApiModelProperty(
+            value = "Update Time",
+            dataType = "LocalDateTime",
+            example = "2021-05-28 00:00:00")
+    private LocalDateTime updateTime;
+
     public JobConfig getJobConfig() {
 
         Map<String, String> parsedConfig =
@@ -253,5 +265,11 @@ public class TaskDTO extends AbstractStatementDTO {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
         return task;
+    }
+
+    public static TaskDTO fromTask(Task task) {
+        TaskDTO dto = new TaskDTO();
+        BeanUtil.copyProperties(task, dto);
+        return dto;
     }
 }

@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.Log;
@@ -275,5 +276,12 @@ public class TaskController {
     @ApiOperation("Query All Catalogue")
     public Result<Tree<Integer>> queryAllCatalogue() {
         return taskService.queryAllCatalogue();
+    }
+
+    @GetMapping("/getUserTask")
+    @ApiOperation("Get order task")
+    public Result<List<TaskDTO>> getMyTask() {
+        int id = StpUtil.getLoginIdAsInt();
+        return Result.succeed(taskService.getUserTasks(id));
     }
 }
