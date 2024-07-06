@@ -22,7 +22,6 @@ package org.dinky.data.metrics;
 import java.io.Serializable;
 
 import cn.hutool.core.lang.Singleton;
-import java.util.Properties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,5 +35,4 @@ public class MetricsTotal implements Serializable {
     private Cpu cpu = Cpu.of();
     private Mem mem = Mem.of();
     private SystemInfo systemInfo = SystemInfo.of();
-
 }

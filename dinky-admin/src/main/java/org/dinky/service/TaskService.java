@@ -303,5 +303,4 @@ public interface TaskService extends ISuperService<Task> {
      * @return
      */
     List<TaskDTO> getUserTasks(Integer userId);
-
 }

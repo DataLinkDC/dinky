@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.Log;
@@ -61,6 +60,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.tree.Tree;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
