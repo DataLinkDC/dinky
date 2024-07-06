@@ -25,7 +25,7 @@ import MyWorker from '@/pages/Home/components/MyWorker/MyWorker';
 import FastLink from '@/pages/Home/components/FastLink/FastLink';
 import AlertHistoryList from '@/pages/DevOps/JobDetail/AlertHistory/components/AlertHistoryList';
 import BatchStreamProportion from '@/pages/Home/components/BatchStreamProportion';
-import WorkHeader from "@/pages/Home/components/WorkerHeader/WorkHeader";
+import WorkHeader from '@/pages/Home/components/WorkerHeader/WorkHeader';
 
 dayjs.extend(relativeTime);
 
@@ -58,7 +58,7 @@ const Workplace: FC = () => {
   };
 
   return (
-    <PageContainer style={{padding: 10}}>
+    <PageContainer style={{ padding: 10 }}>
       <Row gutter={24}>
         <Col xl={16} lg={24} md={24} sm={24} xs={24}>
           <WorkHeader />
