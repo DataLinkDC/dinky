@@ -256,6 +256,8 @@ public class JobManager {
                 .map(t -> executor.pretreatStatement(t))
                 .collect(Collectors.toList());
         statement = String.join(";\n", statements);
+        jobParam =
+                Explainer.build(executor, useStatementSet, this).pretreatStatements(SqlUtil.getStatements(statement));
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
         try {
