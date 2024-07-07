@@ -23,12 +23,6 @@ import { Avatar, Card, Descriptions, Space, Tag } from 'antd';
 import { getCurrentDateStr, getRandomGreeting } from '@/pages/Home/util';
 import { API } from '@/services/data';
 import { UserBaseInfo } from '@/types/AuthCenter/data';
-import { useModel } from '@@/exports';
-import React, { useEffect, useState } from 'react';
-import { Avatar, Card, Descriptions, Space, Tag } from 'antd';
-import { getCurrentDateStr, getRandomGreeting } from '@/pages/Home/util';
-import { API } from '@/services/data';
-import { UserBaseInfo } from '@/types/AuthCenter/data';
 
 const WorkHeader = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
