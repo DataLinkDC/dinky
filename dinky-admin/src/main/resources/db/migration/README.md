@@ -13,12 +13,11 @@
 
 ## 命名规则
 
-- V{版本号}__{描述}.sql eg: V20240708.1.1.0__release.sql
-- R{版本号}__{描述}.sql eg: R20240708.1.1.0__release.sql
+- V{日期}.{版本号}__{描述}.sql eg: V20240708.1.1.0__release.sql
+- R{日期}.{版本号}__{描述}.sql eg: R20240708.1.1.0__release.sql
 
 **注意:** 
-- V{版本号}__{描述}.sql 中间是**两个下划线**,固定规则,不符合规则将无法执行
-- 每个版本只能有一个 V{版本号}__{描述}.sql 文件,否则将无法执行, 不管是 DDL 还是 DML 统一放在一个文件中
+- V{日期}.{版本号}__{描述}.sql 中间是**两个下划线**,固定规则,不符合规则将无法执行
 - 由于某一个版本发布可能会有多个脚本文件,所以版本号不能重复,因此在命名方式上将采用 `V{日期}.{版本号}__描述.sql` 规则,如: `V20240708.1.1.0__release.sql`, 注意日期格式为 `yyyyMMdd`,采用此方式可以避免版本号重复,造成开发者的开发工作会混乱,造成版本管理混乱,造成版本迭代不方便
 
 
@@ -54,8 +53,7 @@
 - R{date}.{Version Number}__{description}.sql eg: R20240708.1.1.0__release.sql
 
 **Attention:**
-- V{version number}__{description}.SQL has two underscores in the middle, which are fixed rules. If they do not comply with the rules, they cannot be executed
-- Each version can only have one V{version number}__{description}.sql file, otherwise it will not be executed, whether it is DDL or DML, it will be placed in one file
+- V{date}.{version number}__{description}.SQL has two underscores in the middle, which are fixed rules. If they do not comply with the rules, they cannot be executed
 - Due to the possibility of multiple script files for a certain version release, the version number cannot be duplicated. Therefore, the naming convention will use `V{date}.{Version Number}__Description.sql` Rule, such as `V20240708.1.1.0_ release. SQL`, please note that the date format is `yyyyMMdd`. This method can avoid duplicate version numbers, which can cause confusion in developer development work, version management, and inconvenient version iteration
 
 **Upgrade script considerations:**
