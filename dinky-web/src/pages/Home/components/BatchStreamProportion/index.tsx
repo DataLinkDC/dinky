@@ -19,26 +19,24 @@
 
 import CountFormatter from '@/components/CountFormatter';
 import { BatchJobIcon, StreamingJobIcon } from '@/components/Icons/HomeIcon';
-import { imgStyle } from '@/pages/Home/constants';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { BatchStreamingOverView } from '@/types/Home/data';
 import { l } from '@/utils/intl';
 import { ProCard, StatisticCard } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
+import useHookRequest from '@/hooks/useHookRequest';
+import { getData } from '@/services/api';
 
 export const BatchStreamProportion: React.FC = () => {
-  const [data, setData] = useState<BatchStreamingOverView>({
-    batchJobCount: 0,
-    streamingJobCount: 0
+  const { loading, data } = useHookRequest<any, any>(getData, {
+    defaultParams: [API_CONSTANTS.GET_JOB_MODEL_OVERVIEW]
   });
-
-  useEffect(() => {
-    queryDataByParams(API_CONSTANTS.GET_JOB_MODEL_OVERVIEW).then((res) => {
-      setData(res);
-    });
-  }, []);
-
+  const imgStyle = {
+    display: 'block',
+    width: 40,
+    height: 40
+  };
   return (
     <ProCard split={'vertical'} size={'small'}>
       <StatisticCard.Group bodyStyle={{ alignContent: 'center' }}>

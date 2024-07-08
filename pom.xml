@@ -97,7 +97,7 @@
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <maven.resource.version>3.3.1</maven.resource.version>
         <mockito.version>3.12.4</mockito.version>
-        <mybatis-plus-boot-starter.version>3.5.3.1</mybatis-plus-boot-starter.version>
+        <mybatis-plus-boot-starter.version>3.5.7</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <org.commonmark>0.21.0</org.commonmark>

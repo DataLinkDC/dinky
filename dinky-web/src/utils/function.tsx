@@ -469,6 +469,9 @@ export const parseSecondStr = (s_time: number) => {
   }
   return time;
 };
+export function Bytes2Mb(bs: number) {
+  return bs / 1024 / 1024;
+}
 
 export function parseByteStr(limit: number) {
   if (limit == null) {

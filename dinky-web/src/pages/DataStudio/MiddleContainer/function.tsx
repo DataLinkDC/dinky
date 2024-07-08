@@ -79,6 +79,7 @@ export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
 //
 export const getTabIcon = (type: string, size?: number) => {
   if (!type) {
+    console.log('type is null');
     return <FileIcon />;
   }
 

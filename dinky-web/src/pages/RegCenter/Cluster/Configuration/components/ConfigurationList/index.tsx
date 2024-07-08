@@ -25,7 +25,6 @@ import { RunningBtn } from '@/components/CallBackButton/RunningBtn';
 import { ClusterConfigIcon } from '@/components/Icons/HomeIcon';
 import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
-import { imgStyle } from '@/pages/Home/constants';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
 import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
 import {
@@ -257,7 +256,15 @@ export default () => {
       return {
         subTitle: renderDataSubTitle(item),
         actions: <DataAction>{renderDataActionButton(item)}</DataAction>,
-        avatar: <ClusterConfigIcon style={imgStyle} />,
+        avatar: (
+          <ClusterConfigIcon
+            style={{
+              display: 'block',
+              width: 42,
+              height: 42
+            }}
+          />
+        ),
         content: renderDataContent(item),
         key: item.id
       };
