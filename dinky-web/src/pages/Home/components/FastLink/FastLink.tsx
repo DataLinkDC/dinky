@@ -25,7 +25,7 @@ import {
   DatabaseIcon
 } from '@/components/Icons/HomeIcon';
 import React from 'react';
-import { AllJobIcons } from '@/components/Icons/DevopsIcons';
+import { history } from 'umi';
 import { l } from '@/utils/intl';
 
 const FastLink = () => {
@@ -38,27 +38,27 @@ const FastLink = () => {
   const links = [
     {
       title: l('menu.datastudio'),
-      href: '',
+      href: '/datastudio',
       icon: <ClusterInstanceIcon style={imgStyle} />
     },
     {
       title: l('menu.registration.alert.instance'),
-      href: '',
+      href: '/registration/alert/instance',
       icon: <AlertInstanceIcon style={imgStyle} />
     },
     {
       title: l('menu.registration.datasource'),
-      href: '',
+      href: '/registration/datasource/list',
       icon: <DatabaseIcon style={imgStyle} />
     },
     {
       title: l('menu.registration.cluster.cluster-config'),
-      href: '',
+      href: '/registration/cluster/instance',
       icon: <ClusterInstanceIcon style={imgStyle} />
     },
     {
       title: l('menu.registration.resource'),
-      href: '',
+      href: '/registration/resource',
       icon: <ClusterConfigIcon style={imgStyle} />
     }
   ];
@@ -67,7 +67,14 @@ const FastLink = () => {
     <Space size={[12, 8]} wrap>
       {links.map((link) => {
         return (
-          <Button key={link.title} type='text' ghost size={'large'} icon={link.icon}>
+          <Button
+            key={link.title}
+            type='text'
+            ghost
+            size={'large'}
+            icon={link.icon}
+            onClick={() => history.push(link.href)}
+          >
             {link.title}
           </Button>
         );

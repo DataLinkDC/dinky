@@ -17,7 +17,7 @@
  *
  */
 
-import { Card, Space, Typography } from 'antd';
+import { Card, Space, Tag, Typography } from 'antd';
 import useHookRequest from '@/hooks/useHookRequest';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -28,6 +28,7 @@ import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { l } from '@/utils/intl';
+import { history } from 'umi';
 
 const MyWorker = () => {
   const { loading, data } = useHookRequest<any, any>(getData, {
@@ -60,7 +61,7 @@ const MyWorker = () => {
     >
       <Card
         style={{
-          height: '30vh',
+          height: '60vh',
           overflowY: 'auto'
         }}
       >
@@ -74,6 +75,7 @@ const MyWorker = () => {
                   <JobLifeCycleTag animation={false} bordered={false} status={item.step} />
                 </Space>
               }
+              onClick={() => history.push('/devops/job-detail?id=' + item.jobInstanceId)}
             >
               <div style={{ marginBottom: 10 }}>{item.note ?? l('home.task.not.desc')}</div>
               <Space style={{ fontSize: 10 }}>

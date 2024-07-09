@@ -1024,8 +1024,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<TaskDTO> getUserTasks(Integer userId) {
         Map<Integer, TaskDTO> tskMap = new HashMap<>();
+        LambdaQueryWrapper<Task> taskWrapper = new LambdaQueryWrapper<>();
+        taskWrapper.in(Task::getDialect, Dialect.FLINK_SQL.getValue(), Dialect.FLINK_JAR.getValue());
         // 流式获取数据，防止OOM
-        baseMapper.selectList(Wrappers.emptyWrapper(), resultContext -> {
+        baseMapper.selectList(taskWrapper, resultContext -> {
             Task task = resultContext.getResultObject();
             if (hasTaskOperatePermission(task.getFirstLevelOwner(), task.getSecondLevelOwners())) {
                 // 去掉statement，防止OOM
