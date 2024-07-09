@@ -27,6 +27,7 @@ import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -234,6 +235,9 @@ public class TaskDTO extends AbstractStatementDTO {
     @TableField(typeHandler = ListTypeHandler.class)
     private List<Integer> secondLevelOwners;
 
+    @ApiModelProperty(value = "Update Time", dataType = "LocalDateTime", example = "2021-05-28 00:00:00")
+    private LocalDateTime updateTime;
+
     public JobConfig getJobConfig() {
 
         Map<String, String> parsedConfig =
@@ -253,5 +257,11 @@ public class TaskDTO extends AbstractStatementDTO {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
         return task;
+    }
+
+    public static TaskDTO fromTask(Task task) {
+        TaskDTO dto = new TaskDTO();
+        BeanUtil.copyProperties(task, dto);
+        return dto;
     }
 }

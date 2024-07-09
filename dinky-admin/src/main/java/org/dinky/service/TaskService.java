@@ -296,4 +296,11 @@ public interface TaskService extends ISuperService<Task> {
      * @return
      */
     Boolean checkTaskOperatePermission(Integer taskId);
+
+    /**
+     * Get user tasks
+     * @param userId
+     * @return
+     */
+    List<TaskDTO> getUserTasks(Integer userId);
 }

@@ -125,6 +125,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1018,6 +1019,37 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return hasTaskOperatePermission(taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners());
         }
         return null;
+    }
+
+    @Override
+    public List<TaskDTO> getUserTasks(Integer userId) {
+        Map<Integer, TaskDTO> tskMap = new HashMap<>();
+        // 流式获取数据，防止OOM
+        baseMapper.selectList(Wrappers.emptyWrapper(), resultContext -> {
+            Task task = resultContext.getResultObject();
+            if (hasTaskOperatePermission(task.getFirstLevelOwner(), task.getSecondLevelOwners())) {
+                // 去掉statement，防止OOM
+                task.setStatement(null);
+                tskMap.put(task.getJobInstanceId(), TaskDTO.fromTask(task));
+                if (tskMap.size() >= 1000) {
+                    // 任务太多了，停止查询
+                    resultContext.stop();
+                }
+            }
+        });
+
+        LambdaQueryWrapper<JobInstance> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(JobInstance::getId, tskMap.keySet());
+        jobInstanceService.getBaseMapper().selectList(wrapper, resultContext -> {
+            JobInstance jobInstance = resultContext.getResultObject();
+            TaskDTO taskDTO = tskMap.get(jobInstance.getId());
+            if (Objects.nonNull(taskDTO)) {
+                taskDTO.setStatus(jobInstance.getStatus());
+            }
+        });
+
+        List<TaskDTO> tasks = new ArrayList<>(tskMap.values());
+        return tasks;
     }
 
     private Boolean hasTaskOperatePermission(Integer firstLevelOwner, List<Integer> secondLevelOwners) {
