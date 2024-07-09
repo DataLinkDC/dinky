@@ -256,3 +256,13 @@ Dinky 部署需要 MySQL5.7 以上版本
 
 :::
 
+## Nginx 配置
+Dinky使用了SSE技术作为日志推流，如果您使用了nginx代理，需要配置Nginx支持SSE，否则默认Nginx配置会导致大量连接异常，造成页面极其卡顿，
+需要在Nginx配置文件中添加以下配置：
+
+```shell
+proxy_buffering off;
+proxy_cache off;
+proxy_read_timeout 86400s;
+proxy_send_timeout 86400s;
+```

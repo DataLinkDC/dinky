@@ -123,3 +123,15 @@ docker compose --profile ms -f docker-compose.yml -f docker-compose.dev.yml up
 创建容器时,可映射到容器/opt/diny/customJar文件夹,添加自定义jar包.
 
 欢迎补充
+
+
+## Nginx 配置
+Dinky使用了SSE技术作为日志推流，如果您使用了nginx代理，需要配置Nginx支持SSE，否则默认Nginx配置会导致大量连接异常，造成页面极其卡顿，
+需要在Nginx配置文件中添加以下配置：
+
+```shell
+proxy_buffering off;
+proxy_cache off;
+proxy_read_timeout 86400s;
+proxy_send_timeout 86400s;
+```

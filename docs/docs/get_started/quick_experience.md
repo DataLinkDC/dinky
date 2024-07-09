@@ -103,5 +103,18 @@ from datagen_source;
 找到我们的作业，点击**详情按钮**，即可查看作业的运行状态，日志，监控等信息。
 ![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-job-detail.png)
 
+
+## Nginx 配置
+Dinky使用了SSE技术作为日志推流，如果您使用了nginx代理，需要配置Nginx支持SSE，否则默认Nginx配置会导致大量连接异常，造成页面极其卡顿，
+需要在Nginx配置文件中添加以下配置：
+
+```shell
+proxy_buffering off;
+proxy_cache off;
+proxy_read_timeout 86400s;
+proxy_send_timeout 86400s;
+```
+
+
 ## 写在最后
 至此，您已经了解了基础DInky使用流程，但Dinky的能力远不止于此，您可以继续阅读其他文档，了解更多Dinky的功能，尽享Dinky为你带来的丝滑开发体验
