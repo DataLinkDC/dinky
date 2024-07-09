@@ -107,6 +107,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +126,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1024,8 +1024,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<TaskDTO> getUserTasks(Integer userId) {
         Map<Integer, TaskDTO> tskMap = new HashMap<>();
+        LambdaQueryWrapper<Task> taskWrapper = new LambdaQueryWrapper<>();
+        taskWrapper.in(Task::getDialect, Dialect.FLINK_SQL.getValue(), Dialect.FLINK_JAR.getValue());
         // 流式获取数据，防止OOM
-        baseMapper.selectList(Wrappers.emptyWrapper(), resultContext -> {
+        baseMapper.selectList(taskWrapper, resultContext -> {
             Task task = resultContext.getResultObject();
             if (hasTaskOperatePermission(task.getFirstLevelOwner(), task.getSecondLevelOwners())) {
                 // 去掉statement，防止OOM
@@ -1049,6 +1051,26 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         });
 
         List<TaskDTO> tasks = new ArrayList<>(tskMap.values());
+        // 按照step排序，发布>开发>,相同情况 下按照状态排序
+        // 失败>重启>运行>完成>未知
+        Comparator<TaskDTO> statusComparator = Comparator.comparingInt(task -> {
+            String status = task.getStatus() == null ? "UNKNOWN" : task.getStatus();
+            switch (JobStatus.valueOf(status)) {
+                case FAILED:
+                    return 4;
+                case RESTARTING:
+                    return 3;
+                case RUNNING:
+                    return 2;
+                case FINISHED:
+                    return 1;
+                default:
+                    return 0;
+            }
+        });
+        tasks.sort(Comparator.comparingInt(TaskDTO::getStep)
+                .thenComparing(statusComparator)
+                .reversed());
         return tasks;
     }
 
