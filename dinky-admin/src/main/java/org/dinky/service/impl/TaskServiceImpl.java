@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import java.util.Comparator;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -108,6 +107,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1054,7 +1054,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // 按照step排序，发布>开发>,相同情况 下按照状态排序
         // 失败>重启>运行>完成>未知
         Comparator<TaskDTO> statusComparator = Comparator.comparingInt(task -> {
-            String status = task.getStatus()==null?"UNKNOWN":task.getStatus();
+            String status = task.getStatus() == null ? "UNKNOWN" : task.getStatus();
             switch (JobStatus.valueOf(status)) {
                 case FAILED:
                     return 4;
@@ -1069,7 +1069,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         });
         tasks.sort(Comparator.comparingInt(TaskDTO::getStep)
-                .thenComparing(statusComparator).reversed());
+                .thenComparing(statusComparator)
+                .reversed());
         return tasks;
     }
 
