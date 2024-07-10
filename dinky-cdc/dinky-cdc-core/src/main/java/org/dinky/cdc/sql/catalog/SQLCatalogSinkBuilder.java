@@ -70,7 +70,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
         // Fixed By fangxiangmin 20240710 检查view名称，把横杠转换成下划线
         viewName = viewName.replaceAll("-", "_");
-        
+
         customTableEnvironment.createTemporaryView(
                 viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
