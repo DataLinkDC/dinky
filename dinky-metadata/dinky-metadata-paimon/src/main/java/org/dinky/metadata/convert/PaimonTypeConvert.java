@@ -19,17 +19,18 @@
 
 package org.dinky.metadata.convert;
 
-import java.time.LocalDate;
-import org.apache.paimon.data.GenericRow;
-import org.apache.paimon.data.InternalRow;
-import org.apache.paimon.types.DataField;
-import org.apache.paimon.types.DataTypeRoot;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.config.DriverConfig;
 
+import org.apache.paimon.data.GenericRow;
+import org.apache.paimon.data.InternalRow;
+import org.apache.paimon.types.DataField;
+import org.apache.paimon.types.DataTypeRoot;
+
+import java.time.LocalDate;
 import java.util.Optional;
 
 /**
