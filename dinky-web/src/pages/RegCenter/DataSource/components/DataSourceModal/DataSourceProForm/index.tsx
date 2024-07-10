@@ -20,17 +20,26 @@
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import {
   AUTO_COMPLETE_TYPE,
+  DATA_SOURCE_TYPE,
   DATA_SOURCE_TYPE_OPTIONS,
   GROUP_TYPE
 } from '@/pages/RegCenter/DataSource/components/constants';
 import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import { ProForm, ProFormGroup, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components';
 import { AutoComplete, Form } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import TextArea from 'antd/es/input/TextArea';
 import { Values } from 'async-validator';
-import React from 'react';
+import React, { useState } from 'react';
+import PaimonSourceForm from '@/pages/RegCenter/DataSource/components/DataSourceView/GeneralJdbc/PaimonSourceForm';
+import JdbcSourceForm from '@/pages/RegCenter/DataSource/components/DataSourceView/GeneralJdbc/JdbcSourceForm';
 
 type DataSourceProFormProps = {
   values: Partial<DataSources.DataSource>;
@@ -50,8 +59,17 @@ const CodeEditProps = {
 
 const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
   const { values, form, dbType, excludeFormItem, flinkTemplateChange, flinkConfigChange } = props;
+  const [selectDbType, setSelectDbType] = useState<string>(dbType);
 
-  const renderDataSourceForm = () => {
+  const renderDataSourceForm = (type?: string) => {
+    switch (type) {
+      case DATA_SOURCE_TYPE.PAIMON:
+        return <PaimonSourceForm form={form} />;
+      default:
+        return <JdbcSourceForm form={form} />;
+    }
+  };
+  const renderForm = () => {
     return (
       <>
         <ProForm.Group>
@@ -74,60 +92,13 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             width={'sm'}
             label={l('rc.ds.type')}
             showSearch
+            onChange={(v: string) => setSelectDbType(v)}
             initialValue={dbType}
             options={DATA_SOURCE_TYPE_OPTIONS}
             rules={[{ required: true, message: l('rc.ds.typePlaceholder') }]}
             placeholder={l('rc.ds.typePlaceholder')}
           />
-
-          <ProFormText
-            name={['connectConfig', 'username']}
-            width={'sm'}
-            label={l('rc.ds.username')}
-            rules={[{ required: true, message: l('rc.ds.usernamePlaceholder') }]}
-            placeholder={l('rc.ds.usernamePlaceholder')}
-          />
-          <ProFormText.Password
-            name={['connectConfig', 'password']}
-            width={'sm'}
-            label={l('rc.ds.password')}
-            placeholder={l('rc.ds.passwordPlaceholder')}
-          />
-          <ProFormText
-            name='note'
-            width={'md'}
-            label={l('global.table.note')}
-            placeholder={l('global.table.notePlaceholder')}
-          />
-        </ProForm.Group>
-
-        <ProForm.Group>
-          <Form.Item
-            name={['connectConfig', 'url']}
-            label={l('rc.ds.url')}
-            rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}
-          >
-            <AutoComplete
-              virtual
-              placement={'topLeft'}
-              autoClearSearchValue
-              options={AUTO_COMPLETE_TYPE}
-              style={{
-                width: parent.innerWidth / 2 - 80
-              }}
-              filterOption
-              onSelect={(value) => form && form.setFieldsValue({ url: value })}
-            >
-              <TextArea placeholder={l('rc.ds.urlPlaceholder')} />
-              {/*<ProFormTextArea*/}
-              {/*  name='url'*/}
-              {/*  width={parent.innerWidth / 2 - 80}*/}
-              {/*  label={l('rc.ds.url')}*/}
-              {/*  rules={[{ required: true, message: l('rc.ds.urlPlaceholder') }]}*/}
-              {/*  placeholder={l('rc.ds.urlPlaceholder')}*/}
-              {/*/>*/}
-            </AutoComplete>
-          </Form.Item>
+          {renderDataSourceForm(selectDbType)}
         </ProForm.Group>
 
         {!excludeFormItem && (
@@ -157,10 +128,15 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
             </ProForm.Item>
           </ProFormGroup>
         )}
+        <ProFormText
+          name='note'
+          label={l('global.table.note')}
+          placeholder={l('global.table.notePlaceholder')}
+        />
       </>
     );
   };
 
-  return renderDataSourceForm();
+  return renderForm();
 };
 export default DataSourceProForm;

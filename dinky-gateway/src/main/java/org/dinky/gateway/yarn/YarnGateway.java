@@ -32,7 +32,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.GatewayException;
-import org.dinky.gateway.model.CustomConfig;
+import org.dinky.data.model.CustomConfig;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;

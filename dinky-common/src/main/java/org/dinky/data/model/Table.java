@@ -19,6 +19,10 @@
 
 package org.dinky.data.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.TableType;
 import org.dinky.utils.SqlUtil;
@@ -40,8 +44,10 @@ import lombok.Setter;
  *
  * @since 2021/7/19 23:27
  */
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     private static final long serialVersionUID = 4209205512472367171L;
@@ -66,7 +72,9 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     /** 驱动类型, @see org.dinky.metadata.enums.DriverType */
     private String driverType;
 
-    public Table() {}
+    public Table(String name) {
+        this.name = name;
+    }
 
     public Table(String name, String schema, List<Column> columns) {
         this.name = name;

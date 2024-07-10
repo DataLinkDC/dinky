@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  * @since 2024/2/6
  */
 public enum DriverType {
+    Paimon("Paimon"),
     MYSQL("MySQL"),
     ORACLE("Oracle"),
     POSTGRESQL("PostgreSql"),

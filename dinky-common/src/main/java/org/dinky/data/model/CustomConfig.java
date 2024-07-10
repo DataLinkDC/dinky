@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.gateway.model;
+package org.dinky.data.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

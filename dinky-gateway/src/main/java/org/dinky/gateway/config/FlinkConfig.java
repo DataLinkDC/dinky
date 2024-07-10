@@ -22,7 +22,7 @@ package org.dinky.gateway.config;
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
-import org.dinky.gateway.model.CustomConfig;
+import org.dinky.data.model.CustomConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;

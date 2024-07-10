@@ -26,7 +26,7 @@ import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointStrategy;
-import org.dinky.gateway.model.CustomConfig;
+import org.dinky.data.model.CustomConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
 import org.apache.flink.configuration.Configuration;

@@ -17,28 +17,28 @@
  *
  */
 
-import ColumnInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/ColumnInfo';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import { DataSources } from '@/types/RegCenter/data';
-import { l } from '@/utils/intl';
-import { Empty } from 'antd';
 import React from 'react';
+import PaimonDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/PaimonDesc/PaimonDesc';
+import { DATA_SOURCE_TYPE } from '@/pages/RegCenter/DataSource/components/constants';
+import GeneralJdbcDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/GeneralJdbcDesc/GeneralJdbcDesc';
 
-type SchemaDescProps = {
-  tableInfo?: Partial<DataSources.Table>;
-  tableColumns?: Partial<DataSources.Column[]>;
-};
+const SchemaDesc: React.FC<DataSources.SchemaDescProps> = (props) => {
+  const { tableInfo, queryParams } = props;
 
-const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
-  const { tableInfo, tableColumns } = props;
+  const getBottomItems = () => {
+    if (tableInfo?.driverType == DATA_SOURCE_TYPE.PAIMON) {
+      return <PaimonDesc tableInfo={tableInfo} queryParams={queryParams} />;
+    } else {
+      return <GeneralJdbcDesc tableInfo={tableInfo} />;
+    }
+  };
 
   return (
     <>
       {tableInfo && <TableInfo tableInfo={tableInfo} />}
-      {tableColumns && <ColumnInfo columnInfo={tableColumns} />}
-      {!tableInfo && !tableColumns && (
-        <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
-      )}
+      {getBottomItems()}
     </>
   );
 };

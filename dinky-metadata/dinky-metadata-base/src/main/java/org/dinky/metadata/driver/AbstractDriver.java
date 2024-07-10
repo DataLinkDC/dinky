@@ -21,6 +21,7 @@ package org.dinky.metadata.driver;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
+import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.metadata.config.DriverConfig;
@@ -31,6 +32,7 @@ import org.dinky.metadata.query.IDBQuery;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.dinky.metadata.result.JdbcSelectResult;
 
 /**
  * AbstractDriver
@@ -45,6 +47,11 @@ public abstract class AbstractDriver<T extends IConnectConfig> implements Driver
 
     public abstract ITypeConvert<T> getTypeConvert();
 
+    @Override
+    public JdbcSelectResult query(QueryData queryData) {
+        StringBuilder queryOption = genQueryOption(queryData);
+        return query(queryOption.toString(),null);
+    }
     public boolean canHandle(String type) {
         return Asserts.isEqualsIgnoreCase(getType(), type);
     }

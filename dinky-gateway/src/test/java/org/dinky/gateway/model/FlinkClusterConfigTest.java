@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.dinky.data.model.CustomConfig;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
