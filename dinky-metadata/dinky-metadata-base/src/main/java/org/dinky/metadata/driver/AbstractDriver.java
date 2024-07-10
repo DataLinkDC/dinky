@@ -28,11 +28,11 @@ import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.config.IConnectConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.IDBQuery;
+import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.dinky.metadata.result.JdbcSelectResult;
 
 /**
  * AbstractDriver
@@ -50,8 +50,9 @@ public abstract class AbstractDriver<T extends IConnectConfig> implements Driver
     @Override
     public JdbcSelectResult query(QueryData queryData) {
         StringBuilder queryOption = genQueryOption(queryData);
-        return query(queryOption.toString(),null);
+        return query(queryOption.toString(), null);
     }
+
     public boolean canHandle(String type) {
         return Asserts.isEqualsIgnoreCase(getType(), type);
     }

@@ -224,5 +224,4 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @return {@link List}< {@link Column}>
      */
     Table getTable(Integer id, String schemaName, String tableName);
-
 }

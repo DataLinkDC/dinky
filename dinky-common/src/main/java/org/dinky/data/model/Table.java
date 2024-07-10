@@ -19,10 +19,6 @@
 
 package org.dinky.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.TableType;
 import org.dinky.utils.SqlUtil;
@@ -36,8 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Table

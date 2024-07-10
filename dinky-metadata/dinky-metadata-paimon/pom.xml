@@ -60,7 +60,6 @@
             <version>2.8.3-10.0</version>
         </dependency>
 
-
         <!-- test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

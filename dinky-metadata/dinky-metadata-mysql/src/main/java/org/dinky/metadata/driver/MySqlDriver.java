@@ -29,7 +29,6 @@ import org.dinky.metadata.convert.MySqlTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.MySqlQuery;
-import org.dinky.utils.TextUtil;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

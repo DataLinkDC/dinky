@@ -19,16 +19,16 @@
 
 package org.dinky.metadata.convert;
 
-import java.util.List;
-import org.apache.paimon.data.GenericRow;
-import org.apache.paimon.data.InternalRow;
-import org.apache.paimon.types.DataField;
-import org.apache.paimon.types.DataTypeRoot;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.config.DriverConfig;
+
+import org.apache.paimon.data.GenericRow;
+import org.apache.paimon.data.InternalRow;
+import org.apache.paimon.types.DataField;
+import org.apache.paimon.types.DataTypeRoot;
 
 import java.util.Optional;
 
@@ -62,12 +62,12 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
         register("int", ColumnType.INT, ColumnType.INTEGER);
     }
 
-    public static Object SafeGetRowData(DataField fieldType,InternalRow row, int ordinal) {
-        if (row.isNullAt(ordinal)){
+    public static Object SafeGetRowData(DataField fieldType, InternalRow row, int ordinal) {
+        if (row.isNullAt(ordinal)) {
             return null;
         }
         DataTypeRoot root = fieldType.type().getTypeRoot();
-        switch (root){
+        switch (root) {
             case CHAR:
             case VARCHAR:
                 return row.getString(ordinal).toString();
@@ -76,8 +76,8 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
             case BINARY:
             case VARBINARY:
                 return "<Binary Type>";
-//            case DECIMAL:
-//                return "<DECIMAL Type>";
+                //            case DECIMAL:
+                //                return "<DECIMAL Type>";
             case TINYINT:
             case SMALLINT:
             case INTEGER:
@@ -92,17 +92,17 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
             case TIME_WITHOUT_TIME_ZONE:
             case TIMESTAMP_WITHOUT_TIME_ZONE:
             case TIMESTAMP_WITH_LOCAL_TIME_ZONE:
-                return row.getTimestamp(ordinal,3).toLocalDateTime();
+                return row.getTimestamp(ordinal, 3).toLocalDateTime();
             case ARRAY:
             case MULTISET:
                 return row.getArray(ordinal).toString();
             case MAP:
                 return row.getMap(ordinal).toString();
-            //case ROW:
-            //  return row.getRow(ordinal).toString();
+                // case ROW:
+                //  return row.getRow(ordinal).toString();
             default:
-                if (row instanceof GenericRow){
-                    return ((GenericRow)row).getField(ordinal).toString();
+                if (row instanceof GenericRow) {
+                    return ((GenericRow) row).getField(ordinal).toString();
                 }
                 return row.getString(ordinal);
         }

@@ -29,7 +29,6 @@ import org.dinky.metadata.convert.PostgreSqlTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.PostgreSqlQuery;
-import org.dinky.utils.TextUtil;
 
 import java.util.HashMap;
 import java.util.List;

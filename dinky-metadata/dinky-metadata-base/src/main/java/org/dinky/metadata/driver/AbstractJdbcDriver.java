@@ -38,7 +38,6 @@ import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
-import org.dinky.utils.TextUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

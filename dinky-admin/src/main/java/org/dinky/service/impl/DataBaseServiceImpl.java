@@ -393,9 +393,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     public Table getTable(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
-        try (Driver driver = Driver.build(dataBase.getDriverConfig())){
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
             return driver.getTable(schemaName, tableName);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -59,7 +59,7 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       }
     },
     {
-      title: "Partition Key",
+      title: 'Partition Key',
       dataIndex: 'partaionKey',
       width: '4%',
       render: (_, record) => {

@@ -21,7 +21,7 @@ import { DataSources } from '@/types/RegCenter/data';
 import { Descriptions } from 'antd';
 import React from 'react';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
-import {DATA_SOURCE_TYPE} from "@/pages/RegCenter/DataSource/components/constants";
+import { DATA_SOURCE_TYPE } from '@/pages/RegCenter/DataSource/components/constants';
 
 type TableInfoProps = {
   tableInfo: Partial<DataSources.Table>;

@@ -455,18 +455,38 @@ public class DataSourceController {
      */
     @GetMapping("/getTable")
     @ApiOperation("Get Columns Of Table")
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(name = "id", value = "DataBase Id", required = true, dataType = "Integer",
-                    paramType = "path", dataTypeClass = Integer.class, example = "1"),
-            @ApiImplicitParam(name = "schemaName", value = "Schema Name", required = true, dataType = "String",
-                    paramType = "query", dataTypeClass = String.class, example = "public"),
-            @ApiImplicitParam(name = "tableName", value = "Table Name", required = true, dataType = "String",
-                    paramType = "query", dataTypeClass = String.class, example = "user")})
+    @ApiImplicitParams(
+            value = {
+                @ApiImplicitParam(
+                        name = "id",
+                        value = "DataBase Id",
+                        required = true,
+                        dataType = "Integer",
+                        paramType = "path",
+                        dataTypeClass = Integer.class,
+                        example = "1"),
+                @ApiImplicitParam(
+                        name = "schemaName",
+                        value = "Schema Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "public"),
+                @ApiImplicitParam(
+                        name = "tableName",
+                        value = "Table Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "user")
+            })
     @SaCheckPermission(
             value = {
-                    PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH,
-                    PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE,
-                    PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC,
             },
             mode = SaMode.OR)
     public Result<Table> getTable(

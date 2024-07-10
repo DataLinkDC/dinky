@@ -19,19 +19,6 @@
 
 package org.dinky.metadata.driver;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.paimon.catalog.Catalog;
-import org.apache.paimon.catalog.CatalogContext;
-import org.apache.paimon.catalog.CatalogFactory;
-import org.apache.paimon.catalog.Identifier;
-import org.apache.paimon.data.GenericRow;
-import org.apache.paimon.data.InternalRow;
-import org.apache.paimon.reader.RecordReader;
-import org.apache.paimon.table.source.ReadBuilder;
-import org.apache.paimon.table.source.Split;
-import org.apache.paimon.table.source.TableRead;
-import org.apache.paimon.types.DataField;
-import org.apache.paimon.types.RowType;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.exception.BusException;
@@ -40,24 +27,35 @@ import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.metadata.config.PaimonConfig;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.PaimonTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.metadata.config.PaimonConfig;
-import org.apache.paimon.options.Options;
 import org.dinky.utils.JsonUtils;
 
-import java.io.IOException;
-import java.time.LocalDate;
+import org.apache.paimon.catalog.Catalog;
+import org.apache.paimon.catalog.CatalogContext;
+import org.apache.paimon.catalog.CatalogFactory;
+import org.apache.paimon.catalog.Identifier;
+import org.apache.paimon.data.InternalRow;
+import org.apache.paimon.options.Options;
+import org.apache.paimon.reader.RecordReader;
+import org.apache.paimon.table.source.ReadBuilder;
+import org.apache.paimon.table.source.Split;
+import org.apache.paimon.table.source.TableRead;
+import org.apache.paimon.types.DataField;
+import org.apache.paimon.types.RowType;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Map;
-import java.util.HashMap;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * MysqlDriver
@@ -83,7 +81,7 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
 
             ReadBuilder readBuilder = table.newReadBuilder();
             QueryData.Option option = queryData.getOption();
-            //Paimon无法做到分页，所以这里逻辑只取前N条
+            // Paimon无法做到分页，所以这里逻辑只取前N条
             int length = option.getLimitEnd() - option.getLimitStart();
             readBuilder.withLimit(length);
             List<Split> splits = readBuilder.newScan().plan().splits();
@@ -138,7 +136,6 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     public String getName() {
         return "Paimon数据库";
     }
-
 
     @Override
     public String test() {
@@ -207,15 +204,20 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
                 column.setName(field.name());
                 column.setType(field.type().toString());
                 column.setComment(field.description());
-                //TODO: 使用CovertType
+                // TODO: 使用CovertType
                 column.setJavaType(ColumnType.STRING);
                 column.setKeyFlag(primaryKeys.contains(field.name()));
-//                column.setPartaionKey(partitionKeys.contains(field.name()));
+                //                column.setPartaionKey(partitionKeys.contains(field.name()));
                 column.setNullable(field.type().isNullable());
                 columns.add(column);
             }
-            tableBuilder.columns(columns).name(tableName).schema(schemaName).comment(catalogTable.comment().toString())
-                    .options(JsonUtils.toJsonString(catalogTable.options())).driverType(getType());
+            tableBuilder
+                    .columns(columns)
+                    .name(tableName)
+                    .schema(schemaName)
+                    .comment(catalogTable.comment().toString())
+                    .options(JsonUtils.toJsonString(catalogTable.options()))
+                    .driverType(getType());
         } catch (Catalog.TableNotExistException e) {
             throw new RuntimeException(e);
         }
@@ -224,7 +226,6 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
 
     @Override
     public List<Column> listColumns(String schemaName, String tableName) {
-
 
         return null;
     }
