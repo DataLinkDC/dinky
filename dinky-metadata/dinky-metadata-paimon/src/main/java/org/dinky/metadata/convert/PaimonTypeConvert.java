@@ -19,16 +19,16 @@
 
 package org.dinky.metadata.convert;
 
+import java.time.LocalDate;
+import org.apache.paimon.data.GenericRow;
+import org.apache.paimon.data.InternalRow;
+import org.apache.paimon.types.DataField;
+import org.apache.paimon.types.DataTypeRoot;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.config.DriverConfig;
-
-import org.apache.paimon.data.GenericRow;
-import org.apache.paimon.data.InternalRow;
-import org.apache.paimon.types.DataField;
-import org.apache.paimon.types.DataTypeRoot;
 
 import java.util.Optional;
 
@@ -89,6 +89,8 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
             case DOUBLE:
                 return row.getDouble(ordinal);
             case DATE:
+                int timeInt = row.getInt(ordinal);
+                return LocalDate.of(1970, 1, 1).plusDays(timeInt);
             case TIME_WITHOUT_TIME_ZONE:
             case TIMESTAMP_WITHOUT_TIME_ZONE:
             case TIMESTAMP_WITH_LOCAL_TIME_ZONE:
