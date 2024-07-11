@@ -19,6 +19,7 @@
 
 package org.dinky.metadata.driver;
 
+import org.apache.paimon.utils.CloseableIterator;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.exception.BusException;
@@ -91,15 +92,23 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
             List<LinkedHashMap<String, Object>> datas;
             try (RecordReader<InternalRow> reader = read.createReader(splits)) {
                 datas = new ArrayList<>();
-                reader.forEachRemaining(x -> {
-                    LinkedHashMap<String, Object> row = new LinkedHashMap<>();
-                    for (int i = 0; i < x.getFieldCount(); i++) {
-                        String name = fieldTypes.get(i).name();
-                        Object data = PaimonTypeConvert.SafeGetRowData(fieldTypes.get(i), x, i);
-                        row.put(name, data);
+
+                try (CloseableIterator<InternalRow> iterator = reader.toCloseableIterator()){
+                    while (iterator.hasNext()){
+                        InternalRow row = iterator.next();
+                        LinkedHashMap<String, Object> rowList = new LinkedHashMap<>();
+                        for (int i = 0; i < row.getFieldCount(); i++) {
+                            String name = fieldTypes.get(i).name();
+                            Object data = PaimonTypeConvert.SafeGetRowData(fieldTypes.get(i), row, i);
+                            rowList.put(name, data);
+                        }
+                        datas.add(rowList);
+                        if (datas.size() >= length) {
+                            log.warn("query data exceed limit: {}", length);
+                            break;
+                        }
                     }
-                    datas.add(row);
-                });
+                }
             }
             result.setRowData(datas);
             result.setSuccess(true);
