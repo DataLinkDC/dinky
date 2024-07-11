@@ -146,23 +146,6 @@ public class SystemInit implements ApplicationRunner {
      * init task monitor
      */
     private void initDaemon() {
-        SystemConfiguration sysConfig = SystemConfiguration.getInstances();
-
-        // Init system metrics task
-        DaemonTask sysMetricsTask = DaemonTask.build(new DaemonTaskConfig(SystemMetricsTask.TYPE));
-        Configuration<Boolean> metricsSysEnable = sysConfig.getMetricsSysEnable();
-        Configuration<Integer> sysGatherTiming = sysConfig.getMetricsSysGatherTiming();
-        Consumer<Configuration<?>> metricsListener = c -> {
-            c.addChangeEvent(x -> {
-                schedule.removeSchedule(sysMetricsTask.getType());
-                PeriodicTrigger trigger = new PeriodicTrigger(sysGatherTiming.getValue());
-                if (metricsSysEnable.getValue()) schedule.addSchedule(sysMetricsTask, trigger);
-            });
-        };
-        metricsListener.accept(metricsSysEnable);
-        metricsListener.accept(sysGatherTiming);
-        metricsSysEnable.runChangeEvent();
-
         // Init clear job history task
         DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
         schedule.addSchedule(clearJobHistoryTask, new PeriodicTrigger(1, TimeUnit.HOURS));

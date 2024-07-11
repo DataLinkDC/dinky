@@ -60,7 +60,7 @@ public class MetricsContextHolder {
     protected static final MetricsContextHolder instance = new MetricsContextHolder();
 
     private final List<MetricsVO> metricsVOS = new CopyOnWriteArrayList<>();
-    private final AtomicLong lastDumpTime = new AtomicLong(System.currentTimeMillis());
+    private final AtomicLong lastDumpTime = new AtomicLong(0);
 
     static {
         String sql = String.format(
