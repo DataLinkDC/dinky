@@ -19,7 +19,6 @@
 
 package org.dinky.metadata.driver;
 
-import org.apache.paimon.utils.CloseableIterator;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.exception.BusException;
@@ -48,6 +47,7 @@ import org.apache.paimon.table.source.Split;
 import org.apache.paimon.table.source.TableRead;
 import org.apache.paimon.types.DataField;
 import org.apache.paimon.types.RowType;
+import org.apache.paimon.utils.CloseableIterator;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -93,8 +93,8 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
             try (RecordReader<InternalRow> reader = read.createReader(splits)) {
                 datas = new ArrayList<>();
 
-                try (CloseableIterator<InternalRow> iterator = reader.toCloseableIterator()){
-                    while (iterator.hasNext()){
+                try (CloseableIterator<InternalRow> iterator = reader.toCloseableIterator()) {
+                    while (iterator.hasNext()) {
                         InternalRow row = iterator.next();
                         LinkedHashMap<String, Object> rowList = new LinkedHashMap<>();
                         for (int i = 0; i < row.getFieldCount(); i++) {
