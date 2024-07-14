@@ -58,6 +58,7 @@ import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
+import org.dinky.function.data.model.UDF;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.FlinkClusterConfig;
@@ -97,6 +98,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -557,7 +559,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
             task.setVersionId(taskVersionId);
             if (Dialect.isUDF(task.getDialect())) {
-                JobManager.build(new JobConfig()).addOrUpdateUdfCodePool(UDFUtils.taskToUDF(task.buildTask()));
+                // compile udf class
+                UDF udf = UDFUtils.taskToUDF(task.buildTask());
+                JobManager jobManager = JobManager.build(new JobConfig());
+                jobManager.initUDF(Collections.singletonList(udf), task.getId());
+                jobManager.addOrUpdateUdfCodePool(UDFUtils.taskToUDF(task.buildTask()));
             }
         } else {
             if (Dialect.isUDF(task.getDialect())
