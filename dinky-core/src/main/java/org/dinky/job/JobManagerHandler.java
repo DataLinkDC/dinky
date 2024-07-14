@@ -19,6 +19,7 @@
 
 package org.dinky.job;
 
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -54,11 +55,15 @@ import org.dinky.trans.Operations;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.api.common.Plan;
+import org.apache.flink.api.dag.Pipeline;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.PipelineOptions;
@@ -142,8 +147,10 @@ public class JobManagerHandler implements IJobManager {
 
     @Override
     public ObjectNode getJarStreamGraphJson(String statement) {
-        StreamGraph streamGraph = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
-        return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
+        Pipeline pipeline = JobJarStreamGraphBuilder.build(this).getJarStreamGraph(statement);
+        Configuration configuration = Configuration.fromMap(getExecutorConfig().getConfig());
+        JobGraph jobGraph = FlinkStreamEnvironmentUtil.getJobGraph(pipeline, configuration);
+        return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(jobGraph));
     }
 
     @Override
@@ -155,11 +162,21 @@ public class JobManagerHandler implements IJobManager {
         statement = String.join(";\n", statements);
         job = Job.build(runMode, config, executorConfig, statement, useGateway);
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
-        StreamGraph streamGraph = jobJarStreamGraphBuilder.getJarStreamGraph(statement);
-
+        Pipeline pipeline = jobJarStreamGraphBuilder.getJarStreamGraph(statement);
+        Configuration configuration =
+                executor.getCustomTableEnvironment().getConfig().getConfiguration();
+        if (pipeline instanceof StreamGraph) {
+            if (Asserts.isNotNullString(config.getSavePointPath())) {
+                ((StreamGraph) pipeline)
+                        .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                                config.getSavePointPath(),
+                                configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+            }
+        }
         try {
             if (!useGateway) {
-                JobClient jobClient = executor.getStreamExecutionEnvironment().executeAsync(streamGraph);
+                JobClient jobClient =
+                        FlinkStreamEnvironmentUtil.executeAsync(pipeline, executor.getStreamExecutionEnvironment());
                 if (Asserts.isNotNull(jobClient)) {
                     job.setJobId(jobClient.getJobID().toHexString());
                     job.setJids(Collections.singletonList(job.getJobId()));
@@ -177,8 +194,12 @@ public class JobManagerHandler implements IJobManager {
                     config.getGatewayConfig().setSql(statement);
                     gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());
                 } else {
-                    streamGraph.setJobName(config.getJobName());
-                    JobGraph jobGraph = streamGraph.getJobGraph();
+                    if (pipeline instanceof StreamGraph) {
+                        ((StreamGraph) pipeline).setJobName(config.getJobName());
+                    } else if (pipeline instanceof Plan) {
+                        ((Plan) pipeline).setJobName(config.getJobName());
+                    }
+                    JobGraph jobGraph = FlinkStreamEnvironmentUtil.getJobGraph(pipeline, configuration);
                     GatewayConfig gatewayConfig = config.getGatewayConfig();
                     List<String> uriList = jobJarStreamGraphBuilder.getUris(statement);
                     String[] jarPaths = uriList.stream()

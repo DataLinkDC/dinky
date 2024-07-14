@@ -19,7 +19,6 @@
 
 package org.dinky.job.builder;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.executor.Executor;
 import org.dinky.job.JobBuilder;
@@ -36,10 +35,7 @@ import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.SqlUtil;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.api.dag.Pipeline;
 
 import java.io.File;
 import java.net.URL;
@@ -69,7 +65,7 @@ public class JobJarStreamGraphBuilder implements JobBuilder {
     @Override
     public void run() throws Exception {}
 
-    public StreamGraph getJarStreamGraph(String statement) {
+    public Pipeline getJarStreamGraph(String statement) {
         DinkyClassLoaderUtil.initClassLoader(config, executor.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(statement);
         ExecuteJarOperation executeJarOperation = null;
@@ -95,15 +91,8 @@ public class JobJarStreamGraphBuilder implements JobBuilder {
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
         List<URL> urLs = executor.getAllFileSet();
-        StreamGraph streamGraph = executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
-        Configuration configuration =
-                executor.getCustomTableEnvironment().getConfig().getConfiguration();
-        if (Asserts.isNotNullString(config.getSavePointPath())) {
-            streamGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                    config.getSavePointPath(),
-                    configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
-        }
-        return streamGraph;
+        return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
+
     }
 
     public List<String> getUris(String statement) {

@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import org.apache.flink.api.dag.Pipeline;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -30,6 +31,7 @@ import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.KerberosUtil;
 import org.dinky.utils.URLUtils;
 
@@ -274,8 +276,8 @@ public abstract class AbstractExecutor implements Executor {
     @Override
     public String getJarStreamingPlanStringJson(String parameter) {
         List<URL> allFileByAdd = getAllFileSet();
-        StreamGraph streamGraph = new ExecuteJarOperation(parameter).explain(getCustomTableEnvironment(), allFileByAdd);
-        return streamGraph.getStreamingPlanAsJSON();
+        Pipeline streamGraph = new ExecuteJarOperation(parameter).explain(getCustomTableEnvironment(), allFileByAdd);
+        return FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(streamGraph);
     }
 
     @Override

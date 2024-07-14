@@ -19,10 +19,12 @@
 
 package org.dinky.trans.dml;
 
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
+import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.URLUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +34,7 @@ import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
@@ -60,7 +62,8 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     @Override
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
-            tEnv.getStreamExecutionEnvironment().execute(getStreamGraph(tEnv));
+            StreamExecutionEnvironment streamExecutionEnvironment = tEnv.getStreamExecutionEnvironment();
+            FlinkStreamEnvironmentUtil.executeAsync(getStreamGraph(tEnv), streamExecutionEnvironment);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -68,21 +71,16 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return Optional.of(TABLE_RESULT_OK);
     }
 
-    public StreamGraph getStreamGraph(CustomTableEnvironment tEnv) {
+    public Pipeline getStreamGraph(CustomTableEnvironment tEnv) {
         return getStreamGraph(tEnv, Collections.emptyList());
     }
 
-    public StreamGraph getStreamGraph(CustomTableEnvironment tEnv, List<URL> classpaths) {
+    public Pipeline getStreamGraph(CustomTableEnvironment tEnv, List<URL> classpaths) {
         JarSubmitParam submitParam = JarSubmitParam.build(statement);
         return getStreamGraph(submitParam, tEnv, classpaths);
     }
 
-    public static StreamGraph getStreamGraph(CustomTableEnvironment tEnv, List<URL> classpaths, String statement) {
-        JarSubmitParam submitParam = JarSubmitParam.build(statement);
-        return getStreamGraph(submitParam, tEnv, classpaths);
-    }
-
-    public static StreamGraph getStreamGraph(
+    public static Pipeline getStreamGraph(
             JarSubmitParam submitParam, CustomTableEnvironment tEnv, List<URL> classpaths) {
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
@@ -115,8 +113,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                     : tEnv.getStreamExecutionEnvironment().getParallelism();
             Pipeline pipeline = PackagedProgramUtils.getPipelineFromProgram(program, configuration, parallelism, true);
             program.close();
-            Assert.isTrue(pipeline instanceof StreamGraph, "can not translate");
-            return (StreamGraph) pipeline;
+            return pipeline;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -151,11 +148,11 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return statement;
     }
 
-    public StreamGraph explain(CustomTableEnvironment tEnv) {
+    public Pipeline explain(CustomTableEnvironment tEnv) {
         return getStreamGraph(tEnv);
     }
 
-    public StreamGraph explain(CustomTableEnvironment tEnv, List<URL> classpaths) {
+    public Pipeline explain(CustomTableEnvironment tEnv, List<URL> classpaths) {
         return getStreamGraph(tEnv, classpaths);
     }
 
