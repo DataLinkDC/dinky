@@ -860,6 +860,7 @@ export default {
   'rc.ds.search': 'Search Name/Note',
   'rc.ds.console.exec': 'Execute',
   'rc.ds.console.running': 'Running...',
+  'rc.ds.detail.tag.console.clear.log': 'Clear Log...',
   'rc.ds.create': 'Create DataSource',
   'rc.ds.decimalDigits': 'Decimal Range',
   'rc.ds.default': 'Default Value',
@@ -981,6 +982,9 @@ export default {
   'rc.resource.filelist': 'File list',
   'rc.resource.sync': 'Sync remote files',
   'rc.resource.copy': 'Copy as: {fillValue}',
+  'rc.resource.enable': 'Resource management function is not enabled',
+  'rc.resource.enable.tips':
+    'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
 
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',

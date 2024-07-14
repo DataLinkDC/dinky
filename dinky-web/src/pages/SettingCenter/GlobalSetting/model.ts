@@ -17,7 +17,7 @@
  *
  */
 
-import { queryDsConfig } from '@/pages/SettingCenter/GlobalSetting/service';
+import { queryDsConfig, queryResourceConfig } from '@/pages/SettingCenter/GlobalSetting/service';
 import { BaseConfigProperties } from '@/types/SettingCenter/data';
 import { createModelTypes } from '@/utils/modelUtils';
 import { Effect } from '@@/plugin-dva/types';
@@ -28,6 +28,7 @@ const SYS_CONFIG = 'SysConfig';
 export type SysConfigStateType = {
   dsConfig: BaseConfigProperties[];
   enabledDs: boolean;
+  enableResource: boolean;
 };
 
 export type ConfigModelType = {
@@ -35,10 +36,12 @@ export type ConfigModelType = {
   state: SysConfigStateType;
   effects: {
     queryDsConfig: Effect;
+    queryResourceConfig: Effect;
   };
   reducers: {
     saveDsConfig: Reducer<SysConfigStateType>;
     updateEnabledDs: Reducer<SysConfigStateType>;
+    updateEnableResource: Reducer<SysConfigStateType>;
   };
 };
 
@@ -46,7 +49,8 @@ const ConfigModel: ConfigModelType = {
   namespace: SYS_CONFIG,
   state: {
     dsConfig: [],
-    enabledDs: false
+    enabledDs: false,
+    enableResource: false
   },
 
   effects: {
@@ -66,6 +70,23 @@ const ConfigModel: ConfigModelType = {
           payload: enabledDs
         });
       }
+    },
+    *queryResourceConfig({ payload }, { call, put }) {
+      const response: BaseConfigProperties[] = yield call(queryResourceConfig, payload);
+      yield put({
+        type: 'saveDsConfig',
+        payload: response || []
+      });
+      if (response && response.length > 0) {
+        const enableResource = response.some(
+          (item: BaseConfigProperties) =>
+            item.key === 'sys.resource.settings.base.enable' && item.value === true
+        );
+        yield put({
+          type: 'updateEnableResource',
+          payload: enableResource
+        });
+      }
     }
   },
 
@@ -80,6 +101,12 @@ const ConfigModel: ConfigModelType = {
       return {
         ...state,
         enabledDs: payload
+      };
+    },
+    updateEnableResource(state, { payload }) {
+      return {
+        ...state,
+        enableResource: payload
       };
     }
   }
