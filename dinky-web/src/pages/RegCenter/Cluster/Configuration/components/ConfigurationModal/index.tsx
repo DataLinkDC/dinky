@@ -60,7 +60,7 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
   useEffect(() => {
     if (visible) {
       dispatch({
-        type:STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
+        type: STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
       });
     }
     form.setFieldsValue(value);

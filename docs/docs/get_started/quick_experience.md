@@ -1,9 +1,8 @@
 ---
 sidebar_position: 1
 id: quick_experience
-title: 快速体验
+title: 快速开始
 ---
-
 
 ## 体验环境
 
@@ -12,61 +11,53 @@ title: 快速体验
 2. 体验环境每天会定时重置，除了一些默认数据外其他所有数据和配置会被清空。
 3. 体验环境服务不可用时间段为工作日每天的 23:00 - 次日的 09:00。周六日全时段服务不可用，如遇其他时间段服务不可用，请联系社区人员,我们会尽快处理。
 4. 体验环境不支持所有的功能，如需要体验完整功能，请自行搭建环境。
-5. 请不要在体验环境中存储重要数据，以免造成数据丢失,数据泄露。
-6. 请不要在体验环境中进行大规模并发测试，以免影响其他用户体验。
-7. 请不要在体验环境中进行一些`删除`等高危操作,以免影响其他用户体验。
+5. 请不要在体验环境中进行大规模并发测试，以免影响其他用户体验。
+
 :::
+
 
 **访问地址:** [http://demo.dinky.org.cn:32451/#/](http://demo.dinky.org.cn:32451/#/)
 
-### 普通账户
-> 注意: 普通账户仅用于测试，不具备完整的权限。无法进行认证中心相关操作。
-
-```plaintext
+```shell
+# 普通账户 ,普通账户仅用于测试，不具备完整的权限。无法进行认证中心相关操作。
 用户名：demo
 密码：dinky123456
-```
-
-### 授权账户
-> 注意: 授权账户只有认证中心相关权限，无法进行其他操作。
-    
-```plaintext
+# 授权账户,授权账户只有认证中心相关权限，无法进行其他操作。
 用户名：auth
 密码：dinky123456
 ```
 
+
 ## Docker 快速开始
-
-:::danger 注意
-
-Dinky v1.0.0 的 Docker 镜像正在开发中，敬请期待。以下步骤目前由于镜像未发布，无法使用。请耐心等待。如您对 Docker 镜像有兴趣，欢迎加入我们的开发群，一起参与开发。
-
-:::
 
 如果您是第一次接触 Dinky，我们推荐您使用 Docker 快速体验 Dinky 的功能。
 
-### 环境准备
+### 独立启动Dinky服务
 
-需要 `Docker 1.13.1+`。
+如果你本地已经安装了 docker，执行以下命令可以一键安装：
 
-### 启动 dinky-standalone-server 镜像
-
-启动该镜像提供 Dinky 实时计算平台。
-
-```sh
-docker run -p 8888:8888 -p 8081:8081 --name dinky dinkydocker/dinky-standalone-server:1.0.0-flink16
+```shell
+# 拉取镜像
+docker pull dinkydocker/dinky-standalone-server:1.0.3-flink1.17
+# 运行程序
+docker run -p 8888:8888 \
+ --name dinky dinkydocker/dinky-standalone-server:1.0.3-flink1.17
 ```
-参数解释：
-> docker需要开放容器内 8888 ，8081 端口到宿主机，8888为后端服务端口，8081为前端服务端口
 
-> 默认使用h2作为数据库，开箱即用，您不需要额外附加数据库。仅限于快速体验，生产环境请使用MySQL或Postgres，具体请参考Docker部署章节
+:::tip 注意
+默认使用h2作为数据库，开箱即用，您不需要额外附加数据库。仅限于快速体验，
+生产环境请使用MySQL或Postgres，更多参数配置请参考[Docker部署](../../deploy_guide/docker_deploy)
+章节获取详细内容，
+:::
 
 Docker启动成功后，在浏览器里输入地址http://ip:8081，看到以下界面，说明Dinky启动成功。
+> 初始账户    
+> 用户名: dinky   
+> 密码 :dinky123!@#
+
 ![login](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-login.png)
 
-默认登录账号：admin
 
-默认登录密码：admin
 
 ## 创建你的第一个Flink任务
 Dinky支持多种任务开发，本章节会指导你如何使用Local模式快速创建一个FlinkSQL任务。

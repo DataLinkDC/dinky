@@ -28,7 +28,8 @@ import {
 import {
   getClusterConfigurationData,
   getEnvData,
-  getFlinkConfigs, getFlinkUdfOptions,
+  getFlinkConfigs,
+  getFlinkUdfOptions,
   getSessionData,
   querySuggestionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';

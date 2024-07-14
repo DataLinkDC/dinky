@@ -47,7 +47,7 @@ export type TaskUdfConfig = {
 export type TaskUdfRefer = {
   name: string;
   className: string;
-}
+};
 
 export type ConfigItem = {
   key: string;
