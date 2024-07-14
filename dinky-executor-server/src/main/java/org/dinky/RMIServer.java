@@ -33,7 +33,7 @@ public class RMIServer {
             LocateRegistry.createRegistry(1099);
             Registry registry = LocateRegistry.getRegistry();
             registry.bind("Compute", remoteMath);
-            System.out.println("Math server ready");
+            System.out.println("Dinky server ready");
             // 如果不想再让该对象被继续调用，使用下面一行
             // UnicastRemoteObject.unexportObject(remoteMath, false);
         } catch (Exception e) {

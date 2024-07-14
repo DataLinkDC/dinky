@@ -23,7 +23,6 @@ import {
   setKeyToLocalStorage,
   setLocalThemeToStorage
 } from '@/utils/function';
-import { l } from '@/utils/intl';
 import { WarningMessageAsync } from '@/utils/messages';
 import { history } from '@@/core/history';
 
@@ -36,9 +35,9 @@ export const gotoRedirectUrl = () => {
   }, 10);
 };
 
-export const redirectToLogin = async () => {
+export const redirectToLogin = (tipMsg: string) => {
   //todo: 使用模态框提示, 但是目前会重复弹出,原因是接口每次都会调用，所以会出现重复弹出
-  await WarningMessageAsync(l('login.token.error'));
+  WarningMessageAsync(tipMsg);
   window.location.href = '/#/user/login';
 };
 

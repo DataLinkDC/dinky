@@ -141,4 +141,6 @@ public interface ServerExecutorService extends Remote {
     String getPyUDFAttr(String statement) throws RemoteException;
 
     String getScalaFullClassName(String statement) throws RemoteException;
+
+    String getLatestJobManageHost(String appId, String oldJobManagerHost, GatewayConfig gatewayConfig) throws RemoteException;
 }

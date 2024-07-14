@@ -431,4 +431,12 @@ public class JobManager {
             throw new RuntimeException(e);
         }
     }
+
+    public String getLatestJobManageHost(String appId, String oldJobManagerHost, GatewayConfig gatewayConfig) {
+        try {
+            return serverExecutorService.getLatestJobManageHost(appId, oldJobManagerHost, gatewayConfig);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

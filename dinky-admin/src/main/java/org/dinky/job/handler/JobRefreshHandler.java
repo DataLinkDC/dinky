@@ -345,9 +345,7 @@ public class JobRefreshHandler {
                         .getFlinkConfig()
                         .setJobName(jobInfoDetail.getInstance().getName());
 
-                Gateway gateway = Gateway.build(gatewayConfig);
-                String latestJobManageHost = gateway.getLatestJobManageHost(appId, clusterInstance.getJobManagerHost());
-
+                String latestJobManageHost = JobManager.build(new JobConfig()).getLatestJobManageHost(appId,  clusterInstance.getJobManagerHost(), gatewayConfig);
                 if (Asserts.isNotNull(latestJobManageHost)) {
                     clusterInstance.setHosts(latestJobManageHost);
                     clusterInstance.setJobManagerHost(latestJobManageHost);

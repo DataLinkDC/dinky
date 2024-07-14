@@ -327,4 +327,10 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     public String getScalaFullClassName(String statement) throws RemoteException {
         return UDFUtil.getScalaFullClassName(statement);
     }
+
+    @Override
+    public String getLatestJobManageHost(String appId, String oldJobManagerHost, GatewayConfig gatewayConfig) throws RemoteException {
+        Gateway gateway = Gateway.build(gatewayConfig);
+        return gateway.getLatestJobManageHost(appId, oldJobManagerHost);
+    }
 }
