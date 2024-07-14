@@ -21,12 +21,14 @@ package org.dinky.controller;
 
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.CatalogueTaskDTO;
+import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.TreeVo;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.service.CatalogueService;
+import org.dinky.service.catalogue.CatalogueService;
 
 import java.io.File;
 import java.util.List;
@@ -125,13 +127,26 @@ public class CatalogueController {
 
     /**
      * query catalogue tree data
+     *
+     * @param catalogueTreeQueryDto {@link CatalogueTreeQueryDTO}
      * @return {@link Result}< {@link List}< {@link Catalogue}>>}
      */
     @PostMapping("/getCatalogueTreeData")
     @ApiOperation("Get Catalogue Tree Data")
-    public Result<List<Catalogue>> getCatalogueTree() {
-        List<Catalogue> catalogues = catalogueService.getCatalogueTree();
+    public Result<List<Catalogue>> getCatalogueTree(@RequestBody CatalogueTreeQueryDTO catalogueTreeQueryDto) {
+        List<Catalogue> catalogues = catalogueService.getCatalogueTree(catalogueTreeQueryDto);
         return Result.succeed(catalogues);
+    }
+
+    /**
+     * query catalogue sort type
+     * @return {@link Result}< {@link List}< {@link TreeVo}>>}
+     */
+    @PostMapping("/getCatalogueSortType")
+    @ApiOperation("Get Catalogue Sort Type")
+    public Result<List<TreeVo>> getCatalogueSortType() {
+        List<TreeVo> catalogueSortType = catalogueService.getCatalogueSortType();
+        return Result.succeed(catalogueSortType);
     }
 
     /**

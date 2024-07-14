@@ -17,20 +17,10 @@
  *
  */
 
-import { TaskDataType } from '@/pages/DataStudio/model';
-import { postAll, putDataJson } from '@/services/api';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
-export async function getTaskData(params: any) {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA, params)).data;
-}
-export async function getTaskSortTypeData() {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA)).data;
-}
-export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
-  return queryDataByParams(API_CONSTANTS.TASK, { id: id });
-}
-export function putTask(params: any) {
-  return putDataJson(API_CONSTANTS.TASK, params);
-}
+-- Increase class_name column's length from 50 to 100.
+ALTER TABLE dinky_udf_manage CHANGE COLUMN class_name class_name VARCHAR(100) null DEFAULT null COMMENT 'Complete class name';
+
+SET FOREIGN_KEY_CHECKS = 1;

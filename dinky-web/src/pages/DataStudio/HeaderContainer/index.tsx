@@ -98,7 +98,8 @@ const HeaderContainer = (props: connect) => {
     updateSelectBottomKey,
     queryDsConfig,
     queryTaskData,
-    enabledDs
+    enabledDs,
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData }
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
@@ -313,7 +314,7 @@ const HeaderContainer = (props: connect) => {
       }
     }
     saveTabs({ ...props.tabs });
-    await queryTaskData();
+    await queryTaskData({ payload: selectCatalogueSortTypeData });
   };
 
   const showDagGraph = async () => {
@@ -565,7 +566,8 @@ export default connect(
   ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     tabs: Studio.tabs,
     dsConfig: SysConfig.dsConfig,
-    enabledDs: SysConfig.enabledDs
+    enabledDs: SysConfig.enabledDs,
+    selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
   }),
   mapDispatchToProps
 )(memo(HeaderContainer));

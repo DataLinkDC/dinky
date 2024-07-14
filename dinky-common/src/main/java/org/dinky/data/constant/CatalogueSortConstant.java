@@ -17,20 +17,16 @@
  *
  */
 
-import { TaskDataType } from '@/pages/DataStudio/model';
-import { postAll, putDataJson } from '@/services/api';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
+package org.dinky.data.constant;
 
-export async function getTaskData(params: any) {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA, params)).data;
-}
-export async function getTaskSortTypeData() {
-  return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA)).data;
-}
-export function getTaskDetails(id: number): Promise<TaskDataType | undefined> {
-  return queryDataByParams(API_CONSTANTS.TASK, { id: id });
-}
-export function putTask(params: any) {
-  return putDataJson(API_CONSTANTS.TASK, params);
+/**
+ * CatalogueSortConstant
+ *
+ * @since 2024/4/29 14:15
+ */
+public class CatalogueSortConstant {
+
+    public static final String STRATEGY_FIRST_LETTER = "first_letter";
+    public static final String STRATEGY_CREATE_TIME = "create_time";
+    public static final String STRATEGY_DEFAULT = "default";
 }

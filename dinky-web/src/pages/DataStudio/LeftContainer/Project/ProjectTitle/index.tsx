@@ -32,6 +32,7 @@ import React, { useState } from 'react';
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {
     leftContainer: { selectKey },
+    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
     dispatch
   } = props;
 
@@ -62,7 +63,7 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
       () => {},
       () => {
         handleCancelCreate();
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
       }
     );
   };
@@ -103,5 +104,6 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  leftContainer: Studio.leftContainer
+  leftContainer: Studio.leftContainer,
+  selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
 }))(ProjectTitle);
