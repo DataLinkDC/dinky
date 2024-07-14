@@ -30,6 +30,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
 import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.lang.Opt;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -95,8 +96,18 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
             setFieldValByName(mybatisPlusFillProperties.getOperatorField(), userId, metaObject);
         }
         if (tenantId == null) {
-            int loginTenantId = (Integer) TenantContextHolder.get();
-            setFieldValByName(mybatisPlusFillProperties.getTenantIdField(), loginTenantId, metaObject);
+            try {
+                Opt<Object> loginTenantId = Opt.ofNullable(TenantContextHolder.get());
+                loginTenantId.ifPresent(loginTenantId1 -> {
+                    if (loginTenantId1 instanceof Integer) {
+                        setFieldValByName(mybatisPlusFillProperties.getTenantIdField(), loginTenantId1, metaObject);
+                    }
+                });
+            } catch (Exception e) {
+                log.warn(
+                        "Ignore set tenantId filed, because tenantId cant't get, Please check if your account is logged in normally or if it has been taken offline",
+                        e);
+            }
         }
     }
 
