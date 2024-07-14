@@ -24,6 +24,7 @@ import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
@@ -91,6 +92,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 
 public abstract class YarnGateway extends AbstractGateway {
@@ -173,7 +175,28 @@ public abstract class YarnGateway extends AbstractGateway {
 
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);
-        yarnClient.start();
+
+        synchronized (YarnGateway.class) {
+            String hadoopUserName;
+            try {
+                hadoopUserName = UserGroupInformation.getLoginUser().getUserName();
+            } catch (Exception e) {
+                hadoopUserName = "hdfs";
+            }
+
+            // 设置 yarn 提交的用户名
+            String yarnUser = configuration.get(CustomerConfigureOptions.YARN_APPLICATION_USER);
+            if (StrUtil.isNotBlank(yarnUser)) {
+                UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser(yarnUser));
+            }
+            try {
+                yarnClient.start();
+            } finally {
+                if (StrUtil.isNotBlank(yarnUser)) {
+                    UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser(hadoopUserName));
+                }
+            }
+        }
     }
 
     private Path getYanConfigFilePath(String path) {
@@ -319,16 +342,16 @@ public abstract class YarnGateway extends AbstractGateway {
 
     protected YarnClusterDescriptor createYarnClusterDescriptorWithJar(FlinkUdfPathContextHolder udfPathContextHolder) {
         YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor();
-
+        ClusterDescriptorAdapterImpl clusterDescriptorAdapter = new ClusterDescriptorAdapterImpl(yarnClusterDescriptor);
         if (Asserts.isNotNull(config.getJarPaths())) {
-            yarnClusterDescriptor.addShipFiles(
+            clusterDescriptorAdapter.addShipFiles(
                     Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
-            yarnClusterDescriptor.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
+            clusterDescriptorAdapter.addShipFiles(new ArrayList<>(udfPathContextHolder.getPyUdfFile()));
         }
         Set<File> otherPluginsFiles = udfPathContextHolder.getAllFileSet();
 
         if (CollUtil.isNotEmpty(otherPluginsFiles)) {
-            yarnClusterDescriptor.addShipFiles(CollUtil.newArrayList(otherPluginsFiles));
+            clusterDescriptorAdapter.addShipFiles(new ArrayList<>(otherPluginsFiles));
         }
         return yarnClusterDescriptor;
     }
@@ -477,7 +500,9 @@ public abstract class YarnGateway extends AbstractGateway {
         return null;
     }
 
-    /** Creates a ZooKeeper path of the form "/a/b/.../z". */
+    /**
+     * Creates a ZooKeeper path of the form "/a/b/.../z".
+     */
     private static String generateZookeeperPath(String... paths) {
         final String result = Arrays.stream(paths)
                 .map(YarnGateway::trimSlashes)

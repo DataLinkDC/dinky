@@ -27,6 +27,9 @@
     <artifactId>dinky-flink</artifactId>
     <packaging>pom</packaging>
     <name>Dinky : Flink</name>
+    <modules>
+
+    </modules>
 
     <profiles>
         <profile>
@@ -43,6 +46,7 @@
                 <module>dinky-flink-1.16</module>
                 <module>dinky-flink-1.17</module>
                 <module>dinky-flink-1.18</module>
+                <module>dinky-flink-1.19</module>
             </modules>
         </profile>
     </profiles>

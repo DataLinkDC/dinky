@@ -127,6 +127,7 @@ const Login: React.FC = () => {
     const chooseTenantResult: API.Result = await chooseTenantSubmit({
       tenantId
     });
+
     await handleChooseTenant(chooseTenantResult);
   };
 
@@ -134,6 +135,7 @@ const Login: React.FC = () => {
     try {
       // login
       const result = await login({ ...values });
+
       if (result.code === 0) {
         // if login success then get token info and set it to local storage
         await queryDataByParams<SaTokenInfo>(API_CONSTANTS.TOKEN_INFO).then((res) => {
