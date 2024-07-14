@@ -79,9 +79,11 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
+import org.dinky.service.UDFService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.resource.ResourcesService;
 import org.dinky.service.task.BaseTask;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
@@ -104,6 +106,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -151,6 +154,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final DataSourceProperties dsProperties;
     private final UserService userService;
     private final ApplicationContext applicationContext;
+    private final UDFService udfService;
+    private final ResourcesService resourcesService;
 
     @Resource
     @Lazy
@@ -709,20 +714,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public List<Task> getAllUDF() {
-        return list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq("enabled", 1)
-                .isNotNull("save_point_path"));
-    }
-
-    @Override
     public List<Task> getReleaseUDF() {
         return list(new LambdaQueryWrapper<Task>()
-                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq(Task::getEnabled, 1)
-                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue())
-                .isNotNull(Task::getSavePointPath));
+                        .in(
+                                Task::getDialect,
+                                Dialect.JAVA.getValue(),
+                                Dialect.SCALA.getValue(),
+                                Dialect.PYTHON.getValue())
+                        .eq(Task::getEnabled, 1)
+                        .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
+                .stream()
+                .filter(task -> Asserts.isNotNullString(
+                        task.getConfigJson().getUdfConfig().getClassName()))
+                .collect(Collectors.toList());
     }
 
     @Override

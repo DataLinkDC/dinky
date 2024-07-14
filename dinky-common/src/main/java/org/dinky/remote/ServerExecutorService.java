@@ -143,4 +143,6 @@ public interface ServerExecutorService extends Remote {
     String getScalaFullClassName(String statement) throws RemoteException;
 
     String getLatestJobManageHost(String appId, String oldJobManagerHost, GatewayConfig gatewayConfig) throws RemoteException;
+
+    List<UDF> getCustomStaticUdfs() throws RemoteException;
 }

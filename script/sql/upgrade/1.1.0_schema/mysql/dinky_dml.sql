@@ -22,29 +22,9 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 begin;
-
-update dinky_sys_menu
-set `path`='/registration/alert/rule',
-    `component`='./RegCenter/Alert/AlertRule',
-    `perms`='registration:alert:rule',
-    `parent_id`=12
-where `id` = 116;
-
-update dinky_sys_menu
-set `path`='/registration/alert/rule/add',
-    `perms`='registration:alert:rule:add'
-where `id` = 117;
-
-update dinky_sys_menu
-set `path`='/registration/alert/rule/delete',
-    `perms`='registration:alert:rule:delete'
-where `id` = 118;
-
-update dinky_sys_menu
-set `path`='/registration/alert/rule/edit',
-    `perms`='registration:alert:rule:edit'
-where `id` = 119;
-
-update dinky_task set first_level_owner = creator;
+INSERT INTO `_dinky_flyway_schema_history` (`installed_rank`, `version`, `description`, `type`, `script`, `checksum`,
+                                            `installed_by`, `installed_on`, `execution_time`, `success`)
+VALUES (1, '1.0.2', '<< Flyway Baseline >>', 'BASELINE', '<< Flyway Baseline >>', NULL, 'root', '2024-05-20 01:32:29',
+        0, 1);
 
 commit ;

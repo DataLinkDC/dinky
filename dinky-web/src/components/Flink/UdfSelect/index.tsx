@@ -17,29 +17,30 @@
  *
  */
 
-package org.dinky.data.vo;
+import {ProFormSelect} from '@ant-design/pro-components';
+import {ProFormSelectProps} from '@ant-design/pro-form/es/components/Select';
+import {Divider} from 'antd';
+import React from "react";
 
-import java.io.Serializable;
-import java.util.Date;
+export type FlinkUdfOptionsProps = ProFormSelectProps & {};
 
-import lombok.Data;
+const FlinkUdfOptionsSelect = (props: FlinkUdfOptionsProps) => {
 
-@Data
-public class UDFManageVO implements Serializable {
-    private Integer id;
-    private String name;
-    private Boolean enabled;
-    private String className;
-    private String language;
-    private Integer taskId;
-    private Integer resourcesId;
-    /**
-     * develop or resources
-     */
-    private String source;
+  const renderTemplateDropDown = (item: any) => {
+    return (
+        <>
+          <Divider style={{ margin: '8px 0' }} />
+          {item}
+        </>
+    );
+  };
 
-    private String dialect;
-    private String fileName;
-    private Date createTime;
-    private Date updateTime;
-}
+  return (
+      <ProFormSelect
+          {...props}
+          fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item), ...props.fieldProps}}
+      />
+  );
+};
+
+export default FlinkUdfOptionsSelect;

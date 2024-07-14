@@ -439,4 +439,12 @@ public class JobManager {
             throw new RuntimeException(e);
         }
     }
+
+    public List<UDF> getCustomStaticUdfs() {
+        try {
+            return serverExecutorService.getCustomStaticUdfs();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -105,7 +105,7 @@ public class JobUDFBuilder implements JobBuilder {
         if (ArrayUtil.isNotEmpty(userCustomUdfJarPath)) {
             for (String jarPath : userCustomUdfJarPath) {
                 if (StrUtil.isNotBlank(jarPath)) {
-                    jobManager.getUdfPathContextHolder().addUdfPath(new File(jarPath));
+                    executor.getUdfPathContextHolder().addUdfPath(new File(jarPath));
                 }
             }
         }

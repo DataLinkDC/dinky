@@ -346,6 +346,7 @@ export interface UDFRegisterInfo {
   resourcesId: number;
   name: string;
   className: string;
+  language: string;
   enable: boolean;
   dialect: string;
   source: string;

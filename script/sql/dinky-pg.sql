@@ -4049,7 +4049,8 @@ CREATE TABLE dinky_udf_manage
 (
     id           SERIAL PRIMARY KEY          NOT NULL,
     name         VARCHAR(50),
-    class_name   VARCHAR(100),
+    class_name   VARCHAR(50),
+    language varchar(10) ,
     task_id      INT,
     resources_id INT,
     enabled      BOOLEAN                              DEFAULT TRUE,
@@ -4064,6 +4065,7 @@ CREATE INDEX name_resources_id_idx ON dinky_udf_manage (name, resources_id);
 COMMENT ON COLUMN dinky_udf_manage.id IS 'id';
 COMMENT ON COLUMN dinky_udf_manage.name IS 'udf name';
 COMMENT ON COLUMN dinky_udf_manage.class_name IS 'Complete class name';
+COMMENT ON COLUMN dinky_udf_manage.language IS 'udf language';
 COMMENT ON COLUMN dinky_udf_manage.task_id IS 'task_id';
 COMMENT ON COLUMN dinky_udf_manage.resources_id IS 'resources_id';
 

@@ -335,4 +335,10 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
         Gateway gateway = Gateway.build(gatewayConfig);
         return gateway.getLatestJobManageHost(appId, oldJobManagerHost);
     }
+
+    @Override
+    public List<UDF> getCustomStaticUdfs() throws RemoteException {
+        List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
+        return staticUdfs == null ? Collections.emptyList() : staticUdfs;
+    }
 }

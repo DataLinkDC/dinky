@@ -44,3 +44,4 @@ ALTER TABLE dinky_task ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;
 ALTER TABLE dinky_task_version ALTER COLUMN statement SET DATA TYPE LONGVARCHAR ;
 
 ALTER TABLE dinky_resources ALTER COLUMN `file_name` SET DATA TYPE TEXT;
+alter table dinky_udf_manage add column `language` VARCHAR(10) DEFAULT null comment 'udf language' ;
