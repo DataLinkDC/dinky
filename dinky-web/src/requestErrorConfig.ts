@@ -17,16 +17,15 @@
  *
  */
 
+import { redirectToLogin } from '@/pages/Other/Login/function';
 import { ENABLE_MODEL_TIP } from '@/services/constants';
-import { API_CONSTANTS } from '@/services/endpoints';
 import { getValueFromLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ErrorNotification, WarningNotification } from '@/utils/messages';
-import { history } from '@@/core/history';
 import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
 
-// 错误处理方案： 错误类型
+// Error handling scheme: Error type
 enum ErrorCode {
   SUCCESS = 0,
   ERROR = 1,
@@ -35,7 +34,7 @@ enum ErrorCode {
   AUTHORIZE_ERROR = 7
 }
 
-// 与后端约定的响应数据格式
+// Response data format agreed upon with the backend
 interface ResponseStructure {
   success: boolean;
   data?: any;
@@ -74,61 +73,61 @@ const handleBizError = (result: ResponseStructure) => {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const errorConfig: RequestConfig = {
-  // 错误处理： umi@3 的错误处理方案。
+  // Error handling: umi@3 Error handling plan for.
   errorConfig: {
-    // 错误抛出
+    // Error thrown
     errorThrower: (res: ResponseStructure) => {
       const { success, data, msg, code } = res as ResponseStructure;
       if (!success) {
         const error: any = new Error(msg);
         error.name = 'BizError';
         error.info = { msg, code, data };
-        throw error; // 抛出自制的错误
+        throw error; // Throwing self-made errors
       }
     },
-    // 错误接收及处理
+    // Error reception and handling
     errorHandler: (error: any, opts: any) => {
       if (opts?.skipErrorHandler) throw error;
-      // 我们的 errorThrower 抛出的错误。
+      //The error thrown by our errorThrower.
       if (error.name === 'BizError') {
         const errorInfo: ResponseStructure = error.info;
         if (errorInfo) {
           handleBizError(errorInfo);
         }
       } else if (error.response) {
-        // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        //认证错误，跳转登录页面
+        //The request was successfully sent and the server also responded with a status code, but the status code exceeded the range of 2xx
+        //Authentication error, redirect to login page
         if (error.response.status === 401) {
-          history.push(API_CONSTANTS.LOGIN_PATH);
+          redirectToLogin();
         } else {
           if (getValueFromLocalStorage(ENABLE_MODEL_TIP) == 'true') {
             ErrorNotification(error.message, error.code);
           }
         }
       } else if (error.request) {
-        // 请求已经成功发起，但没有收到响应
+        //The request has been successfully initiated, but no response has been received
         ErrorNotification(error.toString(), l('app.response.noresponse'));
       } else {
-        // 发送请求时出了点问题
+        // There was a problem sending the request
         ErrorNotification(error.toString(), l('app.request.failed'));
       }
     }
   },
 
-  // 请求拦截器
+  // request interceptor
   requestInterceptors: [
     (config: RequestOptions) => {
-      // 拦截请求配置，进行个性化处理。
+      // Intercept request configuration for personalized processing.
       const url = config?.url;
       return { ...config, url };
     }
   ],
 
-  // 响应拦截器
+  // Response interceptor
   responseInterceptors: [
     (response) => {
-      // 拦截响应数据，进行个性化处理
-      // 不再需要异步处理读取返回体内容，可直接在data中读出，部分字段可在 config 中找到
+      //Intercept response data for personalized processing
+      //No longer requires asynchronous processing to read the content of the return body, it can be directly read from data, and some fields can be found in config
       const { data = {} as any, config } = response;
       return response;
     }

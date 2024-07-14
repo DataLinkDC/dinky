@@ -287,6 +287,7 @@ export default {
   'login.result': '{msg}\t\t{time}',
   'login.username.placeholder': '用户名',
   'login.username.required': '用户名是必填项！',
+  'login.token.error': '无法获取token信息/会话已过期，即将跳转到登录页,请重新登录...',
   /**
    *
    * menu

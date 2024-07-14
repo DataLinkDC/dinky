@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Api(tags = "Tools Controller")
 @RequestMapping("/api/tools")
+@SaCheckLogin
 @RequiredArgsConstructor
 public class ToolsController {
     @PostMapping("/jsonToFlinkSql")

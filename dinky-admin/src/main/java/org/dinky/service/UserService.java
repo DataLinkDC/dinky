@@ -109,7 +109,7 @@ public interface UserService extends ISuperService<User> {
      *
      * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
-    Result<UserDTO> queryCurrentUserInfo();
+    Result<UserDTO> queryCurrentUserInfo(Integer tenantId);
 
     /**
      * user enable or disable

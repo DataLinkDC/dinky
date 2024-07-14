@@ -137,7 +137,6 @@ const Login: React.FC = () => {
       if (result.code === 0) {
         // if login success then get token info and set it to local storage
         await queryDataByParams<SaTokenInfo>(API_CONSTANTS.TOKEN_INFO).then((res) => {
-          console.log(res);
           if (res) {
             setLocalStorageOfToken(JSON.stringify(res));
           } else {
