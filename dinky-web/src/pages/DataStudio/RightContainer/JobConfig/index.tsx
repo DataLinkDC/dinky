@@ -20,6 +20,7 @@
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
 import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
 import {
+  assert,
   getCurrentData,
   getCurrentTab,
   isDataStudioTabsItemType,
@@ -121,10 +122,12 @@ const JobConfig = (props: any) => {
     Object.keys(change).forEach((key) => {
       if (key === 'configJson') {
         if (!pane.params.taskData.configJson) {
+          // @ts-ignore
           pane.params.taskData.configJson = {};
         }
 
         Object.keys(change[key]).forEach((k) => {
+          // @ts-ignore
           pane.params.taskData[key][k] = all[key][k];
         });
       } else {
@@ -315,7 +318,7 @@ const JobConfig = (props: any) => {
           </>
         )}
 
-        {current?.dialect && current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
+        {assert(current?.dialect, [DIALECT.FLINK_SQL], true, 'includes') && (
           <ProFormSelect
             name='envId'
             label={l('pages.datastudio.label.jobConfig.flinksql.env')}

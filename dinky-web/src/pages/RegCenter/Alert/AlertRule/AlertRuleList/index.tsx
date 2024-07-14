@@ -69,16 +69,11 @@ const AlertRuleList: React.FC = () => {
   }
 
   const initData = async (params: any, sorter: any, filter: any) => {
-    const result = await queryList(API_CONSTANTS.ALERT_RULE_LIST, {
+    return await queryList(API_CONSTANTS.ALERT_RULE_LIST, {
       ...params,
       sorter,
       filter
     });
-    const data = result.data.map((t: AlertRule) => {
-      t.rule = JSON.parse(t.rule);
-      return t;
-    });
-    return { data: data };
   };
 
   const columns: ProColumns<AlertRule>[] = [
@@ -114,7 +109,6 @@ const AlertRuleList: React.FC = () => {
             disabled={!HasAuthority(PermissionConstants.REGISTRATION_ALERT_RULE_EDIT)}
             onChange={async () => {
               record.enabled = !record.enabled;
-              record.rule = JSON.stringify(record.rule);
               await handleSubmit(record);
             }}
           />

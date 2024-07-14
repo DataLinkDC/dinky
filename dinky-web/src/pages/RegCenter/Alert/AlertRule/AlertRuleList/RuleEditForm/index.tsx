@@ -32,7 +32,7 @@ import { getData } from '@/services/api';
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data';
-import { AlertRule } from '@/types/SettingCenter/data';
+import { AlertRule, AlertRuleCondition } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import {
   DrawerForm,
@@ -73,7 +73,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
 
   const submit = async () => {
     const fieldsValue = await form.validateFields();
-    return handleSubmit({ ...fieldsValue, rule: JSON.stringify(fieldsValue.rule) });
+    return handleSubmit({ ...values, ...fieldsValue });
   };
 
   const renderTemplateDropDown = (item: any) => {
@@ -111,6 +111,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
     <DrawerForm
       layout={'vertical'}
       form={form}
+      width={'40%'}
       open={modalVisible}
       submitter={{ render: () => [...renderFooter()] }}
       drawerProps={{
@@ -157,7 +158,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
         options={TriggerType}
       />
 
-      <ProFormList
+      <ProFormList<AlertRuleCondition>
         name='rule'
         label={l('sys.alert.rule.triggerRule')}
         creatorButtonProps={

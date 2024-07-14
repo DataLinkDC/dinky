@@ -18,6 +18,7 @@
  */
 
 import {
+  assert,
   getCurrentData,
   getCurrentTab,
   isDataStudioTabsItemType,
@@ -135,7 +136,7 @@ const Result = (props: any) => {
     } else if (consoleData.results && !isRefresh) {
       setDataList(consoleData.results);
     } else {
-      if (current?.dialect && current?.dialect?.toLowerCase() == DIALECT.FLINK_SQL) {
+      if (assert(current?.dialect, [DIALECT.FLINK_SQL], true, 'includes')) {
         // flink sql
         // to do: get job data by history id list, not flink jid
         if (current?.id) {

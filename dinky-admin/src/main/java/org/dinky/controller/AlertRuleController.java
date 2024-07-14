@@ -89,9 +89,9 @@ public class AlertRuleController {
         boolean saved = alertRuleService.saveOrUpdate(alertRule);
         if (saved) {
             JobAlertHandler.getInstance().refreshRulesData();
-            return Result.succeed(Status.MODIFY_SUCCESS);
+            return Result.succeed(Status.SAVE_SUCCESS);
         }
-        return Result.failed(Status.MODIFY_FAILED);
+        return Result.failed(Status.SAVE_FAILED);
     }
 
     @DeleteMapping
