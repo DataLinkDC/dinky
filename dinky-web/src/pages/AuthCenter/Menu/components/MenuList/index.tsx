@@ -144,6 +144,10 @@ const MenuList: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
+    // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值 往上偏移 125 (需要根据具体的右键菜单数量合理设置)
+    if (event.clientY + 150 > window.innerHeight) {
+      event.clientY = window.innerHeight - 125;
+    }
     setMenuState((prevState) => ({
       ...prevState,
       contextMenuOpen: true,
@@ -151,8 +155,10 @@ const MenuList: React.FC = () => {
       clickNode: { ...prevState.clickNode, rightClickedNode: node },
       contextMenuPosition: {
         ...prevState.contextMenuPosition,
-        top: event.clientY + 20,
-        left: event.clientX + 20
+        top: event.clientY + 5,
+        left: event.clientX + 10,
+        screenX: event.screenX,
+        screenY: event.screenY
       }
     }));
   };
