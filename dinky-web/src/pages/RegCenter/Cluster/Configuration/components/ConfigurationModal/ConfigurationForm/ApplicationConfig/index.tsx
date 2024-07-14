@@ -28,10 +28,16 @@ const ApplicationConfig = () => {
       <ProFormGroup labelLayout={'inline'}>
         <ProFormText
           width={'xl'}
+          rules={[
+            {
+              required: true,
+              message: l('rc.cc.sqlSubmitJarPathHelp')
+            }
+          ]}
           name={['config', 'appConfig', 'userJarPath']}
           placeholder={l('rc.cc.sqlSubmitJarPathHelp')}
           label={l('rc.cc.sqlSubmitJarPath')}
-          tooltip={l('rc.cc.sqlSubmitJarPathHelp')}
+          tooltip={l('rc.cc.sqlSubmitJarPathHelpTips')}
         />
       </ProFormGroup>
     </>
