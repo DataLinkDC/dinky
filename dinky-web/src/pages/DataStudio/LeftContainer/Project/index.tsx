@@ -60,7 +60,8 @@ const Project: React.FC = (props: connect) => {
     project: { expandKeys, selectKey },
     tabs: { panes, activeKey },
     selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
-    tabs
+    tabs,
+    users
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
@@ -225,6 +226,8 @@ const Project: React.FC = (props: connect) => {
             const { taskData } = params as DataStudioParams;
             if (taskData) {
               taskData.name = values.name;
+              taskData.firstLevelOwner = values.firstLevelOwner;
+              taskData.secondLevelOwners = values.secondLevelOwners;
             }
           }
           dispatch({ type: STUDIO_MODEL.saveTabs, payload: { ...props.tabs } });
@@ -458,6 +461,7 @@ const Project: React.FC = (props: connect) => {
         title={l('right.menu.createTask')}
         values={{}}
         modalVisible={projectState.isCreateTask}
+        users={users}
         onCancel={() =>
           setProjectState((prevState) => ({
             ...prevState,
@@ -473,6 +477,7 @@ const Project: React.FC = (props: connect) => {
           title={l('button.edit')}
           values={projectState.value}
           modalVisible={projectState.isEdit}
+          users={users}
           onCancel={() =>
             setProjectState((prevState) => ({
               ...prevState,
@@ -490,5 +495,6 @@ const Project: React.FC = (props: connect) => {
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   project: Studio.project,
-  selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData
+  selectCatalogueSortTypeData: Studio.selectCatalogueSortTypeData,
+  users: Studio.users
 }))(Project);

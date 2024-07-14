@@ -18,6 +18,7 @@
  */
 
 import Title from '@/components/Front/Title';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { StateType, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
@@ -68,7 +69,7 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
     );
   };
 
-  const currentTabName = 'menu.datastudio.project';
+  const currentTabName = LeftMenuKey.PROJECT_KEY;
   const btn = BtnRoute[currentTabName];
   btn[0].onClick = () => handleCreateClick();
   btnDispatch({

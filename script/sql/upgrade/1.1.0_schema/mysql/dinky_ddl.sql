@@ -23,4 +23,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Increase class_name column's length from 50 to 100.
 ALTER TABLE dinky_udf_manage CHANGE COLUMN class_name class_name VARCHAR(100) null DEFAULT null COMMENT 'Complete class name';
 
+ALTER TABLE dinky_task
+    add  COLUMN `first_level_owner` int DEFAULT NULL comment 'primary responsible person id';
+
+ALTER TABLE dinky_task
+    add  COLUMN `second_level_owners` varchar(128) DEFAULT NULL comment 'list of secondary responsible persons ids';
+
 SET FOREIGN_KEY_CHECKS = 1;

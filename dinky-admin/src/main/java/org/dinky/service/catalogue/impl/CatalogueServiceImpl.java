@@ -49,6 +49,7 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.catalogue.factory.CatalogueFactory;
 import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 
@@ -100,6 +101,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private final MonitorService monitorService;
 
     private final CatalogueTreeSortFactory catalogueTreeSortFactory;
+
+    private final CatalogueFactory catalogueFactory;
 
     /**
      * @return
@@ -292,6 +295,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         task.setDialect(catalogueTaskDTO.getType());
         task.setConfigJson(catalogueTaskDTO.getConfigJson());
         task.setNote(catalogueTaskDTO.getNote());
+        task.setFirstLevelOwner(catalogueTaskDTO.getFirstLevelOwner());
+        task.setSecondLevelOwners(catalogueTaskDTO.getSecondLevelOwners());
         taskService.saveOrUpdateTask(task);
 
         catalogue.setTenantId(catalogueTaskDTO.getTenantId());
@@ -392,29 +397,15 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         // 查询作业名称
         int size = taskService.queryAllSizeByName(oldTask.getName());
-
-        Task newTask = new Task();
-        BeanUtil.copyProperties(oldTask, newTask);
-        newTask.setId(null);
-        newTask.setJobInstanceId(null);
-        newTask.setType(oldTask.getType());
         // 设置复制后的作业名称为：原名称+自增序列
-        size = size + 1;
-        newTask.setName(oldTask.getName() + "-" + size);
-        newTask.setStep(JobLifeCycle.DEVELOP.getValue());
+        String newTaskName = oldTask.getName() + "-" + (++size);
+        Task newTask = catalogueFactory.getNewTask(oldTask, newTaskName);
         taskService.save(newTask);
 
         Catalogue singleCatalogue =
                 this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
-
-        catalogue.setName(newTask.getName());
-        catalogue.setIsLeaf(singleCatalogue.getIsLeaf());
-        catalogue.setTaskId(newTask.getId());
-        catalogue.setType(singleCatalogue.getType());
-        catalogue.setParentId(singleCatalogue.getParentId());
-        catalogue.setId(null);
-
-        return this.save(catalogue);
+        Catalogue newCatalogue = catalogueFactory.getNewCatalogue(catalogue, singleCatalogue, newTask);
+        return this.save(newCatalogue);
     }
 
     @Override

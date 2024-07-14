@@ -41,9 +41,7 @@ public class ClusterDescriptorAdapterImpl extends ClusterDescriptorAdapter {
     @Override
     public void addShipFiles(List<File> shipFiles) {
         yarnClusterDescriptor.addShipFiles(shipFiles.stream()
-                .map(file -> {
-                    return new Path(file.getPath());
-                })
+                .map(file -> new Path("file://" + file.getPath()))
                 .collect(Collectors.toList()));
     }
 

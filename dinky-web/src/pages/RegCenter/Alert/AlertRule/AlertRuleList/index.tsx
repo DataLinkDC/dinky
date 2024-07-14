@@ -22,8 +22,8 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
-import RuleEditForm from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm';
-import { RuleType } from '@/pages/SettingCenter/AlertRule/AlertRuleList/RuleEditForm/constants';
+import RuleEditForm from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm';
+import { RuleType } from '@/pages/RegCenter/Alert/AlertRule/AlertRuleList/RuleEditForm/constants';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
@@ -111,7 +111,7 @@ const AlertRuleList: React.FC = () => {
           <EnableSwitchBtn
             key={`${record.id}_enable`}
             record={record}
-            disabled={!HasAuthority(PermissionConstants.SYSTEM_ALERT_RULE_EDIT)}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_ALERT_RULE_EDIT)}
             onChange={async () => {
               record.enabled = !record.enabled;
               record.rule = JSON.stringify(record.rule);
@@ -140,13 +140,13 @@ const AlertRuleList: React.FC = () => {
       render: (_text: any, record: AlertRule) => [
         <Authorized
           key={`${record.id}_edit_auth`}
-          path={PermissionConstants.SYSTEM_ALERT_RULE_EDIT}
+          path={PermissionConstants.REGISTRATION_ALERT_RULE_EDIT}
         >
           <EditBtn key={`${record.id}_edit`} onClick={() => editClick(record)} />
         </Authorized>,
         <Authorized
           key={`${record.id}_delete_auth`}
-          path={PermissionConstants.SYSTEM_ALERT_RULE_DELETE}
+          path={PermissionConstants.REGISTRATION_ALERT_RULE_DELETE}
         >
           <>
             {record.ruleType != RuleType.SYSTEM && (
@@ -170,7 +170,10 @@ const AlertRuleList: React.FC = () => {
         loading={ruleState.loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Authorized key={`CreateRule_auth`} path={PermissionConstants.SYSTEM_ALERT_RULE_ADD}>
+          <Authorized
+            key={`CreateRule_auth`}
+            path={PermissionConstants.REGISTRATION_ALERT_RULE_ADD}
+          >
             <CreateBtn
               key={'CreateRule'}
               onClick={() => setRuleState((prevState) => ({ ...prevState, addedOpen: true }))}

@@ -22,9 +22,12 @@ package org.dinky.data.dto;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.mybatis.annotation.Save;
 
 import org.apache.ibatis.type.JdbcType;
+
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -145,6 +148,20 @@ public class TaskSaveDTO {
 
     @ApiModelProperty(value = "Step", dataType = "Integer", example = "1", notes = "Step for the task")
     private Integer step;
+
+    @ApiModelProperty(
+            value = "First Level Owner",
+            dataType = "Integer",
+            example = "1001",
+            notes = "primary responsible person id")
+    private Integer firstLevelOwner;
+
+    @ApiModelProperty(
+            value = "Second Level Owners",
+            dataType = "List",
+            notes = "list of secondary responsible persons' ids")
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Integer> secondLevelOwners;
 
     public Task toTaskEntity() {
         Task task = new Task();

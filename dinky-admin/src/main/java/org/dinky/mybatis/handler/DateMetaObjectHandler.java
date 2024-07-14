@@ -19,6 +19,7 @@
 
 package org.dinky.mybatis.handler;
 
+import org.dinky.context.TenantContextHolder;
 import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
 import org.apache.ibatis.reflection.MetaObject;
@@ -57,7 +58,6 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-
         Object createTime = getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
         Object updateTime = getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
         if (createTime == null) {
@@ -83,6 +83,7 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
         Object creator = getFieldValByName(mybatisPlusFillProperties.getCreatorField(), metaObject);
         Object updater = getFieldValByName(mybatisPlusFillProperties.getUpdaterField(), metaObject);
         Object operator = getFieldValByName(mybatisPlusFillProperties.getOperatorField(), metaObject);
+        Object tenantId = getFieldValByName(mybatisPlusFillProperties.getTenantIdField(), metaObject);
 
         if (creator == null) {
             setFieldValByName(mybatisPlusFillProperties.getCreatorField(), userId, metaObject);
@@ -92,6 +93,10 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
         }
         if (operator == null) {
             setFieldValByName(mybatisPlusFillProperties.getOperatorField(), userId, metaObject);
+        }
+        if (tenantId == null) {
+            int loginTenantId = (Integer) TenantContextHolder.get();
+            setFieldValByName(mybatisPlusFillProperties.getTenantIdField(), loginTenantId, metaObject);
         }
     }
 

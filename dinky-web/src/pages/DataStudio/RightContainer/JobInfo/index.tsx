@@ -17,7 +17,11 @@
  *
  */
 
-import { getCurrentData } from '@/pages/DataStudio/function';
+import {
+  getCurrentData,
+  showFirstLevelOwner,
+  showSecondLevelOwners
+} from '@/pages/DataStudio/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
@@ -26,7 +30,8 @@ import Paragraph from 'antd/es/typography/Paragraph';
 
 const JobInfo = (props: any) => {
   const {
-    tabs: { panes, activeKey }
+    tabs: { panes, activeKey },
+    users
   } = props;
 
   const currentInfo = getCurrentData(panes, activeKey);
@@ -46,11 +51,18 @@ const JobInfo = (props: any) => {
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
           {currentInfo?.versionId}
         </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.firstLevelOwner')}>
+          {showFirstLevelOwner(currentInfo?.firstLevelOwner, users)}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.secondLevelOwners')}>
+          {showSecondLevelOwners(currentInfo?.secondLevelOwners, users)}
+        </Descriptions.Item>
       </Descriptions>
     </div>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs
+  tabs: Studio.tabs,
+  users: Studio.users
 }))(JobInfo);

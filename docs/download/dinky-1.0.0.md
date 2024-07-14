@@ -53,7 +53,7 @@ title: 1.0.0 release
 - 支持实时打印 Flink 表数据
 - 控制台实时打印任务提交 log
 - 支持 Flink CDC 3.0 整库同步
-- 支持自定义告警规则和自定义告警模板
+- 支持自定义告警策略和自定义告警模板
 - 支持Flink k8s operator 提交
 - 支持代理 Flink webui 访问
 - 新增 Flink 任务 Metrics监控自定义图表
