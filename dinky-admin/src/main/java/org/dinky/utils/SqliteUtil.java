@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,16 +35,18 @@ public enum SqliteUtil {
     INSTANCE;
 
     private Connection connection;
+    private final AtomicLong lastRecyle = new AtomicLong(0);
 
     static {
         try {
             SqliteUtil.INSTANCE.connect("dinky.db");
+            SqliteUtil.INSTANCE.recyleData();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void connect(String dbPath) throws SQLException {
+    private void connect(String dbPath) throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
     }
 
@@ -57,11 +60,24 @@ public enum SqliteUtil {
         }
     }
 
-    public void write(String tableName, String columns, String values) throws SQLException {
-        String sql = String.format("INSERT INTO %s (%s) VALUES (%s);", tableName, columns, values);
+    public void executeSql(String sql) throws SQLException {
+        Statement pstmt = connection.createStatement();
+        pstmt.executeUpdate(sql);
+        connection.commit();
+    }
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.executeUpdate();
+    public void recyleData() {
+        long now = System.currentTimeMillis();
+        if (now - lastRecyle.get() < 1000 * 60 * 60) {
+            return;
+        }
+        lastRecyle.set(now);
+        try {
+            String sql = "DELETE FROM dinky_metrics WHERE heart_time <= datetime('now', '-7 days')";
+            executeSql(sql);
+            executeSql("VACUUM");
+        } catch (SQLException e) {
+            log.error("Failed to recyle database: " + e.getMessage());
         }
     }
 
@@ -81,6 +97,7 @@ public enum SqliteUtil {
         } catch (SQLException e) {
             log.error("Failed to write to SQLite: " + e.getMessage());
         }
+        recyleData();
     }
 
     private static String createInsertSql(String tableName, List<String> columns) {

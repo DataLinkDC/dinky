@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.metrics.MetricsTotal;
 import org.dinky.data.result.Result;
 import org.dinky.service.SystemService;
 
@@ -49,6 +50,12 @@ import lombok.RequiredArgsConstructor;
 public class SystemController {
 
     private final SystemService systemService;
+
+    @GetMapping("/getSysInfo")
+    @ApiOperation("Get System Info")
+    public Result<MetricsTotal> getSysInfo() {
+        return Result.succeed(new MetricsTotal());
+    }
 
     /**
      * All log files for this project

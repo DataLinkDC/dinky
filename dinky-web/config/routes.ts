@@ -50,13 +50,13 @@ export default [
     layout: false,
     hideInMenu: true
   },
-  // {
-  //   path: '/home',
-  //   name: 'home',
-  //   icon: 'HomeOutlined',
-  //   footerRender: false,
-  //   component: './Home'
-  // },
+  {
+    path: '/home',
+    name: 'home',
+    icon: 'HomeOutlined',
+    footerRender: false,
+    component: './Home'
+  },
   {
     path: '/datastudio',
     name: 'datastudio',

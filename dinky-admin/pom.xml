@@ -257,7 +257,7 @@
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
-            <version>4.4</version>
+            <version>4.9</version>
         </dependency>
         <!--    for    cache-->
         <dependency>
