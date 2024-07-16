@@ -80,6 +80,17 @@ export default {
    * */
 
   'datastudio.middle.qg': '快捷引导',
+  'datastudio.middle.terminal.mode': '连接方式',
+  'datastudio.middle.terminal.websocket': 'dinky后端',
+  'datastudio.middle.terminal.websocket.tip':
+    '一般情况下无需改动，如果您有自定义nginx配置，请修改此地址',
+  'datastudio.middle.terminal.cluster': 'Flink 集群',
+  'datastudio.middle.terminal.cluster.tip': '需要提前在注册中心添加对应集群,仅展示手动注册集群',
+  'datastudio.middle.terminal.fontSize': '字体大小',
+  'datastudio.middle.terminal.backspaceAsCtrlH': '回退字符转换',
+  'datastudio.middle.terminal.backspaceAsCtrlH.tip': '如果回退删除显示异常，修改此选项',
+  'datastudio.middle.terminal.connect': '连接',
+
   'datastudio.middle.qg.alertGroup': '注册告警组',
   'datastudio.middle.qg.alertInstance': '注册告警实例',
   'datastudio.middle.qg.clusterConfiguration': '注册集群配置',
@@ -1218,5 +1229,31 @@ export default {
   'lineage.refresh': '刷新血缘',
 
   'sys.classLoaderJars.tips':
-    '下述内容展示了 Dinky 服务内部的系统类加载器加载的 jar 包列表,可以通过此种方式直观的查看服务内部已经加载的所有 Jar 文件,以助于排查 Jar 包冲突等问题'
+    '下述内容展示了 Dinky 服务内部的系统类加载器加载的 jar 包列表,可以通过此种方式直观的查看服务内部已经加载的所有 Jar 文件,以助于排查 Jar 包冲突等问题',
+
+  'dashboard.create': '创建仪表盘',
+  'dashboard.add': '添加 Chart',
+  'dashboard.update': '修改 Chart',
+  'dashboard.chart.name': 'Chart 名称',
+  'dashboard.chart.select': '请选择 Chart',
+  'dashboard.name': '仪表盘名称',
+  'dashboard.name.maxLength': '最大长度为 32 个字符',
+  'dashboard.namePlaceholder': '请输入仪表盘名称',
+  'dashboard.remark': '描述',
+  'dashboard.remarkPlaceholder': '请输入描述',
+  'dashboard.chartTheme': 'Chart 主题',
+  'dashboard.selectChartTheme': '请选择 Chart 主题',
+  'dashboard.delete': '删除仪表盘',
+  'dashboard.deleteConfirm': '您确定要删除此仪表盘吗？',
+  'dashboard.theme.chalk': '亮色',
+  'dashboard.theme.dark': '暗黑',
+  'dashboard.theme.essos': '魔王色',
+  'dashboard.theme.infographic': '信息图',
+  'dashboard.theme.macarons': '马卡龙',
+  'dashboard.theme.purple-passion': '紫罗兰',
+  'dashboard.theme.roma': '罗马',
+  'dashboard.theme.shine': '明亮',
+  'dashboard.theme.vintage': '复古',
+  'dashboard.theme.westeros': '西部',
+  'dashboard.theme.wonderland': '奇幻'
 };

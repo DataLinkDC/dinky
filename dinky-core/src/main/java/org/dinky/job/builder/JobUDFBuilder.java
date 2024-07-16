@@ -98,6 +98,7 @@ public class JobUDFBuilder implements JobBuilder {
         if (ArrayUtil.isNotEmpty(pyPaths)) {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {
+                    jarFiles.add(new File(pyPath));
                     executor.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
                 }
             }
@@ -105,6 +106,7 @@ public class JobUDFBuilder implements JobBuilder {
         if (ArrayUtil.isNotEmpty(userCustomUdfJarPath)) {
             for (String jarPath : userCustomUdfJarPath) {
                 if (StrUtil.isNotBlank(jarPath)) {
+                    jarFiles.add(new File(jarPath));
                     executor.getUdfPathContextHolder().addUdfPath(new File(jarPath));
                 }
             }

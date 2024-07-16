@@ -240,4 +240,16 @@ public class PermissionConstants {
     public static final String SYSTEM_SETTING_INFO_LOG_LIST = "settings:systemlog:loglist";
 
     public static final String SYSTEM_SETTING_INFO_ROOT_LOG = "settings:systemlog:rootlog";
+
+    /**
+     * dashboard
+     */
+    public static final String DASHBOARD_LIST_ADD = "dashboard:list:add";
+
+    public static final String DASHBOARD_LIST_EDIT = "dashboard:list:edit";
+    public static final String DASHBOARD_LIST_DELETE = "dashboard:list:delete";
+    public static final String DASHBOARD_LIST_VIEW = "dashboard:list:view";
+    public static final String DASHBOARD_CHART_DELETE = "dashboard:chart:delete";
+    public static final String DASHBOARD_CHART_EDIT = "dashboard:chart:edit";
+    public static final String DASHBOARD_CHART_ADD = "dashboard:chart:add";
 }

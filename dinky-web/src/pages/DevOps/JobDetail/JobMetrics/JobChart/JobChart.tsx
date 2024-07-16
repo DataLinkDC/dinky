@@ -27,8 +27,12 @@ import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import { MetricsDataType } from '@/pages/Metrics/Server/data';
 import { Jobs } from '@/types/DevOps/data';
 import { Empty, Row, Spin } from 'antd';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useModel } from 'umi';
+import ListPagination from '@/components/Flink/ListPagination';
+import { Chart } from '@ant-design/plots/es/interface';
+import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { Filter, isBlank } from '@/pages/Metrics/JobMetricsList';
 
 export type JobChartProps = {
   jobDetail: Jobs.JobInfoDetail;
@@ -102,7 +106,53 @@ const JobChart = (props: JobChartProps) => {
   };
   return (
     <Spin spinning={loading} delay={500}>
-      <Row gutter={[8, 16]}>{renderMetricsCardList(metricsList ?? {}, chartDatas)}</Row>
+      {metricsList && (
+        <ListPagination<JobMetricsItem, Filter>
+          data={metricsList}
+          layount={(data1) => renderMetricsCardList(data1, chartDatas)}
+          defaultPageSize={12}
+          filter={{
+            content: (data: JobMetricsItem[], setFilter) => {
+              return (
+                <ProForm<Filter>
+                  layout={'horizontal'}
+                  grid
+                  rowProps={{
+                    gutter: [16, 0]
+                  }}
+                  onFinish={async (values) => {
+                    setFilter(values);
+                  }}
+                >
+                  <ProFormSelect
+                    colProps={{ md: 12, xl: 8 }}
+                    name='vertices'
+                    label='边'
+                    valueEnum={[...new Set(data.map((item) => item.vertices))].reduce(
+                      (accumulator, item) => {
+                        accumulator[item] = item;
+                        return accumulator;
+                      },
+                      {} as Record<string, string>
+                    )}
+                  />
+                  <ProFormText colProps={{ md: 12, xl: 8 }} name='metrics' label='节点名' />
+                </ProForm>
+              );
+            },
+            filter: (item: JobMetricsItem, filter: Filter) => {
+              let rule = true;
+              if (!isBlank(filter.vertices)) {
+                rule = rule && item.vertices.includes(filter.vertices);
+              }
+              if (!isBlank(filter.metrics)) {
+                rule = rule && item.metrics.includes(filter.metrics);
+              }
+              return rule;
+            }
+          }}
+        />
+      )}
     </Spin>
   );
 };
