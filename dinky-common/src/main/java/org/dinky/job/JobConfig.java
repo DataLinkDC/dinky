@@ -214,6 +214,12 @@ public class JobConfig implements Serializable {
     }
 
     public ExecutorConfig createExecutorSetting() {
+        Map<String, String> config = new HashMap<>(32);
+        if (GatewayType.isDeployCluster(type) && gatewayConfig != null && gatewayConfig.getFlinkConfig() != null) {
+            config.putAll(gatewayConfig.getFlinkConfig().getConfiguration());
+        } else {
+            config.putAll(configJson);
+        }
         return ExecutorConfig.build(
                 type,
                 address,
@@ -224,7 +230,7 @@ public class JobConfig implements Serializable {
                 batchModel,
                 savePointPath,
                 jobName,
-                configJson,
+                config,
                 variables);
     }
 

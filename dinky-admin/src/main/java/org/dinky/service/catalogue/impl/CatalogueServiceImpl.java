@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -585,5 +586,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         catalogueTaskDTO.setParentId(parentId);
         catalogueTaskDTO.setLeaf(true);
         return catalogueTaskDTO;
+    }
+
+    @Override
+    public Boolean checkTaskOperatePermission(Integer catalogueId) {
+        Catalogue catalogue = getById(catalogueId);
+        if (Objects.nonNull(catalogue) && catalogue.getIsLeaf() && Objects.nonNull(catalogue.getTaskId())) {
+            return taskService.checkTaskOperatePermission(catalogue.getTaskId());
+        }
+        return null;
     }
 }
