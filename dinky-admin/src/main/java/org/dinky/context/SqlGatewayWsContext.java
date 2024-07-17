@@ -19,11 +19,10 @@
 
 package org.dinky.context;
 
-import javax.websocket.server.ServerEndpoint;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.websocket.server.ServerEndpoint;
 
 @Component
 @Slf4j

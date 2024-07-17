@@ -17,35 +17,13 @@
  *
  */
 
-import { l } from '@/utils/intl';
+package org.dinky.data.constant;
 
-export const imgStyle = {
-  display: 'block',
-  width: 42,
-  height: 42
-};
-
-export const MONTH_LIST = {
-  '01': l('global.month.january'),
-  '02': l('global.month.february'),
-  '03': l('global.month.march'),
-  '04': l('global.month.april'),
-  '05': l('global.month.may'),
-  '06': l('global.month.june'),
-  '07': l('global.month.july'),
-  '08': l('global.month.august'),
-  '09': l('global.month.september'),
-  '10': l('global.month.october'),
-  '11': l('global.month.november'),
-  '12': l('global.month.december')
-};
-
-export const WEEK_LIST = [
-  l('global.week.sunday'),
-  l('global.week.monday'),
-  l('global.week.tuesday'),
-  l('global.week.wednesday'),
-  l('global.week.thursday'),
-  l('global.week.friday'),
-  l('global.week.saturday')
-];
+public final class MonitorTableConstant {
+    public static final String DINKY_DB = "dinky_db";
+    public static final String DINKY_METRICS = "dinky_metrics";
+    public static final String HEART_TIME = "heart_time";
+    public static final String JOB_ID = "job_id";
+    public static final String VALUE = "value";
+    public static final String DATE = "date";
+}

@@ -38,13 +38,17 @@ import cn.hutool.json.JSONArray;
 public class ListTypeHandler extends AbstractJsonTypeHandler<List<Object>> {
     private static final Logger log = LoggerFactory.getLogger(FastjsonTypeHandler.class);
 
+    public ListTypeHandler(Class<?> type) {
+        super(type);
+    }
+
     @Override
-    protected List<Object> parse(String json) {
+    public List<Object> parse(String json) {
         return new JSONArray(json).toList(Object.class);
     }
 
     @Override
-    protected String toJson(List<Object> obj) {
+    public String toJson(List<Object> obj) {
         return new JSONArray(obj).toString();
     }
 }

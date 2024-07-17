@@ -17,9 +17,16 @@
  *
  */
 
-import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
+package org.dinky.data.enums;
 
-export function getStatusCount() {
-  return getData(API_CONSTANTS.GET_STATUS_COUNT);
+/** Business Operation Types */
+public enum TaskOwnerAlertStrategyEnum {
+    /** Alert includes responsible person */
+    OWNER,
+
+    /** Alert includes responsible person and maintainer */
+    OWNER_AND_MAINTAINER,
+
+    /** Alert does not include responsible person and maintainer */
+    NONE,
 }

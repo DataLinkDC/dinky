@@ -4,30 +4,6 @@ id: quick_experience
 title: 快速开始
 ---
 
-## 体验环境
-
-:::danger 注意
-1. 体验环境仅供学习和体验，不保证稳定性和可用性。如你在访问时提示 `503 Service Unavailable`，请耐心等待, 体验环境会增加访问并发限制等策略。请理解!!
-2. 体验环境每天会定时重置，除了一些默认数据外其他所有数据和配置会被清空。
-3. 体验环境服务不可用时间段为工作日每天的 23:00 - 次日的 09:00。周六日全时段服务不可用，如遇其他时间段服务不可用，请联系社区人员,我们会尽快处理。
-4. 体验环境不支持所有的功能，如需要体验完整功能，请自行搭建环境。
-5. 请不要在体验环境中进行大规模并发测试，以免影响其他用户体验。
-
-:::
-
-
-**访问地址:** [http://demo.dinky.org.cn:32451/#/](http://demo.dinky.org.cn:32451/#/)
-
-```shell
-# 普通账户 ,普通账户仅用于测试，不具备完整的权限。无法进行认证中心相关操作。
-用户名：demo
-密码：dinky123456
-# 授权账户,授权账户只有认证中心相关权限，无法进行其他操作。
-用户名：auth
-密码：dinky123456
-```
-
-
 ## Docker 快速开始
 
 如果您是第一次接触 Dinky，我们推荐您使用 Docker 快速体验 Dinky 的功能。
@@ -126,6 +102,19 @@ from datagen_source;
 ![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-devops.png)
 找到我们的作业，点击**详情按钮**，即可查看作业的运行状态，日志，监控等信息。
 ![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-job-detail.png)
+
+
+## Nginx 配置
+Dinky使用了SSE技术作为日志推流，如果您使用了nginx代理，需要配置Nginx支持SSE，否则默认Nginx配置会导致大量连接异常，造成页面极其卡顿，
+需要在Nginx配置文件中添加以下配置：
+
+```shell
+proxy_buffering off;
+proxy_cache off;
+proxy_read_timeout 86400s;
+proxy_send_timeout 86400s;
+```
+
 
 ## 写在最后
 至此，您已经了解了基础DInky使用流程，但Dinky的能力远不止于此，您可以继续阅读其他文档，了解更多Dinky的功能，尽享Dinky为你带来的丝滑开发体验

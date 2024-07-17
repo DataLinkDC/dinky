@@ -163,6 +163,8 @@ public class JobManagerHandler implements IJobManager {
                 .map(t -> executor.pretreatStatement(t))
                 .collect(Collectors.toList());
         statement = String.join(";\n", statements);
+        jobParam =
+                Explainer.build(executor, useStatementSet, this).pretreatStatements(SqlUtil.getStatements(statement));
         job = Job.build(runMode, config, executorConfig, statement, useGateway);
         JobJarStreamGraphBuilder jobJarStreamGraphBuilder = JobJarStreamGraphBuilder.build(this);
         Pipeline pipeline = jobJarStreamGraphBuilder.getJarStreamGraph(statement);
@@ -176,7 +178,7 @@ public class JobManagerHandler implements IJobManager {
                                 configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
             }
         }
-        try {
+                try {
             if (!useGateway) {
                 JobClient jobClient =
                         FlinkStreamEnvironmentUtil.executeAsync(pipeline, executor.getStreamExecutionEnvironment());

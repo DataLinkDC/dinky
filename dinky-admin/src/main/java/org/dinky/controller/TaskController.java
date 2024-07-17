@@ -60,6 +60,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.tree.Tree;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -275,5 +276,12 @@ public class TaskController {
     @ApiOperation("Query All Catalogue")
     public Result<Tree<Integer>> queryAllCatalogue() {
         return taskService.queryAllCatalogue();
+    }
+
+    @GetMapping("/getUserTask")
+    @ApiOperation("Get order task")
+    public Result<List<TaskDTO>> getMyTask() {
+        int id = StpUtil.getLoginIdAsInt();
+        return Result.succeed(taskService.getUserTasks(id));
     }
 }

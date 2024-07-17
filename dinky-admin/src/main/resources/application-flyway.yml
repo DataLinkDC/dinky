@@ -25,7 +25,7 @@ spring:
     table: _dinky_flyway_schema_history
     placeholder-replacement: false # Placeholder Replacement
     baseline-on-migrate: true  # Baseline during migration
-    baseline-version: 1.0.2 # Baseline version
+    baseline-version: 20240506.1.0.2 # Baseline version
     validate-on-migrate: false # Verify during migration
     placeholder-prefix: '##{'
     placeholder-suffix: '}##'

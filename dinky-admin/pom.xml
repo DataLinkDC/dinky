@@ -41,6 +41,10 @@
         <!--            <artifactId>dinky-executor-server</artifactId>-->
         <!--        </dependency>-->
         <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.mitre.dsmiley.httpproxy</groupId>
             <artifactId>smiley-http-proxy-servlet</artifactId>
         </dependency>
@@ -257,7 +261,7 @@
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
-            <version>4.4</version>
+            <version>4.9</version>
         </dependency>
         <!--    for    cache-->
         <dependency>
@@ -330,23 +334,20 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>io.github.datalinkdc</groupId>
-            <artifactId>dinky-shaded-paimon</artifactId>
-            <version>1.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-dingtalk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-sms</artifactId>
         </dependency>
     </dependencies>
 

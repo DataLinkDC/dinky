@@ -183,6 +183,7 @@ export enum API_CONSTANTS {
   SYSTEM_ROOT_LOG = '/api/system/getRootLog',
   SYSTEM_ROOT_LOG_LIST = '/api/system/listLogDir',
   SYSTEM_ROOT_LOG_READ = '/api/system/readFile',
+  SYSTEM_JVM_INFO = '/api/system/getSysInfo',
 
   // ------------------------------------ system process  ------------------------------------
   PROCESS_LIST = '/api/process/listAllProcess',
@@ -266,6 +267,7 @@ export enum API_CONSTANTS {
 
   // ------------------------------------ task ------------------------------------
   TASK = '/api/task',
+  MY_TASK = '/api/task/getUserTask',
   CANCEL_JOB = '/api/task/cancel',
   JSON_TO_FLINK_SQL = '/api/tools/jsonToFlinkSql',
   EXPLAIN_SQL = '/api/task/explainSql',
