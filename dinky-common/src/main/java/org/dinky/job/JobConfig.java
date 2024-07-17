@@ -23,11 +23,11 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.CustomConfig;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointStrategy;
-import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
 import java.io.Serializable;

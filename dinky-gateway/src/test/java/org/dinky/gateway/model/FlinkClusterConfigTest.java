@@ -19,6 +19,8 @@
 
 package org.dinky.gateway.model;
 
+import org.dinky.data.model.CustomConfig;
+
 import java.io.IOException;
 import java.util.List;
 

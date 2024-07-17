@@ -22,6 +22,22 @@ import { l } from '@/utils/intl';
 /**
  * data source type
  */
+export const DATA_SOURCE_TYPE = {
+  MYSQL: 'MySQL',
+  ORACLE: 'Oracle',
+  POSTGRESQL: 'PostgreSQL',
+  SQLSERVER: 'SQLServer',
+  CLICKHOUSE: 'ClickHouse',
+  DORIS: 'Doris',
+  STARROCKS: 'StarRocks',
+  PRESTO: 'Presto',
+  PHOENIX: 'Phoenix',
+  HIVE: 'Hive',
+  PAIMON: 'Paimon'
+};
+/**
+ * data source type
+ */
 
 export const DATA_SOURCE_TYPE_OPTIONS = [
   {
@@ -29,23 +45,23 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
     options: [
       {
         label: 'MySQL',
-        value: 'MySQL'
+        value: DATA_SOURCE_TYPE.MYSQL
       },
       {
         label: 'Oracle',
-        value: 'Oracle'
+        value: DATA_SOURCE_TYPE.ORACLE
       },
       {
         label: 'PostgreSQL',
-        value: 'PostgreSQL'
+        value: DATA_SOURCE_TYPE.POSTGRESQL
       },
       {
         label: 'SQLServer',
-        value: 'SQLServer'
+        value: DATA_SOURCE_TYPE.SQLSERVER
       },
       {
         label: 'Phoenix',
-        value: 'Phoenix'
+        value: DATA_SOURCE_TYPE.PHOENIX
       }
     ]
   },
@@ -54,19 +70,23 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
     options: [
       {
         label: 'ClickHouse',
-        value: 'ClickHouse'
+        value: DATA_SOURCE_TYPE.CLICKHOUSE
       },
       {
         label: 'Doris',
-        value: 'Doris'
+        value: DATA_SOURCE_TYPE.DORIS
       },
       {
         label: 'StarRocks',
-        value: 'StarRocks'
+        value: DATA_SOURCE_TYPE.STARROCKS
       },
       {
         label: 'Presto',
-        value: 'Presto'
+        value: DATA_SOURCE_TYPE.PRESTO
+      },
+      {
+        label: 'Paimon',
+        value: DATA_SOURCE_TYPE.PAIMON
       }
     ]
   },
@@ -75,7 +95,7 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
     options: [
       {
         label: 'Hive',
-        value: 'Hive'
+        value: DATA_SOURCE_TYPE.HIVE
       }
     ]
   }

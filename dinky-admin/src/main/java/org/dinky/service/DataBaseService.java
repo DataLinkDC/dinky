@@ -27,6 +27,7 @@ import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
+import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobResult;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -213,4 +214,14 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @return {@link Boolean} true: has relationship, false: no relationship
      */
     boolean hasRelationShip(Integer id);
+
+    /**
+     * get table
+     *
+     * @param id {@link Integer}
+     * @param schemaName {@link String}
+     * @param tableName {@link String}
+     * @return {@link List}< {@link Column}>
+     */
+    Table getTable(Integer id, String schemaName, String tableName);
 }
