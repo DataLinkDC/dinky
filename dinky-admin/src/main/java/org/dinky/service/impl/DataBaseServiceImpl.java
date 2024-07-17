@@ -196,8 +196,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         DataBase dataBase = getById(queryData.getId());
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         Driver driver = Driver.build(dataBase.getDriverConfig());
-        StringBuilder queryOption = driver.genQueryOption(queryData);
-        return driver.query(queryOption.toString(), null);
+        return driver.query(queryData);
     }
 
     @Override
@@ -388,5 +387,16 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         return !taskService
                 .list(new LambdaQueryWrapper<Task>().eq(Task::getAlertGroupId, id))
                 .isEmpty();
+    }
+
+    @Override
+    public Table getTable(Integer id, String schemaName, String tableName) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
+        try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
+            return driver.getTable(schemaName, tableName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

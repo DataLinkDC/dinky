@@ -42,6 +42,7 @@
         <module>dinky-metadata-hive</module>
         <module>dinky-metadata-starrocks</module>
         <module>dinky-metadata-presto</module>
+        <module>dinky-metadata-paimon</module>
     </modules>
 
     <dependencies>

@@ -17,20 +17,29 @@
  *
  */
 
-package org.dinky.gateway.model;
+package org.dinky.metadata.config;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+public enum CatalogType {
+    Hive("Hive"),
+    JDBC("JDBC"),
+    FileSystem("FileSystem");
 
-@Getter
-@Setter
-@ApiModel(value = "CustomConfig", description = "Custom config of name-value model")
-public class CustomConfig {
-    @ApiModelProperty(value = "Custom Config Name", dataType = "String", notes = "The name of custom config")
-    private String name;
+    private final String name;
 
-    @ApiModelProperty(value = "Custom Config Value", dataType = "String", notes = "The value of custom config")
-    private String value;
+    CatalogType(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static CatalogType getByName(String name) {
+        for (CatalogType catalogType : CatalogType.values()) {
+            if (catalogType.getName().equals(name)) {
+                return catalogType;
+            }
+        }
+        return null;
+    }
 }

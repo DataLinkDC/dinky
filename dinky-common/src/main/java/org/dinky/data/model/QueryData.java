@@ -81,13 +81,13 @@ public class QueryData {
                 dataType = "String",
                 example = "0",
                 notes = "Starting row number for the LIMIT clause")
-        private String limitStart;
+        private int limitStart;
 
         @ApiModelProperty(
                 value = "Ending row for LIMIT",
                 dataType = "String",
                 example = "10",
                 notes = "Ending row number for the LIMIT clause")
-        private String limitEnd;
+        private int limitEnd;
     }
 }

@@ -217,6 +217,8 @@ public interface Driver extends AutoCloseable {
 
     JdbcSelectResult query(String sql, Integer limit);
 
+    JdbcSelectResult query(QueryData queryData);
+
     StringBuilder genQueryOption(QueryData queryData);
 
     JdbcSelectResult executeSql(String sql, Integer limit);
