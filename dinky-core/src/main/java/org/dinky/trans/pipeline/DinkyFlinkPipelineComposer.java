@@ -19,11 +19,6 @@
 
 package org.dinky.trans.pipeline;
 
-import org.apache.flink.cdc.composer.flink.translator.DataSourceTranslator;
-import org.apache.flink.cdc.composer.flink.translator.TransformTranslator;
-import org.apache.flink.cdc.composer.flink.translator.SchemaOperatorTranslator;
-import org.apache.flink.cdc.composer.flink.translator.PartitioningTranslator;
-import org.apache.flink.cdc.composer.flink.translator.DataSinkTranslator;
 import org.dinky.executor.Executor;
 
 import org.apache.flink.cdc.common.configuration.Configuration;
@@ -38,6 +33,11 @@ import org.apache.flink.cdc.composer.definition.PipelineDef;
 import org.apache.flink.cdc.composer.definition.SinkDef;
 import org.apache.flink.cdc.composer.flink.FlinkEnvironmentUtils;
 import org.apache.flink.cdc.composer.flink.coordination.OperatorIDGenerator;
+import org.apache.flink.cdc.composer.flink.translator.DataSinkTranslator;
+import org.apache.flink.cdc.composer.flink.translator.DataSourceTranslator;
+import org.apache.flink.cdc.composer.flink.translator.PartitioningTranslator;
+import org.apache.flink.cdc.composer.flink.translator.SchemaOperatorTranslator;
+import org.apache.flink.cdc.composer.flink.translator.TransformTranslator;
 import org.apache.flink.cdc.composer.utils.FactoryDiscoveryUtils;
 import org.apache.flink.cdc.runtime.serializer.event.EventSerializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
