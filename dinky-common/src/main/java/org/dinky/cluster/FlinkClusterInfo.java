@@ -19,10 +19,10 @@
 
 package org.dinky.cluster;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 /**
  * FlinkClusterInfo

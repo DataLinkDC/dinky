@@ -19,7 +19,6 @@
 
 package org.dinky.executor;
 
-import org.apache.flink.api.dag.Pipeline;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -37,6 +36,7 @@ import org.dinky.utils.URLUtils;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;

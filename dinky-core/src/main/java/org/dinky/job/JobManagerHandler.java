@@ -19,7 +19,6 @@
 
 package org.dinky.job;
 
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.CustomTableEnvironmentContext;
@@ -29,14 +28,11 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ErrorResult;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
-import org.dinky.data.result.ResultPool;
-import org.dinky.data.result.SelectResult;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
@@ -73,6 +69,7 @@ import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -178,7 +175,7 @@ public class JobManagerHandler implements IJobManager {
                                 configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
             }
         }
-                try {
+        try {
             if (!useGateway) {
                 JobClient jobClient =
                         FlinkStreamEnvironmentUtil.executeAsync(pipeline, executor.getStreamExecutionEnvironment());
@@ -197,7 +194,8 @@ public class JobManagerHandler implements IJobManager {
                         .toMap());
                 if (runMode.isApplicationMode()) {
                     config.getGatewayConfig().setSql(statement);
-                    gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());
+                    gatewayResult =
+                            Gateway.build(config.getGatewayConfig()).submitJar(executor.getUdfPathContextHolder());
                 } else {
                     if (pipeline instanceof StreamGraph) {
                         ((StreamGraph) pipeline).setJobName(config.getJobName());
@@ -347,7 +345,8 @@ public class JobManagerHandler implements IJobManager {
     }
 
     @Override
-    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI) {
+    public SavePointResult savepoint(
+            String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI) {
         if (useGateway && !isUseRestAPI) {
             config.getGatewayConfig()
                     .setFlinkConfig(

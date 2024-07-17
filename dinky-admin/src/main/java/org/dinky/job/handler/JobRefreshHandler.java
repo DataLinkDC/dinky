@@ -280,13 +280,13 @@ public class JobRefreshHandler {
         if (!Asserts.isNull(clusterCfg)
                 && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterInstance.getType())) {
             try {
-            String appId = jobInfoDetail.getClusterInstance().getName();
+                String appId = jobInfoDetail.getClusterInstance().getName();
 
-            GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
-            gatewayConfig.getClusterConfig().setAppId(appId);
-            gatewayConfig
-                    .getFlinkConfig()
-                    .setJobName(jobInfoDetail.getInstance().getName());
+                GatewayConfig gatewayConfig = GatewayConfig.build(clusterCfg.getConfig());
+                gatewayConfig.getClusterConfig().setAppId(appId);
+                gatewayConfig
+                        .getFlinkConfig()
+                        .setJobName(jobInfoDetail.getInstance().getName());
 
                 return Optional.of(JobManager.build(new JobConfig()).getJobStatus(gatewayConfig, appId));
             } catch (Exception ignored) {
@@ -345,7 +345,8 @@ public class JobRefreshHandler {
                         .getFlinkConfig()
                         .setJobName(jobInfoDetail.getInstance().getName());
 
-                String latestJobManageHost = JobManager.build(new JobConfig()).getLatestJobManageHost(appId,  clusterInstance.getJobManagerHost(), gatewayConfig);
+                String latestJobManageHost = JobManager.build(new JobConfig())
+                        .getLatestJobManageHost(appId, clusterInstance.getJobManagerHost(), gatewayConfig);
                 if (Asserts.isNotNull(latestJobManageHost)) {
                     clusterInstance.setHosts(latestJobManageHost);
                     clusterInstance.setJobManagerHost(latestJobManageHost);

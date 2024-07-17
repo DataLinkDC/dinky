@@ -23,7 +23,6 @@ import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.data.enums.JobStatus;
-import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.model.Column;
@@ -143,7 +142,7 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     @Override
     public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI)
             throws RemoteException {
-        return jobManagerHandler.savepoint(jobId, savePointType, savePoint, isUseRestAPI );
+        return jobManagerHandler.savepoint(jobId, savePointType, savePoint, isUseRestAPI);
     }
 
     @Override
@@ -331,7 +330,8 @@ public class JobManagerServiceImpl extends UnicastRemoteObject implements Server
     }
 
     @Override
-    public String getLatestJobManageHost(String appId, String oldJobManagerHost, GatewayConfig gatewayConfig) throws RemoteException {
+    public String getLatestJobManageHost(String appId, String oldJobManagerHost, GatewayConfig gatewayConfig)
+            throws RemoteException {
         Gateway gateway = Gateway.build(gatewayConfig);
         return gateway.getLatestJobManageHost(appId, oldJobManagerHost);
     }

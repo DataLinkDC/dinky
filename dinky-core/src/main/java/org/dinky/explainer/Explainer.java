@@ -23,7 +23,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
@@ -46,8 +45,6 @@ import org.dinky.utils.IpUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
-
-import org.apache.flink.configuration.Configuration;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -49,7 +49,6 @@ import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.api.common.Plan;
 import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.configuration.Configuration;

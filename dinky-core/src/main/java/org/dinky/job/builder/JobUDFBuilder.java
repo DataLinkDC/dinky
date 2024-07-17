@@ -114,7 +114,7 @@ public class JobUDFBuilder implements JobBuilder {
 
         Set<File> pyUdfFile = executor.getUdfPathContextHolder().getPyUdfFile();
         executor.initPyUDF(
-                 config.getSystemConfiguration().getPythonHome(),
+                config.getSystemConfiguration().getPythonHome(),
                 pyUdfFile.stream().map(File::getAbsolutePath).toArray(String[]::new));
         if (GATEWAY_TYPE_MAP.get(YARN).contains(runMode)) {
             config.getGatewayConfig().setJarPaths(ArrayUtil.append(jarPaths, pyPaths));

@@ -20,8 +20,8 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.annotations.TaskId;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;

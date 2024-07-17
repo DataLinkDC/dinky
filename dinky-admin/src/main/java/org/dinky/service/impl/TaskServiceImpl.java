@@ -467,7 +467,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobManager jobManager = JobManager.build(buildJobConfig(task));
         String jobId = jobInstance.getJid();
 
-        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null, SystemConfiguration.getInstances().isUseRestAPI());
+        SavePointResult savePointResult = jobManager.savepoint(
+                jobId, savePointType, null, SystemConfiguration.getInstances().isUseRestAPI());
         Assert.notNull(savePointResult.getJobInfos());
         for (JobInfo item : savePointResult.getJobInfos()) {
             if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobInstance.getTaskId())) {

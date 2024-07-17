@@ -21,7 +21,6 @@ package org.dinky.resource.impl;
 
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.resource.BaseResourceManager;
 
 import java.io.BufferedInputStream;
@@ -129,8 +128,7 @@ public class LocalResourceManager implements BaseResourceManager {
     @Override
     public InputStream readFile(String path) {
         try (HttpResponse exec = HttpUtil.createGet(
-                        instances.getDinkyAddr().getValue() + "/download/downloadFromRs?path="
-                                + URLUtil.encode(path))
+                        instances.getDinkyAddr().getValue() + "/download/downloadFromRs?path=" + URLUtil.encode(path))
                 .execute()) {
             return exec.bodyStream();
         } catch (Exception e) {

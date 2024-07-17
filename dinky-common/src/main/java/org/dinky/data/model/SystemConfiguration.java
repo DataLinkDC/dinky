@@ -66,19 +66,16 @@ public class SystemConfiguration implements Serializable {
     private static final List<Configuration<?>> CONFIGURATION_LIST = getConfigurationList();
 
     private static List<Configuration<?>> getConfigurationList() {
-        return Arrays.stream(
-                        ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
+        return Arrays.stream(ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
                 .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
                 .collect(Collectors.toList());
     }
 
     private List<Configuration<?>> getThisConfigurationList() {
-        return Arrays.stream(
-                        ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
+        return Arrays.stream(ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
                 .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(this, f))
                 .collect(Collectors.toList());
     }
-
 
     private final Configuration<Boolean> useRestAPI = key(Status.SYS_FLINK_SETTINGS_USERESTAPI)
             .booleanType()

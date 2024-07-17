@@ -92,7 +92,6 @@ public class JobJarStreamGraphBuilder implements JobBuilder {
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
         List<URL> urLs = executor.getAllFileSet();
         return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
-
     }
 
     public List<String> getUris(String statement) {

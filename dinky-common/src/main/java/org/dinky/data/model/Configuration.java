@@ -83,8 +83,8 @@ public class Configuration<T> implements Serializable {
                 return;
             }
             this.value = type.isInstance(value) ? (T) value : Convert.convert(getType(), value);
-        }catch (Exception e){
-            System.out.println("Configuration.setValue, this" + this +  ", value: " + value);
+        } catch (Exception e) {
+            System.out.println("Configuration.setValue, this" + this + ", value: " + value);
         }
     }
 

@@ -64,7 +64,8 @@ public class JobTransBuilder implements JobBuilder {
     private JobManagerHandler jobManagerHandler;
 
     public JobTransBuilder(JobManagerHandler jobManagerHandler) {
-        this(jobManagerHandler.getJobParam(),
+        this(
+                jobManagerHandler.getJobParam(),
                 jobManagerHandler.isUseStatementSet(),
                 jobManagerHandler.isUseGateway(),
                 jobManagerHandler.getConfig(),
@@ -213,7 +214,7 @@ public class JobTransBuilder implements JobBuilder {
                             executor.getTimeZone())
                     .getResult(tableResult);
             // TODO: 2024/7/15 persist result should execute at dinky server by network.
-//                    .getResultWithPersistence(tableResult, jobManagerHandler.getHandler());
+            //                    .getResultWithPersistence(tableResult, jobManagerHandler.getHandler());
             job.setResult(result);
         }
     }

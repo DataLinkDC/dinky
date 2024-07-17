@@ -19,7 +19,6 @@
 
 package org.dinky.trans.dml;
 
-import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;

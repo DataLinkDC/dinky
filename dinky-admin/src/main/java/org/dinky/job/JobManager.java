@@ -49,7 +49,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -174,7 +173,8 @@ public class JobManager {
         }
     }
 
-    public SavePointResult savepoint(String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI) {
+    public SavePointResult savepoint(
+            String jobId, SavePointType savePointType, String savePoint, boolean isUseRestAPI) {
         try {
             return serverExecutorService.savepoint(jobId, savePointType, savePoint, isUseRestAPI);
         } catch (RemoteException e) {
