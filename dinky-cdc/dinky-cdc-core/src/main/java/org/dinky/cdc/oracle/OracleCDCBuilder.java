@@ -25,15 +25,14 @@ import org.dinky.cdc.CDCBuilder;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
+import org.apache.flink.cdc.connectors.base.options.StartupOptions;
+import org.apache.flink.cdc.connectors.oracle.OracleSource;
+import org.apache.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.List;
 import java.util.Properties;
-
-import org.apache.flink.cdc.connectors.base.options.StartupOptions;
-import org.apache.flink.cdc.connectors.oracle.OracleSource;
-import org.apache.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 /**
  * OracleCDCBuilder

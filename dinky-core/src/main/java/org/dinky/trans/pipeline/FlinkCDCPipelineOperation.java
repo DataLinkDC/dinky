@@ -19,29 +19,29 @@
 
 package org.dinky.trans.pipeline;
 
-import cn.hutool.core.io.FileUtil;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.UUID;
-import org.apache.flink.cdc.cli.parser.PipelineDefinitionParser;
-import org.apache.flink.cdc.cli.parser.YamlPipelineDefinitionParser;
-import org.apache.flink.cdc.common.configuration.Configuration;
-import org.apache.http.util.TextUtils;
 import org.dinky.data.exception.BusException;
 import org.dinky.executor.Executor;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
 
+import org.apache.flink.cdc.cli.parser.PipelineDefinitionParser;
+import org.apache.flink.cdc.cli.parser.YamlPipelineDefinitionParser;
+import org.apache.flink.cdc.common.configuration.Configuration;
+import org.apache.flink.cdc.composer.PipelineComposer;
+import org.apache.flink.cdc.composer.definition.PipelineDef;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.internal.TableResultImpl;
+import org.apache.http.util.TextUtils;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
 
-import org.apache.flink.cdc.composer.PipelineComposer;
-import org.apache.flink.cdc.composer.definition.PipelineDef;
+import cn.hutool.core.io.FileUtil;
 
 /**
  * FlinkCDCPipelineOperation
@@ -94,8 +94,7 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
     @Override
     public TableResult execute(Executor executor) {
         String yamlText = getPipelineConfigure(statement);
-        Configuration globalPipelineConfig =
-                Configuration.fromMap(executor.getSetConfig());
+        Configuration globalPipelineConfig = Configuration.fromMap(executor.getSetConfig());
         // Parse pipeline definition file
         PipelineDefinitionParser pipelineDefinitionParser = new YamlPipelineDefinitionParser();
         // Create composer
@@ -108,14 +107,15 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
             }
             String tmpConf = String.format("%s/tmp/CDC/%s.yaml", System.getProperty("user.dir"), UUID.randomUUID());
             tmpF = FileUtil.writeBytes(yamlText.getBytes(), tmpConf);
-            PipelineDef pipelineDef = pipelineDefinitionParser.parse(Paths.get(tmpF.getAbsolutePath()), globalPipelineConfig);
+            PipelineDef pipelineDef =
+                    pipelineDefinitionParser.parse(Paths.get(tmpF.getAbsolutePath()), globalPipelineConfig);
             // Compose pipeline
             composer.compose(pipelineDef);
             return TableResultImpl.TABLE_RESULT_OK;
         } catch (Exception e) {
             logger.error("", e);
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             if (tmpF != null) {
                 tmpF.delete();
             }
