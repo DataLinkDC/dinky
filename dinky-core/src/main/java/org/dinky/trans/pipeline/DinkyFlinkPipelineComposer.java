@@ -19,6 +19,11 @@
 
 package org.dinky.trans.pipeline;
 
+import org.apache.flink.cdc.composer.flink.translator.DataSourceTranslator;
+import org.apache.flink.cdc.composer.flink.translator.TransformTranslator;
+import org.apache.flink.cdc.composer.flink.translator.SchemaOperatorTranslator;
+import org.apache.flink.cdc.composer.flink.translator.PartitioningTranslator;
+import org.apache.flink.cdc.composer.flink.translator.DataSinkTranslator;
 import org.dinky.executor.Executor;
 
 import org.apache.flink.cdc.common.configuration.Configuration;
