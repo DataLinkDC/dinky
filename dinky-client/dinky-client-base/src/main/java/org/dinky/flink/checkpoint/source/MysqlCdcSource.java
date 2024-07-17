@@ -24,10 +24,10 @@ import org.dinky.flink.checkpoint.SupportSplitSerializer;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ververica.cdc.connectors.mysql.source.split.MySqlBinlogSplit;
-import com.ververica.cdc.connectors.mysql.source.split.MySqlSnapshotSplit;
-import com.ververica.cdc.connectors.mysql.source.split.MySqlSplit;
-import com.ververica.cdc.connectors.mysql.source.split.MySqlSplitSerializer;
+import org.apache.flink.cdc.connectors.mysql.source.split.MySqlBinlogSplit;
+import org.apache.flink.cdc.connectors.mysql.source.split.MySqlSnapshotSplit;
+import org.apache.flink.cdc.connectors.mysql.source.split.MySqlSplit;
+import org.apache.flink.cdc.connectors.mysql.source.split.MySqlSplitSerializer;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;

@@ -19,6 +19,15 @@
 
 package org.dinky.trans.pipeline;
 
+import cn.hutool.core.io.FileUtil;
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.UUID;
+import org.apache.flink.cdc.cli.parser.PipelineDefinitionParser;
+import org.apache.flink.cdc.cli.parser.YamlPipelineDefinitionParser;
+import org.apache.flink.cdc.common.configuration.Configuration;
+import org.apache.http.util.TextUtils;
+import org.dinky.data.exception.BusException;
 import org.dinky.executor.Executor;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
@@ -31,8 +40,8 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.ververica.cdc.composer.PipelineComposer;
-import com.ververica.cdc.composer.definition.PipelineDef;
+import org.apache.flink.cdc.composer.PipelineComposer;
+import org.apache.flink.cdc.composer.definition.PipelineDef;
 
 /**
  * FlinkCDCPipelineOperation
@@ -85,21 +94,31 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
     @Override
     public TableResult execute(Executor executor) {
         String yamlText = getPipelineConfigure(statement);
-        com.ververica.cdc.common.configuration.Configuration globalPipelineConfig =
-                com.ververica.cdc.common.configuration.Configuration.fromMap(executor.getSetConfig());
+        Configuration globalPipelineConfig =
+                Configuration.fromMap(executor.getSetConfig());
         // Parse pipeline definition file
-        YamlTextPipelineDefinitionParser pipelineDefinitionParser = new YamlTextPipelineDefinitionParser();
+        PipelineDefinitionParser pipelineDefinitionParser = new YamlPipelineDefinitionParser();
         // Create composer
         PipelineComposer composer = createComposer(executor);
 
+        File tmpF = null;
         try {
-            PipelineDef pipelineDef = pipelineDefinitionParser.parse(yamlText, globalPipelineConfig);
+            if (TextUtils.isEmpty(yamlText)) {
+                throw new BusException("YAML configuration is empty.");
+            }
+            String tmpConf = String.format("%s/tmp/CDC/%s.yaml", System.getProperty("user.dir"), UUID.randomUUID());
+            tmpF = FileUtil.writeBytes(yamlText.getBytes(), tmpConf);
+            PipelineDef pipelineDef = pipelineDefinitionParser.parse(Paths.get(tmpF.getAbsolutePath()), globalPipelineConfig);
             // Compose pipeline
             composer.compose(pipelineDef);
             return TableResultImpl.TABLE_RESULT_OK;
         } catch (Exception e) {
             logger.error("", e);
             throw new RuntimeException(e);
+        }finally {
+            if (tmpF != null) {
+                tmpF.delete();
+            }
         }
     }
 

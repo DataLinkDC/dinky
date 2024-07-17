@@ -22,7 +22,7 @@ package org.dinky.trans.pipeline;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import com.ververica.cdc.composer.PipelineExecution;
+import org.apache.flink.cdc.composer.PipelineExecution;
 
 /**
  * A pipeline execution that run the defined pipeline via Flink's {@link

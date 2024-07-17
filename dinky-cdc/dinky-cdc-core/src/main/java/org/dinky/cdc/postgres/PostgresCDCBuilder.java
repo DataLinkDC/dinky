@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.ververica.cdc.connectors.postgres.PostgreSQLSource;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
+import org.apache.flink.cdc.connectors.postgres.PostgreSQLSource;
+import org.apache.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
 
 public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
