@@ -17,12 +17,11 @@
  *
  */
 
-package com.ververica.cdc.composer.flink;
+package org.apache.flink.cdc.composer.flink;
 
+import org.apache.flink.cdc.composer.PipelineExecution;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-
-import com.ververica.cdc.composer.PipelineExecution;
 
 /**
  * A pipeline execution that run the defined pipeline via Flink's {@link

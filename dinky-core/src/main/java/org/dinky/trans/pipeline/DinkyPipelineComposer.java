@@ -19,8 +19,8 @@
 
 package org.dinky.trans.pipeline;
 
-import com.ververica.cdc.composer.PipelineExecution;
-import com.ververica.cdc.composer.definition.PipelineDef;
+import org.apache.flink.cdc.composer.PipelineExecution;
+import org.apache.flink.cdc.composer.definition.PipelineDef;
 
 /** Composer for translating a pipeline definition to an execution. */
 public interface DinkyPipelineComposer {

@@ -57,7 +57,7 @@ public class SystemServiceImpl implements SystemService {
     private static final Map<String, List<String>> JAR_GROUP_MAP = MapUtil.builder(new HashMap<String, List<String>>())
             .put("Dinky", Arrays.asList("org.dinky"))
             .put("Flink", Arrays.asList("org.apache.flink"))
-            .put("CDC", Arrays.asList("com.ververica"))
+            .put("CDC", Arrays.asList("org.apache.flink"))
             .build();
 
     @Override
