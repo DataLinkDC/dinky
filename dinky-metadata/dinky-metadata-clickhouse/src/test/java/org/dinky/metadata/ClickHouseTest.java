@@ -79,8 +79,8 @@ public class ClickHouseTest {
     @Test
     public void connectTest() {
         String test = getDriver().test();
-        System.out.println(test);
-        // LOGGER.info(test);
+//        System.out.println(test);
+         LOGGER.info(test);
         // LOGGER.info("end...");
     }
 
@@ -93,8 +93,8 @@ public class ClickHouseTest {
 
 
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
-        System.out.println(JsonUtils.toJsonString(schemasAndTables));
-        // LOGGER.info(JsonUtils.toJsonString(schemasAndTables));
+//        System.out.println(JsonUtils.toJsonString(schemasAndTables));
+         LOGGER.info(JsonUtils.toJsonString(schemasAndTables));
         // LOGGER.info("end...");
     }
 
@@ -105,8 +105,8 @@ public class ClickHouseTest {
         String test = driver.test();
         Driver connect = driver.connect();
         List<Column> columns = driver.listColumns("xx", "xx");
-        System.out.println(JsonUtils.toJsonString(columns));
-        // LOGGER.info(JsonUtils.toJsonString(columns));
+//        System.out.println(JsonUtils.toJsonString(columns));
+         LOGGER.info(JsonUtils.toJsonString(columns));
         // LOGGER.info("end...");
     }
 
@@ -117,8 +117,8 @@ public class ClickHouseTest {
         String test = driver.test();
         Driver connect = driver.connect();
         JdbcSelectResult query = driver.query("select count(1) from xx.xx", 10);
-        System.out.println(query.getRowData());
-        // LOGGER.info(JsonUtils.toJsonString(query));
+//        System.out.println(query.getRowData());
+         LOGGER.info(query.getRowData().toString());
         // LOGGER.info("end...");
     }
 }
