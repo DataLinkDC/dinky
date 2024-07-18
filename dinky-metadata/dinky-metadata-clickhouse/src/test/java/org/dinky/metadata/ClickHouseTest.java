@@ -49,7 +49,7 @@ public class ClickHouseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClickHouseTest.class);
 
-    private static final String IP = "10.0.4.48";
+    private static final String IP = "127.0.0.1";
     private static final int PORT = 8123;
     private static final String url = StrFormatter.format("jdbc:clickhouse://{}:{}/default", IP, PORT);
 
@@ -66,6 +66,7 @@ public class ClickHouseTest {
 //                        .username("xx")
 //                        .password("xx")
 //                        .build());
+        // 使用与web端一致的获取driver方式
         Map<String, Object> map = new HashMap<>();
         map.put("username","xx");
         map.put("password","xx");
