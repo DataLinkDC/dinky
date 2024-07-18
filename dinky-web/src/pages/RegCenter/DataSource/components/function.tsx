@@ -24,6 +24,7 @@ import {
   HiveIcons,
   MysqlIcons,
   OracleIcons,
+  PaimonIcons,
   PhoenixIcons,
   PostgresqlIcons,
   PrestoIcons,
@@ -60,6 +61,8 @@ export const renderDBIcon = (type: string, size?: number) => {
       return <StarRocksIcons size={size} />;
     case DIALECT.PRESTO:
       return <PrestoIcons size={size} />;
+    case DIALECT.PAIMON:
+      return <PaimonIcons size={size} />;
     default:
       return <DefaultDBIcons size={size} />;
   }

@@ -110,6 +110,7 @@ export enum API_CONSTANTS {
   DATASOURCE_UN_CACHE_SCHEMA_TABLES = '/api/database/unCacheSchemasAndTables',
   DATASOURCE_LIST_ENABLE_ALL = '/api/database/listEnabledAll',
   DATASOURCE_GET_COLUMNS_BY_TABLE = '/api/database/listColumns',
+  DATASOURCE_GET_TABLE = '/api/database/getTable',
   DATASOURCE_GET_GEN_SQL = '/api/database/getSqlGeneration',
   DATASOURCE_QUERY_DATA = '/api/database/queryData',
 
