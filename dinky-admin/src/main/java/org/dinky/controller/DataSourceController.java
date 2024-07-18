@@ -31,6 +31,7 @@ import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.SqlGeneration;
+import org.dinky.data.model.Table;
 import org.dinky.data.result.Result;
 import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -442,5 +443,54 @@ public class DataSourceController {
         } else {
             return Result.failed(Status.COPY_FAILED);
         }
+    }
+
+    /**
+     * get columns of table
+     *
+     * @param id         {@link Integer}
+     * @param schemaName {@link String}
+     * @param tableName  {@link String}
+     * @return {@link Result}< {@link List}< {@link Column}>>
+     */
+    @GetMapping("/getTable")
+    @ApiOperation("Get Columns Of Table")
+    @ApiImplicitParams(
+            value = {
+                @ApiImplicitParam(
+                        name = "id",
+                        value = "DataBase Id",
+                        required = true,
+                        dataType = "Integer",
+                        paramType = "path",
+                        dataTypeClass = Integer.class,
+                        example = "1"),
+                @ApiImplicitParam(
+                        name = "schemaName",
+                        value = "Schema Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "public"),
+                @ApiImplicitParam(
+                        name = "tableName",
+                        value = "Table Name",
+                        required = true,
+                        dataType = "String",
+                        paramType = "query",
+                        dataTypeClass = String.class,
+                        example = "user")
+            })
+    @SaCheckPermission(
+            value = {
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE,
+                PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC,
+            },
+            mode = SaMode.OR)
+    public Result<Table> getTable(
+            @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
+        return Result.succeed(databaseService.getTable(id, schemaName, tableName));
     }
 }

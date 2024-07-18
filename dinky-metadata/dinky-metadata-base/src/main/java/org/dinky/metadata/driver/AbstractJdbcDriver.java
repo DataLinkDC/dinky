@@ -38,7 +38,6 @@ import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
-import org.dinky.utils.TextUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -525,8 +524,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
 
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
-        String limitStart = queryData.getOption().getLimitStart();
-        String limitEnd = queryData.getOption().getLimitEnd();
+        int limitStart = queryData.getOption().getLimitStart();
+        int limitEnd = queryData.getOption().getLimitEnd();
 
         StringBuilder optionBuilder = new StringBuilder()
                 .append("select * from ")
@@ -541,12 +540,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             optionBuilder.append(" order by ").append(order);
         }
 
-        if (TextUtil.isEmpty(limitStart)) {
-            limitStart = "0";
-        }
-        if (TextUtil.isEmpty(limitEnd)) {
-            limitEnd = "100";
-        }
         optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
 
         return optionBuilder;

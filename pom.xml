@@ -483,6 +483,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-paimon</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-metadata-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
