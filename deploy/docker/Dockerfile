@@ -25,7 +25,7 @@ ENV DINKY_VERSION=${DINKY_VERSION}
 ADD . .
 COPY --from=ui-build /build/dist/ /build/dinky-web/dist/
 
-RUN mvn package -Dmaven.test.skip=true -P prod,scala-2.12,flink-single-version,flink-${FLINK_VERSION},fast
+RUN mvn package -Dmaven.test.skip=true -P prod,flink-single-version,flink-${FLINK_VERSION},fast
 RUN mkdir release &&  \
     tar -C release -xvf build/dinky-release-${FLINK_VERSION}-${DINKY_VERSION}.tar.gz && \
     mv release/dinky-release-* release/dinky
