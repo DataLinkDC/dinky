@@ -56,7 +56,7 @@ while getopts "j:f:" opt; do
 done
 
 # 构建命令
-CMD="./mvnw clean package -Dmaven.test.skip=true -P prod,${JDK_VERSION},flink-single-version,scala-2.12,aliyun,${FLINK_VERSION},web"
+CMD="./mvnw clean package -Dmaven.test.skip=true -P prod,${JDK_VERSION},flink-single-version,aliyun,${FLINK_VERSION},web"
 
 # 执行构建命令
 echo "执行命令: $CMD"
