@@ -41,8 +41,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ru.yandex.clickhouse</groupId>
+<!--            <groupId>ru.yandex.clickhouse</groupId>-->
+            <groupId>com.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
+<!--            本地调试注释此项-->
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>

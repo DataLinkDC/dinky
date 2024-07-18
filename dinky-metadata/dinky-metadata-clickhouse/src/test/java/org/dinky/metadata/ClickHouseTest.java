@@ -27,8 +27,11 @@ import org.dinky.metadata.driver.ClickHouseDriver;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.dinky.utils.JsonUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -46,25 +49,37 @@ public class ClickHouseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClickHouseTest.class);
 
-    private static final String IP = "127.0.0.1";
+    private static final String IP = "10.0.4.48";
     private static final int PORT = 8123;
     private static final String url = StrFormatter.format("jdbc:clickhouse://{}:{}/default", IP, PORT);
 
     private final ClickHouseDriver clickHouseDriver = new ClickHouseDriver();
 
     public Driver getDriver() {
-        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
-        config.setType(clickHouseDriver.getType());
-        config.setName(clickHouseDriver.getName());
-        config.setConnectConfig(
-                AbstractJdbcConfig.builder().ip(IP).port(PORT).url(url).build());
-        return Driver.build(config);
+//        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
+//        config.setType(clickHouseDriver.getType());
+//        config.setName(clickHouseDriver.getName());
+//        config.setConnectConfig(
+//                AbstractJdbcConfig.builder().ip(IP)
+//                        .port(PORT)
+//                        .url(url)
+//                        .username("xx")
+//                        .password("xx")
+//                        .build());
+        Map<String, Object> map = new HashMap<>();
+        map.put("username","xx");
+        map.put("password","xx");
+        map.put("url","jdbc:clickhouse://xx.xx.xx.xx:8123/test");
+        return Driver.buildUnconnected("ck","Clickhouse", map);
+//        return Driver.build(config);
     }
+
 
     @Ignore
     @Test
     public void connectTest() {
         String test = getDriver().test();
+        System.out.println(test);
         // LOGGER.info(test);
         // LOGGER.info("end...");
     }
@@ -72,7 +87,13 @@ public class ClickHouseTest {
     @Ignore
     @Test
     public void schemaTest() {
-        List<Schema> schemasAndTables = getDriver().getSchemasAndTables();
+        Driver driver = getDriver();
+        String test = driver.test();
+        Driver connect = driver.connect();
+
+
+        List<Schema> schemasAndTables = driver.getSchemasAndTables();
+        System.out.println(JsonUtils.toJsonString(schemasAndTables));
         // LOGGER.info(JsonUtils.toJsonString(schemasAndTables));
         // LOGGER.info("end...");
     }
@@ -81,7 +102,10 @@ public class ClickHouseTest {
     @Test
     public void columnTest() {
         Driver driver = getDriver();
-        List<Column> columns = driver.listColumns("xxx", "xxx");
+        String test = driver.test();
+        Driver connect = driver.connect();
+        List<Column> columns = driver.listColumns("xx", "xx");
+        System.out.println(JsonUtils.toJsonString(columns));
         // LOGGER.info(JsonUtils.toJsonString(columns));
         // LOGGER.info("end...");
     }
@@ -90,7 +114,10 @@ public class ClickHouseTest {
     @Test
     public void queryTest() {
         Driver driver = getDriver();
-        JdbcSelectResult query = driver.query("select * from xxx", 10);
+        String test = driver.test();
+        Driver connect = driver.connect();
+        JdbcSelectResult query = driver.query("select count(1) from xx.xx", 10);
+        System.out.println(query.getRowData());
         // LOGGER.info(JsonUtils.toJsonString(query));
         // LOGGER.info("end...");
     }
