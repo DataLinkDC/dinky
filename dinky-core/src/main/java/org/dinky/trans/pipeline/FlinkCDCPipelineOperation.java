@@ -19,29 +19,20 @@
 
 package org.dinky.trans.pipeline;
 
-import org.dinky.data.exception.BusException;
 import org.dinky.executor.Executor;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
 
-import org.apache.flink.cdc.cli.parser.PipelineDefinitionParser;
-import org.apache.flink.cdc.cli.parser.YamlPipelineDefinitionParser;
 import org.apache.flink.cdc.common.configuration.Configuration;
 import org.apache.flink.cdc.composer.PipelineComposer;
 import org.apache.flink.cdc.composer.definition.PipelineDef;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.internal.TableResultImpl;
-import org.apache.http.util.TextUtils;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
-
-import cn.hutool.core.io.FileUtil;
 
 /**
  * FlinkCDCPipelineOperation
@@ -96,29 +87,16 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
         String yamlText = getPipelineConfigure(statement);
         Configuration globalPipelineConfig = Configuration.fromMap(executor.getSetConfig());
         // Parse pipeline definition file
-        PipelineDefinitionParser pipelineDefinitionParser = new YamlPipelineDefinitionParser();
+        YamlTextPipelineDefinitionParser pipelineDefinitionParser = new YamlTextPipelineDefinitionParser();
         // Create composer
         PipelineComposer composer = createComposer(executor);
-
-        File tmpF = null;
         try {
-            if (TextUtils.isEmpty(yamlText)) {
-                throw new BusException("YAML configuration is empty.");
-            }
-            String tmpConf = String.format("%s/tmp/CDC/%s.yaml", System.getProperty("user.dir"), UUID.randomUUID());
-            tmpF = FileUtil.writeBytes(yamlText.getBytes(), tmpConf);
-            PipelineDef pipelineDef =
-                    pipelineDefinitionParser.parse(Paths.get(tmpF.getAbsolutePath()), globalPipelineConfig);
+            PipelineDef pipelineDef = pipelineDefinitionParser.parse(yamlText, globalPipelineConfig);
             // Compose pipeline
             composer.compose(pipelineDef);
             return TableResultImpl.TABLE_RESULT_OK;
         } catch (Exception e) {
-            logger.error("", e);
             throw new RuntimeException(e);
-        } finally {
-            if (tmpF != null) {
-                tmpF.delete();
-            }
         }
     }
 
