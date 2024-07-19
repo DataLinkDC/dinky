@@ -195,9 +195,7 @@ public class DataSourceController {
             dataType = "DataBaseDTO",
             paramType = "body",
             dataTypeClass = DataBaseDTO.class)
-    public Result<Void> testConnect(@RequestBody DataBaseDTO dataBaseDTO) throws ClassNotFoundException {
-        //测试驱动是否有正常加载
-        //        Class.forName("org.dinky.metadata.driver.ClickHouseDriver");
+    public Result<Void> testConnect(@RequestBody DataBaseDTO dataBaseDTO) {
         String msg = databaseService.testConnect(dataBaseDTO);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
         if (isHealthy) {

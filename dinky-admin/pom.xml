@@ -345,11 +345,6 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-alert-sms</artifactId>
         </dependency>
-<!--        本地调式时打开，如果需要测试其他数据源，请添加其他数据源依赖在此处-->
-<!--        <dependency>-->
-<!--            <groupId>org.dinky</groupId>-->
-<!--            <artifactId>dinky-metadata-clickhouse</artifactId>-->
-<!--        </dependency>-->
     </dependencies>
 
 

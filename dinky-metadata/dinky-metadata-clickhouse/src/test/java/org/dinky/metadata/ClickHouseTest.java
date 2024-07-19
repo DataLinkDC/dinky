@@ -49,30 +49,24 @@ public class ClickHouseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClickHouseTest.class);
 
-    private static final String IP = "127.0.0.1";
+    private static final String IP = "0.0.0.0";
     private static final int PORT = 8123;
-    private static final String url = StrFormatter.format("jdbc:clickhouse://{}:{}/default", IP, PORT);
+    private static final String url = StrFormatter.format("jdbc:clickhouse://{}:{}/ads", IP, PORT);
 
     private final ClickHouseDriver clickHouseDriver = new ClickHouseDriver();
 
     public Driver getDriver() {
-//        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
-//        config.setType(clickHouseDriver.getType());
-//        config.setName(clickHouseDriver.getName());
-//        config.setConnectConfig(
-//                AbstractJdbcConfig.builder().ip(IP)
-//                        .port(PORT)
-//                        .url(url)
-//                        .username("xx")
-//                        .password("xx")
-//                        .build());
-        // 使用与web端一致的获取driver方式
-        Map<String, Object> map = new HashMap<>();
-        map.put("username","xx");
-        map.put("password","xx");
-        map.put("url","jdbc:clickhouse://xx.xx.xx.xx:8123/test");
-        return Driver.buildUnconnected("ck","Clickhouse", map);
-//        return Driver.build(config);
+        DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
+        config.setType(clickHouseDriver.getType());
+        config.setName(clickHouseDriver.getName());
+        config.setConnectConfig(
+                AbstractJdbcConfig.builder().ip(IP)
+                        .port(PORT)
+                        .url(url)
+                        .username("xx")
+                        .password("xx")
+                        .build());
+        return Driver.build(config);
     }
 
 

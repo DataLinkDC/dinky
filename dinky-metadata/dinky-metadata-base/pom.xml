@@ -97,18 +97,6 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-common</artifactId>
         </dependency>
-
-        <!--本地调试开启以下两项-->
-<!--        <dependency>-->
-<!--            <groupId>com.clickhouse</groupId>-->
-<!--            <artifactId>clickhouse-jdbc</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.lz4</groupId>-->
-<!--            <artifactId>lz4-java</artifactId>-->
-<!--            <version>1.8.0</version>-->
-<!--        </dependency>-->
-
     </dependencies>
 
 </project>
