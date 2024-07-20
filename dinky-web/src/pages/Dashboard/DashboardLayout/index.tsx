@@ -257,7 +257,7 @@ export default (props: DashboardProps) => {
               actions={[
                 <Flex align={'center'} justify={'center'}>
                   <Segmented
-                    defaultValue={chartDatum[0].type}
+                    defaultValue={chartDatum[0]?.type}
                     onChange={(value) => {
                       setChartData((v) => {
                         v[l.i].chartData.forEach((x) => {
@@ -275,7 +275,7 @@ export default (props: DashboardProps) => {
                 <ChartShow
                   chartTheme={chartTheme}
                   chartOptions={chartOptions}
-                  value={chartDatum[0].data?.slice(-1)[0]?.value}
+                  value={chartDatum[0]?.data?.slice(-1)[0]?.value}
                   type={chartDatum[0]?.type}
                   fontSize={(l.h * config.rowHeight) / 4}
                 />
@@ -288,7 +288,7 @@ export default (props: DashboardProps) => {
               chartTheme={chartTheme}
               chartOptions={chartOptions}
               title={title}
-              value={chartDatum[0].data?.slice(-1)[0]?.value}
+              value={chartDatum[0]?.data?.slice(-1)[0]?.value}
               type={chartDatum[0]?.type}
               fontSize={(l.h * config.rowHeight) / 4}
             />
