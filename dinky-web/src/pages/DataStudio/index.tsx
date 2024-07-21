@@ -70,7 +70,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
     tabs: { panes, activeKey },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     queryUserData,
     queryTaskOwnerLockingStrategy
   } = props;
