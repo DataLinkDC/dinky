@@ -18,7 +18,7 @@
         <commons.version>1.3.1</commons.version>
         <flink.shaded.version>16.1</flink.shaded.version>
         <flink.version>1.17.2</flink.version>
-        <flinkcdc.version>3.0.1</flinkcdc.version>
+        <flinkcdc.version>3.1.1</flinkcdc.version>
     </properties>
 
     <dependencies>
@@ -87,42 +87,42 @@
             <version>30.1.1-jre-${flink.shaded.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-sql-connector-mysql-cdc</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-sql-connector-oracle-cdc</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-sql-connector-sqlserver-cdc</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-sql-connector-postgres-cdc</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-cdc-cli</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-cdc-pipeline-connector-mysql</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-cdc-pipeline-connector-doris</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ververica</groupId>
+            <groupId>org.apache.flink</groupId>
             <artifactId>flink-cdc-pipeline-connector-starrocks</artifactId>
             <version>${flinkcdc.version}</version>
         </dependency>
