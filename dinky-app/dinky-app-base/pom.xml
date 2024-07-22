@@ -93,7 +93,16 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-paimon</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-base</artifactId>

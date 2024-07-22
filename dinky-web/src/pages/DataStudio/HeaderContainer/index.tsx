@@ -106,7 +106,7 @@ const HeaderContainer = (props: connect) => {
     queryDsConfig,
     queryTaskData,
     enabledDs,
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     taskOwnerLockingStrategy
   } = props;
 

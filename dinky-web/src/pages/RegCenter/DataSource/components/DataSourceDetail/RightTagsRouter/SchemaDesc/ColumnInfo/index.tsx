@@ -24,20 +24,21 @@ import { CheckSquareOutlined, KeyOutlined } from '@ant-design/icons';
 import { ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table/es/typing';
 import React from 'react';
+import { Empty } from 'antd';
 
 type ColumnInfoProps = {
-  columnInfo: Partial<DataSources.Column[]>;
+  columnInfo?: Partial<DataSources.Column[]>;
 };
 
 const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
   const { columnInfo } = props;
 
   const columns: ProColumns<DataSources.Column>[] = [
-    {
-      title: l('rc.ds.no'),
-      dataIndex: 'position',
-      width: '4%'
-    },
+    // {
+    //   title: l('rc.ds.no'),
+    //   dataIndex: 'position',
+    //   width: '4%'
+    // },
     {
       title: l('rc.ds.columnName'),
       dataIndex: 'name',
@@ -47,7 +48,7 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
     {
       title: l('rc.ds.columnType'),
       dataIndex: 'type',
-      width: '6%'
+      width: '10%'
     },
     {
       title: l('rc.ds.primarykey'),
@@ -55,6 +56,14 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       width: '4%',
       render: (_, record) => {
         return record.keyFlag ? <KeyOutlined style={{ color: '#FAA100' }} /> : undefined;
+      }
+    },
+    {
+      title: 'Partition Key',
+      dataIndex: 'partaionKey',
+      width: '4%',
+      render: (_, record) => {
+        return record.partaionKey ? <KeyOutlined style={{ color: '#21da31' }} /> : undefined;
       }
     },
     {
@@ -86,17 +95,17 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       dataIndex: 'length',
       width: '6%'
     },
-    {
-      title: l('rc.ds.precision'),
-      dataIndex: 'precision',
-      width: '4%'
-    },
-    {
-      title: l('rc.ds.decimalDigits'),
-      dataIndex: 'scale',
-      ellipsis: true,
-      width: '6%'
-    },
+    // {
+    //   title: l('rc.ds.precision'),
+    //   dataIndex: 'precision',
+    //   width: '4%'
+    // },
+    // {
+    //   title: l('rc.ds.decimalDigits'),
+    //   dataIndex: 'scale',
+    //   ellipsis: true,
+    //   width: '6%'
+    // },
     {
       title: l('rc.ds.character'),
       dataIndex: 'characterSet',
@@ -124,19 +133,23 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
 
   return (
     <>
-      <ProTable<DataSources.Column>
-        toolBarRender={false}
-        pagination={{
-          defaultPageSize: 14,
-          hideOnSinglePage: true
-        }}
-        search={false}
-        options={false}
-        size={'small'}
-        bordered
-        columns={columns}
-        dataSource={transformTreeData(columnInfo) as DataSources.Column[]}
-      />
+      {columnInfo ? (
+        <ProTable<DataSources.Column>
+          toolBarRender={false}
+          pagination={{
+            defaultPageSize: 14,
+            hideOnSinglePage: true
+          }}
+          search={false}
+          options={false}
+          size={'small'}
+          bordered
+          columns={columns}
+          dataSource={transformTreeData(columnInfo) as DataSources.Column[]}
+        />
+      ) : (
+        <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')} />
+      )}
     </>
   );
 };
