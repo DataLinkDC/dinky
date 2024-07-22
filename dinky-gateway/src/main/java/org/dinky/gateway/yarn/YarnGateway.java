@@ -125,6 +125,10 @@ public abstract class YarnGateway extends AbstractGateway {
         if (Asserts.isNotNull(flinkConfig.getConfiguration())) {
             addConfigParas(flinkConfig.getConfiguration());
         }
+        // Adding custom Flink configurations
+        if (Asserts.isNotNull(flinkConfig.getFlinkConfigList())) {
+            addConfigParas(flinkConfig.getFlinkConfigList());
+        }
 
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
 
@@ -499,6 +503,8 @@ public abstract class YarnGateway extends AbstractGateway {
                     }
                 }
             }
+        } else {
+            logger.info("High availability non-ZooKeeper mode, current mode is：{}", highAvailabilityMode);
         }
         return null;
     }
