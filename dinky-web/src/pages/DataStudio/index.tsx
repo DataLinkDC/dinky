@@ -110,7 +110,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     window.addEventListener('resize', onResize);
     onResize();
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  }, [bottomContainer, isProject]);
 
   const loadData = () => {
     queryDatabaseList();
