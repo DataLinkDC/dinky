@@ -51,6 +51,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.dinky.utils.SqlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -157,13 +158,14 @@ public class SqlGatewayWsContext {
         VariableManager variableManager = new VariableManager();
         variableManager.registerVariable(variableMap);
         String initSql = URLDecoder.decode(getParameter("initSql"), "UTF-8");
-        String parsedSql = variableManager.parseVariable(initSql);
+        initSql = SqlUtil.removeNote(initSql);
+        initSql = variableManager.parseVariable(initSql);
 
         SqlClientOptions options = SqlClientOptions.builder()
                 .mode(SqlCliMode.fromString(getParameter("mode", true)))
                 .sessionId(getParameter("sessionId"))
                 .connectAddress(getParameter("connectAddress", true))
-                .initSql(parsedSql)
+                .initSql(initSql)
                 .historyFilePath("./tmp/flink-sql-history/history")
                 .terminalSize(size)
                 .build();
