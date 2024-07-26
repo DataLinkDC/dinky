@@ -17,10 +17,22 @@
  *
  */
 
-import React, {useEffect, useState} from 'react';
-import {Layout, Responsive, WidthProvider} from 'react-grid-layout';
+import React, { useEffect, useState } from 'react';
+import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import './index.less';
-import {Button, Col, Empty, Flex, Input, Row, Segmented, Space, Spin, Switch, Tooltip} from 'antd';
+import {
+  Button,
+  Col,
+  Empty,
+  Flex,
+  Input,
+  Row,
+  Segmented,
+  Space,
+  Spin,
+  Switch,
+  Tooltip
+} from 'antd';
 import {
   AreaChartOutlined,
   BackwardOutlined,
@@ -34,23 +46,28 @@ import {
 } from '@ant-design/icons';
 import _ from 'lodash';
 import * as echarts from 'echarts';
-import {ProCard} from '@ant-design/pro-components';
-import {SetOutline} from 'antd-mobile-icons';
-import {history, useLocation} from '@@/exports';
+import { ProCard } from '@ant-design/pro-components';
+import { SetOutline } from 'antd-mobile-icons';
+import { history, useLocation } from '@@/exports';
 import useHookRequest from '@/hooks/useHookRequest';
-import {addOrUpdate, getDataDetailById} from '@/pages/Dashboard/service';
+import { addOrUpdate, getDataDetailById } from '@/pages/Dashboard/service';
 import Edit from '@/pages/Dashboard/DashboardLayout/Edit';
-import {deleteKeyFromRecord, EchartsOptions, LayoutChartData, LayoutData} from '@/pages/Dashboard/data';
-import {ChartData} from '@/pages/Metrics/JobMetricsList/data';
+import {
+  deleteKeyFromRecord,
+  EchartsOptions,
+  LayoutChartData,
+  LayoutData
+} from '@/pages/Dashboard/data';
+import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
 import ChartShow from '@/pages/Dashboard/DashboardLayout/ChartShow';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {l} from '@/utils/intl';
-import {queryDataByParams} from '@/services/BusinessCrud';
-import {PermissionConstants} from '@/types/Public/constants';
-import {Authorized} from '@/hooks/useAccess';
-import {getUrlParam} from '@/utils/function';
-import MetricsFilter from "@/components/Flink/MetricsFilter/MetricsFilter";
-import {MetricsTimeFilter} from "@/pages/DevOps/JobDetail/data";
+import { API_CONSTANTS } from '@/services/endpoints';
+import { l } from '@/utils/intl';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { PermissionConstants } from '@/types/Public/constants';
+import { Authorized } from '@/hooks/useAccess';
+import { getUrlParam } from '@/utils/function';
+import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
+import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -59,14 +76,13 @@ type ChartComponentData = {
   chartData: LayoutChartData[];
 };
 
-
 // todo 当添加或更新时，需要刷新数据，其次还差值范围获取
 export default () => {
   const location = useLocation();
   const layoutId = getUrlParam(location.search, 'layoutId');
   console.log('layoutId', layoutId, location);
 
-  const {data, refresh, loading} = useHookRequest<any, any>(getDataDetailById, {
+  const { data, refresh, loading } = useHookRequest<any, any>(getDataDetailById, {
     defaultParams: [layoutId]
   });
   const chartTheme = data?.chartTheme ?? 'roma';
@@ -110,7 +126,7 @@ export default () => {
       };
     }
     setItems([...items]);
-    setChartData({...chartData});
+    setChartData({ ...chartData });
     setOpenChange(false);
   };
 
@@ -118,21 +134,20 @@ export default () => {
   useEffect(() => {
     // if (!timeRange.isReal) {
     // todo real time
-      const d = Object.values(chartData);
-      if (d.length > 0) {
-        queryDataByParams(API_CONSTANTS.GET_FLINK_DAT_BY_DASHBOARD, {
-          startTime: timeRange.startTime,
-          endTime: timeRange.endTime,
-          flinkMetricsIdList: d
-            .flatMap((x) => x.chartData)
-            .map((x) => x.id)
-            .join()
-        }).then((d) => {
-          setCData(d as any);
-        });
-      }
+    const d = Object.values(chartData);
+    if (d.length > 0) {
+      queryDataByParams(API_CONSTANTS.GET_FLINK_DAT_BY_DASHBOARD, {
+        startTime: timeRange.startTime,
+        endTime: timeRange.endTime,
+        flinkMetricsIdList: d
+          .flatMap((x) => x.chartData)
+          .map((x) => x.id)
+          .join()
+      }).then((d) => {
+        setCData(d as any);
+      });
+    }
     // }
-
   }, [chartData, timeRange]);
 
   useEffect(() => {
@@ -155,7 +170,7 @@ export default () => {
         })
       };
     });
-    setChartData({...chartData});
+    setChartData({ ...chartData });
     setItems(
       layout.map((x: any) => {
         return {
@@ -172,7 +187,7 @@ export default () => {
   const config = {
     className: 'layout',
     rowHeight: 200,
-    cols: {lg: 6, md: 6, sm: 6, xs: 6, xxs: 6}
+    cols: { lg: 6, md: 6, sm: 6, xs: 6, xxs: 6 }
   };
   const [isUpdate, setIsUpdate] = useState(false);
   const [isShowEditCard, setIsShowEditCard] = useState(false);
@@ -183,19 +198,18 @@ export default () => {
   });
 
   const onRemoveItem = (i: string) => {
-    setItems(_.reject(items, {i: i}));
+    setItems(_.reject(items, { i: i }));
     setChartData(deleteKeyFromRecord(chartData, i));
   };
 
   const generateDOM = () => {
     if (items.length === 0) {
-      return <Empty description={l('dashboard.empty')}/>;
+      return <Empty description={l('dashboard.empty')} />;
     }
     return items.map((l, i) => {
       const chartDatum = chartData[l.i]?.chartData;
       chartDatum?.forEach((v) => {
         v.data = (cData ?? {})[v.id] ?? [];
-
       });
 
       const title: string = chartData[l.i].title;
@@ -203,12 +217,12 @@ export default () => {
       const chartOptions = EchartsOptions(chartDatum, isShowEditCard ? '' : title);
 
       const options = [
-        {label: 'Line', value: 'Line', icon: <LineChartOutlined/>},
-        {label: 'Area', value: 'Area', icon: <AreaChartOutlined/>},
-        {label: 'Bar', value: 'Bar', icon: <BarChartOutlined/>}
+        { label: 'Line', value: 'Line', icon: <LineChartOutlined /> },
+        { label: 'Area', value: 'Area', icon: <AreaChartOutlined /> },
+        { label: 'Bar', value: 'Bar', icon: <BarChartOutlined /> }
       ];
       if (chartDatum.length < 2) {
-        options.push({label: 'Statistic', value: 'Statistic', icon: <FieldNumberOutlined/>});
+        options.push({ label: 'Statistic', value: 'Statistic', icon: <FieldNumberOutlined /> });
       }
 
       return (
@@ -232,7 +246,7 @@ export default () => {
               type='primary'
               danger
               ghost
-              icon={<CloseOutlined/>}
+              icon={<CloseOutlined />}
               onClick={() => onRemoveItem(l.i)}
             />
           )}
@@ -245,7 +259,7 @@ export default () => {
                   onChange={(value) => {
                     setChartData((v) => {
                       v[l.i].title = value.currentTarget.value;
-                      return {...v};
+                      return { ...v };
                     });
                   }}
                 />
@@ -257,7 +271,7 @@ export default () => {
               extra={
                 <Button
                   type={'text'}
-                  icon={<SetOutline fontSize={24}/>}
+                  icon={<SetOutline fontSize={24} />}
                   onClick={() => {
                     setUpdateModel(l.i);
                     setEditIsUpdate(true);
@@ -275,7 +289,7 @@ export default () => {
                         v[l.i].chartData.forEach((x) => {
                           x.type = value;
                         });
-                        return {...v};
+                        return { ...v };
                       });
                     }}
                     options={options}
@@ -320,7 +334,7 @@ export default () => {
       <Flex wrap gap='small' justify={'space-between'}>
         <Button
           size={'middle'}
-          icon={<BackwardOutlined/>}
+          icon={<BackwardOutlined />}
           type='primary'
           onClick={handleBackClick}
         >
@@ -347,7 +361,7 @@ export default () => {
                 <Button
                   type='primary'
                   ghost
-                  icon={<PlusOutlined/>}
+                  icon={<PlusOutlined />}
                   onClick={() => {
                     setEditIsUpdate(false);
                     setOpenChange(true);
@@ -359,7 +373,7 @@ export default () => {
               <Button
                 type='primary'
                 ghost
-                icon={<CheckOutlined/>}
+                icon={<CheckOutlined />}
                 onClick={async () => {
                   const layoutData = items.map((item) => {
                     return {
@@ -389,7 +403,7 @@ export default () => {
                 type='primary'
                 danger
                 ghost
-                icon={<CloseOutlined/>}
+                icon={<CloseOutlined />}
                 onClick={async () => {
                   setIsUpdate(false);
                   setIsShowEditCard(false);
@@ -403,15 +417,14 @@ export default () => {
         {!isUpdate && (
           <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_CHART_EDIT}>
             <Row gutter={10}>
-
-              <MetricsFilter onTimeSelect={onTimeSelectChange}/>
+              <MetricsFilter onTimeSelect={onTimeSelectChange} />
               <Col>
                 <Tooltip title={l('button.edit')}>
                   <Button
                     type='primary'
                     danger
                     ghost
-                    icon={<EditOutlined/>}
+                    icon={<EditOutlined />}
                     onClick={() => setIsUpdate(true)}
                   />
                 </Tooltip>
@@ -460,10 +473,10 @@ export default () => {
           defaultValue={
             editIsUpdate
               ? {
-                title: chartData[updateModel].title,
-                layouts: chartData[updateModel].chartData
-              }
-              : {title: '', layouts: []}
+                  title: chartData[updateModel].title,
+                  layouts: chartData[updateModel].chartData
+                }
+              : { title: '', layouts: [] }
           }
         />
       )}

@@ -22,8 +22,6 @@ package org.dinky.service.impl;
 import static org.dinky.data.constant.MonitorTableConstant.HEART_TIME;
 import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 
-import cn.hutool.core.map.MapUtil;
-import com.starrocks.shade.org.apache.arrow.flatbuf.Int;
 import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.constant.MonitorTableConstant;
@@ -46,7 +44,6 @@ import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,14 +55,14 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -73,18 +70,17 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.Tuple;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
-
-import javax.annotation.PostConstruct;
 
 @Service
 @RequiredArgsConstructor
 public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> implements MonitorService {
 
     @PostConstruct
-    private void init(){
+    private void init() {
         String sql = String.format(
                 "%s BIGINT, %s TEXT, %s TEXT, %s INTEGER",
                 JOB_ID, MonitorTableConstant.VALUE, MonitorTableConstant.HEART_TIME, MonitorTableConstant.DATE);
@@ -113,19 +109,19 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                 MetricsVO metricsVO = new MetricsVO();
                 metricsVO.setModel(read.getString(MonitorTableConstant.JOB_ID));
                 metricsVO.setContent(read.getString(MonitorTableConstant.VALUE));
-                metricsVO.setHeartTime(DateUtil.parse(read.getString(HEART_TIME)).toLocalDateTime());
+                metricsVO.setHeartTime(
+                        DateUtil.parse(read.getString(HEART_TIME)).toLocalDateTime());
                 metricsVO.setDate(read.getString(MonitorTableConstant.DATE));
                 metricsVOList.add(metricsVO);
             }
 
         } catch (SQLException e) {
-            throw new DinkyException("Failed to get data from the database",e);
+            throw new DinkyException("Failed to get data from the database", e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return metricsVOList;
     }
-
 
     public static String getUtcCondition(Date startTime, Date endTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
@@ -246,21 +242,22 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
                                 CollUtil::unionAll)));
 
         Map<Integer, List<Dict>> resultData = new HashMap<>();
-            List<MetricsVO> data = getData(
+        List<MetricsVO> data = getData(
                 DateUtil.date(startTime),
                 DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime())),
                 flinkJobIdList);
         data.forEach(x -> {
             Map<String, List<Tuple>> tupleMap = map.get(x.getModel());
-            if (tupleMap==null){
+            if (tupleMap == null) {
                 return;
             }
             tupleMap.keySet().forEach(y -> {
-                Map<String,String> jsonObject =  JsonUtils.toMap(x.getContent().toString(),String.class,Map.class).get(y);
+                Map<String, String> jsonObject = JsonUtils.toMap(x.getContent().toString(), String.class, Map.class)
+                        .get(y);
                 List<Tuple> tupleList = tupleMap.get(y);
                 for (Tuple tuple : tupleList) {
                     String metricsName = tuple.get(0);
-                    Integer d = MapUtil.getInt(jsonObject,metricsName);
+                    Integer d = MapUtil.getInt(jsonObject, metricsName);
                     Dict dict = Dict.create().set("time", x.getHeartTime()).set(MonitorTableConstant.VALUE, d);
                     Integer id = tuple.get(1);
                     resultData.computeIfAbsent(id, k -> new ArrayList<>()).add(dict);

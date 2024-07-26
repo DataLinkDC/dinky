@@ -38,7 +38,7 @@ import { PermissionConstants } from '@/types/Public/constants';
 import { Authorized } from '@/hooks/useAccess';
 import { Layout } from 'react-grid-layout';
 import DashboardLayout from '@/pages/Dashboard/DashboardLayout';
-import MetricsFilter from "@/components/Flink/MetricsFilter/MetricsFilter";
+import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
 
 const echartsThemeOptions = EchartsTheme.map((x) => {
   return { label: l(`dashboard.theme.${x}`), value: x };

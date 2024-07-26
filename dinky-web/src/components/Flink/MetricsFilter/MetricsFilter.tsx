@@ -20,7 +20,7 @@
 import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { getSubMinTime } from '@/pages/Metrics/Server/function';
 import { l } from '@/utils/intl';
-import {Col, DatePicker, Radio, Space} from 'antd';
+import { Col, DatePicker, Radio, Space } from 'antd';
 const { RangePicker } = DatePicker;
 
 type TimeSelectProps = {
