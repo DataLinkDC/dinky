@@ -24,7 +24,7 @@ import { JobMetricsItem, JobProps, MetricsTimeFilter } from '@/pages/DevOps/JobD
 import { buildMetricsTarget } from '@/pages/DevOps/JobDetail/JobMetrics/function';
 import MonitorConfigForm from '@/pages/DevOps/JobDetail/JobMetrics/MetricsForm/MetricsConfigForm';
 import { getMetricsLayout, putMetricsLayout } from '@/pages/DevOps/JobDetail/srvice';
-import { Space } from 'antd';
+import { Row, Space } from 'antd';
 import { useState } from 'react';
 import JobChart from './JobChart/JobChart';
 
@@ -59,7 +59,9 @@ const JobMetrics = (props: JobProps) => {
   return (
     <>
       <Space style={{ marginBottom: 20 }}>
-        <MetricsFilter onTimeSelect={onTimeSelectChange} />
+        <Row gutter={12}>
+          <MetricsFilter onTimeSelect={onTimeSelectChange} />
+        </Row>
         {jobDetail.instance.status == JOB_STATUS.RUNNING ? (
           <MonitorConfigForm
             onSelectChange={onSelectMetricsChange}
