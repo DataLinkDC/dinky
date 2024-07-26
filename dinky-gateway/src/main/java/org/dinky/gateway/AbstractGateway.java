@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.CustomConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.exception.GatewayException;
@@ -93,6 +94,15 @@ public abstract class AbstractGateway implements Gateway {
             configMap.entrySet().stream()
                     .filter(entry -> Asserts.isAllNotNullString(entry.getKey(), entry.getValue()))
                     .forEach(entry -> this.configuration.setString(entry.getKey(), entry.getValue()));
+        }
+    }
+
+    protected void addConfigParas(List<CustomConfig> flinkConfigList) {
+        if (Asserts.isNotNullCollection(flinkConfigList)) {
+            flinkConfigList.stream()
+                    .filter(customConfig -> Asserts.isAllNotNullString(customConfig.getName(), customConfig.getValue()))
+                    .forEach(customConfig ->
+                            this.configuration.setString(customConfig.getName(), customConfig.getValue()));
         }
     }
 
