@@ -29,6 +29,7 @@ import org.dinky.utils.CloseUtil;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
+import org.dinky.utils.SqlUtil;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -48,7 +49,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import org.dinky.utils.SqlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -105,22 +105,22 @@ public class SqlGatewayWsContext {
             });
             executor.execute(() -> {
                 while (isRunning) {
-                try {
-                    int data;
-                    byte[] bytes = new byte[1024];
-                    while ((data = in2web.read(bytes)) != -1) {
-                        session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes, 0, data));
-                    }
-                    log.info("Sql Client Read Terminal Thread Closed :" + options.getConnectAddress());
-                    onClose();
-                } catch (IOException e) {
-                    log.error("sql client receive error", e);
                     try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException interruptedException) {
-                        log.error("Sql Client Thread Interrupted Error: ", e);
+                        int data;
+                        byte[] bytes = new byte[1024];
+                        while ((data = in2web.read(bytes)) != -1) {
+                            session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes, 0, data));
+                        }
+                        log.info("Sql Client Read Terminal Thread Closed :" + options.getConnectAddress());
+                        onClose();
+                    } catch (IOException e) {
+                        log.error("sql client receive error", e);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException interruptedException) {
+                            log.error("Sql Client Thread Interrupted Error: ", e);
+                        }
                     }
-                }
                 }
             });
         } catch (Exception e) {
