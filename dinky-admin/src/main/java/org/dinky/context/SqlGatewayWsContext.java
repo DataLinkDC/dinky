@@ -29,6 +29,7 @@ import org.dinky.utils.CloseUtil;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
+import org.dinky.utils.SqlUtil;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -70,7 +71,7 @@ public class SqlGatewayWsContext {
     private PipedInputStream in2web;
 
     private long lastHeartTime = System.currentTimeMillis();
-    private boolean isRunning = true;
+    private volatile boolean isRunning = true;
 
     private static String url;
     private static String username;
@@ -103,15 +104,23 @@ public class SqlGatewayWsContext {
                 }
             });
             executor.execute(() -> {
-                try {
-                    int data;
-                    byte[] bytes = new byte[1024];
-                    while ((data = in2web.read(bytes)) != -1) {
-                        session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes, 0, data));
+                while (isRunning) {
+                    try {
+                        int data;
+                        byte[] bytes = new byte[1024];
+                        while ((data = in2web.read(bytes)) != -1) {
+                            session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes, 0, data));
+                        }
+                        log.info("Sql Client Read Terminal Thread Closed :" + options.getConnectAddress());
+                        onClose();
+                    } catch (IOException e) {
+                        log.error("sql client receive error", e);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException interruptedException) {
+                            log.error("Sql Client Thread Interrupted Error: ", e);
+                        }
                     }
-                    log.info("Sql Client Read Terminal Thread Closed :" + options.getConnectAddress());
-                } catch (IOException e) {
-                    log.error("sql client receive error", e);
                 }
             });
         } catch (Exception e) {
@@ -157,13 +166,14 @@ public class SqlGatewayWsContext {
         VariableManager variableManager = new VariableManager();
         variableManager.registerVariable(variableMap);
         String initSql = URLDecoder.decode(getParameter("initSql"), "UTF-8");
-        String parsedSql = variableManager.parseVariable(initSql);
+        initSql = SqlUtil.removeNote(initSql);
+        initSql = variableManager.parseVariable(initSql);
 
         SqlClientOptions options = SqlClientOptions.builder()
                 .mode(SqlCliMode.fromString(getParameter("mode", true)))
                 .sessionId(getParameter("sessionId"))
                 .connectAddress(getParameter("connectAddress", true))
-                .initSql(parsedSql)
+                .initSql(initSql)
                 .historyFilePath("./tmp/flink-sql-history/history")
                 .terminalSize(size)
                 .build();
