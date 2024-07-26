@@ -71,7 +71,7 @@ public class SqlGatewayWsContext {
     private PipedInputStream in2web;
 
     private long lastHeartTime = System.currentTimeMillis();
-    private boolean isRunning = true;
+    private volatile boolean isRunning = true;
 
     private static String url;
     private static String username;
@@ -104,6 +104,7 @@ public class SqlGatewayWsContext {
                 }
             });
             executor.execute(() -> {
+                while (isRunning) {
                 try {
                     int data;
                     byte[] bytes = new byte[1024];
@@ -111,8 +112,15 @@ public class SqlGatewayWsContext {
                         session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes, 0, data));
                     }
                     log.info("Sql Client Read Terminal Thread Closed :" + options.getConnectAddress());
+                    onClose();
                 } catch (IOException e) {
                     log.error("sql client receive error", e);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException interruptedException) {
+                        log.error("Sql Client Thread Interrupted Error: ", e);
+                    }
+                }
                 }
             });
         } catch (Exception e) {
