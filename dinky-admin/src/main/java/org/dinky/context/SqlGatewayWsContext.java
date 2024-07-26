@@ -19,9 +19,6 @@
 
 package org.dinky.context;
 
-import cn.hutool.db.Db;
-import cn.hutool.db.Entity;
-import cn.hutool.db.ds.simple.SimpleDataSource;
 import org.dinky.crypto.CryptoComponent;
 import org.dinky.data.model.FragmentVariable;
 import org.dinky.executor.VariableManager;
@@ -57,6 +54,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.db.Db;
+import cn.hutool.db.Entity;
+import cn.hutool.db.ds.simple.SimpleDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
