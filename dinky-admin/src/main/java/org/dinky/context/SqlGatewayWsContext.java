@@ -19,18 +19,27 @@
 
 package org.dinky.context;
 
+import org.dinky.crypto.CryptoComponent;
+import org.dinky.data.model.FragmentVariable;
+import org.dinky.executor.VariableManager;
 import org.dinky.gateway.SqlCliMode;
 import org.dinky.gateway.SqlClientOptions;
 import org.dinky.gateway.sqlgateway.cli.SqlClientAdapter;
 import org.dinky.utils.CloseUtil;
+import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.ByteBuffer;
+import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import javax.websocket.OnClose;
@@ -39,9 +48,14 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.db.Db;
+import cn.hutool.db.Entity;
+import cn.hutool.db.ds.simple.SimpleDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -57,6 +71,13 @@ public class SqlGatewayWsContext {
 
     private long lastHeartTime = System.currentTimeMillis();
     private boolean isRunning = true;
+
+    private static String url;
+    private static String username;
+    private static String password;
+    private static Db db;
+
+    private static CryptoComponent cryptoComponent;
 
     /**
      * 最大化减少线程占用，默认线程为0，无最大限制，不保持线程，任务直接提交给线程
@@ -110,7 +131,7 @@ public class SqlGatewayWsContext {
     }
 
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(Session session) throws UnsupportedEncodingException, SQLException {
         this.session = session;
 
         String cols = getParameter("cols", true);
@@ -118,11 +139,31 @@ public class SqlGatewayWsContext {
         SqlClientOptions.TerminalSize size =
                 new SqlClientOptions.TerminalSize(Integer.parseInt(cols), Integer.parseInt(rows));
 
+        if (db == null) {
+            db = Db.use(new SimpleDataSource(url, username, password));
+        }
+        Entity option = Entity.create("dinky_fragment").set("enabled", true);
+        List<FragmentVariable> entities = db.find(option, FragmentVariable.class);
+        Map<String, String> variableMap = new LinkedHashMap<>();
+        if (entities != null) {
+            for (FragmentVariable variable : entities) {
+                if (FragmentVariableUtils.isSensitive(variable.getName()) && variable.getFragmentValue() != null) {
+                    variableMap.put(variable.getName(), cryptoComponent.decryptText(variable.getFragmentValue()));
+                } else {
+                    variableMap.put(variable.getName(), variable.getFragmentValue());
+                }
+            }
+        }
+        VariableManager variableManager = new VariableManager();
+        variableManager.registerVariable(variableMap);
+        String initSql = URLDecoder.decode(getParameter("initSql"), "UTF-8");
+        String parsedSql = variableManager.parseVariable(initSql);
+
         SqlClientOptions options = SqlClientOptions.builder()
                 .mode(SqlCliMode.fromString(getParameter("mode", true)))
                 .sessionId(getParameter("sessionId"))
                 .connectAddress(getParameter("connectAddress", true))
-                .initSql(getParameter("initSql"))
+                .initSql(parsedSql)
                 .historyFilePath("./tmp/flink-sql-history/history")
                 .terminalSize(size)
                 .build();
@@ -184,5 +225,25 @@ public class SqlGatewayWsContext {
             }
         }
         return list.get(0);
+    }
+
+    @Autowired
+    public void setCryptoComponent(CryptoComponent cryptoComponent) {
+        SqlGatewayWsContext.cryptoComponent = cryptoComponent;
+    }
+
+    @Value("${spring.datasource.url}")
+    public void setUrl(String url) {
+        SqlGatewayWsContext.url = url;
+    }
+
+    @Value("${spring.datasource.username}")
+    public void setUsername(String username) {
+        SqlGatewayWsContext.username = username;
+    }
+
+    @Value("${spring.datasource.password}")
+    public void setPassword(String password) {
+        SqlGatewayWsContext.password = password;
     }
 }

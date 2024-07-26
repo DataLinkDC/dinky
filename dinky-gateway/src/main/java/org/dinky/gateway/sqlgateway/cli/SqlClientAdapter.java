@@ -82,6 +82,8 @@ public class SqlClientAdapter implements Closeable {
                 .orElseThrow(() -> new IllegalArgumentException("Flink Cluster address is not set."));
         configuration.set(RestOptions.BIND_ADDRESS, clusterAddress.getHostName());
         configuration.set(RestOptions.BIND_PORT, clusterAddress.getPort() + "");
+        configuration.set(RestOptions.ADDRESS, clusterAddress.getHostName());
+        configuration.set(RestOptions.PORT, clusterAddress.getPort());
         configuration.set(DeploymentOptions.TARGET, RemoteExecutor.NAME);
         //            当客户端程序终止时，作业执行也会终止。
         configuration.set(DeploymentOptions.ATTACHED, true);
