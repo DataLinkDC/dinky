@@ -69,7 +69,7 @@ const TerminalContent: React.FC<TermProps> = (props) => {
     const termCols = term.cols;
     const termRows = term.rows;
 
-    const params = `mode=${mode}&cols=${termCols}&rows=${termRows}&sessionId=${sessionId}&initSql=${encodeURIComponent(initSql ? initSql : '')}&connectAddress=${connectAddress}`;
+    const params = `mode=${mode}&cols=${termCols}&rows=${termRows}&sessionId=${sessionId}&initSql=${encodeURIComponent(initSql ?? '')}&connectAddress=${connectAddress}`;
 
     ws = new WebSocket(`${wsUrl}/?${params}`);
 
