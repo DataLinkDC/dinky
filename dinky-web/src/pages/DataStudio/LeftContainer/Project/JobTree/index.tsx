@@ -199,6 +199,10 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         type: TabsPageType.terminal
       }
     });
+    dispatch({
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: ''
+    });
   };
   const currentTabName = LeftMenuKey.PROJECT_KEY;
   const btnEvent = [...BtnRoute[currentTabName]];
