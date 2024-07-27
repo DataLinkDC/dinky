@@ -26,12 +26,10 @@ import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.driver.ClickHouseDriver;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.dinky.utils.JsonUtils;
+
+import java.util.List;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -59,22 +57,21 @@ public class ClickHouseTest {
         DriverConfig<AbstractJdbcConfig> config = new DriverConfig<>();
         config.setType(clickHouseDriver.getType());
         config.setName(clickHouseDriver.getName());
-        config.setConnectConfig(
-                AbstractJdbcConfig.builder().ip(IP)
-                        .port(PORT)
-                        .url(url)
-                        .username("xx")
-                        .password("xx")
-                        .build());
+        config.setConnectConfig(AbstractJdbcConfig.builder()
+                .ip(IP)
+                .port(PORT)
+                .url(url)
+                .username("xx")
+                .password("xx")
+                .build());
         return Driver.build(config);
     }
-
 
     @Ignore
     @Test
     public void connectTest() {
         String test = getDriver().test();
-         LOGGER.info(test);
+        LOGGER.info(test);
         // LOGGER.info("end...");
     }
 
@@ -85,9 +82,8 @@ public class ClickHouseTest {
         String test = driver.test();
         Driver connect = driver.connect();
 
-
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
-         LOGGER.info(JsonUtils.toJsonString(schemasAndTables));
+        LOGGER.info(JsonUtils.toJsonString(schemasAndTables));
         // LOGGER.info("end...");
     }
 
@@ -98,7 +94,7 @@ public class ClickHouseTest {
         String test = driver.test();
         Driver connect = driver.connect();
         List<Column> columns = driver.listColumns("xx", "xx");
-         LOGGER.info(JsonUtils.toJsonString(columns));
+        LOGGER.info(JsonUtils.toJsonString(columns));
         // LOGGER.info("end...");
     }
 
@@ -109,7 +105,7 @@ public class ClickHouseTest {
         String test = driver.test();
         Driver connect = driver.connect();
         JdbcSelectResult query = driver.query("select count(1) from xx.xx", 10);
-         LOGGER.info(query.getRowData().toString());
+        LOGGER.info(query.getRowData().toString());
         // LOGGER.info("end...");
     }
 }
