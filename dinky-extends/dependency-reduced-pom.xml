@@ -64,7 +64,7 @@
   <properties>
     <flink.version>1.13.3</flink.version>
 
-    <clickhouse-jdbc.version>0.2.6</clickhouse-jdbc.version>
+    <clickhouse-jdbc.version>0.6.2</clickhouse-jdbc.version>
     <mariadb-java-client.version>2.5.4</mariadb-java-client.version>
     <maven.compiler.target>${target.java.version}</maven.compiler.target>
     <derby.version>10.14.2.0</derby.version>

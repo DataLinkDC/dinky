@@ -65,7 +65,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
 
     @Override
     String getDriverClass() {
-        return "ru.yandex.clickhouse.ClickHouseDriver";
+        return "com.clickhouse.jdbc.ClickHouseDriver";
     }
 
     @Override
