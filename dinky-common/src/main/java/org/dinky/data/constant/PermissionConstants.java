@@ -245,6 +245,7 @@ public class PermissionConstants {
      * dashboard
      */
     public static final String DASHBOARD_LIST_ADD = "dashboard:list:add";
+
     public static final String DASHBOARD_LIST_EDIT = "dashboard:list:edit";
     public static final String DASHBOARD_LIST_DELETE = "dashboard:list:delete";
     public static final String DASHBOARD_LIST_VIEW = "dashboard:list:view";
