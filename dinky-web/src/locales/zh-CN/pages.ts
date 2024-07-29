@@ -280,14 +280,17 @@ export default {
   'home.header.tips.noon.4': '中午好, {user}，中午的阳光，是一天中温暖的拥抱。',
   'home.header.tips.noon.5': '中午好, {user}，一顿丰盛的午餐，是对自己辛勤工作的最好奖赏。',
   'home.header.tips.afternoon.1': '下午好, {user}，下午的工作开始了，保持热情和专注。',
-  'home.header.tips.afternoon.2': '下午好, {user}，下午的阳光温柔，适合思考或冥想，找到内心的平静。',
-  'home.header.tips.afternoon.3': '下午好, {user}，下午的微风，带来清新的空气，愿你的心情也如此清新。',
+  'home.header.tips.afternoon.2':
+    '下午好, {user}，下午的阳光温柔，适合思考或冥想，找到内心的平静。',
+  'home.header.tips.afternoon.3':
+    '下午好, {user}，下午的微风，带来清新的空气，愿你的心情也如此清新。',
   'home.header.tips.afternoon.4': '下午好, {user}，忙碌的下午，也别忘了给自己一点甜头哦！(✿✪‿✪｡)',
   'home.header.tips.afternoon.5': '下午好, {user}，下午的微风，愿你的心情像它一样轻松。(✧∀✧)',
   'home.header.tips.evening.1': '傍晚好, {user}，一天的忙碌结束了，好好放松一下吧！(✿✪‿✪｡)',
   'home.header.tips.evening.2': '傍晚好, {user}，傍晚的晚霞，愿你的心情像它一样绚烂。(✧∇✧)',
   'home.header.tips.evening.3': '傍晚好, {user}，享受傍晚的宁静，让一天的忙碌慢慢沉淀。(✧◡◡✧)',
-  'home.header.tips.evening.4': '傍晚好, {user}，傍晚的天空，星星开始闪烁，愿你的梦想也随之点亮。(✧✧✧)',
+  'home.header.tips.evening.4':
+    '傍晚好, {user}，傍晚的天空，星星开始闪烁，愿你的梦想也随之点亮。(✧✧✧)',
   'home.header.tips.evening.5': '傍晚好, {user}，愿你的代码像傍晚的星光一样璀璨。',
   'home.header.tips.lateNight.1': '深夜好, {user}，深夜的宁静，愿你有一个平静美好的夜晚。(✿✉✿)',
   'home.header.tips.lateNight.2': '深夜好, {user}，深夜的星空，为你的思考带来无限灵感。',
