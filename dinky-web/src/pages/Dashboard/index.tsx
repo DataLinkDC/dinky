@@ -49,7 +49,6 @@ export default () => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1');
 
   const [openDetailPage, setOpenDetailPage] = useState(false);
-  const [detailPageData, setDetailPageData] = useState<Partial<Layout>>({});
   const [openCreate, setOpenCreate] = useState(false);
   const formRef = useRef<ProFormInstance>();
 
@@ -140,7 +139,6 @@ export default () => {
                   rel='noopener noreferrer'
                   key='link'
                   onClick={() => {
-                    setDetailPageData(row);
                     history.push(`/dashboard/dashboard-layout?layoutId=${row.id}`);
                     setOpenDetailPage(true);
                   }}
@@ -220,7 +218,7 @@ export default () => {
       </Modal>
       {openDetailPage && (
         <>
-          <DashboardLayout data={detailPageData} />
+          <DashboardLayout />
         </>
       )}
     </>
