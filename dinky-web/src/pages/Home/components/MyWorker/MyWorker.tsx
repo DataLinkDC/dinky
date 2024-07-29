@@ -17,7 +17,7 @@
  *
  */
 
-import {Button, Card, Space, Tag, Typography} from 'antd';
+import { Button, Card, Space, Tag, Typography } from 'antd';
 import useHookRequest from '@/hooks/useHookRequest';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -29,7 +29,7 @@ import StatusTag from '@/components/JobTags/StatusTag';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { l } from '@/utils/intl';
 import { history } from 'umi';
-import {formatDateToYYYYMMDDHHMMSS} from "@/utils/function";
+import { formatDateToYYYYMMDDHHMMSS } from '@/utils/function';
 
 const MyWorker = () => {
   const { loading, data } = useHookRequest<any, any>(getData, {
@@ -54,7 +54,11 @@ const MyWorker = () => {
       }}
       title={l('home.mywork')}
       bordered={false}
-      extra={<Button type='link' onClick={() => history.push('/devops')}>{l('home.allwork')}</Button>}
+      extra={
+        <Button type='link' onClick={() => history.push('/devops')}>
+          {l('home.allwork')}
+        </Button>
+      }
       loading={loading}
       styles={{
         body: {
@@ -82,9 +86,11 @@ const MyWorker = () => {
             >
               <div style={{ marginBottom: 10 }}>{item.note ?? l('home.task.not.desc')}</div>
               <Space style={{ fontSize: 10 }}>
-                <Typography.Text type='secondary'>{l('home.task.update.at' ,'' ,{
-                  time: formatDateToYYYYMMDDHHMMSS(item.updateTime)
-                })}</Typography.Text>
+                <Typography.Text type='secondary'>
+                  {l('home.task.update.at', '', {
+                    time: formatDateToYYYYMMDDHHMMSS(item.updateTime)
+                  })}
+                </Typography.Text>
                 <StatusTag animation={false} bordered={false} status={item.status} />
               </Space>
             </ProCard>

@@ -17,8 +17,7 @@
  *
  */
 
-import {l} from "@/utils/intl";
-
+import { l } from '@/utils/intl';
 
 /**
  * 根据前缀和个数获取国际化提示语 | Get internationalization tips based on prefix and count
