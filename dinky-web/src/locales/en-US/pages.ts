@@ -270,6 +270,80 @@ export default {
   'home.mywork': 'My Task',
   'home.allwork': 'All Task',
   'home.task.not.desc': 'No mission statement at this time',
+  'home.task.update.at': 'Updated At: {time}',
+  'home.job.stream': 'Stream Job',
+  'home.job.batch': 'Batch Job',
+  'home.header.tips.morning.1': 'Good morning, {user}, A new day, new code, new challenges',
+  'home.header.tips.morning.2':
+    'good morning, {user}, The morning sunshine brings a new beginning, come on!',
+  'home.header.tips.morning.3':
+    'Good morning, {user}, programmer! May your bugs dissipate like morning mist.',
+  'home.header.tips.morning.4':
+    'Good morning, {user}, a new day, new ideas, looking forward to your burst of inspiration.',
+  'home.header.tips.morning.5':
+    'Good morning, {user}, The morning coffee is ready and it`s time to start working.',
+  'home.header.tips.morning.6':
+    'Good morning, {user}, may your morning be like a cup of hot tea, warm and comfortable.',
+  'home.header.tips.morning.7':
+    'Good morning, {user}, remember to smile, it will make your day even better.',
+  'home.header.tips.morning.8':
+    'Good morning, {user}, stay positive, something wonderful is about to happen.',
+  'home.header.tips.morning.9':
+    'Good morning, {user}, May your programming journey be filled with discovery and innovation.',
+  'home.header.tips.morning.10': 'Good morning, {user}, may your code be as fresh as morning dew.',
+  'home.header.tips.forenoon.1':
+    'Good morning, {user}, may your code be as bright as the morning sun.',
+  'home.header.tips.forenoon.2':
+    'Good morning, {user}, are you tired from coding this morning? Take a break and continue to work hard.',
+  'home.header.tips.forenoon.3':
+    'Good morning, {user}, the sunshine this morning is just right, illuminating your workbench.',
+  'home.header.tips.forenoon.4':
+    'Good morning, {user}, enjoy your morning work. Every task is worth giving your all.',
+  'home.header.tips.forenoon.5':
+    'Good morning, {user}, May your code be as refreshing as morning coffee.',
+  'home.header.tips.forenoon.6':
+    'Good morning, {user}, may your code be as vast as the morning sky.',
+  'home.header.tips.noon.1':
+    'Good afternoon, {user}, Lunch time, give yourself a chance to rest and recharge.',
+  'home.header.tips.noon.2':
+    'Good afternoon, {user}, The sunshine at noon reminds us that it`s time to slow down and enjoy a moment of tranquility.',
+  'home.header.tips.noon.3':
+    'Good afternoon, {user}, A brief break at noon can make your afternoon more energetic',
+  'home.header.tips.noon.4':
+    'Good afternoon, {user}, The sunshine at noon is a warm embrace throughout the day.',
+  'home.header.tips.noon.5':
+    'Good afternoon, {user}, A sumptuous lunch is the best reward for your hard work.',
+  'home.header.tips.afternoon.1':
+    'Good afternoon, {user}, The afternoon work has begun. Stay enthusiastic and focused.',
+  'home.header.tips.afternoon.2':
+    'Good afternoon, {user}, The gentle sunshine in the afternoon is suitable for thinking or meditation, to find inner peace.',
+  'home.header.tips.afternoon.3':
+    'Good afternoon, {user}, The gentle breeze of the afternoon brings fresh air. May your mood be so fresh as well.',
+  'home.header.tips.afternoon.4':
+    'Good afternoon, {user}, don`t forget to give yourself some sweet treats during this busy afternoon! (✿✪‿✪｡)',
+  'home.header.tips.afternoon.5':
+    'Good afternoon, {user}, the gentle breeze of the afternoon, may your mood be as relaxed as it is. (✧∀✧)',
+  'home.header.tips.evening.1':
+    'Good evening, {user}, the busy day is over, let`s relax and unwind! (✿✪‿✪｡)',
+  'home.header.tips.evening.2':
+    'Good evening, {user}, the evening glow. May your mood be as brilliant as it is. (✧∇✧)',
+  'home.header.tips.evening.3':
+    'Good evening, {user}, enjoy the tranquility of the evening and let the busyness of the day slowly settle. (✧◡◡✧)',
+  'home.header.tips.evening.4':
+    'Good evening, {user}, In the evening sky, stars are starting to twinkle. May your dreams also light up with them. (✧✧✧)',
+  'home.header.tips.evening.5':
+    'Good evening, {user}, may your code shine like the stars in the evening.',
+  'home.header.tips.lateNight.1':
+    'Good night, {user}, The tranquility of late night, may you have a peaceful and beautiful night. (✿ ✉ ✿)',
+  'home.header.tips.lateNight.2':
+    'Good night, {user}, The starry sky at night brings infinite inspiration to your thinking.',
+  'home.header.tips.lateNight.3':
+    'Good night, {user}, The starry sky at night reminds us of the vastness of the universe and the possibilities of thinking.',
+  'home.header.tips.lateNight.4':
+    'Good night, {user}, late night work. May your focus and persistence bring results.',
+  'home.header.tips.lateNight.5':
+    'Good night, {user}, May your code be as profound as the thoughts of late night.',
+
   /**
    *
    * layouts

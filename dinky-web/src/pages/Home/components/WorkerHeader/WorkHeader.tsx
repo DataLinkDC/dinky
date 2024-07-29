@@ -77,7 +77,7 @@ const WorkHeader = () => {
           {dayTip}
         </Space>
         <div>
-          <Tag color='magenta'>{user.worknum}</Tag>
+          {user.worknum && <Tag color='magenta'>{user.worknum}</Tag>}
           {renderRoleTagList(roleList || [])}
           {renderTenantTagList(tenantList || [])}
         </div>
