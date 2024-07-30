@@ -19,8 +19,6 @@
 
 package org.dinky.job.handler;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.apache.commons.lang3.StringUtils;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkClusterInfo;
@@ -55,6 +53,8 @@ import org.dinky.service.SavepointsService;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -64,6 +64,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -210,18 +211,18 @@ public class JobRefreshHandler {
                 if (Objects.nonNull(jobInfoDetail.getJobDataDto())
                         && Objects.nonNull(jobInfoDetail.getJobDataDto().getCheckpoints())
                         && Objects.nonNull(
-                        jobInfoDetail.getJobDataDto().getCheckpoints().getLatestCheckpoints())
+                                jobInfoDetail.getJobDataDto().getCheckpoints().getLatestCheckpoints())
                         && Objects.nonNull(jobInfoDetail
-                        .getJobDataDto()
-                        .getCheckpoints()
-                        .getLatestCheckpoints()
-                        .getCompletedCheckpointStatistics())
+                                .getJobDataDto()
+                                .getCheckpoints()
+                                .getLatestCheckpoints()
+                                .getCompletedCheckpointStatistics())
                         && StringUtils.isNotBlank(jobInfoDetail
-                        .getJobDataDto()
-                        .getCheckpoints()
-                        .getLatestCheckpoints()
-                        .getCompletedCheckpointStatistics()
-                        .getExternalPath())) {
+                                .getJobDataDto()
+                                .getCheckpoints()
+                                .getLatestCheckpoints()
+                                .getCompletedCheckpointStatistics()
+                                .getExternalPath())) {
                     Savepoints savepoints = new Savepoints();
                     savepoints.setName(SavePointType.CHECKPOINT.getValue());
                     savepoints.setType(SavePointType.CHECKPOINT.getValue());
