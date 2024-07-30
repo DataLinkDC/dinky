@@ -145,7 +145,7 @@ public class FlinkJobTask implements DaemonTask {
      * @return Returns true if you need to save, otherwise returns false
      */
     public boolean isNeedSave() {
-        boolean isNeed = refreshCount % 60 == 0;
+        boolean isNeed = refreshCount % 12 == 0;
         if (isNeed) {
             refreshCount = 0;
         }

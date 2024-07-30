@@ -19,6 +19,8 @@
 
 package org.dinky.job.handler;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.commons.lang3.StringUtils;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkClusterInfo;
@@ -36,10 +38,12 @@ import org.dinky.data.flink.exceptions.FlinkJobExceptionsDetail;
 import org.dinky.data.flink.job.FlinkJobDetailInfo;
 import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
 import org.dinky.data.model.ClusterInstance;
+import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.NotSupportGetStatusException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.job.JobConfig;
@@ -47,11 +51,13 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
+import org.dinky.service.SavepointsService;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.context.annotation.DependsOn;
@@ -75,12 +81,14 @@ public class JobRefreshHandler {
     private static final JobHistoryService jobHistoryService;
     private static final ClusterInstanceService clusterInstanceService;
     private static final HistoryService historyService;
+    private static final SavepointsService savepointsService;
 
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
         clusterInstanceService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceService.class);
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
+        savepointsService = SpringContextUtils.getBean("savepointsServiceImpl", SavepointsService.class);
     }
 
     /**
@@ -199,6 +207,40 @@ public class JobRefreshHandler {
             } else {
                 jobInstanceService.updateById(jobInstance);
                 jobHistoryService.updateById(jobInfoDetail.getJobDataDto().toJobHistory());
+                if (Objects.nonNull(jobInfoDetail.getJobDataDto())
+                        && Objects.nonNull(jobInfoDetail.getJobDataDto().getCheckpoints())
+                        && Objects.nonNull(
+                        jobInfoDetail.getJobDataDto().getCheckpoints().getLatestCheckpoints())
+                        && Objects.nonNull(jobInfoDetail
+                        .getJobDataDto()
+                        .getCheckpoints()
+                        .getLatestCheckpoints()
+                        .getCompletedCheckpointStatistics())
+                        && StringUtils.isNotBlank(jobInfoDetail
+                        .getJobDataDto()
+                        .getCheckpoints()
+                        .getLatestCheckpoints()
+                        .getCompletedCheckpointStatistics()
+                        .getExternalPath())) {
+                    Savepoints savepoints = new Savepoints();
+                    savepoints.setName(SavePointType.CHECKPOINT.getValue());
+                    savepoints.setType(SavePointType.CHECKPOINT.getValue());
+                    savepoints.setPath(jobInfoDetail
+                            .getJobDataDto()
+                            .getCheckpoints()
+                            .getLatestCheckpoints()
+                            .getCompletedCheckpointStatistics()
+                            .getExternalPath());
+                    savepoints.setTaskId(jobInfoDetail.getInstance().getTaskId());
+                    savepoints.setTenantId(jobInfoDetail.getInstance().getTenantId());
+                    QueryWrapper<Savepoints> queryWrapper = new QueryWrapper<>();
+                    queryWrapper
+                            .eq("task_id", jobInfoDetail.getInstance().getTaskId())
+                            .eq("tenant_id", jobInfoDetail.getInstance().getTenantId())
+                            .eq("type", SavePointType.CHECKPOINT.getValue());
+                    savepointsService.remove(queryWrapper);
+                    savepointsService.save(savepoints);
+                }
             }
         }
 

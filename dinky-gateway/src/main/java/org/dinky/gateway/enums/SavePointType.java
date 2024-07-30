@@ -32,7 +32,8 @@ public enum SavePointType {
     TRIGGER("trigger"),
     DISPOSE("dispose"),
     STOP("stop"),
-    CANCEL("cancel");
+    CANCEL("cancel"),
+    CHECKPOINT("checkpoint");
 
     private String value;
 
