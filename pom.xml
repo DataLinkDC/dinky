@@ -52,7 +52,7 @@
         <assertj.version>3.21.0</assertj.version>
         <aws-java-sdk-s3.version>1.12.645</aws-java-sdk-s3.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
-        <clickhouse.version>0.2.6</clickhouse.version>
+        <clickhouse.version>0.6.2</clickhouse.version>
         <commons-email>1.5</commons-email>
         <!--    jexl cannot be upgraded to 3.3, and static methods need to be used.(jexl不能升级到3.3，需要使用到静态方法的使用)    -->
         <commons-jexl3>3.2.1</commons-jexl3>
@@ -109,7 +109,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <reflections.version>0.10.2</reflections.version>
-        <revision>1.1.0-SNAPSHOT</revision>
+        <revision>1.1.0</revision>
         <sa-token.version>1.37.0</sa-token.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
@@ -377,7 +377,7 @@
                 <version>${ojdbc8.version}</version>
             </dependency>
             <dependency>
-                <groupId>ru.yandex.clickhouse</groupId>
+                <groupId>com.clickhouse</groupId>
                 <artifactId>clickhouse-jdbc</artifactId>
                 <version>${clickhouse.version}</version>
             </dependency>

@@ -1,0 +1,118 @@
+{
+  "version.label": {
+    "message": "1.1",
+    "description": "The label for version 1.1"
+  },
+  "sidebar.tutorialSidebar.category.deploy_guide": {
+    "message": "Deploy Guide",
+    "description": "The label for category deploy_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.studio": {
+    "message": "Data Studio",
+    "description": "The label for category studio in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.development_control": {
+    "message": "Basic Introduction",
+    "description": "The label for category development_control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.devops_center": {
+    "message": "Devops Center",
+    "description": "The label for category devops_center in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.register_center": {
+    "message": "Register Center",
+    "description": "The label for category register_center in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.system_setting": {
+    "message": "Setting Center",
+    "description": "The label for category system_setting in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.contribution": {
+    "message": "Contribution",
+    "description": "The label for category contribution in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.extend": {
+    "message": "Extend",
+    "description": "The label for category extend in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.function_extension": {
+    "message": "Function Extension",
+    "description": "The label for category function_extension in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.practical_guide": {
+    "message": "Practical Guide",
+    "description": "The label for category practical_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.get_started": {
+    "message": "Get Started",
+    "description": "The label for category get_started in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.platform_intro": {
+    "message": "Dinky Intro",
+    "description": "The label for category platform_intro in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.quick_start": {
+    "message": "SQL Quick Start",
+    "description": "The label for category quick_start in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.cdcsource_practice": {
+    "message": "CDCSource Practice",
+    "description": "The label for category cdcsource_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.run_mode_practice": {
+    "message": "Flink Mode Submission Practice",
+    "description": "The label for category run_mode_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.scenario_practice": {
+    "message": "Scenario Practice",
+    "description": "The label for category scenario_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Integration_practice": {
+    "message": "Integration Practice",
+    "description": "The label for category Integration_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.user_guide": {
+    "message": "Manual",
+    "description": "The label for category user_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.alert": {
+    "message": "Alert",
+    "description": "The label for category alert in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.auth_center": {
+    "message": "Auth Center",
+    "description": "The label for category auth_center in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.global_settings": {
+    "message": "Global Config",
+    "description": "The label for category global_settings in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.udf_develop": {
+    "message": "UDFFunction Develop",
+    "description": "The label for category udf_develop in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.developer_guide": {
+    "message": "Developer Guide",
+    "description": "The label for category developer_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.extended_grammar": {
+    "message": "Extended Grammar",
+    "description": "The label for category extended_grammar in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.quick_use": {
+    "message": "Quick Use",
+    "description": "The label for category Quick Use in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.快速使用": {
+    "message": "快速使用",
+    "description": "The label for category 快速使用 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.upgrade": {
+    "message": "Upgrade",
+    "description": "The label for category upgrade in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.openapi": {
+    "message": "OpenAPI",
+    "description": "The label for category openapi in sidebar tutorialSidebar"
+  }
+}

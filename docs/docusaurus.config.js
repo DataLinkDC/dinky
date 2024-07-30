@@ -85,12 +85,16 @@ const config = {
             ({
                 docs: {
                     includeCurrentVersion: true,
-                    lastVersion: '1.0',
+                    lastVersion: '1.1',
                     versions: {
                         current: {
                             label: 'Dev',
                             path: '/next',
                             banner: 'unreleased',
+                        },
+                        '1.1': {
+                            label: '1.1',
+                            path: '/1.1',
                         },
                         '1.0': {
                             label: '1.0',
