@@ -20,9 +20,9 @@ https://www.dinky.org.cn/download/download
 cd dinky-release-${FLINK-VERSION}-${DINKY-VERSION}/deploy/kubernetes/helm/dinky
 ```yaml
 image:
-  repository: "dinkydocker/dinky"
+  repository: "dinkydocker/dinky-standalone-server"
   pullPolicy: "Always"
-  tag: "1.1.0-flink1.17"
+  tag: "1.0.3-flink1.17"
   pullSecret: ""
 ```
 #### 内部数据源(同一个k8环境中部署mysql服务)
@@ -82,9 +82,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 image:
-  repository: "dinkydocker/dinky"
+  repository: "dinkydocker/dinky-standalone-server"
   pullPolicy: "Always"
-  tag: "1.1.0-flink1.17"
+  tag: "1.0.3-flink1.17"
   pullSecret: ""
 
 mysql:
@@ -238,9 +238,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 image:
-  repository: "dinkydocker/dinky"
+  repository: "dinkydocker/dinky-standalone-server"
   pullPolicy: "Always"
-  tag: "1.1.0-flink1.17"
+  tag: "1.0.3-flink1.17"
   pullSecret: ""
 
 mysql:
