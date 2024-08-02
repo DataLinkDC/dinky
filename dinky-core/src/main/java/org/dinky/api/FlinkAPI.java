@@ -100,21 +100,28 @@ public class FlinkAPI {
      * @return {@link String}
      */
     private String getResult(String route) {
-        return HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route, NetConstant.SERVER_TIME_OUT_ACTIVE);
+        String url = address + NetConstant.SLASH + route;
+        if (!address.startsWith(NetConstant.HTTP) && !address.startsWith(NetConstant.HTTPS)) {
+            url = NetConstant.HTTP + url;
+        }
+        return HttpUtil.get(url, NetConstant.SERVER_TIME_OUT_ACTIVE);
     }
 
     private JsonNode post(String route, String body) {
-        String res = HttpUtil.post(
-                NetConstant.HTTP + address + NetConstant.SLASH + route, body, NetConstant.SERVER_TIME_OUT_ACTIVE);
+        String url = NetConstant.SLASH + route;
+        if (!address.startsWith(NetConstant.HTTP) && !address.startsWith(NetConstant.HTTPS)) {
+            url = NetConstant.HTTP + url;
+        }
+        String res = HttpUtil.post(url, body, NetConstant.SERVER_TIME_OUT_ACTIVE);
         return parse(res);
     }
 
     private JsonNode patch(String route, String body) {
-        String res = HttpUtil.createRequest(Method.PATCH, NetConstant.HTTP + address + NetConstant.SLASH + route)
-                .timeout(NetConstant.SERVER_TIME_OUT_ACTIVE)
-                .body(body)
-                .execute()
-                .body();
+        String url = address + NetConstant.SLASH + route;
+        if (!address.startsWith(NetConstant.HTTP) && !address.startsWith(NetConstant.HTTPS)) {
+            url = NetConstant.HTTP + url;
+        }
+        String res = HttpUtil.createRequest(Method.PATCH, url).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
         return parse(res);
     }
 
