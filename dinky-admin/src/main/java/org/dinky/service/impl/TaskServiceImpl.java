@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -40,6 +41,8 @@ import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
+import org.dinky.data.flink.checkpoint.CheckPointOverView;
+import org.dinky.data.flink.config.CheckpointConfigInfo;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
@@ -458,6 +461,39 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             isSuccess = true;
         } catch (Exception e) {
             log.warn("Stop with savePoint failed: {}, will try normal rest api stop", e.getMessage());
+            FlinkAPI api = FlinkAPI.build(clusterInstance.getJobManagerHost());
+            JsonNode checkpointConfigInfo = api.getCheckPointsConfig(jobInstance.getJid());
+            if (checkpointConfigInfo.findParent("errors") == null) {
+                CheckpointConfigInfo checkpointConfig = JsonUtils.parseObject(checkpointConfigInfo.toString(), CheckpointConfigInfo.class);
+                if(Objects.nonNull(checkpointConfig)
+                        && Objects.nonNull(checkpointConfig.getExternalizedCheckpointInfo())
+                        && checkpointConfig.getExternalizedCheckpointInfo().isEnabled()
+                        && !checkpointConfig.getExternalizedCheckpointInfo().isDeleteOnCancellation()){
+                    JsonNode checkPoints = api.getCheckPoints(jobInstance.getJid());
+                    if (checkPoints.findParent("errors") == null) {
+                        CheckPointOverView checkPointOverView =
+                                JsonUtils.parseObject(checkPoints.toString(), CheckPointOverView.class);
+                        if (Objects.nonNull(checkPointOverView)
+                                && Objects.nonNull(checkPointOverView.getLatestCheckpoints())
+                                && Objects.nonNull(
+                                checkPointOverView.getLatestCheckpoints().getCompletedCheckpointStatistics())
+                                && StringUtils.isNotBlank(checkPointOverView
+                                .getLatestCheckpoints()
+                                .getCompletedCheckpointStatistics()
+                                .getExternalPath())) {
+                            Savepoints savepoints = new Savepoints();
+                            savepoints.setName(SavePointType.CANCEL.getValue());
+                            savepoints.setType(SavePointType.CANCEL.getValue());
+                            savepoints.setPath(checkPointOverView
+                                    .getLatestCheckpoints()
+                                    .getCompletedCheckpointStatistics()
+                                    .getExternalPath());
+                            savepoints.setTaskId(task.getId());
+                            savepointsService.save(savepoints);
+                        }
+                    }
+                }
+            }
             isSuccess = jobManager.cancelNormal(jobInstance.getJid());
         }
         jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
