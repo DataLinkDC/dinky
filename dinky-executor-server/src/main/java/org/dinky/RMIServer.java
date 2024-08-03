@@ -29,13 +29,13 @@ public class RMIServer {
     public static void main(String[] args) {
 
         try {
-            ServerExecutorService remoteMath = new JobManagerServiceImpl();
+            ServerExecutorService jobManagerService = new JobManagerServiceImpl();
             LocateRegistry.createRegistry(1099);
             Registry registry = LocateRegistry.getRegistry();
-            registry.bind("Compute", remoteMath);
+            registry.bind("Dinky", jobManagerService);
             System.out.println("Dinky server ready");
             // 如果不想再让该对象被继续调用，使用下面一行
-            // UnicastRemoteObject.unexportObject(remoteMath, false);
+            // UnicastRemoteObject.unexportObject(jobManagerService, false);
         } catch (Exception e) {
             e.printStackTrace();
         }

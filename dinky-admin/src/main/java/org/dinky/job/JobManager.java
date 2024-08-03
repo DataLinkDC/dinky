@@ -81,7 +81,7 @@ public class JobManager {
             Registry registry = LocateRegistry.getRegistry("localhost");
 
             // 从Registry中检索远程对象的存根/代理
-            serverExecutorService = (ServerExecutorService) registry.lookup("Compute");
+            serverExecutorService = (ServerExecutorService) registry.lookup("Dinky");
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
