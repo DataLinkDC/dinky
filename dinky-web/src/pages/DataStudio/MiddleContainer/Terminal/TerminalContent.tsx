@@ -69,7 +69,7 @@ const TerminalContent: React.FC<TermProps> = (props) => {
     const termCols = term.cols;
     const termRows = term.rows;
 
-    const params = `mode=${mode}&cols=${termCols}&rows=${termRows}&sessionId=${sessionId}&initSql=${initSql}&connectAddress=${connectAddress}`;
+    const params = `mode=${mode}&cols=${termCols}&rows=${termRows}&sessionId=${sessionId}&initSql=${encodeURIComponent(initSql ?? '')}&connectAddress=${connectAddress}`;
 
     ws = new WebSocket(`${wsUrl}/?${params}`);
 
@@ -122,7 +122,7 @@ const TerminalContent: React.FC<TermProps> = (props) => {
         // rendererType: "canvas", //渲染类型
         // cols: this.cols,// 设置之后会输入多行之后覆盖现象
         // convertEol: true, //启用时，光标将设置为下一行的开头
-        scrollback: 10, //终端中的回滚量
+        scrollback: 1000, //终端中的回滚量
         fontSize: fontSize, //字体大小
         // disableStdin: false, //是否应禁用输入。
         // cursorStyle: "block", //光标样式

@@ -70,7 +70,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
     tabs: { panes, activeKey },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     queryUserData,
     queryTaskOwnerLockingStrategy
   } = props;
@@ -110,7 +110,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     window.addEventListener('resize', onResize);
     onResize();
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  }, [bottomContainer, isProject]);
 
   const loadData = () => {
     queryDatabaseList();

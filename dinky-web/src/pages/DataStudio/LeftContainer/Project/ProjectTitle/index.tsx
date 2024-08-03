@@ -33,7 +33,7 @@ import React, { useState } from 'react';
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {
     leftContainer: { selectKey },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     dispatch
   } = props;
 

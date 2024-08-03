@@ -62,7 +62,7 @@ const Project: React.FC = (props: connect) => {
     dispatch,
     project: { expandKeys, selectKey },
     tabs: { panes, activeKey },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     tabs,
     users
   } = props;

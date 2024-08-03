@@ -61,6 +61,7 @@ import { Button, Empty, Radio, Table, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 
 const { DirectoryTree } = Tree;
 
@@ -133,14 +134,19 @@ const JobList = (props: connect) => {
     },
     {
       title: l('global.table.firstLevelOwner'),
+      width: '5%',
       hideInSearch: true,
       render: (_: any, row: Jobs.JobInstance) => showFirstLevelOwner(row?.firstLevelOwner, users)
     },
     {
+      width: '8%',
       title: l('global.table.secondLevelOwners'),
       hideInSearch: true,
-      render: (_: any, row: Jobs.JobInstance) =>
-        showSecondLevelOwners(row?.secondLevelOwners, users)
+      render: (_: any, row: Jobs.JobInstance) => (
+        <EllipsisMiddle maxCount={15} copyable={false}>
+          {showSecondLevelOwners(row?.secondLevelOwners, users)}
+        </EllipsisMiddle>
+      )
     },
     {
       title: l('global.table.createTime'),

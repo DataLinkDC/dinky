@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   dinky:
-    image: "ikiler/dinky:${DINKY_VERSION}-flink${FLINK_VERSION}"
+    image: "dinkydocker/dinky-standalone-server:${DINKY_VERSION}-flink${FLINK_VERSION}"
     ports:
       - "8888:8888"
     env_file: .env

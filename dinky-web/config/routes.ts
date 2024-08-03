@@ -283,13 +283,6 @@ export default [
       }
     ]
   },
-  {
-    path: '/metrics',
-    name: 'metrics',
-    icon: 'DashboardOutlined',
-    footerRender: false,
-    component: './Metrics'
-  },
 
   {
     path: '/dashboard',

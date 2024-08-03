@@ -66,7 +66,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   const {
     project: { data: projectData, expandKeys, selectKey },
     catalogueSortType: { data: catalogueSortTypeData },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     onNodeClick,
     style,
     height,
@@ -146,7 +146,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   // when sorted, change the icon display
   useEffect(() => {
-    if (selectCatalogueSortTypeData.sortValue && selectCatalogueSortTypeData.sortType) {
+    if (selectCatalogueSortTypeData?.sortValue && selectCatalogueSortTypeData?.sortType) {
       setSortState((prevState) => ({
         ...prevState,
         sortIconType: 'link'
@@ -198,6 +198,10 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         label: 'SQL CLI Terminal',
         type: TabsPageType.terminal
       }
+    });
+    dispatch({
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: ''
     });
   };
   const currentTabName = LeftMenuKey.PROJECT_KEY;

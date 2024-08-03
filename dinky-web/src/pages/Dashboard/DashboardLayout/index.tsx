@@ -20,7 +20,19 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Responsive, WidthProvider } from 'react-grid-layout';
 import './index.less';
-import { Button, Empty, Flex, Input, Segmented, Space, Spin, Switch, Tooltip } from 'antd';
+import {
+  Button,
+  Col,
+  Empty,
+  Flex,
+  Input,
+  Row,
+  Segmented,
+  Space,
+  Spin,
+  Switch,
+  Tooltip
+} from 'antd';
 import {
   AreaChartOutlined,
   BackwardOutlined,
@@ -54,6 +66,8 @@ import { queryDataByParams } from '@/services/BusinessCrud';
 import { PermissionConstants } from '@/types/Public/constants';
 import { Authorized } from '@/hooks/useAccess';
 import { getUrlParam } from '@/utils/function';
+import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
+import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -62,12 +76,8 @@ type ChartComponentData = {
   chartData: LayoutChartData[];
 };
 
-type DashboardProps = {
-  data: any;
-};
-
 // todo 当添加或更新时，需要刷新数据，其次还差值范围获取
-export default (props: DashboardProps) => {
+export default () => {
   const location = useLocation();
   const layoutId = getUrlParam(location.search, 'layoutId');
   console.log('layoutId', layoutId, location);
@@ -83,6 +93,16 @@ export default (props: DashboardProps) => {
   const [cData, setCData] = useState<Record<number | string, ChartData[]>>({});
   const [updateModel, setUpdateModel] = useState('');
   const [editIsUpdate, setEditIsUpdate] = useState(false);
+
+  // date change
+  const [timeRange, setTimeRange] = useState<MetricsTimeFilter>({
+    startTime: new Date().getTime() - 60000,
+    endTime: new Date().getTime(),
+    isReal: true
+  });
+  const onTimeSelectChange = (filter: MetricsTimeFilter) => {
+    setTimeRange(filter);
+  };
 
   const onAddLayout = async (d: { title: string; layouts: LayoutChartData[] }) => {
     if (editIsUpdate) {
@@ -109,11 +129,16 @@ export default (props: DashboardProps) => {
     setChartData({ ...chartData });
     setOpenChange(false);
   };
+
+  // getChartData
   useEffect(() => {
+    // if (!timeRange.isReal) {
+    // todo real time
     const d = Object.values(chartData);
     if (d.length > 0) {
       queryDataByParams(API_CONSTANTS.GET_FLINK_DAT_BY_DASHBOARD, {
-        startTime: new Date().getTime() - 20 * 1000,
+        startTime: timeRange.startTime,
+        endTime: timeRange.endTime,
         flinkMetricsIdList: d
           .flatMap((x) => x.chartData)
           .map((x) => x.id)
@@ -122,7 +147,8 @@ export default (props: DashboardProps) => {
         setCData(d as any);
       });
     }
-  }, [chartData]);
+    // }
+  }, [chartData, timeRange]);
 
   useEffect(() => {
     if (!data) {
@@ -181,9 +207,9 @@ export default (props: DashboardProps) => {
       return <Empty description={l('dashboard.empty')} />;
     }
     return items.map((l, i) => {
-      const chartDatum = chartData[l.i].chartData;
-      chartDatum.forEach((v) => {
-        v.data = cData[v.id] ?? [];
+      const chartDatum = chartData[l.i]?.chartData;
+      chartDatum?.forEach((v) => {
+        v.data = (cData ?? {})[v.id] ?? [];
       });
 
       const title: string = chartData[l.i].title;
@@ -257,7 +283,7 @@ export default (props: DashboardProps) => {
               actions={[
                 <Flex align={'center'} justify={'center'}>
                   <Segmented
-                    defaultValue={chartDatum[0].type}
+                    defaultValue={chartDatum[0]?.type}
                     onChange={(value) => {
                       setChartData((v) => {
                         v[l.i].chartData.forEach((x) => {
@@ -275,7 +301,7 @@ export default (props: DashboardProps) => {
                 <ChartShow
                   chartTheme={chartTheme}
                   chartOptions={chartOptions}
-                  value={chartDatum[0].data?.slice(-1)[0]?.value}
+                  value={chartDatum[0]?.data?.slice(-1)[0]?.value}
                   type={chartDatum[0]?.type}
                   fontSize={(l.h * config.rowHeight) / 4}
                 />
@@ -288,7 +314,7 @@ export default (props: DashboardProps) => {
               chartTheme={chartTheme}
               chartOptions={chartOptions}
               title={title}
-              value={chartDatum[0].data?.slice(-1)[0]?.value}
+              value={chartDatum[0]?.data?.slice(-1)[0]?.value}
               type={chartDatum[0]?.type}
               fontSize={(l.h * config.rowHeight) / 4}
             />
@@ -390,15 +416,20 @@ export default (props: DashboardProps) => {
 
         {!isUpdate && (
           <Authorized key={`added_auth`} path={PermissionConstants.DASHBOARD_CHART_EDIT}>
-            <Tooltip title={l('button.edit')}>
-              <Button
-                type='primary'
-                danger
-                ghost
-                icon={<EditOutlined />}
-                onClick={() => setIsUpdate(true)}
-              />
-            </Tooltip>
+            <Row gutter={10}>
+              <MetricsFilter onTimeSelect={onTimeSelectChange} />
+              <Col>
+                <Tooltip title={l('button.edit')}>
+                  <Button
+                    type='primary'
+                    danger
+                    ghost
+                    icon={<EditOutlined />}
+                    onClick={() => setIsUpdate(true)}
+                  />
+                </Tooltip>
+              </Col>
+            </Row>
           </Authorized>
         )}
       </Flex>
@@ -420,6 +451,12 @@ export default (props: DashboardProps) => {
           isResizable={isUpdate}
           onLayoutChange={(currentLayout) => {
             setItems(currentLayout);
+            const tempData = {} as Record<string, ChartComponentData>;
+            const values = Object.values(chartData) as ChartComponentData[];
+            for (let j = 0; j < values.length; j++) {
+              tempData[j] = values[j];
+            }
+            setChartData(tempData);
           }}
           autoSize
         >

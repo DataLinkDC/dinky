@@ -38,6 +38,7 @@ import { PermissionConstants } from '@/types/Public/constants';
 import { Authorized } from '@/hooks/useAccess';
 import { Layout } from 'react-grid-layout';
 import DashboardLayout from '@/pages/Dashboard/DashboardLayout';
+import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
 
 const echartsThemeOptions = EchartsTheme.map((x) => {
   return { label: l(`dashboard.theme.${x}`), value: x };
@@ -48,7 +49,6 @@ export default () => {
   const [activeKey, setActiveKey] = useState<React.Key | undefined>('tab1');
 
   const [openDetailPage, setOpenDetailPage] = useState(false);
-  const [detailPageData, setDetailPageData] = useState<Partial<Layout>>({});
   const [openCreate, setOpenCreate] = useState(false);
   const formRef = useRef<ProFormInstance>();
 
@@ -101,7 +101,7 @@ export default () => {
             },
             render: (text, row) => {
               return (
-                <Link to={`/dashboard/dashboard-layout/${row.id}`}>
+                <Link to={`/dashboard/dashboard-layout?layoutId=${row.id}`}>
                   {l('dashboard.name')}: {text}
                 </Link>
               );
@@ -139,7 +139,6 @@ export default () => {
                   rel='noopener noreferrer'
                   key='link'
                   onClick={() => {
-                    setDetailPageData(row);
                     history.push(`/dashboard/dashboard-layout?layoutId=${row.id}`);
                     setOpenDetailPage(true);
                   }}
@@ -219,7 +218,7 @@ export default () => {
       </Modal>
       {openDetailPage && (
         <>
-          <DashboardLayout data={detailPageData} />
+          <DashboardLayout />
         </>
       )}
     </>

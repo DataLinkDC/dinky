@@ -116,7 +116,7 @@ const MiddleContainer = (props: any) => {
   };
 
   const updateActiveKey = (item: TabsItemType) => {
-    const { key, label, subType } = item;
+    const { key, label, subType, type } = item;
     if (key === activeKey) {
       return;
     }
@@ -133,7 +133,10 @@ const MiddleContainer = (props: any) => {
     // 根据 作业类型渲染 右侧选中菜单 key
     dispatch({
       type: STUDIO_MODEL.updateSelectRightKey,
-      payload: getRightSelectKeyFromNodeClickJobType(subType ?? '')
+      payload:
+        type?.toLowerCase() === TabsPageType.terminal
+          ? ''
+          : getRightSelectKeyFromNodeClickJobType(subType ?? '')
     });
 
     // 这里如果加此项功能和定位功能重复 , 暂时注释
