@@ -42,7 +42,8 @@ const Workplace: FC = () => {
     return (
       <ProCard layout='center' ghost split={'vertical'}>
         <StatisticCard.Group bodyStyle={{ alignContent: 'center' }} ghost layout={'center'}>
-          <StatisticCard hoverable={true}
+          <StatisticCard
+            hoverable={true}
             statistic={{
               title: l('devops.joblist.status.running'),
               value: statusCount?.running,
@@ -50,7 +51,8 @@ const Workplace: FC = () => {
             }}
           />
           <StatisticCard.Divider />
-          <StatisticCard hoverable={true}
+          <StatisticCard
+            hoverable={true}
             statistic={{
               title: l('devops.joblist.status.failed'),
               value: statusCount?.failed,
@@ -58,7 +60,8 @@ const Workplace: FC = () => {
             }}
           />
           <StatisticCard.Divider />
-          <StatisticCard hoverable={true}
+          <StatisticCard
+            hoverable={true}
             statistic={{
               title: l('devops.joblist.status.unknown'),
               value: statusCount?.unknown,
