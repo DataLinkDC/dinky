@@ -17,7 +17,7 @@
  *
  */
 
-import { PageContainer, ProCard } from '@ant-design/pro-components';
+import { PageContainer, ProCard, StatisticCard } from '@ant-design/pro-components';
 import { Card, Col, Row } from 'antd';
 import React, { FC } from 'react';
 import useHookRequest from '@/hooks/useHookRequest';
@@ -40,22 +40,32 @@ const Workplace: FC = () => {
 
   const ExtraContent: FC<Record<string, any>> = () => {
     return (
-      <ProCard layout='center' ghost>
-        <StatisticsCard
-          title={l('devops.joblist.status.running')}
-          value={statusCount?.running}
-          icon={<RunningIcons size={50} />}
-        />
-        <StatisticsCard
-          title={l('devops.joblist.status.failed')}
-          value={statusCount?.failed}
-          icon={<ErrorIcons size={50} />}
-        />
-        <StatisticsCard
-          title={l('devops.joblist.status.unknown')}
-          value={statusCount?.unknown}
-          icon={<UnknownIcons size={50} />}
-        />
+      <ProCard layout='center' ghost split={'vertical'}>
+        <StatisticCard.Group bodyStyle={{ alignContent: 'center' }} ghost layout={'center'}>
+          <StatisticCard hoverable={true}
+            statistic={{
+              title: l('devops.joblist.status.running'),
+              value: statusCount?.running,
+              icon: <RunningIcons size={50} />
+            }}
+          />
+          <StatisticCard.Divider />
+          <StatisticCard hoverable={true}
+            statistic={{
+              title: l('devops.joblist.status.failed'),
+              value: statusCount?.failed,
+              icon: <ErrorIcons size={50} />
+            }}
+          />
+          <StatisticCard.Divider />
+          <StatisticCard hoverable={true}
+            statistic={{
+              title: l('devops.joblist.status.unknown'),
+              value: statusCount?.unknown,
+              icon: <UnknownIcons size={50} />
+            }}
+          />
+        </StatisticCard.Group>
       </ProCard>
     );
   };
