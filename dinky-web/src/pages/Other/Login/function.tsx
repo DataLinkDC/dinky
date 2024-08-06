@@ -17,17 +17,17 @@
  *
  */
 
-import {ENABLE_MODEL_TIP, SERVER_VERSION} from '@/services/constants';
+import { ENABLE_MODEL_TIP, SERVER_VERSION } from '@/services/constants';
 import {
   getValueFromLocalStorage,
   hasKeyofLocalStorage,
   setKeyToLocalStorage,
   setLocalThemeToStorage
 } from '@/utils/function';
-import {WarningMessageAsync} from '@/utils/messages';
-import {history} from '@@/core/history';
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/endpoints";
+import { WarningMessageAsync } from '@/utils/messages';
+import { history } from '@@/core/history';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 /** This method will redirect to the location of the redirect parameter */
 export const gotoRedirectUrl = () => {

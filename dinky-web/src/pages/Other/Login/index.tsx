@@ -34,7 +34,7 @@ import { useModel } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
-import {TOKEN_KEY} from "@/services/constants";
+import { TOKEN_KEY } from '@/services/constants';
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);

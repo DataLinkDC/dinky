@@ -18,9 +18,10 @@
  */
 
 import { chooseTenantSubmit, outLogin } from '@/services/BusinessCrud';
-import {ENABLE_MODEL_TIP, TOKEN_KEY} from '@/services/constants';
+import { ENABLE_MODEL_TIP, TOKEN_KEY } from '@/services/constants';
 import {
-  getValueFromLocalStorage, removeKeyFromLocalStorage,
+  getValueFromLocalStorage,
+  removeKeyFromLocalStorage,
   setKeyToLocalStorage,
   setTenantStorageAndCookie
 } from '@/utils/function';
