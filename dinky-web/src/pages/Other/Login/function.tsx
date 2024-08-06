@@ -47,14 +47,11 @@ export const redirectToLogin = (tipMsg: string) => {
 export const initSomeThing = () => {
   //  initialize setting theme
   setLocalThemeToStorage();
-  // 设置服务版本到localstorage
-
   queryDataByParams<string>(API_CONSTANTS.GET_SERVICE_VERSION).then((result) => {
     if (result && result != getValueFromLocalStorage(SERVER_VERSION)) {
       console.log('current version:', getValueFromLocalStorage(SERVER_VERSION));
       console.log('update server version:', result);
       setKeyToLocalStorage(SERVER_VERSION, result)
-      // 清理 缓存
       console.log('clean dva cache');
       window.localStorage.removeItem('persist:root');
     }
