@@ -33,6 +33,10 @@ export const LANGUAGE_KEY = 'umi_locale';
 export const LANGUAGE_ZH = 'zh-CN';
 export const LANGUAGE_EN = 'en-US';
 
+export const SERVER_VERSION = 'dinky_server_version';
+
+export const TOKEN_KEY = 'token';
+
 export const DATE_FORMAT = 'YYYY-MM-DD';
 export const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 

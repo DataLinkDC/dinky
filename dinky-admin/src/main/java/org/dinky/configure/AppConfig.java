@@ -85,7 +85,7 @@ public class AppConfig implements WebMvcConfigurer {
                     }
                 }))
                 .addPathPatterns("/api/**", "/openapi/**")
-                .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
+                .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**","/api/version");
 
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")

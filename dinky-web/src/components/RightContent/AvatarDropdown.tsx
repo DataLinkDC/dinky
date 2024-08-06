@@ -18,9 +18,9 @@
  */
 
 import { chooseTenantSubmit, outLogin } from '@/services/BusinessCrud';
-import { ENABLE_MODEL_TIP } from '@/services/constants';
+import {ENABLE_MODEL_TIP, TOKEN_KEY} from '@/services/constants';
 import {
-  getValueFromLocalStorage,
+  getValueFromLocalStorage, removeKeyFromLocalStorage,
   setKeyToLocalStorage,
   setTenantStorageAndCookie
 } from '@/utils/function';
@@ -47,6 +47,7 @@ import HeaderDropdown from '../HeaderDropdown';
 
 export const loginOut = async () => {
   await outLogin();
+  removeKeyFromLocalStorage(TOKEN_KEY);
   const { search, pathname } = window.location;
   const urlParams = new URL(window.location.href).searchParams;
   /** 此方法会跳转到 redirect 参数所在的位置 */
