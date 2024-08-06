@@ -51,7 +51,7 @@ export const initSomeThing = () => {
     if (result && result != getValueFromLocalStorage(SERVER_VERSION)) {
       console.log('current version:', getValueFromLocalStorage(SERVER_VERSION));
       console.log('update server version:', result);
-      setKeyToLocalStorage(SERVER_VERSION, result)
+      setKeyToLocalStorage(SERVER_VERSION, result);
       console.log('clean dva cache');
       window.localStorage.removeItem('persist:root');
     }
