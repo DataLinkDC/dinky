@@ -18,7 +18,7 @@
  */
 
 import { ThemeCloud, ThemeStar } from '@/components/ThemeSvg/ThemeSvg';
-import {LANGUAGE_KEY, LANGUAGE_ZH, SERVER_VERSION, STORY_LANGUAGE} from '@/services/constants';
+import { LANGUAGE_KEY, LANGUAGE_ZH, SERVER_VERSION, STORY_LANGUAGE } from '@/services/constants';
 import { THEME } from '@/types/Public/data';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -29,7 +29,7 @@ import React, { useEffect, useState } from 'react';
 import useCookie from 'react-use-cookie';
 import screenfull from 'screenfull';
 import Avatar from './AvatarDropdown';
-import {getValueFromLocalStorage} from "@/utils/function";
+import { getValueFromLocalStorage } from '@/utils/function';
 
 const GlobalHeaderRight: React.FC = () => {
   /**
