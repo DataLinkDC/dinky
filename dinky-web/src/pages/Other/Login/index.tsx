@@ -34,6 +34,7 @@ import { useModel } from '@umijs/max';
 import React, { useEffect, useState } from 'react';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
+import { TOKEN_KEY } from '@/services/constants';
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -41,7 +42,7 @@ const Login: React.FC = () => {
   const [tenantVisible, handleTenantVisible] = useState<boolean>(false);
   const [tenant, setTenant] = useState<UserBaseInfo.Tenant[]>([]);
 
-  const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage('token', '');
+  const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage(TOKEN_KEY, '');
 
   const containerClassName = useEmotionCss(() => {
     return {
