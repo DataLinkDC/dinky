@@ -67,6 +67,14 @@ export function setKeyToLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
 }
 
+/**
+ * remove key from localStorage
+ * @param key
+ */
+export function removeKeyFromLocalStorage(key: string) {
+  localStorage.removeItem(key);
+}
+
 export function hasKeyofLocalStorage(key: string): boolean {
   return localStorage.getItem(key) === undefined || localStorage.getItem(key) === null;
 }
