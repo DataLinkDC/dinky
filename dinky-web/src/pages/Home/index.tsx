@@ -40,8 +40,8 @@ const Workplace: FC = () => {
 
   const ExtraContent: FC<Record<string, any>> = () => {
     return (
-      <ProCard layout='center' ghost split={'vertical'}>
-        <StatisticCard.Group bodyStyle={{ alignContent: 'center' }} ghost layout={'center'}>
+      <ProCard split={'vertical'} ghost>
+        <StatisticCard.Group bodyStyle={{ alignContent: 'center' }} ghost>
           <StatisticCard
             hoverable={true}
             statistic={{
