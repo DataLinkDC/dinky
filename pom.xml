@@ -46,6 +46,7 @@
         <module>dinky-app</module>
         <module>dinky-admin</module>
         <module>dinky-assembly</module>
+        <module>dinky-executor-server</module>
     </modules>
 
     <properties>
@@ -640,6 +641,11 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-cdc-plus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-executor-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

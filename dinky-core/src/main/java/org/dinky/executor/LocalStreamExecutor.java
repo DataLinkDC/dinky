@@ -20,7 +20,6 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.classloader.DinkyClassLoader;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -39,9 +38,9 @@ import cn.hutool.core.lang.Opt;
  *
  * @since 2021/5/25 13:48
  */
-public class LocalStreamExecutor extends Executor {
+public class LocalStreamExecutor extends AbstractExecutor {
 
-    public LocalStreamExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
+    public LocalStreamExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidJarFiles()) {
             executorConfig
@@ -64,7 +63,7 @@ public class LocalStreamExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.createLocalEnvironment();
         }
-        init(classLoader);
+        init();
     }
 
     @Override

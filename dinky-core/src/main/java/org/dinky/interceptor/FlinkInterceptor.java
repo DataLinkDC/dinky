@@ -25,8 +25,6 @@ import org.dinky.trans.Operation;
 import org.dinky.trans.Operations;
 import org.dinky.utils.SqlUtil;
 
-import org.apache.flink.table.api.TableResult;
-
 /**
  * FlinkInterceptor
  *
@@ -46,13 +44,10 @@ public class FlinkInterceptor {
 
     // return false to continue with executeSql
     public static FlinkInterceptorResult build(Executor executor, String statement) {
-        boolean noExecute = false;
-        TableResult tableResult = null;
         Operation operation = Operations.buildOperation(statement);
         if (Asserts.isNotNull(operation)) {
-            tableResult = operation.execute(executor);
-            noExecute = operation.noExecute();
+            return FlinkInterceptorResult.build(operation.noExecute(), operation.execute(executor));
         }
-        return FlinkInterceptorResult.build(noExecute, tableResult);
+        return FlinkInterceptorResult.build(false, null);
     }
 }

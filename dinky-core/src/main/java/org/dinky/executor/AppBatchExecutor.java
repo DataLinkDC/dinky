@@ -19,8 +19,6 @@
 
 package org.dinky.executor;
 
-import org.dinky.classloader.DinkyClassLoader;
-
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
@@ -29,9 +27,9 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  *
  * @since 2022/2/7 22:14
  */
-public class AppBatchExecutor extends Executor {
+public class AppBatchExecutor extends AbstractExecutor {
 
-    public AppBatchExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
+    public AppBatchExecutor(ExecutorConfig executorConfig) {
         this.executorConfig = executorConfig;
         if (executorConfig.isValidConfig()) {
             Configuration configuration = Configuration.fromMap(executorConfig.getConfig());
@@ -39,7 +37,7 @@ public class AppBatchExecutor extends Executor {
         } else {
             this.environment = StreamExecutionEnvironment.getExecutionEnvironment();
         }
-        init(classLoader);
+        init();
     }
 
     @Override

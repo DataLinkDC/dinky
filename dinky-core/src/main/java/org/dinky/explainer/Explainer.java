@@ -20,42 +20,32 @@
 package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.job.JobConfig;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobManagerHandler;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.ddl.CustomSetOperation;
-import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
-import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.IpUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
-import org.apache.flink.api.dag.Pipeline;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,23 +74,23 @@ public class Explainer {
     private Executor executor;
     private boolean useStatementSet;
     private ObjectMapper mapper = new ObjectMapper();
-    private JobManager jobManager;
+    private JobManagerHandler jobManager;
 
-    public Explainer(Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public Explainer(Executor executor, boolean useStatementSet, JobManagerHandler jobManager) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
         this.jobManager = jobManager;
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public static Explainer build(Executor executor, boolean useStatementSet, JobManagerHandler jobManager) {
         return new Explainer(executor, useStatementSet, jobManager);
     }
 
     public Explainer initialize(JobConfig config, String statement) {
-        DinkyClassLoaderUtil.initClassLoader(config, jobManager.getDinkyClassLoader());
+        DinkyClassLoaderUtil.initClassLoader(config, executor.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
-        List<UDF> udfs = parseUDFFromStatements(statements);
-        jobManager.setJobParam(new JobParam(udfs));
+        JobParam jobParam = pretreatStatements(statements);
+        jobManager.setJobParam(jobParam);
         try {
             JobUDFBuilder.build(jobManager).run();
         } catch (Exception e) {
@@ -136,19 +126,18 @@ public class Explainer {
                 customSetOperation.execute(this.executor.getCustomTableEnvironment());
             } else if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParseStrategy.getAllFilePath(statement)
-                        .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
+                        .forEach(t -> executor.getUdfPathContextHolder().addOtherPlugins(t));
                 (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
-                                jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
+                                executor.getUdfPathContextHolder().getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_FILE)) {
                 AddFileSqlParseStrategy.getAllFilePath(statement)
-                        .forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
+                        .forEach(t -> executor.getUdfPathContextHolder().addFile(t));
                 (executor.getDinkyClassLoader())
                         .addURLs(URLUtils.getURLs(
-                                jobManager.getUdfPathContextHolder().getFiles()));
+                                executor.getUdfPathContextHolder().getFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
-                Configuration combinationConfig = getCombinationConfig();
-                FileSystem.initialize(combinationConfig, null);
+                executor.initializeFileSystem();
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             } else if (operationType.equals(SqlType.INSERT)
@@ -175,7 +164,7 @@ public class Explainer {
                             PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
-                UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
+                UDF udf = UDFUtil.toUDF(statement, executor.getDinkyClassLoader());
                 if (Asserts.isNotNull(udf)) {
                     udfList.add(udf);
                 }
@@ -184,30 +173,6 @@ public class Explainer {
             }
         }
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList), parsedSql.toString());
-    }
-
-    private Configuration getCombinationConfig() {
-        CustomTableEnvironment cte = executor.getCustomTableEnvironment();
-        Configuration rootConfig = cte.getRootConfiguration();
-        Configuration config = cte.getConfig().getConfiguration();
-        Configuration combinationConfig = new Configuration();
-        combinationConfig.addAll(rootConfig);
-        combinationConfig.addAll(config);
-        return combinationConfig;
-    }
-
-    public List<UDF> parseUDFFromStatements(String[] statements) {
-        List<UDF> udfList = new ArrayList<>();
-        for (String statement : statements) {
-            if (statement.isEmpty()) {
-                continue;
-            }
-            UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
-            if (Asserts.isNotNull(udf)) {
-                udfList.add(udf);
-            }
-        }
-        return udfList;
     }
 
     public ExplainResult explainSql(String statement) {
@@ -313,6 +278,7 @@ public class Explainer {
                 }
             }
         }
+
         for (StatementParam item : jobParam.getExecute()) {
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
 
@@ -321,11 +287,7 @@ public class Explainer {
                 if (Asserts.isNull(sqlExplainResult)) {
                     sqlExplainResult = new SqlExplainResult();
                 } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
-
-                    List<URL> allFileByAdd = jobManager.getAllFileSet();
-                    Pipeline pipeline = new ExecuteJarOperation(item.getValue())
-                            .explain(executor.getCustomTableEnvironment(), allFileByAdd);
-                    sqlExplainResult.setExplain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(pipeline));
+                    sqlExplainResult.setExplain(executor.getJarStreamingPlanStringJson(item.getValue()));
                 } else {
                     executor.executeSql(item.getValue());
                 }
@@ -374,34 +336,8 @@ public class Explainer {
         return mapper.createObjectNode();
     }
 
-    public JobPlanInfo getJobPlanInfo(String statement) {
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
-        jobParam.getDdl().forEach(statementParam -> executor.executeSql(statementParam.getValue()));
-
-        if (!jobParam.getTrans().isEmpty()) {
-            return executor.getJobPlanInfo(jobParam.getTransStatement());
-        }
-
-        if (!jobParam.getExecute().isEmpty()) {
-            List<String> dataStreamPlans =
-                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
-            return executor.getJobPlanInfoFromDataStream(dataStreamPlans);
-        }
-        throw new RuntimeException("Creating job plan fails because this job doesn't contain an insert statement.");
-    }
-
     public List<LineageRel> getLineage(String statement) {
-        JobConfig jobConfig = JobConfig.builder()
-                .type(GatewayType.LOCAL.getLongValue())
-                .useRemote(false)
-                .fragment(true)
-                .statementSet(useStatementSet)
-                .parallelism(1)
-                .configJson(executor.getTableConfig().getConfiguration().toMap())
-                .build();
-        jobManager.setConfig(jobConfig);
-        jobManager.setExecutor(executor);
-        this.initialize(jobConfig, statement);
+        initialize(jobManager.getConfig(), statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();
         for (String item : SqlUtil.getStatements(statement)) {

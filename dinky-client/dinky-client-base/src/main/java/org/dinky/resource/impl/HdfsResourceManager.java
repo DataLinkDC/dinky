@@ -140,6 +140,11 @@ public class HdfsResourceManager implements BaseResourceManager {
         }
     }
 
+    @Override
+    public byte[] readFileContext(String path) {
+        return new byte[0];
+    }
+
     public FileSystem getHdfs() {
         if (hdfs == null && instances.getResourcesEnable().getValue()) {
             throw new BusException(Status.RESOURCE_HDFS_CONFIGURATION_ERROR);

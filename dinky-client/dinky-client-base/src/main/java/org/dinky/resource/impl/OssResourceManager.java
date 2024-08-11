@@ -134,6 +134,11 @@ public class OssResourceManager implements BaseResourceManager {
                 .getObjectContent();
     }
 
+    @Override
+    public byte[] readFileContext(String path) {
+        return new byte[0];
+    }
+
     public OssTemplate getOssTemplate() {
         if (ossTemplate == null && instances.getResourcesEnable().getValue()) {
             throw new BusException(Status.RESOURCE_OSS_CONFIGURATION_ERROR);

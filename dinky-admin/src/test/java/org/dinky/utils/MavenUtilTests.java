@@ -19,8 +19,6 @@
 
 package org.dinky.utils;
 
-import org.dinky.function.util.UDFUtil;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -73,10 +71,6 @@ public class MavenUtilTests {
 
         List<File> jars = MavenUtil.getJars(pom);
         System.out.println(jars);
-        jars.parallelStream().forEach(jar -> {
-            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(jar);
-            System.out.println(udfClassByJar);
-        });
     }
 
     @Test

@@ -57,14 +57,9 @@ import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.explainer.sqllineage.SQLLineageBuilder;
-import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.data.model.UDF;
-import org.dinky.function.pool.UdfCodePool;
-import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.FlinkClusterConfig;
@@ -472,7 +467,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobManager jobManager = JobManager.build(buildJobConfig(task));
         String jobId = jobInstance.getJid();
 
-        SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
+        SavePointResult savePointResult = jobManager.savepoint(
+                jobId, savePointType, null, SystemConfiguration.getInstances().isUseRestAPI());
         Assert.notNull(savePointResult.getJobInfos());
         for (JobInfo item : savePointResult.getJobInfos()) {
             if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobInstance.getTaskId())) {
@@ -502,7 +498,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public ObjectNode getStreamGraph(TaskDTO taskDTO) {
         JobConfig config = taskDTO.getJobConfig();
-        JobManager jobManager = JobManager.buildPlanMode(config);
+        JobManager jobManager = JobManager.build(config, true);
         ObjectNode streamGraph = jobManager.getStreamGraph(taskDTO.getStatement());
         RunTimeUtil.recovery(jobManager);
         return streamGraph;
@@ -577,20 +573,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Dialect.isUDF(task.getDialect())) {
                 // compile udf class
                 UDF udf = UDFUtils.taskToUDF(task.buildTask());
-                try {
-                    FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
-                } catch (Throwable e) {
-                    throw new BusException(
-                            "UDF compilation failed and cannot be published. The error message is as follows:"
-                                    + e.getMessage());
-                }
-                UdfCodePool.addOrUpdate(udf);
+                JobManager jobManager = JobManager.build(new JobConfig());
+                jobManager.initUDF(Collections.singletonList(udf), task.getId());
+                jobManager.addOrUpdateUdfCodePool(UDFUtils.taskToUDF(task.buildTask()));
             }
         } else {
             if (Dialect.isUDF(task.getDialect())
                     && Asserts.isNotNull(task.getConfigJson())
                     && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
-                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+                JobManager.build(new JobConfig())
+                        .removeUdfCodePool(task.getConfigJson().getUdfConfig().getClassName());
             }
         }
         boolean saved = saveOrUpdate(task.buildTask());
@@ -612,6 +604,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean saveOrUpdateTask(Task task) {
+        JobManager jobManager = JobManager.build(new JobConfig());
         Task byId = getById(task.getId());
         if (byId != null && JobLifeCycle.PUBLISH.equalsValue(byId.getStep())) {
             throw new BusException(Status.TASK_IS_ONLINE.getMessage());
@@ -628,7 +621,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 UDFTemplate template =
                         udfTemplateService.getById(taskConfigJson.getUdfConfig().getTemplateId());
                 if (template != null) {
-                    String code = UDFUtil.templateParse(
+                    String code = jobManager.templateParse(
                             task.getDialect(),
                             template.getTemplateCode(),
                             taskConfigJson.getUdfConfig().getClassName());
@@ -643,18 +636,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
                 className = compiler.getFullClassName();
             } else if (Dialect.PYTHON.isDialect(task.getDialect())) {
-                className = task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement());
+                className = task.getName() + "." + jobManager.getPyUDFAttr(task.getStatement());
             } else if (Dialect.SCALA.isDialect(task.getDialect())) {
-                className = UDFUtil.getScalaFullClassName(task.getStatement());
+                className = jobManager.getScalaFullClassName(task.getStatement());
             }
             if (!task.getConfigJson().getUdfConfig().getClassName().equals(className)) {
-                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+                jobManager.removeUdfCodePool(task.getConfigJson().getUdfConfig().getClassName());
             }
             task.getConfigJson().getUdfConfig().setClassName(className);
             if (task.getStep().equals(JobLifeCycle.PUBLISH.getValue())) {
-                UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task));
+                jobManager.addOrUpdateUdfCodePool(UDFUtils.taskToUDF(task));
             } else {
-                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+                jobManager.removeUdfCodePool(task.getConfigJson().getUdfConfig().getClassName());
             }
         }
 
@@ -975,6 +968,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public LineageResult getTaskLineage(Integer id) {
+        JobManager jobManager = JobManager.build(new JobConfig());
         TaskDTO task = getTaskInfoById(id);
         if (!Dialect.isCommonSql(task.getDialect())) {
             if (Asserts.isNull(task.getDatabaseId())) {
@@ -985,13 +979,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 return null;
             }
             if (task.getDialect().equalsIgnoreCase("doris") || task.getDialect().equalsIgnoreCase("starrocks")) {
-                return SQLLineageBuilder.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
+                return jobManager.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
-                return SQLLineageBuilder.getSqlLineage(
+                return jobManager.getSqlLineage(
                         task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
-            return LineageBuilder.getColumnLineageByLogicalPlan(buildEnvSql(task));
+            return jobManager.getColumnLineageByLogicalPlan(buildEnvSql(task));
         }
     }
 

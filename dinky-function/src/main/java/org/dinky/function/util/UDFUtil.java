@@ -375,35 +375,6 @@ public class UDFUtil {
         return udfPathContextHolder;
     }
 
-    public static List<Class<?>> getUdfClassByJar(File jarPath) {
-        Assert.notNull(jarPath);
-
-        List<Class<?>> classList = new ArrayList<>();
-        try (JarClassLoader loader = new JarClassLoader()) {
-            loader.addJar(jarPath);
-
-            ClassScanner classScanner =
-                    new ClassScanner("", aClass -> ClassUtil.isAssignable(UserDefinedFunction.class, aClass));
-            classScanner.setClassLoader(loader);
-            ReflectUtil.invoke(classScanner, "scanJar", new JarFile(jarPath));
-            Set<Class<? extends UserDefinedFunction>> classes =
-                    (Set<Class<? extends UserDefinedFunction>>) ReflectUtil.getFieldValue(classScanner, "classes");
-            for (Class<? extends UserDefinedFunction> aClass : classes) {
-                try {
-                    UserDefinedFunctionHelper.validateClass(aClass);
-                    classList.add(aClass);
-                } catch (Exception ex) {
-                    throw new DinkyException();
-                }
-            }
-        } catch (ValidationException e) {
-            throw e;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return classList;
-    }
-
     public static List<String> getPythonUdfList(String udfFile) {
         return getPythonUdfList(SystemConfiguration.getInstances().getPythonHome(), udfFile);
     }
@@ -472,5 +443,39 @@ public class UDFUtil {
         FileUtil.writeUtf8String(
                 JSONUtil.toJsonStr(flinkUdfManifest),
                 PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
+    }
+
+    public static List<String> getUdfClassNameByJarPath(String path) {
+        List<Class<?>> clazz = getUdfClassByJar(new File(path));
+        return clazz.stream().map(Class::getName).collect(Collectors.toList());
+    }
+
+    public static List<Class<?>> getUdfClassByJar(File jarPath) {
+        Assert.notNull(jarPath);
+
+        List<Class<?>> classList = new ArrayList<>();
+        try (JarClassLoader loader = new JarClassLoader()) {
+            loader.addJar(jarPath);
+
+            ClassScanner classScanner =
+                    new ClassScanner("", aClass -> ClassUtil.isAssignable(UserDefinedFunction.class, aClass));
+            classScanner.setClassLoader(loader);
+            ReflectUtil.invoke(classScanner, "scanJar", new JarFile(jarPath));
+            Set<Class<? extends UserDefinedFunction>> classes =
+                    (Set<Class<? extends UserDefinedFunction>>) ReflectUtil.getFieldValue(classScanner, "classes");
+            for (Class<? extends UserDefinedFunction> aClass : classes) {
+                try {
+                    UserDefinedFunctionHelper.validateClass(aClass);
+                    classList.add(aClass);
+                } catch (Exception ex) {
+                    throw new DinkyException();
+                }
+            }
+        } catch (ValidationException e) {
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return classList;
     }
 }

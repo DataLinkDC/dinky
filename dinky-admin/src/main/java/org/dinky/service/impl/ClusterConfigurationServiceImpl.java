@@ -29,7 +29,6 @@ import org.dinky.data.model.Task;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.job.JobManager;
 import org.dinky.mapper.ClusterConfigurationMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
@@ -82,7 +81,13 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
     @Override
     public TestResult testGateway(ClusterConfigurationDTO config) {
         config.getConfig().setType(GatewayType.get(config.getType()));
-        return JobManager.testGateway(GatewayConfig.build(config.getConfig()));
+        return testGateway(GatewayConfig.build(config.getConfig()));
+    }
+
+    public static TestResult testGateway(GatewayConfig gatewayConfig) {
+        // TODO: 2024/3/31
+        //        return Gateway.build(gatewayConfig).test();
+        return null;
     }
 
     /**

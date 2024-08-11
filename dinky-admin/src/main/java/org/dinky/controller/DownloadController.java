@@ -24,7 +24,6 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.util.ZipWriter;
-import org.dinky.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.InputStream;
@@ -117,7 +116,8 @@ public class DownloadController {
     @GetMapping("downloadFromRs")
     @ApiOperation("Download From Resource")
     public void downloadJavaUDF(String path, HttpServletResponse resp) {
-        InputStream inputStream = BaseResourceManager.getInstance().readFile(path);
-        ServletUtil.write(resp, inputStream);
+        // TODO: 2024/3/31
+        //        InputStream inputStream = BaseResourceManager.getInstance().readFile(path);
+        //        ServletUtil.write(resp, inputStream);
     }
 }

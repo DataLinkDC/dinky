@@ -23,6 +23,8 @@ import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.Job;
+import org.dinky.job.JobHandler;
 import org.dinky.job.JobResult;
 
 import java.util.List;
@@ -42,8 +44,17 @@ public class FlinkJarSqlTask extends FlinkSqlTask {
 
     @Override
     public JobResult execute() throws Exception {
-
-        return jobManager.executeJarSql(task.getStatement());
+        JobHandler handler = JobHandler.build();
+        jobManager.prepare(task.getStatement());
+        handler.init(jobManager.getJob());
+        JobResult result = jobManager.executeJarSql(task.getStatement());
+        Job afterJob = jobManager.getJob();
+        if (result.isSuccess()) {
+            handler.success(afterJob);
+        } else {
+            handler.failed(afterJob);
+        }
+        return result;
     }
 
     @Override

@@ -21,7 +21,6 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
-import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.GatewayType;
@@ -32,7 +31,6 @@ import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.JobConfig;
@@ -82,15 +80,15 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public FlinkClusterInfo checkHeartBeat(String hosts, String host) {
-        return FlinkCluster.testFlinkJobManagerIP(hosts, host);
+        return JobManager.build(new JobConfig()).testFlinkJobManagerIP(hosts, host);
     }
 
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
         // TODO 这里判空逻辑有问题，clusterInstance有可能为null
         DinkyAssert.check(clusterInstance);
-        FlinkClusterInfo info =
-                FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
+        FlinkClusterInfo info = JobManager.build(new JobConfig())
+                .testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
@@ -221,20 +219,25 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
             FlinkClusterConfig flinkClusterConfig =
                     clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
             GatewayConfig gatewayConfig = GatewayConfig.build(flinkClusterConfig);
-            JobManager.killCluster(gatewayConfig, clusterInstance.getName());
+            killCluster(gatewayConfig, clusterInstance.getName());
         }
+    }
+
+    public static void killCluster(GatewayConfig gatewayConfig, String appId) {
+        gatewayConfig.getClusterConfig().setAppId(appId);
+        JobManager.build(new JobConfig()).killCluster(gatewayConfig);
     }
 
     @Override
     public ClusterInstance deploySessionCluster(Integer id) {
         ClusterConfiguration clusterCfg = clusterConfigurationService.getClusterConfigById(id);
         if (Asserts.isNull(clusterCfg)) {
-            throw new GatewayException("The cluster configuration does not exist.");
+            throw new RuntimeException("The cluster configuration does not exist.");
         }
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
         gatewayConfig.setType(gatewayConfig.getType().getSessionType());
-        GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
+        GatewayResult gatewayResult = deploySessionCluster(gatewayConfig);
         if (gatewayResult.isSuccess()) {
             Asserts.checkNullString(gatewayResult.getWebURL(), "Unable to obtain Web URL.");
             return registersCluster(ClusterInstanceDTO.builder()
@@ -248,6 +251,10 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                     .build());
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());
+    }
+
+    public static GatewayResult deploySessionCluster(GatewayConfig gatewayConfig) {
+        return JobManager.build(new JobConfig()).deployCluster(gatewayConfig);
     }
 
     /**

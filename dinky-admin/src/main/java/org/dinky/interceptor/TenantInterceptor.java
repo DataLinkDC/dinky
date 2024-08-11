@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import cn.dev33.satoken.SaManager;

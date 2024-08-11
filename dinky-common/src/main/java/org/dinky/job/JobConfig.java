@@ -23,16 +23,14 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.CustomConfig;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.configuration.RestOptions;
-
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +50,10 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 @ApiModel(value = "JobConfig", description = "Configuration details of a job")
-public class JobConfig {
+public class JobConfig implements Serializable {
+
+    private static final String REST_PORT = "rest.port";
+    private static final String DEFAULT_PARAllELISM = "parallelism.default";
 
     @ApiModelProperty(
             value = "Flink run mode",
@@ -193,26 +194,26 @@ public class JobConfig {
             notes = "Map of variables")
     private Map<String, String> variables;
 
+    private SystemConfiguration systemConfiguration;
+
     public JobConfig() {
         this.configJson = new HashMap<>();
     }
 
     public void setAddress(String address) {
-        if (GatewayType.LOCAL.equalsValue(type)
-                && Asserts.isNotNull(configJson)
-                && configJson.containsKey(RestOptions.PORT.key())) {
+        if (GatewayType.LOCAL.equalsValue(type) && Asserts.isNotNull(configJson) && configJson.containsKey(REST_PORT)) {
             int colonIndex = address.indexOf(':');
             if (colonIndex == -1) {
-                this.address = address + NetConstant.COLON + configJson.get(RestOptions.PORT.key());
+                this.address = address + NetConstant.COLON + configJson.get(REST_PORT);
             } else {
-                this.address = address.replaceAll("(?<=:)\\d{0,6}$", configJson.get(RestOptions.PORT.key()));
+                this.address = address.replaceAll("(?<=:)\\d{0,6}$", configJson.get(REST_PORT));
             }
         } else {
             this.address = address;
         }
     }
 
-    public ExecutorConfig getExecutorSetting() {
+    public ExecutorConfig createExecutorSetting() {
         Map<String, String> config = new HashMap<>(32);
         if (GatewayType.isDeployCluster(type) && gatewayConfig != null && gatewayConfig.getFlinkConfig() != null) {
             config.putAll(gatewayConfig.getFlinkConfig().getConfiguration());
@@ -243,7 +244,7 @@ public class JobConfig {
         }
         // Load job configuration content afterwards
         flinkConfig.getConfiguration().putAll(getConfigJson());
-        flinkConfig.getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
+        flinkConfig.getConfiguration().put(DEFAULT_PARAllELISM, String.valueOf(parallelism));
         flinkConfig.setJobName(getJobName());
 
         gatewayConfig = GatewayConfig.build(config);
@@ -258,13 +259,6 @@ public class JobConfig {
         for (Map.Entry<String, String> entry : config.entrySet()) {
             gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), entry.getValue());
         }
-    }
-
-    public void addGatewayConfig(Configuration config) {
-        if (Asserts.isNull(gatewayConfig)) {
-            gatewayConfig = new GatewayConfig();
-        }
-        gatewayConfig.getFlinkConfig().getConfiguration().putAll(config.toMap());
     }
 
     public boolean isUseRemote() {

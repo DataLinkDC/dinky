@@ -22,8 +22,8 @@ package org.dinky.sse.git;
 import org.dinky.data.dto.GitAnalysisJarDTO;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.GitProject;
-import org.dinky.data.model.SystemConfiguration;
-import org.dinky.function.util.UDFUtil;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.sse.StepSse;
 
 import java.io.File;
@@ -59,8 +59,7 @@ public class AnalysisUdfPythonStepSse extends StepSse {
         } catch (ClassNotFoundException e) {
             throw new DinkyException("flink dependency not found");
         }
-        List<String> pythonUdfList =
-                UDFUtil.getPythonUdfList(SystemConfiguration.getInstances().getPythonHome(), zipFile.getAbsolutePath());
+        List<String> pythonUdfList = JobManager.build(new JobConfig()).getPythonUdfList(zipFile.getAbsolutePath());
         GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
         gitAnalysisJarDTO.setJarPath(zipFilePath);
         gitAnalysisJarDTO.setClassList(pythonUdfList);

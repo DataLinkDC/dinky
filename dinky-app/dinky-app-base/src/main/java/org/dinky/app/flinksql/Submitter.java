@@ -62,7 +62,6 @@ import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -106,7 +105,7 @@ public class Submitter {
 
     public static void submit(AppParamConfig config) throws SQLException {
         initSystemConfiguration();
-        BaseResourceManager.initResourceManager();
+        BaseResourceManager.initResourceManager(SystemConfiguration.getInstances());
         URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
         log.info("{} Start Submit Job:{}", LocalDateTime.now(), config.getTaskId());
 
@@ -125,8 +124,7 @@ public class Submitter {
                 // .config(JsonUtils.toMap(appTask.getConfigJson()))
                 .build();
 
-        executor = ExecutorFactory.buildAppStreamExecutor(
-                executorConfig, new WeakReference<>(DinkyClassLoader.build()).get());
+        executor = ExecutorFactory.buildAppStreamExecutor(executorConfig);
 
         // 加载第三方jar //TODO 这里有问题，需要修一修
         loadDep(appTask.getType(), config.getTaskId(), executorConfig);

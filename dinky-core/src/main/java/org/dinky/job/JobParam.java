@@ -45,22 +45,6 @@ public class JobParam {
         this.udfList = udfList;
     }
 
-    public JobParam(List<StatementParam> ddl, List<StatementParam> trans) {
-        this.ddl = ddl;
-        this.trans = trans;
-    }
-
-    public JobParam(
-            List<String> statements,
-            List<StatementParam> ddl,
-            List<StatementParam> trans,
-            List<StatementParam> execute) {
-        this.statements = statements;
-        this.ddl = ddl;
-        this.trans = trans;
-        this.execute = execute;
-    }
-
     public JobParam(
             List<String> statements,
             List<StatementParam> ddl,

@@ -38,11 +38,10 @@ import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.model.job.JobInstance;
-import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.exception.NotSupportGetStatusException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
@@ -289,9 +288,8 @@ public class JobRefreshHandler {
                         .getFlinkConfig()
                         .setJobName(jobInfoDetail.getInstance().getName());
 
-                Gateway gateway = Gateway.build(gatewayConfig);
-                return Optional.of(gateway.getJobStatusById(appId));
-            } catch (NotSupportGetStatusException ignored) {
+                return Optional.of(JobManager.build(new JobConfig()).getJobStatus(gatewayConfig, appId));
+            } catch (Exception ignored) {
                 // if the gateway does not support get status, then use the api to get job status
                 // ignore to do something here
             }
@@ -315,7 +313,7 @@ public class JobRefreshHandler {
             jobConfig.buildGatewayConfig(configJson);
             jobConfig.getGatewayConfig().setType(GatewayType.get(clusterType));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
-            Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
+            JobManager.build(new JobConfig()).onJobGatewayFinishCallback(jobConfig, jobInstance.getStatus());
         }
     }
 
@@ -347,9 +345,8 @@ public class JobRefreshHandler {
                         .getFlinkConfig()
                         .setJobName(jobInfoDetail.getInstance().getName());
 
-                Gateway gateway = Gateway.build(gatewayConfig);
-                String latestJobManageHost = gateway.getLatestJobManageHost(appId, clusterInstance.getJobManagerHost());
-
+                String latestJobManageHost = JobManager.build(new JobConfig())
+                        .getLatestJobManageHost(appId, clusterInstance.getJobManagerHost(), gatewayConfig);
                 if (Asserts.isNotNull(latestJobManageHost)) {
                     clusterInstance.setHosts(latestJobManageHost);
                     clusterInstance.setJobManagerHost(latestJobManageHost);

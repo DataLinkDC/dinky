@@ -17,13 +17,8 @@
  *
  */
 
-package org.apache.flink.table.catalog;
+package org.dinky.executor;
 
-/** Categorizes the language semantics of a {@link CatalogFunction}. */
-public enum FunctionLanguage {
-    JAVA,
-
-    SCALA,
-
-    PYTHON
+public class ExecutorContext {
+    Executor executor;
 }

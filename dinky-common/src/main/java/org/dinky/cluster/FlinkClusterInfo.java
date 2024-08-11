@@ -19,6 +19,8 @@
 
 package org.dinky.cluster;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +31,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class FlinkClusterInfo {
+public class FlinkClusterInfo implements Serializable {
 
     private boolean isEffective;
     private String jobManagerAddress;

@@ -19,16 +19,11 @@
 
 package org.dinky.job.builder;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
-import org.dinky.data.result.InsertResult;
-import org.dinky.gateway.Gateway;
-import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.result.GatewayResult;
-import org.dinky.job.Job;
+import org.dinky.executor.Executor;
 import org.dinky.job.JobBuilder;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManagerHandler;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.ddl.CustomSetOperation;
@@ -38,18 +33,9 @@ import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
-import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.SqlUtil;
-import org.dinky.utils.URLUtils;
 
-import org.apache.flink.api.common.Plan;
 import org.apache.flink.api.dag.Pipeline;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.execution.JobClient;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.io.File;
 import java.net.URL;
@@ -58,106 +44,29 @@ import java.util.List;
 import java.util.Set;
 
 import cn.hutool.core.lang.Assert;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobJarStreamGraphBuilder
  */
-@Slf4j
-public class JobJarStreamGraphBuilder extends JobBuilder {
+public class JobJarStreamGraphBuilder implements JobBuilder {
 
-    private final Configuration configuration;
+    private final JobConfig config;
+    private final Executor executor;
 
-    public JobJarStreamGraphBuilder(JobManager jobManager) {
-        super(jobManager);
-        configuration = executor.getCustomTableEnvironment().getConfig().getConfiguration();
+    public JobJarStreamGraphBuilder(JobConfig config, Executor executor) {
+        this.config = config;
+        this.executor = executor;
     }
 
-    public static JobJarStreamGraphBuilder build(JobManager jobManager) {
-        return new JobJarStreamGraphBuilder(jobManager);
-    }
-
-    private Pipeline getPipeline() {
-        Pipeline pipeline = getJarStreamGraph(job.getStatement(), jobManager.getDinkyClassLoader());
-        if (pipeline instanceof StreamGraph) {
-            if (Asserts.isNotNullString(config.getSavePointPath())) {
-                ((StreamGraph) pipeline)
-                        .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                                config.getSavePointPath(),
-                                configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
-            }
-        }
-        return pipeline;
+    public static JobJarStreamGraphBuilder build(JobManagerHandler jobManager) {
+        return new JobJarStreamGraphBuilder(jobManager.getConfig(), jobManager.getExecutor());
     }
 
     @Override
-    public void run() throws Exception {
-        if (!useGateway) {
-            submitNormal();
-        } else {
-            GatewayResult gatewayResult;
-            if (runMode.isApplicationMode()) {
-                gatewayResult = submitGateway();
-            } else {
-                gatewayResult = submitNormalWithGateway();
-            }
-            job.setResult(InsertResult.success(gatewayResult.getId()));
-            job.setJobId(gatewayResult.getId());
-            job.setJids(gatewayResult.getJids());
-            job.setJobManagerAddress(URLUtils.formatAddress(gatewayResult.getWebURL()));
+    public void run() throws Exception {}
 
-            if (gatewayResult.isSuccess()) {
-                job.setStatus(Job.JobStatus.SUCCESS);
-            } else {
-                job.setStatus(Job.JobStatus.FAILED);
-                job.setError(gatewayResult.getError());
-                log.error(gatewayResult.getError());
-            }
-        }
-    }
-
-    private GatewayResult submitGateway() throws Exception {
-        config.addGatewayConfig(configuration);
-        config.getGatewayConfig().setSql(job.getStatement());
-        return Gateway.build(config.getGatewayConfig()).submitJar(jobManager.getUdfPathContextHolder());
-    }
-
-    private GatewayResult submitNormalWithGateway() {
-        Pipeline pipeline = getPipeline();
-        if (pipeline instanceof StreamGraph) {
-            ((StreamGraph) pipeline).setJobName(config.getJobName());
-        } else if (pipeline instanceof Plan) {
-            ((Plan) pipeline).setJobName(config.getJobName());
-        }
-        JobGraph jobGraph = FlinkStreamEnvironmentUtil.getJobGraph(pipeline, configuration);
-        GatewayConfig gatewayConfig = config.getGatewayConfig();
-        List<String> uriList = getUris(job.getStatement());
-        String[] jarPaths = uriList.stream()
-                .map(URLUtils::toFile)
-                .map(File::getAbsolutePath)
-                .toArray(String[]::new);
-        gatewayConfig.setJarPaths(jarPaths);
-        return Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
-    }
-
-    private void submitNormal() throws Exception {
-        JobClient jobClient =
-                FlinkStreamEnvironmentUtil.executeAsync(getPipeline(), executor.getStreamExecutionEnvironment());
-        if (Asserts.isNotNull(jobClient)) {
-            job.setJobId(jobClient.getJobID().toHexString());
-            job.setJids(new ArrayList<String>() {
-                {
-                    add(job.getJobId());
-                }
-            });
-            job.setStatus(Job.JobStatus.SUCCESS);
-        } else {
-            job.setStatus(Job.JobStatus.FAILED);
-        }
-    }
-
-    public Pipeline getJarStreamGraph(String statement, DinkyClassLoader dinkyClassLoader) {
-        DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoader);
+    public Pipeline getJarStreamGraph(String statement) {
+        DinkyClassLoaderUtil.initClassLoader(config, executor.getDinkyClassLoader());
         String[] statements = SqlUtil.getStatements(statement);
         ExecuteJarOperation executeJarOperation = null;
         for (String sql : statements) {
@@ -172,16 +81,16 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
                 customSetOperation.execute(this.executor.getCustomTableEnvironment());
             } else if (operationType.equals(SqlType.ADD)) {
                 Set<File> files = AddJarSqlParseStrategy.getAllFilePath(sqlStatement);
-                files.forEach(executor::addJar);
-                files.forEach(jobManager.getUdfPathContextHolder()::addOtherPlugins);
+                executor.addJar(files.toArray(new File[0]));
+                files.forEach(executor.getUdfPathContextHolder()::addOtherPlugins);
             } else if (operationType.equals(SqlType.ADD_FILE)) {
                 Set<File> files = AddFileSqlParseStrategy.getAllFilePath(sqlStatement);
-                files.forEach(executor::addJar);
-                files.forEach(jobManager.getUdfPathContextHolder()::addFile);
+                executor.addJar(files.toArray(new File[0]));
+                files.forEach(executor.getUdfPathContextHolder()::addFile);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
-        List<URL> urLs = jobManager.getAllFileSet();
+        List<URL> urLs = executor.getAllFileSet();
         return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
     }
 
@@ -195,6 +104,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
                 break;
             }
         }
+
         return uriList;
     }
 }

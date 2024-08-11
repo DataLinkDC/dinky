@@ -26,8 +26,10 @@ import org.dinky.data.enums.TaskOwnerAlertStrategyEnum;
 import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.properties.OssProperties;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -47,7 +49,7 @@ import lombok.Getter;
  * @since 2021/11/18
  */
 @Getter
-public class SystemConfiguration {
+public class SystemConfiguration implements Serializable {
 
     private static final SystemConfiguration systemConfiguration = new SystemConfiguration();
 
@@ -61,10 +63,19 @@ public class SystemConfiguration {
         return new Configuration.OptionBuilder(status.getKey());
     }
 
-    private static final List<Configuration<?>> CONFIGURATION_LIST = Arrays.stream(
-                    ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
-            .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
-            .collect(Collectors.toList());
+    private static final List<Configuration<?>> CONFIGURATION_LIST = getConfigurationList();
+
+    private static List<Configuration<?>> getConfigurationList() {
+        return Arrays.stream(ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
+                .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
+                .collect(Collectors.toList());
+    }
+
+    private List<Configuration<?>> getThisConfigurationList() {
+        return Arrays.stream(ReflectUtil.getFields(SystemConfiguration.class, f -> f.getType() == Configuration.class))
+                .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(this, f))
+                .collect(Collectors.toList());
+    }
 
     private final Configuration<Boolean> useRestAPI = key(Status.SYS_FLINK_SETTINGS_USERESTAPI)
             .booleanType()
@@ -335,6 +346,14 @@ public class SystemConfiguration {
             item.setValue(value);
         });
         CONFIGURATION_LIST.stream().peek(Configuration::runParameterCheck).forEach(Configuration::runChangeEvent);
+    }
+
+    public void copyTo(SystemConfiguration other) {
+        Map<String, String> configMap = new HashMap<>();
+        for (Configuration<?> config : getThisConfigurationList()) {
+            configMap.put(config.getKey(), String.valueOf(config.getValue()));
+        }
+        other.initSetConfiguration(configMap);
     }
 
     public void initExpressionVariableList(Map<String, String> configMap) {

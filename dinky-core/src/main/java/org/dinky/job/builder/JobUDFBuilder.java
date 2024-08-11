@@ -24,11 +24,14 @@ import static org.dinky.function.util.UDFUtil.SESSION;
 import static org.dinky.function.util.UDFUtil.YARN;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.enums.GatewayType;
+import org.dinky.executor.Executor;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.job.JobBuilder;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManagerHandler;
+import org.dinky.job.JobParam;
 import org.dinky.utils.URLUtils;
 
 import java.io.File;
@@ -45,30 +48,37 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobUDFBuilder
- *
  */
 @Slf4j
-public class JobUDFBuilder extends JobBuilder {
+public class JobUDFBuilder implements JobBuilder {
 
-    public JobUDFBuilder(JobManager jobManager) {
-        super(jobManager);
+    private final JobParam jobParam;
+    private final Executor executor;
+    private final JobConfig config;
+    private final GatewayType runMode;
+
+    public JobUDFBuilder(JobParam jobParam, Executor executor, JobConfig config, GatewayType runMode) {
+        this.jobParam = jobParam;
+        this.executor = executor;
+        this.config = config;
+        this.runMode = runMode;
     }
 
-    public static JobUDFBuilder build(JobManager jobManager) {
-        return new JobUDFBuilder(jobManager);
+    public static JobUDFBuilder build(JobManagerHandler jobManager) {
+        return new JobUDFBuilder(
+                jobManager.getJobParam(), jobManager.getExecutor(), jobManager.getConfig(), jobManager.getRunMode());
     }
 
     @Override
     public void run() throws Exception {
         Asserts.checkNotNull(jobParam, "No executable statement.");
-        List<UDF> udfList = jobManager.getJobParam().getUdfList();
+        List<UDF> udfList = jobParam.getUdfList();
         Integer taskId = config.getTaskId();
         if (taskId == null) {
             taskId = -RandomUtil.randomInt(0, 1000);
         }
         // 1. Obtain the path of the jar package and inject it into the remote environment
-        List<File> jarFiles =
-                new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
+        List<File> jarFiles = new ArrayList<>(executor.getUdfPathContextHolder().getAllFileSet());
 
         String[] userCustomUdfJarPath = UDFUtil.initJavaUDF(udfList, taskId);
         String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
@@ -89,7 +99,7 @@ public class JobUDFBuilder extends JobBuilder {
             for (String pyPath : pyPaths) {
                 if (StrUtil.isNotBlank(pyPath)) {
                     jarFiles.add(new File(pyPath));
-                    jobManager.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
+                    executor.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
                 }
             }
         }
@@ -97,14 +107,14 @@ public class JobUDFBuilder extends JobBuilder {
             for (String jarPath : userCustomUdfJarPath) {
                 if (StrUtil.isNotBlank(jarPath)) {
                     jarFiles.add(new File(jarPath));
-                    jobManager.getUdfPathContextHolder().addUdfPath(new File(jarPath));
+                    executor.getUdfPathContextHolder().addUdfPath(new File(jarPath));
                 }
             }
         }
 
-        Set<File> pyUdfFile = jobManager.getUdfPathContextHolder().getPyUdfFile();
+        Set<File> pyUdfFile = executor.getUdfPathContextHolder().getPyUdfFile();
         executor.initPyUDF(
-                SystemConfiguration.getInstances().getPythonHome(),
+                config.getSystemConfiguration().getPythonHome(),
                 pyUdfFile.stream().map(File::getAbsolutePath).toArray(String[]::new));
         if (GATEWAY_TYPE_MAP.get(YARN).contains(runMode)) {
             config.getGatewayConfig().setJarPaths(ArrayUtil.append(jarPaths, pyPaths));
@@ -113,11 +123,9 @@ public class JobUDFBuilder extends JobBuilder {
         try {
             List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
             // 3.Write the required files for UDF
-            UDFUtil.writeManifest(taskId, jarList, jobManager.getUdfPathContextHolder());
+            UDFUtil.writeManifest(taskId, jarList, executor.getUdfPathContextHolder());
             UDFUtil.addConfigurationClsAndJars(
-                    jobManager.getExecutor().getCustomTableEnvironment(),
-                    jarList,
-                    CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
+                    executor.getCustomTableEnvironment(), jarList, CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
         } catch (Exception e) {
             throw new RuntimeException("add configuration failed: ", e);
         }

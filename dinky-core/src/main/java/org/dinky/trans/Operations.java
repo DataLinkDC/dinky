@@ -52,9 +52,9 @@ public class Operations {
 
     private Operations() {}
 
-    private static final Operation[] ALL_OPERATIONS = getAllOperations();
+    public static final Operation[] ALL_OPERATIONS = getAllOperations();
 
-    private static final List<UDF> JAVA_STATIC_UDF_LIST = getCustomStaticUdfs();
+    public static final List<UDF> JAVA_STATIC_UDF_LIST = getCustomStaticUdfs();
     /**
      * get all {@link Operation} children ordinary class,
      *

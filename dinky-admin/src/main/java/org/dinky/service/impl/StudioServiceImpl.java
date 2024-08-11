@@ -31,13 +31,9 @@ import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
-import org.dinky.data.result.DDLResult;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.metadata.driver.Driver;
@@ -45,12 +41,9 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.utils.FlinkTableMetadataUtil;
-import org.dinky.utils.RunTimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -75,16 +68,6 @@ public class StudioServiceImpl implements StudioService {
     private final Cache<String, JobManager> jobManagerCache = CacheUtil.newTimedCache(1000 * 60 * 2);
     private final String DEFAULT_CATALOG = "default_catalog";
 
-    private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
-        String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
-        studioMetaStoreDTO.setStatement(studioMetaStoreDTO.getStatement() + envSql);
-        JobConfig config = studioMetaStoreDTO.getJobConfig();
-        JobManager jobManager = JobManager.build(config);
-        IResult jobResult = jobManager.executeDDL(studioMetaStoreDTO.getStatement());
-        RunTimeUtil.recovery(jobManager);
-        return jobResult;
-    }
-
     @Override
     public IResult executeDDL(StudioDDLDTO studioDDLDTO) {
         JobConfig config = studioDDLDTO.getJobConfig();
@@ -100,6 +83,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public LineageResult getLineage(StudioLineageDTO studioCADTO) {
         // TODO 添加ProcessStep
+        JobManager jobManager = JobManager.build(new JobConfig());
         if (Asserts.isNotNullString(studioCADTO.getDialect())
                 && !Dialect.FLINK_SQL.isDialect(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
@@ -112,15 +96,15 @@ public class StudioServiceImpl implements StudioService {
                 return null;
             }
             if (Dialect.DORIS.isDialect(studioCADTO.getDialect())) {
-                return SQLLineageBuilder.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
+                return jobManager.getSqlLineage(studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {
-                return SQLLineageBuilder.getSqlLineage(
+                return jobManager.getSqlLineage(
                         studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
             String envSql = taskService.buildEnvSql(studioCADTO);
             studioCADTO.setStatement(studioCADTO.getStatement() + envSql);
-            return LineageBuilder.getColumnLineageByLogicalPlan(studioCADTO.getStatement());
+            return JobManager.build(new JobConfig()).getColumnLineageByLogicalPlan(studioCADTO.getStatement());
         }
     }
 
@@ -150,9 +134,7 @@ public class StudioServiceImpl implements StudioService {
         } else {
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment =
-                    jobManager.getExecutor().getCustomTableEnvironment();
-            catalogs.addAll(FlinkTableMetadataUtil.getCatalog(customTableEnvironment));
+            catalogs.addAll(jobManager.getCatalog());
         }
         return catalogs;
     }
@@ -171,10 +153,7 @@ public class StudioServiceImpl implements StudioService {
         } else {
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment =
-                    jobManager.getExecutor().getCustomTableEnvironment();
-            FlinkTableMetadataUtil.setSchemaInfo(
-                    customTableEnvironment, studioMetaStoreDTO.getCatalog(), database, schema, tables);
+            jobManager.setSchemaInfo(studioMetaStoreDTO.getCatalog(), database, schema, tables);
         }
         schema.setTables(tables);
         return schema;
@@ -193,13 +172,9 @@ public class StudioServiceImpl implements StudioService {
                 columns.addAll(driver.listColumns(database, tableName));
             }
         } else {
-
             String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
-            CustomTableEnvironment customTableEnvironment =
-                    jobManager.getExecutor().getCustomTableEnvironment();
-            columns.addAll(
-                    FlinkTableMetadataUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
+            jobManager.getColumnList(catalogName, database, tableName);
         }
         return columns;
     }
@@ -212,20 +187,5 @@ public class StudioServiceImpl implements StudioService {
             return jobManagerTmp;
         });
         return jobManager;
-    }
-
-    private List<String> showInfo(StudioMetaStoreDTO studioMetaStoreDTO, String baseStatement, String statement) {
-        List<String> infos = new ArrayList<>();
-        studioMetaStoreDTO.setStatement(baseStatement + statement);
-        IResult result = executeMSFlinkSql(studioMetaStoreDTO);
-        if (result instanceof DDLResult) {
-            DDLResult ddlResult = (DDLResult) result;
-            ddlResult.getColumns().stream().findFirst().ifPresent(key -> {
-                for (Map<String, Object> item : ddlResult.getRowData()) {
-                    infos.add(item.get(key).toString());
-                }
-            });
-        }
-        return infos;
     }
 }

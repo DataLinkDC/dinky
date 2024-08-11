@@ -36,6 +36,10 @@
     </properties>
 
     <dependencies>
+        <!--        <dependency>-->
+        <!--            <groupId>org.dinky</groupId>-->
+        <!--            <artifactId>dinky-executor-server</artifactId>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
@@ -183,28 +187,28 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-gateway</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>cn.hutool</groupId>
-                    <artifactId>hutool-crypto</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cn.hutool</groupId>
-                    <artifactId>hutool-http</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>cn.hutool</groupId>
-                    <artifactId>hutool-json</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.dinky</groupId>-->
+        <!--            <artifactId>dinky-gateway</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.dinky</groupId>-->
+        <!--            <artifactId>dinky-core</artifactId>-->
+        <!--            <exclusions>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>cn.hutool</groupId>-->
+        <!--                    <artifactId>hutool-crypto</artifactId>-->
+        <!--                </exclusion>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>cn.hutool</groupId>-->
+        <!--                    <artifactId>hutool-http</artifactId>-->
+        <!--                </exclusion>-->
+        <!--                <exclusion>-->
+        <!--                    <groupId>cn.hutool</groupId>-->
+        <!--                    <artifactId>hutool-json</artifactId>-->
+        <!--                </exclusion>-->
+        <!--            </exclusions>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-daemon</artifactId>
@@ -225,10 +229,10 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-alert-base</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-base</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.dinky</groupId>-->
+        <!--            <artifactId>dinky-client-base</artifactId>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-client-hadoop</artifactId>

@@ -23,9 +23,10 @@ import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Task;
-import org.dinky.function.FunctionFactory;
 import org.dinky.function.data.model.UDF;
 import org.dinky.job.Job;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.utils.UDFUtils;
 
@@ -47,7 +48,7 @@ public class UdfTask extends BaseTask {
         jobResult.setStatus(Job.JobStatus.SUCCESS);
         try {
             UDF udf = UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
-            FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
+            JobManager.build(new JobConfig()).initUDF(Collections.singletonList(udf), task.getId());
         } catch (Exception e) {
             jobResult.setSuccess(false);
             jobResult.setError(ExceptionUtil.getRootCauseMessage(e));

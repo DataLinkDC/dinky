@@ -77,11 +77,15 @@ public class Configuration<T> implements Serializable {
     }
 
     public void setValue(Object value) {
-        if (getType() == Enum.class) {
-            this.value = (T) EnumUtil.fromString((Class<? extends Enum>) type, (String) value);
-            return;
+        try {
+            if (getType() == Enum.class) {
+                this.value = (T) EnumUtil.fromString((Class<? extends Enum>) type, (String) value);
+                return;
+            }
+            this.value = type.isInstance(value) ? (T) value : Convert.convert(getType(), value);
+        } catch (Exception e) {
+            System.out.println("Configuration.setValue, this" + this + ", value: " + value);
         }
-        this.value = type.isInstance(value) ? (T) value : Convert.convert(getType(), value);
     }
 
     public Configuration<T> desensitizedHandler(Function<T, T> desensitizedHandler) {
@@ -125,7 +129,7 @@ public class Configuration<T> implements Serializable {
         return new OptionBuilder(key);
     }
 
-    public static class OptionBuilder {
+    public static class OptionBuilder implements Serializable {
 
         private final String key;
 

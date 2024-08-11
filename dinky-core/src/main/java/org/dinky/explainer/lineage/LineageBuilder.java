@@ -19,10 +19,11 @@
 
 package org.dinky.explainer.lineage;
 
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.LineageRel;
-import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
-import org.dinky.job.JobManager;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManagerHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +38,15 @@ import java.util.Map;
 public class LineageBuilder {
 
     public static LineageResult getColumnLineageByLogicalPlan(String statement) {
-        Explainer explainer = new Explainer(ExecutorFactory.getDefaultExecutor(), false, new JobManager());
+        JobConfig jobConfig = JobConfig.builder()
+                .type(GatewayType.LOCAL.getLongValue())
+                .useRemote(false)
+                .fragment(true)
+                .statementSet(false)
+                .parallelism(1)
+                .build();
+        JobManagerHandler jobManagerHandler = JobManagerHandler.build(jobConfig, false);
+        Explainer explainer = new Explainer(jobManagerHandler.getExecutor(), false, jobManagerHandler);
         List<LineageRel> lineageRelList = explainer.getLineage(statement);
         List<LineageRelation> relations = new ArrayList<>();
         Map<String, LineageTable> tableMap = new HashMap<>();

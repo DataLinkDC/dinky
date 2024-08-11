@@ -25,7 +25,8 @@ import org.dinky.data.dto.GitProjectSortJarDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.GitProject;
-import org.dinky.function.pool.UdfCodePool;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
 import org.dinky.mapper.GitProjectMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.GitProjectService;
@@ -80,7 +81,7 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
 
         gitProject.insertOrUpdate();
 
-        ThreadUtil.execAsync(() -> UdfCodePool.updateGitPool(getGitPool()));
+        ThreadUtil.execAsync(() -> JobManager.build(new JobConfig()).updateGitPool(getGitPool()));
     }
 
     /** @param gitProjectDTOList */

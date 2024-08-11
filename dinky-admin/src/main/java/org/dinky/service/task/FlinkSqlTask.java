@@ -25,6 +25,8 @@ import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.job.Job;
+import org.dinky.job.JobHandler;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.service.TaskService;
@@ -64,8 +66,18 @@ public class FlinkSqlTask extends BaseTask {
 
     @Override
     public JobResult execute() throws Exception {
-        log.info("Initializing Flink job config...");
-        return jobManager.executeSql(task.getStatement());
+        JobHandler handler = JobHandler.build();
+        jobManager.prepare(task.getStatement());
+        handler.init(jobManager.getJob());
+        JobResult result = jobManager.executeSql(task.getStatement());
+        // Job class maybe change at remote server
+        Job afterJob = jobManager.getJob();
+        if (result.isSuccess()) {
+            handler.success(afterJob);
+        } else {
+            handler.failed(afterJob);
+        }
+        return result;
     }
 
     protected JobManager getJobManager() {

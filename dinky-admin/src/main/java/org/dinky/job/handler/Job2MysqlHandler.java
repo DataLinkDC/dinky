@@ -86,7 +86,6 @@ public class Job2MysqlHandler extends AbsJobHandler {
 
     @Override
     public boolean init(Job job) {
-        this.job = job;
         History history = new History();
         history.setType(job.getType().getLongValue());
         if (job.isUseGateway()) {
@@ -109,17 +108,12 @@ public class Job2MysqlHandler extends AbsJobHandler {
     }
 
     @Override
-    public boolean ready() {
-        return true;
-    }
-
-    @Override
     public boolean running() {
         return true;
     }
 
     @Override
-    public boolean success() {
+    public boolean success(Job job) {
         Integer taskId = job.getJobConfig().getTaskId();
 
         History history = new History();
@@ -218,7 +212,7 @@ public class Job2MysqlHandler extends AbsJobHandler {
     }
 
     @Override
-    public boolean failed() {
+    public boolean failed(Job job) {
         History history = new History();
         history.setBatchModel(job.getJobConfig().isBatchModel());
         history.setId(job.getId());
@@ -228,11 +222,6 @@ public class Job2MysqlHandler extends AbsJobHandler {
         history.setEndTime(job.getEndTime());
         history.setError(job.getError());
         historyService.updateById(history);
-        return true;
-    }
-
-    @Override
-    public boolean callback() {
         return true;
     }
 
