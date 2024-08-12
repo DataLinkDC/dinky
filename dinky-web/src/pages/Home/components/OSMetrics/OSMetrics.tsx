@@ -48,7 +48,7 @@ const OSMetrics = () => {
     return (
       <Progress
         percent={precent}
-        size={type === 'dashboard' ? 100 : [200, 15]}
+        size={type === 'dashboard' ? 50 : [-1, 15]}
         percentPosition={{ align: 'center', type: 'inner' }}
         format={() => `${used}${unit}`}
         strokeColor={twoColors}
