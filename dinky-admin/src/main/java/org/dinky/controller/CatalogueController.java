@@ -269,8 +269,6 @@ public class CatalogueController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + exportCatalogueVo.getFileName());
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(exportCatalogueVo.getDataJson());
+        return ResponseEntity.ok().headers(headers).body(exportCatalogueVo.getDataJson());
     }
 }

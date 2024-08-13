@@ -21,8 +21,6 @@ package org.dinky.service.catalogue.impl;
 
 import static org.dinky.assertion.Asserts.isNull;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.json.JSONUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
@@ -77,11 +75,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -631,7 +631,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         // only leaf nodes have tasks
         Task task = isLeaf ? taskService.getById(catalogue.getTaskId()) : null;
         ExportCatalogueBO exportCatalogueBo = catalogueFactory.getExportCatalogueBo(catalogue, task);
-        List<Catalogue> subCatalogues = list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
+        List<Catalogue> subCatalogues =
+                list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
         if (CollectionUtil.isNotEmpty(subCatalogues)) {
             List<ExportCatalogueBO> subExportCatalogueBo = subCatalogues.stream()
                     .map(Catalogue::getId)

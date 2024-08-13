@@ -72,7 +72,7 @@ export const FOLDER_RIGHT_MENU = (disabled = false): MenuItemType[] => [
     key: 'exportJson',
     icon: <UpCircleTwoTone />,
     label: l('right.menu.exportJson')
-  },
+  }
 ];
 
 /**
@@ -111,7 +111,7 @@ export const JOB_RIGHT_MENU = (disabled = false): MenuItemType[] => [
     key: 'exportJson',
     icon: <UpCircleTwoTone />,
     label: l('right.menu.exportJson')
-  },
+  }
 ];
 
 /**
