@@ -67,7 +67,12 @@ export const FOLDER_RIGHT_MENU = (disabled = false): MenuItemType[] => [
     icon: <CompassTwoTone />,
     label: l('right.menu.paste'),
     disabled: !disabled
-  }
+  },
+  {
+    key: 'exportJson',
+    icon: <UpCircleTwoTone />,
+    label: l('right.menu.exportJson')
+  },
 ];
 
 /**
@@ -87,12 +92,6 @@ export const JOB_RIGHT_MENU = (disabled = false): MenuItemType[] => [
     label: l('button.edit')
   },
   {
-    key: 'exportJson',
-    icon: <UpCircleTwoTone />,
-    label: l('right.menu.exportJson'),
-    disabled: true // todo: 此功能暂时不实现 先禁用掉
-  },
-  {
     key: 'copy',
     icon: <CopyTwoTone />,
     label: l('right.menu.copy')
@@ -107,7 +106,12 @@ export const JOB_RIGHT_MENU = (disabled = false): MenuItemType[] => [
     key: 'delete',
     icon: <DeleteTwoTone twoToneColor={'red'} />,
     label: l('button.delete')
-  }
+  },
+  {
+    key: 'exportJson',
+    icon: <UpCircleTwoTone />,
+    label: l('right.menu.exportJson')
+  },
 ];
 
 /**

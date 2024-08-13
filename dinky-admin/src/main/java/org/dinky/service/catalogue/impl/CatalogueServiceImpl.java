@@ -21,8 +21,11 @@ package org.dinky.service.catalogue.impl;
 
 import static org.dinky.assertion.Asserts.isNull;
 
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.json.JSONUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
+import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.enums.CatalogueSortValueEnum;
@@ -40,6 +43,7 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.ExportCatalogueVO;
 import org.dinky.data.vo.TreeVo;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -595,5 +599,46 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             return taskService.checkTaskOperatePermission(catalogue.getTaskId());
         }
         return null;
+    }
+
+    /**
+     * Export catalogue by id
+     *
+     * @param catalogueId catalogue id
+     * @return export catalogue vo
+     */
+    @Override
+    public ExportCatalogueVO exportCatalogue(Integer catalogueId) {
+        ExportCatalogueBO exportCatalogueBo = getAllCatalogue(catalogueId);
+        String dataJson = JSONUtil.toJsonPrettyStr(exportCatalogueBo);
+        return ExportCatalogueVO.builder()
+                .fileName(getExportCatalogueFileName(catalogueId))
+                .dataJson(dataJson)
+                .build();
+    }
+
+    private String getExportCatalogueFileName(Integer catalogueId) {
+        int loginUserId = StpUtil.getLoginIdAsInt();
+        return String.format("%s_%s_%s.json", catalogueId, loginUserId, System.currentTimeMillis());
+    }
+
+    private ExportCatalogueBO getAllCatalogue(Integer catalogueId) {
+        Catalogue catalogue = this.getById(catalogueId);
+        if (Objects.isNull(catalogue)) {
+            return null;
+        }
+        Boolean isLeaf = catalogue.getIsLeaf();
+        // only leaf nodes have tasks
+        Task task = isLeaf ? taskService.getById(catalogue.getTaskId()) : null;
+        ExportCatalogueBO exportCatalogueBo = catalogueFactory.getExportCatalogueBo(catalogue, task);
+        List<Catalogue> subCatalogues = list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
+        if (CollectionUtil.isNotEmpty(subCatalogues)) {
+            List<ExportCatalogueBO> subExportCatalogueBo = subCatalogues.stream()
+                    .map(Catalogue::getId)
+                    .map(this::getAllCatalogue)
+                    .collect(Collectors.toList());
+            exportCatalogueBo.setChildren(subExportCatalogueBo);
+        }
+        return exportCatalogueBo;
     }
 }

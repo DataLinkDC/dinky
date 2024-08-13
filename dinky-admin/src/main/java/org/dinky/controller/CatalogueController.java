@@ -29,6 +29,7 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.ExportCatalogueVO;
 import org.dinky.data.vo.TreeVo;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.service.TaskService;
@@ -37,6 +38,8 @@ import org.dinky.service.catalogue.CatalogueService;
 import java.io.File;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -249,5 +252,25 @@ public class CatalogueController {
     @CheckTaskOwner(checkParam = CatalogueId.class, checkInterface = CatalogueService.class)
     public Result<Void> deleteCatalogueById(@CatalogueId @RequestParam Integer id) {
         return catalogueService.deleteCatalogueById(id);
+    }
+
+    /**
+     * export catalogue by id
+     *
+     * @param id catalogue id
+     * @return {@link Result}< {@link Void}>}
+     */
+    @PostMapping("/export/{id}")
+    @Log(title = "Export Catalogue", businessType = BusinessType.EXPORT)
+    @ApiOperation("Export Catalogue")
+    public ResponseEntity<?> exportCatalogue(@PathVariable Integer id) {
+        ExportCatalogueVO exportCatalogueVo = catalogueService.exportCatalogue(id);
+        // convert the return value to file at the interface level
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + exportCatalogueVo.getFileName());
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(exportCatalogueVo.getDataJson());
     }
 }
