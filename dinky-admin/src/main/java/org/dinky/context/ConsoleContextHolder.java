@@ -99,7 +99,7 @@ public class ConsoleContextHolder {
             return logPross.get(processName);
         }
         try {
-            String filePath = String.format("%s/log/%s.json", DirConstant.getTempDirRoot(), processName);
+            String filePath = String.format("%s/log/%s.json", DirConstant.getTempRootDir(), processName);
             String string = FileUtil.readString(filePath, StandardCharsets.UTF_8);
             ProcessEntity process = JSONObject.parseObject(string, ProcessEntity.class);
             if (process.getStatus().isActiveStatus()) {
@@ -114,7 +114,7 @@ public class ConsoleContextHolder {
 
     public boolean clearProcessLog(String processName) {
         // find process and delete
-        String filePath = String.format("%s/log/%s.json", DirConstant.getTempDirRoot(), processName);
+        String filePath = String.format("%s/log/%s.json", DirConstant.getTempRootDir(), processName);
         if (FileUtil.exist(filePath)) {
             return FileUtil.del(filePath);
         }
@@ -237,7 +237,7 @@ public class ConsoleContextHolder {
             if (e != null) {
                 appendLog(processName, null, LogUtil.getError(e.getCause()), true);
             }
-            String filePath = String.format("%s/log/%s.json", DirConstant.getTempDirRoot(), processName);
+            String filePath = String.format("%s/log/%s.json", DirConstant.getTempRootDir(), processName);
             if (FileUtil.exist(filePath)) {
                 Assert.isTrue(FileUtil.del(filePath));
             }

@@ -40,7 +40,7 @@ import cn.hutool.core.util.StrUtil;
  * @since 0.7.0
  */
 public class URLUtils {
-    private static final String TMP_PATH = DirConstant.getTempDirRoot();
+    private static final String TMP_PATH = DirConstant.getTempRootDir();
 
     /**
      * url download file to local

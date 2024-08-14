@@ -73,7 +73,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     private Pod defaultPodTemplate;
 
     private K8sClientHelper k8sClientHelper;
-    private String tmpConfDir = String.format("%s/kubernetes/%s", DirConstant.getTempDirRoot(), UUID.randomUUID());
+    private String tmpConfDir = String.format("%s/kubernetes/%s", DirConstant.getTempRootDir(), UUID.randomUUID());
 
     public KubernetesGateway() {}
 

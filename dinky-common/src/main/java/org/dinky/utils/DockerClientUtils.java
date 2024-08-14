@@ -51,7 +51,7 @@ public class DockerClientUtils {
     public DockerClientUtils(Docker docker) {
         this.docker = docker;
         this.dockerfile = FileUtil.writeUtf8String(
-                docker.getDockerfile(), DirConstant.getTempDirRoot() + "/dockerfile/" + UUID.randomUUID());
+                docker.getDockerfile(), DirConstant.getTempRootDir() + "/dockerfile/" + UUID.randomUUID());
         dockerClient = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
                         .withDockerHost(docker.getInstance())
                         .withRegistryUrl(docker.getRegistryUrl())

@@ -99,7 +99,7 @@ import cn.hutool.http.HttpUtil;
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
     private final String TMP_SQL_EXEC_DIR =
-            String.format("%s/sql-exec/%s", DirConstant.getTempDirRoot(), UUID.randomUUID());
+            String.format("%s/sql-exec/%s", DirConstant.getTempRootDir(), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 

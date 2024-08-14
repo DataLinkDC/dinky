@@ -67,7 +67,7 @@ public class DirConstant {
      * get tmp dir root of dinky
      * @return tmp dir root of dinky
      */
-    public static String getTempDirRoot() {
+    public static String getTempRootDir() {
         return getRootPath() + FILE_SEPARATOR + "tmp";
     }
 }

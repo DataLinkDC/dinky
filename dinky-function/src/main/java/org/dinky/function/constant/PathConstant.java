@@ -30,7 +30,7 @@ import cn.hutool.core.util.StrUtil;
 public class PathConstant {
 
     /** Tmp path */
-    public static final String TMP_PATH = DirConstant.getTempDirRoot() + File.separator;
+    public static final String TMP_PATH = DirConstant.getTempRootDir() + File.separator;
 
     /** UDF path */
     public static final String UDF_PATH = TMP_PATH + "udf" + File.separator;
