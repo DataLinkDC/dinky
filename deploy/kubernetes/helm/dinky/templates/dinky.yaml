@@ -97,7 +97,7 @@ spec:
             - /bin/bash
             - '-c'
             - >-
-              /dinky/auto.sh startOnPending {{ .Values.spec.extraEnv.flinkVersion}}
+              /opt/dinky/auto.sh startOnPending {{ .Values.spec.extraEnv.flinkVersion}}
           args:
           {{- if .Values.spec.livenessProbe.enabled }}
           livenessProbe:
