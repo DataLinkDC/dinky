@@ -19,13 +19,13 @@
 
 package org.dinky.function.constant;
 
+import org.dinky.data.constant.DirConstant;
+
 import org.apache.flink.table.catalog.FunctionLanguage;
 
 import java.io.File;
 
 import cn.hutool.core.util.StrUtil;
-import org.dinky.data.constant.DirConstant;
-
 
 public class PathConstant {
 

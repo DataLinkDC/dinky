@@ -19,9 +19,9 @@
 
 package org.dinky.data.constant;
 
-import cn.hutool.core.util.StrUtil;
 import java.io.File;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 
 /**
@@ -30,22 +30,21 @@ import cn.hutool.system.SystemUtil;
  * @since 2022/10/15 18:37
  */
 public class DirConstant {
-    public static final String  DINKY_ENV_OR_HOME_ROOT_DIR_NAME = "dinky.root.path";
+    public static final String DINKY_ENV_OR_HOME_ROOT_DIR_NAME = "dinky.root.path";
     public static final String FILE_SEPARATOR = File.separator;
 
     // user dir path, default is project root path
     public static final String USER_DIR_ENV_ROOT_PATH = System.getProperty(SystemUtil.USER_DIR);
 
     // dinky env or home root path
-    public static final String DINKY_ENV_OR_HOME_ROOT_DIR =  System.getProperty(DINKY_ENV_OR_HOME_ROOT_DIR_NAME);
-
+    public static final String DINKY_ENV_OR_HOME_ROOT_DIR = System.getProperty(DINKY_ENV_OR_HOME_ROOT_DIR_NAME);
 
     /**
      * get a root path of dinky
      * @return root path of dinky
      */
     public static String getRootPath() {
-        return  StrUtil.isEmpty(DINKY_ENV_OR_HOME_ROOT_DIR) ? USER_DIR_ENV_ROOT_PATH : DINKY_ENV_OR_HOME_ROOT_DIR;
+        return StrUtil.isEmpty(DINKY_ENV_OR_HOME_ROOT_DIR) ? USER_DIR_ENV_ROOT_PATH : DINKY_ENV_OR_HOME_ROOT_DIR;
     }
 
     /**
@@ -53,7 +52,7 @@ public class DirConstant {
      * @return root logs path of dinky
      */
     public static String getRootLogsPath() {
-        return  getRootPath() + FILE_SEPARATOR + "logs" ;
+        return getRootPath() + FILE_SEPARATOR + "logs";
     }
 
     /**
@@ -61,7 +60,7 @@ public class DirConstant {
      * @return root log of dinky
      */
     public static String getRootLog() {
-        return  getRootLogsPath() + FILE_SEPARATOR + "dinky.log";
+        return getRootLogsPath() + FILE_SEPARATOR + "dinky.log";
     }
 
     /**
@@ -69,7 +68,6 @@ public class DirConstant {
      * @return tmp dir root of dinky
      */
     public static String getTempDirRoot() {
-        return  getRootPath() + FILE_SEPARATOR + "tmp";
+        return getRootPath() + FILE_SEPARATOR + "tmp";
     }
-
 }

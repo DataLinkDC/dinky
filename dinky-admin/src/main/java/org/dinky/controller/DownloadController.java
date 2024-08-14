@@ -108,8 +108,8 @@ public class DownloadController {
     @GetMapping("downloadAppJar/{version}")
     @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
-        List<File> files = FileUtil.loopFiles(
-                DirConstant.getRootPath() + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
+        List<File> files = FileUtil.loopFiles(DirConstant.getRootPath() + "/jar", pathname -> pathname.getName()
+                .contains("dinky-app-" + version));
         if (CollUtil.isNotEmpty(files)) {
             ServletUtil.write(resp, files.get(0));
         }

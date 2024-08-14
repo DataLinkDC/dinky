@@ -31,7 +31,6 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.TreeVo;
-import org.dinky.function.constant.PathConstant;
 import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
 
