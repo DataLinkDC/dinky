@@ -22,6 +22,8 @@ package org.dinky.job.builder;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
@@ -42,9 +44,12 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.table.api.TableResult;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * JobTransBuilder
@@ -63,7 +68,9 @@ public class JobTransBuilder extends JobBuilder {
     @Override
     public void run() throws Exception {
         if (jobParam.getTrans().isEmpty()) {
-            return;
+            String transSqlTypes =
+                    SqlType.getTransSqlTypes().stream().map(SqlType::getType).collect(Collectors.joining(","));
+            throw new BusException(MessageFormat.format(Status.TASK_SQL_NO_EXECUTABLE.getMessage(), transSqlTypes));
         }
 
         if (useStatementSet) {
@@ -161,6 +168,9 @@ public class JobTransBuilder extends JobBuilder {
     private void updateJobWithTableResult(TableResult tableResult, SqlType sqlType) {
         if (tableResult.getJobClient().isPresent()) {
             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+            job.setJids(Collections.singletonList(job.getJobId()));
+        } else if (!sqlType.getCategory().getHasJobClient()) {
+            job.setJobId(UUID.randomUUID().toString().replace("-", ""));
             job.setJids(Collections.singletonList(job.getJobId()));
         }
 

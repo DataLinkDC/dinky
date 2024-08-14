@@ -45,7 +45,7 @@ public interface ResultBuilder {
             case SHOW:
             case DESC:
             case DESCRIBE:
-                return new ShowResultBuilder();
+                return new ShowResultBuilder(id);
             case INSERT:
                 return new InsertResultBuilder();
             default:
