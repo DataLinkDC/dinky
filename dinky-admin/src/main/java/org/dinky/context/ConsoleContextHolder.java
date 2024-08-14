@@ -20,6 +20,7 @@
 package org.dinky.context;
 
 import org.dinky.aop.ProcessAspect;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.ProcessStatus;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.ProcessType;
@@ -98,7 +99,7 @@ public class ConsoleContextHolder {
             return logPross.get(processName);
         }
         try {
-            String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
+            String filePath = String.format("%s/log/%s.json", DirConstant.getTempDirRoot(), processName);
             String string = FileUtil.readString(filePath, StandardCharsets.UTF_8);
             ProcessEntity process = JSONObject.parseObject(string, ProcessEntity.class);
             if (process.getStatus().isActiveStatus()) {
@@ -113,7 +114,7 @@ public class ConsoleContextHolder {
 
     public boolean clearProcessLog(String processName) {
         // find process and delete
-        String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
+        String filePath = String.format("%s/log/%s.json", DirConstant.getTempDirRoot(), processName);
         if (FileUtil.exist(filePath)) {
             return FileUtil.del(filePath);
         }
@@ -236,7 +237,7 @@ public class ConsoleContextHolder {
             if (e != null) {
                 appendLog(processName, null, LogUtil.getError(e.getCause()), true);
             }
-            String filePath = String.format("%s/tmp/log/%s.json", System.getProperty("user.dir"), processName);
+            String filePath = String.format("%s/log/%s.json", DirConstant.getTempDirRoot(), processName);
             if (FileUtil.exist(filePath)) {
                 Assert.isTrue(FileUtil.del(filePath));
             }

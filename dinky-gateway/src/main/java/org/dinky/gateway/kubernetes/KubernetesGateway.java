@@ -20,6 +20,7 @@
 package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.Status;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.FlinkConfig;
@@ -72,7 +73,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     private Pod defaultPodTemplate;
 
     private K8sClientHelper k8sClientHelper;
-    private String tmpConfDir = String.format("%s/tmp/kubernets/%s", System.getProperty("user.dir"), UUID.randomUUID());
+    private String tmpConfDir = String.format("%s/kubernetes/%s", DirConstant.getTempDirRoot(), UUID.randomUUID());
 
     public KubernetesGateway() {}
 

@@ -24,29 +24,24 @@ import org.apache.flink.table.catalog.FunctionLanguage;
 import java.io.File;
 
 import cn.hutool.core.util.StrUtil;
+import org.dinky.data.constant.DirConstant;
 
-/**
- * 文件路径常量
- *
- * @since 0.6.8
- */
+
 public class PathConstant {
 
-    /** 基本路径，dinky 部署的路径 */
-    public static final String WORK_DIR = System.getProperty("user.dir");
-    /** tmp路径 */
-    public static final String TMP_PATH = WORK_DIR + File.separator + "tmp" + File.separator;
+    /** Tmp path */
+    public static final String TMP_PATH = DirConstant.getTempDirRoot() + File.separator;
 
-    /** udf路径 */
+    /** UDF path */
     public static final String UDF_PATH = TMP_PATH + "udf" + File.separator;
 
     public static final String COMPILER = "compiler";
     public static final String PACKAGE = "package";
-    /** udf jar规则 */
+    /** UDF jar rules */
     public static final String UDF_JAR_RULE = "udf-\\d+.jar";
-    /** udf版本规则 */
+    /** UDF version rules */
     public static final String UDF_VERSION_RULE = "\\d+";
-    /** udf jar tmp名字 */
+    /**Udf jar tmp name */
     public static final String UDF_JAR_TMP_NAME = "udf-tmp.jar";
 
     public static final String UDF_JAR_NAME = "udf.jar";

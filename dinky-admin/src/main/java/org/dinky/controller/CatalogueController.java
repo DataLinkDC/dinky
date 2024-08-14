@@ -23,6 +23,7 @@ import org.dinky.data.annotations.CatalogueId;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.annotations.TaskId;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.enums.BusinessType;
@@ -77,7 +78,7 @@ public class CatalogueController {
     @ApiOperation("Upload Zip Package And Create Catalogue")
     public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
         // 获取上传的路径
-        String filePath = PathConstant.WORK_DIR;
+        String filePath = DirConstant.getRootPath();
         // 获取源文件的名称
         String fileName = file.getOriginalFilename();
         String zipPath = filePath + File.separator + fileName;

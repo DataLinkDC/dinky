@@ -34,12 +34,13 @@ import java.util.stream.Collectors;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
+import org.dinky.data.constant.DirConstant;
 
 /**
  * @since 0.7.0
  */
 public class URLUtils {
-    private static final String TMP_PATH = StrUtil.join(File.separator, System.getProperty("user.dir"), "tmp");
+    private static final String TMP_PATH = DirConstant.getTempDirRoot();
 
     /**
      * url download file to local

@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
@@ -108,7 +109,7 @@ public class DownloadController {
     @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
         List<File> files = FileUtil.loopFiles(
-                PathConstant.WORK_DIR + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
+                DirConstant.getRootPath() + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
         if (CollUtil.isNotEmpty(files)) {
             ServletUtil.write(resp, files.get(0));
         }
