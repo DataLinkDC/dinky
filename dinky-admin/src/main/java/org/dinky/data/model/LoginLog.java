@@ -20,26 +20,20 @@
 package org.dinky.data.model;
 
 import org.dinky.mybatis.annotation.Save;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.dinky.mybatis.model.DateBaseEntity;
 
 @Data
 @ApiModel(value = "LoginLog", description = "Login Log Information")

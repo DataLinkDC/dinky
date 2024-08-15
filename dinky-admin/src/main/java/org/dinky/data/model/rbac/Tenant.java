@@ -19,12 +19,11 @@
 
 package org.dinky.data.model.rbac;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import org.dinky.mybatis.model.DateBaseEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -32,7 +31,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dinky.mybatis.model.DateBaseEntity;
 
 /** tenant use to isolate data */
 @Data
