@@ -118,7 +118,7 @@ public class FlinkSqlClient implements Closeable, ISqlClient {
             restConfig.set(SqlGatewayRestOptions.ADDRESS, ADDRESS);
             restConfig.set(SqlGatewayRestOptions.BIND_ADDRESS, ADDRESS);
             restConfig.set(SqlGatewayRestOptions.PORT, port.getPort());
-            restConfig.set(SqlGatewayRestOptions.BIND_PORT, port.getPort()+"");
+            restConfig.set(SqlGatewayRestOptions.BIND_PORT, port.getPort() + "");
             defaultConfig.addAll(
                     restConfig,
                     SqlGatewayEndpointFactoryUtils.getSqlGatewayOptionPrefix(SqlGatewayRestEndpointFactory.IDENTIFIER));
