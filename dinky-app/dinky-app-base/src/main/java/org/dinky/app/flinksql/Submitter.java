@@ -30,6 +30,7 @@ import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
@@ -161,7 +162,7 @@ public class Submitter {
         if (!sqlFile.exists()) {
             sqlFile = new File(confDir, sqlFileName);
             if (!sqlFile.exists()) {
-                log.error("sql file not found,current dir:{},conf dir:{}", System.getProperty("user.dir"), confDir);
+                log.error("sql file not found,current dir:{},conf dir:{}", DirConstant.getRootPath(), confDir);
                 throw new RuntimeException("sql file not found");
             }
         }
