@@ -37,13 +37,14 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 /** role */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_role")
 @ApiModel(value = "Role", description = "Role Information")
-public class Role implements Serializable {
+public class Role extends DateBaseEntity<Role> implements Serializable {
 
     private static final long serialVersionUID = 6877230738922824958L;
 
@@ -77,25 +78,6 @@ public class Role implements Serializable {
     @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes or details about the role")
     private String note;
 
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "String",
-            notes = "Timestamp indicating the creation time of the role")
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "String",
-            notes = "Timestamp indicating the last update time of the role")
-    private LocalDateTime updateTime;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "Tenant", dataType = "Tenant", notes = "Associated tenant information")

@@ -42,13 +42,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName("dinky_sys_token")
 @ApiModel(value = "SysToken", description = "System Token Information")
-public class SysToken implements Serializable {
+public class SysToken extends DateBaseEntity<SysToken> implements Serializable {
     private static final long serialVersionUID = 3579444102399317143L;
 
     @TableId(value = "id", type = IdType.AUTO)
@@ -91,26 +92,6 @@ public class SysToken implements Serializable {
 
     @ApiModelProperty(value = "Expire End Time", dataType = "Date", notes = "End time for token expiration")
     private Date expireEndTime;
-
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "String",
-            notes = "Timestamp indicating the creation time of the token")
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "String",
-            notes = "Timestamp indicating the last update time of the token")
-    private LocalDateTime updateTime;
 
     @ApiModelProperty(
             value = "Creator",

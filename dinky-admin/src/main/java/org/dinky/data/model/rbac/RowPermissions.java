@@ -37,12 +37,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_row_permissions")
 @ApiModel(value = "RowPermissions", description = "Row-Level Permissions Information")
-public class RowPermissions implements Serializable {
+public class RowPermissions extends DateBaseEntity<RowPermissions> implements Serializable {
 
     private static final long serialVersionUID = 8676666963206334660L;
 
@@ -74,26 +75,6 @@ public class RowPermissions implements Serializable {
             example = "user_id = 1001",
             notes = "Expression defining the row-level permissions")
     private String expression;
-
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "String",
-            notes = "Timestamp indicating the creation time of the row-level permissions")
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "String",
-            notes = "Timestamp indicating the last update time of the row-level permissions")
-    private LocalDateTime updateTime;
 
     @TableField(exist = false)
     @ApiModelProperty(

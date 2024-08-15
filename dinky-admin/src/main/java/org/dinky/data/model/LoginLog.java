@@ -39,11 +39,12 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 @Data
 @ApiModel(value = "LoginLog", description = "Login Log Information")
 @TableName("dinky_sys_login_log")
-public class LoginLog implements Serializable {
+public class LoginLog extends DateBaseEntity<LoginLog> implements Serializable {
 
     private static final long serialVersionUID = -3922488670506709018L;
 
@@ -95,22 +96,4 @@ public class LoginLog implements Serializable {
 
     @ApiModelProperty(value = "Access Time", dataType = "String", notes = "Timestamp indicating the time of login")
     private LocalDateTime accessTime;
-
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "String",
-            notes = "Timestamp indicating the creation time of the login log")
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "String",
-            notes = "Timestamp indicating the last update time of the login log")
-    private LocalDateTime updateTime;
 }

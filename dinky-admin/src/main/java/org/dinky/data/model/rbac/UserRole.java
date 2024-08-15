@@ -37,12 +37,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_user_role")
 @ApiModel(value = "UserRole", description = "User Role Relationship")
-public class UserRole implements Serializable {
+public class UserRole extends DateBaseEntity<UserRole> implements Serializable {
     private static final long serialVersionUID = -6123386787317880485L;
 
     @ApiModelProperty(value = "ID", dataType = "Integer", notes = "Unique identifier for the user role relationship")
@@ -54,24 +55,4 @@ public class UserRole implements Serializable {
 
     @ApiModelProperty(value = "Role ID", dataType = "Integer", notes = "ID of the role associated with this user")
     private Integer roleId;
-
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "LocalDateTime",
-            notes = "Timestamp when the user role relationship was created")
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createTime;
-
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "LocalDateTime",
-            notes = "Timestamp when the user role relationship was last updated")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateTime;
 }

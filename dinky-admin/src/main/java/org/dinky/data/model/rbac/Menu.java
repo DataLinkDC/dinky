@@ -44,6 +44,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 @Data
 @ApiModel(value = "Menu", description = "Menu Information")
@@ -51,7 +52,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("dinky_sys_menu")
-public class Menu implements Serializable {
+public class Menu extends DateBaseEntity<Menu> implements Serializable {
 
     private static final long serialVersionUID = 8117367692336619625L;
 
@@ -112,24 +113,6 @@ public class Menu implements Serializable {
 
     @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes or details about the menu")
     private String note;
-
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "String",
-            notes = "Timestamp indicating the creation time of the menu")
-    private LocalDateTime createTime;
-
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "String",
-            notes = "Timestamp indicating the last update time of the menu")
-    private LocalDateTime updateTime;
 
     @TableField(exist = false)
     @ApiModelProperty(value = "Children", dataType = "List<Menu>", notes = "List of child menus")

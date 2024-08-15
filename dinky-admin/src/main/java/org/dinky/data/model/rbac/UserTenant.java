@@ -56,12 +56,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dinky.mybatis.model.DateBaseEntity;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_user_tenant")
 @ApiModel(value = "UserTenant", description = "User Tenant Relationship")
-public class UserTenant implements Serializable {
+public class UserTenant extends DateBaseEntity<UserTenant> implements Serializable {
     private static final long serialVersionUID = -6123386787317880405L;
 
     @ApiModelProperty(value = "ID", dataType = "Integer", notes = "Unique identifier for the user tenant relationship")
@@ -79,24 +80,4 @@ public class UserTenant implements Serializable {
             dataType = "Boolean",
             notes = "Whether the user is a tenant admin for this tenant")
     private Boolean tenantAdminFlag;
-
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "LocalDateTime",
-            notes = "Timestamp when the user tenant relationship was created")
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createTime;
-
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "LocalDateTime",
-            notes = "Timestamp when the user tenant relationship was last updated")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateTime;
 }
