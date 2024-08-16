@@ -19,6 +19,7 @@
 
 package org.dinky.data.result;
 
+import org.dinky.job.JobHandler;
 import org.dinky.utils.FlinkUtil;
 
 import org.apache.flink.table.api.TableResult;
@@ -30,18 +31,24 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * ShowResultBuilder
  *
  * @since 2021/7/1 23:57
  */
-public class ShowResultBuilder implements ResultBuilder {
+public class ShowResultBuilder extends AbstractResultBuilder implements ResultBuilder {
 
     private String nullColumn = "";
 
-    public ShowResultBuilder() {}
+    public ShowResultBuilder(String id) {
+        this.id = id;
+    }
 
     @Override
     public IResult getResult(TableResult tableResult) {
@@ -63,5 +70,31 @@ public class ShowResultBuilder implements ResultBuilder {
             rows.add(map);
         }
         return new org.dinky.data.result.DDLResult(rows, rows.size(), column);
+    }
+
+    /**
+     * Get the results and store them persistently.
+     *
+     * @param tableResult table result
+     * @param jobHandler  job handler
+     * @return IResult
+     */
+    @Override
+    public IResult getResultWithPersistence(TableResult tableResult, JobHandler jobHandler) {
+        if (Objects.isNull(tableResult)) {
+            return SelectResult.buildFailed();
+        }
+        DDLResult ddlResult = (DDLResult) getResult(tableResult);
+        // ddl show: DDLResult -> SelectResult
+        SelectResult selectResult =
+                new SelectResult(id, ddlResult.getRowData(), Sets.newLinkedHashSet(ddlResult.getColumns()));
+        selectResult.setDestroyed(Boolean.TRUE);
+        try {
+            ResultPool.put(selectResult);
+            jobHandler.persistResultData(Lists.newArrayList(this.id));
+        } finally {
+            ResultPool.remove(id);
+        }
+        return selectResult;
     }
 }
