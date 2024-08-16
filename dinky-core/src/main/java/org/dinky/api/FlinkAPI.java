@@ -121,7 +121,11 @@ public class FlinkAPI {
         if (!address.startsWith(NetConstant.HTTP) && !address.startsWith(NetConstant.HTTPS)) {
             url = NetConstant.HTTP + url;
         }
-        String res = HttpUtil.createRequest(Method.PATCH, url).timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
+        String res = HttpUtil.createRequest(Method.PATCH, url)
+                .timeout(NetConstant.SERVER_TIME_OUT_ACTIVE)
+                .body(body)
+                .execute()
+                .body();
         return parse(res);
     }
 
