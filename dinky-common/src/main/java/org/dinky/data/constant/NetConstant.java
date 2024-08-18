@@ -23,6 +23,8 @@ public final class NetConstant {
 
     /** http:// */
     public static final String HTTP = "http://";
+    /** https:// */
+    public static final String HTTPS = "https://";
     /** 冒号: */
     public static final String COLON = ":";
     /** 斜杠/ */
