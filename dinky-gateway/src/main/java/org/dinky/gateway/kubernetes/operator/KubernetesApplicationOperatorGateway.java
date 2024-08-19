@@ -132,6 +132,9 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
                 // fixed bug can't find service list
                 .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
                 .list(options);
+            if(Objects.nonNull(list) && !list.getItems().isEmpty()){
+                throw new RuntimeException("service list is empty, please check svc list is exists");
+            }
             String ipPort = getWebUrl(list, kubernetesClient);
             result.setWebURL("http://" + ipPort);
             result.setId(result.getJids().get(0) + System.currentTimeMillis());
@@ -139,7 +142,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
         } catch (KubernetesClientException e) {
             // some error while connecting to kube cluster
             result.fail(LogUtil.getError(e));
-            e.printStackTrace();
+            logger.error("kubernetes client ex", e);
         }
         logger.info(
                 "submit {} job finish, web url is {} , jobid is {}", getType(), result.getWebURL(), result.getJids());
@@ -156,7 +159,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
         StringBuilder ipPort = new StringBuilder();
         StringBuilder svcRestPort = new StringBuilder();
         StringBuilder svcType = new StringBuilder();
-        logger.info("kubernetes service list : [{}] \n kubernetesClient: [{}]", list, kubernetesClient);
+        logger.debug("kubernetes service list : [{}] \n kubernetesClient: [{}]", list, kubernetesClient);
         for (Service item : list.getItems()) {
             svcRestPort
                     .append(item.getMetadata().getName())
@@ -205,7 +208,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
                 }
             }
         }
-        logger.info("get ipPort {} , svcRestPort {}", ipPort.toString(), svcRestPort.toString());
+        logger.info("get ipPort {} , svcRestPort {}", ipPort, svcRestPort);
         if (pingIpPort(ipPort.toString())) {
             return ipPort.toString();
         } else if (pingIpPort(svcRestPort.toString())) {
