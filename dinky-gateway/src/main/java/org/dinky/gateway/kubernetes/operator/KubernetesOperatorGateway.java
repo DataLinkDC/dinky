@@ -46,17 +46,17 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class KubernetsOperatorGateway extends KubernetesGateway {
+public abstract class KubernetesOperatorGateway extends KubernetesGateway {
 
-    private Map<String, String> kubernetsConfiguration;
+    private Map<String, String> kubernetesConfiguration;
     private FlinkDeployment flinkDeployment = new FlinkDeployment();
     private FlinkDeploymentSpec flinkDeploymentSpec = new FlinkDeploymentSpec();
 
-    private static final Logger logger = LoggerFactory.getLogger(KubernetsOperatorGateway.class);
+    private static final Logger logger = LoggerFactory.getLogger(KubernetesOperatorGateway.class);
 
     @Override
     public void init() {
-        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        kubernetesConfiguration = config.getKubernetesConfig().getConfiguration();
         initConfig();
         initBase();
         initMetadata();
@@ -67,7 +67,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
 
     @Override
     public TestResult test() {
-        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        kubernetesConfiguration = config.getKubernetesConfig().getConfiguration();
         addConfigParas(KubernetesConfigOptions.CLUSTER_ID, UUID.randomUUID().toString());
 
         initConfig();
@@ -94,7 +94,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
     }
 
     public boolean deleteCluster() {
-        kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
+        kubernetesConfiguration = config.getKubernetesConfig().getConfiguration();
         initConfig();
         initMetadata();
         getK8sClientHelper().getKubernetesClient().resource(flinkDeployment).delete();
@@ -141,12 +141,12 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
     private void initResource() {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
-        String jbcpu = kubernetsConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
+        String jbcpu = kubernetesConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
         String jbmem = flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
 
-        String tmcpu = kubernetsConfiguration.getOrDefault("kubernetes.taskmanager.cpu", "1");
+        String tmcpu = kubernetesConfiguration.getOrDefault("kubernetes.taskmanager.cpu", "1");
         String tmmem = flinkConfig.getConfiguration().getOrDefault("taskmanager.memory.process.size", "1G");
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
@@ -160,8 +160,8 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
 
     private void initSpec() {
         String flinkVersion = flinkConfig.getFlinkVersion();
-        String image = kubernetsConfiguration.get("kubernetes.container.image");
-        String serviceAccount = kubernetsConfiguration.get("kubernetes.service-account");
+        String image = kubernetesConfiguration.get("kubernetes.container.image");
+        String serviceAccount = kubernetesConfiguration.get("kubernetes.service-account");
 
         logger.info("\nflinkVersion is : {} \n image is : {}", flinkVersion, image);
 
@@ -195,7 +195,7 @@ public abstract class KubernetsOperatorGateway extends KubernetesGateway {
 
     private void initMetadata() {
         String jobName = config.getFlinkConfig().getJobName();
-        String nameSpace = kubernetsConfiguration.get("kubernetes.namespace");
+        String nameSpace = kubernetesConfiguration.get("kubernetes.namespace");
 
         logger.info("\njobName is ：{} \n namespce is : {}", jobName, nameSpace);
 
