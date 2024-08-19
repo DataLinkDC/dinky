@@ -18,9 +18,7 @@
  */
 
 import { ThemeCloud, ThemeStar } from '@/components/ThemeSvg/ThemeSvg';
-import { queryDataByParams } from '@/services/BusinessCrud';
-import { LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE } from '@/services/constants';
-import { API_CONSTANTS } from '@/services/endpoints';
+import { LANGUAGE_KEY, LANGUAGE_ZH, SERVER_VERSION, STORY_LANGUAGE } from '@/services/constants';
 import { THEME } from '@/types/Public/data';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -31,6 +29,7 @@ import React, { useEffect, useState } from 'react';
 import useCookie from 'react-use-cookie';
 import screenfull from 'screenfull';
 import Avatar from './AvatarDropdown';
+import { getValueFromLocalStorage } from '@/utils/function';
 
 const GlobalHeaderRight: React.FC = () => {
   /**
@@ -41,7 +40,6 @@ const GlobalHeaderRight: React.FC = () => {
   const [theme, setTheme] = useLocalStorage(THEME.NAV_THEME, initialState?.settings?.navTheme);
   const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
   const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
-  const [serviceVersion, setServiceVersion] = useState<string>('');
 
   useEffect(() => {
     setLangCache(language);
@@ -62,12 +60,6 @@ const GlobalHeaderRight: React.FC = () => {
         }
       })))();
   }, [theme, language]);
-
-  useEffect(() => {
-    queryDataByParams<string>(API_CONSTANTS.GET_SERVICE_VERSION).then((res) => {
-      if (res) setServiceVersion(res);
-    });
-  }, []);
 
   if (!initialState || !initialState.settings) {
     return null;
@@ -123,7 +115,7 @@ const GlobalHeaderRight: React.FC = () => {
     style: fullScreenClassName
   };
 
-  const menuVersion = l('menu.version', '', { version: serviceVersion });
+  const menuVersion = l('menu.version', '', { version: getValueFromLocalStorage(SERVER_VERSION) });
   return (
     <>
       <Tooltip

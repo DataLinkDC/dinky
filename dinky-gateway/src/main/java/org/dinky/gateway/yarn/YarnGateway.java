@@ -22,6 +22,7 @@ package org.dinky.gateway.yarn;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.CustomConfig;
 import org.dinky.data.model.SystemConfiguration;
@@ -98,7 +99,7 @@ import cn.hutool.http.HttpUtil;
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
     private final String TMP_SQL_EXEC_DIR =
-            String.format("%s/tmp/sql-exec/%s", System.getProperty("user.dir"), UUID.randomUUID());
+            String.format("%s/sql-exec/%s", DirConstant.getTempRootDir(), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 

@@ -78,7 +78,7 @@ public class SystemController {
     @ApiOperation("Get Root Log File Content")
     @SaCheckPermission(PermissionConstants.SYSTEM_SETTING_INFO_ROOT_LOG)
     public Result<String> getRootLog() {
-        return Result.data(systemService.readFile(DirConstant.ROOT_LOG_PATH));
+        return Result.data(systemService.readFile(DirConstant.getRootLog()));
     }
 
     /**

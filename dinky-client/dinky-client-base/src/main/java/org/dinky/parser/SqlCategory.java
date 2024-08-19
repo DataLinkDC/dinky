@@ -17,22 +17,27 @@
  *
  */
 
-package org.dinky.data.constant;
+package org.dinky.parser;
 
-public final class NetConstant {
+/**
+ * SqlCategory
+ *
+ * @since 2024/8/14 10:55
+ */
+public enum SqlCategory {
+    UNKNOWN(Boolean.FALSE),
+    DDL(Boolean.FALSE),
+    DCL(Boolean.FALSE),
+    DQL(Boolean.TRUE),
+    DML(Boolean.TRUE);
 
-    /** http:// */
-    public static final String HTTP = "http://";
-    /** https:// */
-    public static final String HTTPS = "https://";
-    /** 冒号: */
-    public static final String COLON = ":";
-    /** 斜杠/ */
-    public static final String SLASH = "/";
-    /** 连接运行服务器超时时间 10秒 */
-    public static final Integer SERVER_TIME_OUT_ACTIVE = 10000;
-    /** 读取服务器超时时间 3000 */
-    public static final Integer READ_TIME_OUT = 3000;
-    /** 连接FLINK历史服务器超时时间 2000 */
-    public static final Integer SERVER_TIME_OUT_HISTORY = 3000;
+    private Boolean hasJobClient;
+
+    SqlCategory(Boolean hasJobClient) {
+        this.hasJobClient = hasJobClient;
+    }
+
+    public Boolean getHasJobClient() {
+        return hasJobClient;
+    }
 }

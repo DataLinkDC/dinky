@@ -66,4 +66,4 @@ jobs:
             FLINK_VERSION=${{ matrix.flink }}
             DINKY_VERSION=${{ inputs.dinky_version }}
           tags: |
-            ${{inputs.docker_space}}/dinky:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
+            ${{inputs.docker_space}}/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}

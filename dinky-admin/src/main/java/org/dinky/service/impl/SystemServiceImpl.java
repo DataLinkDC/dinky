@@ -62,7 +62,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public List<TreeNodeDTO> listLogDir() {
-        File systemLogFiles = TreeUtil.getFilesOfDir(DirConstant.LOG_DIR_PATH);
+        File systemLogFiles = TreeUtil.getFilesOfDir(DirConstant.getRootLogsPath());
         return TreeUtil.treeNodeData(systemLogFiles, false);
     }
 
