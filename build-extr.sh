@@ -29,7 +29,7 @@
 # 4. 同时指定 JDK 和 Flink 版本:你可以同时指定 JDK 和 Flink 版本:
 #./build.sh -j jdk8 -f flink-1.15
 # 默认参数
-JDK_VERSION="jdk11"
+JDK_VERSION="jdk-11"
 FLINK_VERSION="flink-1.18"
 
 # 帮助信息
@@ -56,7 +56,7 @@ while getopts "j:f:" opt; do
 done
 
 # 构建命令
-CMD="./mvnw clean package -Dmaven.test.skip=true -P prod,${JDK_VERSION},flink-single-version,scala-2.12,aliyun,${FLINK_VERSION},web"
+CMD="./mvnw clean package -Dmaven.test.skip=true -P prod,${JDK_VERSION},flink-single-version,aliyun,${FLINK_VERSION},web"
 
 # 执行构建命令
 echo "执行命令: $CMD"
