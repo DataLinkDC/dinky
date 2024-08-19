@@ -1673,6 +1673,7 @@ CREATE TABLE `dinky_metrics` (
                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
                                  `task_id` int(255) DEFAULT NULL COMMENT 'task id',
                                  `vertices` varchar(255) DEFAULT NULL COMMENT 'vertices',
+                                 `vertices_title` varchar(255) DEFAULT NULL COMMENT 'vertices_title',
                                  `metrics` varchar(255) DEFAULT NULL COMMENT 'metrics',
                                  `position` int(11) DEFAULT NULL COMMENT 'position',
                                  `show_type` varchar(255) DEFAULT NULL COMMENT 'show type',
