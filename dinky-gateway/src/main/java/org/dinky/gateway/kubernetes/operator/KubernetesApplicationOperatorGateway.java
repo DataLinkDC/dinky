@@ -118,7 +118,8 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
                                 }
                                 return false;
                             },
-                            2,
+                            // TODO: 最好的方式可以自定义设置。针对大作业需要的时间较长。
+                            5,
                             TimeUnit.MINUTES);
 
             // sleep a time ,because some time the service will not be found
@@ -137,7 +138,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
                     // fixed bug can't find service list #3700
                     .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
                     .list(options);
-            if (Objects.nonNull(list) && !list.getItems().isEmpty()) {
+            if (Objects.nonNull(list) && list.getItems().isEmpty()) {
                 throw new RuntimeException("service list is empty, please check svc list is exists");
             }
             String ipPort = getWebUrl(list, kubernetesClient);
