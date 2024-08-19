@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.constant.NetConstant;
@@ -28,6 +27,8 @@ import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.LogUtil;
+
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
 import java.util.Collections;
 import java.util.List;
@@ -106,7 +107,10 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
                                         return false;
                                     }
                                     result.setJids(Collections.singletonList(jobId));
-                                    logger.info("jobName: {} - clusterId : {} , deploy kubernetes success ", jobName, result.getClusterId());
+                                    logger.info(
+                                            "jobName: {} - clusterId : {} , deploy kubernetes success ",
+                                            jobName,
+                                            result.getClusterId());
                                     return true;
                                 }
                                 if ("DEPLOYING".equals(status)) {
@@ -128,11 +132,12 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
             ListOptions options = new ListOptions();
             String serviceName = config.getFlinkConfig().getJobName() + "-rest";
             options.setFieldSelector("metadata.name=" + serviceName);
-            ServiceList list = kubernetesClient.services()
-                // fixed bug can't find service list
-                .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
-                .list(options);
-            if(Objects.nonNull(list) && !list.getItems().isEmpty()){
+            ServiceList list = kubernetesClient
+                    .services()
+                    // fixed bug can't find service list #3700
+                    .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
+                    .list(options);
+            if (Objects.nonNull(list) && !list.getItems().isEmpty()) {
                 throw new RuntimeException("service list is empty, please check svc list is exists");
             }
             String ipPort = getWebUrl(list, kubernetesClient);
@@ -168,7 +173,8 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
             svcType.append(item.getSpec().getType());
             logger.info("kubernetes service item : [{}] ", item);
             for (ServicePort servicePort : item.getSpec().getPorts()) {
-                if ("rest".equals(servicePort.getName())) {
+                // rest 结束
+                if (servicePort.getName().endsWith("rest")) {
                     switch (svcType.toString()) {
                         case NODE_PORT:
                             List<NodeAddress> addresses = kubernetesClient
