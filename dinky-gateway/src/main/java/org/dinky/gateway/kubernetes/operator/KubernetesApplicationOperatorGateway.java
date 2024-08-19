@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.constant.NetConstant;
@@ -45,9 +46,9 @@ import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 
-public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGateway {
+public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGateway {
 
-    private static final Logger logger = LoggerFactory.getLogger(KubetnetsApplicationOperatorGateway.class);
+    private static final Logger logger = LoggerFactory.getLogger(KubernetesApplicationOperatorGateway.class);
 
     @Override
     public GatewayType getType() {
@@ -80,7 +81,6 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                     .waitUntilCondition(
                             flinkDeployment1 -> {
                                 if (Asserts.isNull(flinkDeployment1.getStatus())) {
-
                                     return false;
                                 }
                                 String status = String.valueOf(
@@ -92,7 +92,7 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                                     logger.info("deploy kubernetes error :{}", error);
                                     throw new RuntimeException(error);
                                 }
-                                if (status.equals("READY")) {
+                                if ("READY".equals(status)) {
                                     String jobId = flinkDeployment1
                                             .getStatus()
                                             .getJobStatus()
@@ -106,10 +106,10 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                                         return false;
                                     }
                                     result.setJids(Collections.singletonList(jobId));
-                                    logger.info("deploy kubernetes success ");
+                                    logger.info("jobName: {} - clusterId : {} , deploy kubernetes success ", jobName, result.getClusterId());
                                     return true;
                                 }
-                                if (status.equals("DEPLOYING")) {
+                                if ("DEPLOYING".equals(status)) {
                                     getK8sClientHelper().createDinkyResource();
                                 }
                                 return false;
@@ -128,7 +128,10 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
             ListOptions options = new ListOptions();
             String serviceName = config.getFlinkConfig().getJobName() + "-rest";
             options.setFieldSelector("metadata.name=" + serviceName);
-            ServiceList list = kubernetesClient.services().list(options);
+            ServiceList list = kubernetesClient.services()
+                // fixed bug can't find service list
+                .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
+                .list(options);
             String ipPort = getWebUrl(list, kubernetesClient);
             result.setWebURL("http://" + ipPort);
             result.setId(result.getJids().get(0) + System.currentTimeMillis());
@@ -153,20 +156,17 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
         StringBuilder ipPort = new StringBuilder();
         StringBuilder svcRestPort = new StringBuilder();
         StringBuilder svcType = new StringBuilder();
+        logger.info("kubernetes service list : [{}] \n kubernetesClient: [{}]", list, kubernetesClient);
         for (Service item : list.getItems()) {
             svcRestPort
                     .append(item.getMetadata().getName())
                     .append(".")
                     .append(item.getMetadata().getNamespace());
             svcType.append(item.getSpec().getType());
+            logger.info("kubernetes service item : [{}] ", item);
             for (ServicePort servicePort : item.getSpec().getPorts()) {
-                if (servicePort.getName().equals("rest")) {
+                if ("rest".equals(servicePort.getName())) {
                     switch (svcType.toString()) {
-                        case CLUSTER_IP:
-                            ipPort.append(item.getSpec().getClusterIP());
-                            ipPort.append(":")
-                                    .append(item.getSpec().getPorts().get(0).getPort());
-                            break;
                         case NODE_PORT:
                             List<NodeAddress> addresses = kubernetesClient
                                     .nodes()
@@ -193,6 +193,10 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                                     .append(item.getSpec().getPorts().get(0).getPort());
                             break;
                         default:
+                            // DEFAULT CLUSTER IP
+                            ipPort.append(item.getSpec().getClusterIP());
+                            ipPort.append(":")
+                                    .append(item.getSpec().getPorts().get(0).getPort());
                             break;
                     }
                     svcRestPort
