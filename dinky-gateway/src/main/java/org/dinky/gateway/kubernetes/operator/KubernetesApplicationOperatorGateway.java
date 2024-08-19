@@ -129,7 +129,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
             String serviceName = config.getFlinkConfig().getJobName() + "-rest";
             options.setFieldSelector("metadata.name=" + serviceName);
             ServiceList list = kubernetesClient.services()
-                // fixed bug can't find service list
+                // fixed bug can't find service list #3700
                 .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
                 .list(options);
             if(Objects.nonNull(list) && !list.getItems().isEmpty()){
