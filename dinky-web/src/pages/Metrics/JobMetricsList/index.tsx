@@ -74,7 +74,7 @@ const JobMetricsList = (props: MetricsProps) => {
     onSuccess: (result: MetricsDataType[]) => setChartDatas(() => dataProcess({}, result))
   });
 
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
   useEffect(() => {

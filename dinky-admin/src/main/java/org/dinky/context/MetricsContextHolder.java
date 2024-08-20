@@ -20,6 +20,7 @@
 package org.dinky.context;
 
 import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
+import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
 import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.enums.SseTopic;
@@ -90,7 +91,7 @@ public class MetricsContextHolder {
         }
         pool.execute(() -> {
             String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-            SseSessionContextHolder.sendTopic(topic, o); // Ensure only successfully added metrics are sent
+            sendTopic(topic, o); // Ensure only successfully added metrics are sent
         });
     }
 
@@ -118,7 +119,7 @@ public class MetricsContextHolder {
             metricsVOS.clear();
         }
         String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-        SseSessionContextHolder.sendTopic(topic, o);
+        sendTopic(topic, o);
     }
 
     public List<List<String>> convertMetricsVOsToStringList(List<MetricsVO> metricsVOS) {

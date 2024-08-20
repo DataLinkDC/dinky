@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.dto.SseSubscribeDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.result.Result;
@@ -47,18 +46,18 @@ import lombok.RequiredArgsConstructor;
 @SaCheckLogin
 public class SseController {
 
-    @PostMapping(value = "/subscribeTopic")
-    @ApiOperation("subscribeTopic")
-    @ApiImplicitParam(name = "topics", value = "topics", required = true, dataType = "List")
-    public Result<Set<String>> subscribeTopic(@RequestBody SseSubscribeDTO subscribeDTO) {
-        Set<String> b = SseSessionContextHolder.subscribeTopic(subscribeDTO.getSessionKey(), subscribeDTO.getTopics());
-        return Result.succeed(b, Status.SUCCESS);
-    }
-
-    @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @ApiOperation("Connect Sse")
-    @ApiImplicitParam(name = "sessionKey", value = "Session unique key", required = true, dataType = "String")
-    public SseEmitter connect(String sessionKey) {
-        return SseSessionContextHolder.connectSession(sessionKey);
-    }
+//    @PostMapping(value = "/subscribeTopic")
+//    @ApiOperation("subscribeTopic")
+//    @ApiImplicitParam(name = "topics", value = "topics", required = true, dataType = "List")
+//    public Result<Set<String>> subscribeTopic(@RequestBody SseSubscribeDTO subscribeDTO) {
+//        Set<String> b = SseSessionContextHolder.subscribeTopic(subscribeDTO.getSessionKey(), subscribeDTO.getTopics());
+//        return Result.succeed(b, Status.SUCCESS);
+//    }
+//
+//    @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+//    @ApiOperation("Connect Sse")
+//    @ApiImplicitParam(name = "sessionKey", value = "Session unique key", required = true, dataType = "String")
+//    public SseEmitter connect(String sessionKey) {
+//        return SseSessionContextHolder.connectSession(sessionKey);
+//    }
 }

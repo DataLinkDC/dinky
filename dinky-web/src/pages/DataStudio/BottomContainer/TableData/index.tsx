@@ -41,7 +41,7 @@ export type PrintTable = {
 export const DataPage = (props: any) => {
   const { style, title } = props;
   const [consoleInfo, setConsoleInfo] = useState<string>('');
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
   const [tableName, setTableName] = useState<string>('');

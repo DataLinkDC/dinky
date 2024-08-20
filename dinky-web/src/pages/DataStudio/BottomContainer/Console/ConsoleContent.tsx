@@ -75,7 +75,7 @@ const ConsoleContent = (props: ConsoleProps) => {
 
   const process = `FlinkSubmit/${tab.params.taskId}`;
   const topic = `${SSE_TOPIC.PROCESS_CONSOLE}/${process}`;
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
 

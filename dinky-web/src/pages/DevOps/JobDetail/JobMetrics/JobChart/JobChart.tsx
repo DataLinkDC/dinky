@@ -44,7 +44,7 @@ const JobChart = (props: JobChartProps) => {
 
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
 
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
 

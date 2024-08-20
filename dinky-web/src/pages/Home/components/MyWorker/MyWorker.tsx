@@ -75,6 +75,7 @@ const MyWorker = () => {
         {data?.map((item: TaskInfo) => (
           <Card.Grid key={item.id} style={{ padding: 5 }}>
             <ProCard
+              style={{cursor:"pointer"}}
               bordered={false}
               title={renderTitle(item)}
               extra={

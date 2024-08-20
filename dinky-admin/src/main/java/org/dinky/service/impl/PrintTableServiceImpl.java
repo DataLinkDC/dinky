@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.PrintTableVo;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
@@ -46,6 +45,8 @@ import org.springframework.stereotype.Service;
 
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
+
+import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
 @Slf4j
 @Service
@@ -75,7 +76,7 @@ public class PrintTableServiceImpl implements PrintTableService {
         try {
             String[] data = message.split("\n", 2);
             String topic = StrFormatter.format("{}/{}", SseTopic.PRINT_TABLE.getValue(), data[0]);
-            SseSessionContextHolder.sendTopic(topic, data[1]);
+            sendTopic(topic, data[1]);
         } catch (Exception e) {
             log.error("send message failed: {}", e.getMessage());
         }

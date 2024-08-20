@@ -53,6 +53,8 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
+import static org.dinky.ws.GlobalWebSocket.sendTopic;
+
 @Slf4j
 public class ConsoleContextHolder {
     protected static final ConsoleContextHolder instance = new ConsoleContextHolder();
@@ -151,7 +153,7 @@ public class ConsoleContextHolder {
         //   /TOPIC/PROCESS_CONSOLE/FlinkSubmit/12
         String topic = StrFormatter.format("{}/{}", SseTopic.PROCESS_CONSOLE.getValue(), processName);
         CompletableFuture.runAsync(() -> {
-            SseSessionContextHolder.sendTopic(topic, process);
+            sendTopic(topic, process);
         });
     }
 
