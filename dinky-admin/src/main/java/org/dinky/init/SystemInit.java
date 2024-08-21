@@ -48,7 +48,6 @@ import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.UDFUtils;
 
-
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -113,7 +112,7 @@ public class SystemInit implements ApplicationRunner {
     private void registerURL() {
         URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
         // todo 校验
-//        TomcatURLStreamHandlerFactory.getInstance().addUserFactory(new RsURLStreamHandlerFactory());
+        //        TomcatURLStreamHandlerFactory.getInstance().addUserFactory(new RsURLStreamHandlerFactory());
     }
 
     private void initResources() {
@@ -157,7 +156,7 @@ public class SystemInit implements ApplicationRunner {
             DaemonTask daemonTask = DaemonTask.build(config);
             flinkJobThreadPool.execute(daemonTask);
         }
-//        SseSessionContextHolder.init(schedule);
+        //        SseSessionContextHolder.init(schedule);
     }
 
     /**

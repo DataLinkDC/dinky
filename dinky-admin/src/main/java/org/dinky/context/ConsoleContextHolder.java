@@ -19,6 +19,8 @@
 
 package org.dinky.context;
 
+import static org.dinky.ws.GlobalWebSocket.sendTopic;
+
 import org.dinky.aop.ProcessAspect;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.ProcessStatus;
@@ -52,8 +54,6 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
-
-import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
 @Slf4j
 public class ConsoleContextHolder {

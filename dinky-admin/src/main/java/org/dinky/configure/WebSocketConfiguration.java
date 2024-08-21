@@ -19,6 +19,8 @@
 
 package org.dinky.configure;
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.web.embedded.undertow.UndertowBuilderCustomizer;
 import org.springframework.boot.web.embedded.undertow.UndertowDeploymentInfoCustomizer;
@@ -26,8 +28,6 @@ import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFa
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
-
-import java.util.stream.Collectors;
 
 @Configuration
 public class WebSocketConfiguration {
@@ -44,7 +44,8 @@ public class WebSocketConfiguration {
         UndertowServletWebServerFactory factory = new UndertowServletWebServerFactory();
         factory.getDeploymentInfoCustomizers()
                 .addAll(deploymentInfoCustomizers.orderedStream().collect(Collectors.toList()));
-        factory.getBuilderCustomizers().addAll(builderCustomizers.orderedStream().collect(Collectors.toList()));
+        factory.getBuilderCustomizers()
+                .addAll(builderCustomizers.orderedStream().collect(Collectors.toList()));
         return factory;
     }
     //    @Override

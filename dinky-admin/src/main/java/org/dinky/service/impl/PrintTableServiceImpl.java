@@ -19,6 +19,8 @@
 
 package org.dinky.service.impl;
 
+import static org.dinky.ws.GlobalWebSocket.sendTopic;
+
 import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.PrintTableVo;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
@@ -45,8 +47,6 @@ import org.springframework.stereotype.Service;
 
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
-
-import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
 @Slf4j
 @Service

@@ -46,8 +46,8 @@
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>spring-boot-starter-tomcat</artifactId>
                     <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -94,8 +94,8 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>spring-boot-starter-web</artifactId>
                     <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -196,8 +196,8 @@
             <artifactId>sa-token-spring-boot-starter</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>spring-boot-starter-web</artifactId>
                     <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

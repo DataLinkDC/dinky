@@ -1,23 +1,28 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.ws;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.json.JSONUtil;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.vo.SseDataVo;
 import org.dinky.utils.JsonUtils;
-import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -28,32 +33,48 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
+
+import org.springframework.stereotype.Component;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.extra.spring.SpringUtil;
+import cn.hutool.json.JSONUtil;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Component
 @ServerEndpoint(value = "/api/ws/global")
 public class GlobalWebSocket {
     private static final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
-    public GlobalWebSocket(){
-        executorService.execute(()->{
-            while (true){
+    public GlobalWebSocket() {
+        executorService.execute(() -> {
+            while (true) {
                 sendTopic(GlobalWebSocketTopic.JVM_INFO.getTopic(), Jvm.of());
                 ThreadUtil.safeSleep(TimeUnit.SECONDS.toMillis(5));
             }
         });
     }
+
     @Getter
     @Setter
     public static class RequestDTO {
         private List<String> topics;
     }
 
-    private final static Map<Session, Set<String>> TOPICS = new ConcurrentHashMap<>();
-
+    private static final Map<Session, Set<String>> TOPICS = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session) {
-    }
+    public void onOpen(Session session) {}
 
     @OnClose
     public void onClose(Session session) {
@@ -65,8 +86,8 @@ public class GlobalWebSocket {
         try {
             RequestDTO requestDTO = JsonUtils.parseObject(message, RequestDTO.class);
             if (requestDTO != null && CollUtil.isNotEmpty(requestDTO.getTopics())) {
-                TOPICS.put(session,new HashSet<>(requestDTO.getTopics()));
-            }else {
+                TOPICS.put(session, new HashSet<>(requestDTO.getTopics()));
+            } else {
                 TOPICS.remove(session);
             }
         } catch (Exception e) {
@@ -78,7 +99,6 @@ public class GlobalWebSocket {
     public void onError(Session session, Throwable error) {
         onClose(session);
     }
-
 
     /**
      * Sends the specified content to all subscribers of the given topic.
@@ -99,7 +119,4 @@ public class GlobalWebSocket {
             }
         });
     }
-
-
 }
-
