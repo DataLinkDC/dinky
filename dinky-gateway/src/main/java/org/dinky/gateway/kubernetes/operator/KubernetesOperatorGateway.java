@@ -160,15 +160,18 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
         String jbcpu = kubernetesConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
-        String jbmem = flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
+        String jbmem = flinkConfig.getConfiguration()
+                .getOrDefault("jobmanager.memory.process.size", "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
         // jm ha kubernetes.jobmanager.replicas
-        int replicas = Integer.parseInt(flinkConfig.getConfiguration().getOrDefault("kubernetes.jobmanager.replicas", "1"));
+        int replicas = Integer.parseInt(flinkConfig.getConfiguration()
+                .getOrDefault("kubernetes.jobmanager.replicas", "1"));
         jobManagerSpec.setReplicas(replicas);
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
 
         String tmcpu = kubernetesConfiguration.getOrDefault("kubernetes.taskmanager.cpu", "1");
-        String tmmem = flinkConfig.getConfiguration().getOrDefault("taskmanager.memory.process.size", "1G");
+        String tmmem = flinkConfig.getConfiguration()
+                .getOrDefault("taskmanager.memory.process.size", "1G");
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
 
