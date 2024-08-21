@@ -176,7 +176,7 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         flinkDeploymentSpec.setTaskManager(taskManagerSpec);
     }
 
-    // 不应被定义的 key
+    // flink config defined key
     private final List<String> flinkConfigDefinedByFlink = Lists.newArrayList(
             "kubernetes.namespace",
             "kubernetes.cluster-id"
