@@ -19,6 +19,13 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.enums.UpgradeMode;
@@ -30,19 +37,13 @@ import org.dinky.gateway.kubernetes.operator.api.FlinkDeploymentSpec;
 import org.dinky.gateway.kubernetes.operator.api.JobSpec;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
-
-import java.util.Map;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
-import io.fabric8.kubernetes.api.model.ObjectMeta;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -124,9 +125,25 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
                 .args(userJarParas)
                 .parallelism(Integer.parseInt(parallelism));
 
-        if (Asserts.isNotNull(config.getFlinkConfig().getSavePoint())) {
-            String savePointPath = config.getFlinkConfig().getSavePoint();
-            jobSpecBuilder.initialSavepointPath(savePointPath);
+        // config.getFlinkConfig().getSavePoint() always is null
+        // flinkDeployment spec.flinkConfiguration => subJob flinkConfig > kubernetes Config
+        // note: flink operator can't read job some config. ex: savepoint & kubernetes.operator config
+        final String savePointKey = "state.savepoints.dir";
+        String savePointPath = config.getFlinkConfig().getSavePoint();
+        logger.info("savePointPath: {}", savePointPath);
+        if (!StringUtils.hasText(savePointPath)) {
+            savePointPath = flinkConfig.getConfiguration().getOrDefault(savePointKey, null);
+            logger.info("flinkConfig savePointPath: {}", savePointPath);
+        }
+        // TODO: flink operator upgradeMode specifies savepointPath recovery and needs to be matched with savepointRedeployNonce this parameter.
+        if (Asserts.isNotNull(savePointPath)) {
+            /*
+             * It is possible to redeploy a FlinkDeployment or FlinkSessionJob resource from a target savepoint
+             * by using the combination of savepointRedeployNonce and initialSavepointPath in the job spec
+             * {@see https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-release-1.8/docs/custom-resource/job-management/#redeploy-using-the-savepointredeploynonce}
+             * jobSpecBuilder.initialSavepointPath(savePointPath);
+             * jobSpecBuilder.savepointRedeployNonce(1);
+             */
             jobSpecBuilder.upgradeMode(UpgradeMode.SAVEPOINT);
 
             logger.info("find save point config, the path is : {}", savePointPath);
@@ -158,6 +175,12 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         flinkDeploymentSpec.setTaskManager(taskManagerSpec);
     }
 
+    // 不应被定义的 key
+    private final List<String> flinkConfigDefinedByFlink = Lists.newArrayList(
+            "kubernetes.namespace",
+            "kubernetes.cluster-id"
+    );
+
     private void initSpec() {
         String flinkVersion = flinkConfig.getFlinkVersion();
         String image = kubernetesConfiguration.get("kubernetes.container.image");
@@ -170,10 +193,22 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         } else {
             throw new IllegalArgumentException("Flink version are not Set！！use Operator must be set!");
         }
+        Map<String, String> combinedConfiguration = Maps.newHashMap();
+        // By default, the init initialization of kubernetesConfiguration is used.
+        if (kubernetesConfiguration != null) {
+            combinedConfiguration.putAll(kubernetesConfiguration);
+        }
+        // Secondly, it is overwritten through the job parameters submitted by Dinky.。
+        if (flinkConfig.getConfiguration() != null) {
+            combinedConfiguration.putAll(flinkConfig.getConfiguration());
+        }
+        // note: rm flinkConfiguration by flinkDefined
+        flinkConfigDefinedByFlink.forEach(combinedConfiguration::remove);
+        logger.info("combinedConfiguration: {}", combinedConfiguration);
+        // Merge Config
+        flinkDeploymentSpec.setFlinkConfiguration(combinedConfiguration);
 
         flinkDeploymentSpec.setImage(image);
-
-        flinkDeploymentSpec.setFlinkConfiguration(flinkConfig.getConfiguration());
         flinkDeployment.setSpec(flinkDeploymentSpec);
 
         if (Asserts.isNotNull(serviceAccount)) {
@@ -197,7 +232,7 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         String jobName = config.getFlinkConfig().getJobName();
         String nameSpace = kubernetesConfiguration.get("kubernetes.namespace");
 
-        logger.info("\njobName is ：{} \n namespce is : {}", jobName, nameSpace);
+        logger.info("\njobName is ：{} \n namespace is : {}", jobName, nameSpace);
 
         // set Meta info , include pod name, namespace conf
         ObjectMeta objectMeta = new ObjectMeta();
