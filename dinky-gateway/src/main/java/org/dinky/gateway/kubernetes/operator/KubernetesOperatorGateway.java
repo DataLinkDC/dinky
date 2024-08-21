@@ -135,7 +135,7 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
             savePointPath = flinkConfig.getConfiguration().getOrDefault(savePointKey, null);
             logger.info("flinkConfig savePointPath: {}", savePointPath);
         }
-        // TODO: flink operator upgradeMode specifies savepointPath recovery and needs to be matched with savepointRedeployNonce this parameter.
+        // flink operator upgradeMode specifies savepointPath recovery and needs to be matched with savepointRedeployNonce this parameter.
         if (Asserts.isNotNull(savePointPath)) {
             /*
              * It is possible to redeploy a FlinkDeployment or FlinkSessionJob resource from a target savepoint
