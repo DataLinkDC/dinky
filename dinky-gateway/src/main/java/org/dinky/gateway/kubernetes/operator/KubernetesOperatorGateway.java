@@ -19,6 +19,13 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.enums.UpgradeMode;
@@ -30,24 +37,13 @@ import org.dinky.gateway.kubernetes.operator.api.FlinkDeploymentSpec;
 import org.dinky.gateway.kubernetes.operator.api.JobSpec;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import io.fabric8.kubernetes.api.model.ObjectMeta;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -166,6 +162,9 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         String jbcpu = kubernetesConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
         String jbmem = flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
+        // jm ha kubernetes.jobmanager.replicas
+        int replicas = Integer.parseInt(flinkConfig.getConfiguration().getOrDefault("kubernetes.jobmanager.replicas", "1"));
+        jobManagerSpec.setReplicas(replicas);
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
 
         String tmcpu = kubernetesConfiguration.getOrDefault("kubernetes.taskmanager.cpu", "1");
