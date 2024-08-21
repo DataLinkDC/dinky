@@ -21,37 +21,38 @@ package org.dinky.gateway.kubernetes.operator.api;
 
 import org.apache.flink.annotation.Experimental;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressTLS;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 
+/** Ingress spec. */
 @Experimental
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
-@SuperBuilder
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FlinkDeploymentSpec {
-    private JobSpec job;
-    private Long restartNonce;
-    /** Ingress specs. */
-    private IngressSpec ingress;
+public class IngressSpec {
 
-    private Map<String, String> flinkConfiguration;
-    private String image;
-    private String imagePullPolicy;
-    private String serviceAccount;
-    private String flinkVersion;
-    private Pod podTemplate;
-    private AbstractPodSpec jobManager;
-    private AbstractPodSpec taskManager;
-    private Map<String, String> logConfiguration;
+    /** Ingress template for the JobManager service. */
+    private String template;
+
+    /** Ingress className for the Flink deployment. */
+    private String className;
+
+    /** Ingress annotations. */
+    private Map<String, String> annotations;
+
+    /** Ingress labels. */
+    private Map<String, String> labels;
+
+    /** Ingress tls. */
+    private List<IngressTLS> tls;
 }
