@@ -163,9 +163,10 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         String jbmem = flinkConfig.getConfiguration()
                 .getOrDefault("jobmanager.memory.process.size", "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
-        // jm ha kubernetes.jobmanager.replicas
-        int replicas = Integer.parseInt(flinkConfig.getConfiguration()
-                .getOrDefault("kubernetes.jobmanager.replicas", "1"));
+        // jm ha kubernetes.jobmanager.replicas or job flinkConfig
+        int replicas = Integer.parseInt(kubernetesConfiguration.getOrDefault("kubernetes.jobmanager.replicas",
+                flinkConfig.getConfiguration().getOrDefault("kubernetes.jobmanager.replicas", "1")));
+
         jobManagerSpec.setReplicas(replicas);
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
 
