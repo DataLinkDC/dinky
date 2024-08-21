@@ -125,6 +125,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
             width='xs'
             name='enabled'
             label={l('global.table.isEnable')}
+            initialValue={false}
             {...SWITCH_OPTIONS()}
           />
         </ProForm.Group>
