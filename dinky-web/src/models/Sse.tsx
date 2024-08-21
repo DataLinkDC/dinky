@@ -34,7 +34,5 @@ export type SubscriberData = {
 };
 
 export default () => {
-
-  return {
-  };
+  return {};
 };

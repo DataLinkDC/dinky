@@ -40,7 +40,7 @@ export default {
       changeOrigin: true,
       logLevel: 'debug',
       pathRewrite: { '^': '' },
-      ws:true,
+      ws: true,
       onProxyRes: (
         proxyRes: any,
         req: any,

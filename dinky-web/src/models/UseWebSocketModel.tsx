@@ -17,10 +17,9 @@
  *
  */
 
-import {useEffect, useRef, useState} from "react";
-import {SseData, SubscriberData} from "@/models/Sse";
-import {ErrorMessage} from "@/utils/messages";
-
+import { useEffect, useRef, useState } from 'react';
+import { SseData, SubscriberData } from '@/models/Sse';
+import { ErrorMessage } from '@/utils/messages';
 
 export default () => {
   const subscriberRef = useRef<SubscriberData[]>([]);
@@ -33,16 +32,16 @@ export default () => {
       ws?.close();
     }
     ws.onopen = () => {
-      console.log("ws open");
-    }
+      console.log('ws open');
+    };
   };
 
   const subscribe = async () => {
     const topics: string[] = [];
     subscriberRef.current.forEach((sub) => topics.push(...sub.topic));
-    const param = {topics: topics};
+    const param = { topics: topics };
     if (ws?.readyState === ws?.CLOSED) {
-      reconnect()
+      reconnect();
     } else {
       ws?.send(JSON.stringify(param));
     }
@@ -73,8 +72,8 @@ export default () => {
   }, [ws]);
 
   const subscribeTopic = (topic: string[], onMessage: (data: SseData) => void) => {
-    const sub: SubscriberData = {topic: topic, call: onMessage};
-    if (!subscriberRef.current.flatMap(x=>x.topic).includes(sub.topic[0])){
+    const sub: SubscriberData = { topic: topic, call: onMessage };
+    if (!subscriberRef.current.flatMap((x) => x.topic).includes(sub.topic[0])) {
       subscriberRef.current = [...subscriberRef.current, sub];
       subscribe();
     }

@@ -19,13 +19,13 @@
 
 import useThemeValue from '@/hooks/useThemeValue';
 import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal';
-import {getCurrentTab} from '@/pages/DataStudio/function';
-import {StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
-import {l} from '@/utils/intl';
-import {connect, useModel} from '@@/exports';
-import {Button, GlobalToken, Space} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {SseData} from "@/models/Sse";
+import { getCurrentTab } from '@/pages/DataStudio/function';
+import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import { l } from '@/utils/intl';
+import { connect, useModel } from '@@/exports';
+import { Button, GlobalToken, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { SseData } from '@/models/Sse';
 
 export type FooterContainerProps = {
   token: GlobalToken;
@@ -57,35 +57,33 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const [viewJobRunning, setViewJobRunning] = useState(false);
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
-  const topic = "jvmInfo"
-  const {subscribeTopic} = useModel('UseWebSocketModel', (model: any) => ({
+  const topic = 'jvmInfo';
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
 
   useEffect(() => {
-      return subscribeTopic([topic], (data: SseData) => {
-          const respData = data.data;
-            setMemDetailInfo(
-              Number(respData['heapUsed'] / 1024 / 1024).toFixed(0) +
-              '/' +
-              Number(respData['max'] / 1024 / 1024).toFixed(0) +
-              'M'
-            );
-        }
-      )
-  }
-   , []);
+    return subscribeTopic([topic], (data: SseData) => {
+      const respData = data.data;
+      setMemDetailInfo(
+        Number(respData['heapUsed'] / 1024 / 1024).toFixed(0) +
+          '/' +
+          Number(respData['max'] / 1024 / 1024).toFixed(0) +
+          'M'
+      );
+    });
+  }, []);
 
   const route: ButtonRoute[] = [
     {
       text: (
-        <span style={{backgroundColor: token.colorBgContainer}}>
+        <span style={{ backgroundColor: token.colorBgContainer }}>
           <div
             style={{
               width:
                 (1 -
                   parseInt(memDetailInfo.split('/')[0]) / parseInt(memDetailInfo.split('/')[1])) *
-                100 +
+                  100 +
                 '%',
               backgroundColor: token.colorFill
             }}
@@ -146,7 +144,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
           size={'small'}
           type={'text'}
           block
-          style={{paddingInline: 4}}
+          style={{ paddingInline: 4 }}
           key={index}
           onClick={item.onClick}
           title={item.title}
@@ -171,15 +169,15 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
           left: 0
         }}
       >
-        <Space style={{direction: 'ltr', width: '30%%'}}>
-          <Button size={'small'} type={'text'} block style={{paddingInline: 4}}>
+        <Space style={{ direction: 'ltr', width: '30%%' }}>
+          <Button size={'small'} type={'text'} block style={{ paddingInline: 4 }}>
             Welcome to Dinky !
           </Button>
         </Space>
-        <Space onClick={() => setViewJobRunning(true)} style={{direction: 'rtl', width: '30%'}}>
+        <Space onClick={() => setViewJobRunning(true)} style={{ direction: 'rtl', width: '30%' }}>
           {jobRunningMsg.jobName} - {jobRunningMsg.runningLog}
         </Space>
-        <Space style={{direction: 'rtl', width: '70%'}} size={4} direction={'horizontal'}>
+        <Space style={{ direction: 'rtl', width: '70%' }} size={4} direction={'horizontal'}>
           {renderFooterRightInfo(route)}
         </Space>
       </div>
@@ -193,7 +191,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     </>
   );
 };
-export default connect(({Studio}: { Studio: StateType }) => ({
+export default connect(({ Studio }: { Studio: StateType }) => ({
   footContainer: Studio.footContainer,
   tabs: Studio.tabs
 }))(FooterContainer);
