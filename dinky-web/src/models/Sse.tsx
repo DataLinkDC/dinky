@@ -25,7 +25,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 const session_invalid_label = 'SESSION_INVALID';
 
-
 export default () => {
   return {};
 };

@@ -33,7 +33,7 @@ import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { Key, useEffect, useRef, useState } from 'react';
-import {SseData, Topic} from "@/models/UseWebSocketModel";
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 const { Text } = Typography;
 
@@ -80,7 +80,7 @@ const ConsoleContent = (props: ConsoleProps) => {
   const onUpdate = (data: ProcessStep) => {
     setProcessNode((prevState: any) => {
       //如果key不一致代表重新提交了任务，清空旧状态
-      if (prevState && prevState?.key != data?.key || !data) {
+      if ((prevState && prevState?.key != data?.key) || !data) {
         setSelectNode(undefined);
       }
       return data;
@@ -102,11 +102,13 @@ const ConsoleContent = (props: ConsoleProps) => {
     { onSuccess: async (res) => onUpdate(res) }
   );
 
-  const refreshProcess =()=>{
-    subscribeTopic(Topic.PROCESS_CONSOLE,[process], (data: SseData) => onUpdate(data?.data[process]))
-  }
+  const refreshProcess = () => {
+    subscribeTopic(Topic.PROCESS_CONSOLE, [process], (data: SseData) =>
+      onUpdate(data?.data[process])
+    );
+  };
 
-  useEffect(refreshProcess , []);
+  useEffect(refreshProcess, []);
   const onSelect = (
     _selectedKeys: Key[],
     info: {
@@ -197,7 +199,7 @@ const ConsoleContent = (props: ConsoleProps) => {
                 { processName: process },
                 l('rc.ds.detail.tag.console.clear.log')
               );
-              if (boolean) refreshProcess()
+              if (boolean) refreshProcess();
             }}
             btnExtraContent={
               <LoadingBtn

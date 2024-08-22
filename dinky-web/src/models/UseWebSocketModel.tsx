@@ -17,8 +17,8 @@
  *
  */
 
-import {useEffect, useRef, useState} from 'react';
-import {ErrorMessage} from '@/utils/messages';
+import { useEffect, useRef, useState } from 'react';
+import { ErrorMessage } from '@/utils/messages';
 import { v4 as uuidv4 } from 'uuid';
 export type SseData = {
   topic: string;
@@ -26,10 +26,10 @@ export type SseData = {
 };
 
 export enum Topic {
-  JVM_INFO="JVM_INFO",
-  PROCESS_CONSOLE="PROCESS_CONSOLE",
-  PRINT_TABLE="PRINT_TABLE",
-  METRICS="METRICS",
+  JVM_INFO = 'JVM_INFO',
+  PROCESS_CONSOLE = 'PROCESS_CONSOLE',
+  PRINT_TABLE = 'PRINT_TABLE',
+  METRICS = 'METRICS'
 }
 
 export type SubscriberData = {
@@ -59,9 +59,9 @@ export default () => {
       if (!topics[sub.topic]) {
         topics[sub.topic] = [];
       }
-      if (sub.params&& sub.params.length>0){
+      if (sub.params && sub.params.length > 0) {
         topics[sub.topic] = [...topics[sub.topic], ...sub.params];
-      }else {
+      } else {
         topics[sub.topic] = [...topics[sub.topic]];
       }
     });
@@ -86,8 +86,8 @@ export default () => {
         try {
           const data: SseData = JSON.parse(e.data);
           subscriberRef.current
-            .filter((sub) => sub.topic===data.topic)
-            .filter(sub=>!sub.params || sub.params.find((x)=>data.data[x]) )
+            .filter((sub) => sub.topic === data.topic)
+            .filter((sub) => !sub.params || sub.params.find((x) => data.data[x]))
             .forEach((sub) => sub.call(data));
         } catch (e: any) {
           ErrorMessage(e);
@@ -97,7 +97,7 @@ export default () => {
   }, [ws]);
 
   const subscribeTopic = (topic: Topic, params: string[], onMessage: (data: SseData) => void) => {
-    const sub: SubscriberData = {topic: topic, call: onMessage, params: params,key:uuidv4()};
+    const sub: SubscriberData = { topic: topic, call: onMessage, params: params, key: uuidv4() };
     subscriberRef.current.push(sub);
     subscribe();
     return () => {

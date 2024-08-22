@@ -25,7 +25,7 @@ import { Modal, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Tab } from 'rc-tabs/lib/interface.d';
 import { useEffect, useState } from 'react';
-import {SseData, Topic} from "@/models/UseWebSocketModel";
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 export async function getPrintTables(statement: string) {
   return postAll('api/printTable/getPrintTables', { statement });
@@ -46,10 +46,12 @@ export const DataPage = (props: any) => {
 
   useEffect(() => {
     if (title) {
-      return subscribeTopic(Topic.PRINT_TABLE,[title.fullTableName], (data: SseData) => {
-       if (data?.data[title.fullTableName]){
-         setConsoleInfo((preConsoleInfo) => preConsoleInfo + '\n' + data.data[title.fullTableName]);
-       }
+      return subscribeTopic(Topic.PRINT_TABLE, [title.fullTableName], (data: SseData) => {
+        if (data?.data[title.fullTableName]) {
+          setConsoleInfo(
+            (preConsoleInfo) => preConsoleInfo + '\n' + data.data[title.fullTableName]
+          );
+        }
       });
     }
   }, []);
