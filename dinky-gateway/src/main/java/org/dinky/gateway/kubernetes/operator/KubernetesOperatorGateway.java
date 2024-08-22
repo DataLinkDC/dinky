@@ -36,6 +36,7 @@ import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -153,6 +154,7 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
 
             logger.info("find save point config, the path is : {}", savePointPath);
         } else {
+            // 官方不推荐生产配置
             jobSpecBuilder.upgradeMode(UpgradeMode.STATELESS);
             logger.info("no save point config");
         }
@@ -166,10 +168,18 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         String jbcpu = kubernetesConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
         String jbmem = flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
-        // jm ha kubernetes.jobmanager.replicas or job flinkConfig
-        int replicas = Integer.parseInt(kubernetesConfiguration.getOrDefault(
-                "kubernetes.jobmanager.replicas",
-                flinkConfig.getConfiguration().getOrDefault("kubernetes.jobmanager.replicas", "1")));
+        // if enable job high-availability
+        int replicas = 1;
+        String haEnabled = flinkConfig.getConfiguration().getOrDefault("high-availability.type", "NONE");
+        if (Objects.nonNull(haEnabled) && !Objects.equals("NONE", haEnabled)) {
+            // jm ha kubernetes.jobmanager.replicas or job flinkConfig
+            replicas = Integer.parseInt(kubernetesConfiguration.getOrDefault(
+                    "kubernetes.jobmanager.replicas",
+                    flinkConfig.getConfiguration().getOrDefault("kubernetes.jobmanager.replicas", "1")));
+        } else {
+            logger.info(
+                    "If you need to enable high availability mode, please set the high-availability.* and kubernetes.jobmanager.replicas parameters first.");
+        }
 
         jobManagerSpec.setReplicas(replicas);
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
