@@ -32,7 +32,11 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 
 import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.configuration.HighAvailabilityOptions;
+import org.apache.flink.configuration.JobManagerOptions;
+import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 
 import java.util.List;
 import java.util.Map;
@@ -41,10 +45,8 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import lombok.Data;
@@ -133,13 +135,9 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         // config.getFlinkConfig().getSavePoint() always is null
         // flinkDeployment spec.flinkConfiguration => subJob flinkConfig > kubernetes Config
         // note: flink operator can't read job some config. ex: savepoint & kubernetes.operator config
-        final String savePointKey = "state.savepoints.dir";
-        String savePointPath = config.getFlinkConfig().getSavePoint();
+        String savePointPath = configuration.get(SavepointConfigOptions.SAVEPOINT_PATH);
         logger.info("savePointPath: {}", savePointPath);
-        if (!StringUtils.hasText(savePointPath)) {
-            savePointPath = flinkConfig.getConfiguration().getOrDefault(savePointKey, null);
-            logger.info("flinkConfig savePointPath: {}", savePointPath);
-        }
+
         // flink operator upgradeMode specifies savepointPath recovery and needs to be matched
         // with savepointRedeployNonce this parameter.
         if (Asserts.isNotNull(savePointPath)) {
@@ -154,7 +152,7 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
 
             logger.info("find save point config, the path is : {}", savePointPath);
         } else {
-            // 官方不推荐生产配置
+            // Officially not recommended for production configuration
             jobSpecBuilder.upgradeMode(UpgradeMode.STATELESS);
             logger.info("no save point config");
         }
@@ -165,27 +163,28 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
     private void initResource() {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
-        String jbcpu = kubernetesConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
-        String jbmem = flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
+        String jbcpu = configuration.getString("kubernetes.jobmanager.cpu", "1");
+        // default 1G
+        String jbmem = configuration.getString(JobManagerOptions.TOTAL_PROCESS_MEMORY.key(), "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
         // if enable job high-availability
-        int replicas = 1;
-        String haEnabled = flinkConfig.getConfiguration().getOrDefault("high-availability.type", "NONE");
-        if (Objects.nonNull(haEnabled) && !Objects.equals("NONE", haEnabled)) {
+        Integer replicas = configuration.get(KubernetesConfigOptions.KUBERNETES_JOBMANAGER_REPLICAS);
+        if (replicas > KubernetesConfigOptions.KUBERNETES_JOBMANAGER_REPLICAS.defaultValue()
+                && !Objects.equals(
+                        HighAvailabilityOptions.HA_MODE.defaultValue(),
+                        configuration.get(HighAvailabilityOptions.HA_MODE))) {
             // jm ha kubernetes.jobmanager.replicas or job flinkConfig
-            replicas = Integer.parseInt(kubernetesConfiguration.getOrDefault(
-                    "kubernetes.jobmanager.replicas",
-                    flinkConfig.getConfiguration().getOrDefault("kubernetes.jobmanager.replicas", "1")));
+            replicas = configuration.get(KubernetesConfigOptions.KUBERNETES_JOBMANAGER_REPLICAS);
         } else {
             logger.info(
-                    "If you need to enable high availability mode, please set the high-availability.* and kubernetes.jobmanager.replicas parameters first.");
+                    "If you need to enable high availability mode, please set the high-availability.* and kubernetes.jobmanager.replicas > 1 parameters first.");
         }
 
         jobManagerSpec.setReplicas(replicas);
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
 
-        String tmcpu = kubernetesConfiguration.getOrDefault("kubernetes.taskmanager.cpu", "1");
-        String tmmem = flinkConfig.getConfiguration().getOrDefault("taskmanager.memory.process.size", "1G");
+        String tmcpu = configuration.getString("kubernetes.taskmanager.cpu", "1");
+        String tmmem = configuration.getString(TaskManagerOptions.TOTAL_PROCESS_MEMORY.key(), "1G");
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
 
@@ -202,8 +201,8 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
 
     private void initSpec() {
         String flinkVersion = flinkConfig.getFlinkVersion();
-        String image = kubernetesConfiguration.get("kubernetes.container.image");
-        String serviceAccount = kubernetesConfiguration.get("kubernetes.service-account");
+        String image = configuration.get(KubernetesConfigOptions.CONTAINER_IMAGE);
+        String serviceAccount = configuration.get(KubernetesConfigOptions.KUBERNETES_SERVICE_ACCOUNT);
 
         logger.info("\nflinkVersion is : {} \n image is : {}", flinkVersion, image);
 
@@ -212,19 +211,10 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         } else {
             throw new IllegalArgumentException("Flink version are not Set！！use Operator must be set!");
         }
-        Map<String, String> combinedConfiguration = Maps.newHashMap();
-        // By default, the init initialization of kubernetesConfiguration is used.
-        if (kubernetesConfiguration != null) {
-            combinedConfiguration.putAll(kubernetesConfiguration);
-        }
-        // Secondly, it is overwritten through the job parameters submitted by Dinky.。
-        if (flinkConfig.getConfiguration() != null) {
-            combinedConfiguration.putAll(flinkConfig.getConfiguration());
-        }
+        Map<String, String> combinedConfiguration = configuration.toMap();
         // note: rm flinkConfiguration by flinkDefined
         flinkConfigDefinedByFlink.forEach(combinedConfiguration::remove);
         logger.info("combinedConfiguration: {}", combinedConfiguration);
-        // Merge Config
         flinkDeploymentSpec.setFlinkConfiguration(combinedConfiguration);
 
         flinkDeploymentSpec.setImage(image);

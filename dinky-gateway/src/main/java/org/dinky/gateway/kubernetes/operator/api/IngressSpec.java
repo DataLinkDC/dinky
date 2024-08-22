@@ -32,7 +32,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** Ingress spec. */
+/**
+ * Ingress spec.
+ * {@see https://nightlies.apache.org/flink/flink-kubernetes-operator-docs-release-1.8/docs/operations/ingress/}
+ *
+ */
 @Experimental
 @Data
 @NoArgsConstructor
