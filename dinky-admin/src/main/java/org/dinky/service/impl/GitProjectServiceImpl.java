@@ -68,15 +68,13 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
 
         GitProject gitProject = BeanUtil.toBean(gitProjectDTO, GitProject.class);
         if (gitProject.getOrderLine() == null) {
-            Integer maxOrderLine = Opt.ofNullable(baseMapper
-                            .selectOne(new LambdaQueryWrapper<GitProject>()
-                                    .orderByAsc(GitProject::getOrderLine)
-                                    .last(" limit 1"))
-                            .getOrderLine())
-                    .orElse(999);
+            Integer maxOrderLine = Opt.ofNullable(baseMapper.selectOne(new LambdaQueryWrapper<GitProject>()
+                            .orderByDesc(GitProject::getOrderLine)
+                            .last(" limit 1")))
+                    .map(GitProject::getOrderLine)
+                    .orElse(0);
             gitProject.setOrderLine(maxOrderLine + 1);
         }
-        BeanUtil.copyProperties(gitProjectDTO, gitProject);
 
         gitProject.insertOrUpdate();
 
