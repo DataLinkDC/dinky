@@ -25,7 +25,7 @@ import { l } from '@/utils/intl';
 import { connect, useModel } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { SseData } from '@/models/Sse';
+import {SseData, Topic} from "@/models/UseWebSocketModel";
 
 export type FooterContainerProps = {
   token: GlobalToken;
@@ -57,14 +57,13 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const [viewJobRunning, setViewJobRunning] = useState(false);
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
-  const topic = 'jvmInfo';
   const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
 
   useEffect(() => {
-    return subscribeTopic([topic], (data: SseData) => {
-      const respData = data.data;
+    return subscribeTopic(Topic.JVM_INFO,null, (data: SseData) => {
+      const respData = data.data["none-params"];
       setMemDetailInfo(
         Number(respData['heapUsed'] / 1024 / 1024).toFixed(0) +
           '/' +

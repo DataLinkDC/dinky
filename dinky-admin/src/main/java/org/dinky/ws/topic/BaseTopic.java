@@ -17,15 +17,33 @@
  *
  */
 
-import { postAll } from '@/services/api';
-import { ErrorMessage } from '@/utils/messages';
-import { useEffect, useRef, useState } from 'react';
-// @ts-ignore
-import { v4 as uuidv4 } from 'uuid';
+package org.dinky.ws.topic;
 
-const session_invalid_label = 'SESSION_INVALID';
+import java.util.Map;
+import java.util.Set;
 
+import lombok.AllArgsConstructor;
 
-export default () => {
-  return {};
-};
+@AllArgsConstructor
+public abstract class BaseTopic {
+    public static final String NONE_PARAMS = "none-params";
+    /**
+     *
+     * @return  All subscription parameters
+     */
+    //    Set<String> allParams();
+
+    /**
+     * Data sending ideas, including data acquisition and sending
+     */
+    public abstract Map<String, Object> autoDataSend(Set<String> allParams);
+
+    /**
+     * The first send after changing the subscription
+     * @param allParams All parameters
+     * @return The data sent will be converted by JSON when it is finally sent
+     */
+    public abstract Map<String, Object> firstDataSend(Set<String> allParams);
+
+    public void dataSend(Map<String, Object> data) {}
+}

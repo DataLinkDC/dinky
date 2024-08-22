@@ -17,36 +17,35 @@
  *
  */
 
-import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import {PopconfirmDeleteBtn} from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import FlinkChart from '@/components/Flink/FlinkChart';
 import useHookRequest from '@/hooks/useHookRequest';
-import { SseData } from '@/models/Sse';
-import { SSE_TOPIC } from '@/pages/DevOps/constants';
-import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
-import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
-import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
-import { MetricsDataType } from '@/pages/Metrics/Server/data';
-import { getMetricsLayout } from '@/pages/Metrics/service';
-import { handleRemoveById } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { l } from '@/utils/intl';
-import { useModel } from '@@/exports';
-import { ProCard, ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { Empty, Pagination, Row, Spin } from 'antd';
-import React, { useEffect, useState } from 'react';
+import {JobMetricsItem, MetricsTimeFilter} from '@/pages/DevOps/JobDetail/data';
+import {getMetricsData} from '@/pages/DevOps/JobDetail/srvice';
+import {ChartData} from '@/pages/Metrics/JobMetricsList/data';
+import {MetricsDataType} from '@/pages/Metrics/Server/data';
+import {getMetricsLayout} from '@/pages/Metrics/service';
+import {handleRemoveById} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {l} from '@/utils/intl';
+import {useModel} from '@@/exports';
+import {ProCard, ProForm, ProFormSelect, ProFormText} from '@ant-design/pro-components';
+import {Empty, Spin} from 'antd';
+import React, {useEffect, useState} from 'react';
 import ListPagination from '@/components/Flink/ListPagination';
+import {SseData, Topic} from "@/models/UseWebSocketModel";
 
 export type MetricsProps = {
   timeRange: MetricsTimeFilter;
 };
 
 const JobMetricsList = (props: MetricsProps) => {
-  const { timeRange } = props;
+  const {timeRange} = props;
 
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
   const [jobIds, setJobIds] = useState<string>('');
 
-  const { data, refresh } = useHookRequest<any, any>(getMetricsLayout, { defaultParams: [] });
+  const {data, refresh} = useHookRequest<any, any>(getMetricsLayout, {defaultParams: []});
 
   const dataProcess = (sourceData: Record<string, ChartData[]>, datas: MetricsDataType[]) => {
     datas.forEach((item) => {
@@ -68,29 +67,30 @@ const JobMetricsList = (props: MetricsProps) => {
     return sourceData;
   };
 
-  const { loading } = useHookRequest<MetricsDataType[], any>(getMetricsData, {
+  const {loading} = useHookRequest<MetricsDataType[], any>(getMetricsData, {
     defaultParams: [timeRange, jobIds],
     refreshDeps: [timeRange, jobIds],
     onSuccess: (result: MetricsDataType[]) => setChartDatas(() => dataProcess({}, result))
   });
 
-  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+  const {subscribeTopic} = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
   useEffect(() => {
     if (data != undefined) {
-      const topics: string[] = [];
+      const params: string[] = [];
       const jids: string[] = [];
       data.forEach((item: any) => {
         if (item.flinkJobId != undefined) {
-          topics.push(`${SSE_TOPIC.METRICS}/${item.flinkJobId}`);
+          params.push(item.flinkJobId);
           jids.push(item.flinkJobId);
         }
       });
       setJobIds(jids.join(','));
       if (timeRange.isReal) {
-        return subscribeTopic(topics, (data: SseData) => {
-          setChartDatas((prevState) => dataProcess(prevState, [data.data]));
+        return subscribeTopic(Topic.METRICS, params, (data: SseData) => {
+          //todo ws 实时待优化实现
+          // setChartDatas((prevState) => dataProcess(prevState, [data.data]));
         });
       }
     }
@@ -111,7 +111,7 @@ const JobMetricsList = (props: MetricsProps) => {
         );
       });
     }
-    return [<Empty className={'code-content-empty'} />];
+    return [<Empty className={'code-content-empty'}/>];
   };
 
   return (
@@ -159,7 +159,7 @@ const JobMetricsList = (props: MetricsProps) => {
                           }}
                         >
                           <ProFormSelect
-                            colProps={{ md: 12, xl: 8 }}
+                            colProps={{md: 12, xl: 8}}
                             name='vertices'
                             label='边'
                             valueEnum={[...new Set(data.map((item) => item.vertices))].reduce(
@@ -170,7 +170,7 @@ const JobMetricsList = (props: MetricsProps) => {
                               {} as Record<string, string>
                             )}
                           />
-                          <ProFormText colProps={{ md: 12, xl: 8 }} name='metrics' label='节点名' />
+                          <ProFormText colProps={{md: 12, xl: 8}} name='metrics' label='节点名'/>
                         </ProForm>
                       );
                     },
@@ -190,8 +190,8 @@ const JobMetricsList = (props: MetricsProps) => {
             </Spin>
           );
         })}
-      <br />
-      <br />
+      <br/>
+      <br/>
     </>
   );
 };

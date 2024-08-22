@@ -23,13 +23,14 @@ import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
 import org.dinky.data.constant.MonitorTableConstant;
-import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.SqliteUtil;
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,7 +46,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import cn.hutool.core.text.StrFormatter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -90,8 +90,12 @@ public class MetricsContextHolder {
             return; // Return early to avoid unnecessary operations
         }
         pool.execute(() -> {
-            String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-            sendTopic(topic, o); // Ensure only successfully added metrics are sent
+            Map<String, Object> result = new HashMap<>() {
+                {
+                    put(key, o);
+                }
+            };
+            sendTopic(GlobalWebSocketTopic.METRICS, result); // Ensure only successfully added metrics are sent
         });
     }
 
@@ -118,8 +122,12 @@ public class MetricsContextHolder {
             }
             metricsVOS.clear();
         }
-        String topic = StrFormatter.format("{}/{}", SseTopic.METRICS.getValue(), key);
-        sendTopic(topic, o);
+        Map<String, Object> result = new HashMap<>() {
+            {
+                put(key, o);
+            }
+        };
+        sendTopic(GlobalWebSocketTopic.METRICS, result);
     }
 
     public List<List<String>> convertMetricsVOsToStringList(List<MetricsVO> metricsVOS) {

@@ -17,10 +17,27 @@
  *
  */
 
-import { useEffect, useRef, useState } from 'react';
-import { SseData, SubscriberData } from '@/models/Sse';
-import { ErrorMessage } from '@/utils/messages';
+import {useEffect, useRef, useState} from 'react';
+import {ErrorMessage} from '@/utils/messages';
+import { v4 as uuidv4 } from 'uuid';
+export type SseData = {
+  topic: string;
+  data: Record<string, any>;
+};
 
+export enum Topic {
+  JVM_INFO="JVM_INFO",
+  PROCESS_CONSOLE="PROCESS_CONSOLE",
+  PRINT_TABLE="PRINT_TABLE",
+  METRICS="METRICS",
+}
+
+export type SubscriberData = {
+  key: string;
+  topic: Topic;
+  params: string[];
+  call: (data: SseData) => void;
+};
 export default () => {
   const subscriberRef = useRef<SubscriberData[]>([]);
   const wsUrl = `ws://${window.location.hostname}:${window.location.port}/api/ws/global`;
@@ -37,13 +54,21 @@ export default () => {
   };
 
   const subscribe = async () => {
-    const topics: string[] = [];
-    subscriberRef.current.forEach((sub) => topics.push(...sub.topic));
-    const param = { topics: topics };
+    const topics: Record<string, string[]> = {};
+    subscriberRef.current.forEach((sub) => {
+      if (!topics[sub.topic]) {
+        topics[sub.topic] = [];
+      }
+      if (sub.params&& sub.params.length>0){
+        topics[sub.topic] = [...topics[sub.topic], ...sub.params];
+      }else {
+        topics[sub.topic] = [...topics[sub.topic]];
+      }
+    });
     if (ws?.readyState === ws?.CLOSED) {
       reconnect();
     } else {
-      ws?.send(JSON.stringify(param));
+      ws?.send(JSON.stringify(topics));
     }
   };
 
@@ -57,12 +82,12 @@ export default () => {
 
   useEffect(() => {
     if (ws) {
-      // ws.onopen = () => setTimeout(() => subscribe(), 1000);
       ws.onmessage = (e) => {
         try {
           const data: SseData = JSON.parse(e.data);
           subscriberRef.current
-            .filter((sub) => sub.topic.includes(data.topic))
+            .filter((sub) => sub.topic===data.topic)
+            .filter(sub=>!sub.params || sub.params.find((x)=>data.data[x]) )
             .forEach((sub) => sub.call(data));
         } catch (e: any) {
           ErrorMessage(e);
@@ -71,15 +96,13 @@ export default () => {
     }
   }, [ws]);
 
-  const subscribeTopic = (topic: string[], onMessage: (data: SseData) => void) => {
-    const sub: SubscriberData = { topic: topic, call: onMessage };
-    if (!subscriberRef.current.flatMap((x) => x.topic).includes(sub.topic[0])) {
-      subscriberRef.current = [...subscriberRef.current, sub];
-      subscribe();
-    }
+  const subscribeTopic = (topic: Topic, params: string[], onMessage: (data: SseData) => void) => {
+    const sub: SubscriberData = {topic: topic, call: onMessage, params: params,key:uuidv4()};
+    subscriberRef.current.push(sub);
+    subscribe();
     return () => {
       //组件卸载回调方法，取消订阅此topic
-      subscriberRef.current = subscriberRef.current.filter((item) => item !== sub);
+      subscriberRef.current = subscriberRef.current.filter((item) => item.key !== sub.key);
       subscribe();
     };
   };

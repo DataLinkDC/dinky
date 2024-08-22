@@ -17,15 +17,30 @@
  *
  */
 
-import { postAll } from '@/services/api';
-import { ErrorMessage } from '@/utils/messages';
-import { useEffect, useRef, useState } from 'react';
-// @ts-ignore
-import { v4 as uuidv4 } from 'uuid';
+package org.dinky.ws.topic;
 
-const session_invalid_label = 'SESSION_INVALID';
+import org.dinky.data.metrics.Jvm;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-export default () => {
-  return {};
-};
+public class JvmInfo extends BaseTopic {
+    public static final JvmInfo INSTANCE = new JvmInfo();
+
+    private JvmInfo() {}
+
+    @Override
+    public Map<String, Object> autoDataSend(Set<String> allParams) {
+        return firstDataSend(allParams);
+    }
+
+    @Override
+    public Map<String, Object> firstDataSend(Set<String> allParams) {
+        return new HashMap<>() {
+            {
+                put(NONE_PARAMS, Jvm.of());
+            }
+        };
+    }
+}
