@@ -20,6 +20,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ErrorMessage } from '@/utils/messages';
 import { v4 as uuidv4 } from 'uuid';
+import {TOKEN_KEY} from "@/services/constants";
 export type SseData = {
   topic: string;
   data: Record<string, any>;
@@ -68,7 +69,8 @@ export default () => {
     if (ws?.readyState === ws?.CLOSED) {
       reconnect();
     } else {
-      ws?.send(JSON.stringify(topics));
+      const  token = JSON.parse(localStorage.getItem(TOKEN_KEY)??"{}")?.tokenValue;
+      ws.send(JSON.stringify({token,topics}));
     }
   };
 

@@ -41,6 +41,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.stereotype.Component;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
@@ -75,7 +76,10 @@ public class GlobalWebSocket {
 
     @Getter
     @Setter
-    public static class RequestDTO extends HashMap<GlobalWebSocketTopic, Set<String>> {}
+    public static class RequestDTO {
+        private Map<GlobalWebSocketTopic, Set<String>> topics;
+        private String token;
+    }
 
     private static final Map<Session, RequestDTO> TOPICS = new ConcurrentHashMap<>();
 
@@ -91,7 +95,13 @@ public class GlobalWebSocket {
     public void onMessage(String message, Session session) throws IOException {
         try {
             RequestDTO requestDTO = JsonUtils.parseObject(message, RequestDTO.class);
-            if (MapUtil.isNotEmpty(requestDTO)) {
+            if (requestDTO == null || StpUtil.getLoginIdByToken(requestDTO.getToken()) == null) {
+                // unregister
+                TOPICS.remove(session);
+                return;
+            }
+            Map<GlobalWebSocketTopic, Set<String>> topics = requestDTO.getTopics();
+            if (MapUtil.isNotEmpty(topics)) {
                 TOPICS.put(session, requestDTO);
             } else {
                 TOPICS.remove(session);
@@ -108,11 +118,11 @@ public class GlobalWebSocket {
         onClose(session);
     }
 
-    private RequestDTO getRequestParamMap() {
-        RequestDTO temp = new RequestDTO();
+    private Map<GlobalWebSocketTopic, Set<String>> getRequestParamMap() {
+        Map<GlobalWebSocketTopic, Set<String>> temp = new HashMap<>();
         // Get all the parameters of the theme
         TOPICS.values().forEach(requestDTO -> {
-            requestDTO.forEach((topic, params) -> {
+            requestDTO.topics.forEach((topic, params) -> {
                 if (temp.containsKey(topic)) {
                     temp.get(topic).addAll(params);
                 } else {
@@ -124,7 +134,7 @@ public class GlobalWebSocket {
     }
 
     private void firstSend() {
-        RequestDTO allParams = getRequestParamMap();
+        Map<GlobalWebSocketTopic, Set<String>> allParams = getRequestParamMap();
         // Send data
         allParams.forEach((topic, params) -> {
             sendTopic(topic, params, topic.getInstance().firstDataSend(params));
@@ -133,7 +143,7 @@ public class GlobalWebSocket {
 
     public void sendTopic(GlobalWebSocketTopic topic, Set<String> params, Map<String, Object> result) {
         TOPICS.forEach((session, topics) -> {
-            if (topics.containsKey(topic)) {
+            if (topics.getTopics().containsKey(topic)) {
                 try {
                     SseDataVo data = new SseDataVo(
                             session.getId(), topic.name(), params == null ? result.get(BaseTopic.NONE_PARAMS) : result);
@@ -152,8 +162,9 @@ public class GlobalWebSocket {
         Map<Session, Set<String>> tempMap = new HashMap<>();
         TOPICS.forEach((session, requestDTO) -> {
             paramsAndData.forEach((params, data) -> {
-                if (requestDTO.containsKey(topic) && requestDTO.get(topic).contains(params)) {
-                    tempMap.computeIfAbsent(session, k -> requestDTO.get(topic)).add(params);
+                Map<GlobalWebSocketTopic, Set<String>> topics = requestDTO.getTopics();
+                if (topics.containsKey(topic) && topics.get(topic).contains(params)) {
+                    tempMap.computeIfAbsent(session, k -> topics.get(topic)).add(params);
                 }
             });
         });
