@@ -17,7 +17,7 @@
  *
  */
 
-import {useCallback, useState} from 'react';
+import { useCallback, useState } from 'react';
 
 export function useLocalStorage(key: string, initialValue: any) {
   const readValue = useCallback(() => {

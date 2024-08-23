@@ -19,9 +19,10 @@
 
 package org.dinky.configure;
 
+import org.dinky.ws.WebsocketFilter;
+
 import java.util.stream.Collectors;
 
-import org.dinky.ws.WebsocketFilter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.web.embedded.undertow.UndertowBuilderCustomizer;
 import org.springframework.boot.web.embedded.undertow.UndertowDeploymentInfoCustomizer;
@@ -51,14 +52,13 @@ public class WebSocketConfiguration {
         return factory;
     }
 
-
     @Bean
-    public WebsocketFilter websocketFilter(){
+    public WebsocketFilter websocketFilter() {
         return new WebsocketFilter();
     }
 
     @Bean
-    public FilterRegistrationBean getFilterRegistrationBean(){
+    public FilterRegistrationBean getFilterRegistrationBean() {
         FilterRegistrationBean bean = new FilterRegistrationBean();
         bean.setFilter(websocketFilter());
         bean.addUrlPatterns("/api/ws/*");
