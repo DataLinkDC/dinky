@@ -74,7 +74,7 @@ const ConsoleContent = (props: ConsoleProps) => {
 
   const process = `FlinkSubmit/${tab.params.taskId}`;
   const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
-    subscribeTopic: model.subscribeTopic
+    subscribeTopic: model?.subscribeTopic
   }));
 
   const onUpdate = (data: ProcessStep) => {
