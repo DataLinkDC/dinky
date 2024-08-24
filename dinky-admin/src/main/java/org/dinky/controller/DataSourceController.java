@@ -257,6 +257,49 @@ public class DataSourceController {
     }
 
     /**
+     * get all schemas of database
+     *
+     * @param id {@link Integer}
+     * @return {@link Result}< {@link List}< {@link Schema}>>
+     */
+    @Cacheable(cacheNames = "metadata_schema", key = "#id")
+    @GetMapping("/getSchemas")
+    @ApiOperation("Get All Schemas And Tables")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE)
+    public Result<List<Schema>> getSchemas(@RequestParam Integer id) {
+        return Result.succeed(databaseService.getSchemas(id));
+    }
+
+    /**
+     * get all tables of schema of database
+     *
+     * @param id {@link Integer}
+     * @return {@link Result}< {@link List}< {@link Schema}>>
+     */
+    @GetMapping("/getTables")
+    @ApiOperation("Get All Schemas And Tables")
+    @ApiImplicitParam(
+            name = "id",
+            value = "DataBase Id",
+            required = true,
+            dataType = "Integer",
+            paramType = "path",
+            dataTypeClass = Integer.class,
+            example = "1")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_TREE)
+    public Result<List<Table>> getTables(@RequestParam Integer id, @RequestParam String schemaName) {
+        return Result.succeed(databaseService.getTables(id, schemaName));
+    }
+
+    /**
      * clear cache of schemas and tables
      *
      * @param id {@link Integer}
