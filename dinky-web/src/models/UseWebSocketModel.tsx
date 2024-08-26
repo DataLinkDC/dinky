@@ -43,18 +43,20 @@ export default () => {
   const subscriberRef = useRef<SubscriberData[]>([]);
   const wsUrl = `ws://${window.location.hostname}:${window.location.port}/api/ws/global`;
 
-  const [ws] = useState<WebSocket>(new WebSocket(wsUrl));
+  const ws = useRef<WebSocket>(new WebSocket(wsUrl));
 
   const reconnect = () => {
-    if (ws?.readyState === ws?.OPEN) {
-      ws?.close();
+    if (ws.current.readyState === WebSocket.OPEN) {
+      ws.current.close();
     }
-    ws.onopen = () => {
-      console.log('ws open');
-    };
+    ws.current = new WebSocket(wsUrl);
+    ws.current. onopen = ()=>{
+      receiveMessage()
+      subscribe()
+    }
   };
 
-  const subscribe = async () => {
+  const subscribe =  () => {
     const topics: Record<string, string[]> = {};
     subscriberRef.current.forEach((sub) => {
       if (!topics[sub.topic]) {
@@ -66,37 +68,37 @@ export default () => {
         topics[sub.topic] = [...topics[sub.topic]];
       }
     });
-    if (ws?.readyState === ws?.CLOSED) {
+    if (ws.current.readyState === WebSocket.CLOSED) {
       reconnect();
     } else {
       const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
-      ws.send(JSON.stringify({ token, topics }));
+      ws.current.send(JSON.stringify({ token, topics }));
     }
   };
 
+  // 接收消息
+  const receiveMessage = () => {
+    ws.current.onmessage = (e) => {
+      try {
+        const data: SseData = JSON.parse(e.data);
+        subscriberRef.current
+          .filter((sub) => sub.topic === data.topic)
+          .filter((sub) => !sub.params || sub.params.find((x) => data.data[x]))
+          .forEach((sub) => sub.call(data));
+      } catch (e: any) {
+        ErrorMessage(e);
+      }
+    };
+  }
   useEffect(() => {
+    receiveMessage()
     setInterval(() => {
-      if (ws?.readyState === ws?.CLOSED) {
+      if (ws.current.readyState === WebSocket.CLOSED) {
         reconnect();
       }
-    }, 5000);
+    }, 2000);
   }, []);
 
-  useEffect(() => {
-    if (ws) {
-      ws.onmessage = (e) => {
-        try {
-          const data: SseData = JSON.parse(e.data);
-          subscriberRef.current
-            .filter((sub) => sub.topic === data.topic)
-            .filter((sub) => !sub.params || sub.params.find((x) => data.data[x]))
-            .forEach((sub) => sub.call(data));
-        } catch (e: any) {
-          ErrorMessage(e);
-        }
-      };
-    }
-  }, [ws]);
 
   const subscribeTopic = (topic: Topic, params: string[], onMessage: (data: SseData) => void) => {
     const sub: SubscriberData = { topic: topic, call: onMessage, params: params, key: uuidv4() };
