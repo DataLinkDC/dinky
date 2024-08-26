@@ -50,13 +50,13 @@ export default () => {
       ws.current.close();
     }
     ws.current = new WebSocket(wsUrl);
-    ws.current. onopen = ()=>{
-      receiveMessage()
-      subscribe()
-    }
+    ws.current.onopen = () => {
+      receiveMessage();
+      subscribe();
+    };
   };
 
-  const subscribe =  () => {
+  const subscribe = () => {
     const topics: Record<string, string[]> = {};
     subscriberRef.current.forEach((sub) => {
       if (!topics[sub.topic]) {
@@ -76,7 +76,6 @@ export default () => {
     }
   };
 
-
   const receiveMessage = () => {
     ws.current.onmessage = (e) => {
       try {
@@ -89,16 +88,15 @@ export default () => {
         ErrorMessage(e);
       }
     };
-  }
+  };
   useEffect(() => {
-    receiveMessage()
+    receiveMessage();
     setInterval(() => {
       if (ws.current.readyState === WebSocket.CLOSED) {
         reconnect();
       }
     }, 2000);
   }, []);
-
 
   const subscribeTopic = (topic: Topic, params: string[], onMessage: (data: SseData) => void) => {
     const sub: SubscriberData = { topic: topic, call: onMessage, params: params, key: uuidv4() };
