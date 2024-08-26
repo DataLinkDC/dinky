@@ -22,6 +22,7 @@ package org.dinky.context;
 import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
+import cn.hutool.core.map.MapUtil;
 import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.SqliteUtil;
@@ -30,7 +31,6 @@ import org.dinky.ws.GlobalWebSocketTopic;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -90,11 +90,7 @@ public class MetricsContextHolder {
             return; // Return early to avoid unnecessary operations
         }
         pool.execute(() -> {
-            Map<String, Object> result = new HashMap<>() {
-                {
-                    put(key, o);
-                }
-            };
+            Map<String, Object> result = MapUtil.<String, Object>builder().put(key, o).build();
             sendTopic(GlobalWebSocketTopic.METRICS, result); // Ensure only successfully added metrics are sent
         });
     }
@@ -122,11 +118,7 @@ public class MetricsContextHolder {
             }
             metricsVOS.clear();
         }
-        Map<String, Object> result = new HashMap<>() {
-            {
-                put(key, o);
-            }
-        };
+        Map<String, Object> result = MapUtil.<String,Object>builder().put(key,o).build();;
         sendTopic(GlobalWebSocketTopic.METRICS, result);
     }
 

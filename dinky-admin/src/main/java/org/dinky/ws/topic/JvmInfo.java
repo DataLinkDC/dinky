@@ -19,6 +19,7 @@
 
 package org.dinky.ws.topic;
 
+import cn.hutool.core.map.MapUtil;
 import org.dinky.data.metrics.Jvm;
 
 import java.util.HashMap;
@@ -37,10 +38,6 @@ public class JvmInfo extends BaseTopic {
 
     @Override
     public Map<String, Object> firstDataSend(Set<String> allParams) {
-        return new HashMap<>() {
-            {
-                put(NONE_PARAMS, Jvm.of());
-            }
-        };
+        return MapUtil.<String,Object>builder().put(NONE_PARAMS, Jvm.of()).build();
     }
 }
