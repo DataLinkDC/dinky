@@ -22,7 +22,6 @@ package org.dinky.context;
 import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
-import cn.hutool.core.map.MapUtil;
 import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.SqliteUtil;
@@ -46,6 +45,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+import cn.hutool.core.map.MapUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -90,7 +90,8 @@ public class MetricsContextHolder {
             return; // Return early to avoid unnecessary operations
         }
         pool.execute(() -> {
-            Map<String, Object> result = MapUtil.<String, Object>builder().put(key, o).build();
+            Map<String, Object> result =
+                    MapUtil.<String, Object>builder().put(key, o).build();
             sendTopic(GlobalWebSocketTopic.METRICS, result); // Ensure only successfully added metrics are sent
         });
     }
@@ -118,7 +119,9 @@ public class MetricsContextHolder {
             }
             metricsVOS.clear();
         }
-        Map<String, Object> result = MapUtil.<String,Object>builder().put(key,o).build();;
+        Map<String, Object> result =
+                MapUtil.<String, Object>builder().put(key, o).build();
+        ;
         sendTopic(GlobalWebSocketTopic.METRICS, result);
     }
 

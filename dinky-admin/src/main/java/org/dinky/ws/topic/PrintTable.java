@@ -21,7 +21,6 @@ package org.dinky.ws.topic;
 
 import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
-import cn.hutool.core.map.MapUtil;
 import org.dinky.service.impl.PrintTableServiceImpl;
 import org.dinky.ws.GlobalWebSocketTopic;
 
@@ -29,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import cn.hutool.core.map.MapUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -44,8 +44,8 @@ public class PrintTable extends BaseTopic {
         try {
             String[] data = message.split("\n", 2);
 
-
-            Map<String, Object> result = MapUtil.<String,Object>builder().put(data[0], data[1]).build();
+            Map<String, Object> result =
+                    MapUtil.<String, Object>builder().put(data[0], data[1]).build();
             sendTopic(GlobalWebSocketTopic.PRINT_TABLE, result);
         } catch (Exception e) {
             log.error("send message failed: {}", e.getMessage());

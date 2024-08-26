@@ -19,12 +19,12 @@
 
 package org.dinky.ws.topic;
 
-import cn.hutool.core.map.MapUtil;
 import org.dinky.data.metrics.Jvm;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import cn.hutool.core.map.MapUtil;
 
 public class JvmInfo extends BaseTopic {
     public static final JvmInfo INSTANCE = new JvmInfo();
@@ -38,6 +38,6 @@ public class JvmInfo extends BaseTopic {
 
     @Override
     public Map<String, Object> firstDataSend(Set<String> allParams) {
-        return MapUtil.<String,Object>builder().put(NONE_PARAMS, Jvm.of()).build();
+        return MapUtil.<String, Object>builder().put(NONE_PARAMS, Jvm.of()).build();
     }
 }
