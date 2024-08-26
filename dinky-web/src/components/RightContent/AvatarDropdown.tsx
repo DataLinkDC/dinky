@@ -45,6 +45,7 @@ import { ItemType } from 'rc-menu/es/interface';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import { useCallback, useState } from 'react';
 import HeaderDropdown from '../HeaderDropdown';
+import localforage from 'localforage';
 
 export const loginOut = async () => {
   await outLogin();
@@ -245,7 +246,7 @@ const AvatarDropdown = () => {
       icon: <ClearOutlined />,
       label: l('menu.account.clearPageCache'),
       onClick: () => {
-        window.localStorage.removeItem('persist:root');
+        localforage.removeItem('persist:root');
         window.location.reload();
       }
     },
