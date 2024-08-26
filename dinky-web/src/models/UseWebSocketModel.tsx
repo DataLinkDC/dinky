@@ -76,7 +76,7 @@ export default () => {
     }
   };
 
-  // 接收消息
+
   const receiveMessage = () => {
     ws.current.onmessage = (e) => {
       try {
