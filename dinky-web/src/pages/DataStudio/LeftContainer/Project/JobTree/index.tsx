@@ -296,7 +296,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
       {data.length ? (
         <DirectoryTree
-          style={{ ...style, height: height - 40 - 16, overflowY: 'auto' }}
+          style={{ ...style, height: height - 40 - 16-28, overflowY: 'auto' }}
           className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={onRightClick}
