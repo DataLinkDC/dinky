@@ -37,7 +37,7 @@ interface StudioLineageParams {
   envId: number;
   fragment: boolean;
   variables: any;
-  taskId:number;
+  taskId: number;
 }
 
 const Lineage: React.FC<connect> = (props) => {
@@ -63,7 +63,7 @@ const Lineage: React.FC<connect> = (props) => {
       statementSet: statementSet,
       databaseId: databaseId ?? 0,
       variables: {},
-      taskId:id
+      taskId: id
     };
     getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params).then((res) =>
       setLineageData(res as LineageDetailInfo)
