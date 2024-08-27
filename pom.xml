@@ -124,6 +124,7 @@
         <sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
+        <npm-registry-repo>https://registry.npmjs.org/</npm-registry-repo>
     </properties>
 
     <dependencyManagement>
@@ -1009,6 +1010,20 @@
             <id>dev</id>
             <properties>
                 <scope.runtime>compile</scope.runtime>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>npm-huawei</id>
+            <properties>
+                <npm-registry-repo>https://repo.huaweicloud.com/repository/npm/</npm-registry-repo>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>npm-taobao</id>
+            <properties>
+                <npm-registry-repo>https://registry.npm.taobao.org/</npm-registry-repo>
             </properties>
         </profile>
 
