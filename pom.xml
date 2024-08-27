@@ -99,6 +99,7 @@
         <mockito.version>3.12.4</mockito.version>
         <mybatis-plus-boot-starter.version>3.5.7</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
+        <npm-registry-repo>https://registry.npmjs.org/</npm-registry-repo>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <org.commonmark>0.21.0</org.commonmark>
         <oshi.version>6.4.2</oshi.version>
@@ -109,7 +110,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <reflections.version>0.10.2</reflections.version>
-        <revision>1.1.0</revision>
+        <revision>1.1.1-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
@@ -1009,6 +1010,20 @@
             <id>dev</id>
             <properties>
                 <scope.runtime>compile</scope.runtime>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>npm-huawei</id>
+            <properties>
+                <npm-registry-repo>https://repo.huaweicloud.com/repository/npm/</npm-registry-repo>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>npm-taobao</id>
+            <properties>
+                <npm-registry-repo>https://registry.npmmirror.com/</npm-registry-repo>
             </properties>
         </profile>
 

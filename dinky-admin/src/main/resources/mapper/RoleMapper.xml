@@ -31,13 +31,13 @@
         <where>
             1=1
             <if test='param.tenantId!=null and param.tenantId!=""'>
-                and tenant_id = '${param.tenantId}'
+                and tenant_id = #{param.tenantId}
             </if>
             <if test='param.roleCode!=null and param.roleCode!=""'>
-                and role_code = '${param.roleCode}'
+                and role_code like concat('%',#{param.roleCode},'%')
             </if>
             <if test='param.roleName!=null and param.roleName!=""'>
-                and role_name like "%${param.roleName}%"
+                and role_name like concat('%',#{param.roleName},'%')
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
@@ -83,7 +83,7 @@
         <where>
             1=1
             <if test='tenantId!=null and tenantId!=""'>
-                and tenant_id = '${tenantId}'
+                and tenant_id = #{tenantId}
             </if>
             and id in
             <foreach collection="roleIds" item="id" separator="," open="(" close=")" index="">

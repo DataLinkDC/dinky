@@ -28,7 +28,7 @@
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
-                and a.name like "%${param.name}%"
+                and a.name like concat('%',#{param.name},'%')
             </if>
             <if test='param.task_id!=null and param.task_id!=""'>
                 and a.task_id = #{param.task_id}
