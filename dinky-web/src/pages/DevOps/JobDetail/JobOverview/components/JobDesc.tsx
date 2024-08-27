@@ -18,15 +18,15 @@
  */
 
 import StatusTag from '@/components/JobTags/StatusTag';
-import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { parseMilliSecondStr } from '@/utils/function';
-import { l } from '@/utils/intl';
-import { Link } from '@@/exports';
-import { RocketOutlined } from '@ant-design/icons';
-import { ProCard } from '@ant-design/pro-components';
-import { Descriptions, Tag, Typography } from 'antd';
+import {JobProps} from '@/pages/DevOps/JobDetail/data';
+import {parseMilliSecondStr} from '@/utils/function';
+import {l} from '@/utils/intl';
+import {Link} from '@@/exports';
+import {RocketOutlined} from '@ant-design/icons';
+import {ProCard} from '@ant-design/pro-components';
+import {Descriptions, Tag, Typography} from 'antd';
 
-const { Text } = Typography;
+const {Text} = Typography;
 
 /**
  * Renders the JobConfigTab component.
@@ -35,7 +35,7 @@ const { Text } = Typography;
  * @returns {JSX.Element} - The rendered JobConfigTab component.
  */
 const JobDesc = (props: JobProps) => {
-  const { jobDetail } = props;
+  const {jobDetail} = props;
 
   /**
    * Retrieves the savepoint strategy based on the provided strategy value.
@@ -75,14 +75,14 @@ const JobDesc = (props: JobProps) => {
   return (
     <>
       <ProCard>
-        <Descriptions bordered size='small' column={5}>
+        <Descriptions bordered size='small' column={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 5 }}  >
           <Descriptions.Item label={l('global.table.status')}>
-            <StatusTag status={jobDetail?.instance?.status} />
+            <StatusTag status={jobDetail?.instance?.status}/>
           </Descriptions.Item>
 
           <Descriptions.Item label={l('devops.jobinfo.config.submitType')}>
             <Tag color='pink'>
-              <RocketOutlined /> {jobDetail?.history?.type}
+              <RocketOutlined/> {jobDetail?.history?.type}
             </Tag>
           </Descriptions.Item>
 
@@ -136,7 +136,7 @@ const JobDesc = (props: JobProps) => {
           </Descriptions.Item>
         </Descriptions>
       </ProCard>
-      <br />
+      <br/>
       {/*<ProCard>*/}
       {/*  <Descriptions title={l('devops.jobinfo.config.UserCustomConf')} bordered size="small">*/}
       {/*    {getUserConfig(jobDetail?.history?.config?.config)}*/}
