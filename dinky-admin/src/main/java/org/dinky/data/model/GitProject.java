@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import lombok.EqualsAndHashCode;
 import org.dinky.mybatis.model.SuperEntity;
 
 import java.util.Date;
@@ -37,14 +38,15 @@ import lombok.Data;
  * @author ZackYoung
  * @since 0.8.0
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value = "dinky_git_project")
 @Data
 @ApiModel(value = "GitProject", description = "Git Project Information")
 public class GitProject extends SuperEntity<GitProject> {
     /** */
-    @ApiModelProperty(value = "Tenant ID", example = "1", dataType = "Long")
+    @ApiModelProperty(value = "Tenant ID", example = "1", dataType = "Integer")
     @TableField(value = "tenant_id")
-    private Long tenantId;
+    private Integer tenantId;
 
     @ApiModelProperty(
             value = "URL",
