@@ -68,11 +68,11 @@ public class HeadStepSse extends StepSse {
         String mavenHome = MavenUtil.getMavenHome();
 
         if (StrUtil.isBlank(mavenHome)) {
-            addFileMsg(Status.GIT_MAVEN_HOME_NOT_SET.getMessage());
+            addFileMsgLog(Status.GIT_MAVEN_HOME_NOT_SET.getMessage());
             setFinish(false);
         }
         String mavenVersionMsg = MavenUtil.getMavenVersion();
-        mavenVersionMsg += "\n Your Maven Home is: " + mavenHome;
+        mavenVersionMsg += "Your Maven Home is: " + mavenHome;
         addFileMsgLog(mavenVersionMsg);
     }
 

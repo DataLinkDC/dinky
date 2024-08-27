@@ -138,7 +138,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             }
             if (data !== undefined) {
               logList[currentStep].push(data);
-              setLog(logList[currentStep]?.join('\n'));
+              setLog(logList[currentStep]?.join(''));
             }
           } else if (type === 2) {
             showDataStep = currentStep;

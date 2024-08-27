@@ -97,15 +97,17 @@ public class MavenUtil {
         }
         String mavenCommandLine =
                 getMavenCommandLineByMvn(pom, mavenHome, localRepositoryDirectory, setting, goals, args);
-        Opt.ofNullable(consumer).ifPresent(c -> c.accept("Executing command: " + mavenCommandLine + "\n"));
+        Opt.ofNullable(consumer).ifPresent(c -> c.accept("Executing command: " + mavenCommandLine));
 
         int waitValue = RuntimeUtils.run(
                 mavenCommandLine,
                 s -> {
-                    s = DateUtil.date().toMsStr() + " - " + s + "\n";
-                    consumer.accept(s);
+                    s = DateUtil.date().toMsStr() + " - " + s;
+                    if (consumer != null) {
+                        consumer.accept(s);
+                    }
                 },
-                consumer::accept);
+                consumer);
         return waitValue == 0;
     }
 
@@ -171,7 +173,7 @@ public class MavenUtil {
         commandLine.add("-Dclassworlds.conf=" + StrUtil.wrap(mavenHome + "/bin/m2.conf", "\""));
         commandLine.add("-s " + settingsPath);
         commandLine.add("-f " + projectDir);
-        commandLine.add(StrUtil.join(" ", args));
+        commandLine.add("\"" + StrUtil.join(" ", args) + "\"");
         commandLine.add(StrUtil.join(" ", goals));
         return StrUtil.join(" ", commandLine);
     }

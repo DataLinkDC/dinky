@@ -19,6 +19,8 @@
 
 package org.dinky.sse.git;
 
+import static org.dinky.utils.RunTimeUtil.extractArgs;
+
 import org.dinky.data.model.GitProject;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.GitRepository;
@@ -79,7 +81,7 @@ public class MavenStepSse extends StepSse {
                 null,
                 getLogFile().getAbsolutePath(),
                 CollUtil.newArrayList("clean", "package"),
-                StrUtil.split(gitProject.getBuildArgs(), " "),
+                extractArgs(gitProject.getBuildArgs()),
                 this::addFileMsgLog);
         params.put("pom", pom);
         Assert.isTrue(state, "maven build failed");

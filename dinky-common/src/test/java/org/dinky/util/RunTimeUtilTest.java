@@ -17,9 +17,9 @@
  *
  */
 
-package org.dinky.trans.dml;
+package org.dinky.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.dinky.utils.RunTimeUtil;
 
 import java.util.List;
 
@@ -28,8 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Lists;
 
-class ExecuteJarOperationTest {
-
+public class RunTimeUtilTest {
     public static final List<String> RESULT1 = Lists.newArrayList(
             "merge_into",
             "--warehouse",
@@ -53,7 +52,7 @@ class ExecuteJarOperationTest {
 
     @Test
     void extractArgs() {
-        List<String> args1 = ExecuteJarOperation.extractArgs(
+        List<String> args1 = RunTimeUtil.extractArgs(
                 "merge_into --warehouse hdfs:///tmp/paimon --database default --table T --source_table S --on \"T.id = S.order_id\" --merge_actions matched-upsert,matched-delete --matched_upsert_condition \"T.price > 100\" --matched_upsert_set \"mark = 'important'\"  --matched_delete_condition \"T.price < 10\"");
         Assert.assertArrayEquals(args1.toArray(new String[0]), RESULT1.toArray(new String[0]));
     }
