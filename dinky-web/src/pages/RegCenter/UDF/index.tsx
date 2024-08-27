@@ -53,19 +53,7 @@ export default () => {
           {
             tab: l('rc.udf.register.management'),
             key: 'udf-register',
-            children: (
-              <>
-                {/* TODO: 等待UDF和数据开发联动功能开发完成之后,删除该提示语*/}
-                <Alert
-                  message={
-                    '该功能目前没有和数据开发进行联动,目前仅为展示该 jar 中的相关 UDF,如你在数据开发中使用 UDF 时,你仍然需要按照 Flink 中的创建 UDF 的方式'
-                  }
-                  type='info'
-                  showIcon
-                />
-                <UDFRegister showEditChange={setShowEdit} showEdit={showEdit} />
-              </>
-            )
+            children: <UDFRegister showEditChange={setShowEdit} showEdit={showEdit} />
           },
           {
             tab: l('rc.udf.template.management'),
