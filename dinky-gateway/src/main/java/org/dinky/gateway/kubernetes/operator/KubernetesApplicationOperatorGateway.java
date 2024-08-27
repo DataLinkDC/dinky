@@ -26,6 +26,7 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
@@ -75,9 +76,10 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
 
             kubernetesClient.resource(flinkDeployment).delete();
             kubernetesClient.resource(flinkDeployment).waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
+            logger.debug("flinkDeployment => {}", JsonUtils.toJsonString(flinkDeployment));
             kubernetesClient.resource(flinkDeployment).createOrReplace();
 
-            FlinkDeployment flinkDeploymentResult = kubernetesClient
+            kubernetesClient
                     .resource(flinkDeployment)
                     .waitUntilCondition(
                             flinkDeployment1 -> {
@@ -123,11 +125,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
                             TimeUnit.MINUTES);
 
             // sleep a time ,because some time the service will not be found
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Thread.sleep(3000);
 
             // get jobmanager addr by service
             ListOptions options = new ListOptions();
@@ -136,7 +134,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
             ServiceList list = kubernetesClient
                     .services()
                     // fixed bug can't find service list #3700
-                    .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
+                    .inNamespace(configuration.get(KubernetesConfigOptions.NAMESPACE))
                     .list(options);
             if (Objects.nonNull(list) && list.getItems().isEmpty()) {
                 throw new RuntimeException("service list is empty, please check svc list is exists");
@@ -145,7 +143,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
             result.setWebURL("http://" + ipPort);
             result.setId(result.getJids().get(0) + System.currentTimeMillis());
             result.success();
-        } catch (KubernetesClientException e) {
+        } catch (KubernetesClientException | InterruptedException e) {
             // some error while connecting to kube cluster
             result.fail(LogUtil.getError(e));
             logger.error("kubernetes client ex", e);
