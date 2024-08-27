@@ -1003,7 +1003,8 @@ export default {
   'rc.gp.build.step.4': 'Get Artifact',
   'rc.gp.build.step.5': 'Analysis UDF',
   'rc.gp.build.step.6': 'Finish',
-  'rc.gp.buildArgs': 'Build parameters: Instructions need to be included in characters, please use single quotes \'\', double quotes will be escaped as \\"\\"',
+  'rc.gp.buildArgs':
+    'Build parameters: Instructions need to be included in characters, please use single quotes \'\', double quotes will be escaped as \\"\\"',
   'rc.gp.buildConfirm': 'Are you sure to start building this project? ',
   'rc.gp.buildFail': 'Build failed',
   'rc.gp.buildState': 'Build State',

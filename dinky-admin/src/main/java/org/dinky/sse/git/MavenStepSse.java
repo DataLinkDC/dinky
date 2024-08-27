@@ -19,8 +19,6 @@
 
 package org.dinky.sse.git;
 
-import static org.dinky.utils.RunTimeUtil.extractArgs;
-
 import org.dinky.data.model.GitProject;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.GitRepository;

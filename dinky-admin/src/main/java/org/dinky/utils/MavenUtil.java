@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
@@ -67,7 +66,6 @@ public class MavenUtil {
     // -Dmaven.repo.local=/home/zackyoung/.m2/repository -DskipTests=true package
     private static final TemplateEngine ENGINE =
             new FreemarkerEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
-
 
     public static boolean build(
             String setting,
@@ -170,7 +168,7 @@ public class MavenUtil {
         commandLine.add("-Dclassworlds.conf=" + StrUtil.wrap(mavenHome + "/bin/m2.conf", "\""));
         commandLine.add("-s " + settingsPath);
         commandLine.add("-f " + projectDir);
-        commandLine.add(StrUtil.wrap(StrUtil.replace(args,"\"","\\*"),"\""));
+        commandLine.add(StrUtil.wrap(StrUtil.replace(args, "\"", "\\*"), "\""));
         commandLine.add(StrUtil.join(" ", goals));
         return StrUtil.join(" ", commandLine);
     }
