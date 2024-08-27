@@ -262,6 +262,7 @@ const AlertInstanceList: React.FC = () => {
         headerTitle={l('rc.ai.management')}
         toolBarRender={renderToolBar()}
         dataSource={renderDataSource}
+        grid={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 5 }}
       />
 
       {/* added */}
