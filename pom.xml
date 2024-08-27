@@ -1023,7 +1023,7 @@
         <profile>
             <id>npm-taobao</id>
             <properties>
-                <npm-registry-repo>https://registry.npm.taobao.org/</npm-registry-repo>
+                <npm-registry-repo>https://registry.npmmirror.com/</npm-registry-repo>
             </properties>
         </profile>
 
