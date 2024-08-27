@@ -30,13 +30,13 @@ import { history } from '@umijs/max';
 import { JSX } from 'react';
 import { Reducer, StoreEnhancer } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
 import { Navigate } from 'umi';
 import { default as defaultSettings, default as Settings } from '../config/defaultSettings';
 import { FullScreenProvider } from './hooks/useEditor';
 import { errorConfig } from './requestErrorConfig';
 import { getDataByParamsReturnResult } from './services/BusinessCrud';
 import { API } from './services/data';
+import localforage from 'localforage';
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -191,7 +191,7 @@ export const request = {
 // 这个是redux-persist 的配置
 const persistConfig = {
   key: 'root', // 自动框架生产的根目录id 是root。不变
-  storage // 这个是选择用什么存储，session 还是 storage
+  storage: localforage // 这个是选择用什么存储，session 还是 storage
 };
 
 const persistEnhancer: StoreEnhancer = (next) => (reducer: Reducer<any, any>) => {
