@@ -46,7 +46,7 @@ const JobOverview = (props: any) => {
   const statusCount = data as StatusCountOverView;
 
   return (
-    <Row gutter={[16, 8]} >
+    <Row gutter={[16, 8]}>
       <Col span={5} xs={24} xxl={7}>
         <ProCard colSpan={'20%'} boxShadow={true}>
           <StatisticsCard
@@ -69,7 +69,7 @@ const JobOverview = (props: any) => {
             }
           />
         </ProCard>
-      </Col  >
+      </Col>
       <Col span={19} xs={24} xxl={17}>
         <ProCard layout='center' boxShadow={true}>
           <StatisticsCard
