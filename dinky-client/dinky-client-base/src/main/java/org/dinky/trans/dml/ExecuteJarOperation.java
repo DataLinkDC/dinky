@@ -19,6 +19,8 @@
 
 package org.dinky.trans.dml;
 
+import static org.dinky.utils.RunTimeUtil.extractArgs;
+
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
@@ -38,10 +40,7 @@ import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -129,30 +128,6 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static List<String> extractArgs(String args) {
-        List<String> programArgs = new ArrayList<>();
-        if (StrUtil.isNotEmpty(args)) {
-            String[] array = args.split("\\s+");
-            Iterator<String> iter = Arrays.asList(array).iterator();
-            while (iter.hasNext()) {
-                String v = iter.next();
-                String p = v.substring(0, 1);
-                if (p.equals("'") || p.equals("\"")) {
-                    String value = v;
-                    if (!v.endsWith(p)) {
-                        while (!value.endsWith(p) && iter.hasNext()) {
-                            value += " " + iter.next();
-                        }
-                    }
-                    programArgs.add(value.substring(1, value.length() - 1));
-                } else {
-                    programArgs.add(v);
-                }
-            }
-        }
-        return programArgs;
     }
 
     @Override
