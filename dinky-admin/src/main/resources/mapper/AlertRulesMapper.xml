@@ -27,7 +27,7 @@
         dinky_alert_rules a
         <where>
             <if test='param.name!=null and param.name!=""'>
-                and a.name like "%${param.name}%"
+                and a.name like concat('%',#{param.name},'%')
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')

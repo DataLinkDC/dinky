@@ -13,10 +13,10 @@
                 and a.operate_user_id = #{param.userId}
             </if>
             <if test='param.moduleName!=null and param.moduleName!=""'>
-                and a.module_name like "%${param.name}%"
+                and a.module_name like concat('%',#{param.moduleName},'%')
             </if>
             <if test='param.method!=null and param.method!=""'>
-                and a.method like "%${param.name}%"
+                and a.method like concat('%',#{param.method},'%')
             </if>
 <!--            <if test='param.operateTime!=null and param.operateTime!=""'>-->
 <!--                and a.operate_time <![CDATA[>=]]> str_to_date( #{operateTime},'%Y-%m-%d %H:%i:%s')-->
