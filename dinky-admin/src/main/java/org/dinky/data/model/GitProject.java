@@ -19,7 +19,6 @@
 
 package org.dinky.data.model;
 
-import lombok.EqualsAndHashCode;
 import org.dinky.mybatis.model.SuperEntity;
 
 import java.util.Date;
@@ -33,6 +32,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author ZackYoung
