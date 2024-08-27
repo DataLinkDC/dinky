@@ -929,7 +929,7 @@ export default {
   'rc.gp.build.step.4': '获取产物',
   'rc.gp.build.step.5': '分析 UDF',
   'rc.gp.build.step.6': '完成',
-  'rc.gp.buildArgs': '构建参数',
+  'rc.gp.buildArgs': '构建参数：指令需要字符包含，请使用单引号\'\',双引号则""会被转义为\\"\\"',
   'rc.gp.buildConfirm': '确定开始构建该项目吗？',
   'rc.gp.buildFail': '构建失败',
   'rc.gp.buildState': '构建状态',
