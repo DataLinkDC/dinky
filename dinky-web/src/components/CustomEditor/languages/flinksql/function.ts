@@ -84,7 +84,7 @@ export function buildFlinkSQLConfiguration(monacoLanguages?: Monaco['languages']
       ['"', '"'],
       ["'", "'"],
       ['`', '`']
-    ],
+    ]
   });
 }
 
