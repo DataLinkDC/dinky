@@ -35,7 +35,7 @@
                 and dh.type = #{param.type}
             </if>
             <if test='param.taskId!=null and param.taskId!=""'>
-                and a.task_id in (${param.taskId})
+                and a.task_id in
                 <foreach collection="param.taskId" item="taskId" separator="," open="(" close=")" index="">
                     #{taskId}
                 </foreach>
