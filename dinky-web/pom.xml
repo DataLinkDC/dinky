@@ -66,7 +66,7 @@
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <!-- 国内npm源加速可在后面加入(去掉空格) - -registry https://repo.huaweicloud.com/repository/npm/ -->
+                            <!-- For domestic npm source acceleration, you can check the profile of npm Huawei or npm Taobao -->
                             <arguments>install --force --registry ${npm-registry-repo}</arguments>
                         </configuration>
                     </execution>
