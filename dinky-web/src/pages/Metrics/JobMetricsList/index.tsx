@@ -20,8 +20,6 @@
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import FlinkChart from '@/components/Flink/FlinkChart';
 import useHookRequest from '@/hooks/useHookRequest';
-import { SseData } from '@/models/Sse';
-import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
@@ -32,9 +30,10 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
 import { ProCard, ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { Empty, Pagination, Row, Spin } from 'antd';
+import { Empty, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ListPagination from '@/components/Flink/ListPagination';
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 export type MetricsProps = {
   timeRange: MetricsTimeFilter;
@@ -74,23 +73,24 @@ const JobMetricsList = (props: MetricsProps) => {
     onSuccess: (result: MetricsDataType[]) => setChartDatas(() => dataProcess({}, result))
   });
 
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
   useEffect(() => {
     if (data != undefined) {
-      const topics: string[] = [];
+      const params: string[] = [];
       const jids: string[] = [];
       data.forEach((item: any) => {
         if (item.flinkJobId != undefined) {
-          topics.push(`${SSE_TOPIC.METRICS}/${item.flinkJobId}`);
+          params.push(item.flinkJobId);
           jids.push(item.flinkJobId);
         }
       });
       setJobIds(jids.join(','));
       if (timeRange.isReal) {
-        return subscribeTopic(topics, (data: SseData) => {
-          setChartDatas((prevState) => dataProcess(prevState, [data.data]));
+        return subscribeTopic(Topic.METRICS, params, (data: SseData) => {
+          //todo ws 实时待优化实现
+          // setChartDatas((prevState) => dataProcess(prevState, [data.data]));
         });
       }
     }

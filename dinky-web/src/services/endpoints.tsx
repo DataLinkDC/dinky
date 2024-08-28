@@ -241,7 +241,6 @@ export enum API_CONSTANTS {
   MONITOR_GET_SYSTEM_DATA = '/api/monitor/getSysData',
   MONITOR_GET_FLINK_DATA = '/api/monitor/getFlinkData',
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
-  MONITOR_GET_JVM_INFO = '/api/monitor/getJvmInfo',
   METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
   METRICS_LAYOUT_DELETE = '/api/monitor/deleteMetricsLayout',
   JOB_METRICS = '/api/monitor/jobMetrics',

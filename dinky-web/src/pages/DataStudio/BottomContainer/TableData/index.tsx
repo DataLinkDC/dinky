@@ -17,9 +17,7 @@
  *
  */
 
-import { SseData } from '@/models/Sse';
 import { TaskDataType } from '@/pages/DataStudio/model';
-import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { postAll } from '@/services/api';
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
@@ -27,6 +25,7 @@ import { Modal, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { Tab } from 'rc-tabs/lib/interface.d';
 import { useEffect, useState } from 'react';
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 export async function getPrintTables(statement: string) {
   return postAll('api/printTable/getPrintTables', { statement });
@@ -41,17 +40,18 @@ export type PrintTable = {
 export const DataPage = (props: any) => {
   const { style, title } = props;
   const [consoleInfo, setConsoleInfo] = useState<string>('');
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
-  const [tableName, setTableName] = useState<string>('');
 
   useEffect(() => {
     if (title) {
-      setTableName(title.tableName);
-      const topic = `${SSE_TOPIC.PRINT_TABLE}/${title.fullTableName}`;
-      return subscribeTopic([topic], (data: SseData) => {
-        setConsoleInfo((preConsoleInfo) => preConsoleInfo + '\n' + data.data);
+      return subscribeTopic(Topic.PRINT_TABLE, [title.fullTableName], (data: SseData) => {
+        if (data?.data[title.fullTableName]) {
+          setConsoleInfo(
+            (preConsoleInfo) => preConsoleInfo + '\n' + data.data[title.fullTableName]
+          );
+        }
       });
     }
   }, []);
@@ -81,7 +81,7 @@ export const onAdd = async (
       <Select
         defaultValue=''
         style={{ width: '90%' }}
-        onChange={(e, t: any) => {
+        onChange={(_e, t: any) => {
           selectTable = { tableName: t.label, fullTableName: t.value };
         }}
         options={tables.map((table) => ({ label: table.tableName, value: table.fullTableName }))}
