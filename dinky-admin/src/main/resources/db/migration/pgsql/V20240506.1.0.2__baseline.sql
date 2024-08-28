@@ -3440,7 +3440,6 @@ EXECUTE FUNCTION trigger_set_timestamp();
 -- ----------------------------
 -- Records of public.dinky_sys_menu
 -- ----------------------------
-BEGIN;
 -- insert into public.dinky_sys_menu
 -- values (1, -1, '首页', '/home', './Home', 'home', 'HomeOutlined', 'C', 0, 1, '2023-08-11 14:06:52',
 --         '2023-09-25 18:26:45', null);
@@ -3890,8 +3889,6 @@ values (155, 150, ' 控制台', '/registration/datasource/detail/console', null,
 insert into public.dinky_sys_menu
 values (156, 150, ' 刷新', '/registration/datasource/detail/refresh', null, 'registration:datasource:detail:refresh',
         'ReloadOutlined', 'F', 0, 154, '2024-01-18 22:13:47', '2024-01-18 22:13:47', null);
-
-COMMIT;
 
 
 -- ----------------------------
