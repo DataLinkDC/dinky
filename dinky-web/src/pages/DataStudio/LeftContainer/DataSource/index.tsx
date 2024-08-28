@@ -228,7 +228,7 @@ const DataSource = (props: any) => {
       <SchemaTree
         selectKeys={selectKeys}
         expandKeys={expandKeys}
-        style={{ height: toolContentHeight - 64 - 20 }}
+        height={toolContentHeight - 64 - 20}
         onNodeClick={handleTreeNodeClick}
         treeData={treeData}
         onExpand={handleTreeExpand}
