@@ -30,7 +30,7 @@ const { DirectoryTree } = Tree;
 type SchemaTreeProps = {
   treeData: Partial<any>[];
   onNodeClick: (keys: Key[], info: any) => void;
-  height: number | string; // Calculate the height of the virtual scrolling container, required, otherwise it may cause page lag
+  height: number; // Calculate the height of the virtual scrolling container, required, otherwise it may cause page lag
   expandKeys: Key[];
   onExpand: (keys: Key[]) => void;
   selectKeys: Key[];
@@ -67,7 +67,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
             onChange={onSearchChange}
           />
           <DirectoryTree
-            height={height as number}
+            height={height}
             expandedKeys={expandKeys}
             selectedKeys={selectKeys}
             onExpand={onExpand}
