@@ -152,6 +152,26 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
+    public List<Schema> getSchemas(Integer id) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
+        Driver driver = Driver.build(dataBase.getDriverConfig());
+        List<Schema> schemas = driver.listSchemas();
+        driver.close();
+        return schemas;
+    }
+
+    @Override
+    public List<Table> getTables(Integer id, String schemaName) {
+        DataBase dataBase = getById(id);
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
+        Driver driver = Driver.build(dataBase.getDriverConfig());
+        List<Table> tables = driver.listTables(schemaName);
+        driver.close();
+        return tables;
+    }
+
+    @Override
     public List<Column> listColumns(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
