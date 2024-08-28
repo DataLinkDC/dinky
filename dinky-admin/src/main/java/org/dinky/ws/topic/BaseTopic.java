@@ -17,36 +17,33 @@
  *
  */
 
-export enum JOB_LIFE_CYCLE {
-  UNKNOWN = 0,
-  DEVELOP = 1,
-  PUBLISH = 2
-}
+package org.dinky.ws.topic;
 
-export enum JOB_STATUS {
-  FINISHED = 'FINISHED',
-  RUNNING = 'RUNNING',
-  FAILED = 'FAILED',
-  CANCELED = 'CANCELED',
-  INITIALIZING = 'INITIALIZING',
-  RESTARTING = 'RESTARTING',
-  CREATED = 'CREATED',
-  FAILING = 'FAILING',
-  SUSPENDED = 'SUSPENDED',
-  CANCELLING = 'CANCELLING',
-  RECONNECTING = 'RECONNECTING',
-  UNKNOWN = 'UNKNOWN'
-}
+import java.util.Map;
+import java.util.Set;
 
-export enum JOB_SUBMIT_STATUS {
-  INITIALIZE = 'INITIALIZE',
-  RUNNING = 'RUNNING',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
-  CANCEL = 'CANCEL'
-}
+import lombok.AllArgsConstructor;
 
-export enum BackPressureStatus {
-  OK = 'ok',
-  HIGH = 'high'
+@AllArgsConstructor
+public abstract class BaseTopic {
+    public static final String NONE_PARAMS = "none-params";
+    /**
+     *
+     * @return  All subscription parameters
+     */
+    //    Set<String> allParams();
+
+    /**
+     * Data sending ideas, including data acquisition and sending
+     */
+    public abstract Map<String, Object> autoDataSend(Set<String> allParams);
+
+    /**
+     * The first send after changing the subscription
+     * @param allParams All parameters
+     * @return The data sent will be converted by JSON when it is finally sent
+     */
+    public abstract Map<String, Object> firstDataSend(Set<String> allParams);
+
+    public void dataSend(Map<String, Object> data) {}
 }

@@ -19,9 +19,7 @@
 
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import { SseData } from '@/models/Sse';
 import { DataStudioTabsItemType, StateType, VIEW } from '@/pages/DataStudio/model';
-import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { handleDeleteOperation } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { JobStatus } from '@/types/Studio/data.d';
@@ -35,6 +33,7 @@ import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { Key, useEffect, useRef, useState } from 'react';
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 const { Text } = Typography;
 
@@ -57,7 +56,7 @@ export interface ProcessStep extends DataNode {
 const buildExpandKeys = (node: ProcessStep) => {
   const keys: Key[] = [];
   keys.push(node.key);
-  if (node.children.length > 0) {
+  if (node?.children?.length > 0) {
     node.children.forEach((item: ProcessStep) => {
       keys.push(...buildExpandKeys(item));
     });
@@ -74,15 +73,14 @@ const ConsoleContent = (props: ConsoleProps) => {
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
 
   const process = `FlinkSubmit/${tab.params.taskId}`;
-  const topic = `${SSE_TOPIC.PROCESS_CONSOLE}/${process}`;
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
-    subscribeTopic: model.subscribeTopic
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model?.subscribeTopic
   }));
 
   const onUpdate = (data: ProcessStep) => {
     setProcessNode((prevState: any) => {
       //如果key不一致代表重新提交了任务，清空旧状态
-      if (prevState && prevState?.key != data?.key) {
+      if ((prevState && prevState?.key != data?.key) || !data) {
         setSelectNode(undefined);
       }
       return data;
@@ -99,16 +97,18 @@ const ConsoleContent = (props: ConsoleProps) => {
     });
   };
 
-  const { run } = useRequest(
-    { url: API_CONSTANTS.PROCESS_LOG, params: { processName: process } },
-    { onSuccess: async (res) => onUpdate(res) }
-  );
   const killProcess = useRequest(
     { url: API_CONSTANTS.KILL_PROCESS, params: { processName: process } },
     { onSuccess: async (res) => onUpdate(res) }
   );
 
-  useEffect(() => subscribeTopic([topic], (data: SseData) => onUpdate(data?.data)), []);
+  const refreshProcess = () => {
+    subscribeTopic(Topic.PROCESS_CONSOLE, [process], (data: SseData) =>
+      onUpdate(data?.data[process])
+    );
+  };
+
+  useEffect(refreshProcess, []);
   const onSelect = (
     _selectedKeys: Key[],
     info: {
@@ -199,7 +199,7 @@ const ConsoleContent = (props: ConsoleProps) => {
                 { processName: process },
                 l('rc.ds.detail.tag.console.clear.log')
               );
-              if (boolean) run();
+              if (boolean) refreshProcess();
             }}
             btnExtraContent={
               <LoadingBtn

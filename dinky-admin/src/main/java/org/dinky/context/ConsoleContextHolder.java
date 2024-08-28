@@ -19,17 +19,19 @@
 
 package org.dinky.context;
 
+import static org.dinky.ws.GlobalWebSocket.sendTopic;
+
 import org.dinky.aop.ProcessAspect;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.ProcessStatus;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.ProcessType;
-import org.dinky.data.enums.SseTopic;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ProcessEntity;
 import org.dinky.data.model.ProcessStepEntity;
 import org.dinky.utils.LogUtil;
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import org.apache.http.util.TextUtils;
 
@@ -50,6 +52,7 @@ import com.alibaba.fastjson2.JSONObject;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -148,10 +151,10 @@ public class ConsoleContextHolder {
             }
             process.setLastUpdateStep(stepNode);
         }
-        //   /TOPIC/PROCESS_CONSOLE/FlinkSubmit/12
-        String topic = StrFormatter.format("{}/{}", SseTopic.PROCESS_CONSOLE.getValue(), processName);
         CompletableFuture.runAsync(() -> {
-            SseSessionContextHolder.sendTopic(topic, process);
+            sendTopic(
+                    GlobalWebSocketTopic.PROCESS_CONSOLE,
+                    MapUtil.<String, Object>builder(processName, process).build());
         });
     }
 

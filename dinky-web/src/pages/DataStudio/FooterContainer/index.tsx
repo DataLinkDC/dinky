@@ -21,12 +21,11 @@ import useThemeValue from '@/hooks/useThemeValue';
 import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal';
 import { getCurrentTab } from '@/pages/DataStudio/function';
 import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
-import { getSseData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
-import { connect } from '@@/exports';
+import { connect, useModel } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 export type FooterContainerProps = {
   token: GlobalToken;
@@ -58,24 +57,20 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const [viewJobRunning, setViewJobRunning] = useState(false);
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
   const currentTab = getCurrentTab(tabs.panes ?? [], tabs.activeKey);
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
 
   useEffect(() => {
-    const eventSource = getSseData(API_CONSTANTS.BASE_URL + API_CONSTANTS.GET_JVM_INFO);
-    eventSource.onmessage = (event) => {
-      const respData = JSON.parse(event.data);
-      const data = respData.data;
-      if (respData['topic'] != 'HEART_BEAT') {
-        setMemDetailInfo(
-          Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
-            '/' +
-            Number(data['max'] / 1024 / 1024).toFixed(0) +
-            'M'
-        );
-      }
-    };
-    return () => {
-      eventSource.close();
-    };
+    return subscribeTopic(Topic.JVM_INFO, null, (data: SseData) => {
+      const respData = data.data['none-params'];
+      setMemDetailInfo(
+        Number(respData['heapUsed'] / 1024 / 1024).toFixed(0) +
+          '/' +
+          Number(respData['max'] / 1024 / 1024).toFixed(0) +
+          'M'
+      );
+    });
   }, []);
 
   const route: ButtonRoute[] = [

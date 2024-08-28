@@ -17,36 +17,27 @@
  *
  */
 
-export enum JOB_LIFE_CYCLE {
-  UNKNOWN = 0,
-  DEVELOP = 1,
-  PUBLISH = 2
-}
+package org.dinky.ws.topic;
 
-export enum JOB_STATUS {
-  FINISHED = 'FINISHED',
-  RUNNING = 'RUNNING',
-  FAILED = 'FAILED',
-  CANCELED = 'CANCELED',
-  INITIALIZING = 'INITIALIZING',
-  RESTARTING = 'RESTARTING',
-  CREATED = 'CREATED',
-  FAILING = 'FAILING',
-  SUSPENDED = 'SUSPENDED',
-  CANCELLING = 'CANCELLING',
-  RECONNECTING = 'RECONNECTING',
-  UNKNOWN = 'UNKNOWN'
-}
+import org.dinky.data.metrics.Jvm;
 
-export enum JOB_SUBMIT_STATUS {
-  INITIALIZE = 'INITIALIZE',
-  RUNNING = 'RUNNING',
-  SUCCESS = 'SUCCESS',
-  FAILED = 'FAILED',
-  CANCEL = 'CANCEL'
-}
+import java.util.Map;
+import java.util.Set;
 
-export enum BackPressureStatus {
-  OK = 'ok',
-  HIGH = 'high'
+import cn.hutool.core.map.MapUtil;
+
+public class JvmInfo extends BaseTopic {
+    public static final JvmInfo INSTANCE = new JvmInfo();
+
+    private JvmInfo() {}
+
+    @Override
+    public Map<String, Object> autoDataSend(Set<String> allParams) {
+        return firstDataSend(allParams);
+    }
+
+    @Override
+    public Map<String, Object> firstDataSend(Set<String> allParams) {
+        return MapUtil.<String, Object>builder().put(NONE_PARAMS, Jvm.of()).build();
+    }
 }

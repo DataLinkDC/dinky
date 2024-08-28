@@ -20,7 +20,6 @@
 package org.dinky.init;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.context.SseSessionContextHolder;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
 import org.dinky.daemon.pool.ScheduleThreadPool;
@@ -49,8 +48,7 @@ import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.UDFUtils;
 
-import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory;
-
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -112,7 +110,9 @@ public class SystemInit implements ApplicationRunner {
     }
 
     private void registerURL() {
-        TomcatURLStreamHandlerFactory.getInstance().addUserFactory(new RsURLStreamHandlerFactory());
+        URL.setURLStreamHandlerFactory(new RsURLStreamHandlerFactory());
+        // todo 校验
+        //        TomcatURLStreamHandlerFactory.getInstance().addUserFactory(new RsURLStreamHandlerFactory());
     }
 
     private void initResources() {
@@ -156,7 +156,7 @@ public class SystemInit implements ApplicationRunner {
             DaemonTask daemonTask = DaemonTask.build(config);
             flinkJobThreadPool.execute(daemonTask);
         }
-        SseSessionContextHolder.init(schedule);
+        //        SseSessionContextHolder.init(schedule);
     }
 
     /**

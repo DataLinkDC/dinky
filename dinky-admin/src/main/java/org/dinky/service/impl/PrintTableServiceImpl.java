@@ -19,8 +19,6 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.context.SseSessionContextHolder;
-import org.dinky.data.enums.SseTopic;
 import org.dinky.data.vo.PrintTableVo;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.parser.SqlType;
@@ -44,7 +42,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -52,11 +49,6 @@ import lombok.extern.slf4j.Slf4j;
 public class PrintTableServiceImpl implements PrintTableService {
 
     private static final Pattern FULL_TABLE_NAME_PATTERN = Pattern.compile("^`(\\w+)`\\.`(\\w+)`\\.`(\\w+)`$");
-
-    public PrintTableServiceImpl() {
-        PrintTableListener printer = new PrintTableListener(this::send);
-        printer.start();
-    }
 
     @Override
     public List<PrintTableVo> getPrintTables(String statement) {
@@ -69,16 +61,6 @@ public class PrintTableServiceImpl implements PrintTableService {
                 .flatMap(t -> Arrays.stream(PrintStatementExplainer.splitTableNames(t)))
                 .map(t -> new PrintTableVo(t, getFullTableName(t)))
                 .collect(Collectors.toList());
-    }
-
-    public void send(String message) {
-        try {
-            String[] data = message.split("\n", 2);
-            String topic = StrFormatter.format("{}/{}", SseTopic.PRINT_TABLE.getValue(), data[0]);
-            SseSessionContextHolder.sendTopic(topic, data[1]);
-        } catch (Exception e) {
-            log.error("send message failed: {}", e.getMessage());
-        }
     }
 
     public static String getFullTableName(String table) {
