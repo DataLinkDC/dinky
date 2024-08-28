@@ -185,7 +185,7 @@ const DataSourceDetail = (props: connect) => {
             onExpand={handleTreeExpand}
             onNodeClick={onSchemaTreeNodeClick}
             treeData={treeData}
-          />
+            height={innerHeight - 190}/>
         </Authorized>
       </ProCard>
       <ProCard hoverable colSpan='84%' ghost headerBordered>
