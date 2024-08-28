@@ -76,8 +76,8 @@ public class K8sClientHelper {
         Deployment deployment = kubernetesClient
                 .apps()
                 .deployments()
-                .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
-                .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
+                .inNamespace(configuration.get(KubernetesConfigOptions.NAMESPACE))
+                .withName(configuration.get(KubernetesConfigOptions.CLUSTER_ID))
                 .get();
         if (deployment == null) {
             log.debug("Service {} does not exist", serviceName);
@@ -116,8 +116,8 @@ public class K8sClientHelper {
         Deployment deployment = kubernetesClient
                 .apps()
                 .deployments()
-                .inNamespace(configuration.getString(KubernetesConfigOptions.NAMESPACE))
-                .withName(configuration.getString(KubernetesConfigOptions.CLUSTER_ID))
+                .inNamespace(configuration.get(KubernetesConfigOptions.NAMESPACE))
+                .withName(configuration.get(KubernetesConfigOptions.CLUSTER_ID))
                 .get();
         List<HasMetadata> resources = getSqlFileDecorate().buildResources();
         // set owner reference

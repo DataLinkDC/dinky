@@ -132,10 +132,10 @@
         <where>
             1=1
             <if test='param.path!=null and param.path!=""'>
-                and a.name like "%${param.name}%"
+                and a.path like concat('%', #{param.path}, '%')
             </if>
             <if test='param.name!=null and param.name!=""'>
-                and a.name like "%${param.name}%"
+                and a.name like concat('%', #{param.name}, '%')
             </if>
             <if test='param.type!=null and param.type!=""'>
                 and a.type = #{param.type}

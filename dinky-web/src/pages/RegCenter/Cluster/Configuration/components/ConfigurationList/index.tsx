@@ -301,6 +301,7 @@ export default () => {
         actionRef={actionRef}
         headerTitle={l('rc.cc.management')}
         toolBarRender={toolBarRender}
+        grid={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
         dataSource={renderData(clusterConfigState.configList)}
       />
 

@@ -34,7 +34,7 @@ import {
   handleRemoveById,
   updateDataByParam
 } from '@/services/BusinessCrud';
-import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
+import { PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { PermissionConstants } from '@/types/Public/constants';
 import { Cluster } from '@/types/RegCenter/data.d';
@@ -319,8 +319,10 @@ export default () => {
           }
         >
           <Card
-            headStyle={{ minHeight: '10px' }}
-            bodyStyle={{ width: '100%', padding: '10px 4px' }}
+            styles={{
+              header: { minHeight: '10px' },
+              body: { width: '100%', padding: '10px 4px' }
+            }}
             className={'card-list-item'}
             key={item.id}
             hoverable
@@ -351,7 +353,7 @@ export default () => {
         toolBarRender={toolBarRender}
         {...PROTABLE_OPTIONS_PUBLIC}
         {...(PRO_LIST_CARD_OPTIONS as any)}
-        grid={{ gutter: 24, column: 4 }}
+        grid={{ gutter: 24, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
         pagination={{ size: 'small', defaultPageSize: 12, hideOnSinglePage: true }}
         dataSource={data}
         loading={loading}
