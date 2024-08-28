@@ -19,11 +19,14 @@
 
 package org.dinky.explainer.lineage;
 
+import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.model.LineageRel;
+import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
 import org.dinky.job.JobManager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +39,11 @@ import java.util.Map;
  */
 public class LineageBuilder {
 
-    public static LineageResult getColumnLineageByLogicalPlan(String statement) {
-        Explainer explainer = new Explainer(ExecutorFactory.getDefaultExecutor(), false, new JobManager());
+    public static LineageResult getColumnLineageByLogicalPlan(String statement, ExecutorConfig executorConfig) {
+        Explainer explainer = new Explainer(
+                ExecutorFactory.buildExecutor(executorConfig, new WeakReference<>(DinkyClassLoader.build()).get()),
+                false,
+                new JobManager());
         List<LineageRel> lineageRelList = explainer.getLineage(statement);
         List<LineageRelation> relations = new ArrayList<>();
         Map<String, LineageTable> tableMap = new HashMap<>();

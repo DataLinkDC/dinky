@@ -19,6 +19,7 @@
 
 package org.dinky.core;
 
+import org.dinky.executor.ExecutorConfig;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 
@@ -55,7 +56,7 @@ public class LineageTest {
                 + " 'connector' = 'print'\n"
                 + ");\n"
                 + "insert into TT select a||c A ,b||c B from ST";
-        LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(sql);
+        LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(sql, ExecutorConfig.DEFAULT);
         LOGGER.info("end");
     }
 }
