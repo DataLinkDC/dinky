@@ -991,7 +991,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
-            return LineageBuilder.getColumnLineageByLogicalPlan(buildEnvSql(task));
+            task.setStatement(buildEnvSql(task) + task.getStatement());
+            JobConfig jobConfig = task.getJobConfig();
+            return LineageBuilder.getColumnLineageByLogicalPlan(task.getStatement(), jobConfig.getExecutorSetting());
         }
     }
 

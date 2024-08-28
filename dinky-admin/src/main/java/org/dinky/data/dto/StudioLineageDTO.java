@@ -53,4 +53,7 @@ public class StudioLineageDTO extends AbstractStatementDTO {
             example = "1",
             notes = "The identifier of the target database")
     private Integer databaseId;
+
+    @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "1", notes = "The identifier of the task")
+    private Integer taskId;
 }
