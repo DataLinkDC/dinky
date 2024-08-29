@@ -17,24 +17,24 @@
  *
  */
 
-import FadeIn from '@/components/Animation/FadeIn';
-import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { l } from '@/utils/intl';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { ProForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
-import { SubmitterProps } from '@ant-design/pro-form/es/components';
-import { Col, Row } from 'antd';
-import React, { useEffect, useState } from 'react';
+import {getData} from '@/services/api';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {l} from '@/utils/intl';
+import {GithubOutlined, LockOutlined, UserOutlined} from '@ant-design/icons';
+import {DefaultFooter, ProForm, ProFormCheckbox, ProFormText} from '@ant-design/pro-components';
+import {SubmitterProps} from '@ant-design/pro-form/es/components';
+import {Col, Flex, Row} from 'antd';
+import React, {useEffect, useState} from 'react';
 import style from '../../../../global.less';
-import MainWithStyle from './MainWithStyle';
+import Lottie from 'react-lottie';
+import DataPlatform from '../../../../../public/login_animation.json';
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
 };
 
 const LoginForm: React.FC<LoginFormProps> = (props) => {
-  const { onSubmit } = props;
+  const {onSubmit} = props;
 
   const [form] = ProForm.useForm();
 
@@ -53,7 +53,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
   const handleClickLogin = async () => {
     setSubmitting(true);
-    await onSubmit({ ...form.getFieldsValue() });
+    await onSubmit({...form.getFieldsValue()});
     setSubmitting(false);
   };
 
@@ -62,10 +62,9 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       <>
         <ProFormText
           name='username'
-          width={'md'}
           fieldProps={{
             size: 'large',
-            prefix: <UserOutlined />
+            prefix: <UserOutlined/>
           }}
           required
           placeholder={l('login.username.placeholder')}
@@ -80,7 +79,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           name='password'
           fieldProps={{
             size: 'large',
-            prefix: <LockOutlined />
+            prefix: <LockOutlined/>
           }}
           placeholder={l('login.password.placeholder')}
           rules={[
@@ -91,10 +90,10 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           ]}
         />
         <Row>
-          <Col span={18}>
+          <Col span={12}>
             <ProFormCheckbox name='autoLogin'>{l('login.rememberMe')}</ProFormCheckbox>
           </Col>
-          <Col span={6}>
+          <Col span={12} style={{textAlign: 'right'}}>
             <ProFormCheckbox name='ldapLogin' hidden={!ldapEnabled}>
               {l('login.ldapLogin')}
             </ProFormCheckbox>
@@ -105,7 +104,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
   };
 
   const proFormSubmitter: SubmitterProps = {
-    searchConfig: { submitText: l('menu.login') },
+    searchConfig: {submitText: l('menu.login')},
     resetButtonProps: false,
     submitButtonProps: {
       loading: submitting,
@@ -113,24 +112,85 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       htmlType: 'submit',
       size: 'large',
       shape: 'round',
-      style: { width: '100%' }
+      style: {width: '100%'}
     }
   };
 
   return (
-    <MainWithStyle>
-      <FadeIn>
-        <ProForm
-          className={style.loginform}
-          form={form}
-          onFinish={handleClickLogin}
-          initialValues={{ autoLogin: true }}
-          submitter={{ ...proFormSubmitter }}
-        >
-          {renderLoginForm()}
-        </ProForm>
-      </FadeIn>
-    </MainWithStyle>
+    <>
+      <Flex gap="middle" align="center" justify={"center"}
+            style={{width: '100%', height: '100%', backgroundImage: "url(./imgs/login_background.jpg)"}}>
+        <Row
+          style={{
+            width: '90%',
+            height: '80%',
+            borderRadius: 15,
+            overflow: "hidden",
+            boxShadow: "0px 0px 100px  #78909c"
+          }}>
+          <Col style={{padding: "5%", backgroundColor: "#fff"}} xs={24} sm={24} md={10} lg={8} xl={8} xxl={8}>
+            <Row style={{color: "#00b0ff", marginBottom: 60, justifyContent: "center"}} align={"middle"}>
+              <img src={"./dinky.svg"} width={150}
+                   alt={""}/>
+              <h1 style={{margin: "0"}}>{l('layouts.userLayout.title')}</h1>
+            </Row>
+
+            <ProForm
+              className={style.loginform}
+              form={form}
+              onFinish={handleClickLogin}
+              initialValues={{autoLogin: true}}
+              submitter={{...proFormSubmitter}}
+            >
+              {renderLoginForm()}
+            </ProForm>
+            <DefaultFooter
+              copyright={`${new Date().getFullYear()} ` + l('app.copyright.produced')}
+              style={{backgroundColor:"#fff"}}
+              links={[
+                {
+                  key: 'Dinky',
+                  title: 'Dinky',
+                  href: 'https://github.com/DataLinkDC/dinky',
+                  blankTarget: true
+                },
+                {
+                  key: 'github',
+                  title: <GithubOutlined/>,
+                  href: 'https://github.com/DataLinkDC/dinky',
+                  blankTarget: true
+                }
+              ]}
+            />
+
+          </Col>
+          <Col xs={0} sm={0} md={14} lg={16} xl={16} xxl={16} style={{
+            backgroundImage: "linear-gradient(135deg,#1fa2ff,#12d8fa,#a6ffcb)",
+            width: "100%",
+            height: "100%"
+          }}>
+            <Flex align={"center"} style={{width: "100%", height: "100%"}}>
+              <Lottie options={{
+                loop: true,
+                autoplay: true,
+                animationData: DataPlatform,
+                rendererSettings: {
+                  preserveAspectRatio: 'xMidYMid slice'
+                }
+              }}
+                      height={"60%"}
+                      width={"70%"}
+                      speed={0.5}
+                      isClickToPauseDisabled
+              />
+            </Flex>
+          </Col>
+        </Row>
+      </Flex>
+      <img src={"./icons/footer-bg.svg"} width={"100%"} alt={""} style={{position: "absolute", bottom: 0}}/>
+
+    </>
+
   );
 };
 

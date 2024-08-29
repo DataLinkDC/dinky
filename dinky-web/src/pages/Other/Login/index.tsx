@@ -188,7 +188,6 @@ const Login: React.FC = () => {
       <HelmetTitle />
       <LangSwitch />
       <LoginForm onSubmit={handleSubmitLogin} />
-      <Footer />
       <ChooseModal
         tenantVisible={tenantVisible}
         handleTenantVisible={() => handleTenantVisible(false)}
