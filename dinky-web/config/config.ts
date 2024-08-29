@@ -193,7 +193,7 @@ export default defineConfig({
     }
   ],
   mfsu: {
-    strategy: 'normal'
+    strategy: 'eager'
   },
   // requestRecord: {},
   dva: {}
