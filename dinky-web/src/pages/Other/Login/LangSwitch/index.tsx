@@ -39,7 +39,7 @@ const LangSwitch = () => {
 
   const langClassName = useEmotionCss(({ token }) => {
     return {
-      color:"#fff",
+      color: '#fff',
       width: 42,
       lineHeight: '42px',
       position: 'absolute',
