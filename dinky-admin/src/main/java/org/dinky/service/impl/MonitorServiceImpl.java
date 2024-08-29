@@ -22,12 +22,10 @@ package org.dinky.service.impl;
 import static org.dinky.data.constant.MonitorTableConstant.HEART_TIME;
 import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 
-import org.dinky.context.SseSessionContextHolder;
 import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.exception.DinkyException;
-import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.vo.CascaderVO;
@@ -51,7 +49,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
@@ -71,7 +68,6 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.Tuple;
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -133,20 +129,13 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> impl
 
     @Override
     public SseEmitter sendJvmInfo() {
-        String sessionKey = UUID.randomUUID().toString();
-        SseEmitter sseEmitter = SseSessionContextHolder.connectSession(sessionKey);
-        SseSessionContextHolder.subscribeTopic(sessionKey, CollUtil.newArrayList(sessionKey));
-        scheduleRefreshMonitorDataExecutor.execute(() -> {
-            try {
-                while (true) {
-                    SseSessionContextHolder.sendTopic(sessionKey, Jvm.of());
-                    ThreadUtil.sleep(10000);
-                }
-            } catch (Exception e) {
-                log.error("send jvm info failed, complete sse emiter :" + e.getMessage());
-            }
-        });
-        return sseEmitter;
+        //        while (true) {
+        //            sendTopic(sessionKey, Jvm.of());
+        //            ThreadUtil.sleep(10000);
+        //        }
+        //        return sseEmitter;
+        // todo ws修改
+        return null;
     }
 
     @Override

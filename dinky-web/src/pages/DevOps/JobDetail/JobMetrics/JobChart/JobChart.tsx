@@ -19,8 +19,6 @@
 
 import FlinkChart from '@/components/Flink/FlinkChart';
 import useHookRequest from '@/hooks/useHookRequest';
-import { SseData } from '@/models/Sse';
-import { SSE_TOPIC } from '@/pages/DevOps/constants';
 import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { getMetricsData } from '@/pages/DevOps/JobDetail/srvice';
 import { ChartData } from '@/pages/Metrics/JobMetricsList/data';
@@ -33,6 +31,7 @@ import ListPagination from '@/components/Flink/ListPagination';
 import { Chart } from '@ant-design/plots/es/interface';
 import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Filter, isBlank } from '@/pages/Metrics/JobMetricsList';
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 export type JobChartProps = {
   jobDetail: Jobs.JobInfoDetail;
@@ -44,7 +43,7 @@ const JobChart = (props: JobChartProps) => {
 
   const [chartDatas, setChartDatas] = useState<Record<string, ChartData[]>>({});
 
-  const { subscribeTopic } = useModel('Sse', (model: any) => ({
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
 
@@ -77,9 +76,11 @@ const JobChart = (props: JobChartProps) => {
 
   useEffect(() => {
     if (timeRange.isReal) {
-      const topic = `${SSE_TOPIC.METRICS}/${jobDetail.instance.jid}`;
-      return subscribeTopic([topic], (data: SseData) => {
-        dataProcess(chartDatas, data.data);
+      return subscribeTopic(Topic.METRICS, [jobDetail.instance.jid], (data: SseData) => {
+        const currentData = data?.data[jobDetail.instance.jid];
+        if (currentData) {
+          dataProcess(chartDatas, currentData);
+        }
       });
     }
   }, [timeRange, metricsList]);

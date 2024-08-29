@@ -17,10 +17,10 @@
  *
  */
 
-import React from 'react';
+import { useCallback, useState } from 'react';
 
 export function useLocalStorage(key: string, initialValue: any) {
-  const readValue = React.useCallback(() => {
+  const readValue = useCallback(() => {
     try {
       const item = window.localStorage.getItem(key);
       return item ?? initialValue;
@@ -30,9 +30,9 @@ export function useLocalStorage(key: string, initialValue: any) {
     }
   }, [key, initialValue]);
 
-  const [localState, setLocalState] = React.useState(readValue);
+  const [localState, setLocalState] = useState(readValue);
 
-  const handleSetState = React.useCallback(
+  const handleSetState = useCallback(
     (value: any) => {
       try {
         const nextState = typeof value === 'function' ? value(localState) : value;

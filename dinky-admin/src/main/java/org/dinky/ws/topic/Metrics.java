@@ -17,21 +17,25 @@
  *
  */
 
-package org.dinky.data.enums;
+package org.dinky.ws.topic;
 
-public enum SseTopic {
-    METRICS("/TOPIC/METRICS"),
-    PROCESS_CONSOLE("/TOPIC/PROCESS_CONSOLE"),
-    PRINT_TABLE("/TOPIC/PRINT_TABLE"),
-    UNKNOWN("UNKNOWN");
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-    private final String value;
+public class Metrics extends BaseTopic {
+    public static final Metrics INSTANCE = new Metrics();
 
-    SseTopic(String value) {
-        this.value = value;
+    private Metrics() {}
+
+    @Override
+    public Map<String, Object> autoDataSend(Set<String> allParams) {
+        return new HashMap<>();
     }
 
-    public String getValue() {
-        return value;
+    @Override
+    public Map<String, Object> firstDataSend(Set<String> allParams) {
+        //        monitorService.getMetricsLayoutByName(layoutName)
+        return new HashMap<>();
     }
 }

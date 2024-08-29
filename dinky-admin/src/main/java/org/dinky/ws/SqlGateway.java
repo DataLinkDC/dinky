@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.context;
+package org.dinky.ws;
 
 import org.dinky.crypto.CryptoComponent;
 import org.dinky.data.model.FragmentVariable;
@@ -62,7 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 @ServerEndpoint("/ws/sql-gateway/")
-public class SqlGatewayWsContext {
+public class SqlGateway {
 
     private Session session;
 
@@ -239,21 +239,21 @@ public class SqlGatewayWsContext {
 
     @Autowired
     public void setCryptoComponent(CryptoComponent cryptoComponent) {
-        SqlGatewayWsContext.cryptoComponent = cryptoComponent;
+        SqlGateway.cryptoComponent = cryptoComponent;
     }
 
     @Value("${spring.datasource.url}")
     public void setUrl(String url) {
-        SqlGatewayWsContext.url = url;
+        SqlGateway.url = url;
     }
 
     @Value("${spring.datasource.username}")
     public void setUsername(String username) {
-        SqlGatewayWsContext.username = username;
+        SqlGateway.username = username;
     }
 
     @Value("${spring.datasource.password}")
     public void setPassword(String password) {
-        SqlGatewayWsContext.password = password;
+        SqlGateway.password = password;
     }
 }

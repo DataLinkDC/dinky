@@ -98,6 +98,22 @@ public interface DataBaseService extends ISuperService<DataBase> {
     List<Schema> getSchemasAndTables(Integer id);
 
     /**
+     * get all schemas of database
+     *
+     * @param id {@link Integer}
+     * @return {@link List}< {@link Schema}>
+     */
+    List<Schema> getSchemas(Integer id);
+
+    /**
+     * get all tables of schema of database
+     * @param id {@link Integer}
+     * @param schemaName {@link String}
+     * @return {@link List}< {@link Table}>
+     */
+    List<Table> getTables(Integer id, String schemaName);
+
+    /**
      * get columns of table
      *
      * @param id {@link Integer}
