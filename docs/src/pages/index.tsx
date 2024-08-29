@@ -142,7 +142,7 @@ const GithubBanner = () => {
     return (
         <div>
             <ul className="github-banner">
-                <li><strong>2.7k+</strong> Github stars</li>
+                <li><strong>3.0k+</strong> Github stars</li>
                 <li><strong>1111</strong> Github forks</li>
                 <li><strong>10k+</strong> Total downloads</li>
             </ul>
@@ -171,7 +171,6 @@ export default function Home() {
                 {HeaderGraph()}
             </section>
             <section>
-                {/*{GithubBanner()}*/}
             </section>
             <section className="slice slice-lg pt-lg-6 pb-0 pb-lg-6 bg-section-secondary">
                 <div className="container">
