@@ -19,22 +19,31 @@
 
 package org.dinky.url;
 
+import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.StrUtil;
 import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
+import org.springframework.context.annotation.Profile;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
-
-import org.springframework.context.annotation.Profile;
-
-import cn.hutool.core.lang.Singleton;
+import java.util.Arrays;
+import java.util.List;
 
 @Profile("!test")
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
+    private final List<String> notContains = Arrays.asList("jar", "file");
+
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {
         if ("rs".equals(protocol)) {
             return new RsURLStreamHandler();
         }
+        for (String tempProtocol : notContains) {
+            if (tempProtocol.equals(StrUtil.sub(protocol, 0, tempProtocol.length()))) {
+                return null;
+            }
+        }
+
         try {
             Class.forName("org.apache.hadoop.fs.FsUrlStreamHandlerFactory");
         } catch (Exception e) {

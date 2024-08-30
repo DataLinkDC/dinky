@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.URLUtil;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
@@ -41,7 +43,7 @@ public class ClusterDescriptorAdapterImpl extends ClusterDescriptorAdapter {
     @Override
     public void addShipFiles(List<File> shipFiles) {
         yarnClusterDescriptor.addShipFiles(shipFiles.stream()
-                .map(file -> new Path("file://" + file.getPath()))
+                .map(file -> new Path(URLUtil.getURL(file).toString()))
                 .collect(Collectors.toList()));
     }
 
