@@ -19,6 +19,8 @@
 
 package org.dinky.service.catalogue.factory;
 
+import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
+import org.dinky.data.bo.catalogue.export.ExportTaskBO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
@@ -79,5 +81,42 @@ public class CatalogueFactory {
         newCatalogue.setUpdater(null);
         newCatalogue.setTenantId(null);
         return newCatalogue;
+    }
+
+    public ExportCatalogueBO getExportCatalogueBo(Catalogue catalogue, Task task) {
+        return ExportCatalogueBO.builder()
+                .name(catalogue.getName())
+                .enabled(catalogue.getEnabled())
+                .isLeaf(catalogue.getIsLeaf())
+                .type(catalogue.getType())
+                .task(getExportTaskBo(task))
+                .build();
+    }
+
+    private ExportTaskBO getExportTaskBo(Task task) {
+        if (Objects.isNull(task)) {
+            return null;
+        }
+        return ExportTaskBO.builder()
+                .name(task.getName())
+                .dialect(task.getDialect())
+                .type(task.getType())
+                .checkPoint(task.getCheckPoint())
+                .savePointStrategy(task.getSavePointStrategy())
+                .parallelism(task.getParallelism())
+                .fragment(task.getFragment())
+                .statementSet(task.getStatementSet())
+                .batchModel(task.getBatchModel())
+                .clusterId(task.getClusterId())
+                .clusterConfigurationId(task.getClusterConfigurationId())
+                .databaseId(task.getDatabaseId())
+                .envId(task.getEnvId())
+                .alertGroupId(task.getAlertGroupId())
+                .configJson(task.getConfigJson())
+                .note(task.getNote())
+                .step(task.getStep())
+                .enabled(task.getEnabled())
+                .statement(task.getStatement())
+                .build();
     }
 }
