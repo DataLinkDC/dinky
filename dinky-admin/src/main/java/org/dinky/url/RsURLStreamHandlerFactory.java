@@ -19,15 +19,17 @@
 
 package org.dinky.url;
 
-import cn.hutool.core.lang.Singleton;
-import cn.hutool.core.util.StrUtil;
 import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
-import org.springframework.context.annotation.Profile;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import java.util.Arrays;
 import java.util.List;
+
+import org.springframework.context.annotation.Profile;
+
+import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.StrUtil;
 
 @Profile("!test")
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
