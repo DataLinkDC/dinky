@@ -30,6 +30,8 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.util.URLUtil;
+
 public class ClusterDescriptorAdapterImpl extends ClusterDescriptorAdapter {
 
     public ClusterDescriptorAdapterImpl() {}
@@ -41,7 +43,7 @@ public class ClusterDescriptorAdapterImpl extends ClusterDescriptorAdapter {
     @Override
     public void addShipFiles(List<File> shipFiles) {
         yarnClusterDescriptor.addShipFiles(shipFiles.stream()
-                .map(file -> new Path("file://" + file.getPath()))
+                .map(file -> new Path(URLUtil.getURL(file).toString()))
                 .collect(Collectors.toList()));
     }
 

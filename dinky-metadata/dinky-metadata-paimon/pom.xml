@@ -47,18 +47,6 @@
             <artifactId>paimon-s3</artifactId>
             <version>0.8.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-s3-fs-presto</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-2-uber -->
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-shaded-hadoop-2-uber</artifactId>
-            <version>2.8.3-10.0</version>
-        </dependency>
 
         <!-- test dependencies -->
         <dependency>
