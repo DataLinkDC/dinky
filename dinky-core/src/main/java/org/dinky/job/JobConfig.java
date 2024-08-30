@@ -205,7 +205,9 @@ public class JobConfig {
             if (colonIndex == -1) {
                 this.address = address + NetConstant.COLON + configJson.get(RestOptions.PORT.key());
             } else {
-                this.address = address.replaceAll("(?<=:)\\d{0,6}$", configJson.get(RestOptions.PORT.key()));
+                String port =
+                        configJson.getOrDefault(RestOptions.BIND_PORT.key(), configJson.get(RestOptions.PORT.key()));
+                this.address = address.replaceAll("(?<=:)\\d{0,6}$", port);
             }
         } else {
             this.address = address;
