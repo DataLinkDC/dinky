@@ -17,7 +17,7 @@
   -
   -->
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#ffffff;display:block;z-index:1;position:relative" width="1988" height="105" preserveAspectRatio="xMidYMid" viewBox="0 0 1988 105">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;display:block;z-index:1;position:relative" width="1988" height="105" preserveAspectRatio="xMidYMid" viewBox="0 0 1988 105">
   <g transform="translate(994,52.5) scale(1,-1) translate(-994,-52.5)"><linearGradient id="lg-0.3440145086338846" x1="0" x2="1" y1="0" y2="0">
     <stop stop-color="#ff00ff" offset="0"></stop>
     <stop stop-color="#00ffff" offset="1"></stop>
