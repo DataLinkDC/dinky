@@ -1041,7 +1041,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
         });
-        // When the postgre data source query in () is empty, a syntax error will be reported, so it is necessary to judge
+        // When the postgre data source query in () is empty, a syntax error will be reported, so it is necessary to
+        // judge
         if (!tskMap.keySet().isEmpty()) {
             LambdaQueryWrapper<JobInstance> wrapper = new LambdaQueryWrapper<>();
             wrapper.in(JobInstance::getId, tskMap.keySet());
