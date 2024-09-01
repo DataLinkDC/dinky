@@ -50,7 +50,7 @@ public class AbstractTypeConvert<T extends IConnectConfig> implements ITypeConve
         }
         for (Map.Entry<String, BiFunction<Column, DriverConfig<T>, Optional<ColumnType>>> entry :
                 convertMap.entrySet()) {
-            if (column.getType().contains(entry.getKey())) {
+            if (column.getType().toLowerCase().contains(entry.getKey())) {
                 Optional<ColumnType> columnType = entry.getValue().apply(column, driverConfig);
                 if (columnType.isPresent()) {
                     return columnType.get();
