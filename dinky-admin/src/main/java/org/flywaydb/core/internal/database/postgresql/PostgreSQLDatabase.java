@@ -123,6 +123,7 @@ public class PostgreSQLDatabase extends Database<PostgreSQLConnection> {
     static String pgQuote(String identifier) {
         return "\"" + StringUtils.replaceAll(identifier, "\"", "\"\"") + "\"";
     }
+
     @Override
     public boolean catalogIsSchema() {
         return false;
