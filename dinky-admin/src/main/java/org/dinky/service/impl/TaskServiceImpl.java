@@ -1054,7 +1054,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             });
         }
 
-
         List<TaskDTO> tasks = new ArrayList<>(tskMap.values());
         // 按照step排序，发布>开发>,相同情况 下按照状态排序
         // 失败>重启>运行>完成>未知
