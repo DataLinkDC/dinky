@@ -169,6 +169,11 @@ class AbstractDriverTest {
         }
 
         @Override
+        public List<Table> listTables(String schemaName, String tableName) {
+            return null;
+        }
+
+        @Override
         public List<Column> listColumns(String schemaName, String tableName) {
             return null;
         }

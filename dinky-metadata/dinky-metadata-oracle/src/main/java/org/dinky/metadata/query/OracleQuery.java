@@ -36,6 +36,10 @@ public class OracleQuery extends AbstractDBQuery {
         return "SELECT * FROM ALL_TAB_COMMENTS WHERE OWNER='" + schemaName + "'";
     }
 
+    public String tablesSql(String schemaName, String tableName) {
+        return "SELECT * FROM ALL_TAB_COMMENTS WHERE OWNER='" + schemaName + "' AND TABLE_NAME='" + tableName + "'";
+    }
+
     @Override
     public String columnsSql(String schemaName, String tableName) {
         return "SELECT A.COLUMN_NAME, CASE WHEN A.DATA_TYPE='NUMBER' THEN (CASE WHEN"
