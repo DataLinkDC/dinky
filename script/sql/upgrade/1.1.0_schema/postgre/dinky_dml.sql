@@ -21,5 +21,5 @@
 INSERT INTO "public"."_dinky_flyway_schema_history" ("installed_rank", "version", "description", "type", "script",
                                                      "checksum", "installed_by", "installed_on", "execution_time",
                                                      "success")
-VALUES (1, '1.0.2', '<< Flyway Baseline >>', 'BASELINE', '<< Flyway Baseline >>', NULL, 'null',
-        '2024-05-17 17:25:43.682212', 0, 't');
+VALUES (1, '20240506.1.0.2', 'baseline', 'SQL', 'V20240506.1.0.2__baseline.sql', 708291542, 'postgres',
+        '2024-08-28 16:57:25.656355', 1005, 't');

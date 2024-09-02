@@ -30,4 +30,5 @@ spring:
     placeholder-prefix: '##{'
     placeholder-suffix: '}##'
     fail-on-missing-locations: true # Does the non-existent migration file throw an exception
+    clean-disabled: true
 

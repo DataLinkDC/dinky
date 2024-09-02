@@ -18,13 +18,4 @@
  */
 
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
-begin;
-INSERT INTO `_dinky_flyway_schema_history` (`installed_rank`, `version`, `description`, `type`, `script`, `checksum`,
-                                            `installed_by`, `installed_on`, `execution_time`, `success`)
-VALUES (1, '1.0.2', '<< Flyway Baseline >>', 'BASELINE', '<< Flyway Baseline >>', NULL, 'root', '2024-05-20 01:32:29',
-        0, 1);
-
-commit ;
+INSERT INTO `_dinky_flyway_schema_history` (`installed_rank`, `version`, `description`, `type`, `script`, `checksum`, `installed_by`, `installed_on`, `execution_time`, `success`) VALUES (1, '20240506.1.0.2', 'baseline', 'SQL', 'V20240506.1.0.2__baseline.sql', 1023001974, 'root', '2024-07-08 15:34:05', 61212, 1);
