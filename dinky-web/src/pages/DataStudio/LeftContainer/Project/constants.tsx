@@ -63,10 +63,9 @@ export const FOLDER_RIGHT_MENU = (disabled = false): MenuItemType[] => [
     label: l('right.menu.rename')
   },
   {
-    key: 'paste',
+    key: 'importJson',
     icon: <CompassTwoTone />,
-    label: l('right.menu.paste'),
-    disabled: !disabled
+    label: l('right.menu.importJson'),
   },
   {
     key: 'exportJson',

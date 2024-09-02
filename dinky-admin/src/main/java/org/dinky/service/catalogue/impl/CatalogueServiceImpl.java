@@ -22,12 +22,10 @@ package org.dinky.service.catalogue.impl;
 import static org.dinky.assertion.Asserts.isNull;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.config.Dialect;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.enums.CatalogueSortValueEnum;
-import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.SortTypeEnum;
@@ -268,15 +266,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         if (Opt.ofNullable(catalogueTask.getTask()).isPresent()) {
             task = catalogueTask.getTask().buildTask();
         } else {
-            task.setStep(JobLifeCycle.DEVELOP.getValue());
-            task.setEnabled(true);
-            if (Dialect.isFlinkSql(catalogueTask.getType(), false)) {
-                task.setType(GatewayType.LOCAL.getLongValue());
-                task.setParallelism(1);
-                task.setSavePointStrategy(0); // 0 is disabled
-                task.setEnvId(-1); // -1 is disabled
-                task.setAlertGroupId(-1); // -1 is disabled
-            }
+            String dialect = catalogueTask.getType();
+            catalogueFactory.resetTask(task, dialect);
         }
         if (!Opt.ofNullable(task.getStep()).isPresent()) {
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -609,6 +600,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      */
     @Override
     public ExportCatalogueVO exportCatalogue(Integer catalogueId) {
+        log.info("Export catalogue: {}", catalogueId);
         ExportCatalogueBO exportCatalogueBo = getAllCatalogue(catalogueId);
         String dataJson = JSONUtil.toJsonPrettyStr(exportCatalogueBo);
         return ExportCatalogueVO.builder()

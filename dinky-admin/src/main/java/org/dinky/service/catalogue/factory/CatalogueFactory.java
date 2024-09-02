@@ -19,8 +19,11 @@
 
 package org.dinky.service.catalogue.factory;
 
+import org.dinky.config.Dialect;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.bo.catalogue.export.ExportTaskBO;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
@@ -83,6 +86,26 @@ public class CatalogueFactory {
         return newCatalogue;
     }
 
+    /**
+     * Reset Task value
+     *
+     * @param task Task
+     */
+    public void resetTask(Task task, String dialect) {
+        task.setStep(JobLifeCycle.DEVELOP.getValue());
+        task.setEnabled(Boolean.TRUE);
+        task.setVersionId(null);
+        task.setJobInstanceId(null);
+        if (Dialect.isFlinkSql(dialect, false)) {
+            task.setType(GatewayType.LOCAL.getLongValue());
+            task.setParallelism(1);
+            task.setSavePointStrategy(CommonConstant.SAVE_POINT_STRATEGY_DISABLE);
+            task.setEnvId(CommonConstant.ENV_DISABLE);
+            task.setAlertGroupId(CommonConstant.ALERT_GROUP_DISABLE);
+            task.setFragment(Boolean.FALSE);
+        }
+    }
+
     public ExportCatalogueBO getExportCatalogueBo(Catalogue catalogue, Task task) {
         return ExportCatalogueBO.builder()
                 .name(catalogue.getName())
@@ -97,6 +120,8 @@ public class CatalogueFactory {
         if (Objects.isNull(task)) {
             return null;
         }
+        // Reset task
+        resetTask(task, task.getDialect());
         return ExportTaskBO.builder()
                 .name(task.getName())
                 .dialect(task.getDialect())
@@ -117,6 +142,7 @@ public class CatalogueFactory {
                 .step(task.getStep())
                 .enabled(task.getEnabled())
                 .statement(task.getStatement())
+                .versionId(task.getVersionId())
                 .build();
     }
 }

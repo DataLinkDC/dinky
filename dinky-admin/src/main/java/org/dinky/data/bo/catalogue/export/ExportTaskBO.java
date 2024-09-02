@@ -42,8 +42,6 @@ public class ExportTaskBO {
 
     private Integer savePointStrategy;
 
-    // private String savePointPath;
-
     private Integer parallelism;
 
     private Boolean fragment;
@@ -71,4 +69,6 @@ public class ExportTaskBO {
     private Boolean enabled;
 
     private String statement;
+
+    private Integer versionId;
 }
