@@ -65,7 +65,7 @@ export const FOLDER_RIGHT_MENU = (disabled = false): MenuItemType[] => [
   {
     key: 'importJson',
     icon: <CompassTwoTone />,
-    label: l('right.menu.importJson'),
+    label: l('right.menu.importJson')
   },
   {
     key: 'exportJson',

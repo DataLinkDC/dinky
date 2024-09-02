@@ -49,6 +49,7 @@ public final class CommonConstant {
      * Task init param
      */
     public static final Integer ENV_DISABLE = -1;
+
     public static final Integer SAVE_POINT_STRATEGY_DISABLE = 0;
     public static final Integer ALERT_GROUP_DISABLE = -1;
 }
