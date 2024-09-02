@@ -36,7 +36,7 @@ type DataSourceJdbcProps = {
 
 const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
   const { form } = props;
-  const [fileSystemType, setFileSystemType] = React.useState<string | number>('S3'); // ['S3', 'HDFS', 'LOCAL']
+  const [fileSystemType, setFileSystemType] = React.useState<string | number>(form.getFieldValue('connectConfig')?.fileSystemType || "S3"); // ['S3','OSS', 'HDFS', 'LOCAL']
   const [catalogType, setCatalogType] = React.useState<string | number>('FileSystem'); // ['FileSystem', 'JDBC', 'Hive']
   const renderConfig = () => {
     return (
@@ -60,6 +60,7 @@ const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
           label='File System Type'
           request={async () => [
             { label: 'S3', value: 'S3', disabled: false },
+            { label: 'OSS', value: 'OSS', disabled: false },
             { label: 'HDFS', value: 'HDFS', disabled: true },
             { label: 'LOCAL', value: 'LOCAL', disabled: false }
           ]}
@@ -112,6 +113,31 @@ const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
     );
   };
 
+  const renderOssConfig = ()=>{
+    return (
+      <>
+        <ProFormText
+          name={['connectConfig', 'oss', 'endpoint']}
+          label='oss.endpoint'
+          width={'md'}
+          required={true}
+        />
+        <ProFormText
+          name={['connectConfig', 'oss', 'accessKey']}
+          label='oss.access-key'
+          width={'md'}
+          required={true}
+        />
+        <ProFormText
+          name={['connectConfig', 'oss', 'secretKey']}
+          label='oss.secret-key'
+          width={'md'}
+          required={true}
+        />
+      </>
+    );
+  }
+
   return (
     <div>
       {renderConfig()}
@@ -124,6 +150,7 @@ const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
           required={true}
         />
         {fileSystemType === 'S3' && renderS3Config()}
+        {fileSystemType === 'OSS' && renderOssConfig()}
       </ProFormGroup>
 
       <ProFormList

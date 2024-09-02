@@ -40,6 +40,7 @@ public class PaimonConfig implements IConnectConfig {
     private List<CustomConfig> paimonConfig;
     private String warehouse;
     private S3 s3;
+    private OSS oss;
     private String fileSystemType;
     private String catalogType;
 
@@ -56,6 +57,15 @@ public class PaimonConfig implements IConnectConfig {
                 throw new IllegalArgumentException("S3 config is required for S3 file system");
             }
         }
+        if (Objects.requireNonNull(FileSystemType.fromType(fileSystemType)) == FileSystemType.OSS) {
+            if (oss != null) {
+                options.set("fs.oss.endpoint", oss.getEndpoint());
+                options.set("fs.oss.accessKeyId", oss.getAccessKey());
+                options.set("fs.oss.accessKeySecret", oss.getSecretKey());
+            } else {
+                throw new IllegalArgumentException("OSS config is required for OSS file system");
+            }
+        }
         if (paimonConfig != null) {
             for (CustomConfig customConfig : paimonConfig) {
                 options.set(customConfig.getName(), customConfig.getValue());
@@ -70,5 +80,12 @@ public class PaimonConfig implements IConnectConfig {
         private String accessKey;
         private String secretKey;
         private boolean pathStyle;
+    }
+
+    @Data
+    public static class OSS {
+        private String endpoint;
+        private String accessKey;
+        private String secretKey;
     }
 }
