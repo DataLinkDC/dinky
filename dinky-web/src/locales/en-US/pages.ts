@@ -270,6 +270,8 @@ export default {
   'home.mywork': 'My Task',
   'home.allwork': 'All Task',
   'home.task.not.desc': 'No mission statement at this time',
+  'home.task.not.instance':
+    'This task has not been run before, so we cannot go to the [Devops] to view task details. Please run this task first',
   'home.task.update.at': 'Updated At: {time}',
   'home.job.stream': 'Stream Job',
   'home.job.batch': 'Batch Job',
