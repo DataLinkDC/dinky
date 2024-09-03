@@ -193,7 +193,6 @@ public enum Status {
     MODE_IS_NOT_ALLOW_SELECT(12014, "mode.is.not.allow.select"),
     OPERATE_NOT_SUPPORT_QUERY(12015, "operate.not.support.query"),
     TASK_NOT_OPERATE_PERMISSION(12016, "task.not.operate.permission"),
-    TASK_SQL_NO_EXECUTABLE(12017, "task.sql.no.executable"),
 
     /**
      * alert instance
