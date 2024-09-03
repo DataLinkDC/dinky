@@ -37,6 +37,7 @@ public class PrestoQuery extends AbstractDBQuery {
     public String tablesSql(String schemaName, String tableName) {
         return String.format(PrestoConstant.QUERY_SPECIFIED_TABLES_BY_SCHEMA, schemaName, tableName);
     }
+
     @Override
     public String columnsSql(String schemaName, String tableName) {
         return String.format(PrestoConstant.QUERY_TABLE_SCHEMA, schemaName, tableName);

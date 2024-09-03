@@ -43,6 +43,7 @@ public class PhoenixQuery extends AbstractDBQuery {
         }
         return String.format(PhoenixConstant.QUERY_TABLE_BY_SCHEMA_NAME_AND_TABLE_NAME_SQL, schemaName, tableName);
     }
+
     @Override
     public String columnsSql(String schemaName, String tableName) {
         if (schemaName == null || schemaName.isEmpty()) {

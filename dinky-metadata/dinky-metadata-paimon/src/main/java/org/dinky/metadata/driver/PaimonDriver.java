@@ -201,7 +201,10 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     @Override
     public List<Table> listTables(String schemaName, String tableName) {
         try {
-            return catalog.listTables(schemaName).stream().filter(t -> t.equalsIgnoreCase(tableName)).map(Table::new).collect(Collectors.toList());
+            return catalog.listTables(schemaName).stream()
+                    .filter(t -> t.equalsIgnoreCase(tableName))
+                    .map(Table::new)
+                    .collect(Collectors.toList());
         } catch (Catalog.DatabaseNotExistException e) {
             throw new RuntimeException(e);
         }
