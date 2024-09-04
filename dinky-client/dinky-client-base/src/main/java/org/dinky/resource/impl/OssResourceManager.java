@@ -22,12 +22,17 @@ package org.dinky.resource.impl;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.properties.OssProperties;
 import org.dinky.oss.OssTemplate;
 import org.dinky.resource.BaseResourceManager;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.fs.s3presto.S3FileSystemFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +46,7 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 
 public class OssResourceManager implements BaseResourceManager {
     OssTemplate ossTemplate;
@@ -136,10 +142,23 @@ public class OssResourceManager implements BaseResourceManager {
                 .getObjectContent();
     }
 
+    private FileSystem fileSystem;
+
     @Override
-    public FileSystem getFileSystem() {
-        // todo  flink oss暂未实现
-        return null;
+    public FileSystem getFileSystem() throws IOException {
+        if (fileSystem == null) {
+            SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+            S3FileSystemFactory s3FileSystemFactory = new S3FileSystemFactory();
+            OssProperties ossProperties = systemConfiguration.getOssProperties();
+            Configuration config = new Configuration();
+            config.setString("s3.endpoint", ossProperties.getEndpoint());
+            config.setString("s3.access-key", ossProperties.getAccessKey());
+            config.setString("s3.secret-key", ossProperties.getSecretKey());
+            config.setString("s3.path.style.access", String.valueOf(ossProperties.getPathStyleAccess()));
+            s3FileSystemFactory.configure(config);
+            fileSystem = s3FileSystemFactory.create(URLUtil.toURI("s3://" + ossProperties.getBucketName()));
+        }
+        return fileSystem;
     }
 
     public OssTemplate getOssTemplate() {

@@ -20,6 +20,8 @@
 package org.apache.flink.runtime.webmonitor.history;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.core.plugin.PluginUtils;
 import org.apache.flink.util.FlinkException;
 
 import java.io.IOException;
@@ -37,6 +39,7 @@ public final class HistoryServerUtil {
         HistoryServer hs;
         try {
             org.apache.flink.configuration.Configuration configuration = Configuration.fromMap(config);
+            FileSystem.initialize(configuration, PluginUtils.createPluginManagerFromRootFolder(configuration));
 
             hs = new HistoryServer(configuration, (event) -> {
                 if (event.getType() == HistoryServerArchiveFetcher.ArchiveEventType.CREATED) {

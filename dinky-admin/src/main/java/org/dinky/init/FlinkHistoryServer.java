@@ -19,12 +19,15 @@
 
 package org.dinky.init;
 
+import org.dinky.data.model.ResourcesModelEnum;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.properties.OssProperties;
 import org.dinky.service.JobInstanceService;
 
 import org.apache.flink.runtime.webmonitor.history.HistoryServerUtil;
 
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -33,6 +36,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.collection.CollUtil;
@@ -40,15 +44,29 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
+@Order(value = 2)
 public class FlinkHistoryServer implements ApplicationRunner {
     public static final Set<String> HISTORY_JOBID_SET = new LinkedHashSet<>();
     private final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
             5, 20, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>(100), new ThreadPoolExecutor.DiscardOldestPolicy());
 
     private final Runnable historyRunnable;
+    private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
     public FlinkHistoryServer(JobInstanceService jobInstanceService) {
         this.historyRunnable = () -> {
+            Map<String, String> flinkHistoryServerConfiguration =
+                    SystemConfiguration.getInstances().getFlinkHistoryServerConfiguration();
+            if (systemConfiguration.getResourcesEnable().getValue()) {
+                if (systemConfiguration.getResourcesModel().getValue().equals(ResourcesModelEnum.OSS)) {
+                    OssProperties ossProperties = systemConfiguration.getOssProperties();
+                    flinkHistoryServerConfiguration.put("s3.endpoint", ossProperties.getEndpoint());
+                    flinkHistoryServerConfiguration.put("s3.access-key", ossProperties.getAccessKey());
+                    flinkHistoryServerConfiguration.put("s3.secret-key", ossProperties.getSecretKey());
+                    flinkHistoryServerConfiguration.put(
+                            "s3.path.style.access", String.valueOf(ossProperties.getPathStyleAccess()));
+                }
+            }
             HistoryServerUtil.run(
                     (jobId) -> {
                         HISTORY_JOBID_SET.add(jobId);
@@ -56,13 +74,12 @@ public class FlinkHistoryServer implements ApplicationRunner {
                             jobInstanceService.hookJobDoneByHistory(jobId);
                         });
                     },
-                    SystemConfiguration.getInstances().getFlinkHistoryServerConfiguration());
+                    flinkHistoryServerConfiguration);
         };
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         AtomicReference<Thread> historyThread = new AtomicReference<>(new Thread(historyRunnable));
         Runnable closeHistory = () -> {
             if (historyThread.get().isAlive()) {
