@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public final class HistoryServerUtil {
 
     public static void run(Consumer<String> jobIdEventListener, Map<String, String> config) {
-        log.info("正在启动flink history 服务");
+        log.info("Starting Flink History service....");
         HistoryServer hs;
         try {
             org.apache.flink.configuration.Configuration configuration = Configuration.fromMap(config);
@@ -46,8 +46,9 @@ public final class HistoryServerUtil {
                     Optional.ofNullable(jobIdEventListener).ifPresent(listener -> listener.accept(event.getJobID()));
                 }
             });
+            log.info("Flink History service started successfully.");
         } catch (IOException | FlinkException e) {
-            log.error("flink history 服务启动失败，错误信息如下", e);
+            log.error("The Flink History service failed to start with the following error message: {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
         hs.run();

@@ -22,6 +22,7 @@ package org.dinky.resource.impl;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
+import org.dinky.data.model.S3Configuration;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.properties.OssProperties;
 import org.dinky.oss.OssTemplate;
@@ -151,10 +152,10 @@ public class OssResourceManager implements BaseResourceManager {
             S3FileSystemFactory s3FileSystemFactory = new S3FileSystemFactory();
             OssProperties ossProperties = systemConfiguration.getOssProperties();
             Configuration config = new Configuration();
-            config.setString("s3.endpoint", ossProperties.getEndpoint());
-            config.setString("s3.access-key", ossProperties.getAccessKey());
-            config.setString("s3.secret-key", ossProperties.getSecretKey());
-            config.setString("s3.path.style.access", String.valueOf(ossProperties.getPathStyleAccess()));
+            config.setString(S3Configuration.ENDPOINT, ossProperties.getEndpoint());
+            config.setString(S3Configuration.ACCESS_KEY, ossProperties.getAccessKey());
+            config.setString(S3Configuration.SECRET_KEY, ossProperties.getSecretKey());
+            config.setString(S3Configuration.PATH_STYLE_ACCESS, String.valueOf(ossProperties.getPathStyleAccess()));
             s3FileSystemFactory.configure(config);
             fileSystem = s3FileSystemFactory.create(URLUtil.toURI("s3://" + ossProperties.getBucketName()));
         }

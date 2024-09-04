@@ -66,7 +66,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "UDF & App Jar Controller")
 @RequestMapping("/download")
 public class DownloadController {
-    // todo controller有注入的风险
+    // todo: Controller has injection risk
     @GetMapping("downloadDepJar/{taskId}")
     @ApiOperation("Download UDF Jar")
     public void downloadJavaUDF(@PathVariable Integer taskId, HttpServletResponse resp) {
@@ -131,7 +131,7 @@ public class DownloadController {
         ServletUtil.write(resp, inputStream);
     }
 
-    // todo 此接口有注入的风险
+    // todo: There is a risk of injection in this interface
     @PostMapping("uploadFromRsByLocal")
     @ApiOperation("Upload From Resource By Local")
     @SaIgnore

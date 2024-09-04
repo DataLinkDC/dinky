@@ -30,6 +30,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dinky.data.model.S3Configuration;
 
 @Data
 @Builder
@@ -48,10 +49,10 @@ public class PaimonConfig implements IConnectConfig {
         options.set("warehouse", warehouse);
         if (Objects.requireNonNull(FileSystemType.fromType(fileSystemType)) == FileSystemType.S3) {
             if (s3 != null) {
-                options.set("s3.endpoint", s3.getEndpoint());
-                options.set("s3.access-key", s3.getAccessKey());
-                options.set("s3.secret-key", s3.getSecretKey());
-                options.set("s3.path.style.access", String.valueOf(s3.isPathStyle()));
+                options.set(S3Configuration.ENDPOINT, s3.getEndpoint());
+                options.set(S3Configuration.ACCESS_KEY, s3.getAccessKey());
+                options.set(S3Configuration.SECRET_KEY, s3.getSecretKey());
+                options.set(S3Configuration.PATH_STYLE_ACCESS, String.valueOf(s3.isPathStyle()));
             } else {
                 throw new IllegalArgumentException("S3 config is required for S3 file system");
             }

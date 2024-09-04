@@ -20,6 +20,7 @@
 package org.dinky.init;
 
 import org.dinky.data.model.ResourcesModelEnum;
+import org.dinky.data.model.S3Configuration;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.properties.OssProperties;
 import org.dinky.service.JobInstanceService;
@@ -60,11 +61,11 @@ public class FlinkHistoryServer implements ApplicationRunner {
             if (systemConfiguration.getResourcesEnable().getValue()) {
                 if (systemConfiguration.getResourcesModel().getValue().equals(ResourcesModelEnum.OSS)) {
                     OssProperties ossProperties = systemConfiguration.getOssProperties();
-                    flinkHistoryServerConfiguration.put("s3.endpoint", ossProperties.getEndpoint());
-                    flinkHistoryServerConfiguration.put("s3.access-key", ossProperties.getAccessKey());
-                    flinkHistoryServerConfiguration.put("s3.secret-key", ossProperties.getSecretKey());
+                    flinkHistoryServerConfiguration.put(S3Configuration.ENDPOINT, ossProperties.getEndpoint());
+                    flinkHistoryServerConfiguration.put(S3Configuration.ACCESS_KEY, ossProperties.getAccessKey());
+                    flinkHistoryServerConfiguration.put(S3Configuration.SECRET_KEY, ossProperties.getSecretKey());
                     flinkHistoryServerConfiguration.put(
-                            "s3.path.style.access", String.valueOf(ossProperties.getPathStyleAccess()));
+                            S3Configuration.PATH_STYLE_ACCESS, String.valueOf(ossProperties.getPathStyleAccess()));
                 }
             }
             HistoryServerUtil.run(
