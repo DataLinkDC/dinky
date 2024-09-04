@@ -19,8 +19,7 @@
 
 package org.dinky.url;
 
-import org.dinky.resource.BaseResourceManager;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.io.InputStreamFSInputWrapper;
 import org.apache.flink.core.fs.BlockLocation;
 import org.apache.flink.core.fs.FSDataInputStream;
@@ -30,16 +29,14 @@ import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.FileSystemKind;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.core.fs.local.LocalFileStatus;
+import org.dinky.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 public class ResourceFileSystem extends FileSystem {
-    private final BaseResourceManager BASE_RESOURCE_MANAGER;
 
     public static final URI URI_SCHEMA = URI.create("rs:/");
     private static ResourceFileSystem INSTANCE;
@@ -51,8 +48,9 @@ public class ResourceFileSystem extends FileSystem {
         return INSTANCE;
     }
 
-    public ResourceFileSystem() {
-        this.BASE_RESOURCE_MANAGER = BaseResourceManager.getInstance();
+
+    public BaseResourceManager getBaseResourceManager() {
+        return BaseResourceManager.getInstance();
     }
 
     @Override
@@ -76,7 +74,7 @@ public class ResourceFileSystem extends FileSystem {
     }
 
     protected File getFile(Path f) {
-        return new File(BASE_RESOURCE_MANAGER.getFilePath(f.getPath()));
+        return new File(getBaseResourceManager().getFilePath(f.getPath()));
     }
 
     @Override
@@ -91,18 +89,20 @@ public class ResourceFileSystem extends FileSystem {
 
     @Override
     public FSDataInputStream open(Path f) throws IOException {
-        return new InputStreamFSInputWrapper(BASE_RESOURCE_MANAGER.readFile(f.getPath()));
+        return new InputStreamFSInputWrapper(getBaseResourceManager().readFile(f.getPath()));
     }
 
     @Override
     public FileStatus[] listStatus(Path f) throws IOException {
-        return new FileStatus[0];
+        Path path = new Path(getBaseResourceManager().getFilePath(f.getPath()));
+        return getBaseResourceManager().getFileSystem().listStatus(path);
     }
+
 
     @Override
     public boolean delete(Path f, boolean recursive) throws IOException {
         try {
-            BASE_RESOURCE_MANAGER.remove(f.getPath());
+            getBaseResourceManager().remove(f.getPath());
             return true;
         } catch (Exception e) {
             log.error("delete file failed, path: {}", f.getPath(), e);
@@ -117,13 +117,14 @@ public class ResourceFileSystem extends FileSystem {
 
     @Override
     public FSDataOutputStream create(Path f, WriteMode overwriteMode) throws IOException {
-        return null;
+        Path path = new Path(getBaseResourceManager().getFilePath(f.getPath()));
+        return getBaseResourceManager().getFileSystem().create(path, overwriteMode);
     }
 
     @Override
     public boolean rename(Path src, Path dst) throws IOException {
         try {
-            BASE_RESOURCE_MANAGER.rename(src.getPath(), dst.getPath());
+            getBaseResourceManager().rename(src.getPath(), dst.getPath());
             return true;
         } catch (Exception e) {
             log.error("rename file failed, src: {}, dst: {}", src.getPath(), dst.getPath(), e);

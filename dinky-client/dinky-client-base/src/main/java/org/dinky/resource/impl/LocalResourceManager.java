@@ -19,6 +19,16 @@
 
 package org.dinky.resource.impl;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IORuntimeException;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.flink.core.fs.FileStatus;
+import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.core.fs.local.LocalFileStatus;
+import org.apache.flink.core.fs.local.LocalFileSystem;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
@@ -35,12 +45,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.StrUtil;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LocalResourceManager implements BaseResourceManager {
@@ -126,5 +130,10 @@ public class LocalResourceManager implements BaseResourceManager {
     @Override
     public InputStream readFile(String path) {
         return FileUtil.getInputStream(getFilePath(path));
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return LocalFileSystem.getSharedInstance();
     }
 }

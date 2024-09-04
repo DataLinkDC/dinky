@@ -19,6 +19,8 @@
 
 package org.dinky.resource;
 
+import org.apache.flink.core.fs.FileStatus;
+import org.apache.flink.core.fs.Path;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.SystemConfiguration;
@@ -57,6 +59,7 @@ public interface BaseResourceManager {
     List<ResourcesVO> getFullDirectoryStructure(int rootId);
 
     InputStream readFile(String path);
+    org.apache.flink.core.fs.FileSystem getFileSystem();
 
     static BaseResourceManager getInstance() {
         switch (SystemConfiguration.getInstances().getResourcesModel().getValue()) {
@@ -65,9 +68,8 @@ public interface BaseResourceManager {
             case OSS:
                 return Singleton.get(OssResourceManager.class);
             case LOCAL:
-                return Singleton.get(LocalResourceManager.class);
             default:
-                return null;
+                return Singleton.get(LocalResourceManager.class);
         }
     }
 

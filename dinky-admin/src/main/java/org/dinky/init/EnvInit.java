@@ -19,6 +19,7 @@
 
 package org.dinky.init;
 
+import org.apache.flink.runtime.webmonitor.history.HistoryServerUtil;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
@@ -60,5 +61,6 @@ public class EnvInit implements ApplicationRunner {
                 port,
                 ipAddress,
                 port);
+
     }
 }

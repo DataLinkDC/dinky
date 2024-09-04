@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.enums.Status;
 
 import java.io.Serializable;
@@ -42,6 +43,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Slf4j
 public class Configuration<T> implements Serializable {
     private String key;
     private String name;
@@ -190,7 +192,7 @@ public class Configuration<T> implements Serializable {
             try {
                 x.accept(getValue());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("",e);
             }
         });
     }

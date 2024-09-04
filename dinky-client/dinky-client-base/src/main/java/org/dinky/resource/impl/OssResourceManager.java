@@ -19,6 +19,8 @@
 
 package org.dinky.resource.impl;
 
+import org.apache.flink.core.fs.FileStatus;
+import org.apache.flink.core.fs.FileSystem;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
@@ -132,6 +134,12 @@ public class OssResourceManager implements BaseResourceManager {
         return getOssTemplate()
                 .getObject(getOssTemplate().getBucketName(), getFilePath(path))
                 .getObjectContent();
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        // todo  flink oss暂未实现
+        return null;
     }
 
     public OssTemplate getOssTemplate() {

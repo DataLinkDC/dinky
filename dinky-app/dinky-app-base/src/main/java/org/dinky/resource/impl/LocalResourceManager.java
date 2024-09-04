@@ -19,6 +19,8 @@
 
 package org.dinky.resource.impl;
 
+import org.apache.flink.core.fs.FileStatus;
+import org.apache.flink.core.fs.FileSystem;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.SystemConfiguration;
@@ -138,4 +140,10 @@ public class LocalResourceManager implements BaseResourceManager {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return HttpFileSystem.INSTANCE;
+    }
+
 }
