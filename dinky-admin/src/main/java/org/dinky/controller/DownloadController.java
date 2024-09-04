@@ -108,9 +108,9 @@ public class DownloadController {
     }
 
     /**
-     * 提供docker通过http下载dinky-app.jar
+     * Provide Docker to download dinky-app.jar via HTTP request
      *
-     * @param version 版本
+     * @param version version of dinky-app.jar
      * @param resp    resp
      */
     @GetMapping("downloadAppJar/{version}")
