@@ -454,8 +454,10 @@ public enum Status {
     SYS_FLINK_SETTINGS_USE_FLINK_HISTORY_SERVER_NOTE(201, "sys.flink.settings.useFlinkHistoryServer.note"),
     SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT(202, "sys.flink.settings.flinkHistoryServerPort"),
     SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT_NOTE(203, "sys.flink.settings.flinkHistoryServerPort.note"),
-    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL(204, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval"),
-    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE(205, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval.note"),
+    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL(
+            204, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval"),
+    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE(
+            205, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval.note"),
     ;
     private final int code;
     private final String key;

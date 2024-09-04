@@ -19,7 +19,6 @@
 
 package org.dinky.data.model;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.enums.Status;
 
 import java.io.Serializable;
@@ -40,6 +39,7 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
@@ -192,7 +192,7 @@ public class Configuration<T> implements Serializable {
             try {
                 x.accept(getValue());
             } catch (Exception e) {
-                log.error("",e);
+                log.error("", e);
             }
         });
     }

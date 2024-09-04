@@ -19,7 +19,8 @@
 
 package org.dinky.job.handler;
 
-import com.fasterxml.jackson.databind.type.CollectionType;
+import static org.dinky.utils.JsonUtils.objectMapper;
+
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkClusterInfo;
@@ -64,13 +65,12 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.type.CollectionType;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import static org.dinky.utils.JsonUtils.objectMapper;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -230,8 +230,12 @@ public class JobRefreshHandler {
      * @return {@link org.dinky.data.dto.JobDataDto}.
      */
     public static JobDataDto getJobData(Integer id, String jobManagerHost, String jobId) {
-        if (FlinkHistoryServer.HISTORY_JOBID_SET.contains(jobId)&&SystemConfiguration.getInstances().getUseFlinkHistoryServer().getValue()) {
-            jobManagerHost="127.0.0.1:"+ SystemConfiguration.getInstances().getFlinkHistoryServerPort().getValue();
+        if (FlinkHistoryServer.HISTORY_JOBID_SET.contains(jobId)
+                && SystemConfiguration.getInstances().getUseFlinkHistoryServer().getValue()) {
+            jobManagerHost = "127.0.0.1:"
+                    + SystemConfiguration.getInstances()
+                            .getFlinkHistoryServerPort()
+                            .getValue();
         }
         JobDataDto.JobDataDtoBuilder builder = JobDataDto.builder();
         FlinkAPI api = FlinkAPI.build(jobManagerHost);
@@ -251,8 +255,11 @@ public class JobRefreshHandler {
                 flinkJobDetailInfo.getPlan().getNodes().forEach(planNode -> {
                     if (planNode.getId().equals(vertex)) {
                         try {
-                            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, FlinkJobNodeWaterMark.class);
-                            List<FlinkJobNodeWaterMark> watermark = objectMapper.readValue(api.getWatermark(jobId, vertex), listType);
+                            CollectionType listType = objectMapper
+                                    .getTypeFactory()
+                                    .constructCollectionType(ArrayList.class, FlinkJobNodeWaterMark.class);
+                            List<FlinkJobNodeWaterMark> watermark =
+                                    objectMapper.readValue(api.getWatermark(jobId, vertex), listType);
                             planNode.setWatermark(watermark);
                         } catch (Exception ignored) {
                         }

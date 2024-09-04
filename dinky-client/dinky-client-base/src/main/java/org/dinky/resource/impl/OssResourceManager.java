@@ -19,13 +19,13 @@
 
 package org.dinky.resource.impl;
 
-import org.apache.flink.core.fs.FileStatus;
-import org.apache.flink.core.fs.FileSystem;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.oss.OssTemplate;
 import org.dinky.resource.BaseResourceManager;
+
+import org.apache.flink.core.fs.FileSystem;
 
 import java.io.File;
 import java.io.InputStream;

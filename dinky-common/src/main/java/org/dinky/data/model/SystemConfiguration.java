@@ -19,7 +19,6 @@
 
 package org.dinky.data.model;
 
-import cn.hutool.core.io.FileUtil;
 import org.dinky.context.EngineContextHolder;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.constant.DirConstant;
@@ -38,6 +37,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -83,14 +83,16 @@ public class SystemConfiguration {
             .booleanType()
             .defaultValue(true)
             .note(Status.SYS_FLINK_SETTINGS_USE_FLINK_HISTORY_SERVER_NOTE);
-    private final Configuration<Integer> flinkHistoryServerPort = key(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT)
-            .intType()
-            .defaultValue(8082)
-            .note(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT_NOTE);
-    private final Configuration<Integer> flinkHistoryServerArchiveRefreshInterval = key(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL)
-            .intType()
-            .defaultValue(5000)
-            .note(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE);
+    private final Configuration<Integer> flinkHistoryServerPort =
+            key(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT)
+                    .intType()
+                    .defaultValue(8082)
+                    .note(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT_NOTE);
+    private final Configuration<Integer> flinkHistoryServerArchiveRefreshInterval =
+            key(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL)
+                    .intType()
+                    .defaultValue(5000)
+                    .note(Status.SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE);
 
     private final Configuration<String> mavenSettings = key(Status.SYS_MAVEN_SETTINGS_SETTINGSFILEPATH)
             .stringType()
@@ -421,14 +423,20 @@ public class SystemConfiguration {
         return taskOwnerLockStrategy.getValue();
     }
 
-    public static final  String FLINK_JOB_ARCHIVE = "rs:/tmp/flink-job-archive";
+    public static final String FLINK_JOB_ARCHIVE = "rs:/tmp/flink-job-archive";
 
-    public Map<String,String> getFlinkHistoryServerConfiguration(){
-        Map<String,String> config = new HashMap<>();
-        if (useFlinkHistoryServer.getValue()){
-            config.put("historyserver.web.port",flinkHistoryServerPort.getValue().toString());
-            config.put("historyserver.archive.fs.refresh-interval",flinkHistoryServerArchiveRefreshInterval.getValue().toString());
-            config.put("historyserver.web.tmpdir",FileUtil.file(DirConstant.getTempRootDir(),"flink-job-archive").getAbsolutePath());
+    public Map<String, String> getFlinkHistoryServerConfiguration() {
+        Map<String, String> config = new HashMap<>();
+        if (useFlinkHistoryServer.getValue()) {
+            config.put(
+                    "historyserver.web.port", flinkHistoryServerPort.getValue().toString());
+            config.put(
+                    "historyserver.archive.fs.refresh-interval",
+                    flinkHistoryServerArchiveRefreshInterval.getValue().toString());
+            config.put(
+                    "historyserver.web.tmpdir",
+                    FileUtil.file(DirConstant.getTempRootDir(), "flink-job-archive")
+                            .getAbsolutePath());
             config.put("historyserver.archive.fs.dir", FLINK_JOB_ARCHIVE);
         }
         return config;

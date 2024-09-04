@@ -1,24 +1,38 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.apache.flink.runtime.webmonitor.history;
 
-
-import cn.hutool.core.io.FileUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.HistoryServerOptions;
 import org.apache.flink.util.FlinkException;
-import org.dinky.data.constant.DirConstant;
-import org.dinky.data.model.SystemConfiguration;
-import org.dinky.utils.ClassPathUtils;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public final class HistoryServerUtil {
 
-    public static void run(Consumer<String> jobIdEventListener, Map<String,String> config) {
+    public static void run(Consumer<String> jobIdEventListener, Map<String, String> config) {
         log.info("正在启动flink history 服务");
         HistoryServer hs;
         try {

@@ -19,7 +19,8 @@
 
 package org.dinky.url;
 
-import lombok.extern.slf4j.Slf4j;
+import org.dinky.resource.BaseResourceManager;
+
 import org.apache.flink.api.common.io.InputStreamFSInputWrapper;
 import org.apache.flink.core.fs.BlockLocation;
 import org.apache.flink.core.fs.FSDataInputStream;
@@ -29,11 +30,12 @@ import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.FileSystemKind;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.core.fs.local.LocalFileStatus;
-import org.dinky.resource.BaseResourceManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ResourceFileSystem extends FileSystem {
@@ -47,7 +49,6 @@ public class ResourceFileSystem extends FileSystem {
         }
         return INSTANCE;
     }
-
 
     public BaseResourceManager getBaseResourceManager() {
         return BaseResourceManager.getInstance();
@@ -97,7 +98,6 @@ public class ResourceFileSystem extends FileSystem {
         Path path = new Path(getBaseResourceManager().getFilePath(f.getPath()));
         return getBaseResourceManager().getFileSystem().listStatus(path);
     }
-
 
     @Override
     public boolean delete(Path f, boolean recursive) throws IOException {

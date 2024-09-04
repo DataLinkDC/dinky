@@ -19,14 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
@@ -61,11 +53,22 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobInstanceServiceImpl
@@ -183,8 +186,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     .clusterConfigurationJson(
                             Asserts.isNotNull(jobInfoDetail.getClusterConfiguration())
                                     ? ClusterConfigurationMapping.getClusterConfigurationMapping(jobInfoDetail
-                                    .getClusterConfiguration()
-                                    .toBean())
+                                            .getClusterConfiguration()
+                                            .toBean())
                                     : null)
                     .build();
             jobHistoryService.save(jobHistory);
@@ -252,7 +255,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                 .last("limit 1");
         JobInstance instance = baseMapper.selectOne(queryWrapper);
 
-        if (instance == null || !StrUtil.equalsAny(instance.getStatus(), JobStatus.RECONNECTING.getValue(), JobStatus.UNKNOWN.getValue())) {
+        if (instance == null
+                || !StrUtil.equalsAny(
+                        instance.getStatus(), JobStatus.RECONNECTING.getValue(), JobStatus.UNKNOWN.getValue())) {
             // Not having a corresponding jobinstance means that this may not have succeeded in running,
             // returning true to prevent retry.
             return true;

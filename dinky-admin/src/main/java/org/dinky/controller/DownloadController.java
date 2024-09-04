@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.dev33.satoken.annotation.SaIgnore;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.exception.BusException;
@@ -46,7 +45,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
@@ -56,7 +57,6 @@ import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @since 0.7.0
@@ -135,9 +135,10 @@ public class DownloadController {
     @PostMapping("uploadFromRsByLocal")
     @ApiOperation("Upload From Resource By Local")
     @SaIgnore
-    public Result<Void> uploadFromRs(String path, @RequestParam("file") MultipartFile file)  {
+    public Result<Void> uploadFromRs(String path, @RequestParam("file") MultipartFile file) {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-        if (!systemConfiguration.getResourcesEnable().getValue() || !systemConfiguration.getResourcesModel().getValue().equals(ResourcesModelEnum.LOCAL)){
+        if (!systemConfiguration.getResourcesEnable().getValue()
+                || !systemConfiguration.getResourcesModel().getValue().equals(ResourcesModelEnum.LOCAL)) {
             return Result.failed("resources model is not local or resources is not enable");
         }
 
