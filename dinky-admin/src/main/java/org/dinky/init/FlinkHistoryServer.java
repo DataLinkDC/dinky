@@ -24,6 +24,7 @@ import org.dinky.data.model.S3Configuration;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.properties.OssProperties;
 import org.dinky.service.JobInstanceService;
+import org.dinky.service.SysConfigService;
 
 import org.apache.flink.runtime.webmonitor.history.HistoryServerUtil;
 
@@ -34,6 +35,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -41,6 +43,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.net.NetUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -53,8 +56,10 @@ public class FlinkHistoryServer implements ApplicationRunner {
 
     private final Runnable historyRunnable;
     private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+    private final SysConfigService sysConfigService;
 
-    public FlinkHistoryServer(JobInstanceService jobInstanceService) {
+    public FlinkHistoryServer(JobInstanceService jobInstanceService, SysConfigService sysConfigService) {
+        this.sysConfigService = sysConfigService;
         this.historyRunnable = () -> {
             Map<String, String> flinkHistoryServerConfiguration =
                     SystemConfiguration.getInstances().getFlinkHistoryServerConfiguration();
@@ -68,6 +73,7 @@ public class FlinkHistoryServer implements ApplicationRunner {
                             S3Configuration.PATH_STYLE_ACCESS, String.valueOf(ossProperties.getPathStyleAccess()));
                 }
             }
+
             HistoryServerUtil.run(
                     (jobId) -> {
                         HISTORY_JOBID_SET.add(jobId);
@@ -88,6 +94,17 @@ public class FlinkHistoryServer implements ApplicationRunner {
                 HISTORY_JOBID_SET.clear();
             }
         };
+
+        // Check if the port is available
+        Consumer<Integer> checkAndUpdatePort = (port) -> {
+            if (!NetUtil.isUsableLocalPort(port)) {
+                int usableLocalPort = NetUtil.getUsableLocalPort(8000);
+                sysConfigService.updateSysConfigByKv(
+                        systemConfiguration.getFlinkHistoryServerPort().getKey(), String.valueOf(usableLocalPort));
+            }
+        };
+        systemConfiguration.getFlinkHistoryServerPort().addChangeEvent(checkAndUpdatePort);
+        systemConfiguration.getFlinkHistoryServerPort().addParameterCheck(checkAndUpdatePort);
         CollUtil.newArrayList(
                         systemConfiguration.getUseFlinkHistoryServer(),
                         systemConfiguration.getFlinkHistoryServerPort(),
@@ -95,15 +112,26 @@ public class FlinkHistoryServer implements ApplicationRunner {
                 .forEach(x -> x.addChangeEvent(d -> {
                     if (systemConfiguration.getUseFlinkHistoryServer().getValue()) {
                         closeHistory.run();
+                        checkAndUpdatePort.accept(
+                                systemConfiguration.getFlinkHistoryServerPort().getValue());
                         historyThread
                                 .updateAndGet((t) -> new Thread(historyRunnable))
                                 .start();
+
                     } else {
                         closeHistory.run();
                     }
                 }));
         if (systemConfiguration.getUseFlinkHistoryServer().getValue()) {
-            historyThread.get().start();
+            checkAndUpdatePort.accept(
+                    systemConfiguration.getFlinkHistoryServerPort().getValue());
+            try {
+                if (!historyThread.get().isAlive()) {
+                    historyThread.get().start();
+                }
+            } catch (Exception e) {
+                log.error("Flink history server start failed: ", e);
+            }
         }
     }
 }
