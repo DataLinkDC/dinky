@@ -43,11 +43,8 @@ public class OracleQuery extends AbstractDBQuery {
                 + " THEN A.DATA_TYPE||'('||A.DATA_PRECISION||','||A.DATA_SCALE||')' ELSE"
                 + " A.DATA_TYPE||'('||A.DATA_PRECISION||')' END) ELSE A.DATA_TYPE END"
                 + " DATA_TYPE,A.DATA_PRECISION NUMERIC_PRECISION,A.DATA_SCALE NUMERIC_SCALE,"
-                + " B.COMMENTS,A.NULLABLE,DECODE((select count(1) from all_constraints"
-                + " pc,all_cons_columns pcc  where pcc.column_name = A.column_name  and"
-                + " pcc.constraint_name = pc.constraint_name  and pc.constraint_type ='P'  and"
-                + " pcc.owner = upper(A.OWNER)  and pcc.table_name ="
-                + " upper(A.TABLE_NAME)),0,'','PRI') KEY FROM ALL_TAB_COLUMNS A  INNER JOIN"
+                + " B.COMMENTS,A.NULLABLE, CASE WHEN C.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS KEY"
+                + " FROM ALL_TAB_COLUMNS A  INNER JOIN"
                 + " ALL_COL_COMMENTS B ON A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME ="
                 + " B.COLUMN_NAME AND B.OWNER = '"
                 + schemaName
