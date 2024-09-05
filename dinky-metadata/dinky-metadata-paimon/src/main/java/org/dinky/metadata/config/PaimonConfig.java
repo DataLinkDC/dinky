@@ -20,6 +20,7 @@
 package org.dinky.metadata.config;
 
 import org.dinky.data.model.CustomConfig;
+import org.dinky.data.model.S3Configuration;
 
 import org.apache.paimon.options.Options;
 
@@ -30,7 +31,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.dinky.data.model.S3Configuration;
 
 @Data
 @Builder

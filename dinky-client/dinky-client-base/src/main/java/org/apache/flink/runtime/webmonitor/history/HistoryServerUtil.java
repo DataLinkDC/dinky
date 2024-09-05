@@ -48,7 +48,10 @@ public final class HistoryServerUtil {
             });
             log.info("Flink History service started successfully.");
         } catch (IOException | FlinkException e) {
-            log.error("The Flink History service failed to start with the following error message: {}", e.getMessage(), e);
+            log.error(
+                    "The Flink History service failed to start with the following error message: {}",
+                    e.getMessage(),
+                    e);
             throw new RuntimeException(e);
         }
         hs.run();
