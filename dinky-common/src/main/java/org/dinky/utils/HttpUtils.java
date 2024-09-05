@@ -44,10 +44,10 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
-import org.springframework.util.CollectionUtils;
 
 public class HttpUtils {
 
@@ -154,20 +154,17 @@ public class HttpUtils {
             return;
         }
 
-        CompletableFuture.anyOf(
-                addressList.stream()
-                        .map(
-                                url -> CompletableFuture.runAsync(
-                                        () -> {
-                                            try {
-                                                HttpUtil.createGet(url + urlParams)
-                                                        .disableCache()
-                                                        .timeout(timeout)
-                                                        .then(consumer);
-                                            } catch (Exception e) {
-                                                logger.error("url-timeout :{} ", url);
-                                            }
-                                        }))
+        CompletableFuture.anyOf(addressList.stream()
+                        .map(url -> CompletableFuture.runAsync(() -> {
+                            try {
+                                HttpUtil.createGet(url + urlParams)
+                                        .disableCache()
+                                        .timeout(timeout)
+                                        .then(consumer);
+                            } catch (Exception e) {
+                                logger.error("url-timeout :{} ", url);
+                            }
+                        }))
                         .toArray(CompletableFuture[]::new))
                 .join();
     }

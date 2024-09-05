@@ -35,5 +35,4 @@ public interface ThreadPool {
 
     // 减少工作数
     void removeWorker(int num);
-
 }
