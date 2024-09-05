@@ -255,6 +255,7 @@ export default {
   'home.mywork': '我负责的任务',
   'home.allwork': '全部任务',
   'home.task.not.desc': '暂无任务说明',
+  'home.task.not.instance': '该任务未运行过,无法前往[运维中心]查看任务详情,请先运行该任务.',
   'home.task.update.at': '更新于: {time}',
   'home.job.stream': '流作业',
   'home.job.batch': '批作业',

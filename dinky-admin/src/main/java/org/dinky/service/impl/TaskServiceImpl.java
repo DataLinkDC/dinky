@@ -1041,16 +1041,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
         });
-
-        LambdaQueryWrapper<JobInstance> wrapper = new LambdaQueryWrapper<>();
-        wrapper.in(JobInstance::getId, tskMap.keySet());
-        jobInstanceService.getBaseMapper().selectList(wrapper, resultContext -> {
-            JobInstance jobInstance = resultContext.getResultObject();
-            TaskDTO taskDTO = tskMap.get(jobInstance.getId());
-            if (Objects.nonNull(taskDTO)) {
-                taskDTO.setStatus(jobInstance.getStatus());
-            }
-        });
+        // When the postgre data source query in () is empty, a syntax error will be reported, so it is necessary to
+        // judge
+        if (!tskMap.keySet().isEmpty()) {
+            LambdaQueryWrapper<JobInstance> wrapper = new LambdaQueryWrapper<>();
+            wrapper.in(JobInstance::getId, tskMap.keySet());
+            jobInstanceService.getBaseMapper().selectList(wrapper, resultContext -> {
+                JobInstance jobInstance = resultContext.getResultObject();
+                TaskDTO taskDTO = tskMap.get(jobInstance.getId());
+                if (Objects.nonNull(taskDTO)) {
+                    taskDTO.setStatus(jobInstance.getStatus());
+                }
+            });
+        }
 
         List<TaskDTO> tasks = new ArrayList<>(tskMap.values());
         // 按照step排序，发布>开发>,相同情况 下按照状态排序

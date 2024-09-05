@@ -32,7 +32,7 @@
     "description": "The label of footer link with label=github linking to https://github.com/DataLinkDC/dinky"
   },
   "copyright": {
-    "message": "Copyright © 2024 Dinky, Inc. DataLinkDC.<br/><a href=\"https://beian.miit.gov.cn\" target=\"_blank\">鲁ICP备20001630号-2</a>",
+    "message": "Copyright © 2024 Dinky.<br/><a href=\"https://beian.miit.gov.cn\" target=\"_blank\">鲁ICP备20001630号-3</a>",
     "description": "The footer copyright"
   },
   "logo.alt": {
