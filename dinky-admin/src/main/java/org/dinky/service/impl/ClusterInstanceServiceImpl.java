@@ -242,7 +242,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                     .clusterConfigurationId(id)
                     .autoRegisters(false)
                     .enabled(true)
-                    .note(String.format("Deployment from cluster configuration [%s]...", clusterCfg.getName()))
+                    .note(String.format("Deployment from cluster configuration [%s]", clusterCfg.getName()))
                     .build());
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());

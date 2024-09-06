@@ -40,16 +40,16 @@ import {
   LANGUAGE_ZH,
   TENANT_ID
 } from '@/services/constants';
-import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
-import { l } from '@/utils/intl';
-import { SuccessMessage } from '@/utils/messages';
-import { Monaco } from '@monaco-editor/react';
+import {CODE_EDIT_THEME, THEME} from '@/types/Public/data';
+import {l} from '@/utils/intl';
+import {SuccessMessage} from '@/utils/messages';
+import {Monaco} from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
-import { trim } from 'lodash';
-import { editor, KeyCode, KeyMod } from 'monaco-editor';
+import {trim} from 'lodash';
+import {editor, KeyCode, KeyMod} from 'monaco-editor';
 import path from 'path';
-import { format } from 'sql-formatter';
+import {format} from 'sql-formatter';
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -120,7 +120,7 @@ export function setTenantStorageAndCookie(tenantId: number) {
   // save as localStorage
   setKeyToLocalStorage(TENANT_ID, tenantId.toString());
   // save as cookies
-  setCookieByKey(TENANT_ID, tenantId.toString(), { path: '/' });
+  setCookieByKey(TENANT_ID, tenantId.toString(), {path: '/'});
 }
 
 /**
@@ -197,7 +197,7 @@ function registerEditorAction(editorInstance?: editor.IStandaloneCodeEditor) {
     contextMenuOrder: 1.5,
     run: () => {
       editorInstance?.trigger('anyString', 'editor.action.formatDocument', '');
-      editorInstance?.setValue(format(editorInstance?.getValue(), { language: 'spark' }));
+      editorInstance?.setValue(format(editorInstance?.getValue(), {language: 'spark'}));
     }
   });
   // 格式化选定内容 添加到 右键菜单 | format selection
@@ -209,7 +209,7 @@ function registerEditorAction(editorInstance?: editor.IStandaloneCodeEditor) {
     contextMenuOrder: 1.5,
     run: () => {
       editorInstance?.trigger('anyString', 'editor.action.formatSelection', '');
-      editorInstance?.setValue(format(editorInstance?.getValue(), { language: 'spark' }));
+      editorInstance?.setValue(format(editorInstance?.getValue(), {language: 'spark'}));
     }
   });
   // 注释该行 添加到 右键菜单 | comment line
@@ -275,13 +275,13 @@ export function convertCodeEditTheme(editorInstance?: Monaco['editor']) {
       inherit: true, // 是否继承主题配置
       rules: [
         // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
-        { token: 'custom-info', foreground: '#808080' },
-        { token: 'custom-thread', foreground: '#9fa19f' },
-        { token: 'custom-class', foreground: '#1060d9' },
-        { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
-        { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },
-        { token: 'custom-date', foreground: '#008800' },
-        { token: 'custom-process', foreground: '#07f313' }
+        {token: 'custom-info', foreground: '#808080'},
+        {token: 'custom-thread', foreground: '#9fa19f'},
+        {token: 'custom-class', foreground: '#1060d9'},
+        {token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold'},
+        {token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold'},
+        {token: 'custom-date', foreground: '#008800'},
+        {token: 'custom-process', foreground: '#07f313'}
       ],
       colors: {},
       encodedTokensColors: []
@@ -295,13 +295,13 @@ export function convertCodeEditTheme(editorInstance?: Monaco['editor']) {
       inherit: true, // 是否继承主题配置
       rules: [
         // 注意,默认的不做修改 因为上边继承了父主题, 只添加自己定义的 , 否则会覆盖默认的 , 导致编辑器样式不一致
-        { token: 'custom-info', foreground: '#008800' },
-        { token: 'custom-thread', foreground: '#9fa19f' },
-        { token: 'custom-class', foreground: '#1060d9' },
-        { token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold' },
-        { token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold' },
-        { token: 'custom-date', foreground: '#008800' },
-        { token: 'custom-process', foreground: '#07f313' }
+        {token: 'custom-info', foreground: '#008800'},
+        {token: 'custom-thread', foreground: '#9fa19f'},
+        {token: 'custom-class', foreground: '#1060d9'},
+        {token: 'custom-error', foreground: '#ff0000', fontStyle: 'bold'},
+        {token: 'custom-warning', foreground: '#FFA500', fontStyle: 'bold'},
+        {token: 'custom-date', foreground: '#008800'},
+        {token: 'custom-process', foreground: '#07f313'}
       ],
       colors: {},
       encodedTokensColors: []
@@ -360,42 +360,42 @@ export const getLanguage = (type: string): string => {
  */
 export const getIcon = (type: string) => {
   if (!type) {
-    return <FileIcon />;
+    return <FileIcon/>;
   }
   switch (type.toLowerCase()) {
     case DIALECT.JAVA:
-      return <JavaSvg />;
+      return <JavaSvg/>;
     case DIALECT.SCALA:
-      return <ScalaSvg />;
+      return <ScalaSvg/>;
     case DIALECT.PYTHON:
     case DIALECT.PYTHON_LONG:
-      return <PythonSvg />;
+      return <PythonSvg/>;
     case DIALECT.MD:
     case DIALECT.MDX:
-      return <MarkDownSvg />;
+      return <MarkDownSvg/>;
     case DIALECT.XML:
-      return <XMLSvg />;
+      return <XMLSvg/>;
     case DIALECT.YAML:
     case DIALECT.YML:
-      return <YAMLSvg />;
+      return <YAMLSvg/>;
     case DIALECT.JAR:
-      return <JarSvg />;
+      return <JarSvg/>;
     case DIALECT.SH:
     case DIALECT.BASH:
     case DIALECT.CMD:
-      return <ShellSvg />;
+      return <ShellSvg/>;
     case DIALECT.CONF:
-      return <ConfigSvg />;
+      return <ConfigSvg/>;
     case DIALECT.LOG:
-      return <LogSvg />;
+      return <LogSvg/>;
     case DIALECT.ZIP:
     case DIALECT.TAR:
     case DIALECT.TAR_GZ:
-      return <ZipSvg />;
+      return <ZipSvg/>;
     case DIALECT.FLINK_SQL:
-      return <FlinkSQLSvg />;
+      return <FlinkSQLSvg/>;
     default:
-      return <FileIcon />;
+      return <FileIcon/>;
   }
 };
 
@@ -407,7 +407,7 @@ export const getIcon = (type: string) => {
  */
 export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
   if (isLeft) {
-    return <FolderSvgExpand />;
+    return <FolderSvgExpand/>;
   } else {
     if (trim(splitChar).length === 0) {
       return getIcon(type);
@@ -477,6 +477,7 @@ export const parseSecondStr = (s_time: number) => {
   }
   return time;
 };
+
 export function Bytes2Mb(bs: number) {
   return bs / 1024 / 1024;
 }
@@ -603,13 +604,13 @@ export const searchTreeNode = (originValue: string, searchValue: string): any =>
   return title;
 };
 
-export const transformTreeData = <T,>(data: T[]): T[] => {
+export const transformTreeData = <T, >(data: T[]): T[] => {
   return data.map((item: T, index) => {
-    return { ...item, key: index };
+    return {...item, key: index};
   });
 };
 
-export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string => {
+export const transformTableDataToCsv = <T, >(column: string[], data: T[]): string => {
   let row = '';
   let csvData = '';
   for (const title of column) {
@@ -658,7 +659,7 @@ export async function handleCopyToClipboard(copyText: string) {
   } else {
     await navigator.clipboard.writeText(copyText);
   }
-  await SuccessMessage(l('rc.resource.copy_success', '', { fillValue: copyText }));
+  await SuccessMessage(l('rc.resource.copy_success', '', {fillValue: copyText}));
 }
 
 /**
@@ -671,4 +672,49 @@ export function getUrlParam(allParams = window.location.search, key: string) {
   const params = new URLSearchParams(allParams);
   const result = params.get(key);
   return result ?? '';
+}
+
+/**
+ * 判断字符串中是否包含中文或英文或混合
+ *  当前 : 如果是中文/中英文混合，返回 true，如果是英文，返回 false
+ * @returns {string} "Chinese", "English", "Mixed" or "Other"
+ * @param str
+ */
+export function isContainsChinese(str: string = '') {
+  // Regular expression matches Chinese characters
+  const chineseRegex = /[\u4e00-\u9fa5]/;
+  // Regular expression matches English characters (including uppercase and lowercase)
+  const englishRegex = /[a-zA-Z]/;
+
+  const numberRegex = /[0-9]/;
+
+  if (str.length === 0) {
+    return false;
+  }
+
+  let hasChinese = false;
+  let hasEnglish = false;
+  let hasNumber = false;
+
+  for (let i = 0; i < str.length; i++) {
+    if (chineseRegex.test(str[i])) {
+      hasChinese = true;
+    }
+    if (englishRegex.test(str[i])) {
+      hasEnglish = true;
+    }
+    if (numberRegex.test(str[i])) {
+      hasNumber = true;
+    }
+  }
+
+  if (hasChinese) {
+    return true;
+  } else if (hasEnglish && !hasChinese) {
+    return false;
+  } else if (hasNumber && !hasChinese) {
+    return false;
+  } else {
+    return false;
+  }
 }
