@@ -17,11 +17,8 @@
  *
  */
 
-package org.dinky.url;
+package org.dinky.resource.impl;
 
-import org.dinky.resource.BaseResourceManager;
-
-import org.apache.flink.api.common.io.InputStreamFSInputWrapper;
 import org.apache.flink.core.fs.BlockLocation;
 import org.apache.flink.core.fs.FSDataInputStream;
 import org.apache.flink.core.fs.FSDataOutputStream;
@@ -29,30 +26,14 @@ import org.apache.flink.core.fs.FileStatus;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.FileSystemKind;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.core.fs.local.LocalFileStatus;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import lombok.extern.slf4j.Slf4j;
+public class HttpFileSystem extends FileSystem {
+    public static final HttpFileSystem INSTANCE = new HttpFileSystem();
 
-@Slf4j
-public class ResourceFileSystem extends FileSystem {
-
-    public static final URI URI_SCHEMA = URI.create("rs:/");
-    private static ResourceFileSystem INSTANCE;
-
-    public static synchronized ResourceFileSystem getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ResourceFileSystem();
-        }
-        return INSTANCE;
-    }
-
-    public BaseResourceManager getBaseResourceManager() {
-        return BaseResourceManager.getInstance();
-    }
+    private HttpFileSystem() {}
 
     @Override
     public Path getWorkingDirectory() {
@@ -66,16 +47,12 @@ public class ResourceFileSystem extends FileSystem {
 
     @Override
     public URI getUri() {
-        return URI_SCHEMA;
+        return null;
     }
 
     @Override
     public FileStatus getFileStatus(Path f) throws IOException {
-        return new LocalFileStatus(getFile(f), this);
-    }
-
-    protected File getFile(Path f) {
-        return new File(getBaseResourceManager().getFilePath(f.getPath()));
+        return null;
     }
 
     @Override
@@ -85,31 +62,21 @@ public class ResourceFileSystem extends FileSystem {
 
     @Override
     public FSDataInputStream open(Path f, int bufferSize) throws IOException {
-        return open(f);
+        return null;
     }
 
     @Override
     public FSDataInputStream open(Path f) throws IOException {
-        return new InputStreamFSInputWrapper(getBaseResourceManager().readFile(f.getPath()));
+        return null;
     }
 
     @Override
     public FileStatus[] listStatus(Path f) throws IOException {
-        Path path = new Path(getBaseResourceManager().getFilePath(f.getPath()));
-        if (!getBaseResourceManager().getFileSystem().exists(path)) {
-            return new FileStatus[0];
-        }
-        return getBaseResourceManager().getFileSystem().listStatus(path);
+        return new FileStatus[0];
     }
 
     @Override
     public boolean delete(Path f, boolean recursive) throws IOException {
-        try {
-            getBaseResourceManager().remove(f.getPath());
-            return true;
-        } catch (Exception e) {
-            log.error("delete file failed, path: {}", f.getPath(), e);
-        }
         return false;
     }
 
@@ -120,32 +87,21 @@ public class ResourceFileSystem extends FileSystem {
 
     @Override
     public FSDataOutputStream create(Path f, WriteMode overwriteMode) throws IOException {
-        Path path = new Path(getBaseResourceManager().getFilePath(f.getPath()));
-        return getBaseResourceManager().getFileSystem().create(path, overwriteMode);
+        return new HttpFsDataOutputStream(f);
     }
 
     @Override
     public boolean rename(Path src, Path dst) throws IOException {
-        try {
-            getBaseResourceManager().rename(src.getPath(), dst.getPath());
-            return true;
-        } catch (Exception e) {
-            log.error("rename file failed, src: {}, dst: {}", src.getPath(), dst.getPath(), e);
-        }
         return false;
     }
 
     @Override
     public boolean isDistributedFS() {
-        return true;
+        return false;
     }
 
     @Override
     public FileSystemKind getKind() {
-        return FileSystemKind.OBJECT_STORE;
-    }
-
-    public static ResourceFileSystem getSharedInstance() {
-        return getInstance();
+        return null;
     }
 }
