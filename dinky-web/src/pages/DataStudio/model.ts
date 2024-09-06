@@ -672,7 +672,7 @@ const Model: ModelType = {
     saveTaskSortTypeData(state, { payload }) {
       return {
         ...state,
-        selectCatalogueSortTypeData: {...payload}
+        selectCatalogueSortTypeData: { ...payload }
       };
     },
 
