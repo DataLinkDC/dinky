@@ -87,7 +87,6 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
-        // TODO 这里判空逻辑有问题，clusterInstance有可能为null
         DinkyAssert.check(clusterInstance);
         FlinkClusterInfo info =
                 FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
@@ -134,7 +133,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public List<ClusterInstance> listEnabledAllClusterInstance() {
-        return this.list(new QueryWrapper<ClusterInstance>().eq("enabled", 1));
+        return this.list(new LambdaQueryWrapper<ClusterInstance>().eq(ClusterInstance::getEnabled, 1));
     }
 
     @Override
@@ -144,11 +143,10 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public List<ClusterInstance> listAutoEnable() {
-        return list(new QueryWrapper<ClusterInstance>().eq("enabled", 1).eq("auto_registers", 1));
+        return list(new LambdaQueryWrapper<ClusterInstance>().eq(ClusterInstance::getEnabled, 1).eq(ClusterInstance::isAutoRegisters, 1));
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public ClusterInstance registersCluster(ClusterInstanceDTO clusterInstanceDTO) {
         ClusterInstance clusterInstance = clusterInstanceDTO.toBean();
 
@@ -167,8 +165,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     /**
-     * @param id
-     * @return
+     * @param id cluster instance id
      */
     @Override
     public Boolean deleteClusterInstanceById(Integer id) {
@@ -243,8 +240,9 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
                     .alias(clusterCfg.getName() + "_" + LocalDateTime.now())
                     .type(gatewayConfig.getType().getLongValue())
                     .clusterConfigurationId(id)
-                    .autoRegisters(true)
+                    .autoRegisters(false)
                     .enabled(true)
+                    .note(String.format("Deployment from cluster configuration [%s]...", clusterCfg.getName()))
                     .build());
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());

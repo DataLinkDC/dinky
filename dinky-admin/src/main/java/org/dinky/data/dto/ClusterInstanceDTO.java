@@ -88,6 +88,9 @@ public class ClusterInstanceDTO {
     @ApiModelProperty(value = "taskId", required = true, dataType = "Integer", example = "test", notes = "task id")
     private Integer taskId;
 
+    @ApiModelProperty(value = "note", dataType = "String", example = "test")
+    private String note;
+
     @NotNull(
             message = "Enabled cannot be null",
             groups = {Save.class})
