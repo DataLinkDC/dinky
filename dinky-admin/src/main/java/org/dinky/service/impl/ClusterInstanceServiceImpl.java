@@ -58,7 +58,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
@@ -143,7 +142,9 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public List<ClusterInstance> listAutoEnable() {
-        return list(new LambdaQueryWrapper<ClusterInstance>().eq(ClusterInstance::getEnabled, 1).eq(ClusterInstance::isAutoRegisters, 1));
+        return list(new LambdaQueryWrapper<ClusterInstance>()
+                .eq(ClusterInstance::getEnabled, 1)
+                .eq(ClusterInstance::isAutoRegisters, 1));
     }
 
     @Override
