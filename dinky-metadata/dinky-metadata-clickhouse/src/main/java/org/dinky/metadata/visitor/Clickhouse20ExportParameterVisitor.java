@@ -38,7 +38,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
     private final boolean requireParameterizedOutput;
 
     public Clickhouse20ExportParameterVisitor(
-            final List<Object> parameters, final Appendable appender, final boolean wantParameterizedOutput) {
+            final List<Object> parameters, final StringBuilder appender, final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;
@@ -52,7 +52,7 @@ public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisito
         this(parameters, new StringBuilder(), false);
     }
 
-    public Clickhouse20ExportParameterVisitor(final Appendable appender) {
+    public Clickhouse20ExportParameterVisitor(final StringBuilder appender) {
         this(new ArrayList<Object>(), appender, true);
     }
 
