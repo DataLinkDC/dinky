@@ -115,7 +115,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   }, [searchValue, projectData, taskOwnerLockingStrategy]);
 
   useEffect(() => {
-    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: {...selectCatalogueSortTypeData} });
   }, [selectCatalogueSortTypeData]);
 
   function buildSortTreeOptions(trees: TreeVo[] = []): ItemType[] {
