@@ -675,10 +675,10 @@ export function getUrlParam(allParams = window.location.search, key: string) {
 }
 
 /**
- * 判断字符串中是否包含中文或英文或混合
- *  当前 : 如果是中文/中英文混合，返回 true，如果是英文，返回 false
- * @returns {string} "Chinese", "English", "Mixed" or "Other"
- * @param str
+ * Determine whether the string contains Chinese, English, or a mixture of both
+ *  Current: If it is a mixture of Chinese/English, return true; if it is English, return false
+ * @returns {boolean} true: contains Chinese characters; false: does not contain Chinese characters
+ * @param str string
  */
 export function isContainsChinese(str: string = '') {
   // Regular expression matches Chinese characters
