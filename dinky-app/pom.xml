@@ -33,6 +33,7 @@
                 <module>dinky-app-1.17</module>
                 <module>dinky-app-1.18</module>
                 <module>dinky-app-1.19</module>
+                <module>dinky-app-1.20</module>
             </modules>
         </profile>
 
