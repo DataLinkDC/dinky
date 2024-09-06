@@ -90,6 +90,7 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
@@ -472,7 +473,7 @@ public abstract class YarnGateway extends AbstractGateway {
                         + HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM.key()
                         + "'.");
             }
-            int sessionTimeout = configuration.getInteger(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT);
+            int sessionTimeout = Convert.toInt(configuration.get(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT));
             String root = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
             String namespace = configuration.getValue(HighAvailabilityOptions.HA_CLUSTER_ID);
 

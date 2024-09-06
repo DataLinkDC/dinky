@@ -444,6 +444,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.20</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-catalog-mysql-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -470,6 +475,11 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-catalog-mysql-1.19</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-mysql-1.20</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -636,6 +646,11 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-flink-1.19</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.20</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -891,7 +906,7 @@
         </plugins>
     </build>
 
-    <url>http://www.dinky.org.cn/</url>
+    <url>https://www.dinky.org.cn/</url>
     <inceptionYear>2021</inceptionYear>
 
     <licenses>
@@ -1088,6 +1103,12 @@
             <id>flink-1.19</id>
             <properties>
                 <dinky.flink.version>1.19</dinky.flink.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>flink-1.20</id>
+            <properties>
+                <dinky.flink.version>1.20</dinky.flink.version>
             </properties>
         </profile>
 
