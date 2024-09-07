@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import java.time.format.DateTimeFormatter;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
@@ -235,16 +236,19 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         if (gatewayResult.isSuccess()) {
             Asserts.checkNullString(gatewayResult.getWebURL(), "Unable to obtain Web URL.");
-            return registersCluster(ClusterInstanceDTO.builder()
+            ClusterInstance registersedCluster = registersCluster(ClusterInstanceDTO.builder()
                     .hosts(gatewayResult.getWebURL().replace("http://", ""))
                     .name(gatewayResult.getId())
-                    .alias(clusterCfg.getName() + "_" + LocalDateTime.now())
+                    .alias(clusterCfg.getName() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
                     .type(gatewayConfig.getType().getLongValue())
                     .clusterConfigurationId(id)
                     .autoRegisters(false)
                     .enabled(true)
                     .note(String.format("Deployment from cluster configuration [%s]", clusterCfg.getName()))
                     .build());
+            // check health after deploy session cluster
+            checkHealth(registersedCluster);
+            return registersedCluster;
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());
     }
@@ -284,7 +288,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         ExecutorService executor = ThreadUtil.newExecutor(Math.min(clusterInstances.size(), 10));
         List<CompletableFuture<Integer>> futures = clusterInstances.stream()
                 .map(c -> CompletableFuture.supplyAsync(
-                        () -> this.registersCluster(c).getStatus(), executor))
+                        () -> registersCluster(c).getStatus(), executor))
                 .collect(Collectors.toList());
         return futures.stream().map(CompletableFuture::join).filter(x -> x == 1).count();
     }

@@ -688,8 +688,8 @@ export function isContainsChinese(str: string = '') {
 
   const numberRegex = /[0-9]/;
 
-  if (str.length === 0) {
-    return false;
+  if (str && str.length === 0) {
+    return;
   }
 
   let hasChinese = false;
