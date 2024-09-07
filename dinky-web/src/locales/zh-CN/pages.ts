@@ -1045,6 +1045,7 @@ export default {
   'role.deleteConfirm': '您确定要删除此角色吗？',
   'role.roleCode': '角色编码',
   'role.roleManagement': '角色管理',
+  'role.roleManagement.tips': '系统已在创建租户时,将 [Admin] 用户进行了默认分配,即:所有租户都会包含 [Admin] 用户，在创建角色时无法自由指定租户，如需要指定非当前租户,请根据自身需要选择租户，在右上角切换(如果选项中无新建的租户,请在租户创建成功后刷新页面)，切换完成后,进行创建角色以及角色赋权等相关操作',
   'role.roleName': '角色名称',
   'role.update': '修改角色',
   'role.user.list': '角色用户列表',
