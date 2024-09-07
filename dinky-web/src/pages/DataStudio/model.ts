@@ -298,10 +298,8 @@ export type StateType = {
     data: TreeVo[];
   };
   selectCatalogueSortTypeData: {
-    data: {
-      sortValue: string;
-      sortType: string;
-    };
+    sortValue: string;
+    sortType: string;
   };
   sessionCluster: Cluster.Instance[];
   clusterConfiguration: Cluster.Config[];
@@ -410,10 +408,8 @@ const Model: ModelType = {
       data: []
     },
     selectCatalogueSortTypeData: {
-      data: {
-        sortValue: '',
-        sortType: ''
-      }
+      sortValue: '',
+      sortType: ''
     },
     tabs: {
       activeBreadcrumbTitle: '',
@@ -676,7 +672,7 @@ const Model: ModelType = {
     saveTaskSortTypeData(state, { payload }) {
       return {
         ...state,
-        selectCatalogueSortTypeData: { data: payload }
+        selectCatalogueSortTypeData: { ...payload }
       };
     },
 

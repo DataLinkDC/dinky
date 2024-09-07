@@ -64,7 +64,10 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
       () => {},
       () => {
         handleCancelCreate();
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+        dispatch({
+          type: STUDIO_MODEL_ASYNC.queryProject,
+          payload: { ...selectCatalogueSortTypeData }
+        });
       }
     );
   };
