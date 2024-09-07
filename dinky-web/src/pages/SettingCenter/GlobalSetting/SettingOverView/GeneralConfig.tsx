@@ -128,7 +128,9 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     },
     description: {
       editable: false,
-      render: (dom: any, entity: BaseConfigProperties) => <MoreInfo maxRows={1} >{entity.note}</MoreInfo>
+      render: (dom: any, entity: BaseConfigProperties) => (
+        <MoreInfo maxRows={1}>{entity.note}</MoreInfo>
+      )
     },
     content: {
       dataIndex: 'value',

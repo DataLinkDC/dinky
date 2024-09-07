@@ -17,11 +17,10 @@
  *
  */
 
-import {Flex, Typography} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { Flex, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
 
-
-const { Text} = Typography;
+const { Text } = Typography;
 
 type MoreInfoProps = {
   maxRows: number;
@@ -30,8 +29,7 @@ type MoreInfoProps = {
 };
 
 const MoreInfo: React.FC<MoreInfoProps> = (props) => {
-  const {maxRows, children, type = 'secondary'} = props;
-
+  const { maxRows, children, type = 'secondary' } = props;
 
   const [expanded, setExpanded] = useState(false);
   const [rows, setRows] = useState(maxRows);
@@ -51,13 +49,12 @@ const MoreInfo: React.FC<MoreInfoProps> = (props) => {
           rows,
           expandable: true,
           expanded,
-          onExpand: (_, info) => setExpanded(info.expanded),
+          onExpand: (_, info) => setExpanded(info.expanded)
         }}
       >
         {children}
       </Typography.Paragraph>
     </Flex>
-
   );
 };
 
