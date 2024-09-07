@@ -26,17 +26,14 @@ import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.HttpUtils;
 import org.dinky.utils.TimeUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.StrFormatter;
-import cn.hutool.core.thread.AsyncUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -62,12 +59,11 @@ public class JobMetricsHandler {
 
         // Create a CompletableFuture array for concurrent acquisition of indicator data
         CompletableFuture<?>[] array = customMetricsList.entrySet().stream()
-                .map((e) -> CompletableFuture.runAsync(
+                .map(e -> CompletableFuture.runAsync(
                         () -> fetchFlinkMetrics(e.getKey(), e.getValue(), jobManagerUrls, jobId)))
                 .toArray(CompletableFuture[]::new);
-        // Wait for all Completable Future executions to finish
         try {
-            AsyncUtil.waitAll(array);
+            CompletableFuture.allOf(array).join();
             MetricsVO metricsVO = new MetricsVO();
             metricsVO.setContent(customMetricsList);
             metricsVO.setHeartTime(LocalDateTime.now());
@@ -88,14 +84,20 @@ public class JobMetricsHandler {
      * @param jid     job ID
      */
     private static void fetchFlinkMetrics(String v, Map<String, String> m, String[] urlList, String jid) {
-        if (CollUtil.isEmpty(Arrays.asList(urlList))) {
+        if (urlList == null || urlList.length == 0) {
             return;
         }
-        String metricsName = StrUtil.join(",", m.keySet());
-        String urlParam =
-                StrFormatter.format("/jobs/{}/vertices/{}/metrics?get={}", jid, v, URLUtil.encode(metricsName));
-        ArrayList<String> list = new ArrayList<String>(Arrays.asList(urlList));
-        HttpUtils.asyncRequest(list, urlParam, NetConstant.READ_TIME_OUT, x -> {
+
+        String metricsName = String.join(",", m.keySet());
+        String urlParam = null;
+        try {
+            urlParam = String.format(
+                    "/jobs/%s/vertices/%s/metrics?get=%s", jid, v, URLEncoder.encode(metricsName, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpUtils.request(new ArrayList<>(Arrays.asList(urlList)), urlParam, NetConstant.READ_TIME_OUT, x -> {
             JSONArray array = JSONUtil.parseArray(x.body());
             array.forEach(y -> {
                 JSONObject jsonObject = JSONUtil.parseObj(y);
