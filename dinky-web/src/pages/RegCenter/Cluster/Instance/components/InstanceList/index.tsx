@@ -64,10 +64,9 @@ import {
   Tooltip,
   Typography
 } from 'antd';
-import {useState} from 'react';
-import EllipsisMiddle from "@/components/Typography/EllipsisMiddle";
-import {isContainsChinese} from "@/utils/function";
-
+import { useState } from 'react';
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
+import { isContainsChinese } from '@/utils/function';
 
 const { Text, Paragraph, Link } = Typography;
 
@@ -224,13 +223,21 @@ export default () => {
               <blockquote>
                 {l('rc.ci.version')}: <Link>{item.version || 'None'}</Link>
               </blockquote>
-              <blockquote style={{display: 'flex',}}>
-                <span style={{minWidth: '2vw'}}> {l('rc.ci.alias')}: </span>
-                <EllipsisMiddle copyable={false} maxCount={isContainsChinese(item.alias ?? '') ? 10 : 20} children={item.alias}/>
+              <blockquote style={{ display: 'flex' }}>
+                <span style={{ minWidth: '2vw' }}> {l('rc.ci.alias')}: </span>
+                <EllipsisMiddle
+                  copyable={false}
+                  maxCount={isContainsChinese(item.alias ?? '') ? 10 : 20}
+                  children={item.alias}
+                />
               </blockquote>
-              <blockquote style={{display: 'flex',}}>
-                <span style={{minWidth: '2vw'}}> {l('rc.ci.desc')}: </span>
-                <EllipsisMiddle copyable={false} maxCount={isContainsChinese(item.note ?? '') ? 10 : 20} children={item.note}/>
+              <blockquote style={{ display: 'flex' }}>
+                <span style={{ minWidth: '2vw' }}> {l('rc.ci.desc')}: </span>
+                <EllipsisMiddle
+                  copyable={false}
+                  maxCount={isContainsChinese(item.note ?? '') ? 10 : 20}
+                  children={item.note}
+                />
               </blockquote>
             </Paragraph>
 

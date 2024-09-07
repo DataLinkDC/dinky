@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import java.time.format.DateTimeFormatter;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
@@ -47,6 +46,7 @@ import org.dinky.utils.IpUtil;
 import org.dinky.utils.URLUtils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -239,7 +239,8 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
             ClusterInstance registersedCluster = registersCluster(ClusterInstanceDTO.builder()
                     .hosts(gatewayResult.getWebURL().replace("http://", ""))
                     .name(gatewayResult.getId())
-                    .alias(clusterCfg.getName() + "_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
+                    .alias(clusterCfg.getName() + "_"
+                            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
                     .type(gatewayConfig.getType().getLongValue())
                     .clusterConfigurationId(id)
                     .autoRegisters(false)
@@ -287,8 +288,8 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         List<ClusterInstance> clusterInstances = this.list();
         ExecutorService executor = ThreadUtil.newExecutor(Math.min(clusterInstances.size(), 10));
         List<CompletableFuture<Integer>> futures = clusterInstances.stream()
-                .map(c -> CompletableFuture.supplyAsync(
-                        () -> registersCluster(c).getStatus(), executor))
+                .map(c ->
+                        CompletableFuture.supplyAsync(() -> registersCluster(c).getStatus(), executor))
                 .collect(Collectors.toList());
         return futures.stream().map(CompletableFuture::join).filter(x -> x == 1).count();
     }
