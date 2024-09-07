@@ -17,54 +17,56 @@
  *
  */
 
-import {Alert, Flex, Typography} from 'antd';
+import { Alert, Flex, Typography } from 'antd';
 import React from 'react';
 import Marquee from 'react-fast-marquee';
 
-const {Text} = Typography;
+const { Text } = Typography;
 
 type ScrollInfoProps = {
   children: string;
   isScroll: boolean;
   children: string;
-  alert: boolean | {
-    enabled: boolean;
-    banner: boolean;
-    showIcon: boolean;
-    description: string;
-    type: 'info' | 'error' | 'warning' | 'success';
-  };
+  alert:
+    | boolean
+    | {
+        enabled: boolean;
+        banner: boolean;
+        showIcon: boolean;
+        description: string;
+        type: 'info' | 'error' | 'warning' | 'success';
+      };
 };
 
 const ScrollInfo: React.FC<ScrollInfoProps> = (props) => {
-  const {alert, isScroll, children} = props;
+  const { alert, isScroll, children } = props;
 
-
-  const renderContent = () => <>
-    {isScroll ? (
-      <Marquee pauseOnHover gradient={false}>
-        {children}
-      </Marquee>
-    ) : <>
-    <Text color={'red'} type="secondary">
-      <blockquote>{children}</blockquote>
-    </Text></>
-    }
-  </>
+  const renderContent = () => (
+    <>
+      {isScroll ? (
+        <Marquee pauseOnHover gradient={false}>
+          {children}
+        </Marquee>
+      ) : (
+        <>
+          <Text color={'red'} type='secondary'>
+            <blockquote>{children}</blockquote>
+          </Text>
+        </>
+      )}
+    </>
+  );
 
   return (
     <Flex gap={16} vertical>
-      {
-        (alert && alert.enabled) ? <>
-            <Alert
-              banner={alert.banner}
-              message={renderContent()}
-            />
-          </> :
-          <>{renderContent()}</>
-      }
+      {alert && alert.enabled ? (
+        <>
+          <Alert banner={alert.banner} message={renderContent()} />
+        </>
+      ) : (
+        <>{renderContent()}</>
+      )}
     </Flex>
-
   );
 };
 

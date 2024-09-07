@@ -17,28 +17,33 @@
  *
  */
 
-import {AssignBtn} from '@/components/CallBackButton/AssignBtn';
-import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
-import {EditBtn} from '@/components/CallBackButton/EditBtn';
-import {PopconfirmDeleteBtn} from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { AssignBtn } from '@/components/CallBackButton/AssignBtn';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import AssignMenu from '@/pages/AuthCenter/Role/components/AssignMenu';
 import RoleUserList from '@/pages/AuthCenter/Role/components/RoleUserList';
-import {queryList} from '@/services/api';
-import {handleAddOrUpdate, handleOption, handleRemoveById, queryDataByParams} from '@/services/BusinessCrud';
-import {PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {UserBaseInfo} from '@/types/AuthCenter/data.d';
-import {InitRoleListState} from '@/types/AuthCenter/init.d';
-import {RoleListState} from '@/types/AuthCenter/state.d';
-import {PermissionConstants} from '@/types/Public/constants';
-import {getTenantByLocalStorage} from '@/utils/function';
-import {l} from '@/utils/intl';
-import ProTable, {ActionType, ProColumns} from '@ant-design/pro-table';
-import {Tag} from 'antd';
-import React, {Key, useRef, useState} from 'react';
+import { queryList } from '@/services/api';
+import {
+  handleAddOrUpdate,
+  handleOption,
+  handleRemoveById,
+  queryDataByParams
+} from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitRoleListState } from '@/types/AuthCenter/init.d';
+import { RoleListState } from '@/types/AuthCenter/state.d';
+import { PermissionConstants } from '@/types/Public/constants';
+import { getTenantByLocalStorage } from '@/utils/function';
+import { l } from '@/utils/intl';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import { Tag } from 'antd';
+import React, { Key, useRef, useState } from 'react';
 import RoleModalForm from '../RoleModalForm';
-import ScrollInfo from "@/components/Typography/ScrollInfo";
+import ScrollInfo from '@/components/Typography/ScrollInfo';
 
 const RoleProTable: React.FC = () => {
   /**
@@ -49,9 +54,9 @@ const RoleProTable: React.FC = () => {
   const actionRef = useRef<ActionType>();
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setRoleListState((prevState) => ({...prevState, loading: true}));
+    setRoleListState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setRoleListState((prevState) => ({...prevState, loading: false}));
+    setRoleListState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -75,9 +80,8 @@ const RoleProTable: React.FC = () => {
           ...value,
           tenantId: getTenantByLocalStorage()
         },
-        () => {
-        },
-        () => setRoleListState((prevState) => ({...prevState, addedOpen: false}))
+        () => {},
+        () => setRoleListState((prevState) => ({ ...prevState, addedOpen: false }))
       );
     });
   };
@@ -114,7 +118,7 @@ const RoleProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<UserBaseInfo.Role>) => {
-    setRoleListState((prevState) => ({...prevState, value: record, editOpen: true}));
+    setRoleListState((prevState) => ({ ...prevState, value: record, editOpen: true }));
   };
 
   /**
@@ -122,11 +126,11 @@ const RoleProTable: React.FC = () => {
    * @param record
    */
   const handleAssignVisible = (record: Partial<UserBaseInfo.Role>) => {
-    setRoleListState((prevState) => ({...prevState, value: record, assignMenuOpen: true}));
+    setRoleListState((prevState) => ({ ...prevState, value: record, assignMenuOpen: true }));
   };
 
   const handleClickViewUserList = (record: Partial<UserBaseInfo.Role>) => {
-    queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, {roleId: record.id}).then((res) =>
+    queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, { roleId: record.id }).then((res) =>
       setRoleListState((prevState) => ({
         ...prevState,
         roleUserList: res as UserBaseInfo.User[],
@@ -189,7 +193,7 @@ const RoleProTable: React.FC = () => {
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.Role) => [
         <Authorized key={`${record.id}_add_auth`} path={PermissionConstants.AUTH_ROLE_EDIT}>
-          <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>
+          <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />
         </Authorized>,
         <Authorized key={`${record.id}_delete_auth`} path={PermissionConstants.AUTH_ROLE_DELETE}>
           <>
@@ -209,7 +213,7 @@ const RoleProTable: React.FC = () => {
           <AssignBtn
             key={`${record.id}_ass`}
             onClick={() => handleAssignVisible(record)}
-            title={l('role.assignMenu', '', {roleName: record.roleName})}
+            title={l('role.assignMenu', '', { roleName: record.roleName })}
           />
         </Authorized>
       ]
@@ -221,7 +225,7 @@ const RoleProTable: React.FC = () => {
    */
   return (
     <>
-      <ScrollInfo isScroll={false} alert={{enabled: false, banner: true}}>
+      <ScrollInfo isScroll={false} alert={{ enabled: false, banner: true }}>
         {l('role.roleManagement.tips')}
       </ScrollInfo>
       <ProTable<UserBaseInfo.Role>
@@ -233,12 +237,12 @@ const RoleProTable: React.FC = () => {
           <Authorized key={'roleadd'} path={PermissionConstants.AUTH_ROLE_ADD}>
             <CreateBtn
               key={'toolBarRender'}
-              onClick={() => setRoleListState((prevState) => ({...prevState, addedOpen: true}))}
+              onClick={() => setRoleListState((prevState) => ({ ...prevState, addedOpen: true }))}
             />
           </Authorized>
         ]}
         request={(params, sorter, filter: any) =>
-          queryList(API_CONSTANTS.ROLE, {...params, sorter, filter})
+          queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })
         }
         columns={columns}
       />
@@ -261,7 +265,7 @@ const RoleProTable: React.FC = () => {
           values={roleListState.value}
           open={roleListState.assignMenuOpen}
           onSubmit={handleAssignMenuSubmit}
-          onClose={() => setRoleListState((prevState) => ({...prevState, assignMenuOpen: false}))}
+          onClose={() => setRoleListState((prevState) => ({ ...prevState, assignMenuOpen: false }))}
         />
       )}
       {Object.keys(roleListState.value).length > 0 && (
@@ -270,7 +274,7 @@ const RoleProTable: React.FC = () => {
           open={roleListState.viewUsersOpen}
           userList={roleListState.roleUserList}
           loading={roleListState.loading}
-          onClose={() => setRoleListState((prevState) => ({...prevState, viewUsersOpen: false}))}
+          onClose={() => setRoleListState((prevState) => ({ ...prevState, viewUsersOpen: false }))}
         />
       )}
     </>
