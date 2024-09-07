@@ -1125,6 +1125,8 @@ export default {
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
   'role.roleCode': 'Role Code',
   'role.roleManagement': 'Role Management',
+  'role.roleManagement.tips':
+    'The system has assigned [Admin] users by default when creating tenants, which means that all tenants will include [Admin] users. When creating roles, it is not possible to freely specify tenants. If you need to specify a non current tenant, please select the tenant according to your own needs and switch in the upper right corner (if there is no new tenant in the options, please refresh the page after the tenant is successfully created). After the switch is completed, perform related operations such as creating roles and role empowerment',
   'role.roleName': 'Role Name',
   'role.update': 'Update Role',
   'role.user.list': 'Role of User List',
