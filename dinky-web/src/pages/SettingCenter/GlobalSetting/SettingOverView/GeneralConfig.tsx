@@ -30,6 +30,7 @@ import { ProListMetas, ProListProps } from '@ant-design/pro-list';
 import { ActionType } from '@ant-design/pro-table';
 import { Descriptions, Input, Radio, RadioChangeEvent, Space, Switch } from 'antd';
 import React, { useRef } from 'react';
+import MoreInfo from '@/components/Typography/MoreInfo';
 
 type GeneralConfigProps = {
   data: BaseConfigProperties[];
@@ -127,7 +128,9 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     },
     description: {
       editable: false,
-      render: (dom: any, entity: BaseConfigProperties) => <>{entity.note}</>
+      render: (dom: any, entity: BaseConfigProperties) => (
+        <MoreInfo maxRows={1}>{entity.note}</MoreInfo>
+      )
     },
     content: {
       dataIndex: 'value',
