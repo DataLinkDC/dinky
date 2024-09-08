@@ -49,6 +49,24 @@ public class PostgreSqlQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String tablesSql(String schemaName, String tableName) {
+        return "SELECT n.nspname              AS schema_name\n"
+                + "     , c.relname              AS tablename\n"
+                + "     , obj_description(c.oid) AS comments\n"
+                + "     , c.reltuples            as rows\n"
+                + "FROM pg_class c\n"
+                + "         LEFT JOIN pg_namespace n ON n.oid = c.relnamespace\n"
+                + "WHERE ((c.relkind = 'r'::\"char\") OR (c.relkind = 'f'::\"char\") OR"
+                + " (c.relkind = 'p'::\"char\"))\n"
+                + "  AND n.nspname = '"
+                + schemaName + "'"
+                + " AND c.relname = '"
+                + tableName
+                + "'\n"
+                + "ORDER BY n.nspname, tablename";
+    }
+
+    @Override
     public String columnsSql(String schemaName, String tableName) {
 
         return "SELECT col.column_name                                 as name\n"

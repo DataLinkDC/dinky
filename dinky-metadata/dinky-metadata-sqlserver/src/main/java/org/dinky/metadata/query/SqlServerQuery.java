@@ -37,6 +37,11 @@ public class SqlServerQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String tablesSql(String schemaName, String tableName) {
+        return String.format(SqlServerConstant.QUERY_TABLE_BY_SCHEMA_NAME_AND_TABLE_NAME_SQL, schemaName, tableName);
+    }
+
+    @Override
     public String columnsSql(String schemaName, String tableName) {
         return String.format(SqlServerConstant.QUERY_COLUMNS_SQL, tableName);
     }

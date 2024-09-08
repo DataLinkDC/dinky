@@ -34,6 +34,11 @@ public class HiveQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String tablesSql(String schemaName, String tableName) {
+        return String.format(HiveConstant.QUERY_ALL_TABLES_BY_SCHEMA_NAME_AND_TABLE_NAME, tableName);
+    }
+
+    @Override
     public String columnsSql(String schemaName, String tableName) {
         return String.format(HiveConstant.QUERY_TABLE_SCHEMA, schemaName, tableName);
     }

@@ -44,6 +44,19 @@ public class ClickHouseQuery extends AbstractDBQuery {
     }
 
     /**
+     * 获取指定数据库下指定表的元数据
+     *
+     * @param schemaName 模式名称
+     * @param tableName 表名
+     * @return String
+     */
+    @Override
+    public String tablesSql(String schemaName, String tableName) {
+        return "select name, total_rows, engine, metadata_modification_time, comment "
+                + "from system.tables where 1=1 and database='" + schemaName + "' and name='" + tableName + "'";
+    }
+
+    /**
      * 从元数据表中获取表字段信息
      *
      * @param schemaName 模式名称

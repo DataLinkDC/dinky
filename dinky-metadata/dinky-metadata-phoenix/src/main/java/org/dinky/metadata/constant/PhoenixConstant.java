@@ -42,6 +42,9 @@ public interface PhoenixConstant {
     /** 根据schema查询table信息模板SQL */
     String QUERY_TABLE_BY_SCHEMA_SQL = QUERY_TABLE_BY_SCHEMA_SQL_DEFAULT + "  AND TABLE_SCHEM = '%s' ";
 
+    String QUERY_TABLE_BY_SCHEMA_NAME_AND_TABLE_NAME_SQL =
+            QUERY_TABLE_BY_SCHEMA_SQL_DEFAULT + "  AND TABLE_SCHEM = '%s'" + " AND TABLE_NAME = '%s'";
+
     /** Phoenix的driver */
     String PHOENIX_DRIVER = "org.apache.phoenix.jdbc.PhoenixDriver";
 }

@@ -77,7 +77,7 @@ public abstract class AbstractDriver<T extends IConnectConfig> implements Driver
 
     @Override
     public Table getTable(String schemaName, String tableName) {
-        List<Table> tables = listTables(schemaName);
+        List<Table> tables = listTables(schemaName, tableName);
         Table table = null;
         for (Table item : tables) {
             if (Asserts.isEquals(item.getName(), tableName)) {
