@@ -61,6 +61,10 @@ public class DatabaseFlywayMigration {
     private final FlywayProperties flywayProperties;
     private final DataSourceProperties dataSourceProperties;
 
+    /**
+     * The reason why hikariDataSource is used here is because Dinky uses a Druid connection pool, which can cause some flyway SQL to be intercepted during execution, resulting in automatic upgrade failure
+     * @return dataSource
+     */
     private DataSource dataSource() {
         HikariDataSource hikariDataSource = new HikariDataSource();
         hikariDataSource.setJdbcUrl(dataSourceProperties.getUrl());
