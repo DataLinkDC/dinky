@@ -40,7 +40,7 @@
     "@ant-design/icons": "^5.3.7",
     "@ant-design/pro-components": "^2.7.10",
     "@ant-design/pro-layout": "^7.19.8",
-    "@ant-design/pro-table": "^3.16.1",
+    "@ant-design/pro-table": "^3.16.6",
     "@ant-design/use-emotion-css": "^1.0.4",
     "@antv/g2": "^5.2.0",
     "@antv/layout": "0.3.25",
