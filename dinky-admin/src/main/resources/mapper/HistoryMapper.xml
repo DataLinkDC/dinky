@@ -15,7 +15,7 @@
                 and a.job_id = #{param.jobId}
             </if>
             <if test='param.jobName!=null and param.jobName!=""'>
-                and a.job_name like "%${param.jobName}%"
+                and a.job_name like concat('%',#{param.jobName},'%')
             </if>
             <if test='param.clusterId!=null and param.clusterId!=""'>
                 and a.cluster_id = #{param.clusterId}

@@ -19,12 +19,11 @@
 
 package org.dinky.data.model.rbac;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import org.dinky.mybatis.model.DateBaseEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -38,7 +37,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_tenant")
 @ApiModel(value = "Tenant", description = "Tenant model")
-public class Tenant implements Serializable {
+public class Tenant extends DateBaseEntity<Tenant> implements Serializable {
 
     private static final long serialVersionUID = -7782313413034278131L;
     /** id */
@@ -57,22 +56,4 @@ public class Tenant implements Serializable {
     /** is delete */
     @ApiModelProperty(value = "Is Delete", required = true, dataType = "Boolean", example = "false")
     private Boolean isDelete;
-
-    /** create time */
-    @TableField(fill = FieldFill.INSERT)
-    @ApiModelProperty(
-            value = "Create Time",
-            required = true,
-            dataType = "LocalDateTime",
-            example = "2022-02-24 19:58:00")
-    private LocalDateTime createTime;
-
-    /** update time */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @ApiModelProperty(
-            value = "Update Time",
-            required = true,
-            dataType = "LocalDateTime",
-            example = "2022-02-24 19:58:00")
-    private LocalDateTime updateTime;
 }

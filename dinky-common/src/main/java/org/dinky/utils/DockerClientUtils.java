@@ -20,6 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.config.Docker;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.docker.DockerClientBuilder;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public class DockerClientUtils {
     public DockerClientUtils(Docker docker) {
         this.docker = docker;
         this.dockerfile = FileUtil.writeUtf8String(
-                docker.getDockerfile(), System.getProperty("user.dir") + "/tmp/dockerfile/" + UUID.randomUUID());
+                docker.getDockerfile(), DirConstant.getTempRootDir() + "/dockerfile/" + UUID.randomUUID());
         dockerClient = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
                         .withDockerHost(docker.getInstance())
                         .withRegistryUrl(docker.getRegistryUrl())

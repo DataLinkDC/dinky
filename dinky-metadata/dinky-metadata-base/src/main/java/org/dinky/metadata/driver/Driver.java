@@ -171,6 +171,8 @@ public interface Driver extends AutoCloseable {
 
     List<Table> listTables(String schemaName);
 
+    List<Table> listTables(String schemaName, String tableName);
+
     List<Column> listColumns(String schemaName, String tableName);
 
     List<Column> listColumnsSortByPK(String schemaName, String tableName);
@@ -216,6 +218,8 @@ public interface Driver extends AutoCloseable {
     int executeUpdate(String sql) throws Exception;
 
     JdbcSelectResult query(String sql, Integer limit);
+
+    JdbcSelectResult query(QueryData queryData);
 
     StringBuilder genQueryOption(QueryData queryData);
 

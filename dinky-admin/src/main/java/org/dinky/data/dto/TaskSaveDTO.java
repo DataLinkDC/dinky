@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.JSONObjectHandler;
@@ -45,6 +46,7 @@ public class TaskSaveDTO {
     /** 主键ID */
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID", required = true, dataType = "Integer", example = "1", notes = "Primary Key")
+    @TaskId
     private Integer id;
 
     @NotNull(

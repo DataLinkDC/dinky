@@ -84,20 +84,30 @@ const config = {
             /** @type {import('@docusaurus/preset-classic').Options} */
             ({
                 docs: {
-                    lastVersion: 'current',
+                    includeCurrentVersion: true,
+                    lastVersion: '1.1',
                     versions: {
                         current: {
-                            label: '1.0',
+                            label: 'Dev',
                             path: '/next',
+                            banner: 'unreleased',
                         },
-                        0.6: {
-                            label: '0.6',
-                            path: '/0.6',
-                            banner: 'unmaintained',
+                        '1.1': {
+                            label: '1.1',
+                            path: '/1.1',
+                        },
+                        '1.0': {
+                            label: '1.0',
+                            path: '/1.0',
                         },
                         0.7: {
                             label: '0.7',
                             path: '/0.7',
+                            banner: 'unmaintained',
+                        },
+                        0.6: {
+                            label: '0.6',
+                            path: '/0.6',
                             banner: 'unmaintained',
                         },
                     },
@@ -261,7 +271,7 @@ const config = {
                     width: 100,
                     height: 30,
                 },
-                copyright: `Copyright © ${new Date().getFullYear()} Dinky, Inc. DataLinkDC.<br/>
+                copyright: `Copyright © ${new Date().getFullYear()} Dinky.<br/>
                     <a href="https://beian.miit.gov.cn" target="_blank">鲁ICP备20001630号-3</a>`,
             },
             prism: {

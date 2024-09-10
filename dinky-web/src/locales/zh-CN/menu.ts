@@ -19,7 +19,7 @@
 
 export default {
   'menu.welcome': '欢迎',
-  'menu.home': '首页',
+  'menu.home': '工作台',
   'menu.exception.403': '403',
   'menu.exception.404': '404',
   'menu.exception.500': '500',
@@ -85,6 +85,9 @@ export default {
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
   'menu.metrics': '监控',
+  'menu.dashboard': '看板',
+  'menu.dashboard.list': '看板',
+  'menu.dashboard.chart': '看板-图表',
   'menu.about': '关于',
   'menu.version': '版本：{version}',
 

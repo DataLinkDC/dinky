@@ -32,19 +32,21 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
+@EqualsAndHashCode(callSuper = true)
 @TableName(value = "dinky_git_project")
 @Data
 @ApiModel(value = "GitProject", description = "Git Project Information")
 public class GitProject extends SuperEntity<GitProject> {
     /** */
-    @ApiModelProperty(value = "Tenant ID", example = "1", dataType = "Long")
+    @ApiModelProperty(value = "Tenant ID", example = "1", dataType = "Integer")
     @TableField(value = "tenant_id")
-    private Long tenantId;
+    private Integer tenantId;
 
     @ApiModelProperty(
             value = "URL",

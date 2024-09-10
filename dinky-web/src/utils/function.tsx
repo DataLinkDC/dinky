@@ -42,6 +42,7 @@ import {
 } from '@/services/constants';
 import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
+import { SuccessMessage } from '@/utils/messages';
 import { Monaco } from '@monaco-editor/react';
 import dayjs from 'dayjs';
 import cookies from 'js-cookie';
@@ -64,6 +65,14 @@ export function getLocalStorageLanguage() {
  */
 export function setKeyToLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
+}
+
+/**
+ * remove key from localStorage
+ * @param key
+ */
+export function removeKeyFromLocalStorage(key: string) {
+  localStorage.removeItem(key);
 }
 
 export function hasKeyofLocalStorage(key: string): boolean {
@@ -469,6 +478,10 @@ export const parseSecondStr = (s_time: number) => {
   return time;
 };
 
+export function Bytes2Mb(bs: number) {
+  return bs / 1024 / 1024;
+}
+
 export function parseByteStr(limit: number) {
   if (limit == null) {
     return 'None';
@@ -629,3 +642,79 @@ export const formatTimestampToYYYYMMDDHHMMSS = (timestamp: number) => {
 export const parseDateStringToDate = (dateString: Date) => {
   return dayjs(dateString).toDate();
 };
+
+/**
+ * copy text to clipboard function
+ * @param copyText
+ */
+export async function handleCopyToClipboard(copyText: string) {
+  // Adapting to browsers without the navigator.clipboard.writeText method can be done using the following code
+  if (!navigator) {
+    const textarea = document.createElement('textarea');
+    textarea.value = copyText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  } else {
+    await navigator.clipboard.writeText(copyText);
+  }
+  await SuccessMessage(l('rc.resource.copy_success', '', { fillValue: copyText }));
+}
+
+/**
+ * 获取请求参数中的 keu 对应的 value
+ * @param allParams
+ * @param key
+ * @returns
+ */
+export function getUrlParam(allParams = window.location.search, key: string) {
+  const params = new URLSearchParams(allParams);
+  const result = params.get(key);
+  return result ?? '';
+}
+
+/**
+ * Determine whether the string contains Chinese, English, or a mixture of both
+ *  Current: If it is a mixture of Chinese/English, return true; if it is English, return false
+ * @returns {boolean} true: contains Chinese characters; false: does not contain Chinese characters
+ * @param str string
+ */
+export function isContainsChinese(str: string = '') {
+  // Regular expression matches Chinese characters
+  const chineseRegex = /[\u4e00-\u9fa5]/;
+  // Regular expression matches English characters (including uppercase and lowercase)
+  const englishRegex = /[a-zA-Z]/;
+
+  const numberRegex = /[0-9]/;
+
+  if (str && str.length === 0) {
+    return;
+  }
+
+  let hasChinese = false;
+  let hasEnglish = false;
+  let hasNumber = false;
+
+  for (let i = 0; i < str.length; i++) {
+    if (chineseRegex.test(str[i])) {
+      hasChinese = true;
+    }
+    if (englishRegex.test(str[i])) {
+      hasEnglish = true;
+    }
+    if (numberRegex.test(str[i])) {
+      hasNumber = true;
+    }
+  }
+
+  if (hasChinese) {
+    return true;
+  } else if (hasEnglish && !hasChinese) {
+    return false;
+  } else if (hasNumber && !hasChinese) {
+    return false;
+  } else {
+    return false;
+  }
+}

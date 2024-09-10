@@ -119,11 +119,11 @@ public class DorisSinkOptions {
             .defaultValue(1)
             .withDescription("In the 2pc scenario, the number of retries after the commit phase fails.");
 
-    public static final ConfigOption<Boolean> SINK_USE_NEW_SCHEMA_CHANGE = ConfigOptions.key("sink.use-new-schema-change")
+    public static final ConfigOption<Boolean> SINK_USE_NEW_SCHEMA_CHANGE = ConfigOptions.key(
+                    "sink.use-new-schema-change")
             .booleanType()
             .defaultValue(false)
             .withDescription(
                     "supports table column name, column type, default, comment synchronization, supports multi-column changes, "
-                            +"and supports column name rename. Need to be enabled by configuring use-new-schema-change.");
-
+                            + "and supports column name rename. Need to be enabled by configuring use-new-schema-change.");
 }

@@ -35,13 +35,13 @@
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
-                and a.name like "%${param.name}%"
+                and a.name like concat('%',#{param.name},'%')
             </if>
             <if test='param.alias!=null and param.alias!=""'>
-                and a.alias like "%${param.alias}%"
+                and a.alias like concat('%',#{param.alias},'%')
             </if>
             <if test='param.note!=null and param.note!=""'>
-            and a.note like "%${param.note}%"
+            and a.note like concat('%',#{param.note},'%')
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
@@ -64,6 +64,6 @@
         from
         dinky_cluster a
         where enabled = 1
-        and (type = 'standalone' or type = 'yarn-session'or type = 'kubernetes-session')
+        and `type` in( 'standalone' , 'yarn-session' , 'kubernetes-session')
     </select>
 </mapper>

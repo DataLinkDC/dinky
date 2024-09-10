@@ -20,6 +20,7 @@
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
 import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
 import {
+  assert,
   getCurrentData,
   getCurrentTab,
   isDataStudioTabsItemType,
@@ -52,11 +53,14 @@ import {
   ProFormText
 } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import { Alert, Space } from 'antd';
+import { Alert, Input, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { debounce } from 'lodash';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import FlinkUdfOptionsSelect from '@/components/Flink/UdfSelect';
+import { TaskUdfRefer } from '@/types/Studio/data';
+import { ErrorMessageAsync } from '@/utils/messages';
 
 const JobConfig = (props: any) => {
   const {
@@ -68,6 +72,7 @@ const JobConfig = (props: any) => {
     group,
     rightContainer,
     flinkConfigOptions,
+    flinkUdfOptions,
     taskOwnerLockingStrategy
   } = props;
 
@@ -75,7 +80,15 @@ const JobConfig = (props: any) => {
 
   const [form] = useForm();
 
-  const [selectRunMode, setSelectRunMode] = useState<string>(current?.type);
+  const [selectRunMode, setSelectRunMode] = useState<string>(current?.type ?? RUN_MODE.LOCAL);
+
+  const [currentSelectUdfIndexMap, setCurrentSelectUdfIndexMap] = useState<
+    Map<number, TaskUdfRefer>
+  >(
+    new Map(
+      current?.configJson?.udfRefer?.map((item: TaskUdfRefer, index: number) => [index, item]) ?? []
+    )
+  );
 
   const { initialState, setInitialState } = useModel('@@initialState');
 
@@ -93,7 +106,10 @@ const JobConfig = (props: any) => {
     dispatch({
       type: ALERT_MODEL_ASYNC.queryAlertGroup
     });
-    setSelectRunMode(current?.type);
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryFlinkUdfOptions
+    });
+    setSelectRunMode(current?.type ?? RUN_MODE.LOCAL);
     form.setFieldsValue({ ...current, type: current?.type });
   }, [current]);
 
@@ -106,10 +122,12 @@ const JobConfig = (props: any) => {
     Object.keys(change).forEach((key) => {
       if (key === 'configJson') {
         if (!pane.params.taskData.configJson) {
+          // @ts-ignore
           pane.params.taskData.configJson = {};
         }
 
         Object.keys(change[key]).forEach((k) => {
+          // @ts-ignore
           pane.params.taskData[key][k] = all[key][k];
         });
       } else {
@@ -122,6 +140,82 @@ const JobConfig = (props: any) => {
       payload: { ...props.tabs }
     });
   };
+
+  /**
+   * 处理 selectUdfIndexMap 的状态 | process the state of selectUdfIndexMap
+   * @param index
+   * @param className
+   * @param name
+   */
+  function processSelectUdfMapState(index: number, className: string = '', name: string = '') {
+    setCurrentSelectUdfIndexMap((prevState) => {
+      const newState = new Map(prevState);
+      newState.set(index, {
+        className: className,
+        name: name
+      });
+      return newState;
+    });
+  }
+
+  const handleClassChange = async (value: string, index: number) => {
+    // 检测 这个值是否已经存在 currentSelectUdfIndexMap 的 map 中 || check if the value already exists in the map of currentSelectUdfIndexMap
+    const values = currentSelectUdfIndexMap.values();
+    for (const taskUdfRefer of values) {
+      if (taskUdfRefer?.className === value) {
+        await ErrorMessageAsync(
+          l('pages.datastudio.label.udf.duplicate.tip', '', { className: value }),
+          3
+        );
+        // clear the value of the form
+        form.setFieldsValue({
+          configJson: {
+            udfRefer: {
+              [index]: {
+                className: '',
+                name: ''
+              }
+            }
+          }
+        });
+        return;
+      }
+    }
+    const simpleClassName = value?.split('.')?.pop() ?? '';
+    const lowerName = simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1);
+    processSelectUdfMapState(index, value, lowerName);
+    form.setFieldsValue({
+      configJson: {
+        udfRefer: {
+          [index]: {
+            className: value,
+            name: lowerName
+          }
+        }
+      }
+    });
+  };
+
+  function handleNameChange(name: string, index: number) {
+    // 拿到  currentSelectUdfIndexMap[index].get(index) 的值 || get the value of currentSelectUdfIndexMap[index].get(index)
+    const currentSelectUdfIndexMapValue = currentSelectUdfIndexMap.get(index);
+
+    // 如果 name 和 currentSelectUdfIndexMapValue?.name 相等 则不做任何操作 || if name and currentSelectUdfIndexMapValue?.name are equal, do nothing
+    if (currentSelectUdfIndexMapValue?.name && name !== currentSelectUdfIndexMapValue?.name) {
+      // 更新 currentSelectUdfIndexMap 的值
+      processSelectUdfMapState(index, currentSelectUdfIndexMapValue?.className, name);
+    }
+    form.setFieldsValue({
+      configJson: {
+        udfRefer: {
+          [index]: {
+            className: currentSelectUdfIndexMapValue?.className ?? '',
+            name: name
+          }
+        }
+      }
+    });
+  }
 
   return (
     <div style={{ maxHeight: rightContainer.height, marginTop: 10 }}>
@@ -181,7 +275,7 @@ const JobConfig = (props: any) => {
                     type: current?.type
                   })}
                   label={l('pages.datastudio.label.jobConfig.cluster')}
-                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip2', '', {
                     type: current?.type
                   })}
                   rules={[
@@ -224,7 +318,7 @@ const JobConfig = (props: any) => {
           </>
         )}
 
-        {current?.dialect && current?.dialect?.toLowerCase() === DIALECT.FLINK_SQL && (
+        {assert(current?.dialect, [DIALECT.FLINK_SQL], true, 'includes') && (
           <ProFormSelect
             name='envId'
             label={l('pages.datastudio.label.jobConfig.flinksql.env')}
@@ -323,6 +417,51 @@ const JobConfig = (props: any) => {
             </Space>
           </ProFormGroup>
         </ProFormList>
+        <ProFormList
+          label={l('pages.datastudio.label.udf')}
+          tooltip={l('pages.datastudio.label.udf.tip')}
+          name={['configJson', 'udfRefer']}
+          copyIconProps={false}
+          onAfterRemove={(_, index) => {
+            // 删除一项之后拿到 index 从 currentSelectUdfIndexMap 中删除对应的值 || get the value from currentSelectUdfIndexMap and delete it
+            setCurrentSelectUdfIndexMap((prevState) => {
+              const newState = new Map(prevState);
+              newState.delete(index);
+              return newState;
+            });
+          }}
+          creatorButtonProps={{
+            style: { width: '100%' },
+            creatorButtonText: l('pages.datastudio.label.udf.injectUdf')
+          }}
+        >
+          {(_, index) => {
+            return (
+              <ProFormGroup>
+                <Space key={'udf' + index} align='baseline'>
+                  <FlinkUdfOptionsSelect
+                    name={'className'}
+                    width={calculatorWidth(rightContainer.width) + 80}
+                    mode={'single'}
+                    key={index + 'udf-config'}
+                    allowClear
+                    showSearch
+                    placeholder={l('pages.datastudio.label.udf.className')}
+                    options={flinkUdfOptions}
+                    onChange={(value: string) => handleClassChange(value, index)}
+                  />
+                  <ProForm.Item name={'name'}>
+                    <Input
+                      onChange={(e) => handleNameChange(e.target.value, index)}
+                      placeholder={l('pages.datastudio.label.udf.name')}
+                      style={{ width: calculatorWidth(rightContainer.width) - 80 }}
+                    />
+                  </ProForm.Item>
+                </Space>
+              </ProFormGroup>
+            );
+          }}
+        </ProFormList>
       </ProForm>
     </div>
   );
@@ -345,6 +484,7 @@ export default connect(
     env: Studio.env,
     group: Alert.group,
     flinkConfigOptions: Studio.flinkConfigOptions,
+    flinkUdfOptions: Studio.flinkUdfOptions,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   })
 )(JobConfig);

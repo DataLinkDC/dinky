@@ -62,7 +62,7 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=false \
                  -Dmaven.javadoc.skip=true \
-                   -Pprod,scala-2.12,flink-single-version,flink-1.14,maven-central,web,fast \
+                   -Pprod,flink-single-version,flink-1.14,maven-central,web,fast \
                  --no-snapshot-updates
       - name: "Build Dinky ${{ inputs.version }} with Fink 1.15 Pre Release/Release Artifact"
         id: build_dinky1_15
@@ -72,7 +72,7 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=false \
                  -Dmaven.javadoc.skip=true \
-                   -Pprod,scala-2.12,flink-single-version,flink-1.15,maven-central,web,fast \
+                   -Pprod,flink-single-version,flink-1.15,maven-central,web,fast \
                  --no-snapshot-updates
 
       - name: "Build Dinky ${{ inputs.version }} with Fink 1.16 Pre Release/Release Artifact"
@@ -83,7 +83,7 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=false \
                  -Dmaven.javadoc.skip=true \
-                   -Pprod,scala-2.12,flink-single-version,flink-1.16,maven-central,web,fast \
+                   -Pprod,flink-single-version,flink-1.16,maven-central,web,fast \
                  --no-snapshot-updates
 
       - name: "Build Dinky ${{ inputs.version }} with Fink 1.17 Pre Release/Release Artifact"
@@ -94,7 +94,7 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=false \
                  -Dmaven.javadoc.skip=true \
-                   -Pprod,scala-2.12,flink-single-version,flink-1.17,maven-central,web,fast \
+                   -Pprod,flink-single-version,flink-1.17,maven-central,web,fast \
                  --no-snapshot-updates
 
       - name: "Build Dinky ${{ inputs.version }} with Fink 1.18 Pre Release/Release Artifact"
@@ -105,7 +105,29 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=false \
                  -Dmaven.javadoc.skip=true \
-                   -Pprod,scala-2.12,flink-single-version,flink-1.18,maven-central,web,fast \
+                   -Pprod,flink-single-version,flink-1.18,maven-central,web,fast \
+                 --no-snapshot-updates
+
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.19 Pre Release/Release Artifact"
+        id: build_dinky1_19
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,flink-single-version,flink-1.19,maven-central,web,fast \
+                 --no-snapshot-updates
+
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.20 Pre Release/Release Artifact"
+        id: build_dinky1_20
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,flink-single-version,flink-1.20,maven-central,web,fast \
                  --no-snapshot-updates
 
       - name: Automatic Upload Releases to GitHub Releases Page

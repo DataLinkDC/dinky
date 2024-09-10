@@ -19,6 +19,7 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 
@@ -51,6 +52,7 @@ public class CatalogueTaskDTO {
     private Integer parentId;
 
     @ApiModelProperty(value = "Task ID", dataType = "Integer", example = "3", notes = "The ID of the associated task")
+    @TaskId
     private Integer taskId;
 
     @ApiModelProperty(

@@ -18,6 +18,7 @@
  */
 
 import Title from '@/components/Front/Title';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { StateType, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
@@ -32,7 +33,7 @@ import React, { useState } from 'react';
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {
     leftContainer: { selectKey },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     dispatch
   } = props;
 
@@ -63,12 +64,15 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
       () => {},
       () => {
         handleCancelCreate();
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+        dispatch({
+          type: STUDIO_MODEL_ASYNC.queryProject,
+          payload: { ...selectCatalogueSortTypeData }
+        });
       }
     );
   };
 
-  const currentTabName = 'menu.datastudio.project';
+  const currentTabName = LeftMenuKey.PROJECT_KEY;
   const btn = BtnRoute[currentTabName];
   btn[0].onClick = () => handleCreateClick();
   btnDispatch({

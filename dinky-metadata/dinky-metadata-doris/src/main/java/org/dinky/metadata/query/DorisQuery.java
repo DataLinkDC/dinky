@@ -37,6 +37,11 @@ public class DorisQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String tablesSql(String schemaName, String tableName) {
+        return String.format(DorisConstant.QUERY_TABLE_BY_SCHEMA_NAME_AND_TABLE_NAME, schemaName, tableName);
+    }
+
+    @Override
     public String columnsSql(String schemaName, String tableName) {
         return String.format(DorisConstant.QUERY_COLUMNS_BY_TABLE_AND_SCHEMA, schemaName, tableName);
     }

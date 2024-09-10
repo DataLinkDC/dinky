@@ -18,6 +18,7 @@
  */
 
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { LeftMenuKey } from '@/pages/DataStudio/data.d';
 import { BtnRoute, useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
@@ -88,7 +89,7 @@ const DataSource = (props: any) => {
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
-  const currentTabName = 'menu.datastudio.datasource';
+  const currentTabName = LeftMenuKey.DATASOURCE_KEY;
 
   const btnEvent = [...BtnRoute[currentTabName]];
 
@@ -227,7 +228,7 @@ const DataSource = (props: any) => {
       <SchemaTree
         selectKeys={selectKeys}
         expandKeys={expandKeys}
-        style={{ height: toolContentHeight - 64 - 20 }}
+        height={toolContentHeight - 64 - 20}
         onNodeClick={handleTreeNodeClick}
         treeData={treeData}
         onExpand={handleTreeExpand}

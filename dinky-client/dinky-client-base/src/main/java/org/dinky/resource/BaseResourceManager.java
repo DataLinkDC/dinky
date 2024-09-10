@@ -31,6 +31,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -58,6 +59,8 @@ public interface BaseResourceManager {
 
     InputStream readFile(String path);
 
+    org.apache.flink.core.fs.FileSystem getFileSystem() throws IOException;
+
     static BaseResourceManager getInstance() {
         switch (SystemConfiguration.getInstances().getResourcesModel().getValue()) {
             case HDFS:
@@ -65,9 +68,8 @@ public interface BaseResourceManager {
             case OSS:
                 return Singleton.get(OssResourceManager.class);
             case LOCAL:
-                return Singleton.get(LocalResourceManager.class);
             default:
-                return null;
+                return Singleton.get(LocalResourceManager.class);
         }
     }
 

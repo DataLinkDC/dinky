@@ -89,7 +89,7 @@ jobs:
       fail-fast: true
       matrix:
         jdk: [8, 11]
-        flink: [1.14, 1.15, 1.16, 1.17, 1.18, 1.19]
+        flink: [1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20]
 
     timeout-minutes: 30
     env:
@@ -125,7 +125,7 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=false \
                  -Dmaven.javadoc.skip=true \
-                 -P prod,scala-2.12,flink-single-version,flink-${{ matrix.flink }},maven-central \
+                 -P prod,flink-single-version,flink-${{ matrix.flink }},maven-central \
                  --no-snapshot-updates
 
       # 检查打包的大小

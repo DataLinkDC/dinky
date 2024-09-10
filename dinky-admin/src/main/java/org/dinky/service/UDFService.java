@@ -21,7 +21,9 @@ package org.dinky.service;
 
 import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.function.data.model.UDF;
 
 import java.util.List;
 
@@ -55,4 +57,16 @@ public interface UDFService extends IService<UDFManage> {
      */
     @Transactional(rollbackFor = Exception.class)
     void addOrUpdateByResourceId(List<Integer> resourceIds);
+
+    /**
+     * get udf from udfManage
+     * @return List
+     */
+    List<UDFManage> getUDFFromUdfManage();
+
+    /**
+     * get all udf to cascader list
+     * @return List
+     */
+    List<CascaderVO> getAllUdfsToCascader(List<UDF> userDefinedReleaseUdfs);
 }

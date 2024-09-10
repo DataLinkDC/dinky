@@ -21,6 +21,7 @@ package org.dinky.data.constant;
 
 import java.io.File;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 
 /**
@@ -29,9 +30,44 @@ import cn.hutool.system.SystemUtil;
  * @since 2022/10/15 18:37
  */
 public class DirConstant {
-
+    public static final String DINKY_ENV_OR_HOME_ROOT_DIR_NAME = "dinky.root.path";
     public static final String FILE_SEPARATOR = File.separator;
-    public static final String ROOT_PATH = System.getProperty(SystemUtil.USER_DIR);
-    public static final String LOG_DIR_PATH = ROOT_PATH + FILE_SEPARATOR + "logs";
-    public static final String ROOT_LOG_PATH = LOG_DIR_PATH + FILE_SEPARATOR + "dinky.log";
+
+    // user dir path, default is project root path
+    public static final String USER_DIR_ENV_ROOT_PATH = System.getProperty(SystemUtil.USER_DIR);
+
+    // dinky env or home root path
+    public static final String DINKY_ENV_OR_HOME_ROOT_DIR = System.getProperty(DINKY_ENV_OR_HOME_ROOT_DIR_NAME);
+
+    /**
+     * get a root path of dinky
+     * @return root path of dinky
+     */
+    public static String getRootPath() {
+        return StrUtil.isEmpty(DINKY_ENV_OR_HOME_ROOT_DIR) ? USER_DIR_ENV_ROOT_PATH : DINKY_ENV_OR_HOME_ROOT_DIR;
+    }
+
+    /**
+     * get a root logs path of dinky
+     * @return root logs path of dinky
+     */
+    public static String getRootLogsPath() {
+        return getRootPath() + FILE_SEPARATOR + "logs";
+    }
+
+    /**
+     * get root log  of dinky
+     * @return root log of dinky
+     */
+    public static String getRootLog() {
+        return getRootLogsPath() + FILE_SEPARATOR + "dinky.log";
+    }
+
+    /**
+     * get tmp dir root of dinky
+     * @return tmp dir root of dinky
+     */
+    public static String getTempRootDir() {
+        return getRootPath() + FILE_SEPARATOR + "tmp";
+    }
 }

@@ -70,7 +70,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
     tabs: { panes, activeKey },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     queryUserData,
     queryTaskOwnerLockingStrategy
   } = props;
@@ -99,8 +99,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
     const newBottomHeight = !isProject
       ? 0
       : bottomContainer.selectKey === ''
-      ? 0
-      : bottomContainer.height;
+        ? 0
+        : bottomContainer.height;
     const centerContentHeight = getClientSize().contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);
@@ -110,7 +110,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
     window.addEventListener('resize', onResize);
     onResize();
     return () => window.removeEventListener('resize', onResize);
-  }, []);
+  }, [bottomContainer, isProject]);
 
   const loadData = () => {
     queryDatabaseList();
@@ -127,8 +127,8 @@ const DataStudio: React.FC<connect> = (props: any) => {
     const newBottomHeight = !isProject
       ? 0
       : bottomContainer.selectKey === ''
-      ? 0
-      : bottomContainer.height;
+        ? 0
+        : bottomContainer.height;
     const centerContentHeight = size.contentHeight - newBottomHeight;
     updateCenterContentHeight(centerContentHeight);
     updateToolContentHeight(centerContentHeight - VIEW.leftMargin);

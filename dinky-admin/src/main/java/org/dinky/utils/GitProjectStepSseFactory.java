@@ -63,7 +63,7 @@ public final class GitProjectStepSseFactory {
         List<SseEmitter> emitterList = new ArrayList<>();
 
         StepSse headStepSse = getHeadStepPlan(gitProject.getCodeType(), sleep, emitterList, params);
-        cachedThreadPool.execute(headStepSse::main);
+        cachedThreadPool.execute(headStepSse::run);
         gitProject.setBuildStep(1);
         gitProject.setBuildState(1);
         gitProject.setLastBuild(DateUtil.date());

@@ -18,8 +18,11 @@
 spring:
   datasource:
     driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:dinky;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
-    url: jdbc:h2:./tmp/db/h2;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=9092;
+    url: jdbc:h2:${H2_DB:mem:dinky};MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;
+    # Note: Since dinky version 1.1.0, Flyway has been integrated, so h2 defaults to memory mode and no longer uses file mode (persistence).
+    # File mode can cause Flyway to fail to execute duplicate column addition operations correctly
+    # as h2 does not support stored procedures and cannot determine the existence of columns through stored procedures. Therefore, please do not use file mode
+#    url: jdbc:h2:./tmp/db/h2;MODE=MySQL;DB_CLOSE_DELAY=-1;DATABASE_TO_LOWER=true;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=29099;
     druid:
       initial-size: 1
     username: dinky
@@ -28,8 +31,3 @@ spring:
     console:
       enabled: true
       path: /api/h2
-  sql:
-    init:
-      schema-locations: classpath:db/db-h2-ddl.sql
-      data-locations: classpath:db/db-h2-dml.sql
-      mode: always

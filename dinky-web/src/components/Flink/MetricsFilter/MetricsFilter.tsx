@@ -20,7 +20,7 @@
 import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import { getSubMinTime } from '@/pages/Metrics/Server/function';
 import { l } from '@/utils/intl';
-import { DatePicker, Radio } from 'antd';
+import { Col, DatePicker, Radio, Space } from 'antd';
 const { RangePicker } = DatePicker;
 
 type TimeSelectProps = {
@@ -59,18 +59,22 @@ const MetricsFilter = (props: TimeSelectProps) => {
 
   return (
     <>
-      <Radio.Group defaultValue={'real'} onChange={(v) => onTimeRadioChange(v)}>
-        <Radio.Button value='real'>{l('metrics.filter.real')}</Radio.Button>
-        <Radio.Button value='1h'>{l('metrics.filter.1hour')}</Radio.Button>
-        <Radio.Button value='24h'>{l('metrics.filter.1day')}</Radio.Button>
-        <Radio.Button value='7d'>{l('metrics.filter.1week')}</Radio.Button>
-      </Radio.Group>
-      <RangePicker
-        showTime
-        onChange={(_, time) =>
-          onTimeSelectChange(false, new Date(time[0]).getTime(), new Date(time[1]).getTime())
-        }
-      />
+      <Col>
+        <Radio.Group defaultValue={'real'} onChange={(v) => onTimeRadioChange(v)}>
+          <Radio.Button value='real'>{l('metrics.filter.real')}</Radio.Button>
+          <Radio.Button value='1h'>{l('metrics.filter.1hour')}</Radio.Button>
+          <Radio.Button value='24h'>{l('metrics.filter.1day')}</Radio.Button>
+          <Radio.Button value='7d'>{l('metrics.filter.1week')}</Radio.Button>
+        </Radio.Group>
+      </Col>
+      <Col>
+        <RangePicker
+          showTime
+          onChange={(_, time) =>
+            onTimeSelectChange(false, new Date(time[0]).getTime(), new Date(time[1]).getTime())
+          }
+        />
+      </Col>
     </>
   );
 };

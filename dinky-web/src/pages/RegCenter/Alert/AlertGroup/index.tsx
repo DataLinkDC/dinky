@@ -256,6 +256,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
           headerTitle={l('rc.ag.management')}
           toolBarRender={renderToolBar()}
           dataSource={renderDataSource}
+          grid={{ xs: 1, sm: 2, md: 3, lg: 3, xl: 4, xxl: 5 }}
         />
 
         <AlertGroupForm

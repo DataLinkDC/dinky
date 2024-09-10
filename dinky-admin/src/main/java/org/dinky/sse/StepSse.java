@@ -25,7 +25,6 @@ import org.dinky.data.result.StepResult;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -108,24 +107,15 @@ public abstract class StepSse {
         });
     }
 
-    public synchronized void addFileMsg(Object msg) {
-        FileUtil.appendUtf8String(Convert.toStr(msg), getLogFile());
-    }
-
     public synchronized void addFileMsgCusLog(String msg) {
-        String content = "\n=============    " + Convert.toStr(msg) + "   =============\n";
+        String content = "=============    " + Convert.toStr(msg) + "   =============";
         addMsg(content);
-        FileUtil.appendUtf8String(content, getLogFile());
+        FileUtil.appendUtf8String(content + "\n", getLogFile());
     }
 
     public synchronized void addFileMsgLog(String msg) {
         addMsg(msg);
-        FileUtil.appendUtf8String(msg, getLogFile());
-    }
-
-    public synchronized void addFileLog(List<?> data) {
-        sendMsg(getList(data));
-        FileUtil.appendString(StrUtil.join("\n", data), getLogFile(), StandardCharsets.UTF_8);
+        FileUtil.appendUtf8String(msg + "\n", getLogFile());
     }
 
     protected File getLogFile() {
@@ -144,7 +134,7 @@ public abstract class StepSse {
         cachedThreadPool.execute(this::sendSync);
     }
 
-    public void main() {
+    public void run() {
         this.status = 1;
         getStep();
         FileUtil.del(getLogFile());
@@ -192,7 +182,7 @@ public abstract class StepSse {
             gitProject.setBuildState(1);
             gitProject.setBuildStep(nexStepSse.getStep());
             gitProject.updateById();
-            nexStepSse.main();
+            nexStepSse.run();
         }
     }
 
@@ -201,7 +191,7 @@ public abstract class StepSse {
             try {
                 emitter.complete();
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("", e);
             }
         });
         // Manual GC is required here to release file IO(此处需要手动GC，释放文件IO)
@@ -233,7 +223,7 @@ public abstract class StepSse {
         //
         //        }
 
-        Object dataResult = (data instanceof List) ? StrUtil.join("\n", data) : JSONUtil.toJsonStr(data);
+        Object dataResult = (data instanceof List) ? StrUtil.join("\n", data) + "\n" : JSONUtil.toJsonStr(data);
         return Dict.create()
                 .set("type", 1)
                 .set("currentStep", getStep())

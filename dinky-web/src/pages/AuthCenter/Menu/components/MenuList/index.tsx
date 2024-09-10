@@ -266,7 +266,7 @@ const MenuList: React.FC = () => {
             treeData={menuTreeData}
             disabled={isEditDisabled}
             values={{}}
-            open={addedOpen}
+            open={addedOpen || isRootMenu}
             onCancel={handleCancel}
             onSubmit={(value: Partial<SysMenu>) => handleAddOrUpdateSubmit(value)}
           />
@@ -283,6 +283,7 @@ const MenuList: React.FC = () => {
       ...prevState,
       addedOpen: true,
       editOpen: false,
+      isEditDisabled: false,
       contextMenuOpen: false,
       isRootMenu: true,
       sysMenuValue: {}
@@ -325,10 +326,10 @@ const MenuList: React.FC = () => {
         {sysMenuValue?.id && editOpen
           ? l('menu.edit')
           : !sysMenuValue?.id && addedOpen && !isRootMenu
-          ? l('right.menu.addSub')
-          : !sysMenuValue?.id && addedOpen && isRootMenu
-          ? l('right.menu.createRoot')
-          : ''}
+            ? l('right.menu.addSub')
+            : !sysMenuValue?.id && addedOpen && isRootMenu
+              ? l('right.menu.createRoot')
+              : ''}
       </>
     );
   };

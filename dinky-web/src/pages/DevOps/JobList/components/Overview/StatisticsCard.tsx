@@ -55,7 +55,7 @@ const StatisticsCard = (props: StatisticsCardParams) => {
         <Space size={20}>
           {icon}
           <Space direction='vertical'>
-            <Text>{title}</Text>
+            <Text ellipsis={true}>{title}</Text>
             <Text style={{ fontSize: 30 }}>{value}</Text>
           </Space>
           {extra}

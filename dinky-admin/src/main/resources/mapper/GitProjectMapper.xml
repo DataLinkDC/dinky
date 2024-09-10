@@ -10,7 +10,7 @@
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
-                and a.name like "%${param.name}%"
+                and a.name like concat('%',#{param.name},'%')
             </if>
             <if test='param.branch!=null and param.branch!=""'>
                 and a.branch = #{param.branch}
@@ -25,7 +25,7 @@
                 and a.build_state = #{param.build_state}
             </if>
             <if test='param.url!=null and param.url!=""'>
-                and a.url like "%${param.url}%"
+                and a.url like concat('%',#{param.url},'%')
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')

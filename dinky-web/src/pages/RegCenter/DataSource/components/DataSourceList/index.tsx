@@ -295,6 +295,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
         headerTitle={l('rc.ds.management')}
         toolBarRender={renderToolBar}
         dataSource={renderDataSource}
+        grid={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
       />
 
       {/* added */}

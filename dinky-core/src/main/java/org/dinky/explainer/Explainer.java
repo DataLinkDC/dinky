@@ -58,12 +58,16 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Sets;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrBuilder;
@@ -114,7 +118,17 @@ public class Explainer {
         List<String> statementList = new ArrayList<>();
         List<UDF> udfList = new ArrayList<>();
         StrBuilder parsedSql = new StrBuilder();
-        for (String item : statements) {
+
+        List<String> statementsWithUdf = Arrays.stream(statements).collect(Collectors.toList());
+        Optional.ofNullable(jobManager.getConfig().getUdfRefer())
+                .ifPresent(t -> t.forEach((key, value) -> {
+                    String sql = String.format("create temporary function %s as '%s'", value, key);
+                    statementsWithUdf.add(0, sql);
+                }));
+
+        List<SqlType> transSqlTypes = SqlType.getTransSqlTypes();
+        Set<SqlType> transSqlTypeSet = Sets.newHashSet(transSqlTypes);
+        for (String item : statementsWithUdf) {
             String statement = executor.pretreatStatement(item);
             parsedSql.append(statement).append(";\n");
             if (statement.isEmpty()) {
@@ -141,13 +155,7 @@ public class Explainer {
                 FileSystem.initialize(combinationConfig, null);
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
-            } else if (operationType.equals(SqlType.INSERT)
-                    || operationType.equals(SqlType.SELECT)
-                    || operationType.equals(SqlType.WITH)
-                    || operationType.equals(SqlType.SHOW)
-                    || operationType.equals(SqlType.DESCRIBE)
-                    || operationType.equals(SqlType.DESC)
-                    || operationType.equals(SqlType.CTAS)) {
+            } else if (transSqlTypeSet.contains(operationType)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
                 if (!useStatementSet) {

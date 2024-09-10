@@ -110,6 +110,7 @@ export enum API_CONSTANTS {
   DATASOURCE_UN_CACHE_SCHEMA_TABLES = '/api/database/unCacheSchemasAndTables',
   DATASOURCE_LIST_ENABLE_ALL = '/api/database/listEnabledAll',
   DATASOURCE_GET_COLUMNS_BY_TABLE = '/api/database/listColumns',
+  DATASOURCE_GET_TABLE = '/api/database/getTable',
   DATASOURCE_GET_GEN_SQL = '/api/database/getSqlGeneration',
   DATASOURCE_QUERY_DATA = '/api/database/queryData',
 
@@ -164,6 +165,7 @@ export enum API_CONSTANTS {
   UDF_RESOURCES_LIST = '/api/udf/udfResourcesList',
   UDF_ADD = '/api/udf/addOrUpdateByResourceId',
   UDF_UPDATE = '/api/udf/update',
+  ALL_UDF_LIST = '/api/udf/getAllUdfs',
 
   // ------------------------------------ udf template ------------------------------------
   UDF_TEMPLATE = '/api/udf/template/list',
@@ -182,10 +184,12 @@ export enum API_CONSTANTS {
   SYSTEM_ROOT_LOG = '/api/system/getRootLog',
   SYSTEM_ROOT_LOG_LIST = '/api/system/listLogDir',
   SYSTEM_ROOT_LOG_READ = '/api/system/readFile',
+  SYSTEM_JVM_INFO = '/api/system/getSysInfo',
 
   // ------------------------------------ system process  ------------------------------------
   PROCESS_LIST = '/api/process/listAllProcess',
   PROCESS_LOG = '/api/process/getProcess',
+  KILL_PROCESS = '/api/process/killProcess',
   PROCESS_LOG_CLEAR = '/api/process/clearProcessLog',
 
   /** ------------------------------------------------ Devops center  ------------------------------------ */
@@ -237,13 +241,18 @@ export enum API_CONSTANTS {
   MONITOR_GET_SYSTEM_DATA = '/api/monitor/getSysData',
   MONITOR_GET_FLINK_DATA = '/api/monitor/getFlinkData',
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
-  MONITOR_GET_JVM_INFO = '/api/monitor/getJvmInfo',
   METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
   METRICS_LAYOUT_DELETE = '/api/monitor/deleteMetricsLayout',
   JOB_METRICS = '/api/monitor/jobMetrics',
   SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
+  GET_METRICS_LAYOUT_CASCADER = '/api/monitor/getMetricsLayoutByCascader',
   GET_JVM_INFO = '/api/monitor/getJvmInfo',
+  GET_FLINK_DAT_BY_DASHBOARD = '/api/monitor/getFlinkDataByDashboard',
+  SAVE_DASHBOARD = '/api/dashboard/saveOrUpdate',
+  GET_DASHBOARD_LIST = '/api/dashboard/getDashboardList',
+  GET_DASHBOARD_BY_ID = '/api/dashboard/getDashboardById',
+  DELETE_DASHBOARD = '/api/dashboard/delete',
 
   // ------------------------------------ flink ------------------------------------
   FLINK_PROXY = '/api/flink',
@@ -258,6 +267,7 @@ export enum API_CONSTANTS {
 
   // ------------------------------------ task ------------------------------------
   TASK = '/api/task',
+  MY_TASK = '/api/task/getUserTask',
   CANCEL_JOB = '/api/task/cancel',
   JSON_TO_FLINK_SQL = '/api/tools/jsonToFlinkSql',
   EXPLAIN_SQL = '/api/task/explainSql',

@@ -161,6 +161,14 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-metadata/dinky-metadata-paimon/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-metadata-paimon-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-metadata/dinky-metadata-hive/target
             </directory>
             <outputDirectory>lib</outputDirectory>
@@ -278,6 +286,13 @@
             <outputDirectory>jar</outputDirectory>
             <includes>
                 <include>Dockerfile</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/deploy</directory>
+            <outputDirectory>deploy</outputDirectory>
+            <includes>
+                <include>**/**</include>
             </includes>
         </fileSet>
         <!--<fileSet>

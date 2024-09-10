@@ -11,6 +11,6 @@
         <include refid="baseSql"/>
         from
         dinky_user_tenant
-        where user_id = (#{userId})
+        where user_id = #{userId}
     </select>
 </mapper>

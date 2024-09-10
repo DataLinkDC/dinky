@@ -22,17 +22,19 @@ import ContentScroll from '@/components/Scroll/ContentScroll';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import { STUDIO_TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
-import {
-  getCurrentTab,
-  isDataStudioTabsItemType,
-  isMetadataTabsItemType
-} from '@/pages/DataStudio/function';
+import { getCurrentTab } from '@/pages/DataStudio/function';
 import { getRightSelectKeyFromNodeClickJobType } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
 import StudioEditor from '@/pages/DataStudio/MiddleContainer/StudioEditor';
-import { StateType, STUDIO_MODEL, TabsItemType, TabsPageType } from '@/pages/DataStudio/model';
+import {
+  MetadataTabsItemType,
+  StateType,
+  STUDIO_MODEL,
+  TabsItemType,
+  TabsPageType
+} from '@/pages/DataStudio/model';
 import { RightSide } from '@/pages/DataStudio/route';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 import { ContextMenuPosition, InitContextMenuPosition } from '@/types/Public/state.d';
@@ -42,6 +44,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import { ConfigProvider, Divider, Modal, Space, Tabs, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { memo, useState } from 'react';
+import TerminalTab from '@/pages/DataStudio/MiddleContainer/Terminal';
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -113,7 +116,7 @@ const MiddleContainer = (props: any) => {
   };
 
   const updateActiveKey = (item: TabsItemType) => {
-    const { key, label, subType } = item;
+    const { key, label, subType, type } = item;
     if (key === activeKey) {
       return;
     }
@@ -130,7 +133,10 @@ const MiddleContainer = (props: any) => {
     // 根据 作业类型渲染 右侧选中菜单 key
     dispatch({
       type: STUDIO_MODEL.updateSelectRightKey,
-      payload: getRightSelectKeyFromNodeClickJobType(subType ?? '')
+      payload:
+        type?.toLowerCase() === TabsPageType.terminal
+          ? ''
+          : getRightSelectKeyFromNodeClickJobType(subType ?? '')
     });
 
     // 这里如果加此项功能和定位功能重复 , 暂时注释
@@ -218,32 +224,33 @@ const MiddleContainer = (props: any) => {
    */
   const tabItems = panes.map((item: TabsItemType) => {
     const renderContent = () => {
-      if (isDataStudioTabsItemType(item)) {
-        if (parseInt(activeKey) < 0) {
-          return TabsPageType.None;
+      switch (item.type) {
+        case TabsPageType.terminal:
+          return <TerminalTab />;
+        case TabsPageType.metadata: {
+          const params = (item as MetadataTabsItemType).params;
+          return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
         }
-
-        return (
-          <StudioEditor
-            tabsItem={item}
-            monacoInstance={item.monacoInstance}
-            height={
-              activeKey === item.key
-                ? fullscreen
-                  ? document.body.clientHeight
-                  : props.centerContentHeight - 48
-                : 0
-            }
-          />
-        );
+        case TabsPageType.project:
+          if (parseInt(activeKey) < 0) {
+            return TabsPageType.None;
+          }
+          return (
+            <StudioEditor
+              tabsItem={item}
+              monacoInstance={item.monacoInstance}
+              height={
+                activeKey === item.key
+                  ? fullscreen
+                    ? document.body.clientHeight
+                    : props.centerContentHeight - 48
+                  : 0
+              }
+            />
+          );
+        default:
+          return <>The type {item.type} is unknown</>;
       }
-
-      if (isMetadataTabsItemType(item)) {
-        const params = item.params;
-        return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
-      }
-
-      return <></>;
     };
 
     return {

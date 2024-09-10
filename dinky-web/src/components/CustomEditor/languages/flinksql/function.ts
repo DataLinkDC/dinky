@@ -84,16 +84,7 @@ export function buildFlinkSQLConfiguration(monacoLanguages?: Monaco['languages']
       ['"', '"'],
       ["'", "'"],
       ['`', '`']
-    ],
-
-    folding: {
-      offSide: true,
-      markers: {
-        start:
-          /((create|alter|drop|rename\s+)?(TABLE|DATABASE|STREAM|FUNCTION|PROCEDURE|PACKAGE|TYPE|TRIGGER|INDEX|SCHEMA|VIEW)\b)|((EXECUTE\s+)?(JAR|CDCSOURCE)?\b)/i,
-        end: /\)\\;\b/i
-      }
-    }
+    ]
   });
 }
 

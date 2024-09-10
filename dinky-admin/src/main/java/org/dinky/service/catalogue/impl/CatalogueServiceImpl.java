@@ -49,6 +49,7 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.catalogue.factory.CatalogueFactory;
 import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -100,6 +102,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private final MonitorService monitorService;
 
     private final CatalogueTreeSortFactory catalogueTreeSortFactory;
+
+    private final CatalogueFactory catalogueFactory;
 
     /**
      * @return
@@ -394,29 +398,15 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         // 查询作业名称
         int size = taskService.queryAllSizeByName(oldTask.getName());
-
-        Task newTask = new Task();
-        BeanUtil.copyProperties(oldTask, newTask);
-        newTask.setId(null);
-        newTask.setJobInstanceId(null);
-        newTask.setType(oldTask.getType());
         // 设置复制后的作业名称为：原名称+自增序列
-        size = size + 1;
-        newTask.setName(oldTask.getName() + "-" + size);
-        newTask.setStep(JobLifeCycle.DEVELOP.getValue());
+        String newTaskName = oldTask.getName() + "-" + (++size);
+        Task newTask = catalogueFactory.getNewTask(oldTask, newTaskName);
         taskService.save(newTask);
 
         Catalogue singleCatalogue =
                 this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
-
-        catalogue.setName(newTask.getName());
-        catalogue.setIsLeaf(singleCatalogue.getIsLeaf());
-        catalogue.setTaskId(newTask.getId());
-        catalogue.setType(singleCatalogue.getType());
-        catalogue.setParentId(singleCatalogue.getParentId());
-        catalogue.setId(null);
-
-        return this.save(catalogue);
+        Catalogue newCatalogue = catalogueFactory.getNewCatalogue(catalogue, singleCatalogue, newTask);
+        return this.save(newCatalogue);
     }
 
     @Override
@@ -596,5 +586,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         catalogueTaskDTO.setParentId(parentId);
         catalogueTaskDTO.setLeaf(true);
         return catalogueTaskDTO;
+    }
+
+    @Override
+    public Boolean checkTaskOperatePermission(Integer catalogueId) {
+        Catalogue catalogue = getById(catalogueId);
+        if (Objects.nonNull(catalogue) && catalogue.getIsLeaf() && Objects.nonNull(catalogue.getTaskId())) {
+            return taskService.checkTaskOperatePermission(catalogue.getTaskId());
+        }
+        return null;
     }
 }

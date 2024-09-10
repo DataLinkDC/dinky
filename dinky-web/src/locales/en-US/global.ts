@@ -40,6 +40,7 @@ export default {
   'button.config': 'Config',
   'button.modify': 'Modify',
   'button.edit': 'Edit',
+  'button.open': 'Open',
   'button.start': 'Start',
   'button.stop': 'Stop',
   'button.publish': 'Publish',
@@ -232,5 +233,8 @@ export default {
   'global.job.status.reconciling': 'Reconciling',
   'global.job.status.reconnecting': 'Reconnecting',
   'global.job.status.unknown': 'Unknown',
-  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name'
+  'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name',
+
+  'global.operation.unable': 'Unable to operate',
+  'global.operation.able': 'Can operate'
 };

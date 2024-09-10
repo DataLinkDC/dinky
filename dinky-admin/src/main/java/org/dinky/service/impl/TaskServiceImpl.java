@@ -19,6 +19,8 @@
 
 package org.dinky.service.impl;
 
+import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -36,6 +38,7 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.ProcessStepType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.TaskOwnerLockStrategyEnum;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
@@ -59,7 +62,9 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.sqllineage.SQLLineageBuilder;
+import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
+import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.enums.SavePointStrategy;
@@ -82,9 +87,11 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
+import org.dinky.service.UDFService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.resource.ResourcesService;
 import org.dinky.service.task.BaseTask;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
@@ -101,11 +108,14 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -123,6 +133,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
@@ -153,6 +164,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final DataSourceProperties dsProperties;
     private final UserService userService;
     private final ApplicationContext applicationContext;
+    private final UDFService udfService;
+    private final ResourcesService resourcesService;
 
     @Resource
     @Lazy
@@ -218,6 +231,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             log.info("Init savePoint");
             config.setSavePointPath(savepoints.getPath());
             config.getConfigJson().put("execution.savepoint.path", savepoints.getPath()); // todo: 写工具类处理相关配置
+        } else {
+            // When disabling checkpoints, delete the checkpoint path
+            config.setSavePointPath(null);
+        }
+        if (SystemConfiguration.getInstances().getUseFlinkHistoryServer().getValue()) {
+            config.getConfigJson().compute("jobmanager.archive.fs.dir", (k, v) -> {
+                if (StringUtils.isNotBlank(v)) {
+                    return v + "," + FLINK_JOB_ARCHIVE;
+                }
+                return FLINK_JOB_ARCHIVE;
+            });
         }
         if (GatewayType.get(task.getType()).isDeployCluster()) {
             log.info("Init gateway config, type:{}", task.getType());
@@ -443,7 +467,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             isSuccess = true;
         } catch (Exception e) {
-            log.warn("Stop with savcePoint failed: {}, will try normal rest api stop", e.getMessage());
+            log.warn("Stop with savePoint failed: {}, will try normal rest api stop", e.getMessage());
             isSuccess = jobManager.cancelNormal(jobInstance.getJid());
         }
         jobInstanceService.refreshJobInfoDetail(jobInstance.getId(), true);
@@ -561,7 +585,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
             task.setVersionId(taskVersionId);
             if (Dialect.isUDF(task.getDialect())) {
-                UdfCodePool.addOrUpdate(UDFUtils.taskToUDF(task.buildTask()));
+                // compile udf class
+                UDF udf = UDFUtils.taskToUDF(task.buildTask());
+                try {
+                    FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
+                } catch (Throwable e) {
+                    throw new BusException(
+                            "UDF compilation failed and cannot be published. The error message is as follows:"
+                                    + e.getMessage());
+                }
+                UdfCodePool.addOrUpdate(udf);
             }
         } else {
             if (Dialect.isUDF(task.getDialect())
@@ -705,20 +738,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public List<Task> getAllUDF() {
-        return list(new QueryWrapper<Task>()
-                .in("dialect", Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq("enabled", 1)
-                .isNotNull("save_point_path"));
-    }
-
-    @Override
     public List<Task> getReleaseUDF() {
         return list(new LambdaQueryWrapper<Task>()
-                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
-                .eq(Task::getEnabled, 1)
-                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue())
-                .isNotNull(Task::getSavePointPath));
+                        .in(
+                                Task::getDialect,
+                                Dialect.JAVA.getValue(),
+                                Dialect.SCALA.getValue(),
+                                Dialect.PYTHON.getValue())
+                        .eq(Task::getEnabled, 1)
+                        .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
+                .stream()
+                .filter(task -> Asserts.isNotNullString(
+                        task.getConfigJson().getUdfConfig().getClassName()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -969,7 +1001,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
-            return LineageBuilder.getColumnLineageByLogicalPlan(buildEnvSql(task));
+            task.setStatement(buildEnvSql(task) + task.getStatement());
+            JobConfig jobConfig = task.getJobConfig();
+            return LineageBuilder.getColumnLineageByLogicalPlan(task.getStatement(), jobConfig.getExecutorSetting());
         }
     }
 
@@ -988,5 +1022,83 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             treeNodes.add(new TreeNode<>(catalogue.getId(), catalogue.getParentId(), catalogue.getName(), i + 1));
         }
         return treeNodes;
+    }
+
+    @Override
+    public Boolean checkTaskOperatePermission(Integer taskId) {
+        TaskDTO taskDTO = getTaskInfoById(taskId);
+        if (Objects.nonNull(taskDTO)) {
+            return hasTaskOperatePermission(taskDTO.getFirstLevelOwner(), taskDTO.getSecondLevelOwners());
+        }
+        return null;
+    }
+
+    @Override
+    public List<TaskDTO> getUserTasks(Integer userId) {
+        Map<Integer, TaskDTO> tskMap = new HashMap<>();
+        LambdaQueryWrapper<Task> taskWrapper = new LambdaQueryWrapper<>();
+        taskWrapper.in(Task::getDialect, Dialect.FLINK_SQL.getValue(), Dialect.FLINK_JAR.getValue());
+        // 流式获取数据，防止OOM
+        baseMapper.selectList(taskWrapper, resultContext -> {
+            Task task = resultContext.getResultObject();
+            if (hasTaskOperatePermission(task.getFirstLevelOwner(), task.getSecondLevelOwners())) {
+                // 去掉statement，防止OOM
+                task.setStatement(null);
+                tskMap.put(task.getJobInstanceId(), TaskDTO.fromTask(task));
+                if (tskMap.size() >= 1000) {
+                    // 任务太多了，停止查询
+                    resultContext.stop();
+                }
+            }
+        });
+        // When the postgre data source query in () is empty, a syntax error will be reported, so it is necessary to
+        // judge
+        if (!tskMap.keySet().isEmpty()) {
+            LambdaQueryWrapper<JobInstance> wrapper = new LambdaQueryWrapper<>();
+            wrapper.in(JobInstance::getId, tskMap.keySet());
+            jobInstanceService.getBaseMapper().selectList(wrapper, resultContext -> {
+                JobInstance jobInstance = resultContext.getResultObject();
+                TaskDTO taskDTO = tskMap.get(jobInstance.getId());
+                if (Objects.nonNull(taskDTO)) {
+                    taskDTO.setStatus(jobInstance.getStatus());
+                }
+            });
+        }
+
+        List<TaskDTO> tasks = new ArrayList<>(tskMap.values());
+        // 按照step排序，发布>开发>,相同情况 下按照状态排序
+        // 失败>重启>运行>完成>未知
+        Comparator<TaskDTO> statusComparator = Comparator.comparingInt(task -> {
+            String status = task.getStatus() == null ? "UNKNOWN" : task.getStatus();
+            switch (JobStatus.valueOf(status)) {
+                case FAILED:
+                    return 4;
+                case RESTARTING:
+                    return 3;
+                case RUNNING:
+                    return 2;
+                case FINISHED:
+                    return 1;
+                default:
+                    return 0;
+            }
+        });
+        tasks.sort(Comparator.comparingInt(TaskDTO::getStep)
+                .thenComparing(statusComparator)
+                .reversed());
+        return tasks;
+    }
+
+    private Boolean hasTaskOperatePermission(Integer firstLevelOwner, List<Integer> secondLevelOwners) {
+        boolean isFirstLevelOwner = firstLevelOwner != null && firstLevelOwner == StpUtil.getLoginIdAsInt();
+        if (TaskOwnerLockStrategyEnum.OWNER.equals(
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+            return isFirstLevelOwner;
+        } else if (TaskOwnerLockStrategyEnum.OWNER_AND_MAINTAINER.equals(
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+            return isFirstLevelOwner
+                    || (secondLevelOwners != null && secondLevelOwners.contains(StpUtil.getLoginIdAsInt()));
+        }
+        return true;
     }
 }

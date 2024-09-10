@@ -94,6 +94,8 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
      */
     boolean hookJobDone(String jobId, Integer taskId);
 
+    boolean hookJobDoneByHistory(String jobId);
+
     /**
      * Refresh the job instances for the given task IDs.
      *

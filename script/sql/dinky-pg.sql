@@ -3305,6 +3305,7 @@ CREATE TABLE dinky_metrics
     id          SERIAL PRIMARY KEY          NOT NULL,
     task_id     INT,
     vertices    VARCHAR(255),
+    vertices_title VARCHAR(255),
     metrics     VARCHAR(255),
     position    INT,
     show_type   VARCHAR(255),
@@ -3319,6 +3320,7 @@ COMMENT ON TABLE dinky_metrics IS 'metrics layout';
 COMMENT ON COLUMN dinky_metrics.id IS 'id';
 COMMENT ON COLUMN dinky_metrics.task_id IS 'task id';
 COMMENT ON COLUMN dinky_metrics.vertices IS 'vertices';
+COMMENT ON COLUMN dinky_metrics.vertices_title IS 'vertices_title';
 COMMENT ON COLUMN dinky_metrics.metrics IS 'metrics';
 COMMENT ON COLUMN dinky_metrics.position IS 'position';
 COMMENT ON COLUMN dinky_metrics.show_type IS 'show type';
@@ -4049,7 +4051,8 @@ CREATE TABLE dinky_udf_manage
 (
     id           SERIAL PRIMARY KEY          NOT NULL,
     name         VARCHAR(50),
-    class_name   VARCHAR(100),
+    class_name   VARCHAR(50),
+    language varchar(10) ,
     task_id      INT,
     resources_id INT,
     enabled      BOOLEAN                              DEFAULT TRUE,
@@ -4064,6 +4067,7 @@ CREATE INDEX name_resources_id_idx ON dinky_udf_manage (name, resources_id);
 COMMENT ON COLUMN dinky_udf_manage.id IS 'id';
 COMMENT ON COLUMN dinky_udf_manage.name IS 'udf name';
 COMMENT ON COLUMN dinky_udf_manage.class_name IS 'Complete class name';
+COMMENT ON COLUMN dinky_udf_manage.language IS 'udf language';
 COMMENT ON COLUMN dinky_udf_manage.task_id IS 'task_id';
 COMMENT ON COLUMN dinky_udf_manage.resources_id IS 'resources_id';
 

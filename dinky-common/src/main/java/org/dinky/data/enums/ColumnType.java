@@ -19,7 +19,11 @@
 
 package org.dinky.data.enums;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.google.common.collect.Maps;
 
 /**
  * ColumnType
@@ -38,6 +42,7 @@ public enum ColumnType {
     INT("int", "INT NOT NULL"),
     JAVA_LANG_LONG("java.lang.Long", "BIGINT"),
     LONG("long", "BIGINT NOT NULL"),
+    BIG_INTEGER("java.math.BigInteger", "BIGINT"),
     JAVA_LANG_FLOAT("java.lang.Float", "FLOAT"),
     FLOAT("float", "FLOAT NOT NULL"),
     JAVA_LANG_DOUBLE("java.lang.Double", "DOUBLE"),
@@ -60,6 +65,17 @@ public enum ColumnType {
     private final String javaType;
     private final String flinkType;
 
+    /**
+     * JavaType -> ColumnType
+     */
+    private static final Map<String, ColumnType> JAVA_COL_TYPE_MAP = Maps.newHashMap();
+
+    static {
+        Arrays.stream(ColumnType.values()).forEach(columnType -> {
+            JAVA_COL_TYPE_MAP.put(columnType.getJavaType(), columnType);
+        });
+    }
+
     ColumnType(String javaType, String flinkType) {
         this.javaType = javaType;
         this.flinkType = flinkType;
@@ -72,5 +88,9 @@ public enum ColumnType {
 
     public String getFlinkType() {
         return flinkType;
+    }
+
+    public static ColumnType getByJavaType(String javaType) {
+        return JAVA_COL_TYPE_MAP.getOrDefault(javaType, STRING);
     }
 }

@@ -94,7 +94,9 @@ git clone https://github.com/DataLinkDC/dinky.git
 cd /opt/dinky-source-code
 
 # 编译打包 Profile, 注意 scala 支持 2.11 和 2.12, 请根据实际情况进行选择,jdk 支持 8/11,请根据实际情况进行选择,不选jdk11默认使用系统内的jdk8
-mvn clean package -DskipTests=true -Pprod,jdk11,flink-single-version,scala-2.12,aliyun,flink-1.16,web
+mvn clean package -DskipTests=true -P prod,jdk11,flink-single-version,aliyun,flink-1.16,web
+# 如果需要前端依赖下载源为华为镜像,请添加 npm-huawei profile, 否则默认使用 npm 官方源, 编译命令如下:
+mvn clean package -DskipTests=true -P prod,jdk11,flink-single-version,aliyun,flink-1.16,web,npm-huawei
 
 ```
 

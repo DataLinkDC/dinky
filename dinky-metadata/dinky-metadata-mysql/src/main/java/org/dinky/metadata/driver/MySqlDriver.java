@@ -29,7 +29,6 @@ import org.dinky.metadata.convert.MySqlTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.MySqlQuery;
-import org.dinky.utils.TextUtil;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -114,7 +113,10 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     final String dv = column.getDefaultValue();
                     // If it defaults to a numeric type, there is no need to include single quotes or a bit type
                     String defaultValueTag = " DEFAULT '%s'";
-                    if (NumberUtil.isNumber(dv) || columnType.startsWith("bit")) {
+                    if (NumberUtil.isNumber(dv)
+                            || columnType.startsWith("bit")
+                            || (StrUtil.isNotEmpty(dv)
+                                    && dv.toLowerCase().trim().matches("^current_timestamp.*"))) {
                         defaultValueTag = " DEFAULT %s";
                     }
                     String defaultValue = Asserts.isNotNull(dv)
@@ -167,8 +169,8 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
-        String limitStart = queryData.getOption().getLimitStart();
-        String limitEnd = queryData.getOption().getLimitEnd();
+        int limitStart = queryData.getOption().getLimitStart();
+        int limitEnd = queryData.getOption().getLimitEnd();
 
         StringBuilder optionBuilder = new StringBuilder()
                 .append(String.format("select * from `%s`.`%s`", queryData.getSchemaName(), queryData.getTableName()));
@@ -178,13 +180,6 @@ public class MySqlDriver extends AbstractJdbcDriver {
         }
         if (order != null && !order.isEmpty()) {
             optionBuilder.append(" order by ").append(order);
-        }
-
-        if (TextUtil.isEmpty(limitStart)) {
-            limitStart = "0";
-        }
-        if (TextUtil.isEmpty(limitEnd)) {
-            limitEnd = "100";
         }
         optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
 
