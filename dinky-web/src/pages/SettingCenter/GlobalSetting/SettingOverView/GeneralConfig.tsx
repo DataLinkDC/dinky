@@ -104,6 +104,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
           onChange={selectChanges}
           value={entity.value.toLowerCase()}
           disabled={!HasAuthority(auth)}
+          name={entity.key}
         >
           {entity.example.map((item: any) => (
             <Radio.Button key={item} value={item.toLowerCase()}>

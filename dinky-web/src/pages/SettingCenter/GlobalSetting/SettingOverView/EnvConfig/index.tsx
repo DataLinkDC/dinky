@@ -39,13 +39,13 @@ export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
   };
 
   const selectChange = async (e: RadioChangeEvent) => {
-    const { value } = e.target;
+    const { value,name } = e.target;
 
     await onSaveHandler({
       name: '',
       example: [],
       frontType: '',
-      key: GLOBAL_SETTING_KEYS.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY,
+      key: name??'',
       note: '',
       value: value.toString().toLocaleUpperCase()
     });
