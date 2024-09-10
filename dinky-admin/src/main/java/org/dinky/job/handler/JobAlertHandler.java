@@ -49,13 +49,13 @@ import org.dinky.service.UserService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.utils.JsonUtils;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -252,16 +252,12 @@ public class JobAlertHandler {
         if (!Asserts.isNull(task.getAlertGroup())) {
             // 获取任务的责任人和维护人对应的用户信息|Get the responsible person and maintainer of the task
             User ownerInfo = userCache.get(task.getFirstLevelOwner());
-            List<User> maintainerInfo = task.getSecondLevelOwners().stream()
-                    .map(id -> {
-                        try {
-                            return userCache.get(id);
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    })
-                    .collect(Collectors.toList());
+            List<User> maintainerInfo = Lists.newArrayList();
+            if (CollectionUtils.isNotEmpty(task.getSecondLevelOwners())) {
+                for (Integer secondLevelOwner : task.getSecondLevelOwners()) {
+                    maintainerInfo.add(userCache.get(secondLevelOwner));
+                }
+            }
             AlertGroup alertGroup = task.getAlertGroup();
             alertGroup.getInstances().stream()
                     .filter(Objects::nonNull)
@@ -300,6 +296,7 @@ public class JobAlertHandler {
                         .collect(Collectors.toList()));
                 break;
             case NONE:
+                break;
             default:
                 log.error("Alert Strategy Type: {} is not supported", value);
                 return;
