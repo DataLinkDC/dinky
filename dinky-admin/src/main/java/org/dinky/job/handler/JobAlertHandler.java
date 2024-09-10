@@ -19,7 +19,6 @@
 
 package org.dinky.job.handler;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertResult;
@@ -50,13 +49,13 @@ import org.dinky.service.UserService;
 import org.dinky.service.impl.AlertRuleServiceImpl;
 import org.dinky.utils.JsonUtils;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -254,7 +253,7 @@ public class JobAlertHandler {
             // 获取任务的责任人和维护人对应的用户信息|Get the responsible person and maintainer of the task
             User ownerInfo = userCache.get(task.getFirstLevelOwner());
             List<User> maintainerInfo = Lists.newArrayList();
-            if(CollectionUtils.isNotEmpty(task.getSecondLevelOwners())){
+            if (CollectionUtils.isNotEmpty(task.getSecondLevelOwners())) {
                 for (Integer secondLevelOwner : task.getSecondLevelOwners()) {
                     maintainerInfo.add(userCache.get(secondLevelOwner));
                 }

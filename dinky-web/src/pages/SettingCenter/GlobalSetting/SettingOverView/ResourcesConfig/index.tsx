@@ -76,13 +76,13 @@ export const ResourcesConfig = ({ data, onSave, auth }: ResourcesConfigProps) =>
     setLoading(false);
   };
   const selectChange = async (e: RadioChangeEvent) => {
-    const { value,name } = e.target;
+    const { value, name } = e.target;
     setModel(value);
     await onSaveHandler({
       name: '',
       example: [],
       frontType: '',
-      key: name??'',
+      key: name ?? '',
       note: '',
       value: value.toString().toLocaleUpperCase()
     });

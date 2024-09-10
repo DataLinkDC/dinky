@@ -39,13 +39,13 @@ export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
   };
 
   const selectChange = async (e: RadioChangeEvent) => {
-    const { value,name } = e.target;
+    const { value, name } = e.target;
 
     await onSaveHandler({
       name: '',
       example: [],
       frontType: '',
-      key: name??'',
+      key: name ?? '',
       note: '',
       value: value.toString().toLocaleUpperCase()
     });
