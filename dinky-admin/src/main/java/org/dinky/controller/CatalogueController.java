@@ -41,6 +41,7 @@ import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -260,10 +261,11 @@ public class CatalogueController {
      * @param id catalogue id
      * @return {@link Result}< {@link Void}>}
      */
-    @PostMapping("/export/{id}")
+    @GetMapping("/export")
     @Log(title = "Export Catalogue", businessType = BusinessType.EXPORT)
     @ApiOperation("Export Catalogue")
-    public ResponseEntity<?> exportCatalogue(@PathVariable Integer id) {
+    @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Integer", dataTypeClass = Integer.class)
+    public ResponseEntity<?> exportCatalogue(@RequestParam Integer id) {
         ExportCatalogueVO exportCatalogueVo = catalogueService.exportCatalogue(id);
         // convert the return value to file at the interface level
         HttpHeaders headers = new HttpHeaders();

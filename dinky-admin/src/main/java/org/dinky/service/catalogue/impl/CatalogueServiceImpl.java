@@ -611,7 +611,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     private String getExportCatalogueFileName(Integer catalogueId) {
         int loginUserId = StpUtil.getLoginIdAsInt();
-        return String.format("%s_%s_%s.json", catalogueId, loginUserId, System.currentTimeMillis());
+        return String.format("export_catalogue_%s_%s_%s.json", catalogueId, loginUserId, System.currentTimeMillis());
     }
 
     private ExportCatalogueBO getAllCatalogue(Integer catalogueId) {

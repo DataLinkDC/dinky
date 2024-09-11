@@ -40,6 +40,7 @@ import {
 } from '@/pages/DataStudio/model';
 import {
   handleAddOrUpdate,
+  handleDownloadOption,
   handleOption,
   handlePutDataByParams,
   handleRemoveById
@@ -353,6 +354,16 @@ const Project: React.FC = (props: connect) => {
     handleContextCancel();
   };
 
+  const handleExportJson = async () => {
+    const catalogue_id = projectState.value.id;
+    await handleDownloadOption(
+      API_CONSTANTS.EXPORT_CATALOGUE_URL,
+      l('right.menu.exportJson'),
+      { "id": catalogue_id }
+    );
+    handleContextCancel();
+  }
+
   /**
    * cut task handle
    */
@@ -414,8 +425,12 @@ const Project: React.FC = (props: connect) => {
         handleEdit();
         break;
       case 'exportJson':
+        await handleExportJson();
+        break;
+      case 'importJson':
         // todo: 导出 json
         // await handleCancel();
+        console.log('import json');
         break;
       case 'copy':
         await handleCopy();
