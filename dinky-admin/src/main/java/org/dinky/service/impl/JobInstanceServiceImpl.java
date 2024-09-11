@@ -298,6 +298,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     }
 
     @Override
+    public JobInstance getJobInstanceByTaskName(String taskName) {
+        return baseMapper.getJobInstanceByTaskName(taskName);
+    }
+
+    @Override
     public ProTableResult<JobInstanceVo> listJobInstances(JsonNode para) {
         int current = para.has("current") ? para.get("current").asInt() : 1;
         int pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;

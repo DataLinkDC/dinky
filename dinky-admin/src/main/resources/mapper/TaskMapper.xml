@@ -66,6 +66,12 @@
         where id = #{id}
     </select>
 
+    <select id="getTenantByTaskName" resultType="java.lang.Integer">
+        select tenant_id
+        from dinky_task
+        where name = #{taskName}
+    </select>
+
     <select id="queryOnLineTaskByDoneStatus" resultType="org.dinky.data.model.Task">
         select t.id as id, t.name as name
         from dinky_task t
