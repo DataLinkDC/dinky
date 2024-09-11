@@ -18,7 +18,8 @@
  */
 
 import {
-  addOrUpdateData, download,
+  addOrUpdateData,
+  download,
   getData,
   getDataByRequestBody,
   getInfoById,

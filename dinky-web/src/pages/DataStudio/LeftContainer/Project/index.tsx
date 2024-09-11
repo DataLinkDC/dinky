@@ -356,13 +356,11 @@ const Project: React.FC = (props: connect) => {
 
   const handleExportJson = async () => {
     const catalogue_id = projectState.value.id;
-    await handleDownloadOption(
-      API_CONSTANTS.EXPORT_CATALOGUE_URL,
-      l('right.menu.exportJson'),
-      { "id": catalogue_id }
-    );
+    await handleDownloadOption(API_CONSTANTS.EXPORT_CATALOGUE_URL, l('right.menu.exportJson'), {
+      id: catalogue_id
+    });
     handleContextCancel();
-  }
+  };
 
   /**
    * cut task handle

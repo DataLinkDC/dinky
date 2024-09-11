@@ -159,14 +159,16 @@ export async function download(url: string, params?: any) {
     },
     responseType: 'blob',
     getResponse: true
-  }).then(res => {
-    const {headers, data} = res;
+  }).then((res) => {
+    const { headers, data } = res;
     const disposition = headers['content-disposition'];
-    const file_name = disposition.split(';')
-      .map(item => item.trim())
-      .filter(item => item.startsWith('filename='))
-      .map(item => item.replaceAll('filename=', ''))
-      .shift() || '';
+    const file_name =
+      disposition
+        .split(';')
+        .map((item) => item.trim())
+        .filter((item) => item.startsWith('filename='))
+        .map((item) => item.replaceAll('filename=', ''))
+        .shift() || '';
     const blob = new Blob([data]);
     const objectURL = URL.createObjectURL(blob);
     let btn = document.createElement('a');
@@ -175,5 +177,4 @@ export async function download(url: string, params?: any) {
     btn.click();
     URL.revokeObjectURL(objectURL);
   });
-
 }
