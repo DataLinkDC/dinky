@@ -18,15 +18,15 @@
  */
 
 import LineageGraph from '@/components/LineageGraph';
-import { getCurrentData, mapDispatchToProps } from '@/pages/DataStudio/function';
-import { StateType } from '@/pages/DataStudio/model';
-import { getDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { LineageDetailInfo } from '@/types/DevOps/data';
-import { l } from '@/utils/intl';
-import { connect } from '@umijs/max';
-import { Card, Result } from 'antd';
-import React, { useEffect } from 'react';
+import {getCurrentData, mapDispatchToProps} from '@/pages/DataStudio/function';
+import {StateType} from '@/pages/DataStudio/model';
+import {getDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {LineageDetailInfo} from '@/types/DevOps/data';
+import {l} from '@/utils/intl';
+import {connect} from '@umijs/max';
+import {Card, Result} from 'antd';
+import React, {useEffect} from 'react';
 
 interface StudioLineageParams {
   type: number;
@@ -42,18 +42,21 @@ interface StudioLineageParams {
 
 const Lineage: React.FC<connect> = (props) => {
   const {
-    tabs: { panes, activeKey },
+    tabs: {panes, activeKey},
     bottomHeight
   } = props;
   const [lineageData, setLineageData] = React.useState<LineageDetailInfo>({
     tables: [],
     relations: []
   });
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const currentData = getCurrentData(panes, activeKey);
+
   const queryLineageData = () => {
+    setLoading(true);
     // 组装参数 statementSet type dialect databaseId
-    const currentData = getCurrentData(panes, activeKey);
     if (!currentData) return;
-    const { type, statementSet, dialect, databaseId, statement, envId, fragment, id } = currentData;
+    const {type, statementSet, dialect, databaseId, statement, envId, fragment, id} = currentData;
     const params: StudioLineageParams = {
       type: 1, // todo: 暂时写死 ,后续优化
       dialect: dialect,
@@ -65,28 +68,32 @@ const Lineage: React.FC<connect> = (props) => {
       variables: {},
       taskId: id
     };
-    getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params).then((res) =>
-      setLineageData(res as LineageDetailInfo)
+    getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params).then((res) => {
+        if (res) {
+          setLoading(false);
+          setLineageData(res as LineageDetailInfo);
+        }
+      }
     );
   };
 
   useEffect(() => {
     queryLineageData();
-  }, [activeKey]);
+  }, [activeKey, currentData]);
 
   return (
-    <Card hoverable bodyStyle={{ height: bottomHeight - 50 }} style={{ height: 'inherit' }}>
+    <Card loading={loading} hoverable bodyStyle={{height: bottomHeight - 50}} style={{height: 'inherit'}}>
       {lineageData && (lineageData.tables.length !== 0 || lineageData.relations.length !== 0) ? (
-        <LineageGraph lineageData={lineageData} refreshCallBack={queryLineageData} />
+        <LineageGraph lineageData={lineageData} refreshCallBack={queryLineageData}/>
       ) : (
-        <Result style={{ height: 'inherit' }} status='warning' title={l('lineage.getError')} />
+        <Result style={{height: 'inherit'}} status='warning' title={l('lineage.getError')}/>
       )}
     </Card>
   );
 };
 
 export default connect(
-  ({ Studio }: { Studio: StateType }) => ({
+  ({Studio}: { Studio: StateType }) => ({
     tabs: Studio.tabs,
     bottomHeight: Studio.bottomContainer.height
   }),
