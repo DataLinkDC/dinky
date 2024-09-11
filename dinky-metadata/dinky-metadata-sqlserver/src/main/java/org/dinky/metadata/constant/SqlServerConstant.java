@@ -55,4 +55,10 @@ public interface SqlServerConstant {
             " SELECT  table_name ,table_schema, '' as type, '' as CATALOG, '' as ENGINE , '' as"
                     + " OPTIONS ,0 as rows , null as CREATE_TIME, null as UPDATE_TIME,null AS COMMENTS"
                     + "  FROM INFORMATION_SCHEMA.tables WHERE TABLE_SCHEMA  = '%s' ";
+
+    /** 根据schema查询table信息模板SQL */
+    String QUERY_TABLE_BY_SCHEMA_NAME_AND_TABLE_NAME_SQL =
+            " SELECT  table_name ,table_schema, '' as type, '' as CATALOG, '' as ENGINE , '' as"
+                    + " OPTIONS ,0 as rows , null as CREATE_TIME, null as UPDATE_TIME,null AS COMMENTS"
+                    + "  FROM INFORMATION_SCHEMA.tables WHERE TABLE_SCHEMA  = '%s' AND TABLE_NAME = '%s'";
 }

@@ -222,7 +222,10 @@ const Project: React.FC = (props: connect) => {
       },
       () => {},
       () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+        dispatch({
+          type: STUDIO_MODEL_ASYNC.queryProject,
+          payload: { ...selectCatalogueSortTypeData }
+        });
         if (assert(values.type, [DIALECT.FLINKSQLENV], true, 'includes')) {
           dispatch({ type: STUDIO_MODEL_ASYNC.queryEnv });
         }
@@ -269,7 +272,10 @@ const Project: React.FC = (props: connect) => {
     handleContextCancel();
     if (!isLeaf) {
       await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+        dispatch({
+          type: STUDIO_MODEL_ASYNC.queryProject,
+          payload: { ...selectCatalogueSortTypeData }
+        });
       });
       return;
     }
@@ -298,7 +304,10 @@ const Project: React.FC = (props: connect) => {
             dispatch({ type: STUDIO_MODEL.updateActiveBreadcrumbTitle, payload: '' });
           }
         });
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+        dispatch({
+          type: STUDIO_MODEL_ASYNC.queryProject,
+          payload: { ...selectCatalogueSortTypeData }
+        });
       }
     });
   };
@@ -336,7 +345,10 @@ const Project: React.FC = (props: connect) => {
       l('right.menu.copy'),
       { ...projectState.value },
       () =>
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData })
+        dispatch({
+          type: STUDIO_MODEL_ASYNC.queryProject,
+          payload: { ...selectCatalogueSortTypeData }
+        })
     );
     handleContextCancel();
   };
@@ -373,7 +385,10 @@ const Project: React.FC = (props: connect) => {
         }));
       }
     );
-    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryProject,
+      payload: { ...selectCatalogueSortTypeData }
+    });
     handleContextCancel();
   };
 

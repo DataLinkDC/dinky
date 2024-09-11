@@ -46,6 +46,7 @@
                 <module>dinky-catalog-mysql-1.17</module>
                 <module>dinky-catalog-mysql-1.18</module>
                 <module>dinky-catalog-mysql-1.19</module>
+                <module>dinky-catalog-mysql-1.20</module>
             </modules>
         </profile>
     </profiles>

@@ -17,13 +17,11 @@
  *
  */
 
-package org.dinky.data.constant;
+package org.dinky.executor;
 
-public class SseConstant {
-    /**
-     * Sse label for front to reconnect session
-     */
-    public static final String SSE_SESSION_INVALID = "SESSION_INVALID";
+import org.apache.flink.table.delegation.Parser;
 
-    public static final String HEART_TOPIC = "HEART_BEAT";
+/** */
+public interface ExtendedParser extends Parser {
+    CustomParser getCustomParser();
 }

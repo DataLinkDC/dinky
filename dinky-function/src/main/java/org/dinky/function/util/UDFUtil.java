@@ -357,13 +357,6 @@ public class UDFUtil {
     // create FlinkUdfPathContextHolder from UdfCodePool
     public static FlinkUdfPathContextHolder createFlinkUdfPathContextHolder() {
         FlinkUdfPathContextHolder udfPathContextHolder = new FlinkUdfPathContextHolder();
-        UdfCodePool.getUdfCodePool().values().forEach(udf -> {
-            if (udf.getFunctionLanguage() == FunctionLanguage.PYTHON) {
-                udfPathContextHolder.addPyUdfPath(new File(udf.getCode()));
-            } else {
-                udfPathContextHolder.addUdfPath(new File(udf.getCode()));
-            }
-        });
 
         UdfCodePool.getGitPool().values().forEach(gitPackage -> {
             if ("jar".equals(FileUtil.getSuffix(gitPackage))) {

@@ -36,6 +36,21 @@ public interface DorisConstant {
             + "from information_schema.tables"
             + " where"
             + " TABLE_SCHEMA = '%s'  ";
+
+    /** 查询schema下的指定表 */
+    String QUERY_TABLE_BY_SCHEMA_NAME_AND_TABLE_NAME =
+            "select TABLE_NAME    AS `NAME`,\n" + "       TABLE_SCHEMA  AS `SCHEMA`,\n"
+                    + "       TABLE_COMMENT AS COMMENT,\n"
+                    + "       TABLE_TYPE            as TYPE,\n"
+                    + "       TABLE_CATALOG            as CATALOG,\n"
+                    + "       ENGINE            as ENGINE,\n"
+                    + "       CREATE_OPTIONS            as OPTIONS,\n"
+                    + "       TABLE_ROWS             as `ROWS`,\n"
+                    + "       CREATE_TIME          as CREATE_TIME,\n"
+                    + "       UPDATE_TIME          as UPDATE_TIME\n"
+                    + "from information_schema.tables"
+                    + " where"
+                    + " TABLE_SCHEMA = '%s' and TABLE_NAME = '%s'";
     /** 查询指定schema.table下的所有列信息 */
     String QUERY_COLUMNS_BY_TABLE_AND_SCHEMA = "  show full columns from `%s`.`%s` ";
 

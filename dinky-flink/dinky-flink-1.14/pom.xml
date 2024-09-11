@@ -174,7 +174,7 @@
         <dependency>
             <groupId>com.starrocks</groupId>
             <artifactId>flink-connector-starrocks</artifactId>
-            <version>1.2.3_flink-1.14_2.12</version>
+            <version>1.2.9_flink-1.14_2.12</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.jsqlparser</groupId>

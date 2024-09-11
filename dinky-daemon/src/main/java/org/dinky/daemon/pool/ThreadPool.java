@@ -30,14 +30,9 @@ public interface ThreadPool {
     // 执行任务
     void execute(DaemonTask daemonTask);
 
-    // 关闭连接池
-    void shutdown();
-
     // 增加工作数
     void addWorkers(int num);
 
     // 减少工作数
     void removeWorker(int num);
-
-    int getTaskSize();
 }

@@ -19,6 +19,8 @@
 
 package org.dinky.service.impl;
 
+import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -232,6 +234,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         } else {
             // When disabling checkpoints, delete the checkpoint path
             config.setSavePointPath(null);
+        }
+        if (SystemConfiguration.getInstances().getUseFlinkHistoryServer().getValue()) {
+            config.getConfigJson().compute("jobmanager.archive.fs.dir", (k, v) -> {
+                if (StringUtils.isNotBlank(v)) {
+                    return v + "," + FLINK_JOB_ARCHIVE;
+                }
+                return FLINK_JOB_ARCHIVE;
+            });
         }
         if (GatewayType.get(task.getType()).isDeployCluster()) {
             log.info("Init gateway config, type:{}", task.getType());

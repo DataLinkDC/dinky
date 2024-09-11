@@ -24,6 +24,7 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.resource.BaseResourceManager;
 
+import org.apache.flink.runtime.fs.hdfs.HadoopFileSystem;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -138,6 +140,11 @@ public class HdfsResourceManager implements BaseResourceManager {
         } catch (IOException e) {
             throw new BusException(Status.RESOURCE_FILE_READ_FAILED, e);
         }
+    }
+
+    @Override
+    public org.apache.flink.core.fs.FileSystem getFileSystem() {
+        return Singleton.get(HadoopFileSystem.class, getHdfs());
     }
 
     public FileSystem getHdfs() {

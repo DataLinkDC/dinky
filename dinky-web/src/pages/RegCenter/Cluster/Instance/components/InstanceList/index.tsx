@@ -65,6 +65,8 @@ import {
   Typography
 } from 'antd';
 import { useState } from 'react';
+import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
+import { isContainsChinese } from '@/utils/function';
 
 const { Text, Paragraph, Link } = Typography;
 
@@ -219,15 +221,24 @@ export default () => {
                 {l('rc.ci.jma')}: {renderWebUiRedirect(item)}
               </blockquote>
               <blockquote>
-                {l('rc.ci.version')}: <Link>{item.version}</Link>
+                {l('rc.ci.version')}: <Link>{item.version || 'None'}</Link>
               </blockquote>
-              <Text title={item.alias} ellipsis>
-                {(item.alias || item.alias === '') && (
-                  <blockquote>
-                    {l('rc.ci.alias')}: {item.alias}
-                  </blockquote>
-                )}
-              </Text>
+              <blockquote style={{ display: 'flex' }}>
+                <span style={{ minWidth: '2vw' }}> {l('rc.ci.alias')}: </span>
+                <EllipsisMiddle
+                  copyable={false}
+                  maxCount={isContainsChinese(item.alias ?? '') ? 10 : 20}
+                  children={item.alias}
+                />
+              </blockquote>
+              <blockquote style={{ display: 'flex' }}>
+                <span style={{ minWidth: '2vw' }}> {l('rc.ci.desc')}: </span>
+                <EllipsisMiddle
+                  copyable={false}
+                  maxCount={isContainsChinese(item.note ?? '') ? 10 : 20}
+                  children={item.note}
+                />
+              </blockquote>
             </Paragraph>
 
             <Space size={8} align={'baseline'} className={'hidden-overflow'}>

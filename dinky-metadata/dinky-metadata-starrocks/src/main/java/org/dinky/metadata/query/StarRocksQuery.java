@@ -38,6 +38,11 @@ public class StarRocksQuery extends AbstractDBQuery {
     }
 
     @Override
+    public String tablesSql(String schemaName, String tableName) {
+        return String.format(StarRocksConstant.QUERY_TABLE_BY_SCHEMA_NAME_AND_TABLE_NAME, schemaName, tableName);
+    }
+
+    @Override
     public String columnsSql(String schemaName, String tableName) {
         return String.format(StarRocksConstant.QUERY_COLUMNS_BY_TABLE_AND_SCHEMA, schemaName, tableName);
     }

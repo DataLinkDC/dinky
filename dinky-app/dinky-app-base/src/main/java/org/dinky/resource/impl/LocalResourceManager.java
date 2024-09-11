@@ -24,6 +24,8 @@ import org.dinky.data.model.ResourcesVO;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.resource.BaseResourceManager;
 
+import org.apache.flink.core.fs.FileSystem;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -137,5 +139,10 @@ public class LocalResourceManager implements BaseResourceManager {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return HttpFileSystem.INSTANCE;
     }
 }

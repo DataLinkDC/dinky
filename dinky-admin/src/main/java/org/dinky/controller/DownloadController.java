@@ -23,11 +23,15 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
+import org.dinky.data.model.ResourcesModelEnum;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.result.Result;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.util.ZipWriter;
 import org.dinky.resource.BaseResourceManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -37,9 +41,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
@@ -58,7 +66,7 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "UDF & App Jar Controller")
 @RequestMapping("/download")
 public class DownloadController {
-
+    // todo: Controller has injection risk
     @GetMapping("downloadDepJar/{taskId}")
     @ApiOperation("Download UDF Jar")
     public void downloadJavaUDF(@PathVariable Integer taskId, HttpServletResponse resp) {
@@ -100,9 +108,9 @@ public class DownloadController {
     }
 
     /**
-     * 提供docker通过http下载dinky-app.jar
+     * Provide Docker to download dinky-app.jar via HTTP request
      *
-     * @param version 版本
+     * @param version version of dinky-app.jar
      * @param resp    resp
      */
     @GetMapping("downloadAppJar/{version}")
@@ -117,8 +125,33 @@ public class DownloadController {
 
     @GetMapping("downloadFromRs")
     @ApiOperation("Download From Resource")
-    public void downloadJavaUDF(String path, HttpServletResponse resp) {
+    @SaIgnore
+    public void downloadFromRs(String path, HttpServletResponse resp) {
         InputStream inputStream = BaseResourceManager.getInstance().readFile(path);
         ServletUtil.write(resp, inputStream);
+    }
+
+    // todo: There is a risk of injection in this interface
+    @PostMapping("uploadFromRsByLocal")
+    @ApiOperation("Upload From Resource By Local")
+    @SaIgnore
+    public Result<Void> uploadFromRs(String path, @RequestParam("file") MultipartFile file) {
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        if (!systemConfiguration.getResourcesEnable().getValue()
+                || !systemConfiguration.getResourcesModel().getValue().equals(ResourcesModelEnum.LOCAL)) {
+            return Result.failed("resources model is not local or resources is not enable");
+        }
+
+        try {
+            File dest = new File(path);
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            file.transferTo(dest);
+            return Result.succeed();
+        } catch (IOException e) {
+            log.error("upload file failed", e);
+            throw new BusException("upload file failed");
+        }
     }
 }
