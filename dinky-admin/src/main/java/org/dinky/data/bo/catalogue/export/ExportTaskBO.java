@@ -26,6 +26,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -70,5 +72,8 @@ public class ExportTaskBO {
 
     private String statement;
 
-    private Integer versionId;
+    private Integer firstLevelOwner;
+
+    private List<Integer> secondLevelOwners;
+
 }

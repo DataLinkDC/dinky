@@ -193,6 +193,9 @@ public enum Status {
     MODE_IS_NOT_ALLOW_SELECT(12014, "mode.is.not.allow.select"),
     OPERATE_NOT_SUPPORT_QUERY(12015, "operate.not.support.query"),
     TASK_NOT_OPERATE_PERMISSION(12016, "task.not.operate.permission"),
+    CATALOGUE_NOT_EXIST(12017, "catalogue.not.exist"),
+    CATALOGUE_IS_EXIST(12018, "catalogue.is.exist"),
+    TASK_NAME_NOT_MATCH_CATALOGUE_NAME(12019, "task.name.not.match.catalogue.name"),
 
     /**
      * alert instance

@@ -265,6 +265,7 @@ export enum API_CONSTANTS {
   COPY_TASK_URL = '/api/catalogue/copyTask',
   MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue',
   EXPORT_CATALOGUE_URL = '/api/catalogue/export',
+  IMPORT_CATALOGUE_URL = '/api/catalogue/import',
 
   // ------------------------------------ task ------------------------------------
   TASK = '/api/task',

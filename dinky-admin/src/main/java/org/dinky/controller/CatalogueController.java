@@ -60,6 +60,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * CatalogueController
@@ -259,7 +260,7 @@ public class CatalogueController {
      * export catalogue by id
      *
      * @param id catalogue id
-     * @return {@link Result}< {@link Void}>}
+     * @return {@link ResponseEntity}
      */
     @GetMapping("/export")
     @Log(title = "Export Catalogue", businessType = BusinessType.EXPORT)
@@ -272,5 +273,18 @@ public class CatalogueController {
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + exportCatalogueVo.getFileName());
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
         return ResponseEntity.ok().headers(headers).body(exportCatalogueVo.getDataJson());
+    }
+
+    /**
+     * import catalogue by parent id
+     *
+     * @return {@link Result}< {@link Void}>}
+     */
+    @PostMapping("/import")
+    @Log(title = "Import Catalogue", businessType = BusinessType.IMPORT)
+    @ApiOperation("Import Catalogue")
+    public Result<Void> importCatalogue(MultipartHttpServletRequest request) {
+        catalogueService.importCatalogue(request);
+        return Result.succeed();
     }
 }

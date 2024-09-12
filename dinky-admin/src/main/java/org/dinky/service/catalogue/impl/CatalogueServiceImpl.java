@@ -21,8 +21,11 @@ package org.dinky.service.catalogue.impl;
 
 import static org.dinky.assertion.Asserts.isNull;
 
+import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
+import org.dinky.data.bo.catalogue.export.ExportTaskBO;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.enums.CatalogueSortValueEnum;
@@ -61,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -82,6 +86,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * CatalogueServiceImpl
@@ -607,6 +612,137 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 .fileName(getExportCatalogueFileName(catalogueId))
                 .dataJson(dataJson)
                 .build();
+    }
+
+    /**
+     * Import catalogue
+     *
+     * @param request MultipartHttpServletRequest
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void importCatalogue(MultipartHttpServletRequest request) {
+        log.info("Import Catalogue start");
+        int parentCatalogueId = Integer.parseInt(request.getParameter("pid"));
+        // convert to export catalogue
+        ExportCatalogueBO exportCatalogue = catalogueFactory.getExportCatalogueBO(request);
+        if (Objects.isNull(exportCatalogue)) {
+            throw new BusException(Status.FAILED);
+        }
+        Catalogue parentCatalogue = this.getById(parentCatalogueId);
+        // check param
+        checkImportCatalogueParam(parentCatalogue, exportCatalogue);
+
+        // create catalogue and task
+        List<Task> createTasks = Lists.newArrayList();
+        List<Catalogue> createCatalogues = Lists.newArrayList();
+        List<ExportCatalogueBO> searchCatalogues = Lists.newArrayList(exportCatalogue);
+
+        // ExportCatalogueBO -> Task mapping
+        Map<ExportCatalogueBO, Task> exportCatalogueTaskMap = Maps.newHashMap();
+        // ExportCatalogueBO -> Catalogue mapping
+        Map<ExportCatalogueBO, Catalogue> exportCatalogueMap = Maps.newHashMap();
+        // ExportCatalogueBO -> Parent Catalogue ID mapping
+        Map<ExportCatalogueBO, Integer> exportCatalogueParentIdMap = Maps.newHashMap();
+        exportCatalogueParentIdMap.put(exportCatalogue, parentCatalogueId);
+
+        while (CollectionUtil.isNotEmpty(searchCatalogues)) {
+            List<ExportCatalogueBO> nextSearchCatalogues = Lists.newArrayList();
+            // create task
+            for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
+                ExportTaskBO exportTaskBO = searchCatalogue.getTask();
+                if (Objects.nonNull(exportTaskBO)) {
+                    Task task = catalogueFactory.getTask(exportTaskBO);
+                    createTasks.add(task);
+                    exportCatalogueTaskMap.put(searchCatalogue, task);
+                }
+            }
+            this.taskService.saveBatch(createTasks);
+            // create catalogue
+            for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
+                Task task = exportCatalogueTaskMap.get(searchCatalogue);
+                Integer taskId = Objects.nonNull(task) ? task.getId() : null;
+                Integer parentId = exportCatalogueParentIdMap.get(searchCatalogue);
+                if (Objects.isNull(parentId)) {
+                    log.error("Not found parent id. searchCatalogue: {}", searchCatalogue);
+                    throw new BusException(Status.FAILED);
+                }
+                Catalogue catalogue = catalogueFactory.getCatalogue(searchCatalogue, parentId, taskId);
+                createCatalogues.add(catalogue);
+                exportCatalogueMap.put(searchCatalogue, catalogue);
+                List<ExportCatalogueBO> children = searchCatalogue.getChildren();
+                if (CollectionUtil.isNotEmpty(children)) {
+                    nextSearchCatalogues.addAll(children);
+                }
+            }
+            this.saveBatch(createCatalogues);
+            // put parent id
+            for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
+                List<ExportCatalogueBO> children = searchCatalogue.getChildren();
+                if (CollectionUtil.isEmpty(children)) {
+                    continue;
+                }
+                Catalogue catalogue = exportCatalogueMap.get(searchCatalogue);
+                for (ExportCatalogueBO child : children) {
+                    exportCatalogueParentIdMap.put(child, catalogue.getId());
+                }
+            }
+            createTasks.clear();
+            createCatalogues.clear();
+            searchCatalogues = nextSearchCatalogues;
+        }
+        log.info("Import Catalogue success. The number of Catalogue created is: {}", exportCatalogueMap.size());
+    }
+
+    private void checkImportCatalogueParam(Catalogue parentCatalogue, ExportCatalogueBO exportCatalogue) {
+        // verify that the parent directory exists
+        if (Objects.isNull(parentCatalogue)) {
+            throw new BusException(Status.CATALOGUE_NOT_EXIST);
+        }
+        // check if a catalogue with the same name exists
+        List<String> catalogueNames = getCatalogueNames(exportCatalogue);
+        List<Catalogue> existCatalogues = this.list(new LambdaQueryWrapper<Catalogue>().in(Catalogue::getName, catalogueNames));
+        if (CollectionUtil.isNotEmpty(existCatalogues)) {
+            throw new BusException(Status.CATALOGUE_IS_EXIST, existCatalogues.stream().map(Catalogue::getName).collect(Collectors.joining(",")));
+        }
+        // verify that the task name and parent catalogue name are consistent
+        List<ExportCatalogueBO> searchExportCatalogues = Lists.newArrayList(exportCatalogue);
+        List<ExportCatalogueBO> nextSearchExportCatalogues = Lists.newArrayList();
+        while (CollectionUtil.isNotEmpty(searchExportCatalogues)) {
+            for (ExportCatalogueBO searchExportCatalogue : searchExportCatalogues) {
+                List<ExportCatalogueBO> children = searchExportCatalogue.getChildren();
+                if (CollectionUtil.isNotEmpty(children)) {
+                    nextSearchExportCatalogues.addAll(children);
+                }
+                ExportTaskBO task = searchExportCatalogue.getTask();
+                if (Objects.isNull(task)) {
+                    continue;
+                }
+                String catalogueName = searchExportCatalogue.getName();
+                String taskName = task.getName();
+                if (!StringUtils.equals(catalogueName, taskName)) {
+                    throw new BusException(Status.TASK_NAME_NOT_MATCH_CATALOGUE_NAME, catalogueName, taskName);
+                }
+            }
+            searchExportCatalogues = nextSearchExportCatalogues;
+        }
+    }
+
+    private List<String> getCatalogueNames(ExportCatalogueBO exportCatalogue) {
+        if (Objects.isNull(exportCatalogue)) {
+            return Lists.newArrayList();
+        }
+        List<String> catalogueNameList = Lists.newArrayList();
+        String catalogueName = exportCatalogue.getName();
+        catalogueNameList.add(catalogueName);
+        List<ExportCatalogueBO> children = exportCatalogue.getChildren();
+        if (CollectionUtil.isEmpty(children)) {
+            return catalogueNameList;
+        }
+        for (ExportCatalogueBO child : children) {
+            catalogueNameList.addAll(getCatalogueNames(child));
+        }
+        return catalogueNameList;
     }
 
     private String getExportCatalogueFileName(Integer catalogueId) {

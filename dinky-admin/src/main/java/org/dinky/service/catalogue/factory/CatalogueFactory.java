@@ -19,6 +19,7 @@
 
 package org.dinky.service.catalogue.factory;
 
+import cn.hutool.json.JSONUtil;
 import org.dinky.config.Dialect;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.bo.catalogue.export.ExportTaskBO;
@@ -28,12 +29,17 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Objects;
 
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.bean.BeanUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * CatalogueFactory
@@ -67,6 +73,32 @@ public class CatalogueFactory {
         return newTask;
     }
 
+    public Task getTask(ExportTaskBO exportTaskBO) {
+        Task task = new Task();
+        task.setName(exportTaskBO.getName());
+        task.setDialect(exportTaskBO.getDialect());
+        task.setType(exportTaskBO.getType());
+        task.setCheckPoint(exportTaskBO.getCheckPoint());
+        task.setSavePointStrategy(exportTaskBO.getSavePointStrategy());
+        task.setParallelism(exportTaskBO.getParallelism());
+        task.setFragment(exportTaskBO.getFragment());
+        task.setStatementSet(exportTaskBO.getStatementSet());
+        task.setBatchModel(exportTaskBO.getBatchModel());
+        task.setClusterId(exportTaskBO.getClusterId());
+        task.setClusterConfigurationId(exportTaskBO.getClusterConfigurationId());
+        task.setDatabaseId(exportTaskBO.getDatabaseId());
+        task.setEnvId(exportTaskBO.getEnvId());
+        task.setAlertGroupId(exportTaskBO.getAlertGroupId());
+        task.setConfigJson(exportTaskBO.getConfigJson());
+        task.setNote(exportTaskBO.getNote());
+        task.setStep(exportTaskBO.getStep());
+        task.setEnabled(exportTaskBO.getEnabled());
+        task.setStatement(exportTaskBO.getStatement());
+        task.setFirstLevelOwner(exportTaskBO.getFirstLevelOwner());
+        task.setSecondLevelOwners(exportTaskBO.getSecondLevelOwners());
+        return task;
+    }
+
     public Catalogue getNewCatalogue(Catalogue paramCatalogue, Catalogue oldCatalogue, Task newTask) {
         Catalogue newCatalogue = new Catalogue();
         BeanUtil.copyProperties(paramCatalogue, newCatalogue);
@@ -84,6 +116,17 @@ public class CatalogueFactory {
         newCatalogue.setUpdater(null);
         newCatalogue.setTenantId(null);
         return newCatalogue;
+    }
+
+    public Catalogue getCatalogue(ExportCatalogueBO exportCatalogueBO, Integer parentId, Integer taskId) {
+        Catalogue catalogue = new Catalogue();
+        catalogue.setParentId(parentId);
+        catalogue.setTaskId(taskId);
+        catalogue.setName(exportCatalogueBO.getName());
+        catalogue.setType(exportCatalogueBO.getType());
+        catalogue.setEnabled(exportCatalogueBO.getEnabled());
+        catalogue.setIsLeaf(exportCatalogueBO.getIsLeaf());
+        return catalogue;
     }
 
     /**
@@ -104,6 +147,24 @@ public class CatalogueFactory {
             task.setAlertGroupId(CommonConstant.ALERT_GROUP_DISABLE);
             task.setFragment(Boolean.FALSE);
         }
+    }
+
+    public ExportCatalogueBO getExportCatalogueBO(MultipartHttpServletRequest request) {
+        MultipartFile file = request.getFile("file");
+        if (Objects.isNull(file)) {
+            return null;
+        }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+            return JSONUtil.toBean(content.toString(), ExportCatalogueBO.class);
+        } catch (IOException e) {
+            log.error("Convert MultipartHttpServletRequest to ExportCatalogueBO failed", e);
+        }
+        return null;
     }
 
     public ExportCatalogueBO getExportCatalogueBo(Catalogue catalogue, Task task) {
@@ -142,7 +203,8 @@ public class CatalogueFactory {
                 .step(task.getStep())
                 .enabled(task.getEnabled())
                 .statement(task.getStatement())
-                .versionId(task.getVersionId())
+                .firstLevelOwner(task.getFirstLevelOwner())
+                .secondLevelOwners(task.getSecondLevelOwners())
                 .build();
     }
 }

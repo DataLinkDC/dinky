@@ -26,6 +26,7 @@ import org.dinky.data.result.Result;
 import org.dinky.data.vo.ExportCatalogueVO;
 import org.dinky.data.vo.TreeVo;
 import org.dinky.mybatis.service.ISuperService;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.List;
 
@@ -161,8 +162,16 @@ public interface CatalogueService extends ISuperService<Catalogue> {
 
     /**
      * Export catalogue by id
+     *
      * @param catalogueId catalogue id
      * @return export catalogue vo
      */
     ExportCatalogueVO exportCatalogue(Integer catalogueId);
+
+    /**
+     * Import catalogue
+     *
+     * @param request MultipartHttpServletRequest
+     */
+    void importCatalogue(MultipartHttpServletRequest request);
 }
