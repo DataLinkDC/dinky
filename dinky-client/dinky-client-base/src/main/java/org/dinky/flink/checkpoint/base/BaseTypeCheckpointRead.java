@@ -59,7 +59,7 @@ public class BaseTypeCheckpointRead extends BaseCheckpointRead {
         Map<Class<?>, BasicTypeInfo<?>> types = (Map<Class<?>, BasicTypeInfo<?>>)
                 ReflectUtil.getStaticFieldValue(ReflectUtil.getField(BasicTypeInfo.class, "TYPES"));
         for (Map.Entry<Class<?>, BasicTypeInfo<?>> entry : types.entrySet()) {
-            TypeSerializer<?> serializer = entry.getValue().createSerializer(EXECUTION_CONFIG.getSerializerConfig());
+            TypeSerializer<?> serializer = entry.getValue().createSerializer(EXECUTION_CONFIG);
             boolean equals = getArrayListSerializer(partitionableListState)
                     .getElementSerializer()
                     .getClass()
