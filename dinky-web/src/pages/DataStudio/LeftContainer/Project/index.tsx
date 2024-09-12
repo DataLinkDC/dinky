@@ -363,6 +363,10 @@ const Project: React.FC = (props: connect) => {
 
   const handleUploadCancel = () => {
     setImportVisible(false);
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryProject,
+      payload: { ...selectCatalogueSortTypeData }
+    })
     handleContextCancel();
   };
 
@@ -444,8 +448,6 @@ const Project: React.FC = (props: connect) => {
         await handleExportJson();
         break;
       case 'importJson':
-        // todo: 导入 json
-        console.log('import json');
         handleImportJson();
         break;
       case 'copy':

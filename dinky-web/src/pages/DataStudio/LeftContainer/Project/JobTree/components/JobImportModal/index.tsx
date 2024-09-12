@@ -22,7 +22,8 @@ import { ErrorMessageAsync, SuccessMessageAsync } from '@/utils/messages';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Modal, Upload } from 'antd';
-import React from 'react';
+import React, {useState} from 'react';
+import {UploadFile} from "antd/es/upload/interface";
 
 const { Dragger } = Upload;
 
@@ -37,26 +38,48 @@ const JobImportModal: React.FC<JobImportModalProps> = (props) => {
   const { onUpload, onClose, onOk, visible } = props;
   const { url, pid } = onUpload;
 
+  const [file_list, setFileList] = useState<UploadFile[]>([]);
+
+  const onCloseModal = () => {
+    setFileList([]);
+    onClose();
+  }
+
+  const onOkModal = () => {
+    setFileList([]);
+    onOk();
+  }
+
   const uploadProps: UploadProps = {
     name: 'file',
     multiple: true,
     action: url + '?pid=' + pid,
+    fileList: file_list,
     onChange: async (info) => {
-      const { status, response } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
+      const { status, response, uid } = info.file;
+      const uploadFileList = info.fileList;
       if (status === 'done') {
         if (response.success) {
           await SuccessMessageAsync(
             l('rc.resource.upload.success', '', { fileName: info.file.name })
           );
         } else {
+          uploadFileList.forEach(f => {
+            if (f.uid === uid) {
+              f.status = 'error'
+            }
+          });
           await ErrorMessageAsync(response.msg);
         }
       } else if (status === 'error') {
+        uploadFileList.forEach(f => {
+          if (f.uid === uid) {
+            f.status = 'error'
+          }
+        });
         await ErrorMessageAsync(l('rc.resource.upload.fail', '', { fileName: info.file.name }));
       }
+      setFileList(uploadFileList);
     },
     onDrop(e) {
       console.log('Dropped files', e.dataTransfer.files);
@@ -67,8 +90,8 @@ const JobImportModal: React.FC<JobImportModalProps> = (props) => {
     <Modal
       title={l('datastudio.project.import.title')}
       okButtonProps={{ htmlType: 'submit', autoFocus: true }}
-      onOk={onOk}
-      onCancel={onClose}
+      onOk={onOkModal}
+      onCancel={onCloseModal}
       open={visible}
     >
       <Dragger {...uploadProps}>

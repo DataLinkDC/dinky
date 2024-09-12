@@ -711,8 +711,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         // verify that the task name and parent catalogue name are consistent
         List<ExportCatalogueBO> searchExportCatalogues = Lists.newArrayList(exportCatalogue);
-        List<ExportCatalogueBO> nextSearchExportCatalogues = Lists.newArrayList();
         while (CollectionUtil.isNotEmpty(searchExportCatalogues)) {
+            List<ExportCatalogueBO> nextSearchExportCatalogues = Lists.newArrayList();
             for (ExportCatalogueBO searchExportCatalogue : searchExportCatalogues) {
                 List<ExportCatalogueBO> children = searchExportCatalogue.getChildren();
                 if (CollectionUtil.isNotEmpty(children)) {
