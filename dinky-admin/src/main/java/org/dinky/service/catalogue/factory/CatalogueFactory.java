@@ -19,7 +19,6 @@
 
 package org.dinky.service.catalogue.factory;
 
-import cn.hutool.json.JSONUtil;
 import org.dinky.config.Dialect;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.bo.catalogue.export.ExportTaskBO;
@@ -35,11 +34,12 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 import org.springframework.stereotype.Component;
-
-import cn.hutool.core.bean.BeanUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * CatalogueFactory

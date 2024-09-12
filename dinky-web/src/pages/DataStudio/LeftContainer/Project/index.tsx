@@ -18,11 +18,17 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
-import {assert, getTabByTaskId} from '@/pages/DataStudio/function';
-import {useTasksDispatch} from '@/pages/DataStudio/LeftContainer/BtnContext';
-import {FOLDER_RIGHT_MENU, JOB_RIGHT_MENU} from '@/pages/DataStudio/LeftContainer/Project/constants';
+import { assert, getTabByTaskId } from '@/pages/DataStudio/function';
+import { useTasksDispatch } from '@/pages/DataStudio/LeftContainer/BtnContext';
+import {
+  FOLDER_RIGHT_MENU,
+  JOB_RIGHT_MENU
+} from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
-import {getRightSelectKeyFromNodeClickJobType, isUDF} from '@/pages/DataStudio/LeftContainer/Project/function';
+import {
+  getRightSelectKeyFromNodeClickJobType,
+  isUDF
+} from '@/pages/DataStudio/LeftContainer/Project/function';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import {
@@ -39,17 +45,17 @@ import {
   handlePutDataByParams,
   handleRemoveById
 } from '@/services/BusinessCrud';
-import {DIALECT} from '@/services/constants';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {Catalogue} from '@/types/Studio/data.d';
-import {InitProjectState} from '@/types/Studio/init.d';
-import {ProjectState} from '@/types/Studio/state.d';
-import {l} from '@/utils/intl';
-import {Modal, Typography} from 'antd';
-import {MenuInfo} from 'rc-menu/es/interface';
-import React, {Key, useEffect, useState} from 'react';
-import {connect} from 'umi';
-import JobImportModal from "@/pages/DataStudio/LeftContainer/Project/JobTree/components/JobImportModal";
+import { DIALECT } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Catalogue } from '@/types/Studio/data.d';
+import { InitProjectState } from '@/types/Studio/init.d';
+import { ProjectState } from '@/types/Studio/state.d';
+import { l } from '@/utils/intl';
+import { Modal, Typography } from 'antd';
+import { MenuInfo } from 'rc-menu/es/interface';
+import React, { Key, useEffect, useState } from 'react';
+import { connect } from 'umi';
+import JobImportModal from '@/pages/DataStudio/LeftContainer/Project/JobTree/components/JobImportModal';
 
 const { Text } = Typography;
 
@@ -364,7 +370,7 @@ const Project: React.FC = (props: connect) => {
     uploadValue.pid = projectState.value.id;
     setImportVisible(true);
     handleContextCancel();
-  }
+  };
 
   const handleExportJson = async () => {
     const catalogue_id = projectState.value.id;

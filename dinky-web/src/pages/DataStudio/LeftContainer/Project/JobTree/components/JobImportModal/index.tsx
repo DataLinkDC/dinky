@@ -27,7 +27,7 @@ import React from 'react';
 const { Dragger } = Upload;
 
 type JobImportModalProps = {
-  onUpload: { url: string; pid: string; };
+  onUpload: { url: string; pid: string };
   visible: boolean;
   onClose: () => void;
   onOk: () => void;
