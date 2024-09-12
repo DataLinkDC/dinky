@@ -37,6 +37,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.json.JSONObject;
 
 public class BaseTypeCheckpointRead extends BaseCheckpointRead {
+ private static final    ExecutionConfig EXECUTION_CONFIG = new ExecutionConfig();
 
     public Optional<CheckPointReadTable> create(PartitionableListState<?> partitionableListState) {
         List<JSONObject> data = CollUtil.newArrayList(partitionableListState.get()).stream()
@@ -57,8 +58,7 @@ public class BaseTypeCheckpointRead extends BaseCheckpointRead {
         Map<Class<?>, BasicTypeInfo<?>> types = (Map<Class<?>, BasicTypeInfo<?>>)
                 ReflectUtil.getStaticFieldValue(ReflectUtil.getField(BasicTypeInfo.class, "TYPES"));
         for (Map.Entry<Class<?>, BasicTypeInfo<?>> entry : types.entrySet()) {
-            ExecutionConfig executionConfig = null;
-            TypeSerializer<?> serializer = entry.getValue().createSerializer(executionConfig);
+            TypeSerializer<?> serializer = entry.getValue().createSerializer(EXECUTION_CONFIG.getSerializerConfig());
             boolean equals = getArrayListSerializer(partitionableListState)
                     .getElementSerializer()
                     .getClass()
