@@ -44,7 +44,6 @@ import org.springframework.stereotype.Component;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -121,24 +120,22 @@ public class GlobalWebSocket {
     private Map<GlobalWebSocketTopic, Set<String>> getRequestParamMap() {
         Map<GlobalWebSocketTopic, Set<String>> temp = new HashMap<>();
         // Get all the parameters of the theme
-        TOPICS.values().forEach(requestDTO -> {
-            requestDTO.topics.forEach((topic, params) -> {
-                if (temp.containsKey(topic)) {
-                    temp.get(topic).addAll(params);
-                } else {
-                    temp.put(topic, params);
-                }
-            });
-        });
+        TOPICS.values()
+                .forEach(requestDTO -> requestDTO.topics.forEach((topic, params) -> {
+                    if (temp.containsKey(topic)) {
+                        temp.get(topic).addAll(params);
+                    } else {
+                        temp.put(topic, params);
+                    }
+                }));
         return temp;
     }
 
     private void firstSend() {
         Map<GlobalWebSocketTopic, Set<String>> allParams = getRequestParamMap();
         // Send data
-        allParams.forEach((topic, params) -> {
-            sendTopic(topic, params, topic.getInstance().firstDataSend(params));
-        });
+        allParams.forEach(
+                (topic, params) -> sendTopic(topic, params, topic.getInstance().firstDataSend(params)));
     }
 
     public void sendTopic(GlobalWebSocketTopic topic, Set<String> params, Map<String, Object> result) {
@@ -148,7 +145,7 @@ public class GlobalWebSocket {
                     SseDataVo data = new SseDataVo(
                             session.getId(), topic.name(), params == null ? result.get(BaseTopic.NONE_PARAMS) : result);
 
-                    session.getBasicRemote().sendText(JSONUtil.toJsonStr(data));
+                    session.getBasicRemote().sendText(JsonUtils.toJsonString(data));
 
                 } catch (Exception e) {
                     log.error("Error sending sse data:{}", e.getMessage());
@@ -160,23 +157,19 @@ public class GlobalWebSocket {
 
     public static void sendTopic(GlobalWebSocketTopic topic, Map<String, Object> paramsAndData) {
         Map<Session, Set<String>> tempMap = new HashMap<>();
-        TOPICS.forEach((session, requestDTO) -> {
-            paramsAndData.forEach((params, data) -> {
-                Map<GlobalWebSocketTopic, Set<String>> topics = requestDTO.getTopics();
-                if (topics.containsKey(topic) && topics.get(topic).contains(params)) {
-                    tempMap.computeIfAbsent(session, k -> topics.get(topic)).add(params);
-                }
-            });
-        });
+        TOPICS.forEach((session, requestDTO) -> paramsAndData.forEach((params, data) -> {
+            Map<GlobalWebSocketTopic, Set<String>> topics = requestDTO.getTopics();
+            if (topics.containsKey(topic) && topics.get(topic).contains(params)) {
+                tempMap.computeIfAbsent(session, k -> topics.get(topic)).add(params);
+            }
+        }));
 
         tempMap.forEach((session, params) -> {
             try {
                 Map<String, Object> sendData = new HashMap<>();
-                params.forEach(p -> {
-                    sendData.put(p, paramsAndData.get(p));
-                });
+                params.forEach(p -> sendData.put(p, paramsAndData.get(p)));
                 SseDataVo sseDataVo = new SseDataVo(session.getId(), topic.name(), sendData);
-                session.getBasicRemote().sendText(JSONUtil.toJsonStr(sseDataVo));
+                session.getBasicRemote().sendText(JsonUtils.toJsonString(sseDataVo));
             } catch (IOException e) {
                 log.error("Error sending sse data:{}", e.getMessage());
                 SpringUtil.getBean(GlobalWebSocket.class).onError(session, e);

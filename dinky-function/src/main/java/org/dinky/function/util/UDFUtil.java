@@ -36,6 +36,7 @@ import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
@@ -86,7 +87,6 @@ import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.template.TemplateConfig;
 import cn.hutool.extra.template.TemplateEngine;
 import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
-import cn.hutool.json.JSONUtil;
 
 /**
  * UDFUtil
@@ -463,7 +463,7 @@ public class UDFUtil {
                 .collect(Collectors.toList()));
 
         FileUtil.writeUtf8String(
-                JSONUtil.toJsonStr(flinkUdfManifest),
+                JsonUtils.toJsonString(flinkUdfManifest),
                 PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
     }
 }

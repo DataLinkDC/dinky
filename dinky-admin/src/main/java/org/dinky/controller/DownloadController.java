@@ -29,6 +29,7 @@ import org.dinky.data.result.Result;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.util.ZipWriter;
 import org.dinky.resource.BaseResourceManager;
+import org.dinky.utils.JsonUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +54,6 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +79,7 @@ public class DownloadController {
             return;
         }
         FlinkUdfManifest flinkUdfManifest =
-                JSONUtil.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
+                JsonUtils.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
         List<String> filePath =
                 flinkUdfManifest.getJars().stream().map(Convert::toStr).collect(Collectors.toList());
         List<String> pyFilePath =

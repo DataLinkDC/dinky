@@ -29,6 +29,7 @@ import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.job.JobConfig;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -70,11 +71,19 @@ public class JSONObjectHandler<T> extends AbstractJsonTypeHandler<T> {
             log.debug("unknown json：{}", content);
             return null;
         }
-        return JSONUtil.toBean(content, type);
+        // en: Hutool's JSONUtil is needed here, because some fields need to be automatically switched without the hump
+        // underline
+        // zh: 这里需要使用hutool的JSONUtil，因为部分字段需要驼峰下划线无感知的自动切换
+        try {
+            return JSONUtil.toBean(content, type);
+        } catch (Exception e) {
+            log.error("parse json error", e);
+            return null;
+        }
     }
 
     @Override
     protected String toJson(T object) {
-        return JSONUtil.toJsonStr(object);
+        return JsonUtils.toJsonString(object);
     }
 }

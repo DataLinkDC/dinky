@@ -34,8 +34,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import cn.hutool.json.JSONUtil;
-
 public class HttpSenderTest {
 
     private static Map<String, Object> httpConfig = new HashMap<>();
@@ -55,7 +53,7 @@ public class HttpSenderTest {
                 + "    }\n"
                 + "}");
 
-        httpConfig = JsonUtils.toMap(JSONUtil.toJsonStr(httpParams), String.class, Object.class);
+        httpConfig = JsonUtils.parseDict(JsonUtils.toJsonString(httpParams));
     }
 
     @Test
@@ -67,6 +65,6 @@ public class HttpSenderTest {
         httpAlert.setConfig(alertConfig);
         AlertResult alertResult =
                 httpAlert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
-        Assert.assertEquals(true, alertResult.getSuccess());
+        Assert.assertTrue(alertResult.getSuccess());
     }
 }

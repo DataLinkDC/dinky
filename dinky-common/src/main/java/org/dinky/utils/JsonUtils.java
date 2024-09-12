@@ -28,6 +28,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import org.dinky.assertion.Asserts;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,9 +53,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -68,12 +74,21 @@ public class JsonUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonUtils.class);
 
-    public static final ObjectMapper objectMapper = new ObjectMapper()
-            .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
-            .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
-            .configure(REQUIRE_SETTERS_FOR_GETTERS, true)
-            .setTimeZone(TimeZone.getDefault());
+    public static final ObjectMapper objectMapper;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    static {
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DATE_TIME_FORMATTER));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DATE_TIME_FORMATTER));
+        objectMapper = new ObjectMapper()
+                .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
+                .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                .configure(REQUIRE_SETTERS_FOR_GETTERS, true)
+                .registerModule(javaTimeModule)
+                .setTimeZone(TimeZone.getDefault());
+    }
 
     public static ArrayNode createArrayNode() {
         return objectMapper.createArrayNode();
@@ -188,6 +203,22 @@ public class JsonUtils {
         return json.getBytes(UTF_8);
     }
 
+    public static Dict parseDict(String text) {
+        return parseObject(text, Dict.class);
+    }
+
+    public static <T> T toBean(Object source, Class<T> clazz) {
+        if (source instanceof String) {
+            return parseObject((String) source, clazz);
+        } else {
+            return parseObject(toJsonString(source), clazz);
+        }
+    }
+
+    public static <T> T toBean(Object source, TypeReference<T> valueTypeRef) {
+        return objectMapper.convertValue(source, valueTypeRef);
+    }
+
     public static ObjectNode parseObject(String text) {
         return (ObjectNode) parseToJsonNode(text);
     }
@@ -204,7 +235,7 @@ public class JsonUtils {
         }
     }
 
-    public static ArrayNode parseArray(String text) {
+    public static ArrayNode toList(String text) {
         try {
             return (ArrayNode) objectMapper.readTree(text);
         } catch (Exception e) {

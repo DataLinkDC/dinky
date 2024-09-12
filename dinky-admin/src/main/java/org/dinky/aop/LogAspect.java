@@ -27,6 +27,7 @@ import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.Result;
 import org.dinky.service.impl.OperateLogServiceImpl;
 import org.dinky.utils.IpUtils;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.ServletUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,9 +53,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /** 操作日志记录处理 */
@@ -100,14 +102,14 @@ public class LogAspect {
 
             // *========数据库日志=========*//
             OperateLog operLog = new OperateLog();
-            Result result = JSONUtil.toBean(JSONUtil.parseObj(jsonResult), Result.class);
+            Result<Void> result = JsonUtils.toBean(jsonResult, new TypeReference<Result<Void>>() {});
             operLog.setStatus(result.isSuccess() ? BusinessStatus.SUCCESS.ordinal() : BusinessStatus.FAIL.ordinal());
 
             // 请求的地址
             String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
             operLog.setOperateIp(ip);
             // 返回参数
-            operLog.setJsonResult(JSONUtil.toJsonStr(jsonResult));
+            operLog.setJsonResult(JsonUtils.toJsonString(jsonResult));
 
             operLog.setOperateUrl(ServletUtils.getRequest().getRequestURI());
             if (user != null) {
@@ -145,9 +147,8 @@ public class LogAspect {
      *
      * @param log 日志
      * @param operLog 操作日志
-     * @throws Exception
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, OperateLog operLog) throws Exception {
+    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, OperateLog operLog) {
         // 设置action动作
         operLog.setBusinessType(log.businessType().ordinal());
         // 设置标题
@@ -163,7 +164,6 @@ public class LogAspect {
      * 获取请求的参数，放到log中
      *
      * @param operLog 操作日志
-     * @throws Exception 异常
      */
     private void setRequestValue(JoinPoint joinPoint, OperateLog operLog) {
         String requestMethod = operLog.getRequestMethod();
@@ -179,7 +179,7 @@ public class LogAspect {
     }
 
     /** 是否存在注解，如果存在就获取 */
-    private Log getAnnotationLog(JoinPoint joinPoint) throws Exception {
+    private Log getAnnotationLog(JoinPoint joinPoint) {
         Signature signature = joinPoint.getSignature();
         MethodSignature methodSignature = (MethodSignature) signature;
         Method method = methodSignature.getMethod();
@@ -194,7 +194,7 @@ public class LogAspect {
     private String argsArrayToString(Object[] paramsArray) {
         return Arrays.stream(paramsArray)
                 .filter(o -> !isFilterObject(o))
-                .map(JSONUtil::toJsonStr)
+                .map(JsonUtils::toJsonString)
                 .collect(Collectors.joining(" "));
     }
 

@@ -43,8 +43,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.hutool.json.JSONUtil;
-
 /**
  * WeChatSender
  *
@@ -56,7 +54,7 @@ public class WeChatSender {
     private final String weChatTokenUrlReplace;
 
     WeChatSender(Map<String, Object> config) {
-        this.wechatParams = JSONUtil.toBean(JSONUtil.toJsonStr(config), WechatParams.class);
+        this.wechatParams = JsonUtils.toBean(config, WechatParams.class);
         if (wechatParams.isAtAll()) {
             wechatParams.getAtUsers().clear();
             wechatParams.getAtUsers().add("@all");
@@ -74,9 +72,9 @@ public class WeChatSender {
     /**
      * build template params
      *
-     * @param title
-     * @param content
-     * @return
+     * @param title  title
+     * @param content content
+     * @return Map<String, Object>
      */
     public Map<String, Object> buildTemplateParams(String title, String content) {
         Map<String, Object> params = new HashMap<>();
@@ -123,7 +121,7 @@ public class WeChatSender {
                     resp = EntityUtils.toString(entity, WeChatConstants.CHARSET);
                     EntityUtils.consume(entity);
                 }
-                HashMap<String, Object> map = JsonUtils.parseObject(resp, HashMap.class);
+                HashMap<String, Object> map = JsonUtils.parseDict(resp);
                 if (map != null && null != map.get(WeChatConstants.ACCESS_TOKEN)) {
                     return map.get(WeChatConstants.ACCESS_TOKEN).toString();
                 } else {

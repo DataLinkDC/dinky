@@ -24,6 +24,7 @@ import org.dinky.data.constant.NetConstant;
 import org.dinky.data.model.ext.JobInfoDetail;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.HttpUtils;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -31,12 +32,11 @@ import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import cn.hutool.core.lang.Dict;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -98,9 +98,8 @@ public class JobMetricsHandler {
         }
 
         HttpUtils.request(new ArrayList<>(Arrays.asList(urlList)), urlParam, NetConstant.READ_TIME_OUT, x -> {
-            JSONArray array = JSONUtil.parseArray(x.body());
-            array.forEach(y -> {
-                JSONObject jsonObject = JSONUtil.parseObj(y);
+            List<Dict> array = JsonUtils.toList(x.body(), Dict.class);
+            array.forEach(jsonObject -> {
                 String id = jsonObject.getStr("id");
                 String value = jsonObject.getStr("value");
                 m.put(id, value);

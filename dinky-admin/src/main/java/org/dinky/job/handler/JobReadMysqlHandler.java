@@ -24,6 +24,7 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.result.SelectResult;
 import org.dinky.job.JobReadHandler;
 import org.dinky.service.HistoryService;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,7 +32,6 @@ import java.util.Objects;
 
 import org.springframework.context.annotation.DependsOn;
 
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -65,6 +65,6 @@ public class JobReadMysqlHandler implements JobReadHandler {
         if (StringUtils.isBlank(result)) {
             return SelectResult.buildFailed();
         }
-        return JSONUtil.toBean(result, SelectResult.class);
+        return JsonUtils.toBean(result, SelectResult.class);
     }
 }

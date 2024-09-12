@@ -37,11 +37,11 @@ public class EmailParams {
     private List<String> receiverCcs = new ArrayList<>();
     private String mailProtocol = "SMTP";
     private String serverHost;
-    private int serverPort;
+    private Integer serverPort;
     private String sender;
-    private boolean enableSmtpAuth;
-    private boolean starttlsEnable;
-    private boolean sslEnable;
+    private Boolean enableSmtpAuth;
+    private Boolean starttlsEnable;
+    private Boolean sslEnable;
     private String user;
     private String password;
     private String smtpSslTrust = "";
