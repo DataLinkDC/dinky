@@ -19,26 +19,25 @@
 
 package org.dinky.flink.checkpoint.base;
 
-import org.dinky.data.model.CheckPointReadTable;
-import org.dinky.flink.checkpoint.BaseCheckpointRead;
-
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.json.JSONObject;
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.runtime.state.PartitionableListState;
+import org.dinky.data.model.CheckPointReadTable;
+import org.dinky.flink.checkpoint.BaseCheckpointRead;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.json.JSONObject;
-
 public class BaseTypeCheckpointRead extends BaseCheckpointRead {
- private static final    ExecutionConfig EXECUTION_CONFIG = new ExecutionConfig();
+    private static final ExecutionConfig EXECUTION_CONFIG = new ExecutionConfig();
 
+    @Override
     public Optional<CheckPointReadTable> create(PartitionableListState<?> partitionableListState) {
         List<JSONObject> data = CollUtil.newArrayList(partitionableListState.get()).stream()
                 .map(x -> {
@@ -70,6 +69,7 @@ public class BaseTypeCheckpointRead extends BaseCheckpointRead {
         return null;
     }
 
+    @Override
     public boolean isSourceCkp(PartitionableListState<?> partitionableListState) {
         TypeSerializer<?> typeSerializer = getTypeSerializer(partitionableListState);
         return typeSerializer != null;
