@@ -366,7 +366,7 @@ const Project: React.FC = (props: connect) => {
     dispatch({
       type: STUDIO_MODEL_ASYNC.queryProject,
       payload: { ...selectCatalogueSortTypeData }
-    })
+    });
     handleContextCancel();
   };
 
