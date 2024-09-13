@@ -276,8 +276,8 @@ const FlinkDag = (props: DagProps) => {
       <div style={{ height: '100%', width: '100%' }} ref={container} />
       <Drawer
         styles={{
-          header:{ paddingBlock: 5 },
-          body:{ paddingBlock: 5 }
+          header: { paddingBlock: 5 },
+          body: { paddingBlock: 5 }
         }}
         open={open}
         getContainer={false}
