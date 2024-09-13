@@ -27,6 +27,7 @@ import org.dinky.data.ext.ConfigItem;
 import org.dinky.utils.JsonUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class HttpSenderTest {
         httpParams.setUrl("https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxx");
         httpParams.setMethod(HttpConstants.REQUEST_TYPE_POST);
         ConfigItem configItem = new ConfigItem("Content-Type", "application/json");
-        httpParams.setHeaders(Arrays.asList(configItem));
+        httpParams.setHeaders(Collections.singletonList(configItem));
 
         httpParams.setBody(" {\n" + "    \"msgtype\": \"markdown\",\n"
                 + "    \"markdown\": {\n"
