@@ -26,7 +26,6 @@ import org.dinky.alert.http.params.HttpParams;
 import org.dinky.data.ext.ConfigItem;
 import org.dinky.utils.JsonUtils;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
