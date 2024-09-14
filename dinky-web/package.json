@@ -52,7 +52,7 @@
     "@umijs/route-utils": "^4.0.1",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
-    "antd": "^5.18.2",
+    "antd": "^5.20.6",
     "antd-style": "^3.6.2",
     "butterfly-dag": "^4.3.29",
     "classnames": "^2.5.1",
