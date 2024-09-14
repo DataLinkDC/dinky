@@ -19,38 +19,44 @@
 
 import DagDataNode from '@/components/Flink/FlinkDag/component/DagDataNode';
 import DagPlanNode from '@/components/Flink/FlinkDag/component/DagPlanNode';
-import {edgeConfig, graphConfig, layoutConfig, portConfig, zoomOptions} from '@/components/Flink/FlinkDag/config';
-import {buildDag, regConnect, updateDag} from '@/components/Flink/FlinkDag/functions';
+import {
+  edgeConfig,
+  graphConfig,
+  layoutConfig,
+  portConfig,
+  zoomOptions
+} from '@/components/Flink/FlinkDag/config';
+import { buildDag, regConnect, updateDag } from '@/components/Flink/FlinkDag/functions';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
-import {getDataByParamsReturnResult} from '@/services/BusinessCrud';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {Jobs} from '@/types/DevOps/data';
-import {DagreLayout} from '@antv/layout';
-import {Edge, Graph, Node} from '@antv/x6';
-import {Rectangle} from '@antv/x6-geometry';
-import {Selection} from '@antv/x6-plugin-selection';
-import {register} from '@antv/x6-react-shape';
-import {Drawer, Select, Slider, Table, Tabs, TabsProps, Tag, Typography} from 'antd';
-import {useEffect, useRef, useState} from 'react';
+import { getDataByParamsReturnResult } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Jobs } from '@/types/DevOps/data';
+import { DagreLayout } from '@antv/layout';
+import { Edge, Graph, Node } from '@antv/x6';
+import { Rectangle } from '@antv/x6-geometry';
+import { Selection } from '@antv/x6-plugin-selection';
+import { register } from '@antv/x6-react-shape';
+import { Drawer, Select, Slider, Table, Tabs, TabsProps, Tag, Typography } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 import './index.css';
-import dagre from 'dagre'
+import dagre from 'dagre';
 
 export type DagProps = {
   job: Jobs.Job;
   onlyPlan?: boolean;
   checkPoints?: any;
 };
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 const RenderCheckpoint = (id: string, checkPoints: any) => {
   const [selectPath, setSelectPath] = useState<string>('');
   const key = id + selectPath;
-  const [itemChildren, setItemChildren] = useState({[key]: [] as TabsProps['items']});
+  const [itemChildren, setItemChildren] = useState({ [key]: [] as TabsProps['items'] });
 
   const checkpointArray = ((checkPoints?.history ?? []) as any[])
     .filter((x) => x.status === 'COMPLETED')
     .map((x) => {
-      return {checkpointType: x.checkpoint_type, path: x.external_path, id: x.id};
+      return { checkpointType: x.checkpoint_type, path: x.external_path, id: x.id };
     });
 
   useEffect(() => {
@@ -89,7 +95,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
                           dataIndex: z,
                           key: z,
                           render: (text) => (
-                            <Paragraph copyable ellipsis={{rows: 3}}>
+                            <Paragraph copyable ellipsis={{ rows: 3 }}>
                               {text}
                             </Paragraph>
                           )
@@ -99,13 +105,13 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
                   )
                 };
               })}
-              tabBarStyle={{marginBlock: 0}}
+              tabBarStyle={{ marginBlock: 0 }}
               tabBarGutter={10}
             />
           )
         };
       });
-      setItemChildren({...itemChildren, [key]: genData});
+      setItemChildren({ ...itemChildren, [key]: genData });
     });
   }, [selectPath, id]);
 
@@ -113,7 +119,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
     <>
       <Select
         defaultValue={selectPath}
-        style={{width: '100%'}}
+        style={{ width: '100%' }}
         placeholder='Select a Checkpoint'
         optionFilterProp='children'
         options={checkpointArray.map((x) => {
@@ -135,7 +141,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
         }}
       />
 
-      <Tabs items={itemChildren[key]} tabBarStyle={{marginBlock: 0}} tabBarGutter={10}/>
+      <Tabs items={itemChildren[key]} tabBarStyle={{ marginBlock: 0 }} tabBarGutter={10} />
     </>
   );
 };
@@ -143,7 +149,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
 const FlinkDag = (props: DagProps) => {
   const container = useRef(null);
 
-  const {job, onlyPlan = false, checkPoints = {}} = props;
+  const { job, onlyPlan = false, checkPoints = {} } = props;
 
   const [graph, setGraph] = useState<Graph>();
   const [currentJob, setCurrentJob] = useState<string>();
@@ -162,14 +168,14 @@ const FlinkDag = (props: DagProps) => {
   };
 
   const initListen = (graph: Graph) => {
-    graph.on('node:selected', ({cell}) => {
+    graph.on('node:selected', ({ cell }) => {
       if (onlyPlan) {
         return;
       }
 
       setOpen(true);
       setZoom((oldValue) => {
-        originPosition = {zoom: oldValue};
+        originPosition = { zoom: oldValue };
         return 1;
       });
       graph.zoomTo(1);
@@ -211,18 +217,17 @@ const FlinkDag = (props: DagProps) => {
       })
     );
 
-
     // Adaptive layout
     const model = new DagreLayout(layoutConfig).layout(flinkData);
     graph.fromJSON(model);
 
     // Automatically zoom to fit
     graph.zoomToFit(zoomOptions);
-    graph.on('scale', ({sx}) => setZoom(sx));
+    graph.on('scale', ({ sx }) => setZoom(sx));
     graph?.zoomTo(zoom);
     updateDag(job?.vertices, graph);
     initListen(graph);
-    layout(graph)
+    layout(graph);
     graph.centerContent();
     return graph;
   };
@@ -246,8 +251,8 @@ const FlinkDag = (props: DagProps) => {
       }
       nodeDepths.set(node.id, depth);
 
-      const outgoingEdges = edges.filter(edge => edge.getSourceCellId() === node.id);
-      outgoingEdges.forEach(edge => {
+      const outgoingEdges = edges.filter((edge) => edge.getSourceCellId() === node.id);
+      outgoingEdges.forEach((edge) => {
         const targetNode = graph.getCellById(edge.getTargetCellId()) as Node;
         calculateDepth(targetNode, depth + 1);
       });
@@ -255,110 +260,103 @@ const FlinkDag = (props: DagProps) => {
       return depth;
     };
 
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       if (!nodeDepths.has(node.id)) {
         calculateDepth(node, 1);
       }
     });
 
     const calculatePathLength = (node: Node, length: number) => {
-      const outgoingEdges = edges.filter(edge => edge.getSourceCellId() === node.id);
+      const outgoingEdges = edges.filter((edge) => edge.getSourceCellId() === node.id);
       if (outgoingEdges.length === 0) {
         maxDepth = Math.max(maxDepth, length);
         return;
       }
-      outgoingEdges.forEach(edge => {
+      outgoingEdges.forEach((edge) => {
         const targetNode = graph.getCellById(edge.getTargetCellId()) as Node;
         calculatePathLength(targetNode, length + 1);
       });
     };
 
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       calculatePathLength(node, 1);
     });
 
-    return {maxWidth, maxDepth};
+    return { maxWidth, maxDepth };
   };
 
   // 自动布局
   function layout(graph: Graph) {
-    const {maxDepth, maxWidth} = calculateGraphMetrics(graph)
+    const { maxDepth, maxWidth } = calculateGraphMetrics(graph);
     // 布局方向
-    let dir: string = "LR";
-    let ranksep = 200
-    let nodesep = 40
-
+    let dir: string = 'LR';
+    let ranksep = 200;
+    let nodesep = 40;
 
     if (maxDepth < maxWidth) {
-      dir = 'TB'
-      ranksep = 40
-      nodesep = 40
+      dir = 'TB';
+      ranksep = 40;
+      nodesep = 40;
     }
 
-
-
-    const nodes = graph.getNodes()
-    const edges = graph.getEdges()
-    const g = new dagre.graphlib.Graph()
-    g.setGraph({...layoutConfig, ranksep, nodesep, rankdir: dir})
-    g.setDefaultEdgeLabel(() => ({}))
-
+    const nodes = graph.getNodes();
+    const edges = graph.getEdges();
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({ ...layoutConfig, ranksep, nodesep, rankdir: dir });
+    g.setDefaultEdgeLabel(() => ({}));
 
     nodes.forEach((node) => {
-      g.setNode(node.id, {width: 240, height: 140})
-    })
+      g.setNode(node.id, { width: 240, height: 140 });
+    });
 
     edges.forEach((edge) => {
-      const source = edge.getSource()
-      const target = edge.getTarget()
-      g.setEdge(source.cell, target.cell)
-    })
+      const source = edge.getSource();
+      const target = edge.getTarget();
+      g.setEdge(source.cell, target.cell);
+    });
 
-    dagre.layout(g)
+    dagre.layout(g);
 
     g.nodes().forEach((id) => {
-      const node = graph.getCellById(id) as Node
+      const node = graph.getCellById(id) as Node;
       if (node) {
-        const pos = g.node(id)
-        node.position(pos.x, pos.y)
+        const pos = g.node(id);
+        node.position(pos.x, pos.y);
       }
-    })
+    });
 
     edges.forEach((edge) => {
-      const source = edge.getSourceNode()!
-      const target = edge.getTargetNode()!
-      const sourceBBox = source.getBBox()
-      const targetBBox = target.getBBox()
+      const source = edge.getSourceNode()!;
+      const target = edge.getTargetNode()!;
+      const sourceBBox = source.getBBox();
+      const targetBBox = target.getBBox();
 
       if ((dir === 'LR' || dir === 'RL') && sourceBBox.y !== targetBBox.y) {
         const gap =
           dir === 'LR'
             ? targetBBox.x - sourceBBox.x - sourceBBox.width
-            : -sourceBBox.x + targetBBox.x + targetBBox.width
-        const fix = dir === 'LR' ? sourceBBox.width : 0
-        const x = sourceBBox.x + fix + gap / 2
+            : -sourceBBox.x + targetBBox.x + targetBBox.width;
+        const fix = dir === 'LR' ? sourceBBox.width : 0;
+        const x = sourceBBox.x + fix + gap / 2;
         edge.setVertices([
-          {x, y: sourceBBox.center.y},
-          {x, y: targetBBox.center.y},
-        ])
-      } else if (
-        (dir === 'TB' || dir === 'BT') &&
-        sourceBBox.x !== targetBBox.x
-      ) {
+          { x, y: sourceBBox.center.y },
+          { x, y: targetBBox.center.y }
+        ]);
+      } else if ((dir === 'TB' || dir === 'BT') && sourceBBox.x !== targetBBox.x) {
         const gap =
           dir === 'TB'
             ? targetBBox.y - sourceBBox.y - sourceBBox.height
-            : -sourceBBox.y + targetBBox.y + targetBBox.height
-        const fix = dir === 'TB' ? sourceBBox.height : 0
-        const y = sourceBBox.y + fix + gap / 2
+            : -sourceBBox.y + targetBBox.y + targetBBox.height;
+        const fix = dir === 'TB' ? sourceBBox.height : 0;
+        const y = sourceBBox.y + fix + gap / 2;
         edge.setVertices([
-          {x: sourceBBox.center.x, y},
-          {x: targetBBox.center.x, y},
-        ])
+          { x: sourceBBox.center.x, y },
+          { x: targetBBox.center.x, y }
+        ]);
       } else {
-        edge.setVertices([])
+        edge.setVertices([]);
       }
-    })
+    });
   }
 
   useEffect(() => {
@@ -399,16 +397,16 @@ const FlinkDag = (props: DagProps) => {
           value={zoom}
           min={0.1}
           max={1.5}
-          tooltip={{open: false}}
+          tooltip={{ open: false }}
           step={0.01}
           onChange={setZoom}
         />
       </div>
-      <div style={{height: '100%', width: '100%'}} ref={container}/>
+      <div style={{ height: '100%', width: '100%' }} ref={container} />
       <Drawer
         styles={{
-          header: {paddingBlock: 5},
-          body: {paddingBlock: 5}
+          header: { paddingBlock: 5 },
+          body: { paddingBlock: 5 }
         }}
         open={open}
         getContainer={false}
@@ -428,7 +426,7 @@ const FlinkDag = (props: DagProps) => {
                 key: '1',
                 label: 'Detail',
                 children: (
-                  <div style={{whiteSpace: 'pre'}}>
+                  <div style={{ whiteSpace: 'pre' }}>
                     {currentSelect?.getData().description?.replaceAll('<br/>', '\n')}
                   </div>
                 )

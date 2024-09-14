@@ -22,7 +22,7 @@ import { Platform } from '@antv/x6';
 import { Options } from '@antv/x6/lib/graph/options';
 import Connecting = Options.Connecting;
 import Manual = Options.Manual;
-import {Cell} from "@antv/x6/src/model/cell";
+import { Cell } from '@antv/x6/src/model/cell';
 
 export const edgeConfig = {
   markup: [
@@ -45,7 +45,7 @@ export const edgeConfig = {
       }
     }
   ],
-  connector: { name: 'curveConnector'},
+  connector: { name: 'curveConnector' },
   attrs: {
     wrap: {
       connection: true,
