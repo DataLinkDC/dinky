@@ -17,8 +17,8 @@
  *
  */
 
-import {DagreLayoutOptions} from '@antv/layout/lib/layout/types';
-import {Options} from '@antv/x6/lib/graph/options';
+import { DagreLayoutOptions } from '@antv/layout/lib/layout/types';
+import { Options } from '@antv/x6/lib/graph/options';
 import Connecting = Options.Connecting;
 import Manual = Options.Manual;
 
@@ -43,7 +43,7 @@ export const edgeConfig = {
       }
     }
   ],
-  connector: {name: 'curveConnector'},
+  connector: { name: 'curveConnector' },
   attrs: {
     wrap: {
       connection: true,
@@ -56,8 +56,8 @@ export const edgeConfig = {
       strokeWidth: 1,
       targetMarker: {
         name: 'classic',
-        size: 6,
-      },
+        size: 6
+      }
     },
     text: {
       fontSize: 12
@@ -84,7 +84,7 @@ export const portConfigTb = {
 
     out: {
       position: {
-        name: 'bottom',
+        name: 'bottom'
       },
       attrs: {
         circle: {
@@ -115,8 +115,7 @@ export const portConfig = {
     out: {
       position: {
         name: 'right',
-        args: {
-        }
+        args: {}
       },
       attrs: {
         circle: {
@@ -131,13 +130,13 @@ export const portConfig = {
 };
 
 export const graphConnectConfig: Partial<Connecting> = {
-  connectionPoint: "boundary",
+  connectionPoint: 'boundary',
   snap: true,
   allowBlank: false,
   allowLoop: false,
   highlight: true,
   // Connection pile verification
-  validateConnection({sourceMagnet, targetMagnet}) {
+  validateConnection({ sourceMagnet, targetMagnet }) {
     // Connections can only be created from output link stubs
     if (!sourceMagnet || sourceMagnet.getAttribute('port-group') === 'in') {
       return false;
@@ -169,8 +168,7 @@ export const graphConfig: Partial<Manual> = {
     maxScale: 1.5,
     minScale: 0.1
   },
-  connecting: graphConnectConfig,
-
+  connecting: graphConnectConfig
 };
 
 export const layoutConfig: DagreLayoutOptions = {
