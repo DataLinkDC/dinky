@@ -21,13 +21,14 @@ package org.dinky.data.result;
 
 import static org.junit.Assert.assertEquals;
 
+import org.dinky.utils.JsonUtils;
+
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -52,7 +53,7 @@ public class SelectResultTest {
         String truncateJson = selectResult.toTruncateJson(200L);
         log.info("truncateJson: {}", truncateJson);
         selectResult.setRowData(Lists.newArrayList());
-        assertEquals(JSONUtil.toJsonStr(selectResult), truncateJson);
+        assertEquals(JsonUtils.toJsonString(selectResult), truncateJson);
     }
 
     @Test
@@ -61,7 +62,7 @@ public class SelectResultTest {
         String truncateJson = selectResult.toTruncateJson(250L);
         log.info("truncateJson: {}", truncateJson);
         selectResult.setRowData(Lists.newArrayList(selectResult.getRowData().get(0)));
-        assertEquals(JSONUtil.toJsonStr(selectResult), truncateJson);
+        assertEquals(JsonUtils.toJsonString(selectResult), truncateJson);
     }
 
     private SelectResult prepareData() {
