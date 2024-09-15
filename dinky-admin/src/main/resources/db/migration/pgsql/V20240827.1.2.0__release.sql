@@ -50,3 +50,5 @@ CREATE OR REPLACE TRIGGER update_dinky_dashboard_update_time
                          ON public.dinky_dashboard
                          FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
+
+SELECT add_column_if_not_exists('public','dinky_metrics', 'vertices_title', 'text', 'null', 'vertices title');
