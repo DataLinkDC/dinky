@@ -25,7 +25,7 @@
         from
         dinky_udf_template a
         <where>
-            1=1
+
             <if test='param.name!=null and param.name!=""'>
                 and `name` like concat('%',#{param.name},'%')
             </if>

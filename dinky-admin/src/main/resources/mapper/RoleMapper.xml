@@ -29,7 +29,7 @@
             a.*
         from dinky_role a
         <where>
-            1=1
+
             <if test='param.tenantId!=null and param.tenantId!=""'>
                 and tenant_id = #{param.tenantId}
             </if>
@@ -81,7 +81,7 @@
         ,update_time
         from dinky_role
         <where>
-            1=1
+
             <if test='tenantId!=null and tenantId!=""'>
                 and tenant_id = #{tenantId}
             </if>

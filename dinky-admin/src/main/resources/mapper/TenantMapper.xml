@@ -10,7 +10,6 @@
         from
         dinky_tenant a
         <where>
-            1=1
             <if test='param.tenantCode!=null and param.tenantCode!=""'>
                 and tenant_code like concat('%',#{param.tenantCode},'%')
             </if>
@@ -36,8 +35,7 @@
               ,create_time
               ,update_time
          from dinky_tenant a
-        where  1=1
-          and  id in
+        where id in
         <foreach collection="tenantIds"  item="id" separator="," open="(" close=")" index="">
             #{id}
         </foreach>

@@ -10,7 +10,7 @@
         dinky_row_permissions a
         join dinky_role b on b.id = a.role_id
         <where>
-            1=1
+
             <if test='param.roleCode!=null and param.roleCode!=""'>
                 and b.role_code like concat('%',#{param.roleCode},'%')
             </if>

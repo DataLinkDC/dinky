@@ -8,7 +8,7 @@
         from
         dinky_user a
         <where>
-            1=1
+
             <if test='param.username!=null and param.username!=""'>
                 and a.username like concat('%',#{param.username},'%')
             </if>
@@ -40,7 +40,7 @@
         join dinky_user du on a.user_id = du.id
         join dinky_tenant c on a.tenant_id = c.id
         <where>
-            1=1 and du.tenant_admin_flag = 1
+            du.tenant_admin_flag = 1
             <if test='tenantId!=null and tenantId!=""'>
                 and a.tenant_id = #{tenantId}
             </if>

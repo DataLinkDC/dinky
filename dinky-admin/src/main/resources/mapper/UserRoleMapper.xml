@@ -10,7 +10,7 @@
         from
         dinky_user_role
         <where>
-            1=1
+
             <if test='param.userId!=null and param.userId!=""'>
                 and user_id = #{param.userId}
             </if>

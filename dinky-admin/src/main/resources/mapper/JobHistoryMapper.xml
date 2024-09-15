@@ -15,7 +15,7 @@
         from
         dinky_job_history a
         <where>
-            1=1
+
             <if test='param.id!=null and param.id!=""'>
                 and a.id = #{param.id}
             </if>

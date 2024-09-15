@@ -10,7 +10,7 @@
         from
         dinky_task_version a
         <where>
-            1=1
+
             <if test='param.versionId!=null and param.versionId!=""'>
                 and a.version_id = #{param.versionId}
             </if>

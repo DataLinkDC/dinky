@@ -8,7 +8,7 @@
         from
         dinky_database a
         <where>
-            1=1
+
             <if test='param.name!=null and param.name!=""'>
                 and a.name like concat('%',#{param.name},'%')
             </if>
