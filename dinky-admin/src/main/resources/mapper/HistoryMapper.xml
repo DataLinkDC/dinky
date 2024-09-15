@@ -10,7 +10,7 @@
         from
         dinky_history a
         <where>
-            1=1 and a.task_id = #{param.taskId}
+            a.task_id = #{param.taskId}
             <if test='param.jobId!=null and param.jobId!=""'>
                 and a.job_id = #{param.jobId}
             </if>
