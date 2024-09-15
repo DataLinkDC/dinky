@@ -22,6 +22,7 @@ import { Platform } from '@antv/x6';
 import { Options } from '@antv/x6/lib/graph/options';
 import Connecting = Options.Connecting;
 import Manual = Options.Manual;
+import { Cell } from '@antv/x6/src/model/cell';
 
 export const edgeConfig = {
   markup: [
@@ -76,7 +77,7 @@ export const portConfig = {
       attrs: {
         circle: {
           r: 4,
-          magnet: true,
+          magnet: false,
           stroke: 'transparent',
           strokeWidth: 1,
           fill: 'transparent'
@@ -88,14 +89,14 @@ export const portConfig = {
       position: {
         name: 'right',
         args: {
-          dx: -32
+          dx: 10
         }
       },
 
       attrs: {
         circle: {
           r: 4,
-          magnet: true,
+          magnet: false,
           stroke: 'transparent',
           strokeWidth: 1,
           fill: 'transparent'
@@ -153,7 +154,7 @@ export const graphConfig: Partial<Manual> = {
     modifiers: 'ctrl',
     factor: 1.1,
     maxScale: 1.5,
-    minScale: 0.5
+    minScale: 0.1
   },
   connecting: graphConnectConfig
 };
@@ -161,10 +162,9 @@ export const graphConfig: Partial<Manual> = {
 export const layoutConfig: DagreLayoutOptions = {
   type: 'dagre',
   rankdir: 'LR',
-  align: 'UL',
   ranksep: 120,
   nodesep: 40,
-  controlPoints: true
+  controlPoints: false
 };
 
 export const zoomOptions = {

@@ -32,13 +32,14 @@ import { getDataByParamsReturnResult } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { DagreLayout } from '@antv/layout';
-import { Edge, Graph } from '@antv/x6';
+import { Edge, Graph, Node } from '@antv/x6';
 import { Rectangle } from '@antv/x6-geometry';
 import { Selection } from '@antv/x6-plugin-selection';
 import { register } from '@antv/x6-react-shape';
 import { Drawer, Select, Slider, Table, Tabs, TabsProps, Tag, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import './index.css';
+import dagre from 'dagre';
 
 export type DagProps = {
   job: Jobs.Job;
@@ -191,7 +192,7 @@ const FlinkDag = (props: DagProps) => {
   const initGraph = (flinkData: any) => {
     register({
       shape: 'data-processing-dag-node',
-      width: 270,
+      width: 240,
       height: 140,
       component: onlyPlan ? DagPlanNode : DagDataNode,
       ports: portConfig
@@ -223,12 +224,140 @@ const FlinkDag = (props: DagProps) => {
     // Automatically zoom to fit
     graph.zoomToFit(zoomOptions);
     graph.on('scale', ({ sx }) => setZoom(sx));
-    graph.centerContent();
     graph?.zoomTo(zoom);
     updateDag(job?.vertices, graph);
     initListen(graph);
+    layout(graph);
+    graph.centerContent();
     return graph;
   };
+  const getMaxListLength = (listOfLists: any[]) => {
+    return listOfLists.reduce((maxLength, currentList) => {
+      return Math.max(maxLength, currentList.length);
+    }, 0);
+  };
+  const calculateGraphMetrics = (graph: Graph) => {
+    const nodes = graph.getNodes();
+    const edges = graph.getEdges();
+
+    let maxWidth = getMaxListLength(Object.values(graph.model.outgoings));
+    let maxDepth = 0;
+
+    const nodeDepths = new Map<string, number>();
+
+    const calculateDepth = (node: Node, depth: number) => {
+      if (nodeDepths.has(node.id)) {
+        return nodeDepths.get(node.id)!;
+      }
+      nodeDepths.set(node.id, depth);
+
+      const outgoingEdges = edges.filter((edge) => edge.getSourceCellId() === node.id);
+      outgoingEdges.forEach((edge) => {
+        const targetNode = graph.getCellById(edge.getTargetCellId()) as Node;
+        calculateDepth(targetNode, depth + 1);
+      });
+
+      return depth;
+    };
+
+    nodes.forEach((node) => {
+      if (!nodeDepths.has(node.id)) {
+        calculateDepth(node, 1);
+      }
+    });
+
+    const calculatePathLength = (node: Node, length: number) => {
+      const outgoingEdges = edges.filter((edge) => edge.getSourceCellId() === node.id);
+      if (outgoingEdges.length === 0) {
+        maxDepth = Math.max(maxDepth, length);
+        return;
+      }
+      outgoingEdges.forEach((edge) => {
+        const targetNode = graph.getCellById(edge.getTargetCellId()) as Node;
+        calculatePathLength(targetNode, length + 1);
+      });
+    };
+
+    nodes.forEach((node) => {
+      calculatePathLength(node, 1);
+    });
+
+    return { maxWidth, maxDepth };
+  };
+
+  // 自动布局
+  function layout(graph: Graph) {
+    const { maxDepth, maxWidth } = calculateGraphMetrics(graph);
+    // 布局方向
+    let dir: string = 'LR';
+    let ranksep = 200;
+    let nodesep = 40;
+
+    if (maxDepth < maxWidth) {
+      dir = 'TB';
+      ranksep = 40;
+      nodesep = 40;
+    }
+
+    const nodes = graph.getNodes();
+    const edges = graph.getEdges();
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({ ...layoutConfig, ranksep, nodesep, rankdir: dir });
+    g.setDefaultEdgeLabel(() => ({}));
+
+    nodes.forEach((node) => {
+      g.setNode(node.id, { width: 240, height: 140 });
+    });
+
+    edges.forEach((edge) => {
+      const source = edge.getSource();
+      const target = edge.getTarget();
+      g.setEdge(source.cell, target.cell);
+    });
+
+    dagre.layout(g);
+
+    g.nodes().forEach((id) => {
+      const node = graph.getCellById(id) as Node;
+      if (node) {
+        const pos = g.node(id);
+        node.position(pos.x, pos.y);
+      }
+    });
+
+    edges.forEach((edge) => {
+      const source = edge.getSourceNode()!;
+      const target = edge.getTargetNode()!;
+      const sourceBBox = source.getBBox();
+      const targetBBox = target.getBBox();
+
+      if ((dir === 'LR' || dir === 'RL') && sourceBBox.y !== targetBBox.y) {
+        const gap =
+          dir === 'LR'
+            ? targetBBox.x - sourceBBox.x - sourceBBox.width
+            : -sourceBBox.x + targetBBox.x + targetBBox.width;
+        const fix = dir === 'LR' ? sourceBBox.width : 0;
+        const x = sourceBBox.x + fix + gap / 2;
+        edge.setVertices([
+          { x, y: sourceBBox.center.y },
+          { x, y: targetBBox.center.y }
+        ]);
+      } else if ((dir === 'TB' || dir === 'BT') && sourceBBox.x !== targetBBox.x) {
+        const gap =
+          dir === 'TB'
+            ? targetBBox.y - sourceBBox.y - sourceBBox.height
+            : -sourceBBox.y + targetBBox.y + targetBBox.height;
+        const fix = dir === 'TB' ? sourceBBox.height : 0;
+        const y = sourceBBox.y + fix + gap / 2;
+        edge.setVertices([
+          { x: sourceBBox.center.x, y },
+          { x: targetBBox.center.x, y }
+        ]);
+      } else {
+        edge.setVertices([]);
+      }
+    });
+  }
 
   useEffect(() => {
     const flinkData = buildDag(job?.plan);
@@ -266,7 +395,7 @@ const FlinkDag = (props: DagProps) => {
         <Slider
           vertical
           value={zoom}
-          min={0.5}
+          min={0.1}
           max={1.5}
           tooltip={{ open: false }}
           step={0.01}
@@ -275,8 +404,10 @@ const FlinkDag = (props: DagProps) => {
       </div>
       <div style={{ height: '100%', width: '100%' }} ref={container} />
       <Drawer
-        headerStyle={{ paddingBlock: 5 }}
-        bodyStyle={{ paddingBlock: 5 }}
+        styles={{
+          header: { paddingBlock: 5 },
+          body: { paddingBlock: 5 }
+        }}
         open={open}
         getContainer={false}
         width={'65%'}

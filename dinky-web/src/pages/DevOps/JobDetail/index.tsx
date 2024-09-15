@@ -112,6 +112,7 @@ const JobDetail = (props: any) => {
 
   return (
     <PageContainer
+      key={id}
       loading={!data}
       title={jobInfoDetail?.instance?.name}
       subTitle={<JobLifeCycleTag status={jobInfoDetail?.instance?.step} />}
