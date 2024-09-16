@@ -24,6 +24,7 @@ import {
   graphConfig,
   layoutConfig,
   portConfig,
+  portConfigTb,
   zoomOptions
 } from '@/components/Flink/FlinkDag/config';
 import { buildDag, regConnect, updateDag } from '@/components/Flink/FlinkDag/functions';
@@ -146,6 +147,53 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
   );
 };
 
+type CusEdge = {
+  source: { cell: string };
+  target: { cell: string };
+};
+
+function getMaxWidthAndDepth(edges: CusEdge[]): { maxWidth: number; maxDepth: number } {
+  const sourceCount: Record<string, number> = {};
+  const graph: Record<string, string[]> = {};
+
+  edges.forEach((edge) => {
+    const sourceCell = edge.source.cell;
+    const targetCell = edge.target.cell;
+
+    sourceCount[sourceCell] = (sourceCount[sourceCell] || 0) + 1;
+
+    if (!graph[sourceCell]) {
+      graph[sourceCell] = [];
+    }
+    graph[sourceCell].push(targetCell);
+  });
+
+  const maxSource = Object.keys(sourceCount).reduce((a, b) =>
+    sourceCount[a] > sourceCount[b] ? a : b
+  );
+  const maxWidth = sourceCount[maxSource];
+
+  const visited: Record<string, boolean> = {};
+  let maxDepth = 0;
+
+  function dfs(node: string, depth: number) {
+    if (visited[node]) return;
+    visited[node] = true;
+    maxDepth = Math.max(maxDepth, depth);
+    if (graph[node]) {
+      graph[node].forEach((neighbor) => dfs(neighbor, depth + 1));
+    }
+  }
+
+  Object.keys(graph).forEach((node) => {
+    if (!visited[node]) {
+      dfs(node, 1);
+    }
+  });
+
+  return { maxWidth, maxDepth };
+}
+
 const FlinkDag = (props: DagProps) => {
   const container = useRef(null);
 
@@ -190,12 +238,24 @@ const FlinkDag = (props: DagProps) => {
   };
 
   const initGraph = (flinkData: any) => {
+    const { maxWidth, maxDepth } = getMaxWidthAndDepth(flinkData.edges);
+    let dir: string = 'LR';
+    let ranksep = 200;
+    let nodesep = 40;
+    let portConfigs: any = portConfig;
+
+    if (maxDepth < maxWidth) {
+      dir = 'TB';
+      ranksep = 200;
+      nodesep = 40;
+      portConfigs = portConfigTb;
+    }
     register({
       shape: 'data-processing-dag-node',
       width: 240,
       height: 140,
       component: onlyPlan ? DagPlanNode : DagDataNode,
-      ports: portConfig
+      ports: portConfigs
     });
 
     Edge.config(edgeConfig);
@@ -227,78 +287,13 @@ const FlinkDag = (props: DagProps) => {
     graph?.zoomTo(zoom);
     updateDag(job?.vertices, graph);
     initListen(graph);
-    layout(graph);
+    layout(graph, dir, ranksep, nodesep);
     graph.centerContent();
     return graph;
   };
-  const getMaxListLength = (listOfLists: any[]) => {
-    return listOfLists.reduce((maxLength, currentList) => {
-      return Math.max(maxLength, currentList.length);
-    }, 0);
-  };
-  const calculateGraphMetrics = (graph: Graph) => {
-    const nodes = graph.getNodes();
-    const edges = graph.getEdges();
-
-    let maxWidth = getMaxListLength(Object.values(graph.model.outgoings));
-    let maxDepth = 0;
-
-    const nodeDepths = new Map<string, number>();
-
-    const calculateDepth = (node: Node, depth: number) => {
-      if (nodeDepths.has(node.id)) {
-        return nodeDepths.get(node.id)!;
-      }
-      nodeDepths.set(node.id, depth);
-
-      const outgoingEdges = edges.filter((edge) => edge.getSourceCellId() === node.id);
-      outgoingEdges.forEach((edge) => {
-        const targetNode = graph.getCellById(edge.getTargetCellId()) as Node;
-        calculateDepth(targetNode, depth + 1);
-      });
-
-      return depth;
-    };
-
-    nodes.forEach((node) => {
-      if (!nodeDepths.has(node.id)) {
-        calculateDepth(node, 1);
-      }
-    });
-
-    const calculatePathLength = (node: Node, length: number) => {
-      const outgoingEdges = edges.filter((edge) => edge.getSourceCellId() === node.id);
-      if (outgoingEdges.length === 0) {
-        maxDepth = Math.max(maxDepth, length);
-        return;
-      }
-      outgoingEdges.forEach((edge) => {
-        const targetNode = graph.getCellById(edge.getTargetCellId()) as Node;
-        calculatePathLength(targetNode, length + 1);
-      });
-    };
-
-    nodes.forEach((node) => {
-      calculatePathLength(node, 1);
-    });
-
-    return { maxWidth, maxDepth };
-  };
 
   // 自动布局
-  function layout(graph: Graph) {
-    const { maxDepth, maxWidth } = calculateGraphMetrics(graph);
-    // 布局方向
-    let dir: string = 'LR';
-    let ranksep = 200;
-    let nodesep = 40;
-
-    if (maxDepth < maxWidth) {
-      dir = 'TB';
-      ranksep = 40;
-      nodesep = 40;
-    }
-
+  function layout(graph: Graph, dir: string, ranksep: number, nodesep: number) {
     const nodes = graph.getNodes();
     const edges = graph.getEdges();
     const g = new dagre.graphlib.Graph();
