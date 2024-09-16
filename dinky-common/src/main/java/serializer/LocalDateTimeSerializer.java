@@ -17,29 +17,24 @@
  *
  */
 
-package org.dinky.context;
+package serializer;
 
-import org.dinky.function.constant.PathConstant;
-import org.dinky.utils.JsonUtils;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 
-import cn.hutool.core.io.FileUtil;
-
-public class GitBuildContextHolder {
-    private static final List<Integer> RUNNING_LIST = new ArrayList<>();
-
-    public static void addRun(Integer id) {
-        RUNNING_LIST.add(id);
-        FileUtil.writeUtf8String(JsonUtils.toJsonString(getAll()), PathConstant.TMP_PATH + "/build.list");
-    }
-
-    public static void remove(Integer id) {
-        RUNNING_LIST.remove(id);
-    }
-
-    public static List<Integer> getAll() {
-        return new ArrayList<>(RUNNING_LIST);
+/**
+ * LocalDateTime  Serialized to a timestamp
+ */
+public class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
+    @Override
+    public void serialize(
+            LocalDateTime localDateTime, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+            throws IOException {
+        jsonGenerator.writeNumber(localDateTime.toInstant(ZoneOffset.ofHours(8)).toEpochMilli());
     }
 }

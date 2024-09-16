@@ -25,6 +25,7 @@ import org.dinky.data.model.GitProject;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.sse.StepSse;
+import org.dinky.utils.JsonUtils;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +38,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.json.JSONUtil;
 
 public class AnalysisUdfPythonStepSse extends StepSse {
     public AnalysisUdfPythonStepSse(
@@ -67,7 +67,7 @@ public class AnalysisUdfPythonStepSse extends StepSse {
 
         List<GitAnalysisJarDTO> dataList = CollUtil.newArrayList(gitAnalysisJarDTO);
 
-        String data = JSONUtil.toJsonStr(dataList);
+        String data = JsonUtils.toJsonString(dataList);
         sendMsg(getList(null).set("data", data));
 
         FileUtil.appendString(data, getLogFile(), StandardCharsets.UTF_8);

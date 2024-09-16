@@ -114,10 +114,12 @@ public abstract class AbstractGateway implements Gateway {
         }
     }
 
+    @Override
     public SavePointResult savepointCluster() {
         return savepointCluster(null);
     }
 
+    @Override
     public SavePointResult savepointJob() {
         return savepointJob(null);
     }
@@ -199,8 +201,8 @@ public abstract class AbstractGateway implements Gateway {
 
     protected void resetCheckpointInApplicationMode(String jobName) {
         String uuid = UUID.randomUUID().toString();
-        String checkpointsDirectory = configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY);
-        String savepointDirectory = configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY);
+        String checkpointsDirectory = configuration.get(CheckpointingOptions.CHECKPOINTS_DIRECTORY);
+        String savepointDirectory = configuration.get(CheckpointingOptions.SAVEPOINT_DIRECTORY);
 
         Optional.ofNullable(checkpointsDirectory)
                 .ifPresent(dir -> configuration.set(

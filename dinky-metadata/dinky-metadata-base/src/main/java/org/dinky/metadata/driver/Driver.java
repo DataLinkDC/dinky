@@ -33,6 +33,7 @@ import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.JsonUtils;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,9 +53,17 @@ public interface Driver extends AutoCloseable {
     static Optional<Driver> get(String type) {
         Asserts.checkNotNull(type, "数据源Type配置不能为空");
         ServiceLoader<Driver> drivers = ServiceLoader.load(Driver.class);
-        for (Driver driver : drivers) {
-            if (driver.canHandle(type)) {
-                return Optional.of(driver);
+        Iterator<Driver> driversIterator = drivers.iterator();
+
+        // There may be an issue where the class can't be found, so the exception needs to be caught
+        while (driversIterator.hasNext()) {
+            try {
+                Driver driver = driversIterator.next();
+                if (driver.canHandle(type)) {
+                    return Optional.of(driver);
+                }
+            } catch (Throwable t) {
+                // Do nothing
             }
         }
         return Optional.empty();
@@ -233,7 +242,7 @@ public interface Driver extends AutoCloseable {
      * 得到分割表
      *
      * @param tableRegList 表正则列表
-     * @param splitConfig 分库配置
+     * @param splitConfig  分库配置
      * @return {@link Set}<{@link Table}>
      */
     default Set<Table> getSplitTables(List<String> tableRegList, Map<String, String> splitConfig) {
