@@ -246,7 +246,7 @@ const FlinkDag = (props: DagProps) => {
 
     if (maxDepth < maxWidth) {
       dir = 'TB';
-      ranksep = 200;
+      ranksep = 100;
       nodesep = 40;
       portConfigs = portConfigTb;
     }
@@ -292,7 +292,7 @@ const FlinkDag = (props: DagProps) => {
     return graph;
   };
 
-  // 自动布局
+  // Automatic layout
   function layout(graph: Graph, dir: string, ranksep: number, nodesep: number) {
     const nodes = graph.getNodes();
     const edges = graph.getEdges();
