@@ -246,7 +246,7 @@ const FlinkDag = (props: DagProps) => {
 
     if (maxDepth < maxWidth) {
       dir = 'TB';
-      ranksep = 200;
+      ranksep = 100;
       nodesep = 40;
       portConfigs = portConfigTb;
     }
