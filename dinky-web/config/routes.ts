@@ -323,6 +323,12 @@ export default [
     component: './Other/PersonCenter'
   },
   {
+    path: '/test',
+    footerRender: false,
+    name: 'center',
+    component: './Test'
+  },
+  {
     path: '*',
     component: './Other/404'
   }
