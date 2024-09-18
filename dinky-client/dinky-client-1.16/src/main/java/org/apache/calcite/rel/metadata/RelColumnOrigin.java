@@ -72,7 +72,7 @@ public class RelColumnOrigin {
         this.isComputedColumn = isComputedColumn;
     }
 
-// ~ Methods ----------------------------------------------------------------
+    // ~ Methods ----------------------------------------------------------------
 
     /**
      * Returns table of origin.

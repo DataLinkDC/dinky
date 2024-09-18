@@ -237,18 +237,22 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
                 && rexNode.getClass().equals(RexCall.class)
                 && ((RexCall) rexNode).getOperands().isEmpty()) {
             List<Column> columns = ((TableSourceTable) (input).getTable())
-                    .contextResolvedTable().getResolvedSchema().getColumns();
+                    .contextResolvedTable()
+                    .getResolvedSchema()
+                    .getColumns();
             Set<RelColumnOrigin> set = new LinkedHashSet<>();
-            for (int index=0;index<columns.size();index++){
+            for (int index = 0; index < columns.size(); index++) {
                 Column column = columns.get(index);
-                if(column instanceof Column.ComputedColumn
-                        &&rexNode.toString().equals(((Column.ComputedColumn)column).getExpression().toString())
-                ){
-                    set.add(new RelColumnOrigin(input.getTable(), index, false,true));
+                if (column instanceof Column.ComputedColumn
+                        && rexNode.toString()
+                                .equals(((Column.ComputedColumn) column)
+                                        .getExpression()
+                                        .toString())) {
+                    set.add(new RelColumnOrigin(input.getTable(), index, false, true));
                     return set;
                 }
             }
-            set.add(new RelColumnOrigin(input.getTable(), -1, false,false));
+            set.add(new RelColumnOrigin(input.getTable(), -1, false, false));
             return set;
         }
         // Anything else is a derivation, possibly from multiple columns.

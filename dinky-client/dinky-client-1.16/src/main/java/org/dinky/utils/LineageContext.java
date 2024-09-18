@@ -19,6 +19,12 @@
 
 package org.dinky.utils;
 
+import org.dinky.data.model.FunctionResult;
+import org.dinky.data.model.LineageRel;
+import org.dinky.executor.CustomParser;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.executor.ExtendedParser;
+
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
@@ -38,18 +44,14 @@ import org.apache.flink.table.operations.SinkModifyOperation;
 import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
-import org.dinky.data.model.FunctionResult;
-import org.dinky.data.model.LineageRel;
-import org.dinky.executor.CustomParser;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.executor.ExtendedParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LineageContext
@@ -132,21 +134,19 @@ public class LineageContext {
                     // filed
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
 
-                    if(ordinal==-1){
+                    if (ordinal == -1) {
                         continue;
                     }
 
                     String sourceColumn;
-                    if(relColumnOrigin.isComputedColumn()){
+                    if (relColumnOrigin.isComputedColumn()) {
                         List<String> fieldNames = ((TableSourceTable) table)
                                 .contextResolvedTable()
                                 .getResolvedSchema()
                                 .getColumnNames();
                         sourceColumn = fieldNames.get(ordinal);
-                    }else{
-                        List<String> fieldNames = table
-                                .getRowType()
-                                .getFieldNames();
+                    } else {
+                        List<String> fieldNames = table.getRowType().getFieldNames();
                         sourceColumn = fieldNames.get(ordinal);
                     }
 
