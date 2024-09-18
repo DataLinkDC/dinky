@@ -23,6 +23,7 @@ import {
   CopyrightTwoTone,
   CopyTwoTone,
   DeleteTwoTone,
+  DownCircleTwoTone,
   EditTwoTone,
   PlusCircleTwoTone,
   UpCircleTwoTone
@@ -63,8 +64,14 @@ export const FOLDER_RIGHT_MENU = (disabled = false): MenuItemType[] => [
     label: l('right.menu.rename')
   },
   {
-    key: 'importJson',
+    key: 'paste',
     icon: <CompassTwoTone />,
+    label: l('right.menu.paste'),
+    disabled: !disabled
+  },
+  {
+    key: 'importJson',
+    icon: <DownCircleTwoTone />,
     label: l('right.menu.importJson')
   },
   {
