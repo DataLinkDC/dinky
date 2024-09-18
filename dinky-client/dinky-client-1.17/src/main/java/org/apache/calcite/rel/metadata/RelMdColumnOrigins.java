@@ -48,6 +48,8 @@ import org.apache.calcite.rex.RexShuttle;
 import org.apache.calcite.rex.RexVisitor;
 import org.apache.calcite.rex.RexVisitorImpl;
 import org.apache.calcite.util.BuiltInMethod;
+import org.apache.flink.table.catalog.Column;
+import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,8 +65,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.flink.table.catalog.Column;
-import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
