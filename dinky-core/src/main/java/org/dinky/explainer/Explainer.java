@@ -21,6 +21,7 @@ package org.dinky.explainer;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
@@ -415,8 +416,8 @@ public class Explainer {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {
-                log.error(e.getMessage());
-                return lineageRelList;
+                log.error("Exception occurred while fetching lineage information", e);
+                throw new DinkyException("Exception occurred while fetching lineage information", e);
             }
         }
         return lineageRelList;

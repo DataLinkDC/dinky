@@ -42,6 +42,8 @@ public class RelColumnOrigin {
 
     private final boolean isDerived;
 
+    private boolean isComputedColumn;
+
     /**
      * Stores the expression for data conversion,
      * which source table fields are transformed by which expression the target field
@@ -61,6 +63,13 @@ public class RelColumnOrigin {
         this.iOriginColumn = iOriginColumn;
         this.isDerived = isDerived;
         this.transform = transform;
+    }
+
+    public RelColumnOrigin(RelOptTable originTable, int iOriginColumn, boolean isDerived, boolean isComputedColumn) {
+        this.originTable = originTable;
+        this.iOriginColumn = iOriginColumn;
+        this.isDerived = isDerived;
+        this.isComputedColumn = isComputedColumn;
     }
 
     // ~ Methods ----------------------------------------------------------------
@@ -92,6 +101,10 @@ public class RelColumnOrigin {
      */
     public boolean isDerived() {
         return isDerived;
+    }
+
+    public boolean isComputedColumn() {
+        return isComputedColumn;
     }
 
     public String getTransform() {

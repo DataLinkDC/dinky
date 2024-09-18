@@ -131,11 +131,22 @@ public class LineageContext {
 
                     // filed
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
-                    List<String> fieldNames = ((TableSourceTable) table)
-                            .contextResolvedTable()
-                            .getResolvedSchema()
-                            .getColumnNames();
-                    String sourceColumn = fieldNames.get(ordinal);
+
+                    if (ordinal == -1) {
+                        continue;
+                    }
+
+                    String sourceColumn;
+                    if (relColumnOrigin.isComputedColumn()) {
+                        List<String> fieldNames = ((TableSourceTable) table)
+                                .contextResolvedTable()
+                                .getResolvedSchema()
+                                .getColumnNames();
+                        sourceColumn = fieldNames.get(ordinal);
+                    } else {
+                        List<String> fieldNames = table.getRowType().getFieldNames();
+                        sourceColumn = fieldNames.get(ordinal);
+                    }
 
                     // add record
                     resultList.add(LineageRel.build(
