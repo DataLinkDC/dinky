@@ -106,11 +106,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     <Tabs activeKey={leftContainer.selectKey} items={LeftSide} tabBarStyle={{ display: 'none' }} />
   );
 
-  return (
-    <MovableSidebar {...restMovableSidebarProps}>
-      {content}
-    </MovableSidebar>
-  );
+  return <MovableSidebar {...restMovableSidebarProps}>{content}</MovableSidebar>;
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({

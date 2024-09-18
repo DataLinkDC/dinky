@@ -207,7 +207,7 @@ const DataSource = (props: any) => {
         }}
       />
       <ProForm
-        style={{ height: 40,marginTop:10 }}
+        style={{ height: 40, marginTop: 10 }}
         initialValues={{ selectDb: selectDatabaseId }}
         submitter={false}
       >
