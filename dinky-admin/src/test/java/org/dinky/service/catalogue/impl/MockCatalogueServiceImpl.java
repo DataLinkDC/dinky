@@ -67,4 +67,9 @@ public class MockCatalogueServiceImpl extends CatalogueServiceImpl {
         Optional.ofNullable(entityList).orElse(Lists.newArrayList()).forEach(e -> e.setId(id.getAndIncrement()));
         return true;
     }
+
+    @Override
+    protected Integer getCurrentUserId() {
+        return 222;
+    }
 }

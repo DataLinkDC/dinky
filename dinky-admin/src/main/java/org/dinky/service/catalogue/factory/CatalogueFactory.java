@@ -67,7 +67,7 @@ public class CatalogueFactory {
         return newTask;
     }
 
-    public Task getTask(ExportTaskBO exportTaskBO) {
+    public Task getTask(ExportTaskBO exportTaskBO, Integer firstLevelOwner) {
         Task task = new Task();
         task.setName(exportTaskBO.getName());
         task.setDialect(exportTaskBO.getDialect());
@@ -78,9 +78,6 @@ public class CatalogueFactory {
         task.setFragment(exportTaskBO.getFragment());
         task.setStatementSet(exportTaskBO.getStatementSet());
         task.setBatchModel(exportTaskBO.getBatchModel());
-        task.setClusterId(exportTaskBO.getClusterId());
-        task.setClusterConfigurationId(exportTaskBO.getClusterConfigurationId());
-        task.setDatabaseId(exportTaskBO.getDatabaseId());
         task.setEnvId(exportTaskBO.getEnvId());
         task.setAlertGroupId(exportTaskBO.getAlertGroupId());
         task.setConfigJson(exportTaskBO.getConfigJson());
@@ -88,8 +85,7 @@ public class CatalogueFactory {
         task.setStep(exportTaskBO.getStep());
         task.setEnabled(exportTaskBO.getEnabled());
         task.setStatement(exportTaskBO.getStatement());
-        task.setFirstLevelOwner(exportTaskBO.getFirstLevelOwner());
-        task.setSecondLevelOwners(exportTaskBO.getSecondLevelOwners());
+        task.setFirstLevelOwner(firstLevelOwner);
         return task;
     }
 
@@ -169,9 +165,6 @@ public class CatalogueFactory {
                 .fragment(task.getFragment())
                 .statementSet(task.getStatementSet())
                 .batchModel(task.getBatchModel())
-                .clusterId(task.getClusterId())
-                .clusterConfigurationId(task.getClusterConfigurationId())
-                .databaseId(task.getDatabaseId())
                 .envId(task.getEnvId())
                 .alertGroupId(task.getAlertGroupId())
                 .configJson(task.getConfigJson())
@@ -179,8 +172,6 @@ public class CatalogueFactory {
                 .step(task.getStep())
                 .enabled(task.getEnabled())
                 .statement(task.getStatement())
-                .firstLevelOwner(task.getFirstLevelOwner())
-                .secondLevelOwners(task.getSecondLevelOwners())
                 .build();
     }
 }

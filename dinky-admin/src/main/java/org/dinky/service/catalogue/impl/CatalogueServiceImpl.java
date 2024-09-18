@@ -76,9 +76,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -645,13 +647,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Map<ExportCatalogueBO, Integer> exportCatalogueParentIdMap = Maps.newHashMap();
         exportCatalogueParentIdMap.put(exportCatalogue, parentCatalogueId);
 
+        Integer currentUserId = getCurrentUserId();
         while (CollectionUtil.isNotEmpty(searchCatalogues)) {
             List<ExportCatalogueBO> nextSearchCatalogues = Lists.newArrayList();
             // create task
             for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
                 ExportTaskBO exportTaskBO = searchCatalogue.getTask();
                 if (Objects.nonNull(exportTaskBO)) {
-                    Task task = catalogueFactory.getTask(exportTaskBO);
+                    Task task = catalogueFactory.getTask(exportTaskBO, currentUserId);
                     createTasks.add(task);
                     exportCatalogueTaskMap.put(searchCatalogue, task);
                 }
@@ -691,6 +694,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             searchCatalogues = nextSearchCatalogues;
         }
         log.info("Import Catalogue success. The number of Catalogue created is: {}", exportCatalogueMap.size());
+    }
+
+    @VisibleForTesting
+    protected Integer getCurrentUserId() {
+        return StpUtil.getLoginIdAsInt();
     }
 
     private void checkImportCatalogueParam(Catalogue parentCatalogue, ExportCatalogueBO exportCatalogue) {

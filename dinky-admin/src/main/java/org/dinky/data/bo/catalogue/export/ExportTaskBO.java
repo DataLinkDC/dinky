@@ -21,8 +21,6 @@ package org.dinky.data.bo.catalogue.export;
 
 import org.dinky.data.model.ext.TaskExtConfig;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,12 +50,6 @@ public class ExportTaskBO {
 
     private Boolean batchModel;
 
-    private Integer clusterId;
-
-    private Integer clusterConfigurationId;
-
-    private Integer databaseId;
-
     private Integer envId;
 
     private Integer alertGroupId;
@@ -71,8 +63,4 @@ public class ExportTaskBO {
     private Boolean enabled;
 
     private String statement;
-
-    private Integer firstLevelOwner;
-
-    private List<Integer> secondLevelOwners;
 }

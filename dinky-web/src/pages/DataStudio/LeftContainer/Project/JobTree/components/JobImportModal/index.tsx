@@ -22,7 +22,7 @@ import { ErrorMessageAsync, SuccessMessageAsync } from '@/utils/messages';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Modal, Upload } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UploadFile } from 'antd/es/upload/interface';
 
 const { Dragger } = Upload;
@@ -40,15 +40,11 @@ const JobImportModal: React.FC<JobImportModalProps> = (props) => {
 
   const [file_list, setFileList] = useState<UploadFile[]>([]);
 
-  const onCloseModal = () => {
-    setFileList([]);
-    onClose();
-  };
-
-  const onOkModal = () => {
-    setFileList([]);
-    onOk();
-  };
+  useEffect(() => {
+    if (!visible) {
+      setFileList([]);
+    }
+  }, [visible]);
 
   const uploadProps: UploadProps = {
     name: 'file',
@@ -90,8 +86,8 @@ const JobImportModal: React.FC<JobImportModalProps> = (props) => {
     <Modal
       title={l('datastudio.project.import.title')}
       okButtonProps={{ htmlType: 'submit', autoFocus: true }}
-      onOk={onOkModal}
-      onCancel={onCloseModal}
+      onOk={onOk}
+      onCancel={onClose}
       open={visible}
     >
       <Dragger {...uploadProps}>
