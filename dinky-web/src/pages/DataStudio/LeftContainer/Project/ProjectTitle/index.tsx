@@ -83,9 +83,9 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
 
   /**
    * 渲染侧边栏标题
-   * @returns {JSX.Element}
+   * @returns {React.JSX.Element}
    */
-  const renderTitle = () => {
+  const renderTitle = (): React.JSX.Element => {
     if (selectKey && selectKey === currentTabName) {
       return (
         <Space>
