@@ -40,6 +40,7 @@ import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import React, { useEffect, useState } from 'react';
 import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
+import { useAsyncEffect } from 'ahooks';
 
 const Catalog: React.FC = (props: connect) => {
   const { tabs } = props;
@@ -73,7 +74,6 @@ const Catalog: React.FC = (props: connect) => {
   const [modalVisit, setModalVisit] = useState(false);
   const [row, setRow] = useState<TableDataNode>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [columnData, setColumnData] = useState([]);
   const btnDispatch = useTasksDispatch();
   const currentTabName = LeftMenuKey.CATALOG_KEY;
   const btnEvent = [...BtnRoute[currentTabName]];
@@ -91,23 +91,20 @@ const Catalog: React.FC = (props: connect) => {
     getCatalogs();
   }, [envId, databaseId]);
 
-  useEffect(() => {
+  useAsyncEffect(async () => {
     if (table) {
       setLoading(true);
-      setColumnData([]);
-      getMSColumns({
+      const res = await getMSColumns({
         envId,
         catalog,
         database,
         table,
         dialect,
         databaseId
-      })
-        .then((res) => {
-          setLoading(false);
-          setColumnData(res);
-        })
-        .catch(() => {});
+      });
+      setLoading(false);
+      // @ts-ignore
+      setRow({ ...row, columns: res });
     }
   }, [table]);
 
@@ -147,6 +144,7 @@ const Catalog: React.FC = (props: connect) => {
         const tablesData: TableDataNode[] = [];
         for (const t of tables) {
           tablesData.push({
+            driverType: '',
             title: t.name,
             key: t.name,
             icon: <TableOutlined />,
@@ -347,7 +345,7 @@ const Catalog: React.FC = (props: connect) => {
           </Button>
         ]}
       >
-        <SchemaDesc tableInfo={row} tableColumns={columnData} />
+        <SchemaDesc tableInfo={row} />
       </Modal>
     </Spin>
   );

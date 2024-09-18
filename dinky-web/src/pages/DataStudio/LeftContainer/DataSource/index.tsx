@@ -207,15 +207,12 @@ const DataSource = (props: any) => {
         }}
       />
       <ProForm
-        style={{ height: 40 }}
+        style={{ height: 40, marginTop: 10 }}
         initialValues={{ selectDb: selectDatabaseId }}
         submitter={false}
       >
         <ProFormSelect
           style={{ paddingInline: 6 }}
-          // width={leftContainer.width  }
-          width={'xl'}
-          // addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
           allowClear={false}
           name={'selectDb'}
           placeholder={l('pages.metadata.selectDatabase')}
@@ -228,7 +225,7 @@ const DataSource = (props: any) => {
       <SchemaTree
         selectKeys={selectKeys}
         expandKeys={expandKeys}
-        height={toolContentHeight - 64 - 20}
+        height={toolContentHeight - 64 - 30}
         onNodeClick={handleTreeNodeClick}
         treeData={treeData}
         onExpand={handleTreeExpand}

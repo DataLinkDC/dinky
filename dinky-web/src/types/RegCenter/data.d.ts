@@ -220,7 +220,6 @@ declare namespace DataSources {
    */
   export type SchemaDescProps = {
     tableInfo?: Partial<DataSources.Table>;
-    tableColumns?: Partial<DataSources.Column[]>;
     queryParams?: QueryParams;
   };
 
