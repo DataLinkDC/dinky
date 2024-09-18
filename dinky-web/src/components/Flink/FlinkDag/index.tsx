@@ -246,7 +246,7 @@ const FlinkDag = (props: DagProps) => {
 
     if (maxDepth < maxWidth) {
       dir = 'TB';
-      ranksep = 200;
+      ranksep = 100;
       nodesep = 40;
       portConfigs = portConfigTb;
     }
@@ -421,8 +421,8 @@ const FlinkDag = (props: DagProps) => {
                 key: '1',
                 label: 'Detail',
                 children: (
-                  <div style={{ whiteSpace: 'pre' }}>
-                    {currentSelect?.getData().description?.replaceAll('<br/>', '\n')}
+                  <div style={{ whiteSpace: 'pre-wrap' }} >
+                    {currentSelect?.getData().description?.replace(/<br\/>/g, '\n')}
                   </div>
                 )
               },
