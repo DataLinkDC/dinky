@@ -132,21 +132,19 @@ public class LineageContext {
                     // filed
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
 
-                    if(ordinal==-1){
+                    if (ordinal == -1) {
                         continue;
                     }
 
                     String sourceColumn;
-                    if(relColumnOrigin.isComputedColumn()){
+                    if (relColumnOrigin.isComputedColumn()) {
                         List<String> fieldNames = ((TableSourceTable) table)
                                 .contextResolvedTable()
                                 .getResolvedSchema()
                                 .getColumnNames();
                         sourceColumn = fieldNames.get(ordinal);
-                    }else{
-                        List<String> fieldNames = table
-                                .getRowType()
-                                .getFieldNames();
+                    } else {
+                        List<String> fieldNames = table.getRowType().getFieldNames();
                         sourceColumn = fieldNames.get(ordinal);
                     }
 
