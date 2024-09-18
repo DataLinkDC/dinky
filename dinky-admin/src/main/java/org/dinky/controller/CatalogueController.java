@@ -26,6 +26,7 @@ import org.dinky.data.annotations.TaskId;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
+import org.dinky.data.dto.ImportCatalogueDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
@@ -284,7 +285,9 @@ public class CatalogueController {
     @Log(title = "Import Catalogue", businessType = BusinessType.IMPORT)
     @ApiOperation("Import Catalogue")
     public Result<Void> importCatalogue(MultipartHttpServletRequest request) {
-        catalogueService.importCatalogue(request);
+        // assemble dto objects and shield service requests
+        ImportCatalogueDTO importCatalogueDto = ImportCatalogueDTO.build(request);
+        catalogueService.importCatalogue(importCatalogueDto);
         return Result.succeed();
     }
 }

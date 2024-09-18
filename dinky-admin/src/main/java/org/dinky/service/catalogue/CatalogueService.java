@@ -21,6 +21,7 @@ package org.dinky.service.catalogue;
 
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
+import org.dinky.data.dto.ImportCatalogueDTO;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.ExportCatalogueVO;
@@ -28,8 +29,6 @@ import org.dinky.data.vo.TreeVo;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * CatalogueService
@@ -172,7 +171,7 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     /**
      * Import catalogue
      *
-     * @param request MultipartHttpServletRequest
+     * @param importCatalogueDto ImportCatalogueDTO
      */
-    void importCatalogue(MultipartHttpServletRequest request);
+    void importCatalogue(ImportCatalogueDTO importCatalogueDto);
 }

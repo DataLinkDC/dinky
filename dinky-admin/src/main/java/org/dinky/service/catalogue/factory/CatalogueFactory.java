@@ -28,17 +28,11 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Objects;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -147,24 +141,6 @@ public class CatalogueFactory {
             task.setAlertGroupId(CommonConstant.ALERT_GROUP_DISABLE);
             task.setFragment(Boolean.FALSE);
         }
-    }
-
-    public ExportCatalogueBO getExportCatalogueBO(MultipartHttpServletRequest request) {
-        MultipartFile file = request.getFile("file");
-        if (Objects.isNull(file)) {
-            return null;
-        }
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
-            }
-            return JSONUtil.toBean(content.toString(), ExportCatalogueBO.class);
-        } catch (IOException e) {
-            log.error("Convert MultipartHttpServletRequest to ExportCatalogueBO failed", e);
-        }
-        return null;
     }
 
     public ExportCatalogueBO getExportCatalogueBo(Catalogue catalogue, Task task) {

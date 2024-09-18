@@ -26,6 +26,7 @@ import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.bo.catalogue.export.ExportTaskBO;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
+import org.dinky.data.dto.ImportCatalogueDTO;
 import org.dinky.data.enums.CatalogueSortValueEnum;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
@@ -72,14 +73,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -618,15 +617,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     /**
      * Import catalogue
      *
-     * @param request MultipartHttpServletRequest
+     * @param importCatalogueDto ImportCatalogueDTO
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void importCatalogue(MultipartHttpServletRequest request) {
-        log.info("Import Catalogue start");
-        int parentCatalogueId = Integer.parseInt(request.getParameter("pid"));
-        // convert to export catalogue
-        ExportCatalogueBO exportCatalogue = catalogueFactory.getExportCatalogueBO(request);
+    public void importCatalogue(ImportCatalogueDTO importCatalogueDto) {
+        log.info("Import Catalogue start. importCatalogueDto: {}", importCatalogueDto);
+        Integer parentCatalogueId = importCatalogueDto.getParentCatalogueId();
+        ExportCatalogueBO exportCatalogue = importCatalogueDto.getExportCatalogue();
         if (Objects.isNull(exportCatalogue)) {
             throw new BusException(Status.FAILED);
         }
@@ -658,7 +656,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     exportCatalogueTaskMap.put(searchCatalogue, task);
                 }
             }
-            this.taskService.saveBatch(createTasks);
+            taskService.saveBatch(createTasks);
             // create catalogue
             for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
                 Task task = exportCatalogueTaskMap.get(searchCatalogue);
@@ -750,8 +748,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     private String getExportCatalogueFileName(Integer catalogueId) {
-        int loginUserId = StpUtil.getLoginIdAsInt();
-        return String.format("export_catalogue_%s_%s_%s.json", catalogueId, loginUserId, System.currentTimeMillis());
+        return String.format("export_catalogue_%s_%s.json", catalogueId, System.currentTimeMillis());
     }
 
     private ExportCatalogueBO getAllCatalogue(Integer catalogueId) {
@@ -764,7 +761,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Task task = isLeaf ? taskService.getById(catalogue.getTaskId()) : null;
         ExportCatalogueBO exportCatalogueBo = catalogueFactory.getExportCatalogueBo(catalogue, task);
         List<Catalogue> subCatalogues =
-                list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
+                this.list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
         if (CollectionUtil.isNotEmpty(subCatalogues)) {
             List<ExportCatalogueBO> subExportCatalogueBo = subCatalogues.stream()
                     .map(Catalogue::getId)
