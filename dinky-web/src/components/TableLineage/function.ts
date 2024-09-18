@@ -17,11 +17,9 @@
  *
  */
 
-
-import {LineageDetailInfo} from "@/types/DevOps/data";
-import {EdgeData, NodeData} from "@antv/g6";
-import {ComboData, GraphData} from "@antv/g6/src/spec/data";
-
+import { LineageDetailInfo } from '@/types/DevOps/data';
+import { EdgeData, NodeData } from '@antv/g6';
+import { ComboData, GraphData } from '@antv/g6/src/spec/data';
 
 /**
  * {  "nodes": [    { "id": "node1", "combo": "combo-1", "style": { "x": 100, "y": 100 } },    { "id": "node2", "style": { "x": 200, "y": 200 } }  ],  "edges": [{ "source": "node1", "target": "node2" }],  "combos": [{ "id": "combo-1", "style": { "x": 100, "y": 100 } }] }
@@ -32,13 +30,13 @@ const lineageDataTransformToGraphData = (data: LineageDetailInfo): GraphData => 
   const edges: EdgeData[] = []; // 边
   const combos: ComboData[] = []; // 分组
 
-  data.tables.forEach(item => {
-    item.columns.forEach(column => {
+  data.tables.forEach((item) => {
+    item.columns.forEach((column) => {
       nodes.push({
         id: item.name + '.' + column.name,
         label: column.name,
         fullDbName: item.name,
-        column: column,
+        column: column
       });
     });
     // nodes.push({
@@ -60,11 +58,11 @@ const lineageDataTransformToGraphData = (data: LineageDetailInfo): GraphData => 
     //   label: item.name,
     //   style: {fill: '#e70606', stroke: '#1060d9', lineWidth: 1}
     // });
-  })
-  data.relations.forEach(item => {
+  });
+  data.relations.forEach((item) => {
     // 拿出 表的 name 和 字段的 name
-    const source = data.tables.findLast(table => table.id === item.srcTableId);
-    const target = data.tables.findLast(table => table.id === item.tgtTableId);
+    const source = data.tables.findLast((table) => table.id === item.srcTableId);
+    const target = data.tables.findLast((table) => table.id === item.tgtTableId);
     if (!source || !target) {
       return;
     }
@@ -75,13 +73,11 @@ const lineageDataTransformToGraphData = (data: LineageDetailInfo): GraphData => 
       target: target.name + '.' + item.tgtTableColName,
       targetNode: item.tgtTableColName,
       label: item.relationship,
-      style: {stroke: '#1060d9', lineWidth: 1}
+      style: { stroke: '#1060d9', lineWidth: 1 }
     });
-  })
+  });
 
+  return { nodes: nodes, edges: edges, combos: combos };
+};
 
-  return {nodes: nodes, edges: edges, combos: combos};
-}
-
-
-export {lineageDataTransformToGraphData};
+export { lineageDataTransformToGraphData };
