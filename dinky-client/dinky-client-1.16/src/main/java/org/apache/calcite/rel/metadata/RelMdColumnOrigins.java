@@ -48,6 +48,10 @@ import org.apache.calcite.rex.RexShuttle;
 import org.apache.calcite.rex.RexVisitor;
 import org.apache.calcite.rex.RexVisitorImpl;
 import org.apache.calcite.util.BuiltInMethod;
+import org.apache.flink.table.catalog.Column;
+import org.apache.flink.table.planner.plan.schema.TableSourceTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,9 +66,6 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Modified based on calcite's source code org.apache.calcite.rel.metadata.RelMdColumnOrigins
@@ -230,14 +231,27 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
             // Direct reference: no derivation added.
             RexInputRef inputRef = (RexInputRef) rexNode;
             int index = inputRef.getIndex();
-            if (input instanceof TableScan) {
-                index = computeIndexWithOffset(rel.getProjects(), inputRef.getIndex(), iOutputColumn);
-            }
+//            if (input instanceof TableScan) {
+//                index = computeIndexWithOffset(rel.getProjects(), inputRef.getIndex(), iOutputColumn);
+//            }
             return mq.getColumnOrigins(input, index);
         } else if (input instanceof TableScan
                 && rexNode.getClass().equals(RexCall.class)
                 && ((RexCall) rexNode).getOperands().isEmpty()) {
-            return mq.getColumnOrigins(input, iOutputColumn);
+                List<Column> columns = ((TableSourceTable) (input).getTable())
+                        .contextResolvedTable().getResolvedSchema().getColumns();
+            Set<RelColumnOrigin> set = new LinkedHashSet<>();
+            for (int index=0;index<columns.size();index++){
+                    Column column = columns.get(index);
+                    if(column instanceof Column.ComputedColumn
+                    &&rexNode.toString().equals(((Column.ComputedColumn)column).getExpression().toString())
+                    ){
+                        set.add(new RelColumnOrigin(input.getTable(), index, false,true));
+                        return set;
+                    }
+                }
+            set.add(new RelColumnOrigin(input.getTable(), -1, false,false));
+            return set;
         }
         // Anything else is a derivation, possibly from multiple columns.
         final Set<RelColumnOrigin> set = getMultipleColumns(rexNode, input, mq);

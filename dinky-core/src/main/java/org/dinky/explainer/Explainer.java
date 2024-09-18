@@ -416,6 +416,7 @@ public class Explainer {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {
+                log.error("获取血缘异常", e);
                 throw new DinkyException("获取血缘异常", e);
             }
         }
