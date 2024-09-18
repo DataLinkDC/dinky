@@ -28,7 +28,7 @@ import JobMetrics from '@/pages/DevOps/JobDetail/JobMetrics';
 import JobOperator from '@/pages/DevOps/JobDetail/JobOperator/JobOperator';
 import JobConfigTab from '@/pages/DevOps/JobDetail/JobOverview/JobOverview';
 import JobVersionTab from '@/pages/DevOps/JobDetail/JobVersion/JobVersionTab';
-import { refeshJobInstance } from '@/pages/DevOps/JobDetail/srvice';
+import { refreshJobInstance } from '@/pages/DevOps/JobDetail/srvice';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { history } from '@@/core/history';
@@ -64,7 +64,7 @@ const JobDetail = (props: any) => {
     history.push(`/devops/`);
   }
 
-  const { data, run } = useHookRequest(refeshJobInstance, {
+  const { data, run } = useHookRequest(refreshJobInstance, {
     defaultParams: [id, false],
     pollingInterval: 3000
   });
