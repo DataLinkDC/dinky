@@ -152,6 +152,8 @@ export default {
   'datastudio.project.delete.job': 'Delete [{type}] Job [{name}]',
   'datastudio.project.delete.job.confirm':
     'This operation will delete the execution history of the task and all information of the task. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
+  'datastudio.project.import.title': 'Import json file',
+  'datastudio.project.import.tip': 'Click or drag file to this area to upload',
   /**
    *
    * devops

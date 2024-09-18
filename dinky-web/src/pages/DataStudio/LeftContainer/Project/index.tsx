@@ -40,6 +40,7 @@ import {
 } from '@/pages/DataStudio/model';
 import {
   handleAddOrUpdate,
+  handleDownloadOption,
   handleOption,
   handlePutDataByParams,
   handleRemoveById
@@ -54,6 +55,7 @@ import { Modal, Typography } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
+import JobImportModal from '@/pages/DataStudio/LeftContainer/Project/JobTree/components/JobImportModal';
 
 const { Text } = Typography;
 
@@ -68,6 +70,12 @@ const Project: React.FC = (props: connect) => {
   } = props;
 
   const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
+  const [importVisible, setImportVisible] = useState<boolean>(false);
+  const [uploadValue] = useState({
+    url: API_CONSTANTS.IMPORT_CATALOGUE_URL,
+    pid: ''
+  });
+
   const btnDispatch = useTasksDispatch();
 
   useEffect(() => {
@@ -353,6 +361,29 @@ const Project: React.FC = (props: connect) => {
     handleContextCancel();
   };
 
+  const handleUploadCancel = () => {
+    setImportVisible(false);
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryProject,
+      payload: { ...selectCatalogueSortTypeData }
+    });
+    handleContextCancel();
+  };
+
+  const handleImportJson = () => {
+    uploadValue.pid = projectState.value.id;
+    setImportVisible(true);
+    handleContextCancel();
+  };
+
+  const handleExportJson = async () => {
+    const catalogue_id = projectState.value.id;
+    await handleDownloadOption(API_CONSTANTS.EXPORT_CATALOGUE_URL, l('right.menu.exportJson'), {
+      id: catalogue_id
+    });
+    handleContextCancel();
+  };
+
   /**
    * cut task handle
    */
@@ -414,8 +445,10 @@ const Project: React.FC = (props: connect) => {
         handleEdit();
         break;
       case 'exportJson':
-        // todo: 导出 json
-        // await handleCancel();
+        await handleExportJson();
+        break;
+      case 'importJson':
+        handleImportJson();
         break;
       case 'copy':
         await handleCopy();
@@ -513,6 +546,14 @@ const Project: React.FC = (props: connect) => {
           onSubmit={handleSubmit}
         />
       )}
+
+      {/*  import task json  */}
+      <JobImportModal
+        onUpload={uploadValue}
+        visible={importVisible}
+        onOk={handleUploadCancel}
+        onClose={handleUploadCancel}
+      />
     </div>
   );
 };

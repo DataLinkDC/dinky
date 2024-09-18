@@ -19,6 +19,7 @@
 
 import {
   addOrUpdateData,
+  download,
   getData,
   getDataByRequestBody,
   getInfoById,
@@ -219,6 +220,15 @@ export const handleOption = async (
     return undefined;
   } catch (error) {
     return undefined;
+  }
+};
+
+export const handleDownloadOption = async (url: string, title: string, param: any) => {
+  await LoadingMessageAsync(l('app.request.running') + title);
+  try {
+    await download(url, param);
+  } catch (error) {
+    WarningMessage(l('app.request.download.failed'));
   }
 };
 

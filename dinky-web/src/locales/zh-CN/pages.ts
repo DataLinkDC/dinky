@@ -140,6 +140,8 @@ export default {
   'datastudio.project.delete.job': '删除 [{type}] 作业 [{name}]',
   'datastudio.project.delete.job.confirm':
     '此操作会将该任务的执行历史, 以及任务的所有信息全部删除.\n\t\t\t\t请谨慎操作! 该操作不可逆!!!\n\t\t\t\t\t确认删除吗?',
+  'datastudio.project.import.title': '导入 json 文件',
+  'datastudio.project.import.tip': '点击或拖拽文件到此区域上传',
   /**
    *
    * devops

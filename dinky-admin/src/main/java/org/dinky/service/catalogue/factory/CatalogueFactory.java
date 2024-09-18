@@ -19,6 +19,11 @@
 
 package org.dinky.service.catalogue.factory;
 
+import org.dinky.config.Dialect;
+import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
+import org.dinky.data.bo.catalogue.export.ExportTaskBO;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
@@ -62,6 +67,28 @@ public class CatalogueFactory {
         return newTask;
     }
 
+    public Task getTask(ExportTaskBO exportTaskBO, Integer firstLevelOwner) {
+        Task task = new Task();
+        task.setName(exportTaskBO.getName());
+        task.setDialect(exportTaskBO.getDialect());
+        task.setType(exportTaskBO.getType());
+        task.setCheckPoint(exportTaskBO.getCheckPoint());
+        task.setSavePointStrategy(exportTaskBO.getSavePointStrategy());
+        task.setParallelism(exportTaskBO.getParallelism());
+        task.setFragment(exportTaskBO.getFragment());
+        task.setStatementSet(exportTaskBO.getStatementSet());
+        task.setBatchModel(exportTaskBO.getBatchModel());
+        task.setEnvId(exportTaskBO.getEnvId());
+        task.setAlertGroupId(exportTaskBO.getAlertGroupId());
+        task.setConfigJson(exportTaskBO.getConfigJson());
+        task.setNote(exportTaskBO.getNote());
+        task.setStep(exportTaskBO.getStep());
+        task.setEnabled(exportTaskBO.getEnabled());
+        task.setStatement(exportTaskBO.getStatement());
+        task.setFirstLevelOwner(firstLevelOwner);
+        return task;
+    }
+
     public Catalogue getNewCatalogue(Catalogue paramCatalogue, Catalogue oldCatalogue, Task newTask) {
         Catalogue newCatalogue = new Catalogue();
         BeanUtil.copyProperties(paramCatalogue, newCatalogue);
@@ -79,5 +106,72 @@ public class CatalogueFactory {
         newCatalogue.setUpdater(null);
         newCatalogue.setTenantId(null);
         return newCatalogue;
+    }
+
+    public Catalogue getCatalogue(ExportCatalogueBO exportCatalogueBO, Integer parentId, Integer taskId) {
+        Catalogue catalogue = new Catalogue();
+        catalogue.setParentId(parentId);
+        catalogue.setTaskId(taskId);
+        catalogue.setName(exportCatalogueBO.getName());
+        catalogue.setType(exportCatalogueBO.getType());
+        catalogue.setEnabled(exportCatalogueBO.getEnabled());
+        catalogue.setIsLeaf(exportCatalogueBO.getIsLeaf());
+        return catalogue;
+    }
+
+    /**
+     * Reset Task value
+     *
+     * @param task Task
+     */
+    public void resetTask(Task task, String dialect) {
+        task.setStep(JobLifeCycle.DEVELOP.getValue());
+        task.setEnabled(Boolean.TRUE);
+        task.setVersionId(null);
+        task.setJobInstanceId(null);
+        if (Dialect.isFlinkSql(dialect, false)) {
+            task.setType(GatewayType.LOCAL.getLongValue());
+            task.setParallelism(1);
+            task.setSavePointStrategy(CommonConstant.SAVE_POINT_STRATEGY_DISABLE);
+            task.setEnvId(CommonConstant.ENV_DISABLE);
+            task.setAlertGroupId(CommonConstant.ALERT_GROUP_DISABLE);
+            task.setFragment(Boolean.FALSE);
+        }
+    }
+
+    public ExportCatalogueBO getExportCatalogueBo(Catalogue catalogue, Task task) {
+        return ExportCatalogueBO.builder()
+                .name(catalogue.getName())
+                .enabled(catalogue.getEnabled())
+                .isLeaf(catalogue.getIsLeaf())
+                .type(catalogue.getType())
+                .task(getExportTaskBo(task))
+                .build();
+    }
+
+    private ExportTaskBO getExportTaskBo(Task task) {
+        if (Objects.isNull(task)) {
+            return null;
+        }
+        // Reset task
+        resetTask(task, task.getDialect());
+        return ExportTaskBO.builder()
+                .name(task.getName())
+                .dialect(task.getDialect())
+                .type(task.getType())
+                .checkPoint(task.getCheckPoint())
+                .savePointStrategy(task.getSavePointStrategy())
+                .parallelism(task.getParallelism())
+                .fragment(task.getFragment())
+                .statementSet(task.getStatementSet())
+                .batchModel(task.getBatchModel())
+                .envId(task.getEnvId())
+                .alertGroupId(task.getAlertGroupId())
+                .configJson(task.getConfigJson())
+                .note(task.getNote())
+                .step(task.getStep())
+                .enabled(task.getEnabled())
+                .statement(task.getStatement())
+                .build();
     }
 }
