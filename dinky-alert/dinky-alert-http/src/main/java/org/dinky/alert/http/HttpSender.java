@@ -23,6 +23,7 @@ import org.dinky.alert.AlertResult;
 import org.dinky.alert.http.params.HttpParams;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.ext.ConfigItem;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -44,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 
 /**
  * Http Sender
@@ -56,7 +56,7 @@ public class HttpSender {
     private HttpRequestBase httpRequest;
 
     HttpSender(Map<String, Object> config) {
-        this.httpParams = JSONUtil.toBean(JSONUtil.toJsonStr(config), HttpParams.class);
+        this.httpParams = JsonUtils.toBean(config, HttpParams.class);
         Asserts.checkNotNull(httpParams, "httpParams is null");
     }
 
@@ -119,17 +119,14 @@ public class HttpSender {
         } else {
             line = "&";
         }
-        templateParams.forEach((k, v) -> {
-            httpParams.setUrl(String.format("%s%s%s=%s", httpParams.getUrl(), line, k, v));
-        });
+        templateParams.forEach(
+                (k, v) -> httpParams.setUrl(String.format("%s%s%s=%s", httpParams.getUrl(), line, k, v)));
     }
 
     private void buildRequestHeader() {
         List<ConfigItem> paramsHeaders = httpParams.getHeaders();
         if (CollUtil.isNotEmpty(paramsHeaders)) {
-            paramsHeaders.forEach(configItem -> {
-                httpRequest.setHeader(configItem.getKey(), configItem.getValue());
-            });
+            paramsHeaders.forEach(configItem -> httpRequest.setHeader(configItem.getKey(), configItem.getValue()));
         }
     }
 
@@ -138,14 +135,17 @@ public class HttpSender {
      */
     private void buildMsgToRequestBody(String title, String content) {
         try {
-            JSONObject body = JSONUtil.parseObj(httpParams.getBody());
+            JSONObject body = JsonUtils.parseObject(httpParams.getBody(), JSONObject.class);
+            if (body == null) {
+                body = new JSONObject();
+            }
             if (TextUtils.isEmpty(httpParams.getTitleFiled())) {
                 content = StrFormatter.format("{}\n{}", title, content);
             } else {
                 body.putByPath(httpParams.getTitleFiled(), title);
             }
             body.putByPath(httpParams.getContentFiled(), content);
-            StringEntity entity = new StringEntity(JSONUtil.toJsonStr(body), HttpConstants.DEFAULT_CHARSET);
+            StringEntity entity = new StringEntity(body.toString(), HttpConstants.DEFAULT_CHARSET);
             ((HttpPost) httpRequest).setEntity(entity);
         } catch (Exception e) {
             logger.error("send http alert msg  exception", e);

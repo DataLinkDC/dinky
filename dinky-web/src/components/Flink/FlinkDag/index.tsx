@@ -24,6 +24,7 @@ import {
   graphConfig,
   layoutConfig,
   portConfig,
+  portConfigTb,
   zoomOptions
 } from '@/components/Flink/FlinkDag/config';
 import { buildDag, regConnect, updateDag } from '@/components/Flink/FlinkDag/functions';
@@ -32,13 +33,14 @@ import { getDataByParamsReturnResult } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { DagreLayout } from '@antv/layout';
-import { Edge, Graph } from '@antv/x6';
+import { Edge, Graph, Node } from '@antv/x6';
 import { Rectangle } from '@antv/x6-geometry';
 import { Selection } from '@antv/x6-plugin-selection';
 import { register } from '@antv/x6-react-shape';
 import { Drawer, Select, Slider, Table, Tabs, TabsProps, Tag, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import './index.css';
+import dagre from 'dagre';
 
 export type DagProps = {
   job: Jobs.Job;
@@ -145,6 +147,53 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
   );
 };
 
+type CusEdge = {
+  source: { cell: string };
+  target: { cell: string };
+};
+
+function getMaxWidthAndDepth(edges: CusEdge[]): { maxWidth: number; maxDepth: number } {
+  const sourceCount: Record<string, number> = {};
+  const graph: Record<string, string[]> = {};
+
+  edges.forEach((edge) => {
+    const sourceCell = edge.source.cell;
+    const targetCell = edge.target.cell;
+
+    sourceCount[sourceCell] = (sourceCount[sourceCell] || 0) + 1;
+
+    if (!graph[sourceCell]) {
+      graph[sourceCell] = [];
+    }
+    graph[sourceCell].push(targetCell);
+  });
+
+  const maxSource = Object.keys(sourceCount).reduce((a, b) =>
+    sourceCount[a] > sourceCount[b] ? a : b
+  );
+  const maxWidth = sourceCount[maxSource];
+
+  const visited: Record<string, boolean> = {};
+  let maxDepth = 0;
+
+  function dfs(node: string, depth: number) {
+    if (visited[node]) return;
+    visited[node] = true;
+    maxDepth = Math.max(maxDepth, depth);
+    if (graph[node]) {
+      graph[node].forEach((neighbor) => dfs(neighbor, depth + 1));
+    }
+  }
+
+  Object.keys(graph).forEach((node) => {
+    if (!visited[node]) {
+      dfs(node, 1);
+    }
+  });
+
+  return { maxWidth, maxDepth };
+}
+
 const FlinkDag = (props: DagProps) => {
   const container = useRef(null);
 
@@ -189,12 +238,24 @@ const FlinkDag = (props: DagProps) => {
   };
 
   const initGraph = (flinkData: any) => {
+    const { maxWidth, maxDepth } = getMaxWidthAndDepth(flinkData.edges);
+    let dir: string = 'LR';
+    let ranksep = 200;
+    let nodesep = 40;
+    let portConfigs: any = portConfig;
+
+    if (maxDepth < maxWidth) {
+      dir = 'TB';
+      ranksep = 200;
+      nodesep = 40;
+      portConfigs = portConfigTb;
+    }
     register({
       shape: 'data-processing-dag-node',
-      width: 270,
+      width: 240,
       height: 140,
       component: onlyPlan ? DagPlanNode : DagDataNode,
-      ports: portConfig
+      ports: portConfigs
     });
 
     Edge.config(edgeConfig);
@@ -223,12 +284,75 @@ const FlinkDag = (props: DagProps) => {
     // Automatically zoom to fit
     graph.zoomToFit(zoomOptions);
     graph.on('scale', ({ sx }) => setZoom(sx));
-    graph.centerContent();
     graph?.zoomTo(zoom);
     updateDag(job?.vertices, graph);
     initListen(graph);
+    layout(graph, dir, ranksep, nodesep);
+    graph.centerContent();
     return graph;
   };
+
+  // 自动布局
+  function layout(graph: Graph, dir: string, ranksep: number, nodesep: number) {
+    const nodes = graph.getNodes();
+    const edges = graph.getEdges();
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({ ...layoutConfig, ranksep, nodesep, rankdir: dir });
+    g.setDefaultEdgeLabel(() => ({}));
+
+    nodes.forEach((node) => {
+      g.setNode(node.id, { width: 240, height: 140 });
+    });
+
+    edges.forEach((edge) => {
+      const source = edge.getSource();
+      const target = edge.getTarget();
+      g.setEdge(source.cell, target.cell);
+    });
+
+    dagre.layout(g);
+
+    g.nodes().forEach((id) => {
+      const node = graph.getCellById(id) as Node;
+      if (node) {
+        const pos = g.node(id);
+        node.position(pos.x, pos.y);
+      }
+    });
+
+    edges.forEach((edge) => {
+      const source = edge.getSourceNode()!;
+      const target = edge.getTargetNode()!;
+      const sourceBBox = source.getBBox();
+      const targetBBox = target.getBBox();
+
+      if ((dir === 'LR' || dir === 'RL') && sourceBBox.y !== targetBBox.y) {
+        const gap =
+          dir === 'LR'
+            ? targetBBox.x - sourceBBox.x - sourceBBox.width
+            : -sourceBBox.x + targetBBox.x + targetBBox.width;
+        const fix = dir === 'LR' ? sourceBBox.width : 0;
+        const x = sourceBBox.x + fix + gap / 2;
+        edge.setVertices([
+          { x, y: sourceBBox.center.y },
+          { x, y: targetBBox.center.y }
+        ]);
+      } else if ((dir === 'TB' || dir === 'BT') && sourceBBox.x !== targetBBox.x) {
+        const gap =
+          dir === 'TB'
+            ? targetBBox.y - sourceBBox.y - sourceBBox.height
+            : -sourceBBox.y + targetBBox.y + targetBBox.height;
+        const fix = dir === 'TB' ? sourceBBox.height : 0;
+        const y = sourceBBox.y + fix + gap / 2;
+        edge.setVertices([
+          { x: sourceBBox.center.x, y },
+          { x: targetBBox.center.x, y }
+        ]);
+      } else {
+        edge.setVertices([]);
+      }
+    });
+  }
 
   useEffect(() => {
     const flinkData = buildDag(job?.plan);
@@ -266,7 +390,7 @@ const FlinkDag = (props: DagProps) => {
         <Slider
           vertical
           value={zoom}
-          min={0.5}
+          min={0.1}
           max={1.5}
           tooltip={{ open: false }}
           step={0.01}
@@ -275,8 +399,10 @@ const FlinkDag = (props: DagProps) => {
       </div>
       <div style={{ height: '100%', width: '100%' }} ref={container} />
       <Drawer
-        headerStyle={{ paddingBlock: 5 }}
-        bodyStyle={{ paddingBlock: 5 }}
+        styles={{
+          header: { paddingBlock: 5 },
+          body: { paddingBlock: 5 }
+        }}
         open={open}
         getContainer={false}
         width={'65%'}

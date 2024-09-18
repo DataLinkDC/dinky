@@ -22,6 +22,7 @@ package org.dinky.sse;
 import org.dinky.context.GitBuildContextHolder;
 import org.dinky.data.model.GitProject;
 import org.dinky.data.result.StepResult;
+import org.dinky.utils.JsonUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +46,6 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -223,7 +223,7 @@ public abstract class StepSse {
         //
         //        }
 
-        Object dataResult = (data instanceof List) ? StrUtil.join("\n", data) + "\n" : JSONUtil.toJsonStr(data);
+        Object dataResult = (data instanceof List) ? StrUtil.join("\n", data) + "\n" : JsonUtils.toJsonString(data);
         return Dict.create()
                 .set("type", 1)
                 .set("currentStep", getStep())

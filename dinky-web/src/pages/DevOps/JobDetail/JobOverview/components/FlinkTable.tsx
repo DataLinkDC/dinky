@@ -48,9 +48,8 @@ export type VerticesTableListItem = {
  * Renders the JobConfigTab component.
  *
  * @param {JobProps} props - The component props containing the job detail.
- * @returns {JSX.Element} - The rendered JobConfigTab component.
  */
-const FlinkTable = (props: JobProps): JSX.Element => {
+const FlinkTable = (props: JobProps) => {
   const { jobDetail } = props;
 
   const columns: ProColumns<VerticesTableListItem>[] = [
@@ -142,11 +141,12 @@ const FlinkTable = (props: JobProps): JSX.Element => {
     <>
       <ProCard>
         <ProTable
+          key={jobDetail?.id.toString()}
           defaultSize={'small'}
           columns={columns}
           style={{ width: '100%', height: '30vh' }}
           dataSource={jobDetail?.jobDataDto?.job?.vertices}
-          rowKey='name'
+          rowKey={jobDetail?.id.toString()}
           pagination={{
             defaultPageSize: 10,
             showSizeChanger: true,

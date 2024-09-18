@@ -30,6 +30,7 @@ import org.dinky.scheduler.result.PageInfo;
 import org.dinky.scheduler.result.Result;
 import org.dinky.scheduler.utils.MyJSONUtil;
 import org.dinky.scheduler.utils.ParamUtil;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,10 +47,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 
-/** 任务定义 */
+/**
+ * 任务定义
+ */
 @Component
 public class TaskClient {
 
@@ -60,7 +63,7 @@ public class TaskClient {
      *
      * @param projectCode 项目编号
      * @param processName 工作流定义名称
-     * @param taskName 任务定义名称
+     * @param taskName    任务定义名称
      * @return {@link TaskMainInfo}
      */
     public TaskMainInfo getTaskMainInfo(Long projectCode, String processName, String taskName, String taskType) {
@@ -78,7 +81,7 @@ public class TaskClient {
      *
      * @param projectCode 项目编号
      * @param processName 工作流定义名称
-     * @param taskName 任务定义名称
+     * @param taskName    任务定义名称
      * @return {@link List<TaskMainInfo>}
      */
     public List<TaskMainInfo> getTaskMainInfos(Long projectCode, String processName, String taskName, String taskType) {
@@ -94,7 +97,7 @@ public class TaskClient {
         pageParams.put("searchWorkflowName", processName);
         pageParams.put("taskType", taskType);
 
-        String content = HttpRequest.get(format)
+        try (HttpResponse httpResponse = HttpRequest.get(format)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -102,26 +105,25 @@ public class TaskClient {
                                 .getValue())
                 .form(pageParams)
                 .timeout(5000)
-                .execute()
-                .body();
+                .execute()) {
+            PageInfo<JSONObject> data = MyJSONUtil.toPageBean(httpResponse.body());
+            List<TaskMainInfo> lists = new ArrayList<>();
+            if (data == null || data.getTotalList() == null) {
+                return lists;
+            }
 
-        PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
-        List<TaskMainInfo> lists = new ArrayList<>();
-        if (data == null || data.getTotalList() == null) {
+            for (JSONObject jsonObject : data.getTotalList()) {
+                lists.add(JsonUtils.toBean(jsonObject, TaskMainInfo.class));
+            }
             return lists;
         }
-
-        for (JSONObject jsonObject : data.getTotalList()) {
-            lists.add(JSONUtil.toBean(jsonObject, TaskMainInfo.class));
-        }
-        return lists;
     }
 
     /**
      * 根据编号查询
      *
      * @param projectCode 项目编号
-     * @param taskCode 任务编号
+     * @param taskCode    任务编号
      * @return {@link TaskDefinition}
      */
     public TaskDefinition getTaskDefinition(Long projectCode, Long taskCode) {
@@ -133,17 +135,17 @@ public class TaskClient {
                         + "/projects/{projectCode}/task-definition/{code}",
                 map);
 
-        String content = HttpRequest.get(format)
+        try (HttpResponse httpResponse = HttpRequest.get(format)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
                                 .getDolphinschedulerToken()
                                 .getValue())
                 .timeout(20000)
-                .execute()
-                .body();
-
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinition>>() {}));
+                .execute()) {
+            return MyJSONUtil.verifyResult(
+                    MyJSONUtil.toBean(httpResponse.body(), new TypeReference<Result<TaskDefinition>>() {}));
+        }
     }
 
     /**
@@ -170,7 +172,7 @@ public class TaskClient {
 
         pageParams.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
 
-        String content = HttpRequest.post(format)
+        try (HttpResponse httpResponse = HttpRequest.post(format)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -178,17 +180,17 @@ public class TaskClient {
                                 .getValue())
                 .form(pageParams)
                 .timeout(5000)
-                .execute()
-                .body();
-
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinitionLog>>() {}));
+                .execute()) {
+            return MyJSONUtil.verifyResult(
+                    MyJSONUtil.toBean(httpResponse.body(), new TypeReference<Result<TaskDefinitionLog>>() {}));
+        }
     }
 
     /**
      * 修改任务定义
      *
-     * @param projectCode 项目编号
-     * @param taskCode 任务定义编号
+     * @param projectCode           项目编号
+     * @param taskCode              任务定义编号
      * @param taskDefinitionJsonObj 修改参数
      * @return {@link Long}
      */
@@ -208,7 +210,7 @@ public class TaskClient {
         }
         params.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
 
-        String content = HttpRequest.put(format)
+        try (HttpResponse httpResponse = HttpRequest.put(format)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -216,16 +218,17 @@ public class TaskClient {
                                 .getValue())
                 .form(params)
                 .timeout(5000)
-                .execute()
-                .body();
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Long>>() {}));
+                .execute()) {
+            return MyJSONUtil.verifyResult(
+                    MyJSONUtil.toBean(httpResponse.body(), new TypeReference<Result<Long>>() {}));
+        }
     }
 
     /**
      * 生成任务定义编号
      *
      * @param projectCode 项目编号
-     * @param genNum 生成个数
+     * @param genNum      生成个数
      * @return {@link List}
      */
     public List<Long> genTaskCodes(Long projectCode, int genNum) {
@@ -237,7 +240,8 @@ public class TaskClient {
                 map);
         Map<String, Object> params = new HashMap<>();
         params.put("genNum", genNum);
-        String content = HttpRequest.get(format)
+
+        try (HttpResponse httpResponse = HttpRequest.get(format)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -245,10 +249,10 @@ public class TaskClient {
                                 .getValue())
                 .form(params)
                 .timeout(5000)
-                .execute()
-                .body();
-
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<List<Long>>>() {}));
+                .execute()) {
+            return MyJSONUtil.verifyResult(
+                    MyJSONUtil.toBean(httpResponse.body(), new TypeReference<Result<List<Long>>>() {}));
+        }
     }
 
     /**
@@ -267,8 +271,9 @@ public class TaskClient {
 
     /**
      * 通过 projectCode 获得 DolphinScheduler 任务组列表
-     * @param projectCode
-     * @return
+     *
+     * @param projectCode projectCode
+     * @return  List<TaskGroup>
      */
     public List<TaskGroup> getTaskGroupList(Long projectCode) {
         String url = SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
@@ -277,7 +282,8 @@ public class TaskClient {
         params.put("projectCode", projectCode);
         params.put("pageNo", 1);
         params.put("pageSize", 100);
-        String content = HttpRequest.get(url)
+
+        try (HttpResponse httpResponse = HttpRequest.get(url)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -285,9 +291,9 @@ public class TaskClient {
                                 .getValue())
                 .form(params)
                 .timeout(5000)
-                .execute()
-                .body();
-        PageInfo<JSONObject> pageInfo = MyJSONUtil.toPageBean(content);
-        return MyJSONUtil.toBean(pageInfo.getTotalList().toString(), new TypeReference<List<TaskGroup>>() {});
+                .execute()) {
+            PageInfo<JSONObject> pageInfo = MyJSONUtil.toPageBean(httpResponse.body());
+            return MyJSONUtil.toBean(pageInfo.getTotalList().toString(), new TypeReference<List<TaskGroup>>() {});
+        }
     }
 }

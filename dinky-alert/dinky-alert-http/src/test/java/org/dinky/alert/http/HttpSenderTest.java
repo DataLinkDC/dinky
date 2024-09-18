@@ -26,15 +26,13 @@ import org.dinky.alert.http.params.HttpParams;
 import org.dinky.data.ext.ConfigItem;
 import org.dinky.utils.JsonUtils;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import cn.hutool.json.JSONUtil;
 
 public class HttpSenderTest {
 
@@ -46,7 +44,7 @@ public class HttpSenderTest {
         httpParams.setUrl("https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxxxxxxxxxx");
         httpParams.setMethod(HttpConstants.REQUEST_TYPE_POST);
         ConfigItem configItem = new ConfigItem("Content-Type", "application/json");
-        httpParams.setHeaders(Arrays.asList(configItem));
+        httpParams.setHeaders(Collections.singletonList(configItem));
 
         httpParams.setBody(" {\n" + "    \"msgtype\": \"markdown\",\n"
                 + "    \"markdown\": {\n"
@@ -55,7 +53,7 @@ public class HttpSenderTest {
                 + "    }\n"
                 + "}");
 
-        httpConfig = JsonUtils.toMap(JSONUtil.toJsonStr(httpParams), String.class, Object.class);
+        httpConfig = JsonUtils.parseDict(JsonUtils.toJsonString(httpParams));
     }
 
     @Test
@@ -67,6 +65,6 @@ public class HttpSenderTest {
         httpAlert.setConfig(alertConfig);
         AlertResult alertResult =
                 httpAlert.send(AlertBaseConstant.ALERT_TEMPLATE_TITLE, AlertBaseConstant.ALERT_TEMPLATE_MSG);
-        Assert.assertEquals(true, alertResult.getSuccess());
+        Assert.assertTrue(alertResult.getSuccess());
     }
 }

@@ -19,11 +19,12 @@
 
 package org.dinky.data.result;
 
+import org.dinky.utils.JsonUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -103,7 +104,7 @@ public class StepResult implements Serializable {
         return StepResult.builder()
                 .type(0)
                 .currentStep(currentStep)
-                .data(JSONUtil.toJsonStr(data))
+                .data(JsonUtils.toJsonString(data))
                 .status(status)
                 .build();
     }
@@ -130,6 +131,6 @@ public class StepResult implements Serializable {
 
     @Override
     public String toString() {
-        return JSONUtil.toJsonStr(this);
+        return JsonUtils.toJsonString(this);
     }
 }

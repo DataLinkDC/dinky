@@ -30,6 +30,7 @@ import org.dinky.mapper.GitProjectMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitRepository;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TreeUtil;
 
 import java.io.File;
@@ -46,7 +47,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.json.JSONUtil;
 
 /**
  * @author ZackYoung
@@ -98,7 +98,7 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         if (gitProject == null) {
             return false;
         } else {
-            String jarClasses = JSONUtil.toJsonStr(gitProjectSortJarDTO.getJars());
+            String jarClasses = JsonUtils.toJsonString(gitProjectSortJarDTO.getJars());
             gitProject.setUdfClassMapList(jarClasses);
             return updateById(gitProject);
         }
@@ -111,7 +111,7 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         Opt.ofEmptyAble(list).ifPresent(l -> {
             for (GitProject gitProject : list) {
                 List<GitAnalysisJarDTO> gitAnalysisJarList =
-                        JSONUtil.toList(gitProject.getUdfClassMapList(), GitAnalysisJarDTO.class);
+                        JsonUtils.toList(gitProject.getUdfClassMapList(), GitAnalysisJarDTO.class);
                 for (GitAnalysisJarDTO analysisJarDTO : gitAnalysisJarList) {
                     analysisJarDTO.getClassList().forEach(udf -> {
                         gitPool.computeIfAbsent(udf, k -> analysisJarDTO.getJarPath());

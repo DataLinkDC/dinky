@@ -75,7 +75,6 @@ import com.google.common.cache.LoadingCache;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -196,8 +195,7 @@ public class JobAlertHandler {
 
     private Rule buildRule(AlertRuleDTO alertRuleDTO) {
 
-        List<JSONObject> ruleItemList =
-                JSONUtil.parseArray(alertRuleDTO.getRule()).toBean(List.class);
+        List<JSONObject> ruleItemList = JsonUtils.toList(alertRuleDTO.getRule(), JSONObject.class);
         List<String> conditionList = ruleItemList.stream()
                 .map(r -> r.toBean(RuleItem.class).toString())
                 .collect(Collectors.toList());
