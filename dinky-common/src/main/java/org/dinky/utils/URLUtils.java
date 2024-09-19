@@ -20,6 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.constant.DirConstant;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -39,7 +40,7 @@ import cn.hutool.core.util.StrUtil;
  * @since 0.7.0
  */
 public class URLUtils {
-    private static final String TMP_PATH = StrUtil.join(File.separator, System.getProperty("user.dir"), "tmp");
+    private static final String TMP_PATH = DirConstant.getTempRootDir();
 
     /**
      * url download file to local

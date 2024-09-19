@@ -21,8 +21,10 @@ package org.dinky.service.catalogue;
 
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
+import org.dinky.data.dto.ImportCatalogueDTO;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.ExportCatalogueVO;
 import org.dinky.data.vo.TreeVo;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -149,4 +151,27 @@ public interface CatalogueService extends ISuperService<Catalogue> {
      * @return true if the catalogue task name is exist
      */
     boolean checkCatalogueTaskNameIsExistById(String name, Integer id);
+
+    /**
+     * Check task operate permission.
+     * Contains reflection invocation. Please do not delete.
+     * @param catalogueId
+     * @return
+     */
+    Boolean checkTaskOperatePermission(Integer catalogueId);
+
+    /**
+     * Export catalogue by id
+     *
+     * @param catalogueId catalogue id
+     * @return export catalogue vo
+     */
+    ExportCatalogueVO exportCatalogue(Integer catalogueId);
+
+    /**
+     * Import catalogue
+     *
+     * @param importCatalogueDto ImportCatalogueDTO
+     */
+    void importCatalogue(ImportCatalogueDTO importCatalogueDto);
 }

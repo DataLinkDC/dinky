@@ -25,6 +25,8 @@ public interface HiveConstant {
     String QUERY_ALL_DATABASE = " show databases";
     /** 查询所有schema下的所有表 */
     String QUERY_ALL_TABLES_BY_SCHEMA = "show tables";
+    /** 查询所有schema下的所有表 */
+    String QUERY_ALL_TABLES_BY_SCHEMA_NAME_AND_TABLE_NAME = "show tables in %s like '%s'";
     /** 扩展信息Key */
     String DETAILED_TABLE_INFO = "Detailed Table Information";
     /** 查询指定schema.table的扩展信息 */

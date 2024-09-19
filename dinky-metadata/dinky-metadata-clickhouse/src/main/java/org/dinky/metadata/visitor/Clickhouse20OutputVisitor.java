@@ -38,15 +38,15 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 
 public class Clickhouse20OutputVisitor extends SQLASTOutputVisitor implements Clickhouse20Visitor {
 
-    public Clickhouse20OutputVisitor(Appendable appender) {
+    public Clickhouse20OutputVisitor(StringBuilder appender) {
         super(appender, DbType.clickhouse);
     }
 
-    public Clickhouse20OutputVisitor(Appendable appender, DbType dbType) {
+    public Clickhouse20OutputVisitor(StringBuilder appender, DbType dbType) {
         super(appender, dbType);
     }
 
-    public Clickhouse20OutputVisitor(Appendable appender, boolean parameterized) {
+    public Clickhouse20OutputVisitor(StringBuilder appender, boolean parameterized) {
         super(appender, parameterized);
     }
 

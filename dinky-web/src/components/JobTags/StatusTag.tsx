@@ -68,13 +68,13 @@ const StatusTag = (props: StatusTagProps) => {
       case JOB_STATUS.INITIALIZING:
         return {
           icon: <ClockCircleOutlined />,
-          color: 'default',
+          color: 'blue',
           text: 'INITIALIZING'
         };
       case JOB_STATUS.RESTARTING:
         return {
           icon: <ClockCircleOutlined />,
-          color: 'default',
+          color: '#13c2c2',
           text: 'RESTARTING'
         };
       case JOB_STATUS.CREATED:

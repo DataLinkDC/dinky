@@ -129,28 +129,7 @@ public class FlinkJobThreadPool implements ThreadPool {
         }
     }
 
-    @Override
-    public void shutdown() {
-        synchronized (lock) {
-            for (TaskWorker worker : workers) {
-                worker.shutdown();
-            }
-            workers.clear();
-        }
-    }
-
-    @Override
-    public int getTaskSize() {
-        return queue.getTaskSize();
-    }
-
     public DaemonTask getByTaskConfig(DaemonTaskConfig daemonTask) {
         return queue.getByTaskConfig(daemonTask);
-    }
-
-    public int getWorkCount() {
-        synchronized (lock) {
-            return this.workerNum.get();
-        }
     }
 }

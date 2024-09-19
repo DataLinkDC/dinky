@@ -19,6 +19,7 @@
 
 import { BaseBeanColumns } from '@/types/Public/data';
 import { ConfigItem } from '@/types/Studio/data.d';
+import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 
 /**
  * about alert
@@ -215,6 +216,14 @@ declare namespace Cluster {
  */
 declare namespace DataSources {
   /**
+   * SchemaDescProps info
+   */
+  export type SchemaDescProps = {
+    tableInfo?: Partial<DataSources.Table>;
+    queryParams?: QueryParams;
+  };
+
+  /**
    * database info
    */
   export type DataSource = BaseBeanColumns & {
@@ -243,6 +252,8 @@ declare namespace DataSources {
     type: string;
     engine: string;
     options: string;
+    driverType: string;
+    columns?: Column[];
     rows: number;
     createTime: string;
     updateTime: string;
@@ -256,6 +267,7 @@ declare namespace DataSources {
     type: string;
     comment: string;
     keyFlag: boolean;
+    partaionKey: boolean;
     autoIncrement: boolean;
     defaultValue: string;
     nullable: string;
@@ -355,6 +367,7 @@ export interface UDFRegisterInfo {
   // createTime: string;
   updateTime: Date;
 }
+
 export interface UDFRegisterInfoParent {
   num: number;
   resourcesId: number;
@@ -362,6 +375,7 @@ export interface UDFRegisterInfoParent {
   source: string;
   fileName: string;
 }
+
 export interface UDFRegisterInfoChild {
   id: number;
   resourcesId: number;

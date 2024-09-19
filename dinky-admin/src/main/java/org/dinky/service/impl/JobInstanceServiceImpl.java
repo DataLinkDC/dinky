@@ -41,6 +41,7 @@ import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.vo.task.JobInstanceVo;
+import org.dinky.executor.ExecutorConfig;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTask;
@@ -65,6 +66,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -245,6 +247,35 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     }
 
     @Override
+    public boolean hookJobDoneByHistory(String jobId) {
+        LambdaQueryWrapper<JobInstance> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(JobInstance::getJid, jobId)
+                .orderByDesc(JobInstance::getCreateTime)
+                .last("limit 1");
+        JobInstance instance = baseMapper.selectOne(queryWrapper);
+
+        if (instance == null
+                || !StrUtil.equalsAny(
+                        instance.getStatus(), JobStatus.RECONNECTING.getValue(), JobStatus.UNKNOWN.getValue())) {
+            // Not having a corresponding jobinstance means that this may not have succeeded in running,
+            // returning true to prevent retry.
+            return true;
+        }
+
+        DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
+        DaemonTask daemonTask = FlinkJobThreadPool.getInstance().removeByTaskConfig(config);
+        daemonTask = Optional.ofNullable(daemonTask).orElse(DaemonTask.build(config));
+
+        boolean isDone = daemonTask.dealTask();
+        // If the task is not completed, it is re-queued
+        if (!isDone) {
+            FlinkJobThreadPool.getInstance().execute(daemonTask);
+        }
+        return isDone;
+    }
+
+    @Override
     public void refreshJobByTaskIds(Integer... taskIds) {
         for (Integer taskId : taskIds) {
             JobInstance instance = getJobInstanceByTaskId(taskId);
@@ -258,7 +289,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement());
+        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement(), ExecutorConfig.DEFAULT);
     }
 
     @Override

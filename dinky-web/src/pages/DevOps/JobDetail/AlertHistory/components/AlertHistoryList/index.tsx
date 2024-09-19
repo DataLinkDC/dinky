@@ -42,7 +42,7 @@ const AlertHistoryList = (props: JobProps) => {
   const getAlertHistory = () => {
     setAlertHistory((prevState) => ({ ...prevState, loading: true }));
     queryDataByParams(API_CONSTANTS.ALERT_HISTORY_LIST, {
-      jobInstanceId: jobDetail.instance.id
+      jobInstanceId: jobDetail?.instance?.id
     }).then((res) => {
       setAlertHistory((prevState) => ({ ...prevState, alertHistory: res as AlertHistory[] }));
     });

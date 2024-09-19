@@ -46,7 +46,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 
 /**
  * 工作流定义
@@ -69,7 +68,7 @@ public class ProcessClient {
                         + "/projects/{projectCode}/process-definition",
                 Collections.singletonMap("projectCode", projectCode));
 
-        String content = HttpRequest.get(format)
+        try (HttpResponse httpResponse = HttpRequest.get(format)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -77,22 +76,23 @@ public class ProcessClient {
                                 .getValue())
                 .form(ParamUtil.getPageParams(processName))
                 .timeout(20000)
-                .execute()
-                .body();
-        PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
-        List<ProcessDefinition> lists = new ArrayList<>();
-        if (data == null || data.getTotalList() == null) {
+                .execute()) {
+            String content = httpResponse.body();
+            PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
+            List<ProcessDefinition> lists = new ArrayList<>();
+            if (data == null || data.getTotalList() == null) {
+                return lists;
+            }
+
+            for (JSONObject jsonObject : data.getTotalList()) {
+                ProcessDefinition processDefinition = MyJSONUtil.toBean(jsonObject, ProcessDefinition.class);
+                // The locations of processDefinition is json string
+                List<DagNodeLocation> locations = jsonObject.getBeanList("locations", DagNodeLocation.class);
+                processDefinition.setLocations(JsonUtils.toJsonString(locations));
+                lists.add(processDefinition);
+            }
             return lists;
         }
-
-        for (JSONObject jsonObject : data.getTotalList()) {
-            ProcessDefinition processDefinition = MyJSONUtil.toBean(jsonObject, ProcessDefinition.class);
-            // The locations of processDefinition is json string
-            List<DagNodeLocation> locations = jsonObject.getBeanList("locations", DagNodeLocation.class);
-            processDefinition.setLocations(JSONUtil.toJsonStr(locations));
-            lists.add(processDefinition);
-        }
-        return lists;
     }
 
     /**
@@ -126,17 +126,18 @@ public class ProcessClient {
                         + "/projects/{projectCode}/process-definition/{code}",
                 map);
 
-        String content = HttpRequest.get(format)
+        try (HttpResponse httpResponse = HttpRequest.get(format)
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
                                 .getDolphinschedulerToken()
                                 .getValue())
                 .timeout(20000)
-                .execute()
-                .body();
+                .execute()) {
 
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<DagData>>() {}));
+            return MyJSONUtil.verifyResult(
+                    MyJSONUtil.toBean(httpResponse.body(), new TypeReference<Result<DagData>>() {}));
+        }
     }
 
     /**
@@ -177,7 +178,7 @@ public class ProcessClient {
         } else {
             httpRequest = HttpRequest.put(format + "/" + processCode);
         }
-        HttpResponse httpResponse = httpRequest
+        try (HttpResponse httpResponse = httpRequest
                 .header(
                         Constants.TOKEN,
                         SystemConfiguration.getInstances()
@@ -185,8 +186,10 @@ public class ProcessClient {
                                 .getValue())
                 .form(params)
                 .timeout(20000)
-                .execute();
-        String content = httpResponse.body();
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {}));
+                .execute(); ) {
+            String content = httpResponse.body();
+            return MyJSONUtil.verifyResult(
+                    MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {}));
+        }
     }
 }

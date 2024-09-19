@@ -48,15 +48,12 @@ type RightTagsRouterProps = {
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   const access = useAccess();
 
-  const { tableInfo, queryParams, tagDisabled = false, rightButtons } = props;
-  const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
+  const { queryParams, tagDisabled = false, rightButtons } = props;
+  const [tableInfo, setTableInfo] = useState<Partial<DataSources.Table>>({});
   useEffect(() => {
     const fetchData = async () => {
-      const result = await queryDataByParams(
-        API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE,
-        queryParams
-      );
-      setTableColumns(result as DataSources.Column[]);
+      const result = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_TABLE, queryParams);
+      setTableInfo(result as DataSources.Table);
     };
     if (queryParams.id !== 0) {
       fetchData();
@@ -75,7 +72,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
           {l('rc.ds.detail.tag.desc')}
         </Space>
       ),
-      children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns} />,
+      children: <SchemaDesc queryParams={queryParams} tableInfo={tableInfo} />,
       disabled: tagDisabled,
       auth: PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_DESC
     },

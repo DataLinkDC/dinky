@@ -110,6 +110,7 @@ export enum API_CONSTANTS {
   DATASOURCE_UN_CACHE_SCHEMA_TABLES = '/api/database/unCacheSchemasAndTables',
   DATASOURCE_LIST_ENABLE_ALL = '/api/database/listEnabledAll',
   DATASOURCE_GET_COLUMNS_BY_TABLE = '/api/database/listColumns',
+  DATASOURCE_GET_TABLE = '/api/database/getTable',
   DATASOURCE_GET_GEN_SQL = '/api/database/getSqlGeneration',
   DATASOURCE_QUERY_DATA = '/api/database/queryData',
 
@@ -183,6 +184,7 @@ export enum API_CONSTANTS {
   SYSTEM_ROOT_LOG = '/api/system/getRootLog',
   SYSTEM_ROOT_LOG_LIST = '/api/system/listLogDir',
   SYSTEM_ROOT_LOG_READ = '/api/system/readFile',
+  SYSTEM_JVM_INFO = '/api/system/getSysInfo',
 
   // ------------------------------------ system process  ------------------------------------
   PROCESS_LIST = '/api/process/listAllProcess',
@@ -243,13 +245,18 @@ export enum API_CONSTANTS {
   MONITOR_GET_SYSTEM_DATA = '/api/monitor/getSysData',
   MONITOR_GET_FLINK_DATA = '/api/monitor/getFlinkData',
   MONITOR_GET_LAST_DATA = '/api/monitor/getLastUpdateData',
-  MONITOR_GET_JVM_INFO = '/api/monitor/getJvmInfo',
   METRICS_LAYOUT_GET_BY_NAME = '/api/monitor/getMetricsLayoutByName',
   METRICS_LAYOUT_DELETE = '/api/monitor/deleteMetricsLayout',
   JOB_METRICS = '/api/monitor/jobMetrics',
   SAVE_FLINK_METRICS = '/api/monitor/saveFlinkMetrics/',
   GET_METRICS_LAYOUT = '/api/monitor/getMetricsLayout',
+  GET_METRICS_LAYOUT_CASCADER = '/api/monitor/getMetricsLayoutByCascader',
   GET_JVM_INFO = '/api/monitor/getJvmInfo',
+  GET_FLINK_DAT_BY_DASHBOARD = '/api/monitor/getFlinkDataByDashboard',
+  SAVE_DASHBOARD = '/api/dashboard/saveOrUpdate',
+  GET_DASHBOARD_LIST = '/api/dashboard/getDashboardList',
+  GET_DASHBOARD_BY_ID = '/api/dashboard/getDashboardById',
+  DELETE_DASHBOARD = '/api/dashboard/delete',
 
   // ------------------------------------ flink ------------------------------------
   FLINK_PROXY = '/api/flink',
@@ -261,9 +268,12 @@ export enum API_CONSTANTS {
   SAVE_OR_UPDATE_CATALOGUE_URL = '/api/catalogue/saveOrUpdateCatalogue',
   COPY_TASK_URL = '/api/catalogue/copyTask',
   MOVE_CATALOGUE_URL = '/api/catalogue/moveCatalogue',
+  EXPORT_CATALOGUE_URL = '/api/catalogue/export',
+  IMPORT_CATALOGUE_URL = '/api/catalogue/import',
 
   // ------------------------------------ task ------------------------------------
   TASK = '/api/task',
+  MY_TASK = '/api/task/getUserTask',
   CANCEL_JOB = '/api/task/cancel',
   JSON_TO_FLINK_SQL = '/api/tools/jsonToFlinkSql',
   EXPLAIN_SQL = '/api/task/explainSql',

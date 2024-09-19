@@ -33,7 +33,7 @@ import React, { useState } from 'react';
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {
     leftContainer: { selectKey },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     dispatch
   } = props;
 
@@ -64,7 +64,10 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
       () => {},
       () => {
         handleCancelCreate();
-        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+        dispatch({
+          type: STUDIO_MODEL_ASYNC.queryProject,
+          payload: { ...selectCatalogueSortTypeData }
+        });
       }
     );
   };
@@ -80,9 +83,9 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
 
   /**
    * 渲染侧边栏标题
-   * @returns {JSX.Element}
+   * @returns {React.JSX.Element}
    */
-  const renderTitle = () => {
+  const renderTitle = (): React.JSX.Element => {
     if (selectKey && selectKey === currentTabName) {
       return (
         <Space>

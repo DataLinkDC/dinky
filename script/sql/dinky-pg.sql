@@ -3305,6 +3305,7 @@ CREATE TABLE dinky_metrics
     id          SERIAL PRIMARY KEY          NOT NULL,
     task_id     INT,
     vertices    VARCHAR(255),
+    vertices_title VARCHAR(255),
     metrics     VARCHAR(255),
     position    INT,
     show_type   VARCHAR(255),
@@ -3319,6 +3320,7 @@ COMMENT ON TABLE dinky_metrics IS 'metrics layout';
 COMMENT ON COLUMN dinky_metrics.id IS 'id';
 COMMENT ON COLUMN dinky_metrics.task_id IS 'task id';
 COMMENT ON COLUMN dinky_metrics.vertices IS 'vertices';
+COMMENT ON COLUMN dinky_metrics.vertices_title IS 'vertices_title';
 COMMENT ON COLUMN dinky_metrics.metrics IS 'metrics';
 COMMENT ON COLUMN dinky_metrics.position IS 'position';
 COMMENT ON COLUMN dinky_metrics.show_type IS 'show type';

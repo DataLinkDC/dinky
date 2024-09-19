@@ -108,7 +108,9 @@ public class AppConfig implements WebMvcConfigurer {
                         "/api/login",
                         "/api/ldap/ldapEnableStatus",
                         "/download/**",
-                        "/druid/**");
+                        "/druid/**", "/api/version"
+
+                );
         if (ssoEnabled) {
             log.info("Load{}", config.getClients().getClients().get(0).getName());
             registry.addInterceptor(buildInterceptor(

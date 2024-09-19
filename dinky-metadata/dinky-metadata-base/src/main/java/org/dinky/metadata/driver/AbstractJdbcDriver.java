@@ -38,7 +38,6 @@ import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
-import org.dinky.utils.TextUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -256,6 +255,64 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     Table tableInfo = new Table();
                     tableInfo.setDriverType(getType());
                     tableInfo.setName(tableName);
+                    if (columnList.contains(dbQuery.tableComment())) {
+                        tableInfo.setComment(results.getString(dbQuery.tableComment()));
+                    }
+                    tableInfo.setSchema(schemaName);
+                    if (columnList.contains(dbQuery.tableType())) {
+                        tableInfo.setType(results.getString(dbQuery.tableType()));
+                    }
+                    if (columnList.contains(dbQuery.catalogName())) {
+                        tableInfo.setCatalog(results.getString(dbQuery.catalogName()));
+                    }
+                    if (columnList.contains(dbQuery.engine())) {
+                        tableInfo.setEngine(results.getString(dbQuery.engine()));
+                    }
+                    if (columnList.contains(dbQuery.options())) {
+                        tableInfo.setOptions(results.getString(dbQuery.options()));
+                    }
+                    if (columnList.contains(dbQuery.rows())) {
+                        tableInfo.setRows(results.getLong(dbQuery.rows()));
+                    }
+                    if (columnList.contains(dbQuery.createTime())) {
+                        tableInfo.setCreateTime(results.getTimestamp(dbQuery.createTime()));
+                    }
+                    if (columnList.contains(dbQuery.updateTime())) {
+                        tableInfo.setUpdateTime(results.getTimestamp(dbQuery.updateTime()));
+                    }
+                    tableList.add(tableInfo);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("ListTables error:", e);
+            throw new BusException(e.getMessage());
+        } finally {
+            close(preparedStatement, results);
+        }
+        return tableList;
+    }
+
+    @Override
+    public List<Table> listTables(String schemaName, String tableName) {
+        List<Table> tableList = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        IDBQuery dbQuery = getDBQuery();
+        String sql = dbQuery.tablesSql(schemaName, tableName);
+        try {
+            preparedStatement = conn.get().prepareStatement(sql);
+            results = preparedStatement.executeQuery();
+            ResultSetMetaData metaData = results.getMetaData();
+            List<String> columnList = new ArrayList<>();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columnList.add(metaData.getColumnLabel(i));
+            }
+            while (results.next()) {
+                String tableNameResult = results.getString(dbQuery.tableName());
+                if (Asserts.isNotNullString(tableNameResult)) {
+                    Table tableInfo = new Table();
+                    tableInfo.setDriverType(getType());
+                    tableInfo.setName(tableNameResult);
                     if (columnList.contains(dbQuery.tableComment())) {
                         tableInfo.setComment(results.getString(dbQuery.tableComment()));
                     }
@@ -525,8 +582,8 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
 
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
-        String limitStart = queryData.getOption().getLimitStart();
-        String limitEnd = queryData.getOption().getLimitEnd();
+        int limitStart = queryData.getOption().getLimitStart();
+        int limitEnd = queryData.getOption().getLimitEnd();
 
         StringBuilder optionBuilder = new StringBuilder()
                 .append("select * from ")
@@ -541,12 +598,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
             optionBuilder.append(" order by ").append(order);
         }
 
-        if (TextUtil.isEmpty(limitStart)) {
-            limitStart = "0";
-        }
-        if (TextUtil.isEmpty(limitEnd)) {
-            limitEnd = "100";
-        }
         optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
 
         return optionBuilder;

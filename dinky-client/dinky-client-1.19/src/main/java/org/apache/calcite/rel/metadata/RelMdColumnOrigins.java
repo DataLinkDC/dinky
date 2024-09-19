@@ -48,6 +48,8 @@ import org.apache.calcite.rex.RexShuttle;
 import org.apache.calcite.rex.RexVisitor;
 import org.apache.calcite.rex.RexVisitorImpl;
 import org.apache.calcite.util.BuiltInMethod;
+import org.apache.flink.table.catalog.Column;
+import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -230,14 +232,28 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
             // Direct reference: no derivation added.
             RexInputRef inputRef = (RexInputRef) rexNode;
             int index = inputRef.getIndex();
-            if (input instanceof TableScan) {
-                index = computeIndexWithOffset(rel.getProjects(), inputRef.getIndex(), iOutputColumn);
-            }
             return mq.getColumnOrigins(input, index);
         } else if (input instanceof TableScan
                 && rexNode.getClass().equals(RexCall.class)
                 && ((RexCall) rexNode).getOperands().isEmpty()) {
-            return mq.getColumnOrigins(input, iOutputColumn);
+            List<Column> columns = ((TableSourceTable) (input).getTable())
+                    .contextResolvedTable()
+                    .getResolvedSchema()
+                    .getColumns();
+            Set<RelColumnOrigin> set = new LinkedHashSet<>();
+            for (int index = 0; index < columns.size(); index++) {
+                Column column = columns.get(index);
+                if (column instanceof Column.ComputedColumn
+                        && rexNode.toString()
+                                .equals(((Column.ComputedColumn) column)
+                                        .getExpression()
+                                        .toString())) {
+                    set.add(new RelColumnOrigin(input.getTable(), index, false, true));
+                    return set;
+                }
+            }
+            set.add(new RelColumnOrigin(input.getTable(), -1, false, false));
+            return set;
         }
         // Anything else is a derivation, possibly from multiple columns.
         final Set<RelColumnOrigin> set = getMultipleColumns(rexNode, input, mq);

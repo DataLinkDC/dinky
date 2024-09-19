@@ -21,7 +21,7 @@ import { JobMetricsItem, MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data
 import { getData, putDataAsArray } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 
-export const refeshJobInstance = (id: string, isForce?: boolean) => {
+export const refreshJobInstance = (id: string, isForce?: boolean) => {
   return getData(API_CONSTANTS.REFRESH_JOB_DETAIL, { id, isForce });
 };
 

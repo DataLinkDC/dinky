@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 
 @Controller
-@Api(tags = "Flink Proxy Controller", hidden = true, description = "Flink Proxy API")
+@Api(tags = "Flink Proxy API", hidden = true)
 @RequestMapping(FlinkProxyController.API)
 @SaCheckLogin
 public class FlinkProxyController {
@@ -73,7 +73,11 @@ public class FlinkProxyController {
     @SneakyThrows
     public void writeToHttpServletResponse(HttpResponse httpResponse, HttpServletResponse resp) {
         if (httpResponse.body() != null) {
-            httpResponse.headers().forEach((k, v) -> resp.addHeader(k, v.get(0)));
+            httpResponse.headers().forEach((k, v) -> {
+                if (StrUtil.isNotBlank(k)) {
+                    resp.addHeader(k, v.get(0));
+                }
+            });
             httpResponse.writeBody(resp.getOutputStream(), true, null);
         }
     }

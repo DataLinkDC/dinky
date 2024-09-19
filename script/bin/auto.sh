@@ -46,7 +46,7 @@ assertIsInputVersion() {
 }
 
 # Use FLINK_HOME:
-CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${CUSTOMER_JAR_PATH}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
+CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${CUSTOMER_JAR_PATH}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/flink/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
 PID_FILE="dinky.pid"
 
 # Log configuration file path
@@ -62,7 +62,7 @@ fi
 # OOM dump path
 OOM_OPT="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${APP_HOME}/logs/heapdump.hprof"
 # JVM parameters and log path
-PARAMS_OPT="-Ddinky.logs.path=${DINKY_LOG_PATH} -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true"
+PARAMS_OPT="-Ddinky.logs.path=${DINKY_LOG_PATH} -Ddinky.root.path=${APP_HOME} -Ddruid.mysql.usePingMethod=false -Dlog4j2.isThreadContextMapInheritable=true"
 # JAR parameters
 JAR_PARAMS_OPT="--logging.config=${LOG_CONFIG}"
 # JMX path
@@ -102,7 +102,7 @@ start() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     echo $! >"${PID_PATH}"/${PID_FILE}
     echo "........................................Start Dinky Done........................................"
     echo "current log path : ${DINKY_LOG_PATH}/dinky-start.log , you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log"
@@ -115,7 +115,7 @@ startOnPending() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}
+    java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}
     echo "........................................Start Dinky Successfully........................................"
   else
     echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
@@ -126,7 +126,7 @@ startWithJmx() {
   assertIsInputVersion
   updatePid
   if [ -z "$pid" ]; then
-    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} ${PARAMS_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
+    nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
 #    echo $! >"${PID_PATH}"/${PID_FILE}
     updatePid
     echo "........................................Start Dinky with Jmx Successfully.....................................

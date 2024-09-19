@@ -54,6 +54,9 @@ public class Metrics extends Model<Metrics> {
     @ApiModelProperty(value = "Vertices", dataType = "String", notes = "Vertices information")
     private String vertices;
 
+    @ApiModelProperty(value = "Vertices Title", dataType = "String", notes = "Vertices information")
+    private String verticesTitle;
+
     @ApiModelProperty(value = "Metrics Data", dataType = "String", notes = "Metrics data")
     private String metrics;
 

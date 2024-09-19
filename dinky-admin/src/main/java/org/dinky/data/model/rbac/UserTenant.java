@@ -38,19 +38,13 @@ package org.dinky.data.model.rbac;
  *
  */
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import org.dinky.mybatis.model.DateBaseEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -61,7 +55,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_user_tenant")
 @ApiModel(value = "UserTenant", description = "User Tenant Relationship")
-public class UserTenant implements Serializable {
+public class UserTenant extends DateBaseEntity<UserTenant> implements Serializable {
     private static final long serialVersionUID = -6123386787317880405L;
 
     @ApiModelProperty(value = "ID", dataType = "Integer", notes = "Unique identifier for the user tenant relationship")
@@ -79,24 +73,4 @@ public class UserTenant implements Serializable {
             dataType = "Boolean",
             notes = "Whether the user is a tenant admin for this tenant")
     private Boolean tenantAdminFlag;
-
-    @ApiModelProperty(
-            value = "Create Time",
-            dataType = "LocalDateTime",
-            notes = "Timestamp when the user tenant relationship was created")
-    @TableField(fill = FieldFill.INSERT)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createTime;
-
-    @ApiModelProperty(
-            value = "Update Time",
-            dataType = "LocalDateTime",
-            notes = "Timestamp when the user tenant relationship was last updated")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateTime;
 }

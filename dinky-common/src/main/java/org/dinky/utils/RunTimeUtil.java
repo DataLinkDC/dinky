@@ -20,6 +20,8 @@
 package org.dinky.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -34,6 +36,36 @@ import cn.hutool.core.util.StrUtil;
  * @since 2021/12/11
  */
 public class RunTimeUtil {
+
+    /**
+     * Extract parameters
+     *
+     * @param args parameters
+     * @return List of parameters
+     */
+    public static List<String> extractArgs(String args) {
+        List<String> programArgs = new ArrayList<>();
+        if (StrUtil.isNotEmpty(args)) {
+            String[] array = args.split("\\s+");
+            Iterator<String> iter = Arrays.asList(array).iterator();
+            while (iter.hasNext()) {
+                String v = iter.next();
+                String p = v.substring(0, 1);
+                if (p.equals("'") || p.equals("\"")) {
+                    String value = v;
+                    if (!v.endsWith(p)) {
+                        while (!value.endsWith(p) && iter.hasNext()) {
+                            value += " " + iter.next();
+                        }
+                    }
+                    programArgs.add(value.substring(1, value.length() - 1));
+                } else {
+                    programArgs.add(v);
+                }
+            }
+        }
+        return programArgs;
+    }
 
     public static void recovery(Object obj) {
         obj = null;

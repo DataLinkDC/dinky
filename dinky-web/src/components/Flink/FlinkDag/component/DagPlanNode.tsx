@@ -27,7 +27,7 @@ const DagPlanNode = (props: any) => {
 
   return (
     <Card
-      style={{ width: 270, padding: 0, margin: 0, height: 140 }}
+      style={{ width: 'inherit', padding: 0, margin: 0, height: 'inherit' }}
       bordered={false}
       size={'small'}
       type={'inner'}

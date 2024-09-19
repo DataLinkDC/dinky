@@ -39,6 +39,12 @@ public class FlinkCDCConfig {
     public static final String TABLE_LOWER = "table.lower";
     public static final String TABLE_RENAME = "table.rename";
     public static final String TIMEZONE = "timezone";
+    // 表映射 类似 flink cdc route 映射功能
+    public static final String TABLE_MAPPING_ROUTES = "table.mapping-routes";
+    // 表名 正则表达式替换 pattern 表达式， 替换规则 with
+    public static final String TABLE_REPLACE_PATTERN = "table.replace.pattern";
+    public static final String TABLE_REPLACE_WITH = "table.replace.with";
+
     private String type;
     private String hostname;
     private Integer port;
@@ -149,6 +155,9 @@ public class FlinkCDCConfig {
             case TABLE_LOWER:
             case TABLE_RENAME:
             case TIMEZONE:
+            case TABLE_REPLACE_PATTERN:
+            case TABLE_REPLACE_WITH:
+            case TABLE_MAPPING_ROUTES:
                 return true;
             default:
                 return false;

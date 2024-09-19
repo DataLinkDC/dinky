@@ -45,6 +45,7 @@ import org.apache.flink.table.api.TableResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * JobTransBuilder
@@ -162,6 +163,9 @@ public class JobTransBuilder extends JobBuilder {
         if (tableResult.getJobClient().isPresent()) {
             job.setJobId(tableResult.getJobClient().get().getJobID().toHexString());
             job.setJids(Collections.singletonList(job.getJobId()));
+        } else if (!sqlType.getCategory().getHasJobClient()) {
+            job.setJobId(UUID.randomUUID().toString().replace("-", ""));
+            job.setJids(Collections.singletonList(job.getJobId()));
         }
 
         if (config.isUseResult()) {
@@ -172,7 +176,7 @@ public class JobTransBuilder extends JobBuilder {
                             config.isUseChangeLog(),
                             config.isUseAutoCancel(),
                             executor.getTimeZone())
-                    .getResult(tableResult);
+                    .getResultWithPersistence(tableResult, jobManager.getHandler());
             job.setResult(result);
         }
     }

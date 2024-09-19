@@ -52,6 +52,7 @@
                 <module>dinky-client-1.17</module>
                 <module>dinky-client-1.18</module>
                 <module>dinky-client-1.19</module>
+                <module>dinky-client-1.20</module>
             </modules>
         </profile>
     </profiles>

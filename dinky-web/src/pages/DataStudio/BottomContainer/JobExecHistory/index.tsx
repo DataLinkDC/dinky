@@ -54,14 +54,6 @@ const JobExecHistory: React.FC<connect> = (props) => {
     setHistoryData(row);
     setModalVisit(true);
     setType(type);
-    if (type === 3) {
-      // todo: 实现预览数据逻辑并展示
-      // showJobData(historyData.jobId,dispatch)
-      // const res = getJobData(historyData.jobId);
-      // res.then((resd) => {
-      //   setResult(resd.datas);
-      // });
-    }
   };
 
   const handleCancel = () => {

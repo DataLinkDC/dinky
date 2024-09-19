@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.metrics.MetricsTotal;
 import org.dinky.data.result.Result;
 import org.dinky.service.SystemService;
 
@@ -50,6 +51,12 @@ public class SystemController {
 
     private final SystemService systemService;
 
+    @GetMapping("/getSysInfo")
+    @ApiOperation("Get System Info")
+    public Result<MetricsTotal> getSysInfo() {
+        return Result.succeed(new MetricsTotal());
+    }
+
     /**
      * All log files for this project
      *
@@ -71,7 +78,7 @@ public class SystemController {
     @ApiOperation("Get Root Log File Content")
     @SaCheckPermission(PermissionConstants.SYSTEM_SETTING_INFO_ROOT_LOG)
     public Result<String> getRootLog() {
-        return Result.data(systemService.readFile(DirConstant.ROOT_LOG_PATH));
+        return Result.data(systemService.readFile(DirConstant.getRootLog()));
     }
 
     /**

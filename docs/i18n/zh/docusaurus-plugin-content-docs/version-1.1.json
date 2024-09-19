@@ -1,0 +1,118 @@
+{
+  "version.label": {
+    "message": "1.1",
+    "description": "The label for version 1.1"
+  },
+  "sidebar.tutorialSidebar.category.deploy_guide": {
+    "message": "安装部署",
+    "description": "The label for category deploy_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.user_guide": {
+    "message": "使用手册",
+    "description": "The label for category user_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.studio": {
+    "message": "数据开发",
+    "description": "The label for category studio in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.development_control": {
+    "message": "基本介绍",
+    "description": "The label for category development_control in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.devops_center": {
+    "message": "运维中心",
+    "description": "The label for category devops_center in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.register_center": {
+    "message": "注册中心",
+    "description": "The label for category register_center in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.system_setting": {
+    "message": "配置中心",
+    "description": "The label for category system_setting in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.extend": {
+    "message": "扩展",
+    "description": "The label for category extend in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.function_extension": {
+    "message": "功能扩展",
+    "description": "The label for category function_extension in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.practical_guide": {
+    "message": "实践指南",
+    "description": "The label for category practical_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.developer_guide": {
+    "message": "开发者指南",
+    "description": "The label for category developer_guide in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.contribution": {
+    "message": "参与贡献",
+    "description": "The label for category contribution in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.quick_use": {
+    "message": "快速使用",
+    "description": "The label for category 快速使用 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.get_started": {
+    "message": "快速开始",
+    "description": "The label for category get_started in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.platform_intro": {
+    "message": "Dinky 介绍",
+    "description": "The label for category platform_intro in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.quick_start": {
+    "message": "SQL 快速入门",
+    "description": "The label for category quick_start in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.cdcsource_practice": {
+    "message": "整库同步实践",
+    "description": "The label for category cdcsource_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.run_mode_practice": {
+    "message": "Flink模式提交实践",
+    "description": "The label for category run_mode_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.scenario_practice": {
+    "message": "场景实践",
+    "description": "The label for category scenario_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.Integration_practice": {
+    "message": "集成实践",
+    "description": "The label for category Integration_practice in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.alert": {
+    "message": "告警",
+    "description": "The label for category alert in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.auth_center": {
+    "message": "认证中心",
+    "description": "The label for category auth_center in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.global_settings": {
+    "message": "全局配置",
+    "description": "The label for category global_settings in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.udf_develop": {
+    "message": "函数开发",
+    "description": "The label for category udf_develop in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.extended_grammar": {
+    "message": "扩展语法",
+    "description": "The label for category extended_grammar in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.快速使用": {
+    "message": "快速使用",
+    "description": "The label for category 快速使用 in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.upgrade": {
+    "message": "升级",
+    "description": "The label for category upgrade in sidebar tutorialSidebar"
+  },
+  "sidebar.tutorialSidebar.category.openapi": {
+    "message": "OpenAPI",
+    "description": "The label for category openapi in sidebar tutorialSidebar"
+  }
+}

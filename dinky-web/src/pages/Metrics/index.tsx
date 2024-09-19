@@ -21,10 +21,9 @@ import MetricsFilter from '@/components/Flink/MetricsFilter/MetricsFilter';
 import useHookRequest from '@/hooks/useHookRequest';
 import { MetricsTimeFilter } from '@/pages/DevOps/JobDetail/data';
 import JobMetricsList from '@/pages/Metrics/JobMetricsList';
-import Server from '@/pages/Metrics/Server';
 import { getAllConfig } from '@/pages/Metrics/service';
 import { l } from '@/utils/intl';
-import { PageContainer, ProCard } from '@ant-design/pro-components';
+import { PageContainer } from '@ant-design/pro-components';
 import { Alert } from 'antd';
 import { useState } from 'react';
 
@@ -62,14 +61,9 @@ export default () => {
             <Alert message={l('metrics.dinky.not.open')} type={'warning'} banner showIcon />
           )
         }
-        header={{ extra: [<MetricsFilter onTimeSelect={onTimeSelectChange} />] }}
+        header={{ extra: [<MetricsFilter key={''} onTimeSelect={onTimeSelectChange} />] }}
         content={
           <>
-            {showServer.data && (
-              <ProCard collapsible title={'Dinky Server'} ghost bordered hoverable>
-                <Server timeRange={timeRange} />
-              </ProCard>
-            )}
             {/*<Job />*/}
             <JobMetricsList timeRange={timeRange} />
           </>

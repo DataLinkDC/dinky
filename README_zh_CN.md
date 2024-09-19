@@ -70,7 +70,7 @@ Dinky 是一个基于 `Apache Flink` 的实时数据开发平台，实现了敏�
 
 ## 如何部署
 
-详见 [源码编译](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/compile.mdx) 和 [安装部署](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/deploy.mdx) 。
+详见 [源码编译](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/compile.mdx) 和 [安装部署](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/normal_deploy.mdx) 。
 
 ## 感谢
 

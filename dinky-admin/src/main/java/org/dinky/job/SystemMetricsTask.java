@@ -24,7 +24,6 @@ import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.annotations.GaugeM;
 import org.dinky.data.metrics.BaseMetrics;
 import org.dinky.data.metrics.MetricsTotal;
-import org.dinky.job.handler.SystemMetricsHandler;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -62,7 +61,6 @@ public class SystemMetricsTask implements DaemonTask {
 
     @Override
     public boolean dealTask() {
-        SystemMetricsHandler.refresh();
         return false;
     }
 

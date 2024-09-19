@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.CustomConfig;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.exception.GatewayException;
@@ -96,6 +97,15 @@ public abstract class AbstractGateway implements Gateway {
         }
     }
 
+    protected void addConfigParas(List<CustomConfig> flinkConfigList) {
+        if (Asserts.isNotNullCollection(flinkConfigList)) {
+            flinkConfigList.stream()
+                    .filter(customConfig -> Asserts.isAllNotNullString(customConfig.getName(), customConfig.getValue()))
+                    .forEach(customConfig ->
+                            this.configuration.setString(customConfig.getName(), customConfig.getValue()));
+        }
+    }
+
     protected <T> void addConfigParas(ConfigOption<T> key, T value) {
         if (Asserts.isNotNull(key) && Asserts.isNotNull(value)) {
             this.configuration.set(key, value);
@@ -104,10 +114,12 @@ public abstract class AbstractGateway implements Gateway {
         }
     }
 
+    @Override
     public SavePointResult savepointCluster() {
         return savepointCluster(null);
     }
 
+    @Override
     public SavePointResult savepointJob() {
         return savepointJob(null);
     }
@@ -189,8 +201,8 @@ public abstract class AbstractGateway implements Gateway {
 
     protected void resetCheckpointInApplicationMode(String jobName) {
         String uuid = UUID.randomUUID().toString();
-        String checkpointsDirectory = configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY);
-        String savepointDirectory = configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY);
+        String checkpointsDirectory = configuration.get(CheckpointingOptions.CHECKPOINTS_DIRECTORY);
+        String savepointDirectory = configuration.get(CheckpointingOptions.SAVEPOINT_DIRECTORY);
 
         Optional.ofNullable(checkpointsDirectory)
                 .ifPresent(dir -> configuration.set(

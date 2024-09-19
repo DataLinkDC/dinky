@@ -39,8 +39,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.hutool.json.JSONUtil;
-
 /**
  * DingTalkSender
  */
@@ -51,7 +49,7 @@ public class DingTalkSender {
     private ProxyConfig proxyConfig = null;
 
     DingTalkSender(Map<String, Object> config) {
-        this.dingTalkParams = JSONUtil.toBean(JSONUtil.toJsonStr(config), DingTalkParams.class);
+        this.dingTalkParams = JsonUtils.toBean(JsonUtils.toJsonString(config), DingTalkParams.class);
         Asserts.checkNotNull(dingTalkParams, "dingTalkParams is null");
         if (Boolean.TRUE.equals(dingTalkParams.isEnableProxy())) {
             proxyConfig = new ProxyConfig(
@@ -65,9 +63,9 @@ public class DingTalkSender {
     /**
      * build template params
      *
-     * @param title
-     * @param content
-     * @return
+     * @param title  title
+     * @param content content
+     * @return Map<String, Object>
      */
     public Map<String, Object> buildTemplateParams(String title, String content) {
         Map<String, Object> params = new HashMap<>();
@@ -124,8 +122,8 @@ public class DingTalkSender {
     /**
      * Check Msg Result
      *
-     * @param result
-     * @return
+     * @param result result
+     * @return AlertResult
      */
     private AlertResult checkMsgResult(String result) {
         AlertResult alertResult = new AlertResult();

@@ -46,7 +46,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   const themeValue = useThemeValue();
   const MAX_WIDTH = size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700;
   /**
-   * 侧边栏大小变化
+   * Sidebar size changes
    * @param width
    */
   const handleReSizeChange = (width: any) => {
@@ -57,7 +57,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   };
 
   /**
-   * 侧边栏最小化
+   * The sidebar is minimized
    */
   const handleMinimize = () => {
     dispatch({
@@ -67,14 +67,14 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   };
 
   /**
-   * 侧边栏最大化
+   * Sidebar maximization
    */
   const handleMaxsize = () => {
     handleReSizeChange(MAX_WIDTH);
   };
 
   /**
-   * 侧边栏属性
+   * Sidebar properties
    * @type {{onResize: (event: any, direction: any, elementRef: {offsetWidth: any}) => void, visible: boolean, defaultSize: {width: any, height: any}, enable: {right: boolean}, minWidth: number, title: string, handlerMinimize: () => void, contentHeight: any, maxWidth: number}}
    */
   const restMovableSidebarProps: MovableSidebarProps = {
@@ -106,17 +106,10 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     <Tabs activeKey={leftContainer.selectKey} items={LeftSide} tabBarStyle={{ display: 'none' }} />
   );
 
-  return (
-    <MovableSidebar {...restMovableSidebarProps}>
-      {/*<Tabs activeKey={leftContainer.selectKey} items={LeftSide} tabBarStyle={{display: "none"}}/>*/}
-      {content}
-    </MovableSidebar>
-  );
+  return <MovableSidebar {...restMovableSidebarProps}>{content}</MovableSidebar>;
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  // leftContainer: Studio.leftContainer,
-  // rightContainer: Studio.rightContainer,
   toolContentHeight: Studio.toolContentHeight,
   tabs: Studio.tabs
 }))(LeftContainer);

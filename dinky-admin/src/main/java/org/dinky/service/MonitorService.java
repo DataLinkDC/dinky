@@ -22,15 +22,19 @@ package org.dinky.service;
 import org.dinky.data.MetricsLayoutVo;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
+import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.MetricsVO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import cn.hutool.core.lang.Dict;
 
 public interface MonitorService extends IService<Metrics> {
     /**
@@ -88,4 +92,19 @@ public interface MonitorService extends IService<Metrics> {
      * @return if the delete is successful.
      */
     boolean deleteMetricsLayout(Integer taskId);
+
+    /**
+     *  Get the metrics dashboard data.
+     * @param startTime the start time
+     * @param endTime the end time
+     * @param flinkMetricsIdList the flink metrics id list
+     * @return the map of metrics layout.
+     */
+    Map<Integer, List<Dict>> getFlinkDataByDashboard(Long startTime, Long endTime, String flinkMetricsIdList);
+
+    /**
+     * Get the metrics layout by cascader.
+     * @return the list of cascader vo
+     */
+    List<CascaderVO> getMetricsLayoutByCascader();
 }

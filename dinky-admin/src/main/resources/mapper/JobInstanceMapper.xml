@@ -35,16 +35,16 @@
                 and dh.type = #{param.type}
             </if>
             <if test='param.taskId!=null and param.taskId!=""'>
-                and a.task_id in (${param.taskId})
+                and a.task_id = #{param.taskId}
             </if>
             <if test='param.step!=null and param.step!=""'>
                 and a.step = #{param.step}
             </if>
             <if test='param.name!=null and param.name!=""'>
-                and a.name like "%${param.name}%"
+                and a.name like concat('%',#{param.name},'%')
             </if>
             <if test='param.jid!=null and param.jid!=""'>
-                and a.jid like "%${param.jid}%"
+                and a.jid like concat('%',#{param.jid},'%')
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')

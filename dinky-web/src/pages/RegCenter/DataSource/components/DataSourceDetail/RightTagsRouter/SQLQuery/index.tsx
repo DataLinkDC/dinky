@@ -31,11 +31,13 @@ import React, { useEffect, useState } from 'react';
 // props
 type SQLQueryProps = {
   queryParams: QueryParams;
+  hidlenFilter?: boolean;
 };
 
 const SQLQuery: React.FC<SQLQueryProps> = (props) => {
   const {
-    queryParams: { id: dbId, schemaName, tableName }
+    queryParams: { id: dbId, schemaName, tableName },
+    hidlenFilter = false
   } = props;
 
   // state
@@ -61,8 +63,8 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
         option: {
           where: values.where,
           order: values.order,
-          limitStart: '0',
-          limitEnd: '500'
+          limitStart: 0,
+          limitEnd: 1000
         }
       }
     );
@@ -159,7 +161,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
           dateFormatter='string'
           columns={tableData.columns}
           dataSource={tableData.rowData}
-          toolBarRender={renderToolBar}
+          toolBarRender={!hidlenFilter && renderToolBar}
           tableAlertRender={renderAlert}
           options={{
             density: false,

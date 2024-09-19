@@ -50,13 +50,13 @@ export default [
     layout: false,
     hideInMenu: true
   },
-  // {
-  //   path: '/home',
-  //   name: 'home',
-  //   icon: 'HomeOutlined',
-  //   footerRender: false,
-  //   component: './Home'
-  // },
+  {
+    path: '/home',
+    name: 'home',
+    icon: 'HomeOutlined',
+    footerRender: false,
+    component: './Home'
+  },
   {
     path: '/datastudio',
     name: 'datastudio',
@@ -283,12 +283,30 @@ export default [
       }
     ]
   },
+
   {
-    path: '/metrics',
-    name: 'metrics',
+    path: '/dashboard',
+    name: 'dashboard',
     icon: 'DashboardOutlined',
     footerRender: false,
-    component: './Metrics'
+    routes: [
+      {
+        path: '/dashboard',
+        redirect: '/dashboard/list'
+      },
+      {
+        path: '/dashboard/list',
+        name: 'list',
+        hideInMenu: true,
+        component: './Dashboard'
+      },
+      {
+        path: '/dashboard/dashboard-layout',
+        name: 'chart',
+        hideInMenu: true,
+        component: './Dashboard/DashboardLayout'
+      }
+    ]
   },
   // {
   //   path: '/about',

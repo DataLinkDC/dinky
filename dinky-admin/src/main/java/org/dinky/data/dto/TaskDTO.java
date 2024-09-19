@@ -20,12 +20,14 @@
 package org.dinky.data.dto;
 
 import org.dinky.data.annotations.ProcessId;
+import org.dinky.data.annotations.TaskId;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.alert.AlertGroup;
 import org.dinky.data.model.ext.TaskExtConfig;
 import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,7 @@ public class TaskDTO extends AbstractStatementDTO {
 
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "6", notes = "The identifier of the execution")
     @ProcessId
+    @TaskId
     private Integer id;
 
     @ApiModelProperty(value = "Name", required = true, dataType = "String", example = "Name")
@@ -232,6 +235,9 @@ public class TaskDTO extends AbstractStatementDTO {
     @TableField(typeHandler = ListTypeHandler.class)
     private List<Integer> secondLevelOwners;
 
+    @ApiModelProperty(value = "Update Time", dataType = "LocalDateTime", example = "2021-05-28 00:00:00")
+    private LocalDateTime updateTime;
+
     public JobConfig getJobConfig() {
 
         Map<String, String> parsedConfig =
@@ -251,5 +257,11 @@ public class TaskDTO extends AbstractStatementDTO {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);
         return task;
+    }
+
+    public static TaskDTO fromTask(Task task) {
+        TaskDTO dto = new TaskDTO();
+        BeanUtil.copyProperties(task, dto);
+        return dto;
     }
 }

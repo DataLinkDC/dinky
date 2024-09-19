@@ -30,6 +30,7 @@ import {
   STUDIO_MODEL,
   STUDIO_MODEL_ASYNC,
   TabsItemType,
+  TabsPageType,
   TreeVo
 } from '@/pages/DataStudio/model';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
@@ -38,13 +39,15 @@ import { connect } from '@@/exports';
 import { SortAscendingOutlined } from '@ant-design/icons';
 import { Key } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import type { MenuProps } from 'antd';
+import { Divider, MenuProps } from 'antd';
 import { Button, Dropdown, Empty, Space, Tree } from 'antd';
 import type { ButtonType } from 'antd/es/button/buttonHelpers';
 import Search from 'antd/es/input/Search';
 import { ItemType } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
 import { BtnRoute, useTasksDispatch } from '../../BtnContext';
+import { CodeTwoTone } from '@ant-design/icons';
+import { DIALECT } from '@/services/constants';
 
 const { DirectoryTree } = Tree;
 
@@ -63,7 +66,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   const {
     project: { data: projectData, expandKeys, selectKey },
     catalogueSortType: { data: catalogueSortTypeData },
-    selectCatalogueSortTypeData: { data: selectCatalogueSortTypeData },
+    selectCatalogueSortTypeData,
     onNodeClick,
     style,
     height,
@@ -112,15 +115,17 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
   }, [searchValue, projectData, taskOwnerLockingStrategy]);
 
   useEffect(() => {
-    dispatch({ type: STUDIO_MODEL_ASYNC.queryProject, payload: selectCatalogueSortTypeData });
+    dispatch({
+      type: STUDIO_MODEL_ASYNC.queryProject,
+      payload: { ...selectCatalogueSortTypeData }
+    });
   }, [selectCatalogueSortTypeData]);
 
   function buildSortTreeOptions(trees: TreeVo[] = []): ItemType[] {
     return trees.map((tree) => {
       return {
-        key: tree.name + '_' + tree.value,
+        key: tree.value,
         label: tree.name,
-        value: tree.value,
         children: tree?.children && buildSortTreeOptions(tree.children)
       };
     });
@@ -144,7 +149,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   // when sorted, change the icon display
   useEffect(() => {
-    if (selectCatalogueSortTypeData.sortValue && selectCatalogueSortTypeData.sortType) {
+    if (selectCatalogueSortTypeData?.sortValue && selectCatalogueSortTypeData?.sortType) {
       setSortState((prevState) => ({
         ...prevState,
         sortIconType: 'link'
@@ -186,7 +191,22 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
       payload: getLeafKeyList(projectData)
     });
   };
-
+  const openTerminal = () => {
+    dispatch({
+      type: STUDIO_MODEL.addTab,
+      payload: {
+        icon: DIALECT.TERMINAL,
+        // id: selectDatabaseId + schemaName + tableName,
+        breadcrumbLabel: 'SQL CLI Terminal',
+        label: 'SQL CLI Terminal',
+        type: TabsPageType.terminal
+      }
+    });
+    dispatch({
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: ''
+    });
+  };
   const currentTabName = LeftMenuKey.PROJECT_KEY;
   const btnEvent = [...BtnRoute[currentTabName]];
   const positionKey = (panes: TabsItemType[], activeKey: string) => {
@@ -272,9 +292,14 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         </Dropdown>
       </Space>
 
+      <div style={{ padding: '3px', background: '#F5F5F5' }} onClick={() => openTerminal()}>
+        <CodeTwoTone /> <a>SQL Cli Terminal</a>
+      </div>
+      <Divider style={{ margin: 3 }} />
+
       {data.length ? (
         <DirectoryTree
-          style={{ ...style, height: height - 40 - 16, overflowY: 'auto' }}
+          style={{ ...style, overflowY: 'auto' }}
           className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           onRightClick={onRightClick}

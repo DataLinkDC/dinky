@@ -47,7 +47,7 @@ const JobOverview = (props: any) => {
 
   return (
     <Row gutter={[16, 8]}>
-      <Col span={5}>
+      <Col span={5} xs={24} xxl={7}>
         <ProCard colSpan={'20%'} boxShadow={true}>
           <StatisticsCard
             title={l('devops.joblist.status.all')}
@@ -70,7 +70,7 @@ const JobOverview = (props: any) => {
           />
         </ProCard>
       </Col>
-      <Col span={19}>
+      <Col span={19} xs={24} xxl={17}>
         <ProCard layout='center' boxShadow={true}>
           <StatisticsCard
             title={l('devops.joblist.status.running')}

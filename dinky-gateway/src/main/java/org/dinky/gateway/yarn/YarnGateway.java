@@ -22,7 +22,9 @@ package org.dinky.gateway.yarn;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.CustomConfig;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.AbstractGateway;
@@ -32,7 +34,6 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.GatewayException;
-import org.dinky.gateway.model.CustomConfig;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;
@@ -89,6 +90,7 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
@@ -98,7 +100,7 @@ import cn.hutool.http.HttpUtil;
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
     private final String TMP_SQL_EXEC_DIR =
-            String.format("%s/tmp/sql-exec/%s", System.getProperty("user.dir"), UUID.randomUUID());
+            String.format("%s/sql-exec/%s", DirConstant.getTempRootDir(), UUID.randomUUID());
 
     protected YarnConfiguration yarnConfiguration;
 
@@ -124,6 +126,10 @@ public abstract class YarnGateway extends AbstractGateway {
         final FlinkConfig flinkConfig = config.getFlinkConfig();
         if (Asserts.isNotNull(flinkConfig.getConfiguration())) {
             addConfigParas(flinkConfig.getConfiguration());
+        }
+        // Adding custom Flink configurations
+        if (Asserts.isNotNull(flinkConfig.getFlinkConfigList())) {
+            addConfigParas(flinkConfig.getFlinkConfigList());
         }
 
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
@@ -467,7 +473,7 @@ public abstract class YarnGateway extends AbstractGateway {
                         + HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM.key()
                         + "'.");
             }
-            int sessionTimeout = configuration.getInteger(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT);
+            int sessionTimeout = Convert.toInt(configuration.get(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT));
             String root = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
             String namespace = configuration.getValue(HighAvailabilityOptions.HA_CLUSTER_ID);
 
@@ -499,6 +505,8 @@ public abstract class YarnGateway extends AbstractGateway {
                     }
                 }
             }
+        } else {
+            logger.info("High availability non-ZooKeeper mode, current mode is：{}", highAvailabilityMode);
         }
         return null;
     }

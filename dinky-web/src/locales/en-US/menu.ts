@@ -19,7 +19,7 @@
 
 export default {
   'menu.welcome': 'Welcome',
-  'menu.home': 'Home',
+  'menu.home': 'Worker place',
   'menu.exception.403': '403',
   'menu.exception.404': '404',
   'menu.exception.500': '500',
@@ -85,6 +85,9 @@ export default {
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
   'menu.metrics': 'Metrics',
+  'menu.dashboard': 'Dashboard',
+  'menu.dashboard.list': 'Dashboard',
+  'menu.dashboard.chart': 'Dashboard-Chart',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
 

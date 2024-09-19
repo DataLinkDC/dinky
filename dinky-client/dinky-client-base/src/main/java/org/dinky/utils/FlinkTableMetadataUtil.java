@@ -110,22 +110,10 @@ public class FlinkTableMetadataUtil {
                             column.setScale(((DecimalType) logicalType).getScale());
                         }
 
-                        for (ColumnType columnType : ColumnType.values()) {
-                            if (columnType
-                                    .getJavaType()
-                                    .equals(flinkColumn
-                                            .getDataType()
-                                            .getConversionClass()
-                                            .getName())) {
-                                column.setJavaType(columnType);
-                                break;
-                            }
-                        }
-                        //                            FlinkColumn flinkColumn = FlinkColumn.build(i,
-                        // column.getName(), column.getDataType().getConversionClass().getName(),
-                        // isPrimaryKey.get(), column.getDataType().getLogicalType().isNullable(),
-                        // column.explainExtras().orElse(""), "", column.getComment().orElse(""));
-
+                        String dataTypeName =
+                                flinkColumn.getDataType().getConversionClass().getName();
+                        ColumnType columnType = ColumnType.getByJavaType(dataTypeName);
+                        column.setJavaType(columnType);
                         columns.add(column);
                     }
                 });

@@ -25,6 +25,7 @@ import org.dinky.config.Dialect;
 import org.dinky.data.dto.StudioDDLDTO;
 import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
+import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Column;
@@ -118,9 +119,10 @@ public class StudioServiceImpl implements StudioService {
                         studioCADTO.getStatement(), studioCADTO.getDialect().toLowerCase(), dataBase.getDriverConfig());
             }
         } else {
-            String envSql = taskService.buildEnvSql(studioCADTO);
-            studioCADTO.setStatement(studioCADTO.getStatement() + envSql);
-            return LineageBuilder.getColumnLineageByLogicalPlan(studioCADTO.getStatement());
+            TaskDTO taskDTO = taskService.getTaskInfoById(studioCADTO.getTaskId());
+            taskDTO.setStatement(taskService.buildEnvSql(taskDTO) + taskDTO.getStatement());
+            JobConfig jobConfig = taskDTO.getJobConfig();
+            return LineageBuilder.getColumnLineageByLogicalPlan(taskDTO.getStatement(), jobConfig.getExecutorSetting());
         }
     }
 

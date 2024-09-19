@@ -25,6 +25,8 @@ public interface PrestoConstant {
     String QUERY_ALL_DATABASE = "show catalogs";
     /** 查询某个schema下的所有表 */
     String QUERY_ALL_TABLES_BY_SCHEMA = "show tables from %s";
+    /** 查询某个schema下的指定表 */
+    String QUERY_SPECIFIED_TABLES_BY_SCHEMA = "show tables from %s like '%s'";
     /** 查询指定schema.table的信息 列 列类型 列注释 */
     String QUERY_TABLE_SCHEMA = " describe %s.%s";
     /** 只查询指定schema.table的列名 */

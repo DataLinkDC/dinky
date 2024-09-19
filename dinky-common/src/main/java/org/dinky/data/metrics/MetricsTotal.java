@@ -34,4 +34,5 @@ public class MetricsTotal implements Serializable {
     private Jvm jvm = Jvm.of();
     private Cpu cpu = Cpu.of();
     private Mem mem = Mem.of();
+    private SystemInfo systemInfo = SystemInfo.of();
 }

@@ -52,24 +52,24 @@
         <assertj.version>3.21.0</assertj.version>
         <aws-java-sdk-s3.version>1.12.645</aws-java-sdk-s3.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
-        <clickhouse.version>0.2.6</clickhouse.version>
+        <clickhouse.version>0.6.2</clickhouse.version>
         <commons-email>1.5</commons-email>
         <!--    jexl cannot be upgraded to 3.3, and static methods need to be used.(jexl不能升级到3.3，需要使用到静态方法的使用)    -->
         <commons-jexl3>3.2.1</commons-jexl3>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <dinky.flink.version>1.18</dinky.flink.version>
         <docker.java.version>3.2.14</docker.java.version>
-        <druid-starter>1.2.8</druid-starter>
+        <druid-starter>1.2.23</druid-starter>
         <easy.rules.version>4.1.0</easy.rules.version>
         <fastjson2.version>2.0.41</fastjson2.version>
         <flink.version>1.18.1</flink.version>
-        <flyway.version>10.10.12</flyway.version>
+        <flyway.version>7.15.0</flyway.version>
         <guava.version>32.1.3-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
         <hamcrest.version>1.3</hamcrest.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <hutool.version>5.8.27</hutool.version>
+        <hutool.version>5.8.31</hutool.version>
         <jackson.version>2.14.1</jackson.version>
         <jakarta.ws.rs-api.version>2.1.6</jakarta.ws.rs-api.version>
         <jasypt.version>1.9.3</jasypt.version>
@@ -97,8 +97,9 @@
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <maven.resource.version>3.3.1</maven.resource.version>
         <mockito.version>3.12.4</mockito.version>
-        <mybatis-plus-boot-starter.version>3.5.3.1</mybatis-plus-boot-starter.version>
+        <mybatis-plus-boot-starter.version>3.5.7</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
+        <npm-registry-repo>https://registry.npmjs.org/</npm-registry-repo>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <org.commonmark>0.21.0</org.commonmark>
         <oshi.version>6.4.2</oshi.version>
@@ -109,9 +110,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <reflections.version>0.10.2</reflections.version>
-        <revision>1.1.0-SNAPSHOT</revision>
+        <revision>1.2.0-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
-        <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
@@ -122,12 +122,23 @@
         <spotless.version>2.27.1</spotless.version>
         <spring-boot-dependencies.version>2.7.18</spring-boot-dependencies.version>
         <spring.ldap.version>3.1.0</spring.ldap.version>
+        <sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite-jdbc.version}</version>
+            </dependency>
             <dependency>
                 <groupId>io.fabric8</groupId>
                 <artifactId>kubernetes-client</artifactId>
@@ -153,7 +164,7 @@
                 <artifactId>smiley-http-proxy-servlet</artifactId>
                 <version>${smily.version}</version>
             </dependency>
-            <!--easy-rules 执行引擎-->
+            <!--easy-rules Execution engine-->
             <dependency>
                 <groupId>org.jeasy</groupId>
                 <artifactId>easy-rules-core</artifactId>
@@ -283,20 +294,20 @@
                 <version>${javax.annotation-api.version}</version>
             </dependency>
 
-            <!--解决mysql与phoenix依赖冲突-->
+            <!--Resolve MySQL and Phoenix dependency conflicts-->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf-java.version}</version>
             </dependency>
 
-            <!-- hutool java工具类库  -->
+            <!-- hutool Java Tool Class Library  -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!-- druid 官方 starter -->
+            <!-- druid Official starter -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
@@ -338,6 +349,11 @@
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
@@ -372,7 +388,7 @@
                 <version>${ojdbc8.version}</version>
             </dependency>
             <dependency>
-                <groupId>ru.yandex.clickhouse</groupId>
+                <groupId>com.clickhouse</groupId>
                 <artifactId>clickhouse-jdbc</artifactId>
                 <version>${clickhouse.version}</version>
             </dependency>
@@ -433,6 +449,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.20</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-catalog-mysql-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -463,6 +484,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-mysql-1.20</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-connector-jdbc-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -474,6 +500,11 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-paimon</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -620,6 +651,11 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-flink-1.19</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.20</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -875,7 +911,7 @@
         </plugins>
     </build>
 
-    <url>http://www.dinky.org.cn/</url>
+    <url>https://www.dinky.org.cn/</url>
     <inceptionYear>2021</inceptionYear>
 
     <licenses>
@@ -1003,6 +1039,20 @@
         </profile>
 
         <profile>
+            <id>npm-huawei</id>
+            <properties>
+                <npm-registry-repo>https://repo.huaweicloud.com/repository/npm/</npm-registry-repo>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>npm-taobao</id>
+            <properties>
+                <npm-registry-repo>https://registry.npmmirror.com/</npm-registry-repo>
+            </properties>
+        </profile>
+
+        <profile>
             <id>prod</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -1012,25 +1062,6 @@
             </activation>
             <properties>
                 <scope.runtime>provided</scope.runtime>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>scala-2.11</id>
-            <properties>
-                <scala.binary.version>2.11</scala.binary.version>
-                <scala.version>2.11.7</scala.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>scala-2.12</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <scala.binary.version>2.12</scala.binary.version>
-                <scala.version>2.12.10</scala.version>
             </properties>
         </profile>
 
@@ -1077,6 +1108,12 @@
             <id>flink-1.19</id>
             <properties>
                 <dinky.flink.version>1.19</dinky.flink.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>flink-1.20</id>
+            <properties>
+                <dinky.flink.version>1.20</dinky.flink.version>
             </properties>
         </profile>
 

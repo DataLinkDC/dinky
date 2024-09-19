@@ -28,7 +28,8 @@ import {
 import {
   getClusterConfigurationData,
   getEnvData,
-  getFlinkConfigs, getFlinkUdfOptions,
+  getFlinkConfigs,
+  getFlinkUdfOptions,
   getSessionData,
   querySuggestionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
@@ -132,6 +133,8 @@ export type ConsoleType = {
   result: {};
   // eslint-disable-next-line @typescript-eslint/ban-types
   chart: {};
+  refreshResults: object[];
+  refreshResult: object;
 };
 export type MetadataParams = {
   queryParams: QueryParams;
@@ -160,6 +163,7 @@ export type DataStudioParams = {
 export enum TabsPageType {
   None = '',
   metadata = 'metadata',
+  terminal = 'terminal',
   project = 'project'
 }
 
@@ -294,10 +298,8 @@ export type StateType = {
     data: TreeVo[];
   };
   selectCatalogueSortTypeData: {
-    data: {
-      sortValue: string;
-      sortType: string;
-    };
+    sortValue: string;
+    sortType: string;
   };
   sessionCluster: Cluster.Instance[];
   clusterConfiguration: Cluster.Config[];
@@ -406,10 +408,8 @@ const Model: ModelType = {
       data: []
     },
     selectCatalogueSortTypeData: {
-      data: {
-        sortValue: '',
-        sortType: ''
-      }
+      sortValue: '',
+      sortType: ''
     },
     tabs: {
       activeBreadcrumbTitle: '',
@@ -672,7 +672,7 @@ const Model: ModelType = {
     saveTaskSortTypeData(state, { payload }) {
       return {
         ...state,
-        selectCatalogueSortTypeData: { data: payload }
+        selectCatalogueSortTypeData: { ...payload }
       };
     },
 

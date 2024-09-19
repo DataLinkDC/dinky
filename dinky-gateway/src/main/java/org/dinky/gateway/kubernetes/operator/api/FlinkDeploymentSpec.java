@@ -42,6 +42,9 @@ import lombok.experimental.SuperBuilder;
 public class FlinkDeploymentSpec {
     private JobSpec job;
     private Long restartNonce;
+    /** Ingress specs. */
+    private IngressSpec ingress;
+
     private Map<String, String> flinkConfiguration;
     private String image;
     private String imagePullPolicy;
