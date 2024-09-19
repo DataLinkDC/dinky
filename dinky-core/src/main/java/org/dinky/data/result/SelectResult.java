@@ -19,6 +19,8 @@
 
 package org.dinky.data.result;
 
+import org.dinky.utils.JsonUtils;
+
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,7 +30,6 @@ import com.google.common.collect.Sets;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.json.JSONUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +97,7 @@ public class SelectResult extends AbstractResult implements IResult {
      * @return json string
      */
     public String toTruncateJson(Long length) {
-        String jsonStr = JSONUtil.toJsonStr(this);
+        String jsonStr = JsonUtils.toJsonString(this);
         long overLength = jsonStr.length() - length;
         if (overLength <= 0) {
             return jsonStr;
@@ -104,7 +105,7 @@ public class SelectResult extends AbstractResult implements IResult {
         this.truncationFlag = true;
         if (CollectionUtil.isEmpty(rowData)) {
             this.columns = Sets.newLinkedHashSet();
-            String finalJsonStr = JSONUtil.toJsonStr(this);
+            String finalJsonStr = JsonUtils.toJsonString(this);
             if (finalJsonStr.length() > length) {
                 log.warn(
                         "The row data and columns is empty, but still exceeds the length limit. "
@@ -116,7 +117,7 @@ public class SelectResult extends AbstractResult implements IResult {
             return finalJsonStr;
         }
         // Estimate the size of each row of data to determine how many rows should be removed.
-        String lineJsonStr = JSONUtil.toJsonStr(rowData.get(rowData.size() - 1));
+        String lineJsonStr = JsonUtils.toJsonString(rowData.get(rowData.size() - 1));
         int lineLength = lineJsonStr.length();
         int removeLine = getRemoveLine(overLength, lineLength, rowData.size());
         rowData = ListUtil.sub(rowData, 0, rowData.size() - removeLine);

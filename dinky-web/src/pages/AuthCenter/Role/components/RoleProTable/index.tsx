@@ -43,6 +43,7 @@ import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Tag } from 'antd';
 import React, { Key, useRef, useState } from 'react';
 import RoleModalForm from '../RoleModalForm';
+import ScrollInfo from '@/components/Typography/ScrollInfo';
 
 const RoleProTable: React.FC = () => {
   /**
@@ -224,6 +225,9 @@ const RoleProTable: React.FC = () => {
    */
   return (
     <>
+      <ScrollInfo isScroll={false} alert={{ enabled: false, banner: true }}>
+        {l('role.roleManagement.tips')}
+      </ScrollInfo>
       <ProTable<UserBaseInfo.Role>
         {...PROTABLE_OPTIONS_PUBLIC}
         headerTitle={l('role.roleManagement')}

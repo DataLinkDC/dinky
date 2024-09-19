@@ -46,6 +46,7 @@ import org.dinky.utils.IpUtil;
 import org.dinky.utils.URLUtils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -58,7 +59,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
@@ -87,7 +87,6 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
-        // TODO 这里判空逻辑有问题，clusterInstance有可能为null
         DinkyAssert.check(clusterInstance);
         FlinkClusterInfo info =
                 FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
@@ -134,7 +133,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public List<ClusterInstance> listEnabledAllClusterInstance() {
-        return this.list(new QueryWrapper<ClusterInstance>().eq("enabled", 1));
+        return this.list(new LambdaQueryWrapper<ClusterInstance>().eq(ClusterInstance::getEnabled, 1));
     }
 
     @Override
@@ -144,11 +143,12 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public List<ClusterInstance> listAutoEnable() {
-        return list(new QueryWrapper<ClusterInstance>().eq("enabled", 1).eq("auto_registers", 1));
+        return list(new LambdaQueryWrapper<ClusterInstance>()
+                .eq(ClusterInstance::getEnabled, 1)
+                .eq(ClusterInstance::isAutoRegisters, 1));
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public ClusterInstance registersCluster(ClusterInstanceDTO clusterInstanceDTO) {
         ClusterInstance clusterInstance = clusterInstanceDTO.toBean();
 
@@ -167,8 +167,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     /**
-     * @param id
-     * @return
+     * @param id cluster instance id
      */
     @Override
     public Boolean deleteClusterInstanceById(Integer id) {
@@ -237,15 +236,20 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         if (gatewayResult.isSuccess()) {
             Asserts.checkNullString(gatewayResult.getWebURL(), "Unable to obtain Web URL.");
-            return registersCluster(ClusterInstanceDTO.builder()
+            ClusterInstance registersedCluster = registersCluster(ClusterInstanceDTO.builder()
                     .hosts(gatewayResult.getWebURL().replace("http://", ""))
                     .name(gatewayResult.getId())
-                    .alias(clusterCfg.getName() + "_" + LocalDateTime.now())
+                    .alias(clusterCfg.getName() + "_"
+                            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")))
                     .type(gatewayConfig.getType().getLongValue())
                     .clusterConfigurationId(id)
-                    .autoRegisters(true)
+                    .autoRegisters(false)
                     .enabled(true)
+                    .note(String.format("Deployment from cluster configuration [%s]", clusterCfg.getName()))
                     .build());
+            // check health after deploy session cluster
+            checkHealth(registersedCluster);
+            return registersedCluster;
         }
         throw new DinkyException("Deploy session cluster error: " + gatewayResult.getError());
     }
@@ -284,8 +288,8 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         List<ClusterInstance> clusterInstances = this.list();
         ExecutorService executor = ThreadUtil.newExecutor(Math.min(clusterInstances.size(), 10));
         List<CompletableFuture<Integer>> futures = clusterInstances.stream()
-                .map(c -> CompletableFuture.supplyAsync(
-                        () -> this.registersCluster(c).getStatus(), executor))
+                .map(c ->
+                        CompletableFuture.supplyAsync(() -> registersCluster(c).getStatus(), executor))
                 .collect(Collectors.toList());
         return futures.stream().map(CompletableFuture::join).filter(x -> x == 1).count();
     }

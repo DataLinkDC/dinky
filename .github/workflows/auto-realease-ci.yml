@@ -108,6 +108,28 @@ jobs:
                    -Pprod,flink-single-version,flink-1.18,maven-central,web,fast \
                  --no-snapshot-updates
 
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.19 Pre Release/Release Artifact"
+        id: build_dinky1_19
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,flink-single-version,flink-1.19,maven-central,web,fast \
+                 --no-snapshot-updates
+
+      - name: "Build Dinky ${{ inputs.version }} with Fink 1.20 Pre Release/Release Artifact"
+        id: build_dinky1_20
+        run: |
+          ./mvnw -B clean package \
+                  -Dmaven.test.skip=false \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                   -Pprod,flink-single-version,flink-1.20,maven-central,web,fast \
+                 --no-snapshot-updates
+
       - name: Automatic Upload Releases to GitHub Releases Page
         uses: "marvinpinto/action-automatic-releases@latest"
         with:

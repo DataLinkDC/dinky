@@ -26,10 +26,12 @@ import org.dinky.data.annotations.TaskId;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
+import org.dinky.data.dto.ImportCatalogueDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.ExportCatalogueVO;
 import org.dinky.data.vo.TreeVo;
 import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
@@ -37,7 +39,10 @@ import org.dinky.service.catalogue.CatalogueService;
 import java.io.File;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,6 +51,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.hutool.core.io.FileUtil;
@@ -249,5 +255,39 @@ public class CatalogueController {
     @CheckTaskOwner(checkParam = CatalogueId.class, checkInterface = CatalogueService.class)
     public Result<Void> deleteCatalogueById(@CatalogueId @RequestParam Integer id) {
         return catalogueService.deleteCatalogueById(id);
+    }
+
+    /**
+     * export catalogue by id
+     *
+     * @param id catalogue id
+     * @return {@link ResponseEntity}
+     */
+    @GetMapping("/export")
+    @Log(title = "Export Catalogue", businessType = BusinessType.EXPORT)
+    @ApiOperation("Export Catalogue")
+    @ApiImplicitParam(name = "id", value = "id", required = true, dataType = "Integer", dataTypeClass = Integer.class)
+    public ResponseEntity<?> exportCatalogue(@RequestParam Integer id) {
+        ExportCatalogueVO exportCatalogueVo = catalogueService.exportCatalogue(id);
+        // convert the return value to file at the interface level
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + exportCatalogueVo.getFileName());
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        return ResponseEntity.ok().headers(headers).body(exportCatalogueVo.getDataJson());
+    }
+
+    /**
+     * import catalogue by parent id
+     *
+     * @return {@link Result}< {@link Void}>}
+     */
+    @PostMapping("/import")
+    @Log(title = "Import Catalogue", businessType = BusinessType.IMPORT)
+    @ApiOperation("Import Catalogue")
+    public Result<Void> importCatalogue(MultipartHttpServletRequest request) {
+        // assemble dto objects and shield service requests
+        ImportCatalogueDTO importCatalogueDto = ImportCatalogueDTO.build(request);
+        catalogueService.importCatalogue(importCatalogueDto);
+        return Result.succeed();
     }
 }

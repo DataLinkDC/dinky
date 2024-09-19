@@ -17,7 +17,7 @@
  *
  */
 
-import { Button, Card, Space, Tag, Typography } from 'antd';
+import { Button, Card, Space, Typography } from 'antd';
 import useHookRequest from '@/hooks/useHookRequest';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -30,6 +30,7 @@ import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { l } from '@/utils/intl';
 import { history } from 'umi';
 import { formatDateToYYYYMMDDHHMMSS } from '@/utils/function';
+import { ErrorMessageAsync } from '@/utils/messages';
 
 const MyWorker = () => {
   const { loading, data } = useHookRequest<any, any>(getData, {
@@ -83,7 +84,14 @@ const MyWorker = () => {
                   <JobLifeCycleTag animation={false} bordered={false} status={item.step} />
                 </Space>
               }
-              onClick={() => history.push('/devops/job-detail?id=' + item.jobInstanceId)}
+              onClick={async () => {
+                if (!item.jobInstanceId) {
+                  await ErrorMessageAsync(l('home.task.not.instance'), 2);
+                  return;
+                } else {
+                  history.push('/devops/job-detail?id=' + item.jobInstanceId);
+                }
+              }}
             >
               <div style={{ marginBottom: 10 }}>{item.note ?? l('home.task.not.desc')}</div>
               <Space style={{ fontSize: 10 }}>

@@ -22,11 +22,12 @@ package org.dinky.service.catalogue.impl;
 import static org.dinky.assertion.Asserts.isNull;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.config.Dialect;
+import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
+import org.dinky.data.bo.catalogue.export.ExportTaskBO;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
+import org.dinky.data.dto.ImportCatalogueDTO;
 import org.dinky.data.enums.CatalogueSortValueEnum;
-import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.SortTypeEnum;
@@ -40,6 +41,7 @@ import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.ExportCatalogueVO;
 import org.dinky.data.vo.TreeVo;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -53,6 +55,8 @@ import org.dinky.service.catalogue.factory.CatalogueFactory;
 import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -61,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -71,13 +76,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -264,15 +273,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         if (Opt.ofNullable(catalogueTask.getTask()).isPresent()) {
             task = catalogueTask.getTask().buildTask();
         } else {
-            task.setStep(JobLifeCycle.DEVELOP.getValue());
-            task.setEnabled(true);
-            if (Dialect.isFlinkSql(catalogueTask.getType(), false)) {
-                task.setType(GatewayType.LOCAL.getLongValue());
-                task.setParallelism(1);
-                task.setSavePointStrategy(0); // 0 is disabled
-                task.setEnvId(-1); // -1 is disabled
-                task.setAlertGroupId(-1); // -1 is disabled
-            }
+            String dialect = catalogueTask.getType();
+            catalogueFactory.resetTask(task, dialect);
         }
         if (!Opt.ofNullable(task.getStep()).isPresent()) {
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -595,5 +597,186 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             return taskService.checkTaskOperatePermission(catalogue.getTaskId());
         }
         return null;
+    }
+
+    /**
+     * Export catalogue by id
+     *
+     * @param catalogueId catalogue id
+     * @return export catalogue vo
+     */
+    @Override
+    public ExportCatalogueVO exportCatalogue(Integer catalogueId) {
+        log.info("Export catalogue: {}", catalogueId);
+        ExportCatalogueBO exportCatalogueBo = getAllCatalogue(catalogueId);
+        String dataJson = JSONUtil.toJsonPrettyStr(exportCatalogueBo);
+        return ExportCatalogueVO.builder()
+                .fileName(getExportCatalogueFileName(catalogueId))
+                .dataJson(dataJson)
+                .build();
+    }
+
+    /**
+     * Import catalogue
+     *
+     * @param importCatalogueDto ImportCatalogueDTO
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void importCatalogue(ImportCatalogueDTO importCatalogueDto) {
+        log.info("Import Catalogue start. importCatalogueDto: {}", importCatalogueDto);
+        Integer parentCatalogueId = importCatalogueDto.getParentCatalogueId();
+        ExportCatalogueBO exportCatalogue = importCatalogueDto.getExportCatalogue();
+        if (Objects.isNull(exportCatalogue)) {
+            throw new BusException(Status.FAILED);
+        }
+        Catalogue parentCatalogue = this.getById(parentCatalogueId);
+        // check param
+        checkImportCatalogueParam(parentCatalogue, exportCatalogue);
+
+        // create catalogue and task
+        List<Task> createTasks = Lists.newArrayList();
+        List<Catalogue> createCatalogues = Lists.newArrayList();
+        List<ExportCatalogueBO> searchCatalogues = Lists.newArrayList(exportCatalogue);
+
+        // ExportCatalogueBO -> Task mapping
+        Map<ExportCatalogueBO, Task> exportCatalogueTaskMap = Maps.newHashMap();
+        // ExportCatalogueBO -> Catalogue mapping
+        Map<ExportCatalogueBO, Catalogue> exportCatalogueMap = Maps.newHashMap();
+        // ExportCatalogueBO -> Parent Catalogue ID mapping
+        Map<ExportCatalogueBO, Integer> exportCatalogueParentIdMap = Maps.newHashMap();
+        exportCatalogueParentIdMap.put(exportCatalogue, parentCatalogueId);
+
+        Integer currentUserId = getCurrentUserId();
+        while (CollectionUtil.isNotEmpty(searchCatalogues)) {
+            List<ExportCatalogueBO> nextSearchCatalogues = Lists.newArrayList();
+            // create task
+            for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
+                ExportTaskBO exportTaskBO = searchCatalogue.getTask();
+                if (Objects.nonNull(exportTaskBO)) {
+                    Task task = catalogueFactory.getTask(exportTaskBO, currentUserId);
+                    createTasks.add(task);
+                    exportCatalogueTaskMap.put(searchCatalogue, task);
+                }
+            }
+            taskService.saveBatch(createTasks);
+            // create catalogue
+            for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
+                Task task = exportCatalogueTaskMap.get(searchCatalogue);
+                Integer taskId = Objects.nonNull(task) ? task.getId() : null;
+                Integer parentId = exportCatalogueParentIdMap.get(searchCatalogue);
+                if (Objects.isNull(parentId)) {
+                    log.error("Not found parent id. searchCatalogue: {}", searchCatalogue);
+                    throw new BusException(Status.FAILED);
+                }
+                Catalogue catalogue = catalogueFactory.getCatalogue(searchCatalogue, parentId, taskId);
+                createCatalogues.add(catalogue);
+                exportCatalogueMap.put(searchCatalogue, catalogue);
+                List<ExportCatalogueBO> children = searchCatalogue.getChildren();
+                if (CollectionUtil.isNotEmpty(children)) {
+                    nextSearchCatalogues.addAll(children);
+                }
+            }
+            this.saveBatch(createCatalogues);
+            // put parent id
+            for (ExportCatalogueBO searchCatalogue : searchCatalogues) {
+                List<ExportCatalogueBO> children = searchCatalogue.getChildren();
+                if (CollectionUtil.isEmpty(children)) {
+                    continue;
+                }
+                Catalogue catalogue = exportCatalogueMap.get(searchCatalogue);
+                for (ExportCatalogueBO child : children) {
+                    exportCatalogueParentIdMap.put(child, catalogue.getId());
+                }
+            }
+            createTasks.clear();
+            createCatalogues.clear();
+            searchCatalogues = nextSearchCatalogues;
+        }
+        log.info("Import Catalogue success. The number of Catalogue created is: {}", exportCatalogueMap.size());
+    }
+
+    @VisibleForTesting
+    protected Integer getCurrentUserId() {
+        return StpUtil.getLoginIdAsInt();
+    }
+
+    private void checkImportCatalogueParam(Catalogue parentCatalogue, ExportCatalogueBO exportCatalogue) {
+        // verify that the parent directory exists
+        if (Objects.isNull(parentCatalogue)) {
+            throw new BusException(Status.CATALOGUE_NOT_EXIST);
+        }
+        // check if a catalogue with the same name exists
+        List<String> catalogueNames = getCatalogueNames(exportCatalogue);
+        List<Catalogue> existCatalogues =
+                this.list(new LambdaQueryWrapper<Catalogue>().in(Catalogue::getName, catalogueNames));
+        if (CollectionUtil.isNotEmpty(existCatalogues)) {
+            throw new BusException(
+                    Status.CATALOGUE_IS_EXIST,
+                    existCatalogues.stream().map(Catalogue::getName).collect(Collectors.joining(",")));
+        }
+        // verify that the task name and parent catalogue name are consistent
+        List<ExportCatalogueBO> searchExportCatalogues = Lists.newArrayList(exportCatalogue);
+        while (CollectionUtil.isNotEmpty(searchExportCatalogues)) {
+            List<ExportCatalogueBO> nextSearchExportCatalogues = Lists.newArrayList();
+            for (ExportCatalogueBO searchExportCatalogue : searchExportCatalogues) {
+                List<ExportCatalogueBO> children = searchExportCatalogue.getChildren();
+                if (CollectionUtil.isNotEmpty(children)) {
+                    nextSearchExportCatalogues.addAll(children);
+                }
+                ExportTaskBO task = searchExportCatalogue.getTask();
+                if (Objects.isNull(task)) {
+                    continue;
+                }
+                String catalogueName = searchExportCatalogue.getName();
+                String taskName = task.getName();
+                if (!StringUtils.equals(catalogueName, taskName)) {
+                    throw new BusException(Status.TASK_NAME_NOT_MATCH_CATALOGUE_NAME, catalogueName, taskName);
+                }
+            }
+            searchExportCatalogues = nextSearchExportCatalogues;
+        }
+    }
+
+    private List<String> getCatalogueNames(ExportCatalogueBO exportCatalogue) {
+        if (Objects.isNull(exportCatalogue)) {
+            return Lists.newArrayList();
+        }
+        List<String> catalogueNameList = Lists.newArrayList();
+        String catalogueName = exportCatalogue.getName();
+        catalogueNameList.add(catalogueName);
+        List<ExportCatalogueBO> children = exportCatalogue.getChildren();
+        if (CollectionUtil.isEmpty(children)) {
+            return catalogueNameList;
+        }
+        for (ExportCatalogueBO child : children) {
+            catalogueNameList.addAll(getCatalogueNames(child));
+        }
+        return catalogueNameList;
+    }
+
+    private String getExportCatalogueFileName(Integer catalogueId) {
+        return String.format("export_catalogue_%s_%s.json", catalogueId, System.currentTimeMillis());
+    }
+
+    private ExportCatalogueBO getAllCatalogue(Integer catalogueId) {
+        Catalogue catalogue = this.getById(catalogueId);
+        if (Objects.isNull(catalogue)) {
+            return null;
+        }
+        Boolean isLeaf = catalogue.getIsLeaf();
+        // only leaf nodes have tasks
+        Task task = isLeaf ? taskService.getById(catalogue.getTaskId()) : null;
+        ExportCatalogueBO exportCatalogueBo = catalogueFactory.getExportCatalogueBo(catalogue, task);
+        List<Catalogue> subCatalogues =
+                this.list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
+        if (CollectionUtil.isNotEmpty(subCatalogues)) {
+            List<ExportCatalogueBO> subExportCatalogueBo = subCatalogues.stream()
+                    .map(Catalogue::getId)
+                    .map(this::getAllCatalogue)
+                    .collect(Collectors.toList());
+            exportCatalogueBo.setChildren(subExportCatalogueBo);
+        }
+        return exportCatalogueBo;
     }
 }

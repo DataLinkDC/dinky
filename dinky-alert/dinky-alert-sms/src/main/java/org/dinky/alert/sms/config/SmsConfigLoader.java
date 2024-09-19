@@ -22,6 +22,7 @@ package org.dinky.alert.sms.config;
 import static java.util.Objects.requireNonNull;
 
 import org.dinky.alert.sms.SmsConstants;
+import org.dinky.utils.JsonUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,6 @@ import org.dromara.sms4j.unisms.config.UniFactory;
 import org.dromara.sms4j.yunpian.config.YunPianFactory;
 import org.dromara.sms4j.yunpian.config.YunpianConfig;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -68,46 +67,34 @@ public class SmsConfigLoader {
     }
 
     /**
-     * Parse config params json object.
-     *
-     * @param config
-     * @return
-     */
-    public static JSONObject parseConfigParams(String config) {
-        return JSONUtil.parseObj(config);
-    }
-
-    /**
      * Gets config supplier config.
      *
      * @param params the config params
      * @return the config supplier config {@link BaseConfig }
      */
     public static BaseConfig getConfigSupplierConfig(Map<String, Object> params) {
-        JSONObject fullConfigParams = parseConfigParams(JSONUtil.toJsonStr(params));
-
-        String suppliersId = fullConfigParams.getStr(SmsConstants.SUPPLIERS);
+        Object suppliersId = params.get(SmsConstants.SUPPLIERS);
         requireNonNull(suppliersId, "suppliers is null");
 
-        switch (suppliersId) {
+        switch (suppliersId.toString()) {
             case SupplierConstant.ALIBABA:
-                return JSONUtil.toBean(fullConfigParams, AlibabaConfig.class);
+                return JsonUtils.toBean(params, AlibabaConfig.class);
             case SupplierConstant.TENCENT:
-                return JSONUtil.toBean(fullConfigParams, TencentConfig.class);
+                return JsonUtils.toBean(params, TencentConfig.class);
             case SupplierConstant.HUAWEI:
-                return JSONUtil.toBean(fullConfigParams, HuaweiConfig.class);
+                return JsonUtils.toBean(params, HuaweiConfig.class);
             case SupplierConstant.YUNPIAN:
-                return JSONUtil.toBean(fullConfigParams, YunpianConfig.class);
+                return JsonUtils.toBean(params, YunpianConfig.class);
             case SupplierConstant.UNISMS:
-                return JSONUtil.toBean(fullConfigParams, UniConfig.class);
+                return JsonUtils.toBean(params, UniConfig.class);
             case SupplierConstant.JDCLOUD:
-                return JSONUtil.toBean(fullConfigParams, JdCloudConfig.class);
+                return JsonUtils.toBean(params, JdCloudConfig.class);
             case SupplierConstant.CLOOPEN:
-                return JSONUtil.toBean(fullConfigParams, CloopenConfig.class);
+                return JsonUtils.toBean(params, CloopenConfig.class);
             case SupplierConstant.EMAY:
-                return JSONUtil.toBean(fullConfigParams, EmayConfig.class);
+                return JsonUtils.toBean(params, EmayConfig.class);
             case SupplierConstant.CTYUN:
-                return JSONUtil.toBean(fullConfigParams, CtyunConfig.class);
+                return JsonUtils.toBean(params, CtyunConfig.class);
             default:
                 throw new IllegalArgumentException(String.format("Unsupported supplier type: [%s]", suppliersId));
         }

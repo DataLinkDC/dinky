@@ -64,6 +64,6 @@
         from
         dinky_cluster a
         where enabled = 1
-        and (type = 'standalone' or type = 'yarn-session'or type = 'kubernetes-session')
+        and `type` in( 'standalone' , 'yarn-session' , 'kubernetes-session')
     </select>
 </mapper>

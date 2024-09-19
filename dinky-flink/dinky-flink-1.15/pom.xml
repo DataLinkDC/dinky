@@ -133,7 +133,7 @@
         <dependency>
             <groupId>com.starrocks</groupId>
             <artifactId>flink-connector-starrocks</artifactId>
-            <version>1.2.6_flink-1.15</version>
+            <version>1.2.9_flink-1.15</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.github.jsqlparser</groupId>
@@ -184,7 +184,7 @@
         <dependency>
             <groupId>org.apache.doris</groupId>
             <artifactId>flink-doris-connector-1.15</artifactId>
-            <version>1.2.1</version>
+            <version>1.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>

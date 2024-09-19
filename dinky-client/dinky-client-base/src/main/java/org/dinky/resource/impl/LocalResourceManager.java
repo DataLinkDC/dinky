@@ -24,6 +24,9 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ResourcesVO;
 import org.dinky.resource.BaseResourceManager;
 
+import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.core.fs.local.LocalFileSystem;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -126,5 +129,10 @@ public class LocalResourceManager implements BaseResourceManager {
     @Override
     public InputStream readFile(String path) {
         return FileUtil.getInputStream(getFilePath(path));
+    }
+
+    @Override
+    public FileSystem getFileSystem() {
+        return LocalFileSystem.getSharedInstance();
     }
 }

@@ -56,7 +56,7 @@ const JobConfigTab = (props: JobProps) => {
           <JobDesc jobDetail={jobDetail} />
           <ProCard
             style={{
-              height: '40vh'
+              height: '60vh'
             }}
           >
             {job ? (

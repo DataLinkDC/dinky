@@ -152,6 +152,8 @@ export default {
   'datastudio.project.delete.job': 'Delete [{type}] Job [{name}]',
   'datastudio.project.delete.job.confirm':
     'This operation will delete the execution history of the task and all information of the task. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
+  'datastudio.project.import.title': 'Import json file',
+  'datastudio.project.import.tip': 'Click or drag file to this area to upload',
   /**
    *
    * devops
@@ -270,6 +272,8 @@ export default {
   'home.mywork': 'My Task',
   'home.allwork': 'All Task',
   'home.task.not.desc': 'No mission statement at this time',
+  'home.task.not.instance':
+    'This task has not been run before, so we cannot go to the [Devops] to view task details. Please run this task first',
   'home.task.update.at': 'Updated At: {time}',
   'home.job.stream': 'Stream Job',
   'home.job.batch': 'Batch Job',
@@ -894,7 +898,7 @@ export default {
   'rc.ci.killConfirm':
     'Are you sure to stop this Flink Cluster instance?  Please note that after stopping, it will not be recovered! The associated task will affect, please be careful!',
   'rc.ci.kill': 'Stop Flink Cluster Instance',
-  'rc.ci.jma': 'JobManager Address',
+  'rc.ci.jma': 'JM Address',
   'rc.ci.jmha': 'JobManager HA Address',
   'rc.ci.jmha.tips':
     'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081',
@@ -1123,6 +1127,8 @@ export default {
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
   'role.roleCode': 'Role Code',
   'role.roleManagement': 'Role Management',
+  'role.roleManagement.tips':
+    'The system has assigned [Admin] users by default when creating tenants, which means that all tenants will include [Admin] users. When creating roles, it is not possible to freely specify tenants. If you need to specify a non current tenant, please select the tenant according to your own needs and switch in the upper right corner (if there is no new tenant in the options, please refresh the page after the tenant is successfully created). After the switch is completed, perform related operations such as creating roles and role empowerment',
   'role.roleName': 'Role Name',
   'role.update': 'Update Role',
   'role.user.list': 'Role of User List',

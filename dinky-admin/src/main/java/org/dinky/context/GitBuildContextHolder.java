@@ -20,19 +20,19 @@
 package org.dinky.context;
 
 import org.dinky.function.constant.PathConstant;
+import org.dinky.utils.JsonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.json.JSONUtil;
 
 public class GitBuildContextHolder {
     private static final List<Integer> RUNNING_LIST = new ArrayList<>();
 
     public static void addRun(Integer id) {
         RUNNING_LIST.add(id);
-        FileUtil.writeUtf8String(JSONUtil.toJsonStr(getAll()), PathConstant.TMP_PATH + "/build.list");
+        FileUtil.writeUtf8String(JsonUtils.toJsonString(getAll()), PathConstant.TMP_PATH + "/build.list");
     }
 
     public static void remove(Integer id) {

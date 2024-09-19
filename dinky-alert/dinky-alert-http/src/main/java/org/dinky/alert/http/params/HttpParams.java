@@ -30,8 +30,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor(onConstructor = @__(@JsonCreator))
+@NoArgsConstructor(onConstructor = @__(@JsonCreator))
+@AllArgsConstructor
 public class HttpParams {
 
     private String url;

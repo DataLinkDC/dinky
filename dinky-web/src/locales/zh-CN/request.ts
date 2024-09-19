@@ -43,6 +43,7 @@ export default {
   'app.request.heartbeat.connection.failed': '数据源连接异常，原因为: {error}',
   'app.request.upload.failed': '上传失败。',
   'app.request.update.setting.success': '修改配置成功！',
+  'app.request.download.failed': '下载失败，请重试',
   'app.request.error.try': '失败，请重试',
   'app.request.geterror.try': '获取失败，请重试',
   'app.request.delete.error': '删除失败，请重试',

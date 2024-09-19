@@ -24,6 +24,7 @@ import static java.util.Objects.requireNonNull;
 import org.dinky.alert.AlertException;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.email.params.EmailParams;
+import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +40,6 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
-import cn.hutool.json.JSONUtil;
 
 /**
  * EmailSender 邮件发送器
@@ -50,7 +50,7 @@ public final class EmailSender {
     private final EmailParams emailParams;
 
     public EmailSender(Map<String, Object> config) {
-        this.emailParams = JSONUtil.toBean(JSONUtil.toJsonStr(config), EmailParams.class);
+        this.emailParams = JsonUtils.toBean(config, EmailParams.class);
         if (CollUtil.isEmpty(emailParams.getReceivers())) {
             throw new AlertException("receivers is empty, please check config");
         }
@@ -115,13 +115,13 @@ public final class EmailSender {
             userNameFrom = emailParams.getSender() + "<" + emailParams.getUser() + ">";
         }
         mailAccount.setFrom(userNameFrom);
-        if (emailParams.isEnableSmtpAuth()) {
-            mailAccount.setAuth(emailParams.isEnableSmtpAuth());
+        if (emailParams.getEnableSmtpAuth()) {
+            mailAccount.setAuth(true);
             mailAccount.setUser(emailParams.getUser());
             mailAccount.setPass(emailParams.getPassword());
         }
-        mailAccount.setStarttlsEnable(emailParams.isStarttlsEnable());
-        mailAccount.setSslEnable(emailParams.isSslEnable());
+        mailAccount.setStarttlsEnable(emailParams.getStarttlsEnable());
+        mailAccount.setSslEnable(emailParams.getSslEnable());
         mailAccount.setSocketFactoryClass("javax.net.ssl.SSLSocketFactory");
         MailSSLSocketFactory sf = new MailSSLSocketFactory();
         sf.setTrustedHosts(emailParams.getSmtpSslTrust().split(","));

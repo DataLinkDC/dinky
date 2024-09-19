@@ -140,6 +140,8 @@ export default {
   'datastudio.project.delete.job': '删除 [{type}] 作业 [{name}]',
   'datastudio.project.delete.job.confirm':
     '此操作会将该任务的执行历史, 以及任务的所有信息全部删除.\n\t\t\t\t请谨慎操作! 该操作不可逆!!!\n\t\t\t\t\t确认删除吗?',
+  'datastudio.project.import.title': '导入 json 文件',
+  'datastudio.project.import.tip': '点击或拖拽文件到此区域上传',
   /**
    *
    * devops
@@ -255,6 +257,7 @@ export default {
   'home.mywork': '我负责的任务',
   'home.allwork': '全部任务',
   'home.task.not.desc': '暂无任务说明',
+  'home.task.not.instance': '该任务未运行过,无法前往[运维中心]查看任务详情,请先运行该任务.',
   'home.task.update.at': '更新于: {time}',
   'home.job.stream': '流作业',
   'home.job.batch': '批作业',
@@ -813,7 +816,7 @@ export default {
   'rc.cc.value': '配置值',
   'rc.cc.loadFromLocal': '从本地文件加载',
 
-  'rc.ci.alias': '实例别名',
+  'rc.ci.alias': '别名',
   'rc.ci.aliasPlaceholder': '请输入别名!',
 
   'rc.ci.ar': '自动注册',
@@ -824,7 +827,7 @@ export default {
     '确定停止该 Flink 实例吗? 请注意,停止后将无法恢复!关联的任务将会收到影响,请谨慎操作!',
   'rc.ci.heartbeat': '心跳检测',
   'rc.ci.kill': '停止 Flink 实例',
-  'rc.ci.jma': 'JobManager 地址',
+  'rc.ci.jma': 'JM 地址',
   'rc.ci.jmha': 'JobManager 高可用地址',
   'rc.ci.jmha.tips':
     '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081',
@@ -843,7 +846,7 @@ export default {
   'rc.ci.type': '类型',
   'rc.ci.typePlaceholder': '请选择集群类型!',
   'rc.ci.version': '版本',
-  'rc.ci.desc': '描述',
+  'rc.ci.desc': '备注',
   'rc.ci.search': '搜索 名称/别名/备注',
   'rc.doc.category': '注册类型',
   'rc.doc.categoryPlaceholder': '请选择该文档所属类型!',
@@ -1044,6 +1047,8 @@ export default {
   'role.deleteConfirm': '您确定要删除此角色吗？',
   'role.roleCode': '角色编码',
   'role.roleManagement': '角色管理',
+  'role.roleManagement.tips':
+    '系统已在创建租户时,将 [Admin] 用户进行了默认分配,即:所有租户都会包含 [Admin] 用户，在创建角色时无法自由指定租户，如需要指定非当前租户,请根据自身需要选择租户，在右上角切换(如果选项中无新建的租户,请在租户创建成功后刷新页面)，切换完成后,进行创建角色以及角色赋权等相关操作',
   'role.roleName': '角色名称',
   'role.update': '修改角色',
   'role.user.list': '角色用户列表',

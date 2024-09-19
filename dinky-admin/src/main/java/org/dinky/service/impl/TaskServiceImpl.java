@@ -19,6 +19,8 @@
 
 package org.dinky.service.impl;
 
+import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -232,6 +234,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         } else {
             // When disabling checkpoints, delete the checkpoint path
             config.setSavePointPath(null);
+        }
+        if (SystemConfiguration.getInstances().getUseFlinkHistoryServer().getValue()) {
+            config.getConfigJson().compute("jobmanager.archive.fs.dir", (k, v) -> {
+                if (StringUtils.isNotBlank(v)) {
+                    return v + "," + FLINK_JOB_ARCHIVE;
+                }
+                return FLINK_JOB_ARCHIVE;
+            });
         }
         if (GatewayType.get(task.getType()).isDeployCluster()) {
             log.info("Init gateway config, type:{}", task.getType());
@@ -1041,16 +1051,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
         });
-
-        LambdaQueryWrapper<JobInstance> wrapper = new LambdaQueryWrapper<>();
-        wrapper.in(JobInstance::getId, tskMap.keySet());
-        jobInstanceService.getBaseMapper().selectList(wrapper, resultContext -> {
-            JobInstance jobInstance = resultContext.getResultObject();
-            TaskDTO taskDTO = tskMap.get(jobInstance.getId());
-            if (Objects.nonNull(taskDTO)) {
-                taskDTO.setStatus(jobInstance.getStatus());
-            }
-        });
+        // When the postgre data source query in () is empty, a syntax error will be reported, so it is necessary to
+        // judge
+        if (!tskMap.keySet().isEmpty()) {
+            LambdaQueryWrapper<JobInstance> wrapper = new LambdaQueryWrapper<>();
+            wrapper.in(JobInstance::getId, tskMap.keySet());
+            jobInstanceService.getBaseMapper().selectList(wrapper, resultContext -> {
+                JobInstance jobInstance = resultContext.getResultObject();
+                TaskDTO taskDTO = tskMap.get(jobInstance.getId());
+                if (Objects.nonNull(taskDTO)) {
+                    taskDTO.setStatus(jobInstance.getStatus());
+                }
+            });
+        }
 
         List<TaskDTO> tasks = new ArrayList<>(tskMap.values());
         // 按照step排序，发布>开发>,相同情况 下按照状态排序

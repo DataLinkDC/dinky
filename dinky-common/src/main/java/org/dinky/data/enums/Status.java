@@ -193,7 +193,9 @@ public enum Status {
     MODE_IS_NOT_ALLOW_SELECT(12014, "mode.is.not.allow.select"),
     OPERATE_NOT_SUPPORT_QUERY(12015, "operate.not.support.query"),
     TASK_NOT_OPERATE_PERMISSION(12016, "task.not.operate.permission"),
-    TASK_SQL_NO_EXECUTABLE(12017, "task.sql.no.executable"),
+    CATALOGUE_NOT_EXIST(12017, "catalogue.not.exist"),
+    CATALOGUE_IS_EXIST(12018, "catalogue.is.exist"),
+    TASK_NAME_NOT_MATCH_CATALOGUE_NAME(12019, "task.name.not.match.catalogue.name"),
 
     /**
      * alert instance
@@ -449,6 +451,15 @@ public enum Status {
     PROCESS_REGISTER_EXITS(196, "process.register.exits"),
     PROCESS_CLEAR_LOG_SUCCESS(198, "process.clear.log.success"),
     PROCESS_CLEAR_LOG_FAILED(199, "process.clear.log.failed"),
+
+    SYS_FLINK_SETTINGS_USE_FLINK_HISTORY_SERVER(200, "sys.flink.settings.useFlinkHistoryServer"),
+    SYS_FLINK_SETTINGS_USE_FLINK_HISTORY_SERVER_NOTE(201, "sys.flink.settings.useFlinkHistoryServer.note"),
+    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT(202, "sys.flink.settings.flinkHistoryServerPort"),
+    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_PORT_NOTE(203, "sys.flink.settings.flinkHistoryServerPort.note"),
+    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL(
+            204, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval"),
+    SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE(
+            205, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval.note"),
     ;
     private final int code;
     private final String key;

@@ -79,7 +79,7 @@ const DagDataNode = (props: any) => {
   const backpressure = data.backpressure;
   return (
     <Card
-      style={{ width: '250px', padding: 0, margin: 0, height: 140 }}
+      style={{ width: 'inherit', padding: 0, margin: 0, height: 'inherit' }}
       bordered={false}
       size={'small'}
       type={'inner'}

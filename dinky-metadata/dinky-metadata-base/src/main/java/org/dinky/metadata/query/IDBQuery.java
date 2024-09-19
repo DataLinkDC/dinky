@@ -32,6 +32,9 @@ public interface IDBQuery {
     /** 表信息查询 SQL */
     String tablesSql(String schemaName);
 
+    /** 表信息查询 SQL */
+    String tablesSql(String schemaName, String tableName);
+
     /** 表字段信息查询 SQL */
     String columnsSql(String schemaName, String tableName);
 
