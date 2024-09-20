@@ -201,9 +201,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) throws Exception {
-        JobResult jobResult = BaseTask.getTask(task).execute();
-        log.info("execute job finished,status is {}", jobResult.getStatus());
-        return jobResult;
+        return executeJob(task, false);
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)

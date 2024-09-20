@@ -21,6 +21,8 @@ package org.dinky.trans.dml;
 
 import static org.dinky.utils.RunTimeUtil.extractArgs;
 
+import org.dinky.config.Dialect;
+import org.dinky.context.TaskContextHolder;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
@@ -61,7 +63,11 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
             StreamExecutionEnvironment streamExecutionEnvironment = tEnv.getStreamExecutionEnvironment();
-            FlinkStreamEnvironmentUtil.executeAsync(getStreamGraph(tEnv), streamExecutionEnvironment);
+            if (TaskContextHolder.getDialect().equals(Dialect.FLINK_JAR)) {
+                FlinkStreamEnvironmentUtil.executeAsync(getStreamGraph(tEnv), streamExecutionEnvironment);
+            } else {
+                throw new RuntimeException("Please perform Execute jar syntax in the FlinkJar task !");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
