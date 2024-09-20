@@ -220,8 +220,8 @@ public abstract class Executor {
         }
 
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
-        configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
-        configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
+        configuration.set(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
+        configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
     }
 
     private void addJar(String... jarPath) {

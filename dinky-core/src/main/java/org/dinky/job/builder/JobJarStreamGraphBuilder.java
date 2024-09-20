@@ -19,6 +19,7 @@
 
 package org.dinky.job.builder;
 
+import org.apache.flink.configuration.PipelineOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
@@ -117,6 +118,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
     }
 
     private GatewayResult submitGateway() throws Exception {
+        configuration.set(PipelineOptions.JARS,getUris(job.getStatement()) );
         config.addGatewayConfig(configuration);
         config.getGatewayConfig().setSql(job.getStatement());
         return Gateway.build(config.getGatewayConfig()).submitJar(jobManager.getUdfPathContextHolder());

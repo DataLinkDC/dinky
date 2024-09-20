@@ -25,6 +25,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
 import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.context.TaskContextHolder;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.annotations.ProcessStep;
 import org.dinky.data.app.AppParamConfig;
@@ -201,9 +202,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJob(TaskDTO task) throws Exception {
-        JobResult jobResult = BaseTask.getTask(task).execute();
-        log.info("execute job finished,status is {}", jobResult.getStatus());
-        return jobResult;
+       return executeJob(task, false);
     }
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
