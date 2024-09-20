@@ -19,16 +19,16 @@
 
 package org.dinky.url;
 
-import cn.hutool.core.util.StrUtil;
-
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import java.util.Arrays;
 import java.util.List;
 
+import cn.hutool.core.util.StrUtil;
+
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
     private static final String PREFIX = "sun.net.www.protocol";
-    private final List<String> notContains = Arrays.asList("jar", "file","http","https");
+    private final List<String> notContains = Arrays.asList("jar", "file", "http", "https");
 
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {

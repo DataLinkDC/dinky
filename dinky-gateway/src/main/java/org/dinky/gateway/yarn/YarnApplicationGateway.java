@@ -19,15 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.URLUtil;
-import org.apache.flink.client.deployment.ClusterSpecification;
-import org.apache.flink.client.deployment.application.ApplicationConfiguration;
-import org.apache.flink.client.program.ClusterClient;
-import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.yarn.YarnClusterDescriptor;
-import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -39,10 +30,21 @@ import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.client.deployment.ClusterSpecification;
+import org.apache.flink.client.deployment.application.ApplicationConfiguration;
+import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.yarn.YarnClusterDescriptor;
+import org.apache.hadoop.yarn.api.records.ApplicationId;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.URLUtil;
 
 /**
  * YarnApplicationGateway
@@ -77,8 +79,7 @@ public class YarnApplicationGateway extends YarnGateway {
             init();
         }
 
-        List<String> beforePipelineJars = configuration.get(
-                PipelineOptions.JARS);
+        List<String> beforePipelineJars = configuration.get(PipelineOptions.JARS);
 
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(formatUrl(appConfig.getUserJarPath())));

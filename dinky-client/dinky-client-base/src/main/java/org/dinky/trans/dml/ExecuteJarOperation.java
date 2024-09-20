@@ -63,9 +63,9 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     public Optional<? extends TableResult> execute(CustomTableEnvironment tEnv) {
         try {
             StreamExecutionEnvironment streamExecutionEnvironment = tEnv.getStreamExecutionEnvironment();
-            if (TaskContextHolder.getDialect().equals(Dialect.FLINK_JAR)){
+            if (TaskContextHolder.getDialect().equals(Dialect.FLINK_JAR)) {
                 FlinkStreamEnvironmentUtil.executeAsync(getStreamGraph(tEnv), streamExecutionEnvironment);
-            }else {
+            } else {
                 throw new RuntimeException("Please perform Execute jar syntax in the FlinkJar task !");
             }
         } catch (Exception e) {
