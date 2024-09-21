@@ -39,10 +39,11 @@ import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.URLUtil;
 
 /**
@@ -58,8 +59,9 @@ public class YarnApplicationGateway extends YarnGateway {
     }
 
     /**
-     *  format url
-     *  <p>if url is rs protocol, convert to file path</p>
+     * format url
+     * <p>if url is rs protocol, convert to file path</p>
+     *
      * @param url url
      * @return formatted url
      */
@@ -77,8 +79,11 @@ public class YarnApplicationGateway extends YarnGateway {
             init();
         }
 
+        List<String> beforePipelineJars = configuration.get(PipelineOptions.JARS);
+
         AppConfig appConfig = config.getAppConfig();
         configuration.set(PipelineOptions.JARS, Collections.singletonList(formatUrl(appConfig.getUserJarPath())));
+
         configuration.setString(
                 "python.files",
                 udfPathContextHolder.getPyUdfFile().stream().map(File::getName).collect(Collectors.joining(",")));
@@ -90,13 +95,16 @@ public class YarnApplicationGateway extends YarnGateway {
                 createClusterSpecificationBuilder();
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
-
         YarnResult result = YarnResult.build(getType());
         String webUrl;
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar(udfPathContextHolder)) {
             ClusterDescriptorAdapterImpl clusterDescriptorAdapter =
                     new ClusterDescriptorAdapterImpl(yarnClusterDescriptor);
-            clusterDescriptorAdapter.addShipFiles(Arrays.asList(preparSqlFile()));
+            if (CollUtil.isNotEmpty(beforePipelineJars)) {
+                clusterDescriptorAdapter.addShipFiles(
+                        beforePipelineJars.stream().map(URLUtils::toFile).collect(Collectors.toList()));
+            }
+            clusterDescriptorAdapter.addShipFiles(Collections.singletonList(preparSqlFile()));
             addConfigParas(
                     CustomerConfigureOptions.EXEC_SQL_FILE, configuration.get(CustomerConfigureOptions.EXEC_SQL_FILE));
 

@@ -33,7 +33,7 @@ import cn.hutool.core.util.StrUtil;
 
 @Profile("!test")
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
-    private final List<String> notContains = Arrays.asList("jar", "file");
+    private final List<String> notContains = Arrays.asList("jar", "file", "http", "https");
 
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {

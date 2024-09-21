@@ -20,6 +20,7 @@
 package org.dinky.service.task;
 
 import org.dinky.config.Dialect;
+import org.dinky.context.TaskContextHolder;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.exception.NotSupportExplainExcepition;
@@ -64,6 +65,7 @@ public abstract class BaseTask {
             if (annotation != null) {
                 for (Dialect dialect : annotation.value()) {
                     if (dialect.isDialect(taskDTO.getDialect())) {
+                        TaskContextHolder.setDialect(dialect);
                         return (BaseTask) ReflectUtil.newInstance(clazz, taskDTO);
                     }
                 }
