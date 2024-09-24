@@ -134,9 +134,10 @@ public class DownloadController {
     @PostMapping("uploadFromRsByLocal")
     @ApiOperation("Upload From Resource By Local")
     @SaIgnore
-    public Result<Void> uploadFromRs(String path, @RequestParam("file") MultipartFile file, @RequestHeader("token") String token) {
+    public Result<Void> uploadFromRs(
+            String path, @RequestParam("file") MultipartFile file, @RequestHeader("token") String token) {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-        if (!systemConfiguration.getDinkyToken().getValue().equals(token)){
+        if (!systemConfiguration.getDinkyToken().getValue().equals(token)) {
             return Result.failed("token is not correct");
         }
         if (!systemConfiguration.getResourcesEnable().getValue()
