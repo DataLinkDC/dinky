@@ -249,7 +249,8 @@ public class JobAlertHandler {
 
         if (!Asserts.isNull(task.getAlertGroup())) {
             // 获取任务的责任人和维护人对应的用户信息|Get the responsible person and maintainer of the task
-            User ownerInfo = userCache.get(task.getFirstLevelOwner());
+            Integer owner = task.getFirstLevelOwner();
+            User ownerInfo = owner == null ? null : userCache.get(owner);
             List<User> maintainerInfo = Lists.newArrayList();
             if (CollectionUtils.isNotEmpty(task.getSecondLevelOwners())) {
                 for (Integer secondLevelOwner : task.getSecondLevelOwners()) {
