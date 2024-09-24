@@ -27,9 +27,10 @@ import { LeftSide } from '@/pages/DataStudio/route';
 import { connect } from '@@/exports';
 import { Tabs } from 'antd';
 import React, { useContext } from 'react';
+import { LayoutSize } from '@/pages/DataStudio/data.d';
 
 export type LeftContainerProps = {
-  size: number;
+  size: LayoutSize;
   leftContainer: StateType['leftContainer'];
   rightContainer: StateType['rightContainer'];
 };
@@ -44,7 +45,9 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   } = props;
   const btn = useContext(BtnContext);
   const themeValue = useThemeValue();
-  const MAX_WIDTH = size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700;
+
+  const rightContainerWidth = rightContainer.selectKey === '' ? 0 : rightContainer.width;
+  const maxWidth = size.width - 2 * VIEW.leftToolWidth - rightContainerWidth - 50;
   /**
    * Sidebar size changes
    * @param width
@@ -70,7 +73,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
    * Sidebar maximization
    */
   const handleMaxsize = () => {
-    handleReSizeChange(MAX_WIDTH);
+    handleReSizeChange(maxWidth);
   };
 
   /**
@@ -87,7 +90,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     visible: leftContainer.selectKey !== '',
     defaultSize: { width: leftContainer.width, height: leftContainer.height },
     minWidth: 225,
-    maxWidth: MAX_WIDTH,
+    maxWidth: maxWidth,
     enable: { right: true },
     btnGroup: btn[leftContainer.selectKey]
       ? btn[leftContainer.selectKey].map((item: CircleDataStudioButtonProps) => (

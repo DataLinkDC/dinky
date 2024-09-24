@@ -112,6 +112,7 @@ public abstract class YarnGateway extends AbstractGateway {
         super(config);
     }
 
+    @Override
     public void init() {
         initConfig();
         initYarnClient();
@@ -192,7 +193,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 hadoopUserName = "hdfs";
             }
 
-            // 设置 yarn 提交的用户名
+            // Set the username for the yarn submission
             String yarnUser = configuration.get(CustomerConfigureOptions.YARN_APPLICATION_USER);
             if (StrUtil.isNotBlank(yarnUser)) {
                 UserGroupInformation.setLoginUser(UserGroupInformation.createRemoteUser(yarnUser));
@@ -211,6 +212,7 @@ public abstract class YarnGateway extends AbstractGateway {
         return new Path(URI.create(config.getClusterConfig().getHadoopConfigPath() + "/" + path));
     }
 
+    @Override
     public SavePointResult savepointCluster(String savePoint) {
         if (Asserts.isNull(yarnClient)) {
             init();
@@ -221,6 +223,7 @@ public abstract class YarnGateway extends AbstractGateway {
         return runClusterSavePointResult(savePoint, applicationId, clusterDescriptor);
     }
 
+    @Override
     public SavePointResult savepointJob(String savePoint) {
         if (Asserts.isNull(yarnClient)) {
             init();
@@ -253,13 +256,14 @@ public abstract class YarnGateway extends AbstractGateway {
                 Thread.sleep(3000);
                 clusterClient.shutDownCluster();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             } finally {
                 clusterClient.close();
             }
         });
     }
 
+    @Override
     public TestResult test() {
         try {
             initConfig();
@@ -365,13 +369,12 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     protected YarnClusterDescriptor createInitYarnClusterDescriptor() {
-        YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
+        return new YarnClusterDescriptor(
                 configuration,
                 yarnConfiguration,
                 yarnClient,
                 YarnClientYarnClusterInformationRetriever.create(yarnClient),
                 true);
-        return yarnClusterDescriptor;
     }
 
     protected String getWebUrl(ClusterClient<ApplicationId> clusterClient, YarnResult result)
@@ -464,7 +467,7 @@ public abstract class YarnGateway extends AbstractGateway {
         HighAvailabilityMode highAvailabilityMode = HighAvailabilityMode.fromConfig(configuration);
 
         if (HighAvailabilityMode.ZOOKEEPER == highAvailabilityMode) {
-            configuration.setString(HighAvailabilityOptions.HA_CLUSTER_ID, appId);
+            configuration.set(HighAvailabilityOptions.HA_CLUSTER_ID, appId);
             String zkQuorum = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM);
 
             if (zkQuorum == null || StringUtils.isBlank(zkQuorum)) {
@@ -495,13 +498,13 @@ public abstract class YarnGateway extends AbstractGateway {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("", e);
             } finally {
                 if (Asserts.isNotNull(zooKeeper)) {
                     try {
                         zooKeeper.close();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error("", e);
                     }
                 }
             }
@@ -515,12 +518,11 @@ public abstract class YarnGateway extends AbstractGateway {
      * Creates a ZooKeeper path of the form "/a/b/.../z".
      */
     private static String generateZookeeperPath(String... paths) {
-        final String result = Arrays.stream(paths)
+
+        return Arrays.stream(paths)
                 .map(YarnGateway::trimSlashes)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.joining("/", "/", ""));
-
-        return result;
     }
 
     private static String trimSlashes(String input) {

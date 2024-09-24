@@ -168,9 +168,10 @@ function getMaxWidthAndDepth(edges: CusEdge[]): { maxWidth: number; maxDepth: nu
     graph[sourceCell].push(targetCell);
   });
 
-  const maxSource = Object.keys(sourceCount).reduce((a, b) =>
-    sourceCount[a] > sourceCount[b] ? a : b
-  );
+  const maxSource =
+    Object.keys(sourceCount).length < 1
+      ? '1'
+      : Object.keys(sourceCount).reduce((a, b) => (sourceCount[a] > sourceCount[b] ? a : b));
   const maxWidth = sourceCount[maxSource];
 
   const visited: Record<string, boolean> = {};
