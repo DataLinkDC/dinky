@@ -11,8 +11,6 @@ title: 常规部署
 
 Dinky 采用 mysql 作为后端的存储库，mysql 支持 5.7+。这里假设你已经安装了 mysql 。首先需要创建 Dinky 的后端数据库，这里以配置文件中默认库创建。
 
-在 Dinky 根目录 sql 文件夹下分别放置了 dinky-mysql.sql 、 upgrade/${version}_schema/mysql/ddl 和 dml。如果第一次部署，可以直接将 sql/dinky-mysql.sql 文件在 dinky 数据库下执行。（如果之前已经部署，那 upgrade 目录下存放了各版本的升级 sql ，根据版本号按需执行即可）
-
 <Tabs groupId="operating-systems">
 <TabItem value="mysql5" label="mysql-5.x" default>
 
@@ -55,14 +53,7 @@ flush privileges;
 
 
 #### 第一次部署
-
-```sql
-#首先登录 mysql
-mysql -h fdw1  -udinky -pdinky
-mysql> use dinky;
-mysql> source /opt/dinky/sql/dinky-mysql.sql
-```
-
+Dinky使用Flyway进行数据库版本管理，在第一次部署时，无需手动建表， Flyway 会自动完成。用户只需配置好数据库连接信息，其他配置文件默认即可。
 
 ## Dinky 部署
 
