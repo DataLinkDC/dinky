@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
  * @since 0.7.0
  */
 public class FlinkUdfPathContextHolder {
-    private static final List<String> PYTHON_FILE_SUFFIX = Arrays.asList(".zip", ".py",".pyc",".pyo",".pyd",".pyw",".pyz",".pyzw");
+    private static final List<String> PYTHON_FILE_SUFFIX =
+            Arrays.asList(".zip", ".py", ".pyc", ".pyo", ".pyd", ".pyw", ".pyz", ".pyzw");
 
     private final Set<File> UDF_PATH_CONTEXT = new HashSet<>();
     private final Set<File> OTHER_PLUGINS_PATH_CONTEXT = new HashSet<>();
@@ -57,7 +58,10 @@ public class FlinkUdfPathContextHolder {
     }
 
     public Set<File> getPyUdfFile() {
-        return  getAllFileSet().stream().filter(file -> PYTHON_FILE_SUFFIX.stream().anyMatch(suffix -> file.getName().endsWith(suffix))).collect(Collectors.toSet());
+        return getAllFileSet().stream()
+                .filter(file -> PYTHON_FILE_SUFFIX.stream()
+                        .anyMatch(suffix -> file.getName().endsWith(suffix)))
+                .collect(Collectors.toSet());
     }
 
     public Set<File> getOtherPluginsFiles() {
