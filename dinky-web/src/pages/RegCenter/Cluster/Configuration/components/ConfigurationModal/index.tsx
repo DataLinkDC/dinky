@@ -131,13 +131,13 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
         open={visible}
         modalProps={{
           onCancel: handleCancel,
-          styles:{
-            body:{
+          styles: {
+            body: {
               maxHeight: '70vh',
               overflowY: 'auto',
               overflowX: 'hidden'
             }
-          },
+          }
         }}
         title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
         submitter={{ render: () => [...renderFooter()] }}

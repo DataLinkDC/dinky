@@ -21,7 +21,7 @@ import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
-import {LayoutSize, LeftMenuKey} from '@/pages/DataStudio/data.d';
+import { LayoutSize, LeftMenuKey } from '@/pages/DataStudio/data.d';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
@@ -80,16 +80,17 @@ const DataStudio: React.FC<connect> = (props: any) => {
   const persist = app._store.persist;
   const { fullscreen } = useEditor();
 
-  const getClientSize = () => ({
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
-    contentHeight:
-      document.documentElement.clientHeight -
-      VIEW.headerNavHeight -
-      VIEW.headerHeight -
-      VIEW.footerHeight -
-      VIEW.otherHeight
-  }) as LayoutSize;
+  const getClientSize = () =>
+    ({
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
+      contentHeight:
+        document.documentElement.clientHeight -
+        VIEW.headerNavHeight -
+        VIEW.headerHeight -
+        VIEW.footerHeight -
+        VIEW.otherHeight
+    }) as LayoutSize;
 
   const [size, setSize] = useState(getClientSize());
 

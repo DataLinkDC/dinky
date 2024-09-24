@@ -42,7 +42,7 @@ import { Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
-import {useAsyncEffect} from "ahooks";
+import { useAsyncEffect } from 'ahooks';
 
 const AlertInstanceList: React.FC = () => {
   /**

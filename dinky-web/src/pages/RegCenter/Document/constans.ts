@@ -86,7 +86,8 @@ export const VERSIONS = [
   {
     text: 'Flink-1.19',
     value: '1.19'
-  },  {
+  },
+  {
     text: 'Flink-1.20',
     value: '1.20'
   },

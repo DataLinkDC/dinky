@@ -39,7 +39,7 @@ import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
 import { useRef, useState } from 'react';
 import { connect } from 'umi';
-import {useAsyncEffect} from "ahooks";
+import { useAsyncEffect } from 'ahooks';
 
 type Data = {
   [c: string]: any;

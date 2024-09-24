@@ -27,7 +27,7 @@ import { LeftSide } from '@/pages/DataStudio/route';
 import { connect } from '@@/exports';
 import { Tabs } from 'antd';
 import React, { useContext } from 'react';
-import {LayoutSize} from "@/pages/DataStudio/data.d";
+import { LayoutSize } from '@/pages/DataStudio/data.d';
 
 export type LeftContainerProps = {
   size: LayoutSize;
@@ -46,7 +46,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   const btn = useContext(BtnContext);
   const themeValue = useThemeValue();
 
-  const rightContainerWidth = rightContainer.selectKey === "" ? 0 : rightContainer.width
+  const rightContainerWidth = rightContainer.selectKey === '' ? 0 : rightContainer.width;
   const maxWidth = size.width - 2 * VIEW.leftToolWidth - rightContainerWidth - 50;
   /**
    * Sidebar size changes

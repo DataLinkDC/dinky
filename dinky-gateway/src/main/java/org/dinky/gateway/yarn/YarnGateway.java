@@ -498,13 +498,13 @@ public abstract class YarnGateway extends AbstractGateway {
                     }
                 }
             } catch (Exception e) {
-                logger.error("",e);
+                logger.error("", e);
             } finally {
                 if (Asserts.isNotNull(zooKeeper)) {
                     try {
                         zooKeeper.close();
                     } catch (InterruptedException e) {
-                        logger.error("",e);
+                        logger.error("", e);
                     }
                 }
             }

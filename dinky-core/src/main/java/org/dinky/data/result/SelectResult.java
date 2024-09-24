@@ -19,7 +19,6 @@
 
 package org.dinky.data.result;
 
-import lombok.NoArgsConstructor;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
@@ -32,6 +31,7 @@ import com.google.common.collect.Sets;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 

@@ -104,7 +104,7 @@ public class LogAspect {
             OperateLog operLog = new OperateLog();
             Result<Void> result = JsonUtils.toBean(jsonResult, new TypeReference<Result<Void>>() {});
             if (result == null) {
-                result=Result.failed();
+                result = Result.failed();
             }
             operLog.setStatus(result.isSuccess() ? BusinessStatus.SUCCESS.ordinal() : BusinessStatus.FAIL.ordinal());
 

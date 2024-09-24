@@ -35,7 +35,7 @@ import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { ConfigProvider, Space, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
-import {LayoutSize} from "@/pages/DataStudio/data.d";
+import { LayoutSize } from '@/pages/DataStudio/data.d';
 
 export type BottomContainerProps = {
   size: LayoutSize;
