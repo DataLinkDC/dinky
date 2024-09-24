@@ -19,6 +19,7 @@
 
 package org.dinky.data.result;
 
+import lombok.NoArgsConstructor;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Setter
 @Getter
+@NoArgsConstructor
 public class SelectResult extends AbstractResult implements IResult {
 
     private String jobID;
@@ -65,7 +67,6 @@ public class SelectResult extends AbstractResult implements IResult {
         this.columns = columns;
         this.jobID = jobID;
         this.success = success;
-        // this.endTime = LocalDateTime.now();
         this.isDestroyed = false;
     }
 

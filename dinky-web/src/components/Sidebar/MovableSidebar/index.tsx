@@ -88,6 +88,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
         minHeight={minHeight}
         maxHeight={maxHeight}
         enable={enable}
+
       >
         <>
           {headerVisible && (

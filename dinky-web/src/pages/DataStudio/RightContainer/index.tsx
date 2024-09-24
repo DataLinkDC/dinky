@@ -20,16 +20,17 @@
 import Title from '@/components/Front/Title';
 import MovableSidebar from '@/components/Sidebar/MovableSidebar';
 import useThemeValue from '@/hooks/useThemeValue';
-import { mapDispatchToProps } from '@/pages/DataStudio/function';
-import { StateType, VIEW } from '@/pages/DataStudio/model';
-import { RightSide } from '@/pages/DataStudio/route';
-import { l } from '@/utils/intl';
-import { connect } from '@@/exports';
-import { Tabs } from 'antd';
-import React from 'react';
+import {mapDispatchToProps} from '@/pages/DataStudio/function';
+import {StateType, VIEW} from '@/pages/DataStudio/model';
+import {RightSide} from '@/pages/DataStudio/route';
+import {l} from '@/utils/intl';
+import {connect} from '@@/exports';
+import {Tabs} from 'antd';
+import React, {useEffect} from 'react';
+import {LayoutSize} from "@/pages/DataStudio/data.d";
 
 export type RightContainerProps = {
-  size: number;
+  size: LayoutSize;
   bottomHeight: number;
 };
 const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
@@ -43,7 +44,11 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
     updateSelectRightKey,
     tabs
   } = prop;
-  const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600;
+
+  const leftContainerWidth = leftContainer.selectKey === "" ? 0 : leftContainer.width
+  const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainerWidth - 50;
+
+  console.log(leftContainer)
   return (
     <MovableSidebar
       contentHeight={toolContentHeight}
@@ -64,14 +69,14 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
       }}
       minWidth={200}
       maxWidth={maxWidth}
-      enable={{ left: true }}
-      style={{ borderInlineStart: `1px solid ${themeValue.borderColor}` }}
+      enable={{left: true}}
+      style={{borderInlineStart: `1px solid ${themeValue.borderColor}`}}
     >
       {tabs.panes.length > 0 ? (
         <Tabs
           activeKey={rightContainer.selectKey}
           items={RightSide}
-          tabBarStyle={{ display: 'none' }}
+          tabBarStyle={{display: 'none'}}
         />
       ) : (
         <> </>
@@ -81,7 +86,7 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
 };
 
 export default connect(
-  ({ Studio }: { Studio: StateType }) => ({
+  ({Studio}: { Studio: StateType }) => ({
     leftContainer: Studio.leftContainer,
     rightContainer: Studio.rightContainer,
     bottomContainer: Studio.bottomContainer,

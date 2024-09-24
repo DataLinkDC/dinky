@@ -21,7 +21,7 @@ import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
 import { useEditor } from '@/hooks/useEditor';
 import useThemeValue from '@/hooks/useThemeValue';
 import BottomContainer from '@/pages/DataStudio/BottomContainer';
-import { LeftMenuKey } from '@/pages/DataStudio/data.d';
+import {LayoutSize, LeftMenuKey} from '@/pages/DataStudio/data.d';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import { isProjectTabs, mapDispatchToProps } from '@/pages/DataStudio/function';
 import SecondHeaderContainer from '@/pages/DataStudio/HeaderContainer';
@@ -59,7 +59,6 @@ const DataStudio: React.FC<connect> = (props: any) => {
     queryTaskData,
     queryTaskSortTypeData,
     updateToolContentHeight,
-    updateBottomHeight,
     querySessionData,
     queryEnv,
     updateCenterContentHeight,
@@ -90,7 +89,7 @@ const DataStudio: React.FC<connect> = (props: any) => {
       VIEW.headerHeight -
       VIEW.footerHeight -
       VIEW.otherHeight
-  });
+  }) as LayoutSize;
 
   const [size, setSize] = useState(getClientSize());
 

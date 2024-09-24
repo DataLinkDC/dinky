@@ -17,16 +17,16 @@
  *
  */
 
-import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
-import { EditBtn } from '@/components/CallBackButton/EditBtn';
-import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
-import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { Authorized, HasAuthority } from '@/hooks/useAccess';
+import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
+import {EditBtn} from '@/components/CallBackButton/EditBtn';
+import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
+import {PopconfirmDeleteBtn} from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import {Authorized, HasAuthority} from '@/hooks/useAccess';
 import useHookRequest from '@/hooks/useHookRequest';
-import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
-import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
+import {CLUSTER_TYPE_OPTIONS} from '@/pages/RegCenter/Cluster/constants';
+import {renderWebUiRedirect} from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
-import { getData } from '@/services/api';
+import {getData} from '@/services/api';
 import {
   handleAddOrUpdate,
   handleOption,
@@ -34,20 +34,15 @@ import {
   handleRemoveById,
   updateDataByParam
 } from '@/services/BusinessCrud';
-import { PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { PermissionConstants } from '@/types/Public/constants';
-import { Cluster } from '@/types/RegCenter/data.d';
-import { InitClusterInstanceState } from '@/types/RegCenter/init.d';
-import { ClusterInstanceState } from '@/types/RegCenter/state.d';
-import { l } from '@/utils/intl';
-import {
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-  HeartTwoTone,
-  StopTwoTone
-} from '@ant-design/icons';
-import { ProList } from '@ant-design/pro-components';
+import {PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {PermissionConstants} from '@/types/Public/constants';
+import {Cluster} from '@/types/RegCenter/data.d';
+import {InitClusterInstanceState} from '@/types/RegCenter/init.d';
+import {ClusterInstanceState} from '@/types/RegCenter/state.d';
+import {l} from '@/utils/intl';
+import {CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone, StopTwoTone} from '@ant-design/icons';
+import {ProList} from '@ant-design/pro-components';
 import {
   Badge,
   Button,
@@ -55,6 +50,7 @@ import {
   Col,
   Descriptions,
   Divider,
+  Flex,
   Input,
   List,
   Row,
@@ -64,11 +60,11 @@ import {
   Tooltip,
   Typography
 } from 'antd';
-import { useState } from 'react';
+import {useState} from 'react';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
-import { isContainsChinese } from '@/utils/function';
+import {isContainsChinese} from '@/utils/function';
 
-const { Text, Paragraph, Link } = Typography;
+const {Paragraph, Link} = Typography;
 
 export default () => {
   /**
@@ -79,11 +75,11 @@ export default () => {
   const [isAutoCreate, setIsAutoCreate] = useState<boolean>(false);
   const [searchKeyWord, setSearchKeyword] = useState<string>('');
 
-  const { data, loading, refresh } = useHookRequest(getData, {
+  const {data, loading, refresh} = useHookRequest(getData, {
     refreshDeps: [searchKeyWord, isAutoCreate],
     defaultParams: [
       API_CONSTANTS.CLUSTER_INSTANCE_LIST,
-      { searchKeyWord: searchKeyWord, isAutoCreate: isAutoCreate }
+      {searchKeyWord: searchKeyWord, isAutoCreate: isAutoCreate}
     ]
   });
 
@@ -92,10 +88,10 @@ export default () => {
    * @param {() => void} callback
    * @returns {Promise<void>}
    */
-  const executeAndCallback = async (callback: () => void) => {
-    setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
+  const executeAndCallback = async (callback: () => Promise<any>): Promise<void> => {
+    setClusterInstanceStatus((prevState) => ({...prevState, loading: true}));
     await callback();
-    setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
+    setClusterInstanceStatus((prevState) => ({...prevState, loading: false}));
     await refresh();
   };
 
@@ -145,7 +141,7 @@ export default () => {
   };
   const handleKill = async (id: number) => {
     await executeAndCallback(async () =>
-      handlePutDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_KILL, l('rc.ci.kill'), { id })
+      handlePutDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_KILL, l('rc.ci.kill'), {id})
     );
   };
 
@@ -155,7 +151,7 @@ export default () => {
    */
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
     await executeAndCallback(async () =>
-      updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, { id: record.id })
+      updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {id: record.id})
     );
   };
 
@@ -173,12 +169,12 @@ export default () => {
    */
   const renderActionButton = (record: Cluster.Instance) => (
     <Space wrap direction={'vertical'} align={'center'}>
-      <br />
+      <br/>
       <Authorized
         key={`${record.id}_edit_auth`}
         path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT}
       >
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)}/>
       </Authorized>
       <Authorized
         key={`${record.id}_delete_auth`}
@@ -198,7 +194,7 @@ export default () => {
           <PopconfirmDeleteBtn
             key={`${record.id}_kill`}
             onClick={() => handleKill(record.id)}
-            buttonIcon={<StopTwoTone />}
+            buttonIcon={<StopTwoTone/>}
             title={l('rc.ci.kill')}
             description={l('rc.ci.killConfirm')}
           />
@@ -215,7 +211,7 @@ export default () => {
     return (
       <>
         <Row wrap={false}>
-          <Col flex='85%'>
+          <Col flex={8}>
             <Paragraph>
               <blockquote>
                 {l('rc.ci.jma')}: {renderWebUiRedirect(item)}
@@ -223,16 +219,16 @@ export default () => {
               <blockquote>
                 {l('rc.ci.version')}: <Link>{item.version || 'None'}</Link>
               </blockquote>
-              <blockquote style={{ display: 'flex' }}>
-                <span style={{ minWidth: '2vw' }}> {l('rc.ci.alias')}: </span>
+              <blockquote style={{display: 'flex'}}>
+                <span style={{minWidth: '2vw'}}> {l('rc.ci.alias')}: </span>
                 <EllipsisMiddle
                   copyable={false}
                   maxCount={isContainsChinese(item.alias ?? '') ? 10 : 20}
                   children={item.alias}
                 />
               </blockquote>
-              <blockquote style={{ display: 'flex' }}>
-                <span style={{ minWidth: '2vw' }}> {l('rc.ci.desc')}: </span>
+              <blockquote style={{display: 'flex'}}>
+                <span style={{minWidth: '2vw'}}> {l('rc.ci.desc')}: </span>
                 <EllipsisMiddle
                   copyable={false}
                   maxCount={isContainsChinese(item.note ?? '') ? 10 : 20}
@@ -241,30 +237,30 @@ export default () => {
               </blockquote>
             </Paragraph>
 
-            <Space size={8} align={'baseline'} className={'hidden-overflow'}>
-              <EnableSwitchBtn
-                record={item}
-                onChange={() => handleChangeEnable(item)}
-                disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT)}
-              />
-              <Tag color='cyan'>
-                {CLUSTER_TYPE_OPTIONS().find((record) => item.type === record.value)?.label}
-              </Tag>
-              <Tag
-                icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
-                color={item.status === 1 ? 'success' : 'warning'}
-              >
-                {item.status === 1
-                  ? l('global.table.status.normal')
-                  : l('global.table.status.abnormal')}
-              </Tag>
-            </Space>
           </Col>
-          <Divider type={'vertical'} style={{ height: '100%' }} />
+          <Divider type={'vertical'} style={{height: '100%'}}/>
           <Col className={'card-button-list'} flex='auto'>
             {renderActionButton(item)}
           </Col>
         </Row>
+        <Flex justify={"space-around"}>
+          <EnableSwitchBtn
+            record={item}
+            onChange={() => handleChangeEnable(item)}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT)}
+          />
+          <Tag color='cyan'>
+            {CLUSTER_TYPE_OPTIONS().find((record) => item.type === record.value)?.label}
+          </Tag>
+          <Tag
+            icon={item.status === 1 ? <CheckCircleOutlined/> : <ExclamationCircleOutlined/>}
+            color={item.status === 1 ? 'success' : 'warning'}
+          >
+            {item.status === 1
+              ? l('global.table.status.normal')
+              : l('global.table.status.abnormal')}
+          </Tag>
+        </Flex>
       </>
     );
   };
@@ -297,7 +293,7 @@ export default () => {
     <Authorized key={`_add_auth`} path={PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_ADD}>
       <CreateBtn
         key={`_add`}
-        onClick={() => setClusterInstanceStatus((prevState) => ({ ...prevState, addedOpen: true }))}
+        onClick={() => setClusterInstanceStatus((prevState) => ({...prevState, addedOpen: true}))}
       />
     </Authorized>,
     <Authorized
@@ -307,7 +303,7 @@ export default () => {
       <Button
         key={`_add_heartbeat_btn`}
         type={'primary'}
-        icon={<HeartTwoTone />}
+        icon={<HeartTwoTone/>}
         onClick={() => handleHeartBeat()}
       >
         {l('button.heartbeat')}
@@ -325,21 +321,21 @@ export default () => {
             item.autoRegisters ? (
               l('rc.ci.ar')
             ) : (
-              <span style={{ color: '#69b1ff' }}>{l('rc.ci.mr')}</span>
+              <span style={{color: '#69b1ff'}}>{l('rc.ci.mr')}</span>
             )
           }
         >
           <Card
             styles={{
-              header: { minHeight: '10px' },
-              body: { width: '100%', padding: '10px 4px' }
+              header: {minHeight: '10px'},
+              body: {width: '100%', padding: '10px 4px'}
             }}
             className={'card-list-item'}
             key={item.id}
             hoverable
             title={renderTitle(item)}
           >
-            <Card.Meta style={{ width: '100%' }} description={renderDataContent(item)} />
+            <Card.Meta style={{width: '100%'}} description={renderDataContent(item)}/>
           </Card>
         </Badge.Ribbon>
       </List.Item>
@@ -364,8 +360,8 @@ export default () => {
         toolBarRender={toolBarRender}
         {...PROTABLE_OPTIONS_PUBLIC}
         {...(PRO_LIST_CARD_OPTIONS as any)}
-        grid={{ gutter: 24, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
-        pagination={{ size: 'small', defaultPageSize: 12, hideOnSinglePage: true }}
+        grid={{gutter: 24, xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4}}
+        pagination={{size: 'small', defaultPageSize: 12, hideOnSinglePage: true}}
         dataSource={data}
         loading={loading}
         itemLayout={'vertical'}
