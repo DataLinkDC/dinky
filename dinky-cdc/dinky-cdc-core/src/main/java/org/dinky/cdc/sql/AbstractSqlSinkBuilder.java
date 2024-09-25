@@ -279,7 +279,6 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
     }
 
     protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {}
-    ;
 
     /**
      * replace view name middle to under line for flink use view name
@@ -287,7 +286,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
      * @return view name
      */
     public static String replaceViewNameMiddleLineToUnderLine(String viewName) {
-        if (!viewName.isEmpty() & viewName.contains("-")) {
+        if (!viewName.isEmpty() && viewName.contains("-")) {
             logger.warn("the view name [{}] contains '-', replace '-' to '_' for flink use view name", viewName);
             return viewName.replaceAll("-", "_");
         }
