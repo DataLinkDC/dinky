@@ -278,19 +278,19 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
         mapOperator.name("PartitionByPrimarykey");
     }
 
-    protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {};
+    protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {}
+    ;
 
     /**
      * replace view name middle to under line for flink use view name
      * @param viewName view name
      * @return view name
      */
-    public static String replaceViewNameMiddleLineToUnderLine( String viewName) {
-        if (!viewName.isEmpty() & viewName.contains("-")){
+    public static String replaceViewNameMiddleLineToUnderLine(String viewName) {
+        if (!viewName.isEmpty() & viewName.contains("-")) {
             logger.warn("the view name [{}] contains '-', replace '-' to '_' for flink use view name", viewName);
             return viewName.replaceAll("-", "_");
         }
         return viewName;
     }
-
 }
