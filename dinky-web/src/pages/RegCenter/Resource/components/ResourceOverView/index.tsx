@@ -155,8 +155,9 @@ const ResourceOverView: React.FC<connect> = (props) => {
           content: l('rc.resource.deleteConfirm'),
           onOk: async () => realDelete(),
         });
+      }else {
+        await realDelete();
       }
-      await realDelete();
     }
   };
 
