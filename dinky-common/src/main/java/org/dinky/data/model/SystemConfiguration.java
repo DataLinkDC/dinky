@@ -264,6 +264,11 @@ public class SystemConfiguration {
             .defaultValue(true)
             .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE);
 
+    private final Configuration<Boolean> physicalDeletion = key(Status.SYS_RESOURCE_SETTINGS_PHYSICAL_DELETION)
+            .booleanType()
+            .defaultValue(false)
+            .note(Status.SYS_RESOURCE_SETTINGS_PHYSICAL_DELETION_NOTE);
+
     private final Configuration<ResourcesModelEnum> resourcesModel = key(Status.SYS_RESOURCE_SETTINGS_MODEL)
             .enumType(ResourcesModelEnum.class)
             .defaultValue(ResourcesModelEnum.LOCAL)

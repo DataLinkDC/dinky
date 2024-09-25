@@ -409,6 +409,8 @@ public enum Status {
     SYS_METRICS_SETTINGS_FLINK_GATHERTIMEOUT_NOTE(155, "sys.metrics.settings.flink.gatherTimeout.note"),
     SYS_RESOURCE_SETTINGS_ENABLE(156, "sys.resource.settings.base.enable"),
     SYS_RESOURCE_SETTINGS_ENABLE_NOTE(157, "sys.resource.settings.base.enable.note"),
+    SYS_RESOURCE_SETTINGS_PHYSICAL_DELETION(182, "sys.resource.settings.base.physicalDeletion"),
+    SYS_RESOURCE_SETTINGS_PHYSICAL_DELETION_NOTE(183, "sys.resource.settings.base.physicalDeletion.note"),
     SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH(158, "sys.resource.settings.base.upload.base.path"),
     SYS_RESOURCE_SETTINGS_UPLOAD_BASE_PATH_NOTE(159, "sys.resource.settings.base.upload.base.path.note"),
     SYS_RESOURCE_SETTINGS_MODEL(160, "sys.resource.settings.base.model"),
