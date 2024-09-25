@@ -32,6 +32,12 @@ export type StudioParam = {
   savePointPath?: string;
 };
 
+export type LayoutSize = {
+  width: number;
+  height: number;
+  contentHeight: number;
+};
+
 export enum LeftMenuKey {
   PROJECT_KEY = 'menu.datastudio.project',
   CATALOG_KEY = 'menu.datastudio.catalog',

@@ -131,10 +131,12 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
         open={visible}
         modalProps={{
           onCancel: handleCancel,
-          bodyStyle: {
-            maxHeight: '70vh',
-            overflowY: 'auto',
-            overflowX: 'hidden'
+          styles: {
+            body: {
+              maxHeight: '70vh',
+              overflowY: 'auto',
+              overflowX: 'hidden'
+            }
           }
         }}
         title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}

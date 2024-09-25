@@ -26,10 +26,11 @@ import { RightSide } from '@/pages/DataStudio/route';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
 import { Tabs } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { LayoutSize } from '@/pages/DataStudio/data.d';
 
 export type RightContainerProps = {
-  size: number;
+  size: LayoutSize;
   bottomHeight: number;
 };
 const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
@@ -43,7 +44,11 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
     updateSelectRightKey,
     tabs
   } = prop;
-  const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600;
+
+  const leftContainerWidth = leftContainer.selectKey === '' ? 0 : leftContainer.width;
+  const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainerWidth - 50;
+
+  console.log(leftContainer);
   return (
     <MovableSidebar
       contentHeight={toolContentHeight}

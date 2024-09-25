@@ -40,8 +40,9 @@ import { ProList } from '@ant-design/pro-components';
 import { ActionType } from '@ant-design/pro-table';
 import { Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
+import { useAsyncEffect } from 'ahooks';
 
 const AlertInstanceList: React.FC = () => {
   /**
@@ -65,11 +66,11 @@ const AlertInstanceList: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    queryAlertInstanceList();
+  useAsyncEffect(async () => {
+    await queryAlertInstanceList();
   }, []);
 
-  const executeAndCallbackRefresh = async (callback: () => void) => {
+  const executeAndCallbackRefresh = async (callback: () => Promise<any>) => {
     setAlertInstanceState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setAlertInstanceState((prevState) => ({ ...prevState, loading: false }));
