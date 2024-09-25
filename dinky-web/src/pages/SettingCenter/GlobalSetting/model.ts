@@ -119,14 +119,13 @@ const ConfigModel: ConfigModelType = {
 
         const physicalDelete = response.some(
           (item: BaseConfigProperties) =>
-            item.key === GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_PHYSICAL_DELETION && item.value == true
+            item.key === GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_PHYSICAL_DELETION &&
+            item.value == true
         );
         yield put({
           type: 'updateResourcePhysicalDelete',
           payload: physicalDelete
         });
-
-
       }
     }
   },
@@ -161,7 +160,7 @@ const ConfigModel: ConfigModelType = {
         ...state,
         resourcePhysicalDelete: payload
       };
-    },
+    }
   }
 };
 
