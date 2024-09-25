@@ -103,6 +103,9 @@ public class LogAspect {
             // *========数据库日志=========*//
             OperateLog operLog = new OperateLog();
             Result<Void> result = JsonUtils.toBean(jsonResult, new TypeReference<Result<Void>>() {});
+            if (result == null) {
+                result = Result.failed();
+            }
             operLog.setStatus(result.isSuccess() ? BusinessStatus.SUCCESS.ordinal() : BusinessStatus.FAIL.ordinal());
 
             // 请求的地址

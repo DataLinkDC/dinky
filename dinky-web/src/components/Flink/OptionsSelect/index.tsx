@@ -41,7 +41,7 @@ const FlinkOptionsSelect = (props: FlinkOptionsProps) => {
   return (
     <ProFormSelect
       {...props}
-      fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item) }}
+      fieldProps={{ dropdownRender: (item) => renderTemplateDropDown(item), virtual: false }}
     />
   );
 };

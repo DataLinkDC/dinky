@@ -22,7 +22,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { RunningBtn } from '@/components/CallBackButton/RunningBtn';
-import { ClusterConfigIcon } from '@/components/Icons/HomeIcon';
+import { HadoopIcon, K8sIcon } from '@/components/Icons/HomeIcon';
 import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import ConfigurationModal from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal';
@@ -45,7 +45,8 @@ import { l } from '@/utils/intl';
 import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useAsyncEffect } from 'ahooks';
 
 export default () => {
   /**
@@ -62,8 +63,8 @@ export default () => {
     );
   };
 
-  useEffect(() => {
-    queryClusterConfigList();
+  useAsyncEffect(async () => {
+    await queryClusterConfigList();
   }, []);
 
   /**
@@ -71,7 +72,7 @@ export default () => {
    * @param {() => void} callback
    * @returns {Promise<void>}
    */
-  const executeAndCallbackRefresh = async (callback: () => void) => {
+  const executeAndCallbackRefresh = async (callback: () => Promise<any>): Promise<void> => {
     setClusterConfigState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     await queryClusterConfigList();
@@ -253,13 +254,15 @@ export default () => {
    */
   const renderData = (list: Cluster.Config[]) =>
     list.map((item: Cluster.Config) => {
+      const Icon = item.type === 'yarn-application' ? HadoopIcon : K8sIcon;
       return {
         subTitle: renderDataSubTitle(item),
         actions: <DataAction>{renderDataActionButton(item)}</DataAction>,
         avatar: (
-          <ClusterConfigIcon
+          <Icon
             style={{
               display: 'block',
+              alignContent: 'center',
               width: 42,
               height: 42
             }}

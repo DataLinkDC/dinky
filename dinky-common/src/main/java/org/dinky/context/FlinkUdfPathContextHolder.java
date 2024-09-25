@@ -20,17 +20,21 @@
 package org.dinky.context;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @since 0.7.0
  */
 public class FlinkUdfPathContextHolder {
+    private static final List<String> PYTHON_FILE_SUFFIX =
+            Arrays.asList(".zip", ".py", ".pyc", ".pyo", ".pyd", ".pyw", ".pyz", ".pyzw");
 
     private final Set<File> UDF_PATH_CONTEXT = new HashSet<>();
     private final Set<File> OTHER_PLUGINS_PATH_CONTEXT = new HashSet<>();
-    private final Set<File> PYTHON_UDF_FILE = new HashSet<>();
     private final Set<File> FILES = new HashSet<>();
 
     public void addUdfPath(File file) {
@@ -54,7 +58,10 @@ public class FlinkUdfPathContextHolder {
     }
 
     public Set<File> getPyUdfFile() {
-        return PYTHON_UDF_FILE;
+        return getAllFileSet().stream()
+                .filter(file -> PYTHON_FILE_SUFFIX.stream()
+                        .anyMatch(suffix -> file.getName().endsWith(suffix)))
+                .collect(Collectors.toSet());
     }
 
     public Set<File> getOtherPluginsFiles() {

@@ -182,7 +182,7 @@ const StudioEditor: React.FC<EditorProps & connect> = (props) => {
           style={{
             position: 'absolute',
             top: 15,
-            right: '10%',
+            right: '15%',
             boxShadow: '0 0 10px #ccc'
           }}
         >

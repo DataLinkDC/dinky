@@ -63,8 +63,10 @@ public class HttpFsDataOutputStream extends FSDataOutputStream {
     }
 
     private void sendFile() {
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         try (HttpResponse httpResponse = HttpUtil.createPost(
-                        SystemConfiguration.getInstances().getDinkyAddr().getValue() + "/download/uploadFromRsByLocal")
+                        systemConfiguration.getDinkyAddr().getValue() + "/download/uploadFromRsByLocal")
+                .header("token", systemConfiguration.getDinkyToken().getValue())
                 .form("file", file)
                 .form("path", path.toString())
                 .execute()) {

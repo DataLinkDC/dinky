@@ -55,6 +55,7 @@ import {
   Col,
   Descriptions,
   Divider,
+  Flex,
   Input,
   List,
   Row,
@@ -68,7 +69,7 @@ import { useState } from 'react';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 import { isContainsChinese } from '@/utils/function';
 
-const { Text, Paragraph, Link } = Typography;
+const { Paragraph, Link } = Typography;
 
 export default () => {
   /**
@@ -92,7 +93,7 @@ export default () => {
    * @param {() => void} callback
    * @returns {Promise<void>}
    */
-  const executeAndCallback = async (callback: () => void) => {
+  const executeAndCallback = async (callback: () => Promise<any>): Promise<void> => {
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: true }));
     await callback();
     setClusterInstanceStatus((prevState) => ({ ...prevState, loading: false }));
@@ -215,7 +216,7 @@ export default () => {
     return (
       <>
         <Row wrap={false}>
-          <Col flex='85%'>
+          <Col flex={8}>
             <Paragraph>
               <blockquote>
                 {l('rc.ci.jma')}: {renderWebUiRedirect(item)}
@@ -240,31 +241,30 @@ export default () => {
                 />
               </blockquote>
             </Paragraph>
-
-            <Space size={8} align={'baseline'} className={'hidden-overflow'}>
-              <EnableSwitchBtn
-                record={item}
-                onChange={() => handleChangeEnable(item)}
-                disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT)}
-              />
-              <Tag color='cyan'>
-                {CLUSTER_TYPE_OPTIONS().find((record) => item.type === record.value)?.label}
-              </Tag>
-              <Tag
-                icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
-                color={item.status === 1 ? 'success' : 'warning'}
-              >
-                {item.status === 1
-                  ? l('global.table.status.normal')
-                  : l('global.table.status.abnormal')}
-              </Tag>
-            </Space>
           </Col>
           <Divider type={'vertical'} style={{ height: '100%' }} />
           <Col className={'card-button-list'} flex='auto'>
             {renderActionButton(item)}
           </Col>
         </Row>
+        <Flex justify={'space-around'}>
+          <EnableSwitchBtn
+            record={item}
+            onChange={() => handleChangeEnable(item)}
+            disabled={!HasAuthority(PermissionConstants.REGISTRATION_CLUSTER_INSTANCE_EDIT)}
+          />
+          <Tag color='cyan'>
+            {CLUSTER_TYPE_OPTIONS().find((record) => item.type === record.value)?.label}
+          </Tag>
+          <Tag
+            icon={item.status === 1 ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
+            color={item.status === 1 ? 'success' : 'warning'}
+          >
+            {item.status === 1
+              ? l('global.table.status.normal')
+              : l('global.table.status.abnormal')}
+          </Tag>
+        </Flex>
       </>
     );
   };

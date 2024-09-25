@@ -31,6 +31,7 @@ import com.google.common.collect.Sets;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Setter
 @Getter
+@NoArgsConstructor
 public class SelectResult extends AbstractResult implements IResult {
 
     private String jobID;
@@ -65,7 +67,6 @@ public class SelectResult extends AbstractResult implements IResult {
         this.columns = columns;
         this.jobID = jobID;
         this.success = success;
-        // this.endTime = LocalDateTime.now();
         this.isDestroyed = false;
     }
 

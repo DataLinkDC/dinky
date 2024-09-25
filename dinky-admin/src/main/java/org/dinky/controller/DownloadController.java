@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,7 +67,6 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "UDF & App Jar Controller")
 @RequestMapping("/download")
 public class DownloadController {
-    // todo: Controller has injection risk
     @GetMapping("downloadDepJar/{taskId}")
     @ApiOperation("Download UDF Jar")
     public void downloadJavaUDF(@PathVariable Integer taskId, HttpServletResponse resp) {
@@ -131,12 +131,15 @@ public class DownloadController {
         ServletUtil.write(resp, inputStream);
     }
 
-    // todo: There is a risk of injection in this interface
     @PostMapping("uploadFromRsByLocal")
     @ApiOperation("Upload From Resource By Local")
     @SaIgnore
-    public Result<Void> uploadFromRs(String path, @RequestParam("file") MultipartFile file) {
+    public Result<Void> uploadFromRs(
+            String path, @RequestParam("file") MultipartFile file, @RequestHeader("token") String token) {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        if (!systemConfiguration.getDinkyToken().getValue().equals(token)) {
+            return Result.failed("token is not correct");
+        }
         if (!systemConfiguration.getResourcesEnable().getValue()
                 || !systemConfiguration.getResourcesModel().getValue().equals(ResourcesModelEnum.LOCAL)) {
             return Result.failed("resources model is not local or resources is not enable");

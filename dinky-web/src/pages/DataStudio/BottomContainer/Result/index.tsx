@@ -37,8 +37,9 @@ import { Button, Empty, Input, InputRef, Space, Table, Tabs, Tooltip } from 'ant
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { connect } from 'umi';
+import { useAsyncEffect } from 'ahooks';
 
 type Data = {
   [c: string]: any;
@@ -131,7 +132,6 @@ const Result = (props: any) => {
       return;
     }
 
-    const params = currentTabs.params;
     const consoleData = currentTabs.console;
     if (consoleData.result && !isRefresh) {
       setData(consoleData.result);
@@ -161,7 +161,7 @@ const Result = (props: any) => {
               }
             );
             const data = tableData.data;
-            if (data.success) {
+            if (tableData.success && data?.success) {
               consoleData.result = data;
               setData(data);
             } else {
@@ -175,10 +175,10 @@ const Result = (props: any) => {
     setLoading(false);
   };
 
-  useEffect(() => {
+  useAsyncEffect(async () => {
     setData({});
     setDataList([]);
-    loadData(initIsRefresh);
+    await loadData(initIsRefresh);
   }, [currentTabs?.console?.refreshResult, currentTabs?.console?.refreshResults, currentTabs?.id]);
 
   const getColumns = (columns: string[] = []) => {

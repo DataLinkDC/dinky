@@ -402,7 +402,7 @@ const JobConfig = (props: any) => {
             <Space key={'config'} align='baseline'>
               <FlinkOptionsSelect
                 name='key'
-                width={calculatorWidth(rightContainer.width) + 100}
+                width={calculatorWidth(rightContainer.width) + 50}
                 mode={'single'}
                 allowClear
                 showSearch
@@ -411,7 +411,7 @@ const JobConfig = (props: any) => {
               />
               <ProFormText
                 name={'value'}
-                width={calculatorWidth(rightContainer.width) - 100}
+                width={calculatorWidth(rightContainer.width) - 60}
                 placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
               />
             </Space>
@@ -454,7 +454,7 @@ const JobConfig = (props: any) => {
                     <Input
                       onChange={(e) => handleNameChange(e.target.value, index)}
                       placeholder={l('pages.datastudio.label.udf.name')}
-                      style={{ width: calculatorWidth(rightContainer.width) - 80 }}
+                      style={{ width: calculatorWidth(rightContainer.width) - 90 }}
                     />
                   </ProForm.Item>
                 </Space>

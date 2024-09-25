@@ -36,8 +36,8 @@ public class OracleTypeConvert extends AbstractJdbcTypeConvert {
         this.convertMap.clear();
         register("char", ColumnType.STRING);
         register("date", ColumnType.LOCAL_DATETIME);
-        register("time", ColumnType.TIME);
         register("timestamp", ColumnType.TIMESTAMP);
+        register("time", ColumnType.TIME);
         register("number", OracleTypeConvert::convertNumber);
         register("float", ColumnType.JAVA_LANG_FLOAT);
         register("clob", ColumnType.STRING);
