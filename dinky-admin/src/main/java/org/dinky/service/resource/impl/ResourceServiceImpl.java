@@ -19,7 +19,6 @@
 
 package org.dinky.service.resource.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
@@ -55,6 +54,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -320,8 +320,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     public boolean remove(Integer id) {
         Assert.isFalse(
                 Opt.ofNullable(getById(id))
-                        .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
-                        .getPid()
+                                .orElseThrow(() -> new BusException(Status.RESOURCE_DIR_OR_FILE_NOT_EXIST))
+                                .getPid()
                         == -1,
                 () -> new BusException(Status.ROOT_DIR_NOT_ALLOW_DELETE));
         try {
@@ -331,7 +331,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
 
             if (systemConfiguration.getPhysicalDeletion().getValue()) {
                 getBaseResourceManager().remove(byId.getFullName());
-                log.warn("The resource type you have configured is [{}] and physical deletion is enabled. The File or Directory [{}] will be deleted",
+                log.warn(
+                        "The resource type you have configured is [{}] and physical deletion is enabled. The File or Directory [{}] will be deleted",
                         systemConfiguration.getResourcesModel().getValue().name(),
                         byId.getFullName());
             }

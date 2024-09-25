@@ -54,7 +54,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
 
 const ResourceOverView: React.FC<connect> = (props) => {
-  const { dispatch, enableResource ,resourcePhysicalDelete} = props;
+  const { dispatch, enableResource, resourcePhysicalDelete } = props;
 
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
 
@@ -153,14 +153,12 @@ const ResourceOverView: React.FC<connect> = (props) => {
         Modal.confirm({
           title: l('rc.resource.delete'),
           content: l('rc.resource.deleteConfirm'),
-          onOk: async () => realDelete(),
+          onOk: async () => realDelete()
         });
       }
       await realDelete();
     }
   };
-
-
 
   /**
    * the node right click event OF rename,
