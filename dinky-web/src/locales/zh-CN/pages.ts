@@ -1004,6 +1004,9 @@ export default {
     '复制成功，值为：[{fillValue}] 已复制到剪贴板。请粘贴到需要的地方进行使用',
   'rc.resource.enable': '未启用资源管理功能',
   'rc.resource.enable.tips': '请前往 [配置中心 -> 全局配置 -> Resource 配置] 中启用资源管理功能!!!',
+  'rc.resource.delete': '删除资源',
+  'rc.resource.deleteConfirm':
+    '检测到你开启了物理删除模式,一旦执行无法恢复,此操作不可逆, 确定删除该资源文件吗？',
 
   'rc.template.codeType': '代码类型',
   'rc.template.codeTypePlaceholder': '请选择代码类型！',

@@ -1085,6 +1085,9 @@ export default {
   'rc.resource.enable': 'Resource management function is not enabled',
   'rc.resource.enable.tips':
     'Please go to [Setting Center -> Global Settings -> Resource Configuration] to enable the resource management function!!!',
+  'rc.resource.delete': 'Delete Resource',
+  'rc.resource.deleteConfirm':
+    'We have detected that you have enabled physical deletion mode. Once executed, it cannot be restored and this operation is irreversible. Are you sure you want to delete this resource file?',
 
   'rc.template.codeType': 'Code Type',
   'rc.template.codeTypePlaceholder': 'Please select code type! ',

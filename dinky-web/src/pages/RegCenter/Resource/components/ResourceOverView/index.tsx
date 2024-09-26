@@ -54,7 +54,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
 
 const ResourceOverView: React.FC<connect> = (props) => {
-  const { dispatch, enableResource } = props;
+  const { dispatch, enableResource, resourcePhysicalDelete } = props;
 
   const [resourceState, setResourceState] = useState<ResourceState>(InitResourceState);
 
@@ -73,7 +73,7 @@ const ResourceOverView: React.FC<connect> = (props) => {
     );
   };
 
-  useEffect(() => {
+  useAsyncEffect(() => {
     dispatch({
       type: CONFIG_MODEL_ASYNC.queryResourceConfig,
       payload: SettingConfigKeyEnum.RESOURCE.toLowerCase()
@@ -138,14 +138,26 @@ const ResourceOverView: React.FC<connect> = (props) => {
     }
   };
 
+  const realDelete = async () => {
+    await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, resourceState.rightClickedNode.id);
+    await refreshTree();
+  };
+
   /**
    * the node right click event OF delete,
    */
   const handleDelete = async () => {
     if (resourceState.rightClickedNode) {
       setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }));
-      await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, resourceState.rightClickedNode.id);
-      await refreshTree();
+      if (resourcePhysicalDelete) {
+        Modal.confirm({
+          title: l('rc.resource.delete'),
+          content: l('rc.resource.deleteConfirm'),
+          onOk: async () => realDelete()
+        });
+      } else {
+        await realDelete();
+      }
     }
   };
 
@@ -421,5 +433,6 @@ const ResourceOverView: React.FC<connect> = (props) => {
 };
 
 export default connect(({ SysConfig }: { SysConfig: SysConfigStateType }) => ({
-  enableResource: SysConfig.enableResource
+  enableResource: SysConfig.enableResource,
+  resourcePhysicalDelete: SysConfig.resourcePhysicalDelete
 }))(ResourceOverView);

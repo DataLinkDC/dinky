@@ -37,6 +37,7 @@ export type SysConfigStateType = {
   dsConfig: BaseConfigProperties[];
   enabledDs: boolean;
   enableResource: boolean;
+  resourcePhysicalDelete: boolean;
   taskOwnerLockingStrategy: TaskOwnerLockingStrategy;
 };
 
@@ -51,6 +52,7 @@ export type ConfigModelType = {
   reducers: {
     saveDsConfig: Reducer<SysConfigStateType>;
     updateEnabledDs: Reducer<SysConfigStateType>;
+    updateResourcePhysicalDelete: Reducer<SysConfigStateType>;
     updateEnableResource: Reducer<SysConfigStateType>;
     updateTaskOwnerLockingStrategy: Reducer<SysConfigStateType>;
   };
@@ -62,6 +64,7 @@ const ConfigModel: ConfigModelType = {
     dsConfig: [],
     enabledDs: false,
     enableResource: false,
+    resourcePhysicalDelete: false,
     taskOwnerLockingStrategy: TaskOwnerLockingStrategy.ALL
   },
 
@@ -90,7 +93,7 @@ const ConfigModel: ConfigModelType = {
       if (response && response.length > 0) {
         const enabledDs = response.some(
           (item: BaseConfigProperties) =>
-            item.key === GLOBAL_SETTING_KEYS.SYS_DOLPHINSETTINGS_ENABLE && item.value === true
+            item.key === GLOBAL_SETTING_KEYS.SYS_DOLPHINSETTINGS_ENABLE && item.value == true
         );
         yield put({
           type: 'updateEnabledDs',
@@ -112,6 +115,16 @@ const ConfigModel: ConfigModelType = {
         yield put({
           type: 'updateEnableResource',
           payload: enableResource
+        });
+
+        const physicalDelete = response.some(
+          (item: BaseConfigProperties) =>
+            item.key === GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_PHYSICAL_DELETION &&
+            item.value == true
+        );
+        yield put({
+          type: 'updateResourcePhysicalDelete',
+          payload: physicalDelete
         });
       }
     }
@@ -140,6 +153,12 @@ const ConfigModel: ConfigModelType = {
       return {
         ...state,
         enableResource: payload
+      };
+    },
+    updateResourcePhysicalDelete(state, { payload }) {
+      return {
+        ...state,
+        resourcePhysicalDelete: payload
       };
     }
   }
