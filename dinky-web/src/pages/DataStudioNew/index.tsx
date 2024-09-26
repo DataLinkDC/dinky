@@ -43,7 +43,7 @@ const DataStudioNew: React.FC = (props: any) => {
               id: 'dock2',
               size: 800,
               mode: 'horizontal',
-    
+
               tabs: [
                 {
                   id: 'tab2-1',
@@ -63,7 +63,7 @@ const DataStudioNew: React.FC = (props: any) => {
               id: 'dock3',
               size: 200,
               mode: 'horizontal',
-    
+
               // panelLock: {
               //   panelStyle: 'main'
               // },
@@ -84,7 +84,7 @@ const DataStudioNew: React.FC = (props: any) => {
             },
           ],
         },
-        
+
         {
           id: 'dock4',
           mode: 'vertical',
