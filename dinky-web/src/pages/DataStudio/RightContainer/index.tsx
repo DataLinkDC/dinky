@@ -47,8 +47,6 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
 
   const leftContainerWidth = leftContainer.selectKey === '' ? 0 : leftContainer.width;
   const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainerWidth - 50;
-
-  console.log(leftContainer);
   return (
     <MovableSidebar
       contentHeight={toolContentHeight}

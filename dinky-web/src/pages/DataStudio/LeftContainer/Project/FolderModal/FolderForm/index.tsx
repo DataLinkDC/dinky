@@ -26,6 +26,9 @@ const FolderForm = () => {
       name='name'
       label={l('datastudio.project.create.folder.name')}
       placeholder={l('datastudio.project.create.folder.name.placeholder')}
+      fieldProps={{
+        autoFocus: true
+      }}
       rules={[
         {
           required: true,

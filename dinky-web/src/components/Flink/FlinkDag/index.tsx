@@ -210,6 +210,7 @@ const FlinkDag = (props: DagProps) => {
   };
 
   const handleClose = () => {
+    graph?.unselect(currentSelect);
     setOpen(false);
     setCurrentSelect(undefined);
     graph?.zoomToFit(zoomOptions);
@@ -410,11 +411,9 @@ const FlinkDag = (props: DagProps) => {
         mask={false}
         onClose={handleClose}
         destroyOnClose={true}
-        closable={false}
+        closable={true}
       >
-        {onlyPlan ? (
-          <></>
-        ) : (
+        {!onlyPlan && (
           <Tabs
             defaultActiveKey='1'
             items={[

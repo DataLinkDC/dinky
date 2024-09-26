@@ -29,7 +29,7 @@ import {
   UnknownIcons
 } from '@/components/Icons/DevopsIcons';
 import useHookRequest from '@/hooks/useHookRequest';
-import { DevopContext } from '@/pages/DevOps';
+import { DevopsContext } from '@/pages/DevOps';
 import { JOB_STATUS } from '@/pages/DevOps/constants';
 import StatisticsCard from '@/pages/DevOps/JobList/components/Overview/StatisticsCard';
 import { getData } from '@/services/api';
@@ -41,7 +41,7 @@ import { Button, Col, Row, Space } from 'antd';
 import { useContext } from 'react';
 
 const JobOverview = (props: any) => {
-  const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
+  const { statusFilter, setStatusFilter } = useContext<any>(DevopsContext);
   const { data } = useHookRequest(getData, { defaultParams: [API_CONSTANTS.GET_STATUS_COUNT] });
   const statusCount = data as StatusCountOverView;
 

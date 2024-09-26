@@ -72,6 +72,7 @@ const FolderModal: React.FC<JobModalProps> = (props) => {
   return (
     <>
       <ModalForm<Catalogue>
+        isKeyPressSubmit
         title={title}
         form={form}
         width={'30%'}

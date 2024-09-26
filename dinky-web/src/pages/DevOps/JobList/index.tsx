@@ -32,7 +32,7 @@ import {
   searchInTree
 } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType } from '@/pages/DataStudio/model';
-import { DevopContext } from '@/pages/DevOps';
+import { DevopsContext } from '@/pages/DevOps';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { getJobDuration } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList/JobHistoryList';
@@ -44,8 +44,6 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { SplitPane } from '@andrewray/react-multi-split-pane';
-import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import {
   ArrowsAltOutlined,
   ClearOutlined,
@@ -57,7 +55,7 @@ import {
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProCard, ProTable } from '@ant-design/pro-components';
 import { connect, useModel } from '@umijs/max';
-import { Button, Empty, Radio, Table, Tree } from 'antd';
+import { Button, Col, Empty, Flex, Radio, Splitter, Table, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
@@ -73,9 +71,8 @@ const JobList = (props: connect) => {
     queryTaskOwnerLockingStrategy,
     projectData
   } = props;
-  const refObject = useRef<HTMLDivElement>(null);
   const tableRef = useRef<ActionType>();
-  const { statusFilter, setStatusFilter } = useContext<any>(DevopContext);
+  const { statusFilter, setStatusFilter } = useContext<any>(DevopsContext);
   const [stepFilter, setStepFilter] = useState<number | undefined>();
   const [taskFilter, setTaskFilter] = useState<string | undefined>();
   const [taskId, setTaskId] = useState<number>();
@@ -241,144 +238,134 @@ const JobList = (props: connect) => {
         width: '99vw'
       }}
     >
-      <SplitPane
-        split={'vertical'}
-        defaultSizes={[100, 500]}
-        minSize={200}
-        className={'split-pane'}
-      >
-        <Pane
-          className={'split-pane'}
-          forwardRef={refObject}
-          minSize={200}
-          size={200}
-          split={'horizontal'}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
-            <Search
-              style={{ margin: '4px 0px', padding: '0 5px', width: '80%' }}
-              placeholder={l('global.search.text')}
-              onChange={onChangeSearch}
-              allowClear={true}
-              autoFocus
-              addonAfter={
-                // 如果选中的 key 长度大于 0 则显示清除按钮 | if the length of the selected key is greater than 0, the clear button is displayed
-                selectedKey.length > 0 && (
-                  <Button
-                    title={l('devops.joblist.clear.filtertips')}
-                    icon={<ClearOutlined />}
-                    onClick={() => resetValue()}
-                  >
-                    {l('devops.joblist.clear.filter')}
-                  </Button>
-                )
-              }
-            />
-            <Button.Group>
-              <CircleBtn
-                title={l('button.expand-all')}
-                icon={<ArrowsAltOutlined />}
-                onClick={() => setExpandedKeys(getLeafKeyList(data))}
+      <Splitter>
+        <Splitter.Panel collapsible={{ end: true }}>
+          <Col>
+            <Flex
+              align={'center'}
+              justify={'flex-start'}
+              style={{ margin: '4px 0px', padding: '0 5px' }}
+            >
+              <Search
+                placeholder={l('global.search.text')}
+                onChange={onChangeSearch}
+                allowClear={true}
+                autoFocus
+                addonAfter={
+                  // 如果选中的 key 长度大于 0 则显示清除按钮 | if the length of the selected key is greater than 0, the clear button is displayed
+                  selectedKey.length > 0 && (
+                    <Button
+                      title={l('devops.joblist.clear.filtertips')}
+                      icon={<ClearOutlined />}
+                      onClick={() => resetValue()}
+                    >
+                      {l('devops.joblist.clear.filter')}
+                    </Button>
+                  )
+                }
               />
-            </Button.Group>
-            <Button.Group>
-              <CircleBtn
-                title={l('button.collapse-all')}
-                icon={<ShrinkOutlined />}
-                onClick={() => setExpandedKeys([])}
-              />
-            </Button.Group>
-          </div>
 
-          {data.length ? (
-            <DirectoryTree
-              style={{ padding: '0 10px' }}
-              className={'treeList'}
-              onSelect={(_, info) => onNodeClick(info)}
-              // onRightClick={onRightClick}
-              expandedKeys={expandedKeys}
-              // expandAction={'doubleClick'}
-              selectedKeys={selectedKey}
-              onExpand={(expandedKeys: Key[]) => setExpandedKeys(expandedKeys)}
-              treeData={data}
-            />
-          ) : (
-            <Empty className={'code-content-empty'} />
-          )}
-        </Pane>
-
-        <Pane
-          className={'split-pane'}
-          forwardRef={refObject}
-          minSize={200}
-          size={200}
-          split={'horizontal'}
-        >
-          <ProTable<Jobs.JobInstance>
-            {...PROTABLE_OPTIONS_PUBLIC}
-            search={false}
-            tableStyle={{ height: parent.innerHeight - 245 }}
-            loading={{ delay: 1000 }}
-            rowKey={(record) => record.id}
-            columns={jobListColumns}
-            params={{
-              isHistory: false,
-              status: statusFilter,
-              step: stepFilter,
-              name: taskFilter,
-              taskId: taskId
-            }}
-            actionRef={tableRef}
-            toolbar={{
-              settings: false,
-              search: { onSearch: (value: string) => setTaskFilter(value) },
-              filter: (
-                <>
-                  <Radio.Group
-                    defaultValue={undefined}
-                    onChange={(e) => setStepFilter(e.target.value)}
-                  >
-                    <Radio.Button value={undefined} defaultChecked={true}>
-                      {l('global.table.lifecycle.all')}
-                    </Radio.Button>
-                    <Radio.Button value={JOB_LIFE_CYCLE.PUBLISH}>
-                      {l('global.table.lifecycle.publish')}
-                    </Radio.Button>
-                    <Radio.Button value={JOB_LIFE_CYCLE.DEVELOP}>
-                      {l('global.table.lifecycle.dev')}
-                    </Radio.Button>
-                  </Radio.Group>
-                </>
-              ),
-              actions: [
-                <Button icon={<RedoOutlined />} onClick={() => tableRef.current?.reload()} />
-              ]
-            }}
-            request={async (params, sorter, filter: any) =>
-              queryList(API_CONSTANTS.JOB_INSTANCE, {
-                ...params,
-                sorter,
-                filter
-              })
-            }
-            expandable={{
-              expandedRowRender: (record) => (
-                <JobHistoryList taskId={record.taskId} key={record.id} />
-              ),
-              expandIcon: ({ expanded, onExpand, record }) => (
-                <Button
-                  className={'options-button'}
-                  key={`${record.id}_history`}
-                  onClick={(e) => onExpand(record, e)}
-                  title={l('devops.joblist.history')}
-                  icon={<ClockCircleTwoTone twoToneColor={expanded ? '#52c41a' : '#4096ff'} />}
+              <Button.Group>
+                <CircleBtn
+                  title={l('button.expand-all')}
+                  icon={<ArrowsAltOutlined />}
+                  onClick={() => setExpandedKeys(getLeafKeyList(data))}
                 />
-              )
-            }}
-            scroll={{ y: parent.innerHeight - 245 - 150 }}
-          />
-        </Pane>
-      </SplitPane>
+              </Button.Group>
+              <Button.Group>
+                <CircleBtn
+                  title={l('button.collapse-all')}
+                  icon={<ShrinkOutlined />}
+                  onClick={() => setExpandedKeys([])}
+                />
+              </Button.Group>
+            </Flex>
+
+            {data.length ? (
+              <DirectoryTree
+                style={{ padding: '0 10px' }}
+                className={'treeList'}
+                onSelect={(_, info) => onNodeClick(info)}
+                expandedKeys={expandedKeys}
+                selectedKeys={selectedKey}
+                onExpand={(expandedKeys: Key[]) => setExpandedKeys(expandedKeys)}
+                treeData={data}
+              />
+            ) : (
+              <Empty className={'code-content-empty'} />
+            )}
+          </Col>
+        </Splitter.Panel>
+
+        <Splitter.Panel defaultSize={'80%'} max={'90%'} min={'20%'}>
+          <Flex align={'center'} justify={'center'}>
+            <Col style={{ width: '98%' }}>
+              <ProTable<Jobs.JobInstance>
+                {...PROTABLE_OPTIONS_PUBLIC}
+                search={false}
+                loading={{ delay: 1000 }}
+                rowKey={(record) => record.id}
+                columns={jobListColumns}
+                params={{
+                  isHistory: false,
+                  status: statusFilter,
+                  step: stepFilter,
+                  name: taskFilter,
+                  taskId: taskId
+                }}
+                actionRef={tableRef}
+                toolbar={{
+                  settings: false,
+                  search: { onSearch: (value: string) => setTaskFilter(value) },
+                  filter: (
+                    <>
+                      <Radio.Group
+                        defaultValue={undefined}
+                        onChange={(e) => setStepFilter(e.target.value)}
+                      >
+                        <Radio.Button value={undefined} defaultChecked={true}>
+                          {l('global.table.lifecycle.all')}
+                        </Radio.Button>
+                        <Radio.Button value={JOB_LIFE_CYCLE.PUBLISH}>
+                          {l('global.table.lifecycle.publish')}
+                        </Radio.Button>
+                        <Radio.Button value={JOB_LIFE_CYCLE.DEVELOP}>
+                          {l('global.table.lifecycle.dev')}
+                        </Radio.Button>
+                      </Radio.Group>
+                    </>
+                  ),
+                  actions: [
+                    <Button icon={<RedoOutlined />} onClick={() => tableRef.current?.reload()} />
+                  ]
+                }}
+                request={async (params, sorter, filter: any) =>
+                  queryList(API_CONSTANTS.JOB_INSTANCE, {
+                    ...params,
+                    sorter,
+                    filter
+                  })
+                }
+                expandable={{
+                  expandedRowRender: (record) => (
+                    <JobHistoryList taskId={record.taskId} key={record.id} />
+                  ),
+                  expandIcon: ({ expanded, onExpand, record }) => (
+                    <Button
+                      className={'options-button'}
+                      key={`${record.id}_history`}
+                      onClick={(e) => onExpand(record, e)}
+                      title={l('devops.joblist.history')}
+                      icon={<ClockCircleTwoTone twoToneColor={expanded ? '#52c41a' : '#4096ff'} />}
+                    />
+                  )
+                }}
+                // scroll={{y: parent.innerHeight - 245 - 150}}
+              />
+            </Col>
+          </Flex>
+        </Splitter.Panel>
+      </Splitter>
     </ProCard>
   );
 };

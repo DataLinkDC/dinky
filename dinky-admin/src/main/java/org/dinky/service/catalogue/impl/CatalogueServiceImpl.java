@@ -64,6 +64,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,6 +86,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.Opt;
+import cn.hutool.core.map.BiMap;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
@@ -632,7 +634,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         Catalogue parentCatalogue = this.getById(parentCatalogueId);
         // check param
-        checkImportCatalogueParam(parentCatalogue, exportCatalogue);
+        BiMap<String, String> existsNameMap = checkImportCatalogueParam(parentCatalogue, exportCatalogue);
 
         // create catalogue and task
         List<Task> createTasks = Lists.newArrayList();
@@ -655,6 +657,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 ExportTaskBO exportTaskBO = searchCatalogue.getTask();
                 if (Objects.nonNull(exportTaskBO)) {
                     Task task = catalogueFactory.getTask(exportTaskBO, currentUserId);
+                    if (existsNameMap.containsKey(task.getName())) {
+                        task.setName(existsNameMap.get(task.getName()));
+                    }
                     createTasks.add(task);
                     exportCatalogueTaskMap.put(searchCatalogue, task);
                 }
@@ -670,6 +675,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     throw new BusException(Status.FAILED);
                 }
                 Catalogue catalogue = catalogueFactory.getCatalogue(searchCatalogue, parentId, taskId);
+                if (existsNameMap.containsKey(catalogue.getName())) {
+                    catalogue.setName(existsNameMap.get(catalogue.getName()));
+                }
                 createCatalogues.add(catalogue);
                 exportCatalogueMap.put(searchCatalogue, catalogue);
                 List<ExportCatalogueBO> children = searchCatalogue.getChildren();
@@ -701,20 +709,16 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         return StpUtil.getLoginIdAsInt();
     }
 
-    private void checkImportCatalogueParam(Catalogue parentCatalogue, ExportCatalogueBO exportCatalogue) {
+    private BiMap<String, String> checkImportCatalogueParam(
+            Catalogue parentCatalogue, ExportCatalogueBO exportCatalogue) {
         // verify that the parent directory exists
         if (Objects.isNull(parentCatalogue)) {
             throw new BusException(Status.CATALOGUE_NOT_EXIST);
         }
-        // check if a catalogue with the same name exists
         List<String> catalogueNames = getCatalogueNames(exportCatalogue);
-        List<Catalogue> existCatalogues =
-                this.list(new LambdaQueryWrapper<Catalogue>().in(Catalogue::getName, catalogueNames));
-        if (CollectionUtil.isNotEmpty(existCatalogues)) {
-            throw new BusException(
-                    Status.CATALOGUE_IS_EXIST,
-                    existCatalogues.stream().map(Catalogue::getName).collect(Collectors.joining(",")));
-        }
+        // check if a catalogue with the same name exists
+        BiMap<String, String> existsNameMap = new BiMap<>(new HashMap<>());
+        getNotExistsCatalogueName(catalogueNames, existsNameMap);
         // verify that the task name and parent catalogue name are consistent
         List<ExportCatalogueBO> searchExportCatalogues = Lists.newArrayList(exportCatalogue);
         while (CollectionUtil.isNotEmpty(searchExportCatalogues)) {
@@ -736,6 +740,44 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             }
             searchExportCatalogues = nextSearchExportCatalogues;
         }
+        return existsNameMap;
+    }
+
+    /**
+     * Modify the name of the Catalogue. Duplicate additions to copy data and increments
+     *
+     * @param catalogueNames catalogue names
+     * @return List<String> 不重复的目录名称
+     */
+    private void getNotExistsCatalogueName(List<String> catalogueNames, BiMap<String, String> existsNameMap) {
+        List<Catalogue> existCatalogues =
+                this.list(new LambdaQueryWrapper<Catalogue>().in(Catalogue::getName, catalogueNames));
+        if (CollectionUtil.isEmpty(existCatalogues)) {
+            return;
+        }
+        List<String> existCataloguesList = existCatalogues.stream()
+                .map(Catalogue::getName)
+                .map(name -> {
+                    String key = name;
+                    if (existsNameMap.containsValue(name)) {
+                        key = existsNameMap.getKey(name);
+                    }
+                    // Configure the suffix - copy\(\d+\), match \d+1 if it exists, add the suffix - copy(1) if it does
+                    // not exist.
+                    String regex = ".*-copy\\((\\d+)\\)";
+                    if (name.matches(regex)) {
+                        String[] split = name.split("\\(");
+                        String num = split[1].split("\\)")[0];
+                        int i = Integer.parseInt(num) + 1;
+                        existsNameMap.put(key, name.replace(num, String.valueOf(i)));
+                    } else {
+                        existsNameMap.put(key, name + "-copy(1)");
+                    }
+                    return existsNameMap.get(key);
+                })
+                .collect(Collectors.toList());
+
+        getNotExistsCatalogueName(existCataloguesList, existsNameMap);
     }
 
     private List<String> getCatalogueNames(ExportCatalogueBO exportCatalogue) {
