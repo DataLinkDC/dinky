@@ -68,8 +68,9 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
     private String addSourceTableView(
             CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
-        // 上游表名称
-        String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
+        // Because the name of the view on Flink is not allowed to have -, it needs to be replaced with - here_
+        String viewName = replaceViewNameMiddleLineToUnderLine("VIEW_" + table.getSchemaTableNameWithUnderline());
+
         customTableEnvironment.createTemporaryView(
                 viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
