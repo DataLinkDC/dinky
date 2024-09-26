@@ -19,33 +19,10 @@
 
 package org.dinky.metadata.config;
 
-import org.dinky.utils.TextUtil;
-
-import lombok.Getter;
-
-@Getter
-public enum FileSystemType {
-    LOCAL("local"),
-    HDFS("hdfs"),
-    S3("s3"),
-    NONE("none"),
-    ;
-
-    private final String type;
-
-    FileSystemType(String type) {
-        this.type = type;
-    }
-
-    public static FileSystemType fromType(String type) {
-        if (TextUtil.isEmpty(type)) {
-            return NONE;
-        }
-        for (FileSystemType value : FileSystemType.values()) {
-            if (value.getType().equalsIgnoreCase(type)) {
-                return value;
-            }
-        }
-        return null;
-    }
+public class PaimonHadoopConfig {
+    public static String METASTORE = "metastore";
+    public static String URI = "uri";
+    public static String hiveConfDir = "hive-conf-dir";
+    public static String hadoopConfDir = "hadoop-conf-dir";
+    public static String WAREHOUSE = "warehouse";
 }

@@ -19,33 +19,15 @@
 
 package org.dinky.metadata.config;
 
-import org.dinky.utils.TextUtil;
-
-import lombok.Getter;
-
-@Getter
-public enum FileSystemType {
-    LOCAL("local"),
-    HDFS("hdfs"),
-    S3("s3"),
-    NONE("none"),
-    ;
-
-    private final String type;
-
-    FileSystemType(String type) {
-        this.type = type;
-    }
-
-    public static FileSystemType fromType(String type) {
-        if (TextUtil.isEmpty(type)) {
-            return NONE;
-        }
-        for (FileSystemType value : FileSystemType.values()) {
-            if (value.getType().equalsIgnoreCase(type)) {
-                return value;
-            }
-        }
-        return null;
-    }
+/**
+ * 配置类 S3Configuration 用于存储 S3 配置信息
+ *
+ */
+public class PaimonS3Configuration {
+    public static String ACCESS_KEY = "s3.access-key";
+    public static String SECRET_KEY = "s3.secret-key";
+    public static String ENDPOINT = "s3.endpoint";
+    public static String BUCKET_NAME = "s3.bucket-name";
+    public static String PATH_STYLE_ACCESS = "s3.path.style.access";
+    public static String REGION = "s3.region";
 }
