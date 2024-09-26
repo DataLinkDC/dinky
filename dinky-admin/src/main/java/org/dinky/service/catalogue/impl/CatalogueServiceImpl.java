@@ -756,14 +756,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 key = existsNameMap.getKey(name);
             }
             // Configure the suffix - copy\(\d+\), match \d+1 if it exists, add the suffix - copy(1) if it does not exist.
-            String regex = ".*- copy\\((\\d+)\\)";
+            String regex = ".*-copy\\((\\d+)\\)";
             if (name.matches(regex)) {
                 String[] split = name.split("\\(");
                 String num = split[1].split("\\)")[0];
                 int i = Integer.parseInt(num) + 1;
                 existsNameMap.put(key, name.replace(num, String.valueOf(i)));
             } else {
-                existsNameMap.put(key, name + " - copy(1)");
+                existsNameMap.put(key, name + "-copy(1)");
             }
             return existsNameMap.get(key);
         }).collect(Collectors.toList());
