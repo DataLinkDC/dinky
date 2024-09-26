@@ -83,12 +83,12 @@
                     <artifactId>dinky-gateway</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>dinky-alert-sms</artifactId>
                     <groupId>org.dinky</groupId>
+                    <artifactId>dinky-alert-sms</artifactId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>dinky-alert-dingtalk</artifactId>
                     <groupId>org.dinky</groupId>
+                    <artifactId>dinky-alert-dingtalk</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

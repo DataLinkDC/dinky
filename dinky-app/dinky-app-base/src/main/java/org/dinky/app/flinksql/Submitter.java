@@ -19,7 +19,6 @@
 
 package org.dinky.app.flinksql;
 
-import org.apache.flink.configuration.PipelineOptions;
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
@@ -47,7 +46,6 @@ import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.SqlUtil;
-import org.dinky.utils.URLUtils;
 import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
@@ -55,6 +53,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.Plan;
 import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.python.PythonOptions;

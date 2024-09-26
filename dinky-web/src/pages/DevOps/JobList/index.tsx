@@ -17,29 +17,33 @@
  *
  */
 
-import {CircleBtn} from '@/components/CallBackButton/CircleBtn';
+import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
-import {mapDispatchToProps, showFirstLevelOwner, showSecondLevelOwners} from '@/pages/DataStudio/function';
+import {
+  mapDispatchToProps,
+  showFirstLevelOwner,
+  showSecondLevelOwners
+} from '@/pages/DataStudio/function';
 import {
   buildProjectTree,
   generateList,
   getLeafKeyList,
   searchInTree
 } from '@/pages/DataStudio/LeftContainer/Project/function';
-import {StateType} from '@/pages/DataStudio/model';
-import {DevopsContext} from '@/pages/DevOps';
-import {JOB_LIFE_CYCLE} from '@/pages/DevOps/constants';
-import {getJobDuration} from '@/pages/DevOps/function';
+import { StateType } from '@/pages/DataStudio/model';
+import { DevopsContext } from '@/pages/DevOps';
+import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { getJobDuration } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList/JobHistoryList';
-import {SysConfigStateType} from '@/pages/SettingCenter/GlobalSetting/model';
-import {SettingConfigKeyEnum} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
-import {queryList} from '@/services/api';
-import {PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {Jobs} from '@/types/DevOps/data';
-import {getTenantByLocalStorage} from '@/utils/function';
-import {l} from '@/utils/intl';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
+import { queryList } from '@/services/api';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Jobs } from '@/types/DevOps/data';
+import { getTenantByLocalStorage } from '@/utils/function';
+import { l } from '@/utils/intl';
 import {
   ArrowsAltOutlined,
   ClearOutlined,
@@ -48,16 +52,16 @@ import {
   RedoOutlined,
   ShrinkOutlined
 } from '@ant-design/icons';
-import type {ActionType, ProColumns} from '@ant-design/pro-components';
-import {ProCard, ProTable} from '@ant-design/pro-components';
-import {connect, useModel} from '@umijs/max';
-import {Button, Col, Empty, Flex, Radio, Splitter, Table, Tree} from 'antd';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ProCard, ProTable } from '@ant-design/pro-components';
+import { connect, useModel } from '@umijs/max';
+import { Button, Col, Empty, Flex, Radio, Splitter, Table, Tree } from 'antd';
 import Search from 'antd/es/input/Search';
-import {Key, useContext, useEffect, useRef, useState} from 'react';
-import {history} from 'umi';
+import { Key, useContext, useEffect, useRef, useState } from 'react';
+import { history } from 'umi';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
 
-const {DirectoryTree} = Tree;
+const { DirectoryTree } = Tree;
 
 const JobList = (props: connect) => {
   const {
@@ -68,14 +72,14 @@ const JobList = (props: connect) => {
     projectData
   } = props;
   const tableRef = useRef<ActionType>();
-  const {statusFilter, setStatusFilter} = useContext<any>(DevopsContext);
+  const { statusFilter, setStatusFilter } = useContext<any>(DevopsContext);
   const [stepFilter, setStepFilter] = useState<number | undefined>();
   const [taskFilter, setTaskFilter] = useState<string | undefined>();
   const [taskId, setTaskId] = useState<number>();
   const [searchValue, setSearchValueValue] = useState('');
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [selectedKey, setSelectedKey] = useState<Key[]>([]);
-  const {initialState, setInitialState} = useModel('@@initialState');
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   const [data, setData] = useState<any[]>(
     buildProjectTree(
@@ -112,7 +116,7 @@ const JobList = (props: connect) => {
     {
       title: l('global.table.lifecycle'),
       dataIndex: 'step',
-      render: (_: any, row: { step: number }) => <JobLifeCycleTag status={row.step}/>
+      render: (_: any, row: { step: number }) => <JobLifeCycleTag status={row.step} />
     },
     {
       title: l('global.table.runmode'),
@@ -157,7 +161,7 @@ const JobList = (props: connect) => {
     {
       title: l('global.table.status'),
       dataIndex: 'status',
-      render: (_: any, row: Jobs.JobInstance) => <StatusTag status={row.status}/>
+      render: (_: any, row: Jobs.JobInstance) => <StatusTag status={row.status} />
     },
     Table.EXPAND_COLUMN,
     {
@@ -170,7 +174,7 @@ const JobList = (props: connect) => {
           className={'options-button'}
           key={`${record.id}_history`}
           title={l('devops.joblist.detail')}
-          icon={<EyeTwoTone/>}
+          icon={<EyeTwoTone />}
           onClick={() => history.push(`/devops/job-detail?id=${record.id}`)}
         />
       ]
@@ -193,12 +197,12 @@ const JobList = (props: connect) => {
 
   useEffect(() => {
     setInterval(() => tableRef.current?.reload(false), 5 * 1000);
-    queryUserData({id: getTenantByLocalStorage()});
+    queryUserData({ id: getTenantByLocalStorage() });
     queryTaskOwnerLockingStrategy(SettingConfigKeyEnum.ENV.toLowerCase());
   }, []);
 
   const onChangeSearch = (e: any) => {
-    let {value} = e.target;
+    let { value } = e.target;
     if (!value) {
       setSearchValueValue(value);
       return;
@@ -211,7 +215,7 @@ const JobList = (props: connect) => {
 
   function onNodeClick(info: any) {
     const {
-      node: {isLeaf, name, type, parentId, path, key, taskId, fullInfo}
+      node: { isLeaf, name, type, parentId, path, key, taskId, fullInfo }
     } = info;
     if (isLeaf) {
       // 如果是 leaf 节点 则设置选中的 key 和 taskId | if it is a leaf node, set the selected key and taskId
@@ -235,9 +239,13 @@ const JobList = (props: connect) => {
       }}
     >
       <Splitter>
-        <Splitter.Panel collapsible={{end: true}}>
+        <Splitter.Panel collapsible={{ end: true }}>
           <Col>
-            <Flex align={"center"} justify={"flex-start"} style={{margin: '4px 0px', padding: '0 5px'}}>
+            <Flex
+              align={'center'}
+              justify={'flex-start'}
+              style={{ margin: '4px 0px', padding: '0 5px' }}
+            >
               <Search
                 placeholder={l('global.search.text')}
                 onChange={onChangeSearch}
@@ -248,7 +256,7 @@ const JobList = (props: connect) => {
                   selectedKey.length > 0 && (
                     <Button
                       title={l('devops.joblist.clear.filtertips')}
-                      icon={<ClearOutlined/>}
+                      icon={<ClearOutlined />}
                       onClick={() => resetValue()}
                     >
                       {l('devops.joblist.clear.filter')}
@@ -260,14 +268,14 @@ const JobList = (props: connect) => {
               <Button.Group>
                 <CircleBtn
                   title={l('button.expand-all')}
-                  icon={<ArrowsAltOutlined/>}
+                  icon={<ArrowsAltOutlined />}
                   onClick={() => setExpandedKeys(getLeafKeyList(data))}
                 />
               </Button.Group>
               <Button.Group>
                 <CircleBtn
                   title={l('button.collapse-all')}
-                  icon={<ShrinkOutlined/>}
+                  icon={<ShrinkOutlined />}
                   onClick={() => setExpandedKeys([])}
                 />
               </Button.Group>
@@ -275,7 +283,7 @@ const JobList = (props: connect) => {
 
             {data.length ? (
               <DirectoryTree
-                style={{padding: '0 10px'}}
+                style={{ padding: '0 10px' }}
                 className={'treeList'}
                 onSelect={(_, info) => onNodeClick(info)}
                 expandedKeys={expandedKeys}
@@ -284,18 +292,18 @@ const JobList = (props: connect) => {
                 treeData={data}
               />
             ) : (
-              <Empty className={'code-content-empty'}/>
+              <Empty className={'code-content-empty'} />
             )}
           </Col>
         </Splitter.Panel>
 
-        <Splitter.Panel defaultSize={"80%"} max={"90%"} min={"20%"}>
-          <Flex align={"center"} justify={"center"}>
-            <Col style={{width: "98%"}}>
+        <Splitter.Panel defaultSize={'80%'} max={'90%'} min={'20%'}>
+          <Flex align={'center'} justify={'center'}>
+            <Col style={{ width: '98%' }}>
               <ProTable<Jobs.JobInstance>
                 {...PROTABLE_OPTIONS_PUBLIC}
                 search={false}
-                loading={{delay: 1000}}
+                loading={{ delay: 1000 }}
                 rowKey={(record) => record.id}
                 columns={jobListColumns}
                 params={{
@@ -308,7 +316,7 @@ const JobList = (props: connect) => {
                 actionRef={tableRef}
                 toolbar={{
                   settings: false,
-                  search: {onSearch: (value: string) => setTaskFilter(value)},
+                  search: { onSearch: (value: string) => setTaskFilter(value) },
                   filter: (
                     <>
                       <Radio.Group
@@ -328,7 +336,7 @@ const JobList = (props: connect) => {
                     </>
                   ),
                   actions: [
-                    <Button icon={<RedoOutlined/>} onClick={() => tableRef.current?.reload()}/>
+                    <Button icon={<RedoOutlined />} onClick={() => tableRef.current?.reload()} />
                   ]
                 }}
                 request={async (params, sorter, filter: any) =>
@@ -340,15 +348,15 @@ const JobList = (props: connect) => {
                 }
                 expandable={{
                   expandedRowRender: (record) => (
-                    <JobHistoryList taskId={record.taskId} key={record.id}/>
+                    <JobHistoryList taskId={record.taskId} key={record.id} />
                   ),
-                  expandIcon: ({expanded, onExpand, record}) => (
+                  expandIcon: ({ expanded, onExpand, record }) => (
                     <Button
                       className={'options-button'}
                       key={`${record.id}_history`}
                       onClick={(e) => onExpand(record, e)}
                       title={l('devops.joblist.history')}
-                      icon={<ClockCircleTwoTone twoToneColor={expanded ? '#52c41a' : '#4096ff'}/>}
+                      icon={<ClockCircleTwoTone twoToneColor={expanded ? '#52c41a' : '#4096ff'} />}
                     />
                   )
                 }}
@@ -362,7 +370,7 @@ const JobList = (props: connect) => {
   );
 };
 export default connect(
-  ({Studio, SysConfig}: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
     users: Studio.users,
     projectData: Studio.project.data,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
