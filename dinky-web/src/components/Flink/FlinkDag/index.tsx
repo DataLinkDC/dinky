@@ -27,18 +27,18 @@ import {
   portConfigTb,
   zoomOptions
 } from '@/components/Flink/FlinkDag/config';
-import { buildDag, regConnect, updateDag } from '@/components/Flink/FlinkDag/functions';
+import {buildDag, regConnect, updateDag} from '@/components/Flink/FlinkDag/functions';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
-import { getDataByParamsReturnResult } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { Jobs } from '@/types/DevOps/data';
-import { DagreLayout } from '@antv/layout';
-import { Edge, Graph, Node } from '@antv/x6';
-import { Rectangle } from '@antv/x6-geometry';
-import { Selection } from '@antv/x6-plugin-selection';
-import { register } from '@antv/x6-react-shape';
-import { Drawer, Select, Slider, Table, Tabs, TabsProps, Tag, Typography } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import {getDataByParamsReturnResult} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {Jobs} from '@/types/DevOps/data';
+import {DagreLayout} from '@antv/layout';
+import {Edge, Graph, Node} from '@antv/x6';
+import {Rectangle} from '@antv/x6-geometry';
+import {Selection} from '@antv/x6-plugin-selection';
+import {register} from '@antv/x6-react-shape';
+import {Drawer, Select, Slider, Table, Tabs, TabsProps, Tag, Typography} from 'antd';
+import {useEffect, useRef, useState} from 'react';
 import './index.css';
 import dagre from 'dagre';
 
@@ -47,17 +47,17 @@ export type DagProps = {
   onlyPlan?: boolean;
   checkPoints?: any;
 };
-const { Paragraph } = Typography;
+const {Paragraph} = Typography;
 
 const RenderCheckpoint = (id: string, checkPoints: any) => {
   const [selectPath, setSelectPath] = useState<string>('');
   const key = id + selectPath;
-  const [itemChildren, setItemChildren] = useState({ [key]: [] as TabsProps['items'] });
+  const [itemChildren, setItemChildren] = useState({[key]: [] as TabsProps['items']});
 
   const checkpointArray = ((checkPoints?.history ?? []) as any[])
     .filter((x) => x.status === 'COMPLETED')
     .map((x) => {
-      return { checkpointType: x.checkpoint_type, path: x.external_path, id: x.id };
+      return {checkpointType: x.checkpoint_type, path: x.external_path, id: x.id};
     });
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
                           dataIndex: z,
                           key: z,
                           render: (text) => (
-                            <Paragraph copyable ellipsis={{ rows: 3 }}>
+                            <Paragraph copyable ellipsis={{rows: 3}}>
                               {text}
                             </Paragraph>
                           )
@@ -106,13 +106,13 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
                   )
                 };
               })}
-              tabBarStyle={{ marginBlock: 0 }}
+              tabBarStyle={{marginBlock: 0}}
               tabBarGutter={10}
             />
           )
         };
       });
-      setItemChildren({ ...itemChildren, [key]: genData });
+      setItemChildren({...itemChildren, [key]: genData});
     });
   }, [selectPath, id]);
 
@@ -120,7 +120,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
     <>
       <Select
         defaultValue={selectPath}
-        style={{ width: '100%' }}
+        style={{width: '100%'}}
         placeholder='Select a Checkpoint'
         optionFilterProp='children'
         options={checkpointArray.map((x) => {
@@ -142,7 +142,7 @@ const RenderCheckpoint = (id: string, checkPoints: any) => {
         }}
       />
 
-      <Tabs items={itemChildren[key]} tabBarStyle={{ marginBlock: 0 }} tabBarGutter={10} />
+      <Tabs items={itemChildren[key]} tabBarStyle={{marginBlock: 0}} tabBarGutter={10}/>
     </>
   );
 };
@@ -192,13 +192,13 @@ function getMaxWidthAndDepth(edges: CusEdge[]): { maxWidth: number; maxDepth: nu
     }
   });
 
-  return { maxWidth, maxDepth };
+  return {maxWidth, maxDepth};
 }
 
 const FlinkDag = (props: DagProps) => {
   const container = useRef(null);
 
-  const { job, onlyPlan = false, checkPoints = {} } = props;
+  const {job, onlyPlan = false, checkPoints = {}} = props;
 
   const [graph, setGraph] = useState<Graph>();
   const [currentJob, setCurrentJob] = useState<string>();
@@ -210,6 +210,7 @@ const FlinkDag = (props: DagProps) => {
   };
 
   const handleClose = () => {
+    graph?.unselect(currentSelect)
     setOpen(false);
     setCurrentSelect(undefined);
     graph?.zoomToFit(zoomOptions);
@@ -217,14 +218,14 @@ const FlinkDag = (props: DagProps) => {
   };
 
   const initListen = (graph: Graph) => {
-    graph.on('node:selected', ({ cell }) => {
+    graph.on('node:selected', ({cell}) => {
       if (onlyPlan) {
         return;
       }
 
       setOpen(true);
       setZoom((oldValue) => {
-        originPosition = { zoom: oldValue };
+        originPosition = {zoom: oldValue};
         return 1;
       });
       graph.zoomTo(1);
@@ -239,7 +240,7 @@ const FlinkDag = (props: DagProps) => {
   };
 
   const initGraph = (flinkData: any) => {
-    const { maxWidth, maxDepth } = getMaxWidthAndDepth(flinkData.edges);
+    const {maxWidth, maxDepth} = getMaxWidthAndDepth(flinkData.edges);
     let dir: string = 'LR';
     let ranksep = 200;
     let nodesep = 40;
@@ -284,7 +285,7 @@ const FlinkDag = (props: DagProps) => {
 
     // Automatically zoom to fit
     graph.zoomToFit(zoomOptions);
-    graph.on('scale', ({ sx }) => setZoom(sx));
+    graph.on('scale', ({sx}) => setZoom(sx));
     graph?.zoomTo(zoom);
     updateDag(job?.vertices, graph);
     initListen(graph);
@@ -298,11 +299,11 @@ const FlinkDag = (props: DagProps) => {
     const nodes = graph.getNodes();
     const edges = graph.getEdges();
     const g = new dagre.graphlib.Graph();
-    g.setGraph({ ...layoutConfig, ranksep, nodesep, rankdir: dir });
+    g.setGraph({...layoutConfig, ranksep, nodesep, rankdir: dir});
     g.setDefaultEdgeLabel(() => ({}));
 
     nodes.forEach((node) => {
-      g.setNode(node.id, { width: 240, height: 140 });
+      g.setNode(node.id, {width: 240, height: 140});
     });
 
     edges.forEach((edge) => {
@@ -335,8 +336,8 @@ const FlinkDag = (props: DagProps) => {
         const fix = dir === 'LR' ? sourceBBox.width : 0;
         const x = sourceBBox.x + fix + gap / 2;
         edge.setVertices([
-          { x, y: sourceBBox.center.y },
-          { x, y: targetBBox.center.y }
+          {x, y: sourceBBox.center.y},
+          {x, y: targetBBox.center.y}
         ]);
       } else if ((dir === 'TB' || dir === 'BT') && sourceBBox.x !== targetBBox.x) {
         const gap =
@@ -346,8 +347,8 @@ const FlinkDag = (props: DagProps) => {
         const fix = dir === 'TB' ? sourceBBox.height : 0;
         const y = sourceBBox.y + fix + gap / 2;
         edge.setVertices([
-          { x: sourceBBox.center.x, y },
-          { x: targetBBox.center.x, y }
+          {x: sourceBBox.center.x, y},
+          {x: targetBBox.center.x, y}
         ]);
       } else {
         edge.setVertices([]);
@@ -393,16 +394,16 @@ const FlinkDag = (props: DagProps) => {
           value={zoom}
           min={0.1}
           max={1.5}
-          tooltip={{ open: false }}
+          tooltip={{open: false}}
           step={0.01}
           onChange={setZoom}
         />
       </div>
-      <div style={{ height: '100%', width: '100%' }} ref={container} />
+      <div style={{height: '100%', width: '100%'}} ref={container}/>
       <Drawer
         styles={{
-          header: { paddingBlock: 5 },
-          body: { paddingBlock: 5 }
+          header: {paddingBlock: 5},
+          body: {paddingBlock: 5}
         }}
         open={open}
         getContainer={false}
@@ -410,32 +411,28 @@ const FlinkDag = (props: DagProps) => {
         mask={false}
         onClose={handleClose}
         destroyOnClose={true}
-        closable={false}
+        closable={true}
       >
-        {onlyPlan ? (
-          <></>
-        ) : (
-          <Tabs
-            defaultActiveKey='1'
-            items={[
-              {
-                key: '1',
-                label: 'Detail',
-                children: (
-                  <div style={{ whiteSpace: 'pre-wrap' }}>
-                    {currentSelect?.getData().description?.replace(/<br\/>/g, '\n')}
-                  </div>
-                )
-              },
-              {
-                key: '2',
-                label: 'CheckPointRead',
-                children: RenderCheckpoint(currentSelect?.id, checkPoints)
-              }
-            ]}
-            tabBarGutter={10}
-          />
-        )}
+        {!onlyPlan && <Tabs
+          defaultActiveKey='1'
+          items={[
+            {
+              key: '1',
+              label: 'Detail',
+              children: (
+                <div style={{whiteSpace: 'pre-wrap'}}>
+                  {currentSelect?.getData().description?.replace(/<br\/>/g, '\n')}
+                </div>
+              )
+            },
+            {
+              key: '2',
+              label: 'CheckPointRead',
+              children: RenderCheckpoint(currentSelect?.id, checkPoints)
+            }
+          ]}
+          tabBarGutter={10}
+        />}
       </Drawer>
     </span>
   );

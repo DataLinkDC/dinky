@@ -19,6 +19,7 @@
 
 package org.dinky.app.flinksql;
 
+import org.apache.flink.configuration.PipelineOptions;
 import org.dinky.app.db.DBUtil;
 import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
@@ -46,6 +47,7 @@ import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.url.RsURLStreamHandlerFactory;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.SqlUtil;
+import org.dinky.utils.URLUtils;
 import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
@@ -254,9 +256,12 @@ public class Submitter {
         for (String statement : statements) {
             if (ExecuteJarParseStrategy.INSTANCE.match(statement)) {
                 ExecuteJarOperation executeJarOperation = new ExecuteJarOperation(statement);
-                Pipeline pipeline = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment());
+
                 ReadableConfig configuration =
                         executor.getStreamExecutionEnvironment().getConfiguration();
+                List<String> jars = configuration.get(PipelineOptions.JARS);
+                List<URL> jarsUrl = jars.stream().map(URLUtil::getURL).collect(Collectors.toList());
+                Pipeline pipeline = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment(), jarsUrl);
                 if (pipeline instanceof StreamGraph) {
                     // stream job
                     StreamGraph streamGraph = (StreamGraph) pipeline;

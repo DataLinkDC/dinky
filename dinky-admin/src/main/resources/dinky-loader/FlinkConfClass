@@ -8,6 +8,7 @@ org.apache.flink.configuration.JobManagerOptions
 org.apache.flink.configuration.TaskManagerOptions
 org.apache.flink.configuration.HighAvailabilityOptions
 org.apache.flink.configuration.KubernetesConfigOptions
+org.apache.flink.client.cli.ArtifactFetchOptions
 org.apache.flink.configuration.ClusterOptions
 org.apache.flink.configuration.StateBackendOptions
 org.apache.flink.configuration.QueryableStateOptions

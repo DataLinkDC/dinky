@@ -92,7 +92,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                         submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
-            Configuration configuration = tEnv.getConfig().getConfiguration();
+            Configuration configuration = tEnv.getRootConfiguration();
             File file =
                     Opt.ofBlankAble(submitParam.getUri()).map(URLUtils::toFile).orElse(null);
             String submitArgs = Opt.ofBlankAble(submitParam.getArgs()).orElse("");

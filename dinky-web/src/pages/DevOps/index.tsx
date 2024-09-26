@@ -24,7 +24,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Space } from 'antd';
 import { createContext, useState } from 'react';
 
-export const DevopContext = createContext({});
+export const DevopsContext = createContext({});
 
 export default () => {
   const [statusFilter, setStatusFilter] = useState();
@@ -35,12 +35,12 @@ export default () => {
   return (
     <SlowlyAppear>
       <PageContainer title={false} breadcrumb={{ style: { display: 'none' } }}>
-        <DevopContext.Provider value={{ statusFilter, setStatusFilter }}>
+        <DevopsContext.Provider value={{ statusFilter, setStatusFilter }}>
           <Space direction='vertical' size={10}>
             <JobOverview />
             <JobList />
           </Space>
-        </DevopContext.Provider>
+        </DevopsContext.Provider>
       </PageContainer>
     </SlowlyAppear>
   );

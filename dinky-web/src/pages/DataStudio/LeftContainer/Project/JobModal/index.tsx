@@ -198,6 +198,9 @@ const JobModal: React.FC<JobModalProps> = (props) => {
             placeholder={l('catalog.name.placeholder')}
             validateTrigger={['onBlur', 'onChange', 'onSubmit']}
             rules={[{ required: true, validator: validateName }]}
+            fieldProps={{
+              autoFocus: true
+            }}
             width={'xl'}
           />
           <ProFormSelect
@@ -294,6 +297,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
 
   return (
     <ModalForm<Catalogue>
+      isKeyPressSubmit
       title={title}
       form={form}
       width={'60%'}
