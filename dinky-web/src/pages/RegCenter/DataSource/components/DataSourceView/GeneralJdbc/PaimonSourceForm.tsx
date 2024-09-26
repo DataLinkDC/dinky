@@ -60,8 +60,7 @@ const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
           label='File System Type'
           request={async () => [
             { label: 'S3', value: 'S3', disabled: false },
-            { label: 'HDFS', value: 'HDFS', disabled: true },
-            { label: 'LOCAL', value: 'LOCAL', disabled: false }
+            { label: 'HDFS/LOCAL', value: 'LOCAL', disabled: false }
           ]}
           required
           fieldProps={{
