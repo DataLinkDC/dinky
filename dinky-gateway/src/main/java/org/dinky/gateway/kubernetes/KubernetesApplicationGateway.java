@@ -184,7 +184,12 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 try (ClusterClient<String> client = clusterClient.getClusterClient()) {
                     logger.info("Start get job list ....");
                     Collection<JobStatusMessage> jobList = client.listJobs().get(15, TimeUnit.SECONDS);
-                    logger.info("Get K8S Job list: {}", jobList);
+                    if (jobList == null) {
+                        logger.error("Get job list is failed, Please check your Network !!");
+                        continue;
+                    } else {
+                        logger.info("Get K8S Job list: {}", jobList);
+                    }
                     if (jobList.isEmpty()) {
                         logger.error("Get job is empty, will be reconnect later....");
                         continue;
