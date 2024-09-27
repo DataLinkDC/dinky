@@ -68,7 +68,7 @@ JAR_PARAMS_OPT="--logging.config=${LOG_CONFIG}"
 # JMX path
 JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.20.0.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
 #JVM OPTS
-JVM_OPTS="-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0 -XX:MaxPermSize=1024M"
+JVM_OPTS="-Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M"
 
 # Check whether the pid path exists
 PID_PATH="${APP_HOME}/run"
