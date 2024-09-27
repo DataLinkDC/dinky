@@ -25,19 +25,36 @@ import {
   ProFormText
 } from '@ant-design/pro-components';
 import { l } from '@/utils/intl';
-import React from 'react';
-import { Segmented, Space } from 'antd';
+import React, { useEffect } from 'react';
+import { Space } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 
 type DataSourceJdbcProps = {
   form: FormInstance<Values>;
 };
+export const FileSystemType = {
+  S3: 'S3',
+  HDFS: 'HDFS',
+  LOCAL: 'LOCAL'
+};
+
+export const CatalogType = {
+  FileSystem: 'FileSystem',
+  JDBC: 'JDBC',
+  Hive: 'Hive'
+};
 
 const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
   const { form } = props;
-  const [fileSystemType, setFileSystemType] = React.useState<string | number>('S3'); // ['S3', 'HDFS', 'LOCAL']
-  const [catalogType, setCatalogType] = React.useState<string | number>('FileSystem'); // ['FileSystem', 'JDBC', 'Hive']
+  const [fileSystemType, setFileSystemType] = React.useState<string>();
+  const [catalogType, setCatalogType] = React.useState<string>();
+
+  useEffect(() => {
+    setCatalogType(form.getFieldsValue()?.connectConfig?.catalogType ?? CatalogType.FileSystem);
+    setFileSystemType(form.getFieldsValue()?.connectConfig?.fileSystemType ?? FileSystemType.LOCAL);
+  });
+
   const renderConfig = () => {
     return (
       <Space direction={'horizontal'} size={60}>
@@ -45,29 +62,31 @@ const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
           name={['connectConfig', 'catalogType']}
           label='Catalog Type'
           request={async () => [
-            { label: 'FileSystem', value: 'FileSystem', disabled: false },
-            { label: 'JDBC', value: 'JDBC', disabled: true },
-            { label: 'Hive', value: 'Hive', disabled: true }
+            { label: CatalogType.FileSystem, value: CatalogType.FileSystem, disabled: false },
+            { label: CatalogType.JDBC, value: CatalogType.JDBC, disabled: true },
+            { label: CatalogType.Hive, value: CatalogType.Hive, disabled: false }
           ]}
           required
           fieldProps={{
-            onChange: (value) => setCatalogType(value)
+            onChange: (value) => setCatalogType(value + '')
           }}
         />
 
-        <ProFormSegmented
-          name={['connectConfig', 'fileSystemType']}
-          label='File System Type'
-          request={async () => [
-            { label: 'S3', value: 'S3', disabled: false },
-            { label: 'HDFS', value: 'HDFS', disabled: true },
-            { label: 'LOCAL', value: 'LOCAL', disabled: false }
-          ]}
-          required
-          fieldProps={{
-            onChange: (value) => setFileSystemType(value)
-          }}
-        />
+        {catalogType == CatalogType.FileSystem && (
+          <ProFormSegmented
+            name={['connectConfig', 'fileSystemType']}
+            label='File System Type'
+            request={async () => [
+              { label: FileSystemType.LOCAL, value: FileSystemType.LOCAL, disabled: false },
+              { label: FileSystemType.S3, value: FileSystemType.S3, disabled: false },
+              { label: FileSystemType.HDFS, value: FileSystemType.HDFS, disabled: false }
+            ]}
+            required
+            fieldProps={{
+              onChange: (value) => setFileSystemType(value + '')
+            }}
+          />
+        )}
       </Space>
     );
   };
@@ -112,18 +131,57 @@ const PaimonSourceForm: React.FC<DataSourceJdbcProps> = (props) => {
     );
   };
 
+  const renderHiveConfig = () => {
+    return (
+      <>
+        <ProFormText
+          name={['connectConfig', 'hadoop', 'hiveConfDir']}
+          label='hive-conf-dir'
+          width={'md'}
+          required={true}
+        />
+        <ProFormText
+          name={['connectConfig', 'hadoop', 'hadoopConfDir']}
+          label='hadoop-conf-dir'
+          width={'md'}
+        />
+        <ProFormText name={['connectConfig', 'hadoop', 'uri']} label='Uri' width={'md'} />
+      </>
+    );
+  };
+  const renderHdfsConfig = () => {
+    return (
+      <>
+        <ProFormText
+          name={['connectConfig', 'hadoop', 'hadoopConfDir']}
+          label='hadoop-conf-dir'
+          width={'md'}
+          required={true}
+        />
+      </>
+    );
+  };
+
   return (
     <div>
       {renderConfig()}
       <br />
       <ProFormGroup>
-        <ProFormText
-          name={['connectConfig', 'warehouse']}
-          label='warehouse'
-          width={'md'}
-          required={true}
-        />
-        {fileSystemType === 'S3' && renderS3Config()}
+        {catalogType != CatalogType.Hive && (
+          <ProFormText
+            name={['connectConfig', 'warehouse']}
+            label='warehouse'
+            width={'md'}
+            required={true}
+          />
+        )}
+        {catalogType === CatalogType.FileSystem &&
+          fileSystemType === FileSystemType.S3 &&
+          renderS3Config()}
+        {catalogType === CatalogType.FileSystem &&
+          fileSystemType === FileSystemType.HDFS &&
+          renderHdfsConfig()}
+        {catalogType === CatalogType.Hive && renderHiveConfig()}
       </ProFormGroup>
 
       <ProFormList

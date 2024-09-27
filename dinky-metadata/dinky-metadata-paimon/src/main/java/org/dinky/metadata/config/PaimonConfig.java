@@ -19,13 +19,13 @@
 
 package org.dinky.metadata.config;
 
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.CustomConfig;
-import org.dinky.data.model.S3Configuration;
+import org.dinky.utils.TextUtil;
 
 import org.apache.paimon.options.Options;
 
 import java.util.List;
-import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,22 +41,51 @@ public class PaimonConfig implements IConnectConfig {
     private List<CustomConfig> paimonConfig;
     private String warehouse;
     private S3 s3;
+    private Hadoop hadoop;
     private String fileSystemType;
     private String catalogType;
 
     public Options getOptions() {
         Options options = new Options();
-        options.set("warehouse", warehouse);
-        if (Objects.requireNonNull(FileSystemType.fromType(fileSystemType)) == FileSystemType.S3) {
-            if (s3 != null) {
-                options.set(S3Configuration.ENDPOINT, s3.getEndpoint());
-                options.set(S3Configuration.ACCESS_KEY, s3.getAccessKey());
-                options.set(S3Configuration.SECRET_KEY, s3.getSecretKey());
-                options.set(S3Configuration.PATH_STYLE_ACCESS, String.valueOf(s3.isPathStyle()));
+
+        if (CatalogType.getByName(catalogType) == CatalogType.Hive) {
+            options.set(PaimonHadoopConfig.METASTORE, "hive");
+            if (hadoop != null) {
+                if (!TextUtil.isEmpty(hadoop.getHadoopConfDir())) {
+                    options.set(PaimonHadoopConfig.hadoopConfDir, hadoop.getHadoopConfDir());
+                }
+                if (!TextUtil.isEmpty(hadoop.getHiveConfDir())) {
+                    options.set(PaimonHadoopConfig.hiveConfDir, hadoop.getHiveConfDir());
+                }
+                if (!TextUtil.isEmpty(hadoop.getUri())) {
+                    options.set(PaimonHadoopConfig.URI, hadoop.getUri());
+                }
             } else {
-                throw new IllegalArgumentException("S3 config is required for S3 file system");
+                throw new BusException("Hadoop config is required for Hive catalog");
+            }
+        } else {
+            options.set("warehouse", warehouse);
+        }
+
+        if (FileSystemType.fromType(fileSystemType) == FileSystemType.S3) {
+            if (s3 != null) {
+                options.set(PaimonS3Configuration.ENDPOINT, s3.getEndpoint());
+                options.set(PaimonS3Configuration.ACCESS_KEY, s3.getAccessKey());
+                options.set(PaimonS3Configuration.SECRET_KEY, s3.getSecretKey());
+                options.set(PaimonS3Configuration.PATH_STYLE_ACCESS, String.valueOf(s3.isPathStyle()));
+            } else {
+                throw new BusException("S3 config is required for S3 file system");
+            }
+        } else if (FileSystemType.fromType(fileSystemType) == FileSystemType.HDFS) {
+            if (hadoop != null) {
+                if (!TextUtil.isEmpty(hadoop.getHadoopConfDir())) {
+                    options.set(PaimonHadoopConfig.hadoopConfDir, hadoop.getHadoopConfDir());
+                }
+            } else {
+                throw new BusException("Hadoop config is required for hadoop ");
             }
         }
+
         if (paimonConfig != null) {
             for (CustomConfig customConfig : paimonConfig) {
                 options.set(customConfig.getName(), customConfig.getValue());
@@ -71,5 +100,12 @@ public class PaimonConfig implements IConnectConfig {
         private String accessKey;
         private String secretKey;
         private boolean pathStyle;
+    }
+
+    @Data
+    public static class Hadoop {
+        private String hiveConfDir;
+        private String hadoopConfDir;
+        private String uri;
     }
 }

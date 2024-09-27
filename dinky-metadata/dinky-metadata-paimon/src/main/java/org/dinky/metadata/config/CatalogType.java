@@ -19,9 +19,12 @@
 
 package org.dinky.metadata.config;
 
+import org.dinky.utils.TextUtil;
+
 public enum CatalogType {
     Hive("Hive"),
     JDBC("JDBC"),
+    NONE("None"),
     FileSystem("FileSystem");
 
     private final String name;
@@ -35,6 +38,9 @@ public enum CatalogType {
     }
 
     public static CatalogType getByName(String name) {
+        if (TextUtil.isEmpty(name)) {
+            return NONE;
+        }
         for (CatalogType catalogType : CatalogType.values()) {
             if (catalogType.getName().equals(name)) {
                 return catalogType;
