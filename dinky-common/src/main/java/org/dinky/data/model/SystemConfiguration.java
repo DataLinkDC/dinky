@@ -123,10 +123,10 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue(System.getProperty("dinkyAddr"))
             .note(Status.SYS_ENV_SETTINGS_DINKYADDR_NOTE);
-    private final Configuration<String> dinkyToken = key(Status.SYS_ENV_SETTINGS_DINKYTOKEN_NOTE)
+    private final Configuration<String> dinkyToken = key(Status.SYS_ENV_SETTINGS_DINKYTOKEN)
             .stringType()
             .defaultValue("efda1551-7958-4e0f-80a8-dfd107df3e38")
-            .note(Status.SYS_ENV_SETTINGS_DINKYTOKEN);
+            .note(Status.SYS_ENV_SETTINGS_DINKYTOKEN_NOTE);
 
     private final Configuration<Integer> jobReSendDiffSecond = key(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND)
             .intType()
