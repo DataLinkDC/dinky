@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 import React, { Dispatch, RefObject, SetStateAction } from 'react';
 import { DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup } from 'rc-dock';
 import { DockContext, PanelData, TabData } from 'rc-dock/lib/DockData';
@@ -99,8 +118,8 @@ export const useLayout = (
 
   // 激活panel点击事件
   const activePanelOnClick = () => {
-    // @ts-ignore
     const panels = Array.from(
+      // @ts-ignore
       dockLayoutRef.current?._ref.querySelectorAll('.dock-box>.dock-panel')
     );
     for (const panel of panels) {
@@ -233,17 +252,14 @@ export const groups: {
 } = {
   leftTop: {
     floatable: true,
-    widthFlex: 200,
     panelExtra: toolbarPanelExtra
   },
   leftBottom: {
     floatable: true,
-    widthFlex: 200,
     panelExtra: toolbarPanelExtra
   },
   right: {
     floatable: true,
-    widthFlex: 200,
     panelExtra: toolbarPanelExtra
   },
   //  中间内容group
