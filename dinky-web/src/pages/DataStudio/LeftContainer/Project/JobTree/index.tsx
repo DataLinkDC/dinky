@@ -39,7 +39,7 @@ import { connect } from '@@/exports';
 import { SortAscendingOutlined } from '@ant-design/icons';
 import { Key } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import {Divider, Flex, MenuProps} from 'antd';
+import { Divider, Flex, MenuProps } from 'antd';
 import { Button, Dropdown, Empty, Space, Tree } from 'antd';
 import type { ButtonType } from 'antd/es/button/buttonHelpers';
 import Search from 'antd/es/input/Search';
@@ -271,7 +271,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   return (
     <>
-      <Flex gap={8} justify={"center"} align={"center"}>
+      <Flex gap={8} justify={'center'} align={'center'}>
         <Search
           style={{ margin: '8px 0px' }}
           placeholder={l('global.search.text')}

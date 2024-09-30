@@ -17,11 +17,11 @@
  *
  */
 
-import {Dropdown} from 'antd';
-import {MenuItemType} from 'antd/es/menu/interface';
-import {MenuInfo} from 'rc-menu/es/interface';
+import { Dropdown } from 'antd';
+import { MenuItemType } from 'antd/es/menu/interface';
+import { MenuInfo } from 'rc-menu/es/interface';
 import React from 'react';
-import {RightMenuItemProps} from "@/pages/DataStudioNew/data.d";
+import { RightMenuItemProps } from '@/pages/DataStudioNew/data.d';
 
 type RightContextMenuProps = {
   onClick: (values: MenuInfo) => void;
@@ -32,7 +32,7 @@ type RightContextMenuProps = {
 };
 
 const RightContextMenu: React.FC<RightContextMenuProps> = (props) => {
-  const {onClick, items, openChange, open, contextMenuPosition} = props;
+  const { onClick, items, openChange, open, contextMenuPosition } = props;
 
   return (
     <Dropdown
@@ -40,13 +40,13 @@ const RightContextMenu: React.FC<RightContextMenuProps> = (props) => {
       autoAdjustOverflow
       destroyPopupOnHide
       trigger={['contextMenu']}
-      overlayStyle={{...contextMenuPosition}}
-      menu={{onClick: onClick, items: items}}
+      overlayStyle={{ ...contextMenuPosition }}
+      menu={{ onClick: onClick, items: items }}
       open={open}
       onOpenChange={openChange}
     >
       {/*占位*/}
-      <div style={{...contextMenuPosition}}/>
+      <div style={{ ...contextMenuPosition }} />
     </Dropdown>
   );
 };
@@ -55,7 +55,7 @@ export default RightContextMenu;
 
 // 获取右键按钮菜单
 export const useRightMenuItem = (props: RightMenuItemProps) => {
-  const {layoutState} = props;
+  const { layoutState } = props;
   const menuItem: MenuItemType[] = [];
   // menuItem.push({
   //   key: 'saveLayout',
@@ -66,27 +66,27 @@ export const useRightMenuItem = (props: RightMenuItemProps) => {
   if (layoutState.toolbar.showDesc) {
     menuItem.push({
       key: 'hideToolbarDesc',
-      label: "隐藏工具栏窗口名称"
-    })
+      label: '隐藏工具栏窗口名称'
+    });
   } else {
     menuItem.push({
       key: 'showToolbarDesc',
-      label: "显示工具栏窗口名称"
-    })
+      label: '显示工具栏窗口名称'
+    });
   }
   // 显示激活tab缓存提示
   // todo 这个最大的特点其实可以多开窗口，名字需要再次定义
   if (layoutState.toolbar.showActiveTab) {
     menuItem.push({
       key: 'hideToolbarActiveTab',
-      label: "隐藏工具栏激活tab图标"
-    })
+      label: '隐藏工具栏激活tab图标'
+    });
   } else {
     menuItem.push({
       key: 'showToolbarActiveTab',
-      label: "显示工具栏激活tab图标"
-    })
+      label: '显示工具栏激活tab图标'
+    });
   }
 
-  return menuItem
-}
+  return menuItem;
+};

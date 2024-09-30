@@ -332,5 +332,5 @@ export default [
   {
     path: '*',
     component: './Other/404'
-  },
+  }
 ];
