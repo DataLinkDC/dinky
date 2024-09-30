@@ -143,7 +143,7 @@ public class JobAlertData {
     private static String buildTaskUrl(JobInstance jobInstance) {
         return StrFormatter.format(
                 "{}/#/devops/job-detail?id={}",
-                SystemConfiguration.getInstances().getDinkyAddr(),
+                SystemConfiguration.getInstances().getDinkyAddr().getValue(),
                 jobInstance.getTaskId());
     }
 
