@@ -65,6 +65,13 @@ export default [
     component: './DataStudio'
   },
   {
+    path: '/datastudio-new',
+    name: 'datastudio',
+    icon: 'CodeOutlined',
+    footerRender: false,
+    component: './DataStudioNew'
+  },
+  {
     path: '/devops',
     name: 'devops',
     icon: 'ControlOutlined',
@@ -325,5 +332,5 @@ export default [
   {
     path: '*',
     component: './Other/404'
-  }
+  },
 ];
