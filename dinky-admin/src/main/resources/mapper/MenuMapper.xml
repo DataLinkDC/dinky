@@ -102,7 +102,7 @@
         from dinky_sys_menu m
                  left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
-                 left join dinky_role r on r.role_id = ur.role_id
+                 left join dinky_role r on r.id = ur.role_id
         where r.is_delete = 0 and ur.user_id = #{userId}
     </select>
 
