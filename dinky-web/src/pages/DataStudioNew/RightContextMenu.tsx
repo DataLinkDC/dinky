@@ -59,8 +59,8 @@ export const useRightMenuItem = (props: RightMenuItemProps) => {
   const menuItem: MenuItemType[] = [];
   menuItem.push({
     key: 'saveLayout',
-    label: "保存布局"
-  })
+    label: '保存布局'
+  });
 
   // 显示工具窗口名称
   if (layoutState.toolbar.showDesc) {

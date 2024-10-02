@@ -21,7 +21,7 @@ import { ContextMenuPosition } from '@/types/Public/state';
 import { ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
 import { MenuItemType } from 'antd/es/menu/interface';
 import { useRightMenuItem } from '@/pages/DataStudioNew/RightContextMenu';
-import {LayoutData} from "rc-dock";
+import { LayoutData } from 'rc-dock';
 
 export type LayoutState = {
   layoutData: LayoutData;

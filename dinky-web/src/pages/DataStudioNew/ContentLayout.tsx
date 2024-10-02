@@ -17,32 +17,38 @@
  *
  */
 
-import React, {Dispatch, RefObject, SetStateAction} from 'react';
-import {DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup} from 'rc-dock';
-import {DockContext, PanelData, TabData} from 'rc-dock/lib/DockData';
+import React, { Dispatch, RefObject, SetStateAction } from 'react';
+import { DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup } from 'rc-dock';
+import { DockContext, PanelData, TabData } from 'rc-dock/lib/DockData';
 import 'rc-dock/style/index-light.less';
 import './index.less';
-import {BorderOutlined, CloseOutlined, ImportOutlined, SelectOutlined, SwitcherOutlined} from '@ant-design/icons';
+import {
+  BorderOutlined,
+  CloseOutlined,
+  ImportOutlined,
+  SelectOutlined,
+  SwitcherOutlined
+} from '@ant-design/icons';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
-import {Divider} from 'antd';
-import {sleep} from 'ahooks/es/utils/testingHelpers';
-import {LayoutState} from '@/pages/DataStudioNew/data.d';
-import {leftDefaultShowTab} from "@/pages/DataStudioNew/Toolbar/toolbar-route";
-import {getDockPositionByToolbarPosition} from "@/pages/DataStudioNew/function";
+import { Divider } from 'antd';
+import { sleep } from 'ahooks/es/utils/testingHelpers';
+import { LayoutState } from '@/pages/DataStudioNew/data.d';
+import { leftDefaultShowTab } from '@/pages/DataStudioNew/Toolbar/toolbar-route';
+import { getDockPositionByToolbarPosition } from '@/pages/DataStudioNew/function';
 
 const quickGuideTab: TabData = {
   closable: false,
   id: 'quick-start',
   title: '快速开始',
   content: (
-    <div style={{height: 0}}>
-      <KeyBoard/>
-      <Divider/>
-      <br/>
-      <br/>
-      <br/>
-      <QuickGuide/>
+    <div style={{ height: 0 }}>
+      <KeyBoard />
+      <Divider />
+      <br />
+      <br />
+      <br />
+      <QuickGuide />
     </div>
   ),
   group: 'centerContent'
@@ -69,7 +75,9 @@ export const useLayout = (
         setLayoutState((prevState) => {
           tabIds.forEach((tabId) => {
             //@ts-ignore
-            prevState.toolbar[toolbarPosition].allTabs = prevState.toolbar[toolbarPosition].allTabs?.filter((t) => t !== tabId)
+            prevState.toolbar[toolbarPosition].allTabs = prevState.toolbar[
+              toolbarPosition
+            ].allTabs?.filter((t) => t !== tabId);
           });
           //@ts-ignore
           prevState.toolbar[toolbarPosition].currentSelect = undefined;
@@ -88,17 +96,18 @@ export const useLayout = (
   };
   const saveLayout = () => {
     // todo 获取所有激活的tab
-    const map = layoutState.toolbar.leftTop.allTabs.map((x) => dockLayoutRef.current?.find(x) as TabData)
-      .filter(x => x && x?.parent?.activeId === x?.id)
-      .map(x => ({id: x.id, group: x.parent?.group}));
-    console.log(map)
+    const map = layoutState.toolbar.leftTop.allTabs
+      .map((x) => dockLayoutRef.current?.find(x) as TabData)
+      .filter((x) => x && x?.parent?.activeId === x?.id)
+      .map((x) => ({ id: x.id, group: x.parent?.group }));
+    console.log(map);
 
     const cacheLayoutData = JSON.stringify({
       ...layoutState,
       layoutData: dockLayoutRef.current?.saveLayout()
     });
     localStorage.setItem('datastudio-layout', cacheLayoutData);
-  }
+  };
 
   // 激活panel点击事件
   const activePanelOnClick = () => {
@@ -143,7 +152,7 @@ export const useLayout = (
     }
   };
 
-  return {onLayoutChange};
+  return { onLayoutChange };
 };
 
 export const layout: LayoutData = {
@@ -157,22 +166,24 @@ export const layout: LayoutData = {
           {
             mode: 'vertical',
             size: 200,
-            children: [{
-              tabs: [
-                {
-                  content: leftDefaultShowTab.content,
-                  id: leftDefaultShowTab.key,
-                  title: leftDefaultShowTab.title,
-                  minHeight: 50,
-                  group: leftDefaultShowTab.position
-                }
-              ]
-            }]
+            children: [
+              {
+                tabs: [
+                  {
+                    content: leftDefaultShowTab.content,
+                    id: leftDefaultShowTab.key,
+                    title: leftDefaultShowTab.title,
+                    minHeight: 50,
+                    group: leftDefaultShowTab.position
+                  }
+                ]
+              }
+            ]
           },
           {
             size: 1000,
             tabs: [quickGuideTab],
-            panelLock: {panelStyle: 'main'}
+            panelLock: { panelStyle: 'main' }
           }
         ]
       },
@@ -183,7 +194,6 @@ export const layout: LayoutData = {
     ]
   }
 };
-
 
 const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => {
   const buttons = [];
@@ -214,8 +224,11 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
         title='Dock'
         onClick={() =>
           // @ts-ignore
-          context.dockMove(panelData, context.state.layout.dockbox, getDockPositionByToolbarPosition(panelData.group))
-
+          context.dockMove(
+            panelData,
+            context.state.layout.dockbox,
+            getDockPositionByToolbarPosition(panelData.group)
+          )
         }
       />
     );
@@ -251,7 +264,6 @@ export const groups: {
     floatable: true,
     panelExtra: toolbarPanelExtra,
     newWindow: true
-
   },
   right: {
     floatable: true,
@@ -259,7 +271,7 @@ export const groups: {
     newWindow: true
   },
   //  中间内容group
-  'centerContent': {
+  centerContent: {
     newWindow: true,
     tabLocked: true,
     panelExtra: (panelData: PanelData, context: DockContext) => {

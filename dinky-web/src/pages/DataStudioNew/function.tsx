@@ -17,11 +17,11 @@
  *
  */
 
-import {LayoutState, RightContextMenuState} from '@/pages/DataStudioNew/data.d';
-import {Dispatch, SetStateAction} from 'react';
-import {ContextMenuPosition} from '@/types/Public/state';
-import {DropDirection} from 'rc-dock';
-import {ToolbarPosition} from '@/pages/DataStudioNew/Toolbar/data.d';
+import { LayoutState, RightContextMenuState } from '@/pages/DataStudioNew/data.d';
+import { Dispatch, SetStateAction } from 'react';
+import { ContextMenuPosition } from '@/types/Public/state';
+import { DropDirection } from 'rc-dock';
+import { ToolbarPosition } from '@/pages/DataStudioNew/Toolbar/data.d';
 
 export const handleRightClick = (
   e: any,
@@ -73,15 +73,15 @@ export const getDockPositionByToolbarPosition = (position: ToolbarPosition): Dro
   }
 };
 
-export const getLayoutState = (layout: LayoutState) :LayoutState=> {
-  let floatbox = layout.layoutData.floatbox
+export const getLayoutState = (layout: LayoutState): LayoutState => {
+  let floatbox = layout.layoutData.floatbox;
   if (layout.layoutData.windowbox?.children) {
     if (floatbox) {
       layout.layoutData.windowbox.children.forEach((item) => {
-        layout.layoutData.floatbox!!.children.push(item)
-      })
+        layout.layoutData.floatbox!!.children.push(item);
+      });
     } else {
-      floatbox = layout.layoutData.windowbox
+      floatbox = layout.layoutData.windowbox;
     }
   }
   return {
@@ -91,5 +91,5 @@ export const getLayoutState = (layout: LayoutState) :LayoutState=> {
       floatbox,
       windowbox: undefined
     }
-  }
-}
+  };
+};
