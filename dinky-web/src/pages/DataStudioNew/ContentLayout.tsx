@@ -17,66 +17,35 @@
  *
  */
 
-import React, { Dispatch, RefObject, SetStateAction } from 'react';
-import { DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup } from 'rc-dock';
-import { DockContext, PanelData, TabData } from 'rc-dock/lib/DockData';
+import React, {Dispatch, RefObject, SetStateAction} from 'react';
+import {DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup} from 'rc-dock';
+import {DockContext, PanelData, TabData} from 'rc-dock/lib/DockData';
 import 'rc-dock/style/index-light.less';
 import './index.less';
-import {
-  BorderOutlined,
-  CloseOutlined,
-  ImportOutlined,
-  SelectOutlined,
-  SwitcherOutlined
-} from '@ant-design/icons';
-import Project from '@/pages/DataStudio/LeftContainer/Project';
+import {BorderOutlined, CloseOutlined, ImportOutlined, SelectOutlined, SwitcherOutlined} from '@ant-design/icons';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
-import { Divider } from 'antd';
-import { sleep } from 'ahooks/es/utils/testingHelpers';
-import { LayoutState } from '@/pages/DataStudioNew/data.d';
-
-const jsxTab = {
-  id: 'jsxTab',
-  title: 'jsx',
-  closable: true,
-  content: (
-    <iframe
-      width={'100%'}
-      height={'100%'}
-      src={`https://ticlo.github.io/rc-dock/examples/basic.jsx.html`}
-    />
-  )
-};
-
-const htmlTab = {
-  id: 'htmlTab',
-  title: 'html',
-  closable: true,
-  content: (
-    <iframe
-      width={'100%'}
-      height={'100%'}
-      src={`https://ticlo.github.io/rc-dock/examples/basic.html.html`}
-    />
-  )
-};
+import {Divider} from 'antd';
+import {sleep} from 'ahooks/es/utils/testingHelpers';
+import {LayoutState} from '@/pages/DataStudioNew/data.d';
+import {leftDefaultShowTab} from "@/pages/DataStudioNew/Toolbar/toolbar-route";
+import {getDockPositionByToolbarPosition} from "@/pages/DataStudioNew/function";
 
 const quickGuideTab: TabData = {
   closable: false,
   id: 'quick-start',
   title: '快速开始',
   content: (
-    <div style={{ height: 0 }}>
-      <KeyBoard />
-      <Divider />
-      <br />
-      <br />
-      <br />
-      <QuickGuide />
+    <div style={{height: 0}}>
+      <KeyBoard/>
+      <Divider/>
+      <br/>
+      <br/>
+      <br/>
+      <QuickGuide/>
     </div>
   ),
-  group: 'center-content'
+  group: 'centerContent'
 };
 
 export const useLayout = (
@@ -89,6 +58,7 @@ export const useLayout = (
     currentTabId: string,
     direction?: DropDirection
   ) => {
+    // 遍历layout，获取所有激活的tab
     if (direction === 'remove') {
       // 删除工具栏选中
       const currentTab = dockLayoutRef.current?.find(currentTabId)!!;
@@ -99,7 +69,7 @@ export const useLayout = (
         setLayoutState((prevState) => {
           tabIds.forEach((tabId) => {
             //@ts-ignore
-            prevState.toolbar[toolbarPosition].allTabs?.delete(tabId!!);
+            prevState.toolbar[toolbarPosition].allTabs = prevState.toolbar[toolbarPosition].allTabs?.filter((t) => t !== tabId)
           });
           //@ts-ignore
           prevState.toolbar[toolbarPosition].currentSelect = undefined;
@@ -114,7 +84,21 @@ export const useLayout = (
       // todo 0.01s秒是一个经验值，后续可以根据实际情况调整，如果设备性能低，需加大时间，后续需要有测试
       sleep(10).then(activePanelOnClick);
     }
+    sleep(10).then(saveLayout);
   };
+  const saveLayout = () => {
+    // todo 获取所有激活的tab
+    const map = layoutState.toolbar.leftTop.allTabs.map((x) => dockLayoutRef.current?.find(x) as TabData)
+      .filter(x => x && x?.parent?.activeId === x?.id)
+      .map(x => ({id: x.id, group: x.parent?.group}));
+    console.log(map)
+
+    const cacheLayoutData = JSON.stringify({
+      ...layoutState,
+      layoutData: dockLayoutRef.current?.saveLayout()
+    });
+    localStorage.setItem('datastudio-layout', cacheLayoutData);
+  }
 
   // 激活panel点击事件
   const activePanelOnClick = () => {
@@ -159,40 +143,47 @@ export const useLayout = (
     }
   };
 
-  return { onLayoutChange };
+  return {onLayoutChange};
 };
 
 export const layout: LayoutData = {
   dockbox: {
-    size: 200,
     mode: 'vertical',
     children: [
       {
         mode: 'horizontal',
-        size: 280,
+        size: 200,
         children: [
           {
-            id: 'leftTop',
-            tabs: [
-              {
-                content: <Project />,
-                id: 'project',
-                title: '项目',
-                minHeight: 50,
-                group: 'leftTop'
-              }
-            ]
+            mode: 'vertical',
+            size: 200,
+            children: [{
+              tabs: [
+                {
+                  content: leftDefaultShowTab.content,
+                  id: leftDefaultShowTab.key,
+                  title: leftDefaultShowTab.title,
+                  minHeight: 50,
+                  group: leftDefaultShowTab.position
+                }
+              ]
+            }]
           },
           {
             size: 1000,
             tabs: [quickGuideTab],
-            panelLock: { panelStyle: 'main' }
+            panelLock: {panelStyle: 'main'}
           }
         ]
+      },
+      {
+        mode: 'horizontal',
+        tabs: []
       }
     ]
   }
 };
+
 
 const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => {
   const buttons = [];
@@ -223,7 +214,8 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
         title='Dock'
         onClick={() =>
           // @ts-ignore
-          context.dockMove(panelData, context.state.layout.dockbox, 'left')
+          context.dockMove(panelData, context.state.layout.dockbox, getDockPositionByToolbarPosition(panelData.group))
+
         }
       />
     );
@@ -252,18 +244,23 @@ export const groups: {
 } = {
   leftTop: {
     floatable: true,
-    panelExtra: toolbarPanelExtra
+    panelExtra: toolbarPanelExtra,
+    newWindow: true
   },
   leftBottom: {
     floatable: true,
-    panelExtra: toolbarPanelExtra
+    panelExtra: toolbarPanelExtra,
+    newWindow: true
+
   },
   right: {
     floatable: true,
-    panelExtra: toolbarPanelExtra
+    panelExtra: toolbarPanelExtra,
+    newWindow: true
   },
   //  中间内容group
-  'center-content': {
+  'centerContent': {
+    newWindow: true,
     tabLocked: true,
     panelExtra: (panelData: PanelData, context: DockContext) => {
       return <div>{centerPanelExtraButtons(panelData, context).map((button) => button)}</div>;

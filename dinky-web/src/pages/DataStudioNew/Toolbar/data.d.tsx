@@ -17,21 +17,21 @@
  *
  */
 
-import { JSX } from 'react';
-import { ToolbarSelect } from '@/pages/DataStudioNew/data.d';
 import * as React from 'react';
-import { TabData } from 'rc-dock';
+import {JSX} from 'react';
+import {ToolbarSelect} from '@/pages/DataStudioNew/data.d';
+import {TabData} from 'rc-dock';
 
 export type ToolbarProp = {
-  showDesc: boolean;
-  showActiveTab: boolean;
-  route: ToolbarRoute[];
-  onClick: (route: ToolbarRoute) => void;
-  toolbarSelect?: ToolbarSelect;
+  showDesc: boolean,
+  onClick: (route: ToolbarRoute) => void,
+  toolbarSelect: ToolbarSelect,
+  position: ToolbarPosition,
+  saveToolbarLayout: (position: ToolbarPosition, list: string[]) => void
 };
 
 // 位置总共分为 左上 左下 右
-export type ToolbarPosition = 'leftTop' | 'leftBottom' | 'right';
+export type ToolbarPosition = 'leftTop' | 'leftBottom' | 'right' | 'centerContent';
 
 export type ToolbarRoute = {
   key: string;

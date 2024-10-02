@@ -17,49 +17,58 @@
  *
  */
 
-import { DockLayout, TabData } from 'rc-dock';
-import React, { useRef, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
+import {DockLayout, TabData} from 'rc-dock';
+import React, {useRef, useState} from 'react';
+import {PageContainer} from '@ant-design/pro-layout';
 import 'rc-dock/dist/rc-dock.css';
-import { Col, Row, theme } from 'antd';
+import {Col, Row, theme} from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
-import { LayoutState, RightContextMenuState } from '@/pages/DataStudioNew/data.d';
+import {LayoutState, RightContextMenuState} from '@/pages/DataStudioNew/data.d';
 import {
   getDockPositionByToolbarPosition,
+  getLayoutState,
   handleRightClick,
   InitContextMenuPosition
 } from '@/pages/DataStudioNew/function';
-import RightContextMenu, { useRightMenuItem } from '@/pages/DataStudioNew/RightContextMenu';
-import { MenuInfo } from 'rc-menu/es/interface';
-import { leftDefaultShowTab, toolbarRoutes } from '@/pages/DataStudioNew/Toolbar/toolbar-route';
-import { ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
-import { groups, layout, useLayout } from '@/pages/DataStudioNew/ContentLayout';
-import { PanelData } from 'rc-dock/lib/DockData';
+import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
+import {MenuInfo} from 'rc-menu/es/interface';
+import {leftDefaultShowTab, toolbarRoutes} from '@/pages/DataStudioNew/Toolbar/toolbar-route';
+import {ToolbarPosition, ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
+import {groups, layout, useLayout} from '@/pages/DataStudioNew/ContentLayout';
+import {PanelData} from 'rc-dock/lib/DockData';
 
-const { useToken } = theme;
+const {useToken} = theme;
 
 const DataStudioNew: React.FC = () => {
-  const { token } = useToken();
+  const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
 
   // 页面布局状态
-  const [layoutState, setLayoutState] = useState<LayoutState>({
-    toolbar: {
-      showDesc: false,
-      showActiveTab: false,
-      route: toolbarRoutes,
-      leftTop: {
-        currentSelect: leftDefaultShowTab.key,
-        allTabs: new Set([leftDefaultShowTab.key])
-      },
-      leftBottom: {},
-      right: {}
-    }
-  });
-  const { onLayoutChange } = useLayout(layoutState, setLayoutState, dockLayoutRef);
+  const [layoutState, setLayoutState] = useState<LayoutState>(
+    localStorage.getItem('datastudio-layout') ?
+      getLayoutState(JSON.parse(localStorage.getItem('datastudio-layout')!!))
+      :
+      {
+        layoutData: layout,
+        toolbar: {
+          showDesc: false,
+          leftTop: {
+            currentSelect: leftDefaultShowTab.key,
+            allOpenTabs: [leftDefaultShowTab.key],
+            allTabs: toolbarRoutes.filter((x) => x.position === 'leftTop').map((x) => x.key)
+          },
+          leftBottom: {
+            allTabs: toolbarRoutes.filter((x) => x.position === 'leftBottom').map((x) => x.key)
+          },
+          right: {
+            allTabs: toolbarRoutes.filter((x) => x.position === 'right').map((x) => x.key)
+          }
+        }
+      } as LayoutState);
+  const {onLayoutChange} = useLayout(layoutState, setLayoutState, dockLayoutRef);
 
-  const menuItem = useRightMenuItem({ layoutState });
+  const menuItem = useRightMenuItem({layoutState});
   // 右键弹出框状态
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,
@@ -73,31 +82,19 @@ const DataStudioNew: React.FC = () => {
   const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
 
   const handleMenuClick = (values: MenuInfo) => {
-    setRightContextMenuState((prevState) => ({ ...prevState, show: false }));
+    setRightContextMenuState((prevState) => ({...prevState, show: false}));
 
     switch (values.key) {
       case 'showToolbarDesc':
         setLayoutState((prevState) => ({
           ...prevState,
-          toolbar: { ...prevState.toolbar, showDesc: true }
+          toolbar: {...prevState.toolbar, showDesc: true}
         }));
         break;
       case 'hideToolbarDesc':
         setLayoutState((prevState) => ({
           ...prevState,
-          toolbar: { ...prevState.toolbar, showDesc: false }
-        }));
-        break;
-      case 'showToolbarActiveTab':
-        setLayoutState((prevState) => ({
-          ...prevState,
-          toolbar: { ...prevState.toolbar, showActiveTab: true }
-        }));
-        break;
-      case 'hideToolbarActiveTab':
-        setLayoutState((prevState) => ({
-          ...prevState,
-          toolbar: { ...prevState.toolbar, showActiveTab: false }
+          toolbar: {...prevState.toolbar, showDesc: false}
         }));
         break;
       case 'saveLayout':
@@ -112,7 +109,7 @@ const DataStudioNew: React.FC = () => {
       let tab = dockLayoutRef.current?.find(prevState.toolbar[route.position].currentSelect!!);
       // 如果没有选中的tab，就遍历所有tab，找到第一个添加进去
       if (!tab) {
-        const keys = prevState.toolbar[route.position].allTabs?.keys();
+        const keys = prevState.toolbar[route.position].allOpenTabs;
         if (keys) {
           for (const key of keys) {
             if (tab) {
@@ -134,9 +131,9 @@ const DataStudioNew: React.FC = () => {
         prevState.toolbar[route.position] = {
           ...prevState.toolbar[route.position],
           currentSelect: undefined,
-          allTabs: new Set(
-            [...(prevState.toolbar[route.position]?.allTabs ?? [])].filter((t) => t !== route.key)
-          )
+          allOpenTabs: Array.from(new Set(
+            [...(prevState.toolbar[route.position]?.allOpenTabs ?? [])].filter((t) => t !== route.key)
+          ))
         };
       } else {
         // 新增tab
@@ -170,39 +167,55 @@ const DataStudioNew: React.FC = () => {
         prevState.toolbar[route.position] = {
           ...prevState.toolbar[route.position],
           currentSelect: route.key,
-          allTabs: new Set([...(prevState.toolbar[route.position]?.allTabs ?? []), route.key])
+          allOpenTabs: Array.from(new Set([...(prevState.toolbar[route.position]?.allOpenTabs ?? []), route.key]))
         };
       }
-      return { ...prevState };
+      return {...prevState};
     });
   };
 
   const saveTab = (tabData: TabData & any) => {
-    let { id, inputValue } = tabData;
-
-    return { id, inputValue };
+    let {id, inputValue} = tabData;
+    return {id};
   };
+  // 保存工具栏按钮位置布局
+  const saveToolbarLayout = (position: ToolbarPosition, list: string[]) => {
+    setLayoutState(prevState => (
+      {
+        ...prevState,
+        toolbar: {
+          ...prevState.toolbar,
+          [position]: {
+            ...prevState.toolbar[position],
+            allTabs: list
+          }
+        }
+      }
+    ))
+    // todo 保存到本地
+    // localStorage.setItem('datastudio-layout', cacheLayoutData);
+  }
   return (
     <PageContainer
       breadcrumb={undefined}
       title={false}
-      childrenContentStyle={{ margin: 0, padding: 0 }}
+      childrenContentStyle={{margin: 0, padding: 0}}
     >
-      <Row style={{ height: 'calc(100vh - 81px)' }}>
+      <Row style={{height: 'calc(100vh - 81px)'}}>
         {/*左边工具栏*/}
         <Col
-          style={{ width: toolbarWidth, height: 'inherit' }}
+          style={{width: toolbarWidth, height: 'inherit'}}
           flex='none'
           onContextMenu={rightContextMenuHandle}
         >
           {/*左上工具栏*/}
-          <Col style={{ width: 'inherit', height: '50%' }}>
+          <Col style={{width: 'inherit', height: '50%'}}>
             <Toolbar
               showDesc={layoutState.toolbar.showDesc}
-              showActiveTab={layoutState.toolbar.showActiveTab}
-              route={layoutState.toolbar.route.filter((x) => x.position === 'leftTop')}
+              position={"leftTop"}
               onClick={toolbarOnClick}
               toolbarSelect={layoutState.toolbar.leftTop}
+              saveToolbarLayout={saveToolbarLayout}
             />
           </Col>
 
@@ -210,57 +223,64 @@ const DataStudioNew: React.FC = () => {
           <Col
             style={{
               width: 'inherit',
-              height: '50%',
-              display: 'flex',
-              flexDirection: 'column-reverse'
+              height: '50%'
             }}
           >
             <Toolbar
               showDesc={layoutState.toolbar.showDesc}
-              showActiveTab={layoutState.toolbar.showActiveTab}
-              route={layoutState.toolbar.route.filter((x) => x.position === 'leftBottom')}
+              position={'leftBottom'}
               onClick={toolbarOnClick}
               toolbarSelect={layoutState.toolbar.leftBottom}
+              saveToolbarLayout={saveToolbarLayout}
             />
           </Col>
         </Col>
 
         {/* 中间内容栏*/}
-        <Col style={{ height: 'inherit' }} flex='auto'>
+        <Col style={{height: 'inherit'}} flex='auto'>
           <DockLayout
             ref={dockLayoutRef}
-            defaultLayout={layout}
+            defaultLayout={layoutState.layoutData}
             groups={groups}
-            style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
+            style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
             onLayoutChange={onLayoutChange}
             saveTab={saveTab}
+            loadTab={(savedTab) => {
+              const id = savedTab.id;
+              const route = toolbarRoutes.find((x) => x.key === id);
+              return {
+                ...savedTab,
+                content: route?.content ?? <></>,
+                title: route?.title ?? <></>,
+              };
+            }}
           />
         </Col>
 
         {/*右边工具栏*/}
         <Col
-          style={{ width: toolbarWidth, height: 'inherit' }}
+          style={{width: toolbarWidth, height: 'inherit'}}
           flex='none'
           onContextMenu={rightContextMenuHandle}
         >
           <Toolbar
             showDesc={layoutState.toolbar.showDesc}
-            showActiveTab={layoutState.toolbar.showActiveTab}
-            route={layoutState.toolbar.route.filter((x) => x.position === 'right')}
+            position={'right'}
             onClick={toolbarOnClick}
             toolbarSelect={layoutState.toolbar.right}
+            saveToolbarLayout={saveToolbarLayout}
           />
         </Col>
       </Row>
 
       {/*@ts-ignore*/}
-      <FooterContainer token={token} />
+      <FooterContainer token={token}/>
 
       {/*右键菜单*/}
       <RightContextMenu
         contextMenuPosition={rightContextMenuState.position}
         open={rightContextMenuState.show}
-        openChange={() => setRightContextMenuState((prevState) => ({ ...prevState, show: false }))}
+        openChange={() => setRightContextMenuState((prevState) => ({...prevState, show: false}))}
         items={menuItem}
         onClick={handleMenuClick}
       />

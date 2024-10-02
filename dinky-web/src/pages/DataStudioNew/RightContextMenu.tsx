@@ -57,10 +57,10 @@ export default RightContextMenu;
 export const useRightMenuItem = (props: RightMenuItemProps) => {
   const { layoutState } = props;
   const menuItem: MenuItemType[] = [];
-  // menuItem.push({
-  //   key: 'saveLayout',
-  //   label: "保存布局"
-  // })
+  menuItem.push({
+    key: 'saveLayout',
+    label: "保存布局"
+  })
 
   // 显示工具窗口名称
   if (layoutState.toolbar.showDesc) {
@@ -74,19 +74,5 @@ export const useRightMenuItem = (props: RightMenuItemProps) => {
       label: '显示工具栏窗口名称'
     });
   }
-  // 显示激活tab缓存提示
-  // todo 这个最大的特点其实可以多开窗口，名字需要再次定义
-  if (layoutState.toolbar.showActiveTab) {
-    menuItem.push({
-      key: 'hideToolbarActiveTab',
-      label: '隐藏工具栏激活tab图标'
-    });
-  } else {
-    menuItem.push({
-      key: 'showToolbarActiveTab',
-      label: '显示工具栏激活tab图标'
-    });
-  }
-
   return menuItem;
 };
