@@ -22,18 +22,9 @@ import { ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
 import { MenuItemType } from 'antd/es/menu/interface';
 import { useRightMenuItem } from '@/pages/DataStudioNew/RightContextMenu';
 import { LayoutData } from 'rc-dock';
+import {LayoutState} from "@/pages/DataStudioNew/model";
 
-export type LayoutState = {
-  layoutData: LayoutData;
-  toolbar: {
-    showDesc: boolean;
-    showActiveTab: boolean;
-    leftTop: ToolbarSelect;
-    leftBottom: ToolbarSelect;
-    right: ToolbarSelect;
-    centerContent: ToolbarSelect;
-  };
-};
+
 
 export type ToolbarSelect = {
   // 当前选中的tab

@@ -17,43 +17,59 @@
  *
  */
 
-import React, { Dispatch, RefObject, SetStateAction } from 'react';
-import { DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup } from 'rc-dock';
-import { DockContext, PanelData, TabData } from 'rc-dock/lib/DockData';
+import React, {Dispatch, RefObject, SetStateAction} from 'react';
+import {DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup} from 'rc-dock';
+import {DockContext, PanelData, TabData} from 'rc-dock/lib/DockData';
 import 'rc-dock/style/index-light.less';
 import './index.less';
-import {
-  BorderOutlined,
-  CloseOutlined,
-  ImportOutlined,
-  SelectOutlined,
-  SwitcherOutlined
-} from '@ant-design/icons';
+import {BorderOutlined, CloseOutlined, ImportOutlined, SelectOutlined, SwitcherOutlined} from '@ant-design/icons';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
-import { Divider } from 'antd';
-import { sleep } from 'ahooks/es/utils/testingHelpers';
-import { LayoutState } from '@/pages/DataStudioNew/data.d';
-import { leftDefaultShowTab } from '@/pages/DataStudioNew/Toolbar/toolbar-route';
-import { getDockPositionByToolbarPosition } from '@/pages/DataStudioNew/function';
+import {Divider} from 'antd';
+import {sleep} from 'ahooks/es/utils/testingHelpers';
+import {leftDefaultShowTab} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import {getDockPositionByToolbarPosition} from '@/pages/DataStudioNew/function';
+import {ToolbarPosition} from "@/pages/DataStudioNew/Toolbar/data.d";
+import {BoxBase, PanelBase} from "rc-dock/es";
+import {LayoutState} from "@/pages/DataStudioNew/model";
 
 const quickGuideTab: TabData = {
   closable: false,
   id: 'quick-start',
   title: '快速开始',
   content: (
-    <div style={{ height: 0 }}>
-      <KeyBoard />
-      <Divider />
-      <br />
-      <br />
-      <br />
-      <QuickGuide />
+    <div style={{height: 0}}>
+      <KeyBoard/>
+      <Divider/>
+      <br/>
+      <br/>
+      <br/>
+      <QuickGuide/>
     </div>
   ),
   group: 'centerContent'
 };
 
+// 遍历layout，获取所有激活和打开的tab
+const getAllPanel = (newLayout: LayoutBase) => {
+  return [...getBoxPanels(newLayout.dockbox), ...getBoxPanels(newLayout.floatbox), ...getBoxPanels(newLayout.maxbox), ...getBoxPanels(newLayout.windowbox)]
+}
+
+const getBoxPanels = (layout: BoxBase | undefined) => {
+  const tabs: PanelBase[] = [];
+  if (!layout) {
+    return tabs;
+  }
+  layout.children?.forEach((child) => {
+    const panel = child as PanelBase;
+    if (panel.tabs) {
+      tabs.push(panel);
+    } else {
+      tabs.push(...getBoxPanels(child as BoxBase));
+    }
+  });
+  return tabs;
+}
 export const useLayout = (
   layoutState: LayoutState,
   setLayoutState: Dispatch<SetStateAction<LayoutState>>,
@@ -64,20 +80,30 @@ export const useLayout = (
     currentTabId: string,
     direction?: DropDirection
   ) => {
-    // 遍历layout，获取所有激活的tab
+    setLayoutState(prevState => {
+      getAllPanel(newLayout).forEach((panel) => {
+        const toolbarPosition = panel.group as ToolbarPosition;
+        if (toolbarPosition && (toolbarPosition === 'leftTop' || toolbarPosition === 'leftBottom' || toolbarPosition === 'right')) {
+          prevState.toolbar[toolbarPosition].allOpenTabs = panel.tabs?.map((x) => x.id!!) ?? [];
+        }
+      })
+      return {...prevState}
+    })
+
+
     if (direction === 'remove') {
       // 删除工具栏选中
       const currentTab = dockLayoutRef.current?.find(currentTabId)!!;
-      const toolbarPosition = (currentTab as TabData).group;
+      const toolbarPosition = (currentTab as TabData).group as ToolbarPosition;
       if (toolbarPosition) {
         //@ts-ignore
         const tabIds: string[] = currentTab?.parent?.tabs?.map((x) => x.id);
         setLayoutState((prevState) => {
           tabIds.forEach((tabId) => {
             //@ts-ignore
-            prevState.toolbar[toolbarPosition].allTabs = prevState.toolbar[
+            prevState.toolbar[toolbarPosition].allOpenTabs = prevState.toolbar[
               toolbarPosition
-            ].allTabs?.filter((t) => t !== tabId);
+              ].allOpenTabs?.filter((t) => t !== tabId);
           });
           //@ts-ignore
           prevState.toolbar[toolbarPosition].currentSelect = undefined;
@@ -99,7 +125,7 @@ export const useLayout = (
     const map = layoutState.toolbar.leftTop.allTabs
       .map((x) => dockLayoutRef.current?.find(x) as TabData)
       .filter((x) => x && x?.parent?.activeId === x?.id)
-      .map((x) => ({ id: x.id, group: x.parent?.group }));
+      .map((x) => ({id: x.id, group: x.parent?.group}));
     console.log(map);
 
     const cacheLayoutData = JSON.stringify({
@@ -152,7 +178,7 @@ export const useLayout = (
     }
   };
 
-  return { onLayoutChange };
+  return {onLayoutChange};
 };
 
 export const layout: LayoutData = {
@@ -183,7 +209,7 @@ export const layout: LayoutData = {
           {
             size: 1000,
             tabs: [quickGuideTab],
-            panelLock: { panelStyle: 'main' }
+            panelLock: {panelStyle: 'main'}
           }
         ]
       },
@@ -197,7 +223,7 @@ export const layout: LayoutData = {
 
 const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => {
   const buttons = [];
-  if (panelData.parent?.mode !== 'window') {
+  if (panelData.parent?.mode !== 'window' && panelData.parent?.mode !== 'float') {
     buttons.push(
       <SelectOutlined
         rotate={90}
@@ -223,11 +249,11 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
         key='move to dock'
         title='Dock'
         onClick={() =>
-          // @ts-ignore
           context.dockMove(
             panelData,
+            // @ts-ignore
             context.state.layout.dockbox,
-            getDockPositionByToolbarPosition(panelData.group)
+            getDockPositionByToolbarPosition(panelData.group as ToolbarPosition)
           )
         }
       />

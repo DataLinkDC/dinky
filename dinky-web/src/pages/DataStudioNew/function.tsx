@@ -74,8 +74,8 @@ export const getDockPositionByToolbarPosition = (position: ToolbarPosition): Dro
 };
 
 export const getLayoutState = (layout: LayoutState): LayoutState => {
-  let floatbox = layout.layoutData.floatbox;
-  if (layout.layoutData.windowbox?.children) {
+  let floatbox = layout.layoutData?.floatbox;
+  if (layout.layoutData?.windowbox?.children) {
     if (floatbox) {
       layout.layoutData.windowbox.children.forEach((item) => {
         layout.layoutData.floatbox!!.children.push(item);
