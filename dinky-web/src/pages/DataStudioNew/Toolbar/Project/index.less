@@ -17,27 +17,25 @@
  *
  */
 
-import { ContextMenuPosition } from '@/types/Public/state';
+.right_click_menu li {
+  margin: 0 !important;
+}
 
-import {LayoutState} from "@/pages/DataStudioNew/model";
+.right_click_menu {
+  z-index: 9999;
+  color: #666;
+  background-color: #fff;
+  border: 1px solid #d2d2d2;
+  box-shadow: 1px 1px 4px rgb(0 0 0 / 8%);
+}
 
+.tree_div {
+  padding-right: 10px;
+}
 
-
-export type ToolbarSelect = {
-  // 当前选中的tab
-  currentSelect?: string;
-  // 所有打开的tab
-  allOpenTabs: string[];
-  allTabs: string[];
-};
-
-// 没必要持久化
-// 右键状态
-export type RightContextMenuState = {
-  show: boolean;
-  position: ContextMenuPosition;
-};
-
-export type RightMenuItemProps = {
-  layoutState: LayoutState;
-};
+.site-tree-search-value {
+  //color: #00EE76;
+  color: #c00b26;
+  font-size: 15px;
+  background-color: rgba(3, 102, 214, 0.5);
+}

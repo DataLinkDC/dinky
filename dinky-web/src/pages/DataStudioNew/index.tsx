@@ -18,58 +18,37 @@
  */
 
 import {DockLayout, TabData} from 'rc-dock';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import 'rc-dock/dist/rc-dock.css';
-import {Col, Row, theme} from 'antd';
+import {Col, Input, Row, theme} from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import {RightContextMenuState} from '@/pages/DataStudioNew/data.d';
-import {
-  getDockPositionByToolbarPosition, getLayoutState,
-  handleRightClick,
-  InitContextMenuPosition
-} from '@/pages/DataStudioNew/function';
+import {getAllPanel, handleRightClick, InitContextMenuPosition} from '@/pages/DataStudioNew/function';
 import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
 import {MenuInfo} from 'rc-menu/es/interface';
-import {leftDefaultShowTab, toolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import {ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import {ToolbarPosition, ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
-import {groups, layout, useLayout} from '@/pages/DataStudioNew/ContentLayout';
-import {PanelData} from 'rc-dock/lib/DockData';
+import {groups} from '@/pages/DataStudioNew/ContentLayout';
 import {connect} from "umi";
-import {LayoutState, STUDIO_MODEL} from "@/pages/DataStudioNew/model";
-import {Dispatch} from "@umijs/max";
+import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
+import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
+import {getUUID} from "rc-select/es/hooks/useId";
 
 const {useToken} = theme;
 
 const DataStudioNew: React.FC = (props: any) => {
-  const {layoutState, setLayoutState, handleToolbarShowDesc} = props
+  const {
+    layoutState,
+    handleToolbarShowDesc,
+    handleToolbarIconClick,
+    saveToolbarLayout,
+    handleLayoutChange,
+    addCenterTab
+  } = props
   const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
-
-  // 页面布局状态
-  // const [layoutState, setLayoutState] = useState<LayoutState>(
-  //   localStorage.getItem('datastudio-layout')
-  //     ? getLayoutState(JSON.parse(localStorage.getItem('datastudio-layout')!!))
-  //     : ({
-  //         layoutData: layout,
-  //         toolbar: {
-  //           showDesc: false,
-  //           leftTop: {
-  //             currentSelect: leftDefaultShowTab.key,
-  //             allOpenTabs: [leftDefaultShowTab.key],
-  //             allTabs: toolbarRoutes.filter((x) => x.position === 'leftTop').map((x) => x.key)
-  //           },
-  //           leftBottom: {
-  //             allTabs: toolbarRoutes.filter((x) => x.position === 'leftBottom').map((x) => x.key)
-  //           },
-  //           right: {
-  //             allTabs: toolbarRoutes.filter((x) => x.position === 'right').map((x) => x.key)
-  //           }
-  //         }
-  //       } as LayoutState)
-  // );
-  const {onLayoutChange} = useLayout(layoutState, setLayoutState, dockLayoutRef);
 
   const menuItem = useRightMenuItem({layoutState});
   // 右键弹出框状态
@@ -77,6 +56,38 @@ const DataStudioNew: React.FC = (props: any) => {
     show: false,
     position: InitContextMenuPosition
   });
+  useEffect(() => {
+    if (dockLayoutRef.current) {
+      if (layoutState.centerContent.activeTab) {
+        // 中间tab变化
+        const tab = (layoutState.centerContent.tabs as CenterTab[]).find(x => x.id === layoutState.centerContent.activeTab)!!;
+        const centerContent = getAllPanel(dockLayoutRef.current.getLayout()).find((x) => x.group === "centerContent")!!;
+        const tabData: TabData = {
+          closable: true,
+          id: tab.id,
+          content: <></>,
+          title: tab.title,
+          group: "centerContent"
+        }
+        if (layoutState.centerContent.tabs.length === 1) {
+          dockLayoutRef.current.updateTab(centerContent.activeId!!, tabData, true)
+        } else if (layoutState.centerContent.tabs.length === 0) {
+          // 进入快速开始界面
+          dockLayoutRef.current.updateTab(centerContent.activeId!!, {
+            closable: false,
+            id: 'quick-start',
+            title: '快速开始',
+            content: (
+              <></>
+            ),
+            group: 'centerContent'
+          }, true)
+        } else {
+          dockLayoutRef.current.dockMove(tabData, centerContent.activeId!!, 'active')
+        }
+      }
+    }
+  }, [layoutState.centerContent]);
 
   // 工具栏宽度
   const toolbarWidth = layoutState.toolbar.showDesc ? 60 : 30;
@@ -90,111 +101,64 @@ const DataStudioNew: React.FC = (props: any) => {
     switch (values.key) {
       case 'showToolbarDesc':
       case 'hideToolbarDesc':
-        // handleToolbarShowDesc()
+        handleToolbarShowDesc()
         break;
-      case 'saveLayout':
-        console.log(dockLayoutRef.current?.saveLayout());
+      case "saveLayout":
+        addCenterTab({
+          id: "123" + getUUID(),
+          title: "123" + getUUID(),
+          tabType: 'code'
+        })
         break;
     }
   };
 
   const toolbarOnClick = (route: ToolbarRoute) => {
-    setLayoutState((prevState) => {
-      const newTab = dockLayoutRef.current?.find(route.key) as TabData;
-      let tab = dockLayoutRef.current?.find(prevState.toolbar[route.position].currentSelect!!);
-      // 如果没有选中的tab，就遍历所有tab，找到第一个添加进去
-      if (!tab) {
-        const keys = prevState.toolbar[route.position].allOpenTabs;
-        if (keys) {
-          for (const key of keys) {
-            if (tab) {
-              break;
-            }
-            tab = dockLayoutRef.current?.find(key);
-          }
-        }
-      }
-      if (prevState.toolbar[route.position].currentSelect === route.key) {
-        // 取消选中
-        if (newTab) {
-          if (layoutState.toolbar.showActiveTab) {
-            dockLayoutRef.current?.dockMove(newTab, null, 'active');
-          } else {
-            dockLayoutRef.current?.dockMove(newTab.parent as PanelData, null, 'remove');
-          }
-        }
-
-        prevState.toolbar[route.position] = {
-          ...prevState.toolbar[route.position],
-          currentSelect: undefined,
-          allOpenTabs: Array.from(
-            new Set(
-              [...(prevState.toolbar[route.position]?.allOpenTabs ?? [])].filter(
-                (t) => t !== route.key
-              )
-            )
-          )
-        };
-      } else {
-        // 新增tab
-        if (tab && !newTab) {
-          dockLayoutRef.current?.dockMove(
-            {
-              id: route.key,
-              content: route.content,
-              title: route.title,
-              group: route.position
-            },
-            tab,
-            'active'
-          );
-        } else if (newTab) {
-          dockLayoutRef.current?.dockMove(newTab, newTab.parent!!, 'middle');
-        } else {
-          // 创建窗口
-          dockLayoutRef.current?.dockMove(
-            {
-              id: route.key,
-              content: route.content,
-              title: route.title,
-              group: route.position
-            },
-            dockLayoutRef.current?.getLayout().dockbox,
-            getDockPositionByToolbarPosition(route.position)
-          );
-        }
-
-        prevState.toolbar[route.position] = {
-          ...prevState.toolbar[route.position],
-          currentSelect: route.key,
-          allOpenTabs: Array.from(
-            new Set([...(prevState.toolbar[route.position]?.allOpenTabs ?? []), route.key])
-          )
-        };
-      }
-      return {...prevState};
-    });
+    handleToolbarIconClick({
+      dockLayout: dockLayoutRef.current!!,
+      route
+    })
   };
 
   const saveTab = (tabData: TabData & any) => {
-    let {id, inputValue} = tabData;
-    return {id};
+    let {id, group, title} = tabData;
+    return {id, group, title};
   };
-  // 保存工具栏按钮位置布局
-  const saveToolbarLayout = (position: ToolbarPosition, list: string[]) => {
-    console.log(position, list)
-    setLayoutState((prevState) => ({
-      ...prevState,
-      toolbar: {
-        ...prevState.toolbar,
-        [position]: {
-          ...prevState.toolbar[position],
-          allTabs: list
-        }
+  const loadTab = (tab: TabData) => {
+    const {id, title, group} = tab;
+    if (group !== "centerContent") {
+      const route = ToolbarRoutes.find((x) => x.key === id);
+      return {
+        ...tab,
+        content: route?.content() ?? <></>,
+        title
+      };
+    } else {
+      if (id === "quick-start") {
+        const route = ToolbarRoutes.find((x) => x.key === id);
+        return {
+          ...tab,
+          content: route?.content() ?? <></>,
+          title
+        };
       }
-    }));
-    // todo 保存到本地
-    // localStorage.setItem('datastudio-layout', cacheLayoutData);
+      // todo 添加中间tab内容
+      return {
+        ...tab,
+        title,
+        closable: true,
+        content: <Input/>,
+      };
+    }
+
+  }
+  // 保存工具栏按钮位置布局
+  const saveToolbarLayoutHandle = (position: ToolbarPosition, list: string[]) => {
+    saveToolbarLayout({
+      dockLayout: dockLayoutRef.current!!,
+      position,
+      list
+    })
   };
   return (
     <PageContainer
@@ -216,7 +180,7 @@ const DataStudioNew: React.FC = (props: any) => {
               position={'leftTop'}
               onClick={toolbarOnClick}
               toolbarSelect={layoutState.toolbar.leftTop}
-              saveToolbarLayout={saveToolbarLayout}
+              saveToolbarLayout={saveToolbarLayoutHandle}
             />
           </Col>
 
@@ -232,7 +196,7 @@ const DataStudioNew: React.FC = (props: any) => {
               position={'leftBottom'}
               onClick={toolbarOnClick}
               toolbarSelect={layoutState.toolbar.leftBottom}
-              saveToolbarLayout={saveToolbarLayout}
+              saveToolbarLayout={saveToolbarLayoutHandle}
             />
           </Col>
         </Col>
@@ -241,20 +205,23 @@ const DataStudioNew: React.FC = (props: any) => {
         <Col style={{height: 'inherit'}} flex='auto'>
           <DockLayout
             ref={dockLayoutRef}
-            defaultLayout={layoutState.layoutData}
+            layout={layoutState.layoutData}
             groups={groups}
             style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
-            onLayoutChange={onLayoutChange}
+            onLayoutChange={(newLayout, currentTabId, direction) => {
+              // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
+              setTimeout(() => {
+                handleLayoutChange({
+                  dockLayout: dockLayoutRef.current!!,
+                  newLayout,
+                  currentTabId,
+                  direction
+                })
+              }, 0)
+            }
+            }
             saveTab={saveTab}
-            loadTab={(savedTab) => {
-              const id = savedTab.id;
-              const route = toolbarRoutes.find((x) => x.key === id);
-              return {
-                ...savedTab,
-                content: route?.content ?? <></>,
-                title: route?.title ?? <></>
-              };
-            }}
+            loadTab={loadTab}
           />
         </Col>
 
@@ -269,7 +236,7 @@ const DataStudioNew: React.FC = (props: any) => {
             position={'right'}
             onClick={toolbarOnClick}
             toolbarSelect={layoutState.toolbar.right}
-            saveToolbarLayout={saveToolbarLayout}
+            saveToolbarLayout={saveToolbarLayoutHandle}
           />
         </Col>
       </Row>
@@ -290,18 +257,8 @@ const DataStudioNew: React.FC = (props: any) => {
 };
 
 export default connect(
-  ({Studio}: { Studio: LayoutState }) => ({
-    layoutState: Studio
-  }), (dispatch: Dispatch) => ({
-      handleToolbarShowDesc: () =>
-        dispatch({
-          type: STUDIO_MODEL.handleToolbarShowDesc
-        }),
-      setLayoutData: () =>
-        dispatch({
-          type: STUDIO_MODEL.setLayoutData
-        }),
-    }
-  ))(DataStudioNew);
+  ({DataStudio}: { DataStudio: LayoutState }) => ({
+    layoutState: DataStudio
+  }), mapDispatchToProps)(DataStudioNew);
 
 // export default DataStudioNew

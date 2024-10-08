@@ -17,11 +17,40 @@
  *
  */
 
-import { LayoutState, RightContextMenuState } from '@/pages/DataStudioNew/data.d';
-import { Dispatch, SetStateAction } from 'react';
+import {  RightContextMenuState } from '@/pages/DataStudioNew/data.d';
+import {createContext, Dispatch, SetStateAction} from 'react';
 import { ContextMenuPosition } from '@/types/Public/state';
-import { DropDirection } from 'rc-dock';
+import {DockLayout, DropDirection, LayoutBase} from 'rc-dock';
 import { ToolbarPosition } from '@/pages/DataStudioNew/Toolbar/data.d';
+import {BoxBase, PanelBase} from "rc-dock/es";
+import {LayoutState} from "@/pages/DataStudioNew/model";
+import {LayoutData} from "rc-dock/src/DockData";
+
+
+
+// 遍历layout，获取所有激活和打开的tab
+export const getAllPanel = (newLayout: LayoutBase) => {
+  return [...getBoxPanels(newLayout.dockbox), ...getBoxPanels(newLayout.floatbox), ...getBoxPanels(newLayout.maxbox), ...getBoxPanels(newLayout.windowbox)]
+}
+
+const getBoxPanels = (layout: BoxBase | undefined) => {
+  const tabs: PanelBase[] = [];
+  if (!layout) {
+    return tabs;
+  }
+  layout.children?.forEach((child) => {
+    const panel = child as PanelBase;
+    if (panel.tabs) {
+      tabs.push(panel);
+    } else {
+      tabs.push(...getBoxPanels(child as BoxBase));
+    }
+  });
+  return tabs;
+}
+
+
+
 
 export const handleRightClick = (
   e: any,
@@ -30,8 +59,8 @@ export const handleRightClick = (
   let x = e.clientX;
   let y = e.clientY;
   // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值
-  if (x + 150 > window.innerWidth) {
-    x = window.innerWidth - 160; // 160 是右键菜单的宽度
+  if (x + 180 > window.innerWidth) {
+    x = window.innerWidth - 190; // 190 是右键菜单的宽度
   }
   if (y + 200 > window.innerHeight) {
     y = window.innerHeight - 210; // 210 是右键菜单的高度
@@ -73,23 +102,20 @@ export const getDockPositionByToolbarPosition = (position: ToolbarPosition): Dro
   }
 };
 
-export const getLayoutState = (layout: LayoutState): LayoutState => {
-  let floatbox = layout.layoutData?.floatbox;
-  if (layout.layoutData?.windowbox?.children) {
+export const getLayoutState = (layout: LayoutData): LayoutData => {
+  let floatbox = layout?.floatbox;
+  if (layout?.windowbox?.children) {
     if (floatbox) {
-      layout.layoutData.windowbox.children.forEach((item) => {
-        layout.layoutData.floatbox!!.children.push(item);
+      layout.windowbox.children.forEach((item) => {
+        layout.floatbox!!.children.push(item);
       });
     } else {
-      floatbox = layout.layoutData.windowbox;
+      floatbox = layout.windowbox;
     }
   }
   return {
-    ...layout,
-    layoutData: {
-      ...layout.layoutData,
+      ...layout,
       floatbox,
       windowbox: undefined
-    }
   };
 };

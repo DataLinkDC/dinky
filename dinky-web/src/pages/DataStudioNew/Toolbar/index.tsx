@@ -21,13 +21,13 @@ import {Flex, Row} from 'antd';
 import React from 'react';
 import './index.less';
 import {ToolbarPosition, ToolbarProp} from '@/pages/DataStudioNew/Toolbar/data.d';
-import {toolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import {ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import {ReactSortable} from 'react-sortablejs';
 
-export default (props: ToolbarProp) => {
+export default React.memo((props: ToolbarProp) => {
   const {showDesc, onClick, toolbarSelect, position, saveToolbarLayout} = props;
   const routes = toolbarSelect.allTabs;
-  const currentRoutes = routes.map((value) => toolbarRoutes.find((item) => item.key === value)!!).map(item => ({
+  const currentRoutes = routes.map((value) => ToolbarRoutes.find((item) => item.key === value)!!).map(item => ({
     ...item,
     position
   }));
@@ -90,4 +90,4 @@ export default (props: ToolbarProp) => {
       </ReactSortable>
     </Flex>
   );
-};
+});

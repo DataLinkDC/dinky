@@ -40,5 +40,5 @@ export type ToolbarRoute = {
   // 图标
   icon: JSX.Element;
   position: ToolbarPosition;
-  content: React.ReactElement | ((tab: TabData) => React.ReactElement);
+  content:()=> React.ReactElement | ((tab: TabData) => React.ReactElement);
 };

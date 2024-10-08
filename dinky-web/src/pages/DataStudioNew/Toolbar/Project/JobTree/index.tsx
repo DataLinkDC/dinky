@@ -69,6 +69,8 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     selectCatalogueSortTypeData,
     onNodeClick,
     style,
+    height,
+    leftContainerWidth,
     onRightClick,
     selectKeyChange,
     onExpand,
@@ -319,6 +321,8 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 export default connect(
   ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
+    height: Studio.toolContentHeight,
+    leftContainerWidth: Studio.leftContainer.width,
     project: Studio.project,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
     users: Studio.users,

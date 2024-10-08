@@ -17,27 +17,26 @@
  *
  */
 
-import { ContextMenuPosition } from '@/types/Public/state';
+import { l } from '@/utils/intl';
+import { ProFormText } from '@ant-design/pro-components';
 
-import {LayoutState} from "@/pages/DataStudioNew/model";
-
-
-
-export type ToolbarSelect = {
-  // 当前选中的tab
-  currentSelect?: string;
-  // 所有打开的tab
-  allOpenTabs: string[];
-  allTabs: string[];
+const FolderForm = () => {
+  return (
+    <ProFormText
+      name='name'
+      label={l('datastudio.project.create.folder.name')}
+      placeholder={l('datastudio.project.create.folder.name.placeholder')}
+      fieldProps={{
+        autoFocus: true
+      }}
+      rules={[
+        {
+          required: true,
+          message: l('datastudio.project.create.folder.name.placeholder')
+        }
+      ]}
+    />
+  );
 };
 
-// 没必要持久化
-// 右键状态
-export type RightContextMenuState = {
-  show: boolean;
-  position: ContextMenuPosition;
-};
-
-export type RightMenuItemProps = {
-  layoutState: LayoutState;
-};
+export default FolderForm;
