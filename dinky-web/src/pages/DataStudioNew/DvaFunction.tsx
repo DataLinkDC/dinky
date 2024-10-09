@@ -25,11 +25,6 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch({
         type: STUDIO_MODEL.handleToolbarShowDesc
       }),
-    handleToolbarIconClick: (payload: PayloadType) =>
-      dispatch({
-        ...payload,
-        type: STUDIO_MODEL.handleToolbarIconClick,
-      }),
     saveToolbarLayout: (payload: SaveToolbarLayoutDTO) =>
       dispatch({
         ...payload,

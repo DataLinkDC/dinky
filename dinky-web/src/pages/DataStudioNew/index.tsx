@@ -25,7 +25,12 @@ import {Col, Input, Row, theme} from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import {RightContextMenuState} from '@/pages/DataStudioNew/data.d';
-import {getAllPanel, handleRightClick, InitContextMenuPosition} from '@/pages/DataStudioNew/function';
+import {
+  getAllPanel,
+  getDockPositionByToolbarPosition,
+  handleRightClick,
+  InitContextMenuPosition
+} from '@/pages/DataStudioNew/function';
 import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
 import {MenuInfo} from 'rc-menu/es/interface';
 import {ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
@@ -35,6 +40,7 @@ import {connect} from "umi";
 import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {getUUID} from "rc-select/es/hooks/useId";
+import {PanelData} from "rc-dock/lib/DockData";
 
 const {useToken} = theme;
 
@@ -42,7 +48,6 @@ const DataStudioNew: React.FC = (props: any) => {
   const {
     layoutState,
     handleToolbarShowDesc,
-    handleToolbarIconClick,
     saveToolbarLayout,
     handleLayoutChange,
     addCenterTab
@@ -114,10 +119,57 @@ const DataStudioNew: React.FC = (props: any) => {
   };
 
   const toolbarOnClick = (route: ToolbarRoute) => {
-    handleToolbarIconClick({
-      dockLayout: dockLayoutRef.current!!,
-      route
-    })
+    const dockLayout = dockLayoutRef.current!!;
+    const newTab = dockLayout.find(route.key) as TabData;
+    let tab = dockLayout.find(layoutState.toolbar[route.position].currentSelect!!);
+    // 如果没有选中的tab，就遍历所有tab，找到第一个添加进去
+    if (!tab) {
+      const keys = layoutState.toolbar[route.position].allOpenTabs;
+      if (keys) {
+        for (const key of keys) {
+          if (tab) {
+            break;
+          }
+          tab = dockLayout.find(key);
+        }
+      }
+    }
+    if (layoutState.toolbar[route.position].currentSelect === route.key) {
+      // 取消选中
+      if (newTab) {
+        if (layoutState.toolbar.showActiveTab) {
+          dockLayout.dockMove(newTab, null, 'active');
+        } else {
+          // 删除panel
+          dockLayout.dockMove(newTab.parent as PanelData, null, 'remove');
+        }
+      }
+    } else {
+      // todo 切换tab
+      if (tab && !newTab) {
+        dockLayout.updateTab(tab.id!!, {
+          id: route.key,
+          content: route.content(),
+          title: route.title,
+          group: route.position
+        }, true)
+      } else if (newTab) {
+        dockLayout.dockMove(newTab, newTab.parent!!, 'middle');
+      } else {
+        // 创建窗口
+        // todo 这里创建窗口可以优化
+        dockLayout.dockMove(
+          {
+            id: route.key,
+            content: route.content(),
+            title: route.title,
+            group: route.position
+          },
+          dockLayout.getLayout().dockbox,
+          getDockPositionByToolbarPosition(route.position)
+        );
+      }
+    }
   };
 
   const saveTab = (tabData: TabData & any) => {
@@ -210,14 +262,12 @@ const DataStudioNew: React.FC = (props: any) => {
             style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
             onLayoutChange={(newLayout, currentTabId, direction) => {
               // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
-              setTimeout(() => {
                 handleLayoutChange({
                   dockLayout: dockLayoutRef.current!!,
                   newLayout,
                   currentTabId,
                   direction
                 })
-              }, 0)
             }
             }
             saveTab={saveTab}

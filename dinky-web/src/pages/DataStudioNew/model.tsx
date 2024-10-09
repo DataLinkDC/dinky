@@ -56,8 +56,6 @@ export type StudioModelType = {
     handleLayoutChange: Reducer<LayoutState, HandleLayoutChangeDTO>;
     // 操作工具栏显示描述
     handleToolbarShowDesc: Reducer<LayoutState>;
-    // 工具栏图标点击事件
-    handleToolbarIconClick: Reducer<LayoutState, PayloadType>;
     // 保存工具栏布局
     saveToolbarLayout: Reducer<LayoutState, SaveToolbarLayoutDTO>;
     // 添加中间tab
@@ -118,6 +116,9 @@ const StudioModel: StudioModelType = {
         const toolbarPosition = panel.group as ToolbarPosition;
         if (toolbarPosition && (toolbarPosition === 'leftTop' || toolbarPosition === 'leftBottom' || toolbarPosition === 'right')) {
           state.toolbar[toolbarPosition].allOpenTabs = panel.activeId ? [panel.activeId] : [];
+          if (state.toolbar[toolbarPosition].currentSelect !== panel.activeId) {
+            state.toolbar[toolbarPosition].currentSelect = panel.activeId;
+          }
         }
       })
 
@@ -186,80 +187,6 @@ const StudioModel: StudioModelType = {
           }
         }
       }
-    },
-    // 工具栏图标点击事件
-    handleToolbarIconClick(state, {dockLayout, route}) {
-      const newTab = dockLayout.find(route.key) as TabData;
-      let tab = dockLayout.find(state.toolbar[route.position].currentSelect!!);
-      // 如果没有选中的tab，就遍历所有tab，找到第一个添加进去
-      if (!tab) {
-        const keys = state.toolbar[route.position].allOpenTabs;
-        if (keys) {
-          for (const key of keys) {
-            if (tab) {
-              break;
-            }
-            tab = dockLayout.find(key);
-          }
-        }
-      }
-      if (state.toolbar[route.position].currentSelect === route.key) {
-        // 取消选中
-        if (newTab) {
-          if (state.toolbar.showActiveTab) {
-            dockLayout.dockMove(newTab, null, 'active');
-          } else {
-            // 删除panel
-            dockLayout.dockMove(newTab.parent as PanelData, null, 'remove');
-          }
-        }
-
-        state.toolbar[route.position] = {
-          ...state.toolbar[route.position],
-          currentSelect: undefined,
-          allOpenTabs: Array.from(
-            new Set(
-              [...(state.toolbar[route.position]?.allOpenTabs ?? [])].filter(
-                (t) => t !== route.key
-              )
-            )
-          )
-        };
-      } else {
-        // todo 切换tab
-        if (tab && !newTab) {
-          dockLayout.updateTab(tab.id!!, {
-            id: route.key,
-            content: route.content(),
-            title: route.title,
-            group: route.position
-          }, true)
-        } else if (newTab) {
-          dockLayout.dockMove(newTab, newTab.parent!!, 'middle');
-        } else {
-          // 创建窗口
-          // todo 这里创建窗口可以优化
-          dockLayout.dockMove(
-            {
-              id: route.key,
-              content: route.content(),
-              title: route.title,
-              group: route.position
-            },
-            dockLayout.getLayout().dockbox,
-            getDockPositionByToolbarPosition(route.position)
-          );
-        }
-
-        state.toolbar[route.position] = {
-          ...state.toolbar[route.position],
-          currentSelect: route.key,
-          allOpenTabs: Array.from(
-            new Set([...(state.toolbar[route.position]?.allOpenTabs ?? []), route.key])
-          )
-        };
-      }
-      return {...state};
     },
     addCenterTab(state, {id, tabType, title, icon}) {
       const newTab = {
