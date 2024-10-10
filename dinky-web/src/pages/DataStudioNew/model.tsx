@@ -1,21 +1,18 @@
-import {TabData} from "rc-dock";
 import {ToolbarSelect} from "@/pages/DataStudioNew/data.d";
 import {Reducer} from "@@/plugin-dva/types";
 import {createModelTypes} from "@/utils/modelUtils";
 import {leftDefaultShowTab, ToolbarRoutes} from "@/pages/DataStudioNew/Toolbar/ToolbarRoute";
 import {layout} from "@/pages/DataStudioNew/ContentLayout";
-import {PanelData} from "rc-dock/lib/DockData";
 import {
   CenterTabDTO,
   HandleLayoutChangeDTO,
   InitSaveLayoutDTO,
-  PayloadType,
   ProjectDTO,
   ProjectState,
   SaveToolbarLayoutDTO
 } from "@/pages/DataStudioNew/type";
 import {LayoutBase} from "rc-dock/src/DockData";
-import {getAllPanel, getDockPositionByToolbarPosition} from "@/pages/DataStudioNew/function";
+import {getAllPanel} from "@/pages/DataStudioNew/function";
 import {ToolbarPosition} from "@/pages/DataStudioNew/Toolbar/data.d";
 import {findToolbarPositionByTabId} from "@/pages/DataStudioNew/DockLayoutFunction";
 
@@ -94,7 +91,7 @@ const StudioModel: StudioModelType = {
       },
       project: {
         expandKeys: [],
-        selectKey: undefined
+        selectedKeys: []
       }
     },
     centerContent: {
@@ -111,16 +108,6 @@ const StudioModel: StudioModelType = {
       }
     },
     handleLayoutChange(state, {dockLayout, newLayout, currentTabId, direction}) {
-      // 获取所有panel,并更正工具栏的显示
-      getAllPanel(newLayout).forEach((panel) => {
-        const toolbarPosition = panel.group as ToolbarPosition;
-        if (toolbarPosition && (toolbarPosition === 'leftTop' || toolbarPosition === 'leftBottom' || toolbarPosition === 'right')) {
-          state.toolbar[toolbarPosition].allOpenTabs = panel.activeId ? [panel.activeId] : [];
-          if (state.toolbar[toolbarPosition].currentSelect !== panel.activeId) {
-            state.toolbar[toolbarPosition].currentSelect = panel.activeId;
-          }
-        }
-      })
 
       if (direction === 'remove') {
         // 删除工具栏选中
@@ -160,8 +147,19 @@ const StudioModel: StudioModelType = {
           state.centerContent.activeTab = currentTabId;
         }
       }
+
+      state.toolbar.leftBottom.currentSelect=undefined;
+      state.toolbar.right.currentSelect=undefined;
+      state.toolbar.leftTop.currentSelect=undefined;
+      // 获取所有panel,并更正工具栏的显示
+      getAllPanel(newLayout).forEach((panel) => {
+        const toolbarPosition = panel.group as ToolbarPosition;
+        if (toolbarPosition && (toolbarPosition === 'leftTop' || toolbarPosition === 'leftBottom' || toolbarPosition === 'right')) {
+          state.toolbar[toolbarPosition].allOpenTabs = panel.activeId ? [panel.activeId] : [];
+          state.toolbar[toolbarPosition].currentSelect = panel.activeId;
+        }
+      })
       state.layoutData = newLayout;
-      // 激活panel点击事件
       return {...state}
     },
     // 操作工具栏显示描述
@@ -176,7 +174,6 @@ const StudioModel: StudioModelType = {
     },
     // 保存工具栏布局
     saveToolbarLayout(state, {dockLayout, position, list}) {
-      //todo 思考：当工具栏布局更新时，选择的tab是否需要更新到对应的位置
       return {
         ...state,
         toolbar: {

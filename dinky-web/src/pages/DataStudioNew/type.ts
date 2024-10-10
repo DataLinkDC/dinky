@@ -38,5 +38,5 @@ export interface ProjectDTO extends AnyAction, ProjectState {
 // state
 export type ProjectState = {
   expandKeys: number[];
-  selectKey?: string
+  selectedKeys?: number[]
 }

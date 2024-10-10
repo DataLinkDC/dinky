@@ -17,15 +17,27 @@
  *
  */
 
-import React, {Dispatch, RefObject, SetStateAction} from 'react';
-import {DockLayout, DropDirection, LayoutBase, LayoutData, TabGroup} from 'rc-dock';
+import React from 'react';
+import {LayoutData, TabGroup} from 'rc-dock';
 import {DockContext, PanelData, TabData} from 'rc-dock/lib/DockData';
 import 'rc-dock/style/index-light.less';
 import './index.less';
-import {BorderOutlined, CloseOutlined, ImportOutlined, SelectOutlined, SwitcherOutlined} from '@ant-design/icons';
+import {
+  ArrowsAltOutlined,
+  BorderOutlined,
+  CloseOutlined,
+  EnvironmentOutlined,
+  ImportOutlined,
+  PlusCircleOutlined,
+  SelectOutlined,
+  ShrinkOutlined,
+  SwitcherOutlined
+} from '@ant-design/icons';
 import {leftDefaultShowTab} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import {getDockPositionByToolbarPosition} from '@/pages/DataStudioNew/function';
 import {ToolbarPosition} from "@/pages/DataStudioNew/Toolbar/data.d";
+import {LayoutState} from "@/pages/DataStudioNew/model";
+import {l} from "@/utils/intl";
 
 const quickGuideTab: TabData = {
   closable: false,
@@ -135,30 +147,64 @@ const toolbarPanelExtra = (panelData: PanelData, context: DockContext) => {
   return <>{toolbarPanelExtraButtons(panelData, context).map((button) => button)}</>;
 };
 
-export const groups: {
-  [key: string]: TabGroup;
-} = {
-  leftTop: {
-    floatable: true,
-    panelExtra: toolbarPanelExtra,
-    newWindow: true
-  },
-  leftBottom: {
-    floatable: true,
-    panelExtra: toolbarPanelExtra,
-    newWindow: true
-  },
-  right: {
-    floatable: true,
-    panelExtra: toolbarPanelExtra,
-    newWindow: true
-  },
-  //  中间内容group
-  centerContent: {
-    newWindow: true,
-    tabLocked: true,
-    panelExtra: (panelData: PanelData, context: DockContext) => {
-      return <div>{centerPanelExtraButtons(panelData, context).map((button) => button)}</div>;
+export const groups = (layoutState: LayoutState): { [key: string]: TabGroup } => {
+  return {
+    leftTop: {
+      floatable: true,
+      // panelExtra: toolbarPanelExtra,
+      panelExtra: (panelData: PanelData, context: DockContext) => {
+        if (layoutState.toolbar.leftTop.currentSelect === "project") {
+          const btns = [];
+          btns.push(
+            <PlusCircleOutlined
+              className='my-panel-extra-btn'
+              key='right.menu.createRoot'
+              title={l('right.menu.createRoot')}
+              onClick={() => {
+              }}
+            />
+          );
+          btns.push(
+            <ArrowsAltOutlined
+              className='my-panel-extra-btn'
+              key='button.expand-all'
+              title={l('button.expand-all')}
+              onClick={() => {
+              }}
+            />
+          );
+          btns.push(
+            <ShrinkOutlined
+              className='my-panel-extra-btn'
+              key='button.collapse-all'
+              title={l('button.collapse-all')}
+              onClick={() => {
+              }}
+            />
+          );
+          return <>{[...btns, ...toolbarPanelExtraButtons(panelData, context)].map((button) => button)}</>
+        }
+        return <>{toolbarPanelExtraButtons(panelData, context).map((button) => button)}</>
+      },
+      newWindow: true
+    },
+    leftBottom: {
+      floatable: true,
+      panelExtra: toolbarPanelExtra,
+      newWindow: true
+    },
+    right: {
+      floatable: true,
+      panelExtra: toolbarPanelExtra,
+      newWindow: true
+    },
+    //  中间内容group
+    centerContent: {
+      newWindow: true,
+      tabLocked: true,
+      panelExtra: (panelData: PanelData, context: DockContext) => {
+        return <div>{centerPanelExtraButtons(panelData, context).map((button) => button)}</div>;
+      }
     }
   }
 };

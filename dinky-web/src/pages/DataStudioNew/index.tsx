@@ -33,7 +33,7 @@ import {
 } from '@/pages/DataStudioNew/function';
 import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
 import {MenuInfo} from 'rc-menu/es/interface';
-import {ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import {TestRoutes, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import {ToolbarPosition, ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
 import {groups} from '@/pages/DataStudioNew/ContentLayout';
 import {connect} from "umi";
@@ -41,6 +41,7 @@ import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {getUUID} from "rc-select/es/hooks/useId";
 import {PanelData} from "rc-dock/lib/DockData";
+import * as Algorithm from "rc-dock/src/Algorithm";
 
 const {useToken} = theme;
 
@@ -149,7 +150,7 @@ const DataStudioNew: React.FC = (props: any) => {
       if (tab && !newTab) {
         dockLayout.updateTab(tab.id!!, {
           id: route.key,
-          content: route.content(),
+          content: TestRoutes[route?.key],
           title: route.title,
           group: route.position
         }, true)
@@ -161,13 +162,14 @@ const DataStudioNew: React.FC = (props: any) => {
         dockLayout.dockMove(
           {
             id: route.key,
-            content: route.content(),
+            content: TestRoutes[route?.key],
             title: route.title,
             group: route.position
           },
           dockLayout.getLayout().dockbox,
           getDockPositionByToolbarPosition(route.position)
         );
+
       }
     }
   };
@@ -182,7 +184,9 @@ const DataStudioNew: React.FC = (props: any) => {
       const route = ToolbarRoutes.find((x) => x.key === id);
       return {
         ...tab,
-        content: route?.content() ?? <></>,
+        // content: route?.content() ?? <></>,
+        content:TestRoutes[route?.key],
+        // content:<Input />,
         title
       };
     } else {
@@ -190,7 +194,7 @@ const DataStudioNew: React.FC = (props: any) => {
         const route = ToolbarRoutes.find((x) => x.key === id);
         return {
           ...tab,
-          content: route?.content() ?? <></>,
+          content: TestRoutes[route?.key],
           title
         };
       }
@@ -206,6 +210,47 @@ const DataStudioNew: React.FC = (props: any) => {
   }
   // 保存工具栏按钮位置布局
   const saveToolbarLayoutHandle = (position: ToolbarPosition, list: string[]) => {
+    const dockLayout = dockLayoutRef.current!!;
+    //todo 思考：当工具栏布局更新时，选择的tab是否需要更新到对应的位置
+    const currentSelect: string = layoutState.toolbar[position].currentSelect;
+    // 如果新的布局中有tab,说明toolbar被移动了
+    const addSelect = list.find((x) => !layoutState.toolbar[position].allTabs.includes(x));
+    console.log(addSelect, position, list)
+    if (addSelect) {
+      const tabData = {
+        id: addSelect,
+        title: ToolbarRoutes.find((x) => x.key === addSelect)!!.title,
+        content: <></>,
+        group: position
+      }
+      // 查找被移动的toolbar位置，先删除，再添加
+      const getMoveToolbarPosition = (): ToolbarPosition | undefined => {
+        if (layoutState.toolbar.leftTop.allTabs.includes(addSelect)) {
+          return 'leftTop'
+        }
+        if (layoutState.toolbar.leftBottom.allTabs.includes(addSelect)) {
+          return 'leftBottom'
+        }
+        if (layoutState.toolbar.right.allTabs.includes(addSelect)) {
+          return 'right'
+        }
+      }
+      const moveToolbarPosition = getMoveToolbarPosition()
+      if (moveToolbarPosition) {
+        if (layoutState.toolbar[moveToolbarPosition].currentSelect === addSelect) {
+          if (currentSelect) {
+            dockLayout.updateTab(currentSelect, tabData, true)
+          } else {
+            setTimeout(() => {
+              dockLayout.dockMove(tabData, dockLayoutRef.current!!.getLayout().dockbox, getDockPositionByToolbarPosition(position))
+            }, 0)
+          }
+        }
+        dockLayout.dockMove((dockLayout.find(addSelect) as TabData), null, 'remove')
+      }
+    }
+
+
     saveToolbarLayout({
       dockLayout: dockLayoutRef.current!!,
       position,
@@ -258,16 +303,16 @@ const DataStudioNew: React.FC = (props: any) => {
           <DockLayout
             ref={dockLayoutRef}
             layout={layoutState.layoutData}
-            groups={groups}
+            groups={groups(layoutState)}
             style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
             onLayoutChange={(newLayout, currentTabId, direction) => {
               // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
-                handleLayoutChange({
-                  dockLayout: dockLayoutRef.current!!,
-                  newLayout,
-                  currentTabId,
-                  direction
-                })
+              handleLayoutChange({
+                dockLayout: dockLayoutRef.current!!,
+                newLayout,
+                currentTabId,
+                direction
+              })
             }
             }
             saveTab={saveTab}

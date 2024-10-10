@@ -54,7 +54,8 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     icon: <ConsoleSqlOutlined/>,
     position: 'leftTop',
     content: () =>
-      lazyComponent(<Project />)
+      // lazyComponent(<Project />)
+      lazyComponent(<>这是测试界面</>)
   },
   {
     key: 'catalog',
@@ -136,3 +137,10 @@ export const ToolbarRoutes: ToolbarRoute[] = [
 ];
 
 export const leftDefaultShowTab: ToolbarRoute = ToolbarRoutes[1];
+
+
+export const TestRoutes = {
+  "quick-start":<StartIntro />,
+  "project":<Project />,
+  "console": <>这是测试界面www</>,
+}

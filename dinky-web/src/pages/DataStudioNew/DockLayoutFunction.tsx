@@ -1,6 +1,7 @@
 import {BoxData} from "rc-dock/es";
 import {LayoutState} from "@/pages/DataStudioNew/model";
 import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
+import {TestRoutes} from "@/pages/DataStudioNew/Toolbar/ToolbarRoute";
 
 export const createNewPanel = (state: LayoutState, route: ToolbarRoute) => {
   const boxData: BoxData = {
@@ -11,7 +12,7 @@ export const createNewPanel = (state: LayoutState, route: ToolbarRoute) => {
         tabs: [
           {
             id: route.key,
-            content: route.content(),
+            content: TestRoutes[route?.key],
             title: route.title,
             group: route.position
           }

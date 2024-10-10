@@ -49,10 +49,25 @@ export default React.memo((props: ToolbarProp) => {
         list={list}
         setList={(newState, sortable) => {
           if (sortable) {
-            saveToolbarLayout(
-              sortable?.options.multiDragKey!! as ToolbarPosition,
-              newState.map((item) => item.id)
-            );
+            const datas = list.map((item) => item.id);
+            if (newState.length !== datas.length ) {
+              saveToolbarLayout(
+                sortable?.options.multiDragKey!! as ToolbarPosition,
+                newState.map((item) => item.id)
+              );
+            }else {
+              for (let i = 0; i < newState.length; i++) {
+                if (newState[i].id !== datas[i]) {
+                  // 元素发生改变删除
+                  saveToolbarLayout(
+                    sortable?.options.multiDragKey!! as ToolbarPosition,
+                    newState.map((item) => item.id)
+                  );
+                  break;
+                }
+              }
+            }
+
           }
         }}
       >
