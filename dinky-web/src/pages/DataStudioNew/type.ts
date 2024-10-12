@@ -33,6 +33,10 @@ export interface CenterTabDTO extends AnyAction, CenterTab {
 export interface ProjectDTO extends AnyAction, ProjectState {
 }
 
+export interface UpdateActionDTO extends AnyAction {
+  actionType: string;
+  params: Record<string, any>;
+}
 
 
 // state

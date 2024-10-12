@@ -1,5 +1,5 @@
 import {ToolbarSelect} from "@/pages/DataStudioNew/data.d";
-import {Reducer} from "@@/plugin-dva/types";
+import {AnyAction, Reducer} from "@@/plugin-dva/types";
 import {createModelTypes} from "@/utils/modelUtils";
 import {leftDefaultShowTab, ToolbarRoutes} from "@/pages/DataStudioNew/Toolbar/ToolbarRoute";
 import {layout} from "@/pages/DataStudioNew/ContentLayout";
@@ -9,7 +9,7 @@ import {
   InitSaveLayoutDTO,
   ProjectDTO,
   ProjectState,
-  SaveToolbarLayoutDTO
+  SaveToolbarLayoutDTO, UpdateActionDTO
 } from "@/pages/DataStudioNew/type";
 import {LayoutBase} from "rc-dock/src/DockData";
 import {getAllPanel} from "@/pages/DataStudioNew/function";
@@ -38,6 +38,13 @@ export type LayoutState = {
   centerContent: {
     tabs: CenterTab[],
     activeTab?: string | undefined
+  },
+  // 记录按钮操作
+  action:{
+    // 操作类型
+    actionType?:string,
+    // 参数
+    params?:Record<string, any>
   }
 };
 
@@ -59,6 +66,8 @@ export type StudioModelType = {
     addCenterTab: Reducer<LayoutState, CenterTabDTO>;
     //更新 project
     updateProject: Reducer<LayoutState, ProjectDTO>;
+    // 更新操作
+    updateAction: Reducer<LayoutState, UpdateActionDTO >;
   };
 }
 
@@ -97,6 +106,10 @@ const StudioModel: StudioModelType = {
     centerContent: {
       tabs: [],
       activeTab: undefined
+    },
+    action:{
+      actionType:undefined,
+      params:undefined
     }
   },
   effects: {},
@@ -218,6 +231,15 @@ const StudioModel: StudioModelType = {
         }
       }
     },
+    updateAction(state, {actionType, params}) {
+      return {
+        ...state,
+        action: {
+          actionType,
+          params
+        }
+      }
+    }
   }
 }
 

@@ -26,7 +26,6 @@ import {
   ArrowsAltOutlined,
   BorderOutlined,
   CloseOutlined,
-  EnvironmentOutlined,
   ImportOutlined,
   PlusCircleOutlined,
   SelectOutlined,
@@ -34,10 +33,11 @@ import {
   SwitcherOutlined
 } from '@ant-design/icons';
 import {leftDefaultShowTab} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {getDockPositionByToolbarPosition} from '@/pages/DataStudioNew/function';
-import {ToolbarPosition} from "@/pages/DataStudioNew/Toolbar/data.d";
 import {LayoutState} from "@/pages/DataStudioNew/model";
 import {l} from "@/utils/intl";
+import * as Algorithm from "rc-dock/src/Algorithm";
+import {createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
+import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
 
 const quickGuideTab: TabData = {
   closable: false,
@@ -92,14 +92,15 @@ export const layout: LayoutData = {
 
 const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => {
   const buttons = [];
+
   if (panelData.parent?.mode !== 'window' && panelData.parent?.mode !== 'float') {
     buttons.push(
       <SelectOutlined
         rotate={90}
         className='my-panel-extra-btn'
-        key='new-window'
-        title='在新窗口中打开'
-        onClick={() => context.dockMove(panelData, null, 'new-window')}
+        key='float'
+        title='浮动'
+        onClick={() => context.dockMove(panelData, null, 'float')}
       />
     );
     const MaximizeIcon = panelData.parent?.mode === 'maximize' ? SwitcherOutlined : BorderOutlined;
@@ -112,18 +113,38 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
       />
     );
   } else {
+    if (panelData.parent?.mode == 'float') {
+      buttons.push(
+        <SelectOutlined
+          rotate={90}
+          className='my-panel-extra-btn'
+          key='new-window'
+          title='在新窗口打开'
+          onClick={() => context.dockMove(panelData, null, 'new-window')}
+        />
+      );
+    }
     buttons.push(
       <ImportOutlined
         className='my-panel-extra-btn'
         key='move to dock'
         title='Dock'
-        onClick={() =>
-          context.dockMove(
-            panelData,
-            // @ts-ignore
-            context.state.layout.dockbox,
-            getDockPositionByToolbarPosition(panelData.group as ToolbarPosition)
-          )
+        onClick={() => {
+          // @ts-ignore
+          const route:ToolbarRoute = {
+            key: panelData.activeId as string,
+            // 标题
+            title: panelData.activeId as string,
+            // 图标
+            icon: <> </>,
+            position: panelData.group as ToolbarPosition
+          };
+          // @ts-ignore
+          const layout = Algorithm.fixLayoutData(createNewPanel(context.state.layout, route), context.props.groups);
+          // @ts-ignore
+          context.changeLayout(layout, route.key,"update",false)
+          context.dockMove(panelData,null,"remove")
+        }
         }
       />
     );
@@ -147,13 +168,16 @@ const toolbarPanelExtra = (panelData: PanelData, context: DockContext) => {
   return <>{toolbarPanelExtraButtons(panelData, context).map((button) => button)}</>;
 };
 
-export const groups = (layoutState: LayoutState): { [key: string]: TabGroup } => {
+export const groups = (layoutState: LayoutState, updateAction: (params: {
+  actionType: string,
+  params: Record<string, any>
+}) => void): { [key: string]: TabGroup } => {
   return {
     leftTop: {
       floatable: true,
       // panelExtra: toolbarPanelExtra,
       panelExtra: (panelData: PanelData, context: DockContext) => {
-        if (layoutState.toolbar.leftTop.currentSelect === "project") {
+        if (panelData.activeId === "project") {
           const btns = [];
           btns.push(
             <PlusCircleOutlined
@@ -170,6 +194,7 @@ export const groups = (layoutState: LayoutState): { [key: string]: TabGroup } =>
               key='button.expand-all'
               title={l('button.expand-all')}
               onClick={() => {
+                updateAction({actionType: 'project-expand-all', params: {}})
               }}
             />
           );
@@ -179,6 +204,7 @@ export const groups = (layoutState: LayoutState): { [key: string]: TabGroup } =>
               key='button.collapse-all'
               title={l('button.collapse-all')}
               onClick={() => {
+                updateAction({actionType: 'project-collapse-all', params: {}})
               }}
             />
           );

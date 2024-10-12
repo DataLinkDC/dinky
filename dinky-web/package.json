@@ -88,7 +88,8 @@
     "styled-components": "^6.1.1",
     "use-sse": "^2.0.1",
     "uuid": "^10.0.0",
-    "websocket": "^1.0.35"
+    "websocket": "^1.0.35",
+    "react-activation": "^0.12.4"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^3.2.1",

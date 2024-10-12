@@ -5,7 +5,7 @@ import {
   HandleLayoutChangeDTO,
   InitSaveLayoutDTO,
   PayloadType, ProjectDTO,
-  SaveToolbarLayoutDTO
+  SaveToolbarLayoutDTO, UpdateActionDTO
 } from "@/pages/DataStudioNew/type";
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -39,6 +39,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch({
         ...payload,
         type: STUDIO_MODEL.updateProject
+      }),
+    updateAction: (payload:UpdateActionDTO) =>
+      dispatch({
+        ...payload,
+        type: STUDIO_MODEL.updateAction
       }),
 
   }

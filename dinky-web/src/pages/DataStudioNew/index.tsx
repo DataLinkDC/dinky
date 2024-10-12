@@ -40,7 +40,8 @@ import {connect} from "umi";
 import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {getUUID} from "rc-select/es/hooks/useId";
-import {PanelData} from "rc-dock/lib/DockData";
+import {AliveScope, KeepAlive} from "react-activation";
+import {createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
 import * as Algorithm from "rc-dock/src/Algorithm";
 
 const {useToken} = theme;
@@ -51,7 +52,8 @@ const DataStudioNew: React.FC = (props: any) => {
     handleToolbarShowDesc,
     saveToolbarLayout,
     handleLayoutChange,
-    addCenterTab
+    addCenterTab,
+    updateAction
   } = props
   const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
@@ -62,6 +64,12 @@ const DataStudioNew: React.FC = (props: any) => {
     show: false,
     position: InitContextMenuPosition
   });
+  useEffect(() => {
+    updateAction({
+      actionType: undefined,
+      params: undefined
+    })
+  }, []);
   useEffect(() => {
     if (dockLayoutRef.current) {
       if (layoutState.centerContent.activeTab) {
@@ -121,56 +129,23 @@ const DataStudioNew: React.FC = (props: any) => {
 
   const toolbarOnClick = (route: ToolbarRoute) => {
     const dockLayout = dockLayoutRef.current!!;
-    const newTab = dockLayout.find(route.key) as TabData;
-    let tab = dockLayout.find(layoutState.toolbar[route.position].currentSelect!!);
-    // 如果没有选中的tab，就遍历所有tab，找到第一个添加进去
-    if (!tab) {
-      const keys = layoutState.toolbar[route.position].allOpenTabs;
-      if (keys) {
-        for (const key of keys) {
-          if (tab) {
-            break;
-          }
-          tab = dockLayout.find(key);
-        }
-      }
-    }
-    if (layoutState.toolbar[route.position].currentSelect === route.key) {
-      // 取消选中
-      if (newTab) {
-        if (layoutState.toolbar.showActiveTab) {
-          dockLayout.dockMove(newTab, null, 'active');
-        } else {
-          // 删除panel
-          dockLayout.dockMove(newTab.parent as PanelData, null, 'remove');
-        }
-      }
-    } else {
-      // todo 切换tab
-      if (tab && !newTab) {
-        dockLayout.updateTab(tab.id!!, {
-          id: route.key,
-          content: TestRoutes[route?.key],
-          title: route.title,
-          group: route.position
-        }, true)
-      } else if (newTab) {
-        dockLayout.dockMove(newTab, newTab.parent!!, 'middle');
-      } else {
-        // 创建窗口
-        // todo 这里创建窗口可以优化
-        dockLayout.dockMove(
-          {
-            id: route.key,
-            content: TestRoutes[route?.key],
-            title: route.title,
-            group: route.position
-          },
-          dockLayout.getLayout().dockbox,
-          getDockPositionByToolbarPosition(route.position)
-        );
+    const currentSelect = layoutState.toolbar[route.position].currentSelect;
+    if (!currentSelect) {
+      // 添加panel
+      const layout = Algorithm.fixLayoutData(createNewPanel(layoutState.layoutData, route), dockLayout.props.groups);
+      dockLayout.changeLayout(layout, route.key, "update", false)
 
-      }
+    } else if (currentSelect === route.key) {
+      // 取消选中
+      dockLayout.dockMove(dockLayout.find(route.key) as TabData, null, 'remove');
+    } else {
+      //  切换tab
+      dockLayout.updateTab(currentSelect, {
+        id: route.key,
+        content: <></>,
+        title: route.title,
+        group: route.position
+      }, true)
     }
   };
 
@@ -184,9 +159,7 @@ const DataStudioNew: React.FC = (props: any) => {
       const route = ToolbarRoutes.find((x) => x.key === id);
       return {
         ...tab,
-        // content: route?.content() ?? <></>,
-        content:TestRoutes[route?.key],
-        // content:<Input />,
+        content: <KeepAlive cacheKey={route?.key}>{TestRoutes[route?.key]}</KeepAlive>,
         title
       };
     } else {
@@ -215,7 +188,6 @@ const DataStudioNew: React.FC = (props: any) => {
     const currentSelect: string = layoutState.toolbar[position].currentSelect;
     // 如果新的布局中有tab,说明toolbar被移动了
     const addSelect = list.find((x) => !layoutState.toolbar[position].allTabs.includes(x));
-    console.log(addSelect, position, list)
     if (addSelect) {
       const tabData = {
         id: addSelect,
@@ -300,24 +272,32 @@ const DataStudioNew: React.FC = (props: any) => {
 
         {/* 中间内容栏*/}
         <Col style={{height: 'inherit'}} flex='auto'>
-          <DockLayout
-            ref={dockLayoutRef}
-            layout={layoutState.layoutData}
-            groups={groups(layoutState)}
-            style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
-            onLayoutChange={(newLayout, currentTabId, direction) => {
-              // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
-              handleLayoutChange({
-                dockLayout: dockLayoutRef.current!!,
-                newLayout,
-                currentTabId,
-                direction
-              })
-            }
-            }
-            saveTab={saveTab}
-            loadTab={loadTab}
-          />
+          <AliveScope>
+            <DockLayout
+              ref={dockLayoutRef}
+              layout={layoutState.layoutData}
+              groups={groups(layoutState,updateAction)}
+              dropMode={'edge'}
+              style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
+              onLayoutChange={(newLayout, currentTabId, direction) => {
+
+                // todo 这里移到方向会导致布局和算法异常，先暂时规避掉
+                if (direction === 'left' || direction === 'right' || direction === 'top' || direction === 'bottom' || direction === 'middle') {
+                  return
+                }
+                // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
+                handleLayoutChange({
+                  dockLayout: dockLayoutRef.current!!,
+                  newLayout,
+                  currentTabId,
+                  direction
+                })
+              }
+              }
+              saveTab={saveTab}
+              loadTab={loadTab}
+            />
+          </AliveScope>
         </Col>
 
         {/*右边工具栏*/}

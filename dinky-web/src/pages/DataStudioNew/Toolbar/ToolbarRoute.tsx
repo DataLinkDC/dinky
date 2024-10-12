@@ -141,6 +141,6 @@ export const leftDefaultShowTab: ToolbarRoute = ToolbarRoutes[1];
 
 export const TestRoutes = {
   "quick-start":<StartIntro />,
-  "project":<Project />,
+  "project":lazyComponent(<Project />),
   "console": <>这是测试界面www</>,
 }
