@@ -38,6 +38,7 @@ import {l} from "@/utils/intl";
 import * as Algorithm from "rc-dock/src/Algorithm";
 import {createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
 import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
+import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
 
 const quickGuideTab: TabData = {
   closable: false,
@@ -194,7 +195,7 @@ export const groups = (layoutState: LayoutState, updateAction: (params: {
               key='button.expand-all'
               title={l('button.expand-all')}
               onClick={() => {
-                updateAction({actionType: 'project-expand-all', params: {}})
+                updateAction({actionType: DataStudioActionType.PROJECT_EXPAND_ALL, params: {}})
               }}
             />
           );
@@ -204,7 +205,7 @@ export const groups = (layoutState: LayoutState, updateAction: (params: {
               key='button.collapse-all'
               title={l('button.collapse-all')}
               onClick={() => {
-                updateAction({actionType: 'project-collapse-all', params: {}})
+                updateAction({actionType: DataStudioActionType.PROJECT_COLLAPSE_ALL, params: {}})
               }}
             />
           );

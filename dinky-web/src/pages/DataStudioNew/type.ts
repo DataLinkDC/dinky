@@ -3,10 +3,11 @@ import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.
 import {AnyAction} from "@@/plugin-dva/types";
 import {DropDirection, LayoutBase} from "rc-dock/src/DockData";
 import {CenterTab} from "@/pages/DataStudioNew/model";
+import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
 
 // dispatch DTO
-export interface InitSaveLayoutDTO extends AnyAction {
-  dockLayout: DockLayout;
+export interface SetLayoutDTO extends AnyAction {
+  layout: LayoutBase;
 }
 
 export interface HandleLayoutChangeDTO extends AnyAction {
@@ -34,7 +35,7 @@ export interface ProjectDTO extends AnyAction, ProjectState {
 }
 
 export interface UpdateActionDTO extends AnyAction {
-  actionType: string;
+  actionType: DataStudioActionType;
   params: Record<string, any>;
 }
 

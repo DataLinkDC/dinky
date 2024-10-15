@@ -3,17 +3,18 @@ import {Dispatch} from "@umijs/max";
 import {
   CenterTabDTO,
   HandleLayoutChangeDTO,
-  InitSaveLayoutDTO,
-  PayloadType, ProjectDTO,
-  SaveToolbarLayoutDTO, UpdateActionDTO
+  ProjectDTO,
+  SaveToolbarLayoutDTO,
+  SetLayoutDTO,
+  UpdateActionDTO
 } from "@/pages/DataStudioNew/type";
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    initSaveLayout: (payload: InitSaveLayoutDTO) =>{
+    setLayout: (payload: SetLayoutDTO) => {
       dispatch({
         ...payload,
-        type: STUDIO_MODEL.initSaveLayout
+        type: STUDIO_MODEL.setLayout
       })
     },
     handleLayoutChange: (payload: HandleLayoutChangeDTO) =>
@@ -35,12 +36,17 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
         ...payload,
         type: STUDIO_MODEL.addCenterTab
       }),
+    removeCenterTab: (id: string) =>
+      dispatch({
+        id,
+        type: STUDIO_MODEL.removeCenterTab
+      }),
     updateProject: (payload: ProjectDTO) =>
       dispatch({
         ...payload,
         type: STUDIO_MODEL.updateProject
       }),
-    updateAction: (payload:UpdateActionDTO) =>
+    updateAction: (payload: UpdateActionDTO) =>
       dispatch({
         ...payload,
         type: STUDIO_MODEL.updateAction

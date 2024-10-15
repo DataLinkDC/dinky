@@ -41,3 +41,12 @@ export type RightContextMenuState = {
 export type RightMenuItemProps = {
   layoutState: LayoutState;
 };
+
+
+export enum DataStudioActionType {
+  // project
+  PROJECT_COLLAPSE_ALL = 'project-collapse-all',
+  PROJECT_EXPAND_ALL = 'project-expand-all',
+  PROJECT_RIGHT_CLICK = 'project-right-click',
+
+}

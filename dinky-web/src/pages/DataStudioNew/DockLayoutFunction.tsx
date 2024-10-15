@@ -1,8 +1,36 @@
 import {BoxData} from "rc-dock/es";
 import {LayoutState} from "@/pages/DataStudioNew/model";
 import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
-import {PanelData} from "rc-dock/lib/DockData";
-import {LayoutData} from "rc-dock";
+import {PanelData} from "rc-dock/es/DockData";
+import {DockLayout, LayoutData} from "rc-dock";
+import {TabData} from "rc-dock/es/DockData";
+import {Filter} from "rc-dock/es/Algorithm";
+
+
+export const activeTab = (dockLayout:DockLayout,layoutData: LayoutData,sourceTabData:TabData,targetId:string) => {
+  const tabPanel = find(layoutData, sourceTabData.id!!) as PanelData;
+  const targetTabPanel = find(layoutData, targetId) as PanelData;
+  if (!tabPanel && targetTabPanel ){
+    // 新增tab
+    targetTabPanel.tabs=[sourceTabData,...targetTabPanel.tabs]
+    targetTabPanel.activeId = sourceTabData.id
+  }else {
+    // 切换tab
+    if (tabPanel.activeId===sourceTabData.id) {
+      dockLayout.loadLayout(layoutData)
+      return;
+    }
+    if (tabPanel.tabs.length === 0) {
+      tabPanel.tabs=[sourceTabData]
+    }else {
+      if (tabPanel.tabs.some(tab=>tab.id===sourceTabData.id)) {
+        tabPanel.activeId = sourceTabData.id
+      }
+    }
+  }
+
+  dockLayout.loadLayout(layoutData)
+}
 
 export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute):LayoutData => {
   // todo 这里有布局混乱导致算法崩溃风险
@@ -94,4 +122,66 @@ export const findToolbarPositionByTabId = (toolbar: LayoutState['toolbar'], tabI
     return 'right'
   }
   return undefined
+}
+
+
+
+export function find(layout: LayoutData, id: string, filter: Filter = Filter.AnyTabPanel): PanelData | TabData | BoxData | undefined {
+  let result: PanelData | TabData | BoxData | undefined;
+
+  if (filter & Filter.Docked) {
+    result = findInBox(layout.dockbox, id, filter);
+  }
+  if (result) return result;
+
+  if (filter & Filter.Floated) {
+    result = findInBox(layout.floatbox, id, filter);
+  }
+  if (result) return result;
+
+  if (filter & Filter.Windowed) {
+    result = findInBox(layout.windowbox, id, filter);
+  }
+  if (result) return result;
+
+  if (filter & Filter.Max) {
+    result = findInBox(layout.maxbox, id, filter);
+  }
+
+  return result;
+}
+function findInBox(box: BoxData | undefined, id: string, filter: Filter): PanelData | TabData | BoxData | undefined {
+  let result: PanelData | TabData | BoxData | undefined;
+  if ((filter | Filter.Box) && box?.id === id) {
+    return box;
+  }
+  if (!box?.children) {
+    return undefined;
+  }
+  for (let child of box.children) {
+    if ('children' in child) {
+      if (result = findInBox(child, id, filter)) {
+        break;
+      }
+    } else if ('tabs' in child) {
+      if (result = findInPanel(child, id, filter)) {
+        break;
+      }
+    }
+  }
+  return result;
+}
+
+function findInPanel(panel: PanelData, id: string, filter: Filter): PanelData | TabData | undefined {
+  if (panel.id === id && (filter & Filter.Panel)) {
+    return panel;
+  }
+  if (filter & Filter.Tab) {
+    for (let tab of panel.tabs) {
+      if (tab.id === id) {
+        return panel;
+      }
+    }
+  }
+  return undefined;
 }

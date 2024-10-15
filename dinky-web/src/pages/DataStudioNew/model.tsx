@@ -1,4 +1,4 @@
-import {ToolbarSelect} from "@/pages/DataStudioNew/data.d";
+import {DataStudioActionType, ToolbarSelect} from "@/pages/DataStudioNew/data.d";
 import {AnyAction, Reducer} from "@@/plugin-dva/types";
 import {createModelTypes} from "@/utils/modelUtils";
 import {leftDefaultShowTab, ToolbarRoutes} from "@/pages/DataStudioNew/Toolbar/ToolbarRoute";
@@ -6,10 +6,11 @@ import {layout} from "@/pages/DataStudioNew/ContentLayout";
 import {
   CenterTabDTO,
   HandleLayoutChangeDTO,
-  InitSaveLayoutDTO,
+  SetLayoutDTO,
   ProjectDTO,
   ProjectState,
-  SaveToolbarLayoutDTO, UpdateActionDTO
+  SaveToolbarLayoutDTO,
+  UpdateActionDTO
 } from "@/pages/DataStudioNew/type";
 import {LayoutBase} from "rc-dock/src/DockData";
 import {getAllPanel} from "@/pages/DataStudioNew/function";
@@ -21,7 +22,7 @@ export type CenterTab = {
   id: string;
   tabType: CenterTabType;
   title: string;
-  icon?: any;
+  params: Record<string, any>;
 }
 export type LayoutState = {
   layoutData: LayoutBase;
@@ -40,11 +41,11 @@ export type LayoutState = {
     activeTab?: string | undefined
   },
   // 记录按钮操作
-  action:{
+  action: {
     // 操作类型
-    actionType?:string,
+    actionType?: DataStudioActionType,
     // 参数
-    params?:Record<string, any>
+    params?: Record<string, any>
   }
 };
 
@@ -54,8 +55,8 @@ export type StudioModelType = {
   state: LayoutState;
   effects: {},
   reducers: {
-    // 初始化保存布局
-    initSaveLayout: Reducer<LayoutState, InitSaveLayoutDTO>;
+    // 保存布局
+    setLayout: Reducer<LayoutState, SetLayoutDTO>;
     // 监听布局变化
     handleLayoutChange: Reducer<LayoutState, HandleLayoutChangeDTO>;
     // 操作工具栏显示描述
@@ -64,10 +65,12 @@ export type StudioModelType = {
     saveToolbarLayout: Reducer<LayoutState, SaveToolbarLayoutDTO>;
     // 添加中间tab
     addCenterTab: Reducer<LayoutState, CenterTabDTO>;
+    // 删除中间tab
+    removeCenterTab: Reducer<LayoutState>;
     //更新 project
     updateProject: Reducer<LayoutState, ProjectDTO>;
     // 更新操作
-    updateAction: Reducer<LayoutState, UpdateActionDTO >;
+    updateAction: Reducer<LayoutState, UpdateActionDTO>;
   };
 }
 
@@ -107,18 +110,18 @@ const StudioModel: StudioModelType = {
       tabs: [],
       activeTab: undefined
     },
-    action:{
-      actionType:undefined,
-      params:undefined
+    action: {
+      actionType: undefined,
+      params: undefined
     }
   },
   effects: {},
   reducers: {
-    initSaveLayout(state, {dockLayout}) {
+    setLayout(state, {layout}) {
       return {
         ...state,
-        layoutData: dockLayout.saveLayout()
-      }
+        layoutData: layout
+      };
     },
     handleLayoutChange(state, {dockLayout, newLayout, currentTabId, direction}) {
 
@@ -148,7 +151,7 @@ const StudioModel: StudioModelType = {
                     <></>
                   ),
                   group: 'centerContent'
-                }, true)
+                }, true);
               }
             }
           }
@@ -161,9 +164,9 @@ const StudioModel: StudioModelType = {
         }
       }
 
-      state.toolbar.leftBottom.currentSelect=undefined;
-      state.toolbar.right.currentSelect=undefined;
-      state.toolbar.leftTop.currentSelect=undefined;
+      state.toolbar.leftBottom.currentSelect = undefined;
+      state.toolbar.right.currentSelect = undefined;
+      state.toolbar.leftTop.currentSelect = undefined;
       // 获取所有panel,并更正工具栏的显示
       getAllPanel(newLayout).forEach((panel) => {
         const toolbarPosition = panel.group as ToolbarPosition;
@@ -171,9 +174,9 @@ const StudioModel: StudioModelType = {
           state.toolbar[toolbarPosition].allOpenTabs = panel.activeId ? [panel.activeId] : [];
           state.toolbar[toolbarPosition].currentSelect = panel.activeId;
         }
-      })
+      });
       state.layoutData = newLayout;
-      return {...state}
+      return {...state};
     },
     // 操作工具栏显示描述
     handleToolbarShowDesc(state, {}) {
@@ -183,10 +186,10 @@ const StudioModel: StudioModelType = {
           ...state.toolbar,
           showDesc: !state.toolbar.showDesc
         }
-      }
+      };
     },
     // 保存工具栏布局
-    saveToolbarLayout(state, {dockLayout, position, list}) {
+    saveToolbarLayout(state, {position, list}) {
       return {
         ...state,
         toolbar: {
@@ -196,20 +199,19 @@ const StudioModel: StudioModelType = {
             allTabs: list
           }
         }
-      }
+      };
     },
-    addCenterTab(state, {id, tabType, title, icon}) {
+    addCenterTab(state, {id, tabType, title, params}) {
       const newTab = {
         id,
         tabType,
         title,
-        icon
+        params
       };
-      let tabs = state.centerContent.tabs
+      let tabs = state.centerContent.tabs;
       if (!state.centerContent.tabs.map(x => x.id).includes(id)) {
-        tabs = [newTab, ...state.centerContent.tabs]
+        tabs = [newTab, ...state.centerContent.tabs];
       }
-
       return {
         ...state,
         centerContent: {
@@ -217,19 +219,31 @@ const StudioModel: StudioModelType = {
           tabs: tabs,
           activeTab: id
         }
-      }
+      };
     },
-    updateProject(state, {expandKeys, selectKey}) {
+    removeCenterTab: function (prevState: LayoutState, {id}): LayoutState {
+      const tabs = prevState.centerContent.tabs.filter((x) => x.id !== id)
+
+      return {
+        ...prevState,
+        centerContent: {
+          ...prevState.centerContent,
+          tabs: tabs,
+          activeTab: prevState.centerContent.activeTab === id ? tabs[0]?.id : prevState.centerContent.activeTab
+        }
+      };
+    },
+    updateProject(state, {expandKeys, selectedKeys}) {
       return {
         ...state,
         toolbar: {
           ...state.toolbar,
           project: {
-            expandKeys,
-            selectKey
+            expandKeys: expandKeys ?? state.toolbar.project.expandKeys,
+            selectedKeys: selectedKeys ?? state.toolbar.project.selectedKeys
           }
         }
-      }
+      };
     },
     updateAction(state, {actionType, params}) {
       return {
@@ -238,7 +252,7 @@ const StudioModel: StudioModelType = {
           actionType,
           params
         }
-      }
+      };
     }
   }
 }

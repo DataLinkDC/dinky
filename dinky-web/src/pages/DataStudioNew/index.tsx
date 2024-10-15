@@ -18,22 +18,17 @@
  */
 
 import {DockLayout, TabData} from 'rc-dock';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {lazy, useEffect, useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import 'rc-dock/dist/rc-dock.css';
-import {Col, Input, Row, theme} from 'antd';
+import {Col, Row, theme} from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import {RightContextMenuState} from '@/pages/DataStudioNew/data.d';
-import {
-  getAllPanel,
-  getDockPositionByToolbarPosition,
-  handleRightClick,
-  InitContextMenuPosition
-} from '@/pages/DataStudioNew/function';
+import {getAllPanel, handleRightClick, InitContextMenuPosition} from '@/pages/DataStudioNew/function';
 import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
 import {MenuInfo} from 'rc-menu/es/interface';
-import {TestRoutes, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import {lazyComponent, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import {ToolbarPosition, ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
 import {groups} from '@/pages/DataStudioNew/ContentLayout';
 import {connect} from "umi";
@@ -41,10 +36,12 @@ import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {getUUID} from "rc-select/es/hooks/useId";
 import {AliveScope, KeepAlive} from "react-activation";
-import {createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
-import * as Algorithm from "rc-dock/src/Algorithm";
+import {activeTab, createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
+import * as Algorithm from "./Algorithm";
+import {PanelData} from "rc-dock/lib/DockData";
 
 const {useToken} = theme;
+const FlinkSQL = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/FlinkSQL'));
 
 const DataStudioNew: React.FC = (props: any) => {
   const {
@@ -53,7 +50,9 @@ const DataStudioNew: React.FC = (props: any) => {
     saveToolbarLayout,
     handleLayoutChange,
     addCenterTab,
-    updateAction
+    updateAction,
+    removeCenterTab,
+    setLayout
   } = props
   const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
@@ -85,19 +84,8 @@ const DataStudioNew: React.FC = (props: any) => {
         }
         if (layoutState.centerContent.tabs.length === 1) {
           dockLayoutRef.current.updateTab(centerContent.activeId!!, tabData, true)
-        } else if (layoutState.centerContent.tabs.length === 0) {
-          // 进入快速开始界面
-          dockLayoutRef.current.updateTab(centerContent.activeId!!, {
-            closable: false,
-            id: 'quick-start',
-            title: '快速开始',
-            content: (
-              <></>
-            ),
-            group: 'centerContent'
-          }, true)
         } else {
-          dockLayoutRef.current.dockMove(tabData, centerContent.activeId!!, 'active')
+          activeTab(dockLayoutRef.current, layoutState.layoutData, tabData, centerContent.activeId!!)
         }
       }
     }
@@ -159,7 +147,8 @@ const DataStudioNew: React.FC = (props: any) => {
       const route = ToolbarRoutes.find((x) => x.key === id);
       return {
         ...tab,
-        content: <KeepAlive cacheKey={route?.key}>{TestRoutes[route?.key]}</KeepAlive>,
+        content: <KeepAlive
+          cacheKey={route?.key}>{ToolbarRoutes.find(item => item.key === route?.key)?.content()}</KeepAlive>,
         title
       };
     } else {
@@ -167,16 +156,18 @@ const DataStudioNew: React.FC = (props: any) => {
         const route = ToolbarRoutes.find((x) => x.key === id);
         return {
           ...tab,
-          content: TestRoutes[route?.key],
+          content: ToolbarRoutes.find(item => item.key === route?.key)?.content(),
           title
         };
       }
+      const tabData = (layoutState.centerContent.tabs as CenterTab[]).find((x) => x.id === id)!!;
+
       // todo 添加中间tab内容
       return {
         ...tab,
         title,
         closable: true,
-        content: <Input/>,
+        content: <KeepAlive>{lazyComponent(<FlinkSQL  {...tabData}/>)}</KeepAlive>,
       };
     }
 
@@ -212,13 +203,15 @@ const DataStudioNew: React.FC = (props: any) => {
         if (layoutState.toolbar[moveToolbarPosition].currentSelect === addSelect) {
           if (currentSelect) {
             dockLayout.updateTab(currentSelect, tabData, true)
+            dockLayout.dockMove((dockLayout.find(addSelect) as TabData), null, 'remove')
           } else {
-            setTimeout(() => {
-              dockLayout.dockMove(tabData, dockLayoutRef.current!!.getLayout().dockbox, getDockPositionByToolbarPosition(position))
-            }, 0)
+            const route = {...ToolbarRoutes.find((x) => x.key === addSelect)!!, position: position};
+            let layout = Algorithm.removeFromLayout(dockLayout.getLayout(), dockLayout.find(addSelect) as TabData);
+            layout = Algorithm.fixLayoutData(createNewPanel(layout, route), dockLayout.props.groups);
+            dockLayout.changeLayout(layout, route.key, "update", false)
           }
         }
-        dockLayout.dockMove((dockLayout.find(addSelect) as TabData), null, 'remove')
+
       }
     }
 
@@ -276,14 +269,33 @@ const DataStudioNew: React.FC = (props: any) => {
             <DockLayout
               ref={dockLayoutRef}
               layout={layoutState.layoutData}
-              groups={groups(layoutState,updateAction)}
+              groups={groups(layoutState, updateAction)}
               dropMode={'edge'}
               style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
               onLayoutChange={(newLayout, currentTabId, direction) => {
-
                 // todo 这里移到方向会导致布局和算法异常，先暂时规避掉
                 if (direction === 'left' || direction === 'right' || direction === 'top' || direction === 'bottom' || direction === 'middle') {
                   return
+                }
+                // 移除centerContent中的tab
+                if (currentTabId && direction === "remove" && (dockLayoutRef.current?.find(currentTabId) as PanelData)?.group === "centerContent") {
+                  if (layoutState.centerContent.tabs.length === 1) {
+                    dockLayoutRef.current?.updateTab(currentTabId, {
+                      closable: false,
+                      id: 'quick-start',
+                      title: '快速开始',
+                      content: (
+                        <></>
+                      ),
+                      group: 'centerContent'
+                    }, false)
+                  } else {
+                    setLayout({
+                      layout: newLayout
+                    })
+                  }
+                  removeCenterTab(currentTabId)
+                  return;
                 }
                 // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
                 handleLayoutChange({

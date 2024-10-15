@@ -89,7 +89,8 @@
     "use-sse": "^2.0.1",
     "uuid": "^10.0.0",
     "websocket": "^1.0.35",
-    "react-activation": "^0.12.4"
+    "react-activation": "^0.12.4",
+    "react-resizable-panels": "^2.1.4"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^3.2.1",

@@ -32,7 +32,7 @@ import {
 import React, {lazy, ReactElement, ReactNode, Suspense} from 'react';
 
 
-const lazyComponent = (element:ReactNode):ReactElement => {
+export const lazyComponent = (element:ReactNode):ReactElement => {
 return <Suspense fallback={<div>loading...</div>}>{element}</Suspense>
 }
 const Project = lazy(() => import('@/pages/DataStudioNew/Toolbar/Project'));
@@ -40,6 +40,7 @@ const Catalog = lazy(() => import('@/pages/DataStudio/LeftContainer/Catalog'));
 const StartIntro = lazy(()=>import('@/pages/DataStudioNew/StartIntroPage'));
 const DataSource = lazy(() => import('@/pages/DataStudio/LeftContainer/DataSource'));
 const GlobalVariable = lazy(() => import('@/pages/DataStudio/LeftContainer/GlobaleVar'));
+const Service = lazy(() => import('@/pages/DataStudioNew/Toolbar/Service'));
 export const ToolbarRoutes: ToolbarRoute[] = [
   {
     key: 'quick-start',
@@ -54,8 +55,7 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     icon: <ConsoleSqlOutlined/>,
     position: 'leftTop',
     content: () =>
-      // lazyComponent(<Project />)
-      lazyComponent(<>这是测试界面</>)
+      lazyComponent(<Project />)
   },
   {
     key: 'catalog',
@@ -114,11 +114,11 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     content: () => <>这是测试界面</>
   },
   {
-    key: 'console',
-    title: '控制台',
-    icon: <RightSquareOutlined/>,
+    key: '服务',
+    title: '服务',
+    icon: <SettingOutlined />,
     position: 'leftBottom',
-    content: () => <>这是测试界面</>
+    content: () => lazyComponent(<Service />)
   },
   {
     key: 'result',
@@ -138,9 +138,3 @@ export const ToolbarRoutes: ToolbarRoute[] = [
 
 export const leftDefaultShowTab: ToolbarRoute = ToolbarRoutes[1];
 
-
-export const TestRoutes = {
-  "quick-start":<StartIntro />,
-  "project":lazyComponent(<Project />),
-  "console": <>这是测试界面www</>,
-}
