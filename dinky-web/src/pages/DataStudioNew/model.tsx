@@ -1,21 +1,30 @@
 import {DataStudioActionType, ToolbarSelect} from "@/pages/DataStudioNew/data.d";
-import {AnyAction, Reducer} from "@@/plugin-dva/types";
+import {Effect, Reducer} from "@@/plugin-dva/types";
 import {createModelTypes} from "@/utils/modelUtils";
 import {leftDefaultShowTab, ToolbarRoutes} from "@/pages/DataStudioNew/Toolbar/ToolbarRoute";
 import {layout} from "@/pages/DataStudioNew/ContentLayout";
 import {
   CenterTabDTO,
+  FlinkCluster,
   HandleLayoutChangeDTO,
-  SetLayoutDTO,
   ProjectDTO,
   ProjectState,
   SaveToolbarLayoutDTO,
+  SetLayoutDTO,
+  TempData,
+  TempDataDTO,
   UpdateActionDTO
 } from "@/pages/DataStudioNew/type";
 import {LayoutBase} from "rc-dock/src/DockData";
 import {getAllPanel} from "@/pages/DataStudioNew/function";
 import {ToolbarPosition} from "@/pages/DataStudioNew/Toolbar/data.d";
 import {findToolbarPositionByTabId} from "@/pages/DataStudioNew/DockLayoutFunction";
+import {EnvType} from "@/pages/DataStudio/model";
+import {
+  getClusterConfigurationData,
+  getEnvData,
+  getSessionData
+} from "@/pages/DataStudio/RightContainer/JobConfig/service";
 
 export type CenterTabType = "web" | "task"
 export type CenterTab = {
@@ -46,14 +55,18 @@ export type LayoutState = {
     actionType?: DataStudioActionType,
     // 参数
     params?: Record<string, any>
-  }
+  },
+  tempData: TempData
 };
 
 
 export type StudioModelType = {
   namespace: string;
   state: LayoutState;
-  effects: {},
+  effects: {
+    queryFlinkEnv: Effect;
+    queryFlinkCluster: Effect;
+  },
   reducers: {
     // 保存布局
     setLayout: Reducer<LayoutState, SetLayoutDTO>;
@@ -71,6 +84,7 @@ export type StudioModelType = {
     updateProject: Reducer<LayoutState, ProjectDTO>;
     // 更新操作
     updateAction: Reducer<LayoutState, UpdateActionDTO>;
+    saveTempData: Reducer<LayoutState, TempDataDTO>;
   };
 }
 
@@ -113,9 +127,45 @@ const StudioModel: StudioModelType = {
     action: {
       actionType: undefined,
       params: undefined
+    },
+    tempData: {
+      flinkEnv: [],
+      flinkCluster: []
     }
   },
-  effects: {},
+  effects: {
+    * queryFlinkEnv({payload}, {call, put, select}) {
+      const tempData: TempData = yield select((state:any) => state.DataStudio.tempData);
+      const response: EnvType[] = yield call(getEnvData, payload);
+      // 移除数据，并保留当前类别的属性
+      yield put({
+        type: 'saveTempData',
+        payload: {
+          ...tempData,
+          flinkEnv: response.map(item => ({id: item.id, name: item.name, fragment: item.fragment}))
+        }
+      });
+    },
+    * queryFlinkCluster({payload}, {call, put, select}) {
+      const tempData: TempData = yield select((state:any) => state.DataStudio.tempData);
+      const sessionData: FlinkCluster[] = yield call(getSessionData, payload);
+      const clusterConfigurationData: FlinkCluster[] = yield call(getClusterConfigurationData, payload);
+      const flinkClusterData = [...sessionData, ...clusterConfigurationData].map(x => ({
+        id: x.id,
+        name: x.name,
+        enabled: x.enabled,
+        type: x.type
+      }));
+      // 移除数据，并保留当前类别的属性
+      yield put({
+        type: 'saveTempData',
+        payload: {
+          ...tempData,
+          flinkCluster: flinkClusterData
+        }
+      });
+    }
+  },
   reducers: {
     setLayout(state, {layout}) {
       return {
@@ -222,7 +272,7 @@ const StudioModel: StudioModelType = {
       };
     },
     removeCenterTab: function (prevState: LayoutState, {id}): LayoutState {
-      const tabs = prevState.centerContent.tabs.filter((x) => x.id !== id)
+      const tabs = prevState.centerContent.tabs.filter((x) => x.id !== id);
 
       return {
         ...prevState,
@@ -253,6 +303,12 @@ const StudioModel: StudioModelType = {
           params
         }
       };
+    },
+    saveTempData: function (prevState: LayoutState, action: TempDataDTO): LayoutState {
+      return {
+        ...prevState,
+        tempData: action.payload
+      }
     }
   }
 }

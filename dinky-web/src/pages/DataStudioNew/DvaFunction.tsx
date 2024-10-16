@@ -1,4 +1,4 @@
-import {STUDIO_MODEL} from "@/pages/DataStudioNew/model";
+import {STUDIO_MODEL, STUDIO_MODEL_ASYNC} from "@/pages/DataStudioNew/model";
 import {Dispatch} from "@umijs/max";
 import {
   CenterTabDTO,
@@ -50,6 +50,17 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch({
         ...payload,
         type: STUDIO_MODEL.updateAction
+      }),
+
+
+    // effects
+    queryFlinkEnv: () =>
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.queryFlinkEnv
+      }),
+    queryFlinkCluster: () =>
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.queryFlinkCluster
       }),
 
   }

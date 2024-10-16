@@ -40,8 +40,29 @@ export interface UpdateActionDTO extends AnyAction {
 }
 
 
+export interface TempDataDTO extends AnyAction {
+}
+
+
 // state
 export type ProjectState = {
   expandKeys: number[];
   selectedKeys?: number[]
 }
+
+export type TempData = {
+  flinkEnv: EnvType[],
+  flinkCluster: FlinkCluster[]
+}
+export type FlinkCluster = {
+  id: number;
+  name: string;
+  enabled: boolean;
+  type:   'local' | 'yarn-session' | 'yarn-per-job' | 'yarn-application' | 'kubernetes-session' | 'kubernetes-application' | 'kubernetes-application-operator';
+
+}
+export type EnvType = {
+  id?: number;
+  name?: string;
+  fragment?: boolean;
+};

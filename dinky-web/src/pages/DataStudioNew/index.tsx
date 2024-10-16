@@ -39,6 +39,7 @@ import {AliveScope, KeepAlive} from "react-activation";
 import {activeTab, createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
 import * as Algorithm from "./Algorithm";
 import {PanelData} from "rc-dock/lib/DockData";
+import {useAsyncEffect} from "ahooks";
 
 const {useToken} = theme;
 const FlinkSQL = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/FlinkSQL'));
@@ -52,7 +53,9 @@ const DataStudioNew: React.FC = (props: any) => {
     addCenterTab,
     updateAction,
     removeCenterTab,
-    setLayout
+    setLayout,
+    queryFlinkEnv,
+    queryFlinkCluster
   } = props
   const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
@@ -63,6 +66,11 @@ const DataStudioNew: React.FC = (props: any) => {
     show: false,
     position: InitContextMenuPosition
   });
+
+  useAsyncEffect(async ()=>{
+    await queryFlinkEnv()
+    await queryFlinkCluster()
+  },[])
   useEffect(() => {
     updateAction({
       actionType: undefined,
@@ -167,7 +175,7 @@ const DataStudioNew: React.FC = (props: any) => {
         ...tab,
         title,
         closable: true,
-        content: <KeepAlive>{lazyComponent(<FlinkSQL  {...tabData}/>)}</KeepAlive>,
+        content: <KeepAlive cacheKey={tabData.id}>{lazyComponent(<FlinkSQL  {...tabData}/>)}</KeepAlive>,
       };
     }
 
@@ -211,7 +219,6 @@ const DataStudioNew: React.FC = (props: any) => {
             dockLayout.changeLayout(layout, route.key, "update", false)
           }
         }
-
       }
     }
 

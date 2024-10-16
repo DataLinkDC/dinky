@@ -78,41 +78,41 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     position: 'leftTop',
     content: () => lazyComponent(<GlobalVariable/>)
   },
-  {
-    key: 'jobConfig',
-    title: '作业配置',
-    icon: <SettingOutlined/>,
-    position: 'right',
-    content: () => <>这是测试界面</>
-  },
-  {
-    key: 'previewConfig',
-    title: '预览配置',
-    icon: <InsertRowRightOutlined/>,
-    position: 'right',
-    content: () => <>这是测试界面</>
-  },
-  {
-    key: 'savePoint',
-    title: '保存点',
-    icon: <FolderOutlined/>,
-    position: 'right',
-    content: () => <>这是测试界面</>
-  },
-  {
-    key: 'history',
-    title: '历史版本',
-    icon: <HistoryOutlined/>,
-    position: 'right',
-    content: () => <>这是测试界面</>
-  },
-  {
-    key: 'jobInfo',
-    title: '作业信息',
-    icon: <InfoCircleOutlined/>,
-    position: 'right',
-    content: () => <>这是测试界面</>
-  },
+  // {
+  //   key: 'jobConfig',
+  //   title: '作业配置',
+  //   icon: <SettingOutlined/>,
+  //   position: 'right',
+  //   content: () => <>这是测试界面</>
+  // },
+  // {
+  //   key: 'previewConfig',
+  //   title: '预览配置',
+  //   icon: <InsertRowRightOutlined/>,
+  //   position: 'right',
+  //   content: () => <>这是测试界面</>
+  // },
+  // {
+  //   key: 'savePoint',
+  //   title: '保存点',
+  //   icon: <FolderOutlined/>,
+  //   position: 'right',
+  //   content: () => <>这是测试界面</>
+  // },
+  // {
+  //   key: 'history',
+  //   title: '历史版本',
+  //   icon: <HistoryOutlined/>,
+  //   position: 'right',
+  //   content: () => <>这是测试界面</>
+  // },
+  // {
+  //   key: 'jobInfo',
+  //   title: '作业信息',
+  //   icon: <InfoCircleOutlined/>,
+  //   position: 'right',
+  //   content: () => <>这是测试界面</>
+  // },
   {
     key: '服务',
     title: '服务',

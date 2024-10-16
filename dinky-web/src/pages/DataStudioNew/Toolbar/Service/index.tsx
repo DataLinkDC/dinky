@@ -9,6 +9,7 @@ import React from "react";
 import {ArrowsAltOutlined, CodeOutlined, PartitionOutlined, ShrinkOutlined, TableOutlined} from "@ant-design/icons";
 import RunToolBarButton from "@/pages/DataStudioNew/components/RunToolBarButton";
 import {FlinkSQLSvg} from "@/components/Icons/CodeLanguageIcon";
+import CusPanelResizeHandle from "@/pages/DataStudioNew/components/CusPanelResizeHandle";
 
 const items: TabsProps['items'] = [
   {
@@ -65,7 +66,7 @@ const Service = (props: any) => {
       />
     </Panel>
 
-    <PanelResizeHandle className={'panel-resize-handle'}/>
+    <CusPanelResizeHandle />
 
     <Panel style={{paddingInline: 10}}>
       <Tabs activeKey={undefined} items={items}  size={"small"} style={{height: '100%'}}/>

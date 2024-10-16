@@ -1,7 +1,34 @@
 .run-toolbar{
   width: 100%;
   height: 40px;
-  background-color: #f5f3f2;
   padding-inline: 20px;
   padding-block: 2px;
+  background-color: #f5f3f2;
+}
+
+.right-toolbar{
+  background-color: #f5f3f2;
+  height: inherit;
+  position: absolute;
+  right: 0;
+  user-select: none;
+}
+
+.right-toolbar-item{
+  height: 80px;
+  width: 100%;
+  writing-mode: vertical-lr;
+  align-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+.right-toolbar-item:hover{
+  color: #0396ff;
+}
+
+.right-toolbar-item-active{
+  background-color: #0396ff;
+}
+.right-toolbar-item-active:hover{
+  color: #f4f5f9;
 }
