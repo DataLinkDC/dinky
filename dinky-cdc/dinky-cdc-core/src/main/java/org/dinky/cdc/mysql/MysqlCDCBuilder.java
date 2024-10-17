@@ -83,6 +83,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         Properties debeziumProperties = new Properties();
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
         debeziumProperties.setProperty("decimal.handling.mode", "string");
+        if (Asserts.isNotNullString(serverTimeZone)
+                && Asserts.isNotNullString(config.getDebezium().get("datetime.type"))) {
+            debeziumProperties.setProperty("datetime.format.timestamp.zone", serverTimeZone);
+        }
 
         config.getDebezium().forEach((key, value) -> {
             if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
