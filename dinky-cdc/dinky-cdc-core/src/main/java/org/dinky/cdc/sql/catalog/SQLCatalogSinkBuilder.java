@@ -66,7 +66,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         String catalogName = config.getSink().get("catalog.name");
         String sinkSchemaName = getSinkSchemaName(table);
         String tableName = getSinkTableName(table);
-        String sinkTableName = catalogName + "." + sinkSchemaName + "." + tableName;
+        String sinkTableName = catalogName + ".`" + sinkSchemaName + "`.`" + tableName + "`";
         // Because the name of the view on Flink is not allowed to have -, it needs to be replaced with - here_
         String viewName = replaceViewNameMiddleLineToUnderLine("VIEW_" + table.getSchemaTableNameWithUnderline());
 
