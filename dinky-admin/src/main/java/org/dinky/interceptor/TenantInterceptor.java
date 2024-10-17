@@ -59,7 +59,7 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
         if (Asserts.isNotNull(cookies)) {
             for (Cookie cookie : cookies) {
                 switch (cookie.getName()) {
-                    case "token":
+                    case "dinky-token":
                         token = Opt.ofBlankAble(cookie.getValue());
                         SaTokenDao saTokenDao = SaManager.getSaTokenDao();
                         String keyTokenValue = StpUtil.getStpLogic().splicingKeyTokenValue(token.get());

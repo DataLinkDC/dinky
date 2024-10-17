@@ -145,7 +145,7 @@ sa-token:
   is-write-header: true
   # is read header
   is-read-header: true
-  token-name: token
+  token-name: dinky-token
   is-read-cookie: true
 
 ---
