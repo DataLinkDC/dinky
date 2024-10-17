@@ -180,17 +180,19 @@ public class Job2MysqlHandler extends AbsJobHandler {
         history.setClusterId(clusterId);
         historyService.updateById(history);
 
-        if (Asserts.isNullCollection(job.getJids()) || Asserts.isNullString(job.getJobManagerAddress())) {
+        if (job.getJobConfig().isStatementSet()
+                && (Asserts.isNullCollection(job.getJids()) || Asserts.isNullString(job.getJobManagerAddress()))) {
             throw new BusException("The JobID or JobManagerAddress is null. ");
         }
 
-        String jid = job.getJids().get(0);
         JobInstance jobInstance = history.buildJobInstance();
         jobInstance.setHistoryId(job.getId());
         jobInstance.setClusterId(clusterId);
         jobInstance.setTaskId(taskId);
         jobInstance.setName(job.getJobConfig().getJobName());
-        jobInstance.setJid(jid);
+        if (Asserts.isNotNullCollection(job.getJids())) {
+            jobInstance.setJid(job.getJids().get(0));
+        }
         jobInstance.setStep(job.getJobConfig().getStep());
         jobInstance.setStatus(JobStatus.INITIALIZING.getValue());
         jobInstanceService.save(jobInstance);
