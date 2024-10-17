@@ -72,7 +72,11 @@ public class FlinkAPI {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public FlinkAPI(String address) {
-        this.address = address;
+        if (address.startsWith(NetConstant.HTTP) || address.startsWith(NetConstant.HTTPS)) {
+            this.address = address;
+        } else {
+            this.address = NetConstant.HTTP + address;
+        }
     }
 
     public static FlinkAPI build(String address) {

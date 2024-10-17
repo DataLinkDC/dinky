@@ -131,7 +131,10 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                     && entry.getKey().startsWith("properties")
                     && Asserts.isNotNullString(entry.getValue())) {
                 properties.setProperty(entry.getKey().replace("properties.", ""), entry.getValue());
+            } else {
+                properties.setProperty(entry.getKey(), entry.getValue());
             }
+            logger.info("sink config k/v:{}", properties);
         }
         return properties;
     }
@@ -586,5 +589,27 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected ZoneId getSinkTimeZone() {
         return this.sinkTimeZone;
+    }
+
+    protected Map<String, String> getTableTopicMap() {
+        String topicMapStr = this.config.getSink().get("table.topic.map");
+        Map<String, String> tableTopicMap = new HashMap<>();
+        if (topicMapStr != null) {
+            String[] topicTabArray = topicMapStr.split(";");
+            for (String topicTab : topicTabArray) {
+                if (topicTab != null) {
+                    String[] topicTable = topicTab.split(":");
+                    if (topicTable.length > 1) {
+                        String[] tables = topicTable[1].split(",");
+                        for (String table : tables) {
+                            tableTopicMap.put(table, topicTable[0]);
+                        }
+                    }
+                }
+            }
+        }
+
+        logger.info("topic map," + tableTopicMap);
+        return tableTopicMap;
     }
 }

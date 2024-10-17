@@ -65,6 +65,8 @@ public class JobExecuteBuilder extends JobBuilder {
                 }
                 GatewayResult gatewayResult = null;
                 config.addGatewayConfig(executor.getSetConfig());
+                config.addGatewayConfig(
+                        executor.getCustomTableEnvironment().getConfig().getConfiguration());
                 config.getGatewayConfig().setSql(jobParam.getParsedSql());
 
                 if (runMode.isApplicationMode()) {

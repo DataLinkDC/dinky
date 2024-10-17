@@ -20,6 +20,8 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkConstant;
+import org.dinky.data.constant.NetConstant;
 import org.dinky.data.enums.GatewayType;
 
 import java.util.ArrayList;
@@ -167,14 +169,18 @@ public class ExecutorConfig {
 
         String host = null;
         Integer port = null;
+        String hostPort = address;
         if (Asserts.isNotNullString(address)) {
-            String[] strings = address.split(":");
+            if (address.startsWith(NetConstant.HTTP) || address.startsWith(NetConstant.HTTPS)) {
+                hostPort = address.replace(NetConstant.HTTP, "").replace(NetConstant.HTTPS, "");
+            }
+            String[] strings = hostPort.split(":");
             if (strings.length > 1) {
                 host = strings[0];
                 port = Integer.parseInt(strings[1]);
             } else {
                 host = strings[0];
-                port = 8081;
+                port = FlinkConstant.FLINK_REST_DEFAULT_PORT;
             }
         }
 

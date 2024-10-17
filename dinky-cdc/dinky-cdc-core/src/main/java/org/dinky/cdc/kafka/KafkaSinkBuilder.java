@@ -116,21 +116,23 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                                     .setTopic(config.getSink().get("topic"))
                                     .setValueSerializationSchema(new SimpleStringSchema())
                                     .build())
+                            .setTransactionalIdPrefix(
+                                    config.getSink().get("transactional.id.prefix") == null
+                                            ? ""
+                                            : config.getSink().get("transactional.id.prefix"))
                             .setDeliverGuarantee(DeliveryGuarantee.valueOf(
-                                    env.getCheckpointingMode().name()));
+                                    config.getSink().get("delivery.guarantee") == null
+                                            ? "NONE"
+                                            : config.getSink().get("delivery.guarantee")));
             if (!kafkaProducerConfig.isEmpty()) {
                 kafkaSinkBuilder.setKafkaProducerConfig(kafkaProducerConfig);
-            }
-            if (!kafkaProducerConfig.isEmpty()
-                    && kafkaProducerConfig.containsKey("transactional.id")
-                    && Asserts.isNotNullString(kafkaProducerConfig.getProperty("transactional.id"))) {
-                kafkaSinkBuilder.setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id"));
             }
             KafkaSink<String> kafkaSink = kafkaSinkBuilder.build();
             dataStreamSource.sinkTo(kafkaSink);
         } else {
             Map<Table, OutputTag<String>> tagMap = new LinkedHashMap<>();
             Map<String, Table> tableMap = new LinkedHashMap<>();
+            Map<String, String> tableTopicMap = this.getTableTopicMap();
             ObjectMapper objectMapper = new ObjectMapper();
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource
                     .map(x -> objectMapper.readValue(x, Map.class))
@@ -141,6 +143,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
             if (Asserts.isNotNullCollection(schemaList)) {
                 for (Schema schema : schemaList) {
                     if (Asserts.isNullCollection(schema.getTables())) {
+                        logger.error("Schema:{} tables is empty", schema.getName());
                         // if schema tables is empty, throw exception
                         throw new IllegalArgumentException(
                                 "Schema tables is empty, please check your configuration or check your database permission and try again.");
@@ -176,6 +179,14 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                 });
                 tagMap.forEach((k, v) -> {
                     String topic = getSinkTableName(k);
+                    if (tableTopicMap != null) {
+                        String tableName = k.getName();
+                        String newTopic = tableTopicMap.get(tableName);
+                        if (Asserts.isNotNullString(newTopic)) {
+                            topic = newTopic;
+                        }
+                    }
+
                     org.apache.flink.connector.kafka.sink.KafkaSinkBuilder<String> kafkaSinkBuilder =
                             KafkaSink.<String>builder()
                                     .setBootstrapServers(config.getSink().get("brokers"))
@@ -183,17 +194,18 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                                             .setTopic(topic)
                                             .setValueSerializationSchema(new SimpleStringSchema())
                                             .build())
+                                    .setTransactionalIdPrefix(
+                                            config.getSink().get("transactional.id.prefix") == null
+                                                    ? ""
+                                                    : config.getSink().get("transactional.id.prefix"))
                                     .setDeliverGuarantee(DeliveryGuarantee.valueOf(
-                                            env.getCheckpointingMode().name()));
+                                            config.getSink().get("delivery.guarantee") == null
+                                                    ? "NONE"
+                                                    : config.getSink().get("delivery.guarantee")));
                     if (!kafkaProducerConfig.isEmpty()) {
                         kafkaSinkBuilder.setKafkaProducerConfig(kafkaProducerConfig);
                     }
-                    if (!kafkaProducerConfig.isEmpty()
-                            && kafkaProducerConfig.containsKey("transactional.id")
-                            && Asserts.isNotNullString(kafkaProducerConfig.getProperty("transactional.id"))) {
-                        kafkaSinkBuilder.setTransactionalIdPrefix(
-                                kafkaProducerConfig.getProperty("transactional.id") + "-" + topic);
-                    }
+
                     KafkaSink<String> kafkaSink = kafkaSinkBuilder.build();
                     process.getSideOutput(v).rebalance().sinkTo(kafkaSink).name(topic);
                 });

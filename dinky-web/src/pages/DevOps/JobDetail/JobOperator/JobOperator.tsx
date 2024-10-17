@@ -40,7 +40,10 @@ export type OperatorType = {
 };
 const JobOperator = (props: OperatorType) => {
   const { jobDetail, refesh } = props;
-  const webUri = `${API_CONSTANTS.BASE_URL}/api/flink/${jobDetail?.clusterInstance?.jobManagerHost}/#/job/running/${jobDetail?.instance?.jid}/overview`;
+  const jobManagerHost = jobDetail?.clusterInstance?.jobManagerHost;
+  const webUri = jobManagerHost?.startsWith('http://') || jobManagerHost?.startsWith('https://')
+    ? jobManagerHost
+    : `${API_CONSTANTS.BASE_URL}/api/flink/${jobManagerHost}/#/job/running/${jobDetail?.instance?.jid}/overview`;
 
   const handleJobOperator = (key: string) => {
     Modal.confirm({
