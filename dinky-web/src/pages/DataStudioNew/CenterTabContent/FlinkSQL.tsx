@@ -1,5 +1,5 @@
 import {CenterTabType, LayoutState} from "@/pages/DataStudioNew/model";
-import {Button, Col, Divider, Flex, Row, Skeleton} from "antd";
+import {Button, Col, Divider, Flex, Row, Skeleton, TabsProps} from "antd";
 import "./index.less"
 import React, {useEffect, useRef, useState} from "react";
 import {handleInitEditorAndLanguageOnBeforeMount} from "@/components/CustomEditor/function";
@@ -27,9 +27,11 @@ import {PageContainer, ProForm, ProFormInstance} from "@ant-design/pro-component
 import {useAsyncEffect} from "ahooks";
 import {getTaskDetails} from "@/pages/DataStudio/LeftContainer/Project/service";
 import {SelectFlinkEnv} from "@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkEnv";
-import {useForm} from "antd/es/form/Form";
 import {SelectFlinkRunMode} from "@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkRunMode";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
+import {TaskInfo} from "@/pages/DataStudioNew/CenterTabContent/TaskInfo";
+import TaskConfig from "@/pages/DataStudioNew/CenterTabContent/TaskConfig";
+import {HistoryVersion} from "@/pages/DataStudioNew/CenterTabContent/HistoryVersion";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -44,31 +46,64 @@ export type TaskParams = {
   key: number;
 }
 export  type FlinkSQLState = {
+  taskId:number;
   statement: string;
+  name:string;
+  dialect:string
   step: number;
   flinkEnvId: number;
+  versionId: number;
 }
 
 const toolbarSize = 40;
-const rightToolbarItem = ["配置", "信息"];
 export const FlinkSQL = (props: FlinkSqlProps & any) => {
-  const {showDesc, id, tempData,updateAction,updateProject} = props;
+  const {showDesc, id, tempData, updateAction, updateProject} = props;
   const params = props.params as TaskParams;
   const containerRef = useRef<HTMLDivElement>(null);
   const [codeEditorWidth, setCodeEditorWidth] = useState(0)
   const [selectRightToolbar, setSelectRightToolbar] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true)
-  const [currentState, setCurrentState] = useState<FlinkSQLState>({statement: '', step: 0, flinkEnvId: -1})
+  const [currentState, setCurrentState] = useState<FlinkSQLState>({
+    taskId: params.taskId,
+    statement: '',
+    name: '',
+    dialect:'',
+    step: 0,
+    flinkEnvId: -1,
+    versionId: 0
+  })
 
   const formRef = useRef<ProFormInstance>();
+
+  const rightToolbarItem:TabsProps['items'] = [{
+    label:'配置',
+    key: 'config',
+    children: <TaskConfig tempData={tempData}  />
+  },{
+    label:'信息',
+    key: 'info',
+    children: <TaskInfo params={{...currentState}}/>
+  },{
+    label:'历史版本',
+    key: 'historyVersion',
+    children: <HistoryVersion taskId={currentState.taskId}/>
+  },
+  ]
 
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId)
     if (taskDetail) {
-      setCurrentState(prevState => ({...prevState, statement: taskDetail.statement, step: taskDetail.step}))
+      setCurrentState(prevState => ({
+        ...prevState,
+        statement: taskDetail.statement,
+        name: taskDetail.name,
+        dialect: taskDetail.dialect,
+        step: taskDetail.step,
+        versionId: taskDetail.versionId,
+        flinkEnvId: taskDetail.envId
+      }))
     }
-    console.log(tempData)
     setLoading(false)
   }, [])
   // 数据初始化
@@ -105,7 +140,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
           initialValues={{
             // type: selectRunMode,
             flinkMode: ['local'],
-            flinkEnvId: -1
+            flinkEnvId: currentState.flinkEnvId
           }}
           formRef={formRef}
           submitter={false}
@@ -134,7 +169,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{height: "100%"}}/>
 
 
-            <RunToolBarButton showDesc={showDesc} color={'green'} desc={"运行"}    icon={<CaretRightOutlined/>}
+            <RunToolBarButton showDesc={showDesc} color={'green'} desc={"运行"} icon={<CaretRightOutlined/>}
                               onClick={async () => {
                                 const val1 = await formRef.current?.validateFields();
                                 console.log(val1)
@@ -144,8 +179,8 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
 
             <Divider type={'vertical'} style={{height: "100%"}}/>
             <RunToolBarButton showDesc={showDesc} desc={"格式化"} icon={<ClearOutlined/>}/>
-            <RunToolBarButton showDesc={showDesc} desc={"定位"} icon={<EnvironmentOutlined/>} onClick={async ()=>{
-              updateProject({selectedKeys:[params.key]})
+            <RunToolBarButton showDesc={showDesc} desc={"定位"} icon={<EnvironmentOutlined/>} onClick={async () => {
+              updateProject({selectedKeys: [params.key]})
             }}/>
 
             <Divider type={'vertical'} style={{height: "100%"}}/>
@@ -182,21 +217,12 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
                   <Panel>
                     <PageContainer
                       title={false}
-                      tabList={[
-                        {
-                          tab: '基本信息',
-                          key: 'base',
-                        },
-                        {
-                          tab: '详细信息',
-                          key: 'info',
-                        },
-                      ]}
                       extra={[
                         <Button key="close" icon={<CloseOutlined/>} type={'text'}
                                 onClick={() => setSelectRightToolbar(undefined)}/>,
                       ]}
                     >
+                      {rightToolbarItem.find(item => item.label === selectRightToolbar)?.children}
                     </PageContainer>
                   </Panel>
                 </>
@@ -204,8 +230,8 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             </PanelGroup>
           </Col>
           <Flex wrap vertical className={'right-toolbar'} style={{width: toolbarSize,}}>
-            {rightToolbarItem.map((item) => (
-              <div className={'right-toolbar-item ' + (selectRightToolbar === item ? 'right-toolbar-item-active' : '')}
+            {rightToolbarItem.map(item=>item.label?.toString()).map((item) => (
+              <div key={item} className={'right-toolbar-item ' + (selectRightToolbar === item ? 'right-toolbar-item-active' : '')}
                    onClick={() => setSelectRightToolbar(item)}>
                 {item}
               </div>
@@ -223,5 +249,5 @@ export default connect(
   ({DataStudio}: { DataStudio: LayoutState }) => ({
     showDesc: DataStudio.toolbar.showDesc,
     tempData: DataStudio.tempData
-  }),mapDispatchToProps)(FlinkSQL);
+  }), mapDispatchToProps)(FlinkSQL);
 // export default FlinkSQL;

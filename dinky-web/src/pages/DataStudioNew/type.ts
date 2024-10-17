@@ -4,6 +4,8 @@ import {AnyAction} from "@@/plugin-dva/types";
 import {DropDirection, LayoutBase} from "rc-dock/src/DockData";
 import {CenterTab} from "@/pages/DataStudioNew/model";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
+import {Alert} from "@/types/RegCenter/data";
+import {DefaultOptionType} from "antd/es/select";
 
 // dispatch DTO
 export interface SetLayoutDTO extends AnyAction {
@@ -51,8 +53,11 @@ export type ProjectState = {
 }
 
 export type TempData = {
-  flinkEnv: EnvType[],
-  flinkCluster: FlinkCluster[]
+  flinkEnv: EnvType[];
+  flinkCluster: FlinkCluster[];
+  alertGroup: Alert.AlertGroup[];
+  flinkConfigOptions: DefaultOptionType[];
+  flinkUdfOptions: DefaultOptionType[];
 }
 export type FlinkCluster = {
   id: number;

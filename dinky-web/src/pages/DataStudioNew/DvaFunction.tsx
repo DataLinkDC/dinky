@@ -62,6 +62,18 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryFlinkCluster
       }),
+    queryAlertGroup: () =>
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.queryAlertGroup
+      }),
+    queryFlinkConfigOptions: () =>
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
+      }),
+    queryFlinkUdfOptions: () =>
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.queryFlinkUdfOptions
+      }),
 
   }
 }

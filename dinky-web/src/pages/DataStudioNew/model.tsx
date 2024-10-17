@@ -23,8 +23,13 @@ import {EnvType} from "@/pages/DataStudio/model";
 import {
   getClusterConfigurationData,
   getEnvData,
+  getFlinkConfigs,
+  getFlinkUdfOptions,
   getSessionData
 } from "@/pages/DataStudio/RightContainer/JobConfig/service";
+import {Alert} from "@/types/RegCenter/data";
+import {showAlertGroup} from "@/pages/RegCenter/Alert/AlertGroup/service";
+import {DefaultOptionType} from "antd/es/select";
 
 export type CenterTabType = "web" | "task"
 export type CenterTab = {
@@ -66,6 +71,9 @@ export type StudioModelType = {
   effects: {
     queryFlinkEnv: Effect;
     queryFlinkCluster: Effect;
+    queryAlertGroup: Effect;
+    queryFlinkConfigOptions: Effect;
+    queryFlinkUdfOptions: Effect;
   },
   reducers: {
     // 保存布局
@@ -130,12 +138,15 @@ const StudioModel: StudioModelType = {
     },
     tempData: {
       flinkEnv: [],
-      flinkCluster: []
+      flinkCluster: [],
+      alertGroup: [],
+      flinkConfigOptions: [],
+      flinkUdfOptions: []
     }
   },
   effects: {
     * queryFlinkEnv({payload}, {call, put, select}) {
-      const tempData: TempData = yield select((state:any) => state.DataStudio.tempData);
+      const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const response: EnvType[] = yield call(getEnvData, payload);
       // 移除数据，并保留当前类别的属性
       yield put({
@@ -147,7 +158,7 @@ const StudioModel: StudioModelType = {
       });
     },
     * queryFlinkCluster({payload}, {call, put, select}) {
-      const tempData: TempData = yield select((state:any) => state.DataStudio.tempData);
+      const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const sessionData: FlinkCluster[] = yield call(getSessionData, payload);
       const clusterConfigurationData: FlinkCluster[] = yield call(getClusterConfigurationData, payload);
       const flinkClusterData = [...sessionData, ...clusterConfigurationData].map(x => ({
@@ -164,7 +175,44 @@ const StudioModel: StudioModelType = {
           flinkCluster: flinkClusterData
         }
       });
-    }
+    },
+    * queryAlertGroup({}, {call, put, select}) {
+      const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
+      const data: Alert.AlertGroup[] = yield call(showAlertGroup);
+      // 移除数据，并保留当前类别的属性
+      yield put({
+        type: 'saveTempData',
+        payload: {
+          ...tempData,
+          alertGroup: data
+        }
+      });
+    },
+    * queryFlinkConfigOptions({}, {call, put, select}) {
+      const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
+      const data: DefaultOptionType[] = yield call(getFlinkConfigs);
+      // 移除数据，并保留当前类别的属性
+      yield put({
+        type: 'saveTempData',
+        payload: {
+          ...tempData,
+          flinkConfigOptions: data
+        }
+      });
+    },
+    * queryFlinkUdfOptions({}, {call, put, select}) {
+      const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
+      const data: [] = yield call(getFlinkUdfOptions);
+
+      // 移除数据，并保留当前类别的属性
+      yield put({
+        type: 'saveTempData',
+        payload: {
+          ...tempData,
+          flinkUdfOptions: data
+        }
+      });
+    },
   },
   reducers: {
     setLayout(state, {layout}) {

@@ -55,7 +55,10 @@ const DataStudioNew: React.FC = (props: any) => {
     removeCenterTab,
     setLayout,
     queryFlinkEnv,
-    queryFlinkCluster
+    queryFlinkCluster,
+    queryAlertGroup,
+    queryFlinkConfigOptions,
+    queryFlinkUdfOptions,
   } = props
   const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
@@ -70,6 +73,9 @@ const DataStudioNew: React.FC = (props: any) => {
   useAsyncEffect(async ()=>{
     await queryFlinkEnv()
     await queryFlinkCluster()
+    await queryAlertGroup()
+    await queryFlinkConfigOptions()
+    await queryFlinkUdfOptions()
   },[])
   useEffect(() => {
     updateAction({

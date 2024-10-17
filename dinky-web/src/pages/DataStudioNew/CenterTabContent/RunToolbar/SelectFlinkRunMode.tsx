@@ -63,7 +63,8 @@ export const SelectFlinkRunMode = (props: { data: FlinkCluster[] }) => {
         displayRender: displayRender,
         onChange: (value) => {
           console.log(value);
-        }
+        },
+        allowClear:false
       }}
     />
   )
