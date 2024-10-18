@@ -19,9 +19,10 @@
 
 package org.dinky.trans.pipeline;
 
-import java.lang.reflect.Constructor;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.dinky.executor.Executor;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.Operation;
+
 import org.apache.flink.cdc.cli.parser.YamlPipelineDefinitionParser;
 import org.apache.flink.cdc.common.configuration.Configuration;
 import org.apache.flink.cdc.composer.PipelineComposer;
@@ -30,9 +31,11 @@ import org.apache.flink.cdc.composer.flink.FlinkPipelineComposer;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.internal.TableResultImpl;
-import org.dinky.executor.Executor;
-import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.Operation;
+
+import java.lang.reflect.Constructor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -67,8 +70,7 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
 
     private static final String KEY_WORD = "EXECUTE PIPELINE";
 
-    public FlinkCDCPipelineOperation() {
-    }
+    public FlinkCDCPipelineOperation() {}
 
     public FlinkCDCPipelineOperation(String statement) {
         super(statement);
@@ -114,8 +116,10 @@ public class FlinkCDCPipelineOperation extends AbstractOperation implements Oper
 
     public PipelineComposer createComposer(Executor executor) {
         try {
-            Class<FlinkPipelineComposer> clazz = (Class<FlinkPipelineComposer>) Class.forName("org.apache.flink.cdc.composer.flink.FlinkPipelineComposer");
-            Constructor<FlinkPipelineComposer> constructor = clazz.getDeclaredConstructor(StreamExecutionEnvironment.class, boolean.class);
+            Class<FlinkPipelineComposer> clazz = (Class<FlinkPipelineComposer>)
+                    Class.forName("org.apache.flink.cdc.composer.flink.FlinkPipelineComposer");
+            Constructor<FlinkPipelineComposer> constructor =
+                    clazz.getDeclaredConstructor(StreamExecutionEnvironment.class, boolean.class);
             constructor.setAccessible(true);
             return constructor.newInstance(executor.getStreamExecutionEnvironment(), false);
         } catch (Exception e) {
