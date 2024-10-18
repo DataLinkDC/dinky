@@ -568,8 +568,8 @@ export default {
     'The data is too long to be displayed in full',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',
-  'pages.datastudio.label.version.leftTitle': 'Version number',
-  'pages.datastudio.label.version.rightTitle': 'Version number',
+  'pages.datastudio.label.version.leftTitle': 'Version number: {versionId} Creation time: {createTime}',
+  'pages.datastudio.label.version.rightTitle': 'Version: [Current Edited Version] Update Time: [{updateTime}]',
   'pages.datastudio.label.version.rollback': 'Rollback',
   'pages.datastudio.label.version.rollback.flinksql': 'Rollback Flink SQL Version',
   'pages.datastudio.label.version.rollback.flinksqlConfirm':

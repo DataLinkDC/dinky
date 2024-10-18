@@ -16,8 +16,9 @@ import {ProFormFlinkConfig} from "@/pages/DataStudioNew/CenterTabContent/TaskCon
 import {ProFormFlinkUdfConfig} from "@/pages/DataStudioNew/CenterTabContent/TaskConfig/ProFormFlinkUdfConfig";
 import React, {useEffect, useRef, useState} from "react";
 import {TempData} from "@/pages/DataStudioNew/type";
+import {FlinkSQLState} from "@/pages/DataStudioNew/CenterTabContent/FlinkSQL";
 
-export const BasicConfig = (props: { tempData: TempData }) => {
+export const BasicConfig = (props: { tempData: TempData,data:FlinkSQLState,onValuesChange?: (changedValues: any, values: FlinkSQLState) => void }) => {
   const {alertGroup, flinkConfigOptions, flinkUdfOptions} = props.tempData;
   const formRef = useRef<ProFormInstance>();
   const [containerWidth, setContainerWidth] = useState<number>(0);
@@ -42,8 +43,9 @@ export const BasicConfig = (props: { tempData: TempData }) => {
     };
   }, [])
   return <div ref={divRef}>
-    <ProForm initialValues={{savePointStrategy: 0}}
+    <ProForm initialValues={{...props.data}}
              submitter={false}
+             onValuesChange={props.onValuesChange}
              formRef={formRef} layout={'vertical'} rowProps={{
       gutter: [16, 0],
     }}>

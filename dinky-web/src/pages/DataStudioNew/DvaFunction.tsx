@@ -36,6 +36,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
         ...payload,
         type: STUDIO_MODEL.addCenterTab
       }),
+    updateCenterTab: (payload: CenterTabDTO) =>
+      dispatch({
+        ...payload,
+        type: STUDIO_MODEL.updateCenterTab
+      }),
     removeCenterTab: (id: string) =>
       dispatch({
         id,

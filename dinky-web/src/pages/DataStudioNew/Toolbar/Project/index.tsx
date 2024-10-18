@@ -159,7 +159,8 @@ export const Project: React.FC<connect> = (props: any) => {
         tabType: "task",
         params:{
           taskId: taskId,
-          key: key
+          key: key,
+          dialect: type,
         }
       })
     }

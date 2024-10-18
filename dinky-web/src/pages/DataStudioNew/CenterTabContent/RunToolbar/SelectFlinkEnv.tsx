@@ -10,24 +10,10 @@ export const SelectFlinkEnv = (params: { flinkEnv: EnvType[] ,value?:number,onCh
   const {flinkEnv,value,onChange} = params;
   const options = [{label: l('button.disable'), value: -1},...flinkEnv.map((env) => ({label: env.name, value: env.id}))];
 
-  // return (<Select
-  //   variant="borderless"
-  //   defaultValue={-1}
-  //   value={value}
-  //   onChange={onChange}
-  //   popupMatchSelectWidth={false}
-  //   size={"middle"}
-  //   showSearch
-  //   placeholder="选择Flink Env"
-  //   optionFilterProp="label"
-  //   options={options}
-  //   allowClear
-  // />)
   return (
     <ProFormSelect
       style={{height: "100%"}}
-      name='flinkEnvId'
-      // label={l('pages.datastudio.label.jobConfig.flinksql.env')}
+      name='envId'
       tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
       options={options}
       rules={[

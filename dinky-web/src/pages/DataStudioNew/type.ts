@@ -45,6 +45,15 @@ export interface UpdateActionDTO extends AnyAction {
 export interface TempDataDTO extends AnyAction {
 }
 
+export type FlinkTaskRunType =
+  'local'
+  | 'standalone'
+  | 'yarn-session'
+  | 'yarn-per-job'
+  | 'yarn-application'
+  | 'kubernetes-session'
+  | 'kubernetes-application'
+  | 'kubernetes-application-operator'
 
 // state
 export type ProjectState = {
@@ -63,8 +72,7 @@ export type FlinkCluster = {
   id: number;
   name: string;
   enabled: boolean;
-  type:   'local' | 'yarn-session' | 'yarn-per-job' | 'yarn-application' | 'kubernetes-session' | 'kubernetes-application' | 'kubernetes-application-operator';
-
+  type: FlinkTaskRunType;
 }
 export type EnvType = {
   id?: number;

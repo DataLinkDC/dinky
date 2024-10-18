@@ -17,7 +17,12 @@ export type RunToolBarButtonProps = {
   return (<Tooltip title={desc}>
     <Button loading={loading} htmlType={'submit'} type="text" icon={icon} onClick={async ()=>{
       setLoading(true)
-      await  (onClick && onClick())
+      if (onClick){
+        try {
+          await onClick()
+        }catch (e) {
+        }
+      }
       await sleep(500)
       setLoading(false)
     }} style={{...style,padding:'1px 6px'}}>{showDesc ? desc : ""}</Button>

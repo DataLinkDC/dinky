@@ -34,12 +34,12 @@ import {groups} from '@/pages/DataStudioNew/ContentLayout';
 import {connect} from "umi";
 import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
-import {getUUID} from "rc-select/es/hooks/useId";
 import {AliveScope, KeepAlive} from "react-activation";
 import {activeTab, createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
 import * as Algorithm from "./Algorithm";
 import {PanelData} from "rc-dock/lib/DockData";
 import {useAsyncEffect} from "ahooks";
+import {getIcon} from "@/utils/function";
 
 const {useToken} = theme;
 const FlinkSQL = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/FlinkSQL'));
@@ -70,13 +70,13 @@ const DataStudioNew: React.FC = (props: any) => {
     position: InitContextMenuPosition
   });
 
-  useAsyncEffect(async ()=>{
+  useAsyncEffect(async () => {
     await queryFlinkEnv()
     await queryFlinkCluster()
     await queryAlertGroup()
     await queryFlinkConfigOptions()
     await queryFlinkUdfOptions()
-  },[])
+  }, [])
   useEffect(() => {
     updateAction({
       actionType: undefined,
@@ -120,11 +120,6 @@ const DataStudioNew: React.FC = (props: any) => {
         handleToolbarShowDesc()
         break;
       case "saveLayout":
-        addCenterTab({
-          id: "123" + getUUID(),
-          title: "123" + getUUID(),
-          tabType: 'code'
-        })
         break;
     }
   };
@@ -136,7 +131,6 @@ const DataStudioNew: React.FC = (props: any) => {
       // 添加panel
       const layout = Algorithm.fixLayoutData(createNewPanel(layoutState.layoutData, route), dockLayout.props.groups);
       dockLayout.changeLayout(layout, route.key, "update", false)
-
     } else if (currentSelect === route.key) {
       // 取消选中
       dockLayout.dockMove(dockLayout.find(route.key) as TabData, null, 'remove');
@@ -176,12 +170,22 @@ const DataStudioNew: React.FC = (props: any) => {
       }
       const tabData = (layoutState.centerContent.tabs as CenterTab[]).find((x) => x.id === id)!!;
 
+      const getTitle = () => {
+        if (tabData.tabType === "task") {
+          if (tabData.isUpdate){
+            return <span style={{color:'#52c41a'}}>{getIcon(tabData.params.dialect)}{tabData.title}{"  *"}</span>
+          }
+          return <span>{getIcon(tabData.params.dialect)}{tabData.title}</span>
+        } else {
+          return tabData.title
+        }
+      }
       // todo 添加中间tab内容
       return {
         ...tab,
-        title,
+        title: getTitle(),
         closable: true,
-        content: <KeepAlive cacheKey={tabData.id}>{lazyComponent(<FlinkSQL  {...tabData}/>)}</KeepAlive>,
+        content: <KeepAlive cacheKey={tabData.id}>{lazyComponent(<FlinkSQL  tabData={tabData}/>)}</KeepAlive>,
       };
     }
 

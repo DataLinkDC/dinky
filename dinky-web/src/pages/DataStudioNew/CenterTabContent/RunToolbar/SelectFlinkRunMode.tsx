@@ -32,7 +32,7 @@ export const SelectFlinkRunMode = (props: { data: FlinkCluster[] }) => {
   })
   //optionDict转换options
   const options = [{
-    value: -1,
+    value: 'local',
     label: "local"
   },...Object.keys(optionDict).filter(key => optionDict[key].length > 0).map((key) => {
     return {
@@ -61,9 +61,6 @@ export const SelectFlinkRunMode = (props: { data: FlinkCluster[] }) => {
       fieldProps={{
         options: options,
         displayRender: displayRender,
-        onChange: (value) => {
-          console.log(value);
-        },
         allowClear:false
       }}
     />

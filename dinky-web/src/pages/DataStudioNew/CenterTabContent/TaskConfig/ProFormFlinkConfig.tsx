@@ -4,7 +4,6 @@ import {QuestionCircleOutlined, SwapOutlined} from "@ant-design/icons";
 import {ProFormGroup, ProFormInstance, ProFormList, ProFormText} from "@ant-design/pro-components";
 import FlinkOptionsSelect from "@/components/Flink/OptionsSelect";
 import React, {useEffect, useRef, useState} from "react";
-import {TempData} from "@/pages/DataStudioNew/type";
 import {DefaultOptionType} from "antd/es/select";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import {calculatorWidth} from "@/pages/DataStudioNew/CenterTabContent/TaskConfig/function";

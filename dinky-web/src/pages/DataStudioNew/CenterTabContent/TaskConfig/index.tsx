@@ -6,22 +6,24 @@ import {InfoCircleOutlined} from "@ant-design/icons";
 import {SWITCH_OPTIONS} from "@/services/constants";
 import {TempData} from "@/pages/DataStudioNew/type";
 import {BasicConfig} from "@/pages/DataStudioNew/CenterTabContent/TaskConfig/BasicConfig";
+import {FlinkSQLState} from "@/pages/DataStudioNew/CenterTabContent/FlinkSQL";
 
-export default (props: { tempData: TempData }) => {
+export default (props: { tempData: TempData,data:FlinkSQLState,onValuesChange?: (changedValues: any, values: FlinkSQLState) => void }) => {
 
   const items: TabsProps['items'] = [
     {
-      key: 'basicConfig', label: '基础配置', children: <BasicConfig tempData={props.tempData}/>
+      key: 'basicConfig', label: '基础配置', children: <BasicConfig tempData={props.tempData} data={props.data} onValuesChange={props.onValuesChange}/>
     },
 
     {
       key: 'previewConfig', label: '预览配置', children: <ProForm
         initialValues={{
-          maxRowNum: 100
+          ...props.data
         }}
         style={{padding: '10px'}}
         submitter={false}
         layout='vertical'
+        onValuesChange={props.onValuesChange}
       >
         <ProFormGroup>
           <ProFormSwitch

@@ -506,8 +506,8 @@ export default {
   'pages.datastudio.label.result.query.latest.data.truncate': '数据过长无法全部显示',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',
-  'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间',
-  'pages.datastudio.label.version.rightTitle': '版本号：【当前编辑版本】 创建时间',
+  'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间：【{createTime}】',
+  'pages.datastudio.label.version.rightTitle': '版本号：【当前编辑版本】 更新时间：【{updateTime}】',
   'pages.datastudio.label.version.rollback': '回滚',
   'pages.datastudio.label.version.rollback.flinksql': '回滚Flink SQL版本',
   'pages.datastudio.label.version.rollback.flinksqlConfirm':

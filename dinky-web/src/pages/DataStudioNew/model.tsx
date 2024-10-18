@@ -36,6 +36,8 @@ export type CenterTab = {
   id: string;
   tabType: CenterTabType;
   title: string;
+  // 是否存在更新
+  isUpdate: boolean;
   params: Record<string, any>;
 }
 export type LayoutState = {
@@ -84,6 +86,8 @@ export type StudioModelType = {
     handleToolbarShowDesc: Reducer<LayoutState>;
     // 保存工具栏布局
     saveToolbarLayout: Reducer<LayoutState, SaveToolbarLayoutDTO>;
+    // 更新中间tab
+    updateCenterTab: Reducer<LayoutState, CenterTabDTO>;
     // 添加中间tab
     addCenterTab: Reducer<LayoutState, CenterTabDTO>;
     // 删除中间tab
@@ -299,12 +303,34 @@ const StudioModel: StudioModelType = {
         }
       };
     },
+    updateCenterTab(state, {id, tabType, title, params,isUpdate}) {
+      return {
+        ...state,
+        centerContent: {
+          ...state.centerContent,
+          tabs: state.centerContent.tabs.map((x) => {
+            if (x.id === id) {
+              return {
+                id,
+                tabType,
+                title,
+                params,
+                isUpdate
+              };
+            } else {
+              return x;
+            }
+          })
+        }
+      };
+    },
     addCenterTab(state, {id, tabType, title, params}) {
       const newTab = {
         id,
         tabType,
         title,
-        params
+        params,
+        isUpdate: false
       };
       let tabs = state.centerContent.tabs;
       if (!state.centerContent.tabs.map(x => x.id).includes(id)) {
