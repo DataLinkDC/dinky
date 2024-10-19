@@ -17,7 +17,7 @@
  *
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ErrorMessage } from '@/utils/messages';
 import { v4 as uuidv4 } from 'uuid';
 import { TOKEN_KEY } from '@/services/constants';
@@ -41,23 +41,32 @@ export type SubscriberData = {
   call: (data: SseData) => void;
 };
 
+export type WsState = {
+  wsOnReady: boolean;
+  wsUrl: string;
+};
+
 export default () => {
   const subscriberRef = useRef<SubscriberData[]>([]);
 
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
   const wsUrl = `${protocol}://${window.location.hostname}:${window.location.port}/api/ws/global`;
+  const [wsState, setWsState] = useState<WsState>({ wsOnReady: true, wsUrl });
 
   const ws = useRef<WebSocket>();
 
   const reconnect = () => {
-    if (ws.current && ws.current.readyState != WebSocket.OPEN) {
+    if (ws.current && ws.current.readyState === WebSocket.CLOSED) {
       ws.current.close();
     }
     ws.current = new WebSocket(wsUrl);
     ws.current.onopen = () => {
+      setWsState({ wsOnReady: true, wsUrl });
       receiveMessage();
       subscribe();
     };
+    ws.current.onerror = () => setWsState({ wsOnReady: false, wsUrl });
+    ws.current.onclose = () => setWsState({ wsOnReady: false, wsUrl });
   };
 
   const subscribe = () => {
@@ -120,6 +129,7 @@ export default () => {
 
   return {
     subscribeTopic,
-    reconnect
+    reconnect,
+    wsState
   };
 };
