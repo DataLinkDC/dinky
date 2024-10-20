@@ -105,6 +105,7 @@ from datagen_source;
 
 
 ## Nginx 配置
+### Dinky 1.0-1.1版本
 Dinky使用了SSE技术作为日志推流，如果您使用了nginx代理，需要配置Nginx支持SSE，否则默认Nginx配置会导致大量连接异常，造成页面极其卡顿，
 需要在Nginx配置文件中添加以下配置：
 
@@ -114,7 +115,47 @@ proxy_cache off;
 proxy_read_timeout 86400s;
 proxy_send_timeout 86400s;
 ```
+### Dinky 1.2以后版本
+Dinky使用了Websocket技术作为日志推流，如果您使用了nginx代理，需要配置Nginx支持Websocket，否则无法使用控制台等功能
+需要在Nginx配置文件中添加以下配置：
 
+> 注意，以下为参考配置，并非强制要求标准配置，请根据你的自身情况进行修改
+
+```shell
+    location /api/ws/global {
+        proxy_pass ${你的后端地址};
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+        proxy_set_header  Host $http_host;
+        proxy_set_header  X-Real-IP  $remote_addr;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header  X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+
+    location /ws/sql-gateway/ {
+        proxy_pass ${你的后端地址};
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+        proxy_set_header  Host $http_host;
+        proxy_set_header  X-Real-IP  $remote_addr;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header  X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+
+```
+在Http节点加入配置支持websocket
+```shell
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+```
 
 ## 写在最后
 至此，您已经了解了基础DInky使用流程，但Dinky的能力远不止于此，您可以继续阅读其他文档，了解更多Dinky的功能，尽享Dinky为你带来的丝滑开发体验
