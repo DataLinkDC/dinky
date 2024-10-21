@@ -53,6 +53,9 @@ public interface TaskMapper extends SuperMapper<Task> {
     @InterceptorIgnore(tenantLine = "true")
     Integer getTenantByTaskId(@Param("id") Integer id);
 
+    @InterceptorIgnore(tenantLine = "true")
+    Integer getTenantByTaskName(@Param("taskName") String taskName);
+
     List<JobTypeOverView> getTaskOnlineRate();
 
     JobModelOverview getJobStreamingOrBatchModelOverview();

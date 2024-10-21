@@ -174,6 +174,19 @@ public class APIController {
         return Result.succeed(jobInstanceService.getJobInstanceByTaskId(id));
     }
 
+    @GetMapping("/getJobInstanceByTaskName")
+    @ApiOperation("Get Job Instance By Task Id")
+    @ApiImplicitParam(
+            name = "id",
+            value = "Task Id",
+            required = true,
+            dataType = "Integer",
+            dataTypeClass = Integer.class)
+    public Result<JobInstance> getJobInstanceByTaskId(@RequestParam String taskName) {
+        taskService.initTenantByTaskName(taskName);
+        return Result.succeed(jobInstanceService.getJobInstanceByTaskName(taskName));
+    }
+
     @GetMapping(value = "/exportSql")
     @ApiOperation("Export Sql")
     @Log(title = "Export Sql", businessType = BusinessType.EXPORT)
