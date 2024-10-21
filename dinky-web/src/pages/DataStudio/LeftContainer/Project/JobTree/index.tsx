@@ -39,7 +39,7 @@ import { connect } from '@@/exports';
 import { SortAscendingOutlined } from '@ant-design/icons';
 import { Key } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
-import { Divider, MenuProps } from 'antd';
+import { Divider, Flex, MenuProps } from 'antd';
 import { Button, Dropdown, Empty, Space, Tree } from 'antd';
 import type { ButtonType } from 'antd/es/button/buttonHelpers';
 import Search from 'antd/es/input/Search';
@@ -69,8 +69,6 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     selectCatalogueSortTypeData,
     onNodeClick,
     style,
-    height,
-    leftContainerWidth,
     onRightClick,
     selectKeyChange,
     onExpand,
@@ -271,9 +269,9 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
   return (
     <>
-      <Space direction='horizontal' size={8}>
+      <Flex gap={8} justify={'center'} align={'center'}>
         <Search
-          style={{ margin: '8px 0px', width: leftContainerWidth - 60 }}
+          style={{ margin: '8px 0px' }}
           placeholder={l('global.search.text')}
           onChange={onChangeSearch}
           allowClear={true}
@@ -290,7 +288,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         >
           <Button icon={<SortAscendingOutlined />} type={sortState.sortIconType}></Button>
         </Dropdown>
-      </Space>
+      </Flex>
 
       <div style={{ padding: '3px', background: '#F5F5F5' }} onClick={() => openTerminal()}>
         <CodeTwoTone /> <a>SQL Cli Terminal</a>
@@ -321,8 +319,6 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 export default connect(
   ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
-    height: Studio.toolContentHeight,
-    leftContainerWidth: Studio.leftContainer.width,
     project: Studio.project,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
     users: Studio.users,

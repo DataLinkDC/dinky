@@ -32,7 +32,7 @@ workbox.clientsClaim();
 workbox.precaching.precacheAndRoute(self.__precacheManifest || []);
 
 /**
- * Register a navigation route.
+ * Register a navigation routes.
  * https://developers.google.com/web/tools/workbox/modules/workbox-routing#how_to_register_a_navigation_route
  */
 workbox.routing.registerNavigationRoute('/index.html');
