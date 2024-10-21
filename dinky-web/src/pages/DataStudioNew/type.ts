@@ -79,3 +79,17 @@ export type EnvType = {
   name?: string;
   fragment?: boolean;
 };
+
+
+
+export interface StudioLineageParams {
+  type: number;
+  statementSet: boolean;
+  dialect: string;
+  databaseId: number;
+  statement: string;
+  envId: number;
+  fragment: boolean;
+  variables: any;
+  taskId: number;
+}

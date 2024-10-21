@@ -168,7 +168,8 @@ export const graphConfig: Partial<Manual> = {
     maxScale: 1.5,
     minScale: 0.1
   },
-  connecting: graphConnectConfig
+  connecting: graphConnectConfig,
+  autoResize: true
 };
 
 export const layoutConfig: DagreLayoutOptions = {

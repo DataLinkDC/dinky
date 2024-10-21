@@ -24,6 +24,13 @@ export const SelectFlinkRunMode = (props: { data: FlinkCluster[] }) => {
     "kubernetes-application-operator": []
   } as Record<string, Option[]>
   data.forEach((item) => {
+    if (item.type === "yarn-application") {
+      optionDict['yarn-per-job'].push({
+        value: item.id,
+        label: item.name,
+        enabled: item.enabled
+      })
+    }
     optionDict[item.type].push({
       value: item.id,
       label: item.name,

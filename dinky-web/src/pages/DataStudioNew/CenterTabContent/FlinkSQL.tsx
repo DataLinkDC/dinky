@@ -32,12 +32,17 @@ import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {TaskInfo} from "@/pages/DataStudioNew/CenterTabContent/TaskInfo";
 import TaskConfig from "@/pages/DataStudioNew/CenterTabContent/TaskConfig";
 import {HistoryVersion} from "@/pages/DataStudioNew/CenterTabContent/HistoryVersion";
-import {FlinkTaskRunType} from "@/pages/DataStudioNew/type";
+import {FlinkTaskRunType, StudioLineageParams} from "@/pages/DataStudioNew/type";
 import {TaskExtConfig} from "@/types/Studio/data";
 import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 import {debounce} from "lodash";
-import {executeSql} from "@/pages/DataStudio/HeaderContainer/service";
+import {executeSql, explainSql, getJobPlan} from "@/pages/DataStudio/HeaderContainer/service";
 import {l} from "@/utils/intl";
+import {editor} from "monaco-editor";
+import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
+import {getDataByParams} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/endpoints";
+import {LineageDetailInfo} from "@/types/DevOps/data";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -85,6 +90,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
   const [selectRightToolbar, setSelectRightToolbar] = useState<string | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [originStatementValue, setOriginStatementValue] = useState<string>("")
   const [currentState, setCurrentState] = useState<FlinkSQLState>({
     alertGroupId: -1,
     batchModel: false,
@@ -120,6 +126,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     if (taskDetail) {
       // @ts-ignore
       setCurrentState({...taskDetail, taskId: params.taskId})
+      setOriginStatementValue(taskDetail.statement)
     }
     setLoading(false)
   }, [])
@@ -150,12 +157,16 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     if (currentState.type === 'standalone' || currentState.type === 'kubernetes-session' || currentState.type === 'yarn-session') {
       return [currentState.type, currentState.clusterId]
     }
+    return [currentState.type, currentState.clusterConfigurationId]
+  }
+  const onEditorChange = (value: string | undefined, ev: editor.IModelContentChangedEvent) => {
+    updateCenterTab({...props.tabData, isUpdate: originStatementValue !== value})
+    setCurrentState(prevState => ({...prevState, statement: value ?? ''}))
   }
 
   const onValuesChange = (changedValues: any, allValues: FlinkSQLState) => {
-    updateCenterTab({...props.tabData, isUpdate: true})
     if ('flinkMode' in allValues) {
-      const mode = (allValues['flinkMode'] as [string, number])[0]
+      const mode = (allValues['flinkMode'] as [string, number])[0] as FlinkTaskRunType
       if (mode === 'local') {
         allValues.clusterId = null
         allValues.clusterConfigurationId = null
@@ -167,6 +178,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
         allValues.clusterId = null
         allValues.clusterConfigurationId = id
       }
+      allValues.type = mode
     }
     setCurrentState({...currentState, ...allValues})
   }
@@ -221,9 +233,55 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             {/* 运行工具栏*/}
             {/*todo 按钮可能会超过当前布局，解决方案：超过布局的按钮需要用更多来显示*/}
             <RunToolBarButton showDesc={showDesc} desc={"保存"} icon={<SaveOutlined/>} onClick={handleSave}/>
-            <RunToolBarButton showDesc={showDesc} desc={"检查"} icon={<AuditOutlined/>}/>
-            <RunToolBarButton showDesc={showDesc} desc={"预览DAG"} icon={<ApartmentOutlined/>}/>
-            <RunToolBarButton showDesc={showDesc} desc={"血缘"} icon={<PartitionOutlined/>}/>
+            <RunToolBarButton showDesc={showDesc} desc={"检查"} icon={<AuditOutlined/>} onClick={async () => {
+              let param = {
+                ...currentState
+              };
+              const res = await explainSql(
+                l('pages.datastudio.editor.checking', '', {jobName: currentState?.name}),
+                param
+              );
+              updateAction({
+                actionType: DataStudioActionType.TASK_RUN_CHECK,
+                params: {
+                  taskId: params.taskId,
+                  data: res.data
+                }
+              })
+
+            }}/>
+            <RunToolBarButton showDesc={showDesc} desc={"预览DAG"} icon={<ApartmentOutlined/>} onClick={async () => {
+              const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), currentState);
+              updateAction({
+                actionType: DataStudioActionType.TASK_RUN_DAG,
+                params: {
+                  taskId: params.taskId,
+                  data: res.data
+                }
+              })
+            }}/>
+            <RunToolBarButton showDesc={showDesc} desc={"血缘"} icon={<PartitionOutlined/>} onClick={async ()=>{
+                const { type, dialect, databaseId, statement, envId, fragment, taskId } = currentState;
+                const params: StudioLineageParams = {
+                  type: 1, // todo: 暂时写死 ,后续优化
+                  dialect: dialect,
+                  envId: envId ?? -1,
+                  fragment: fragment,
+                  statement: statement,
+                  statementSet: true,
+                  databaseId: databaseId ?? 0,
+                  variables: {},
+                  taskId: taskId
+                };
+                const data = await getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params) as LineageDetailInfo
+              updateAction({
+                actionType: DataStudioActionType.TASK_RUN_LINEAGE,
+                params: {
+                  taskId: params.taskId,
+                  data: data
+                }
+              })
+            }}/>
 
             <Divider type={'vertical'} style={{height: "100%"}}/>
 
@@ -283,7 +341,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
                     // options={finalEditorOptions}
                     className={'editor-develop'}
                     // onMount={editorDidMountChange}
-                    // onChange={onChange}
+                    onChange={debounce(onEditorChange, 500)}
                     //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题
                     //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash
                     theme={convertCodeEditTheme()}

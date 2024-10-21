@@ -17,39 +17,27 @@
  *
  */
 
-import { ContextMenuPosition } from '@/types/Public/state';
+import LineageGraph from '@/components/LineageGraph';
+import {LineageDetailInfo} from '@/types/DevOps/data';
+import {l} from '@/utils/intl';
+import {Card, Result} from 'antd';
+import React from 'react';
 
-import {LayoutState} from "@/pages/DataStudioNew/model";
 
-
-
-export type ToolbarSelect = {
-  // 当前选中的tab
-  currentSelect?: string;
-  // 所有打开的tab
-  allOpenTabs: string[];
-  allTabs: string[];
+export default (props: { data: LineageDetailInfo }) => {
+  const {data} = props;
+  return (
+    <Card
+      style={{height: 'inherit'}}
+      hoverable
+      styles={{body: {height: 'inherit'}}}
+    >
+      {data && (data.tables.length !== 0 || data.relations.length !== 0) ? (
+        // todo 刷新没用，可以去掉api
+        <LineageGraph lineageData={data} refreshCallBack={()=>{}}/>
+      ) : (
+        <Result style={{height: 'inherit'}} status='warning' title={l('lineage.getError')}/>
+      )}
+    </Card>
+  );
 };
-
-// 没必要持久化
-// 右键状态
-export type RightContextMenuState = {
-  show: boolean;
-  position: ContextMenuPosition;
-};
-
-export type RightMenuItemProps = {
-  layoutState: LayoutState;
-};
-
-
-export enum DataStudioActionType {
-  // project
-  PROJECT_COLLAPSE_ALL = 'project-collapse-all',
-  PROJECT_EXPAND_ALL = 'project-expand-all',
-  PROJECT_RIGHT_CLICK = 'project-right-click',
-  TASK_RUN_CHECK = 'task-run-check',
-  TASK_RUN_DAG = 'task-run-dag',
-  TASK_RUN_LINEAGE = 'task-run-lineage',
-
-}

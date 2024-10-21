@@ -71,11 +71,13 @@ const DataStudioNew: React.FC = (props: any) => {
   });
 
   useAsyncEffect(async () => {
-    await queryFlinkEnv()
-    await queryFlinkCluster()
-    await queryAlertGroup()
-    await queryFlinkConfigOptions()
-    await queryFlinkUdfOptions()
+    // await queryFlinkEnv()
+    // await queryFlinkCluster()
+    // await queryAlertGroup()
+    // await queryFlinkConfigOptions()
+    // await queryFlinkUdfOptions()
+
+    await Promise.all([queryFlinkEnv(), queryFlinkCluster(), queryAlertGroup(), queryFlinkConfigOptions(), queryFlinkUdfOptions()])
   }, [])
   useEffect(() => {
     updateAction({

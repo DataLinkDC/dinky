@@ -220,7 +220,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   return (
     <>
-      <Row wrap={false}>
+      <Row wrap={false} style={{height:'100%'}}>
         <Col flex='auto'>
           {/* fullScreen button */}
           {fullScreenBtn && (
