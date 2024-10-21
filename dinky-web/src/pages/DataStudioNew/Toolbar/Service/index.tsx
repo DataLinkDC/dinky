@@ -10,7 +10,7 @@ import {
   ApartmentOutlined,
   ArrowsAltOutlined,
   AuditOutlined,
-  CodeOutlined,
+  CodeOutlined, HistoryOutlined,
   PartitionOutlined,
   ShrinkOutlined
 } from "@ant-design/icons";
@@ -18,6 +18,7 @@ import RunToolBarButton from "@/pages/DataStudioNew/components/RunToolBarButton"
 import CusPanelResizeHandle from "@/pages/DataStudioNew/components/CusPanelResizeHandle";
 import {getIcon} from "@/utils/function";
 import Output from "@/pages/DataStudioNew/Toolbar/Service/Output";
+import ExecutionHistory from "@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory";
 import {KeepAlive} from "react-activation";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
 import Explain from "@/pages/DataStudioNew/Toolbar/Service/Explain";
@@ -161,22 +162,22 @@ const Service = (props: { showDesc: boolean, tabs: CenterTab[], action: any }) =
 
   const renderContent = () => {
     if (selectedKey.length === 1) {
+      const taskId = selectedKey[0] as number;
       const items: TabsProps['items'] = [
         {
           key: 'output',
           label: '输出',
           icon: <CodeOutlined/>,
-          children: <Output taskId={(selectedKey[0] as number)}/>,
+          children: <Output taskId={taskId}/>,
         }
-        // ,
-        // {
-        //   key: '2',
-        //   label: '结果',
-        //   icon: <TableOutlined/>,
-        //   children: 'Content of Tab Pane 2',
-        // },
+        ,
+        {
+          key: 'history',
+          label: '执行历史',
+          icon: <HistoryOutlined/>,
+          children: <ExecutionHistory taskId={taskId}/>,
+        },
       ];
-      const taskId = selectedKey[0] as string;
       const taskItem = taskItems[taskId] ?? [];
       return <Tabs activeKey={tabActiveKey[taskId]} items={[...items, ...taskItem]} size={"small"}
                    onChange={(activeKey) => {

@@ -36,13 +36,14 @@ import {FlinkTaskRunType, StudioLineageParams} from "@/pages/DataStudioNew/type"
 import {TaskExtConfig} from "@/types/Studio/data";
 import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 import {debounce} from "lodash";
-import {executeSql, explainSql, getJobPlan} from "@/pages/DataStudio/HeaderContainer/service";
+import {cancelTask, executeSql, explainSql, getJobPlan} from "@/pages/DataStudio/HeaderContainer/service";
 import {l} from "@/utils/intl";
 import {editor} from "monaco-editor";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
-import {getDataByParams} from "@/services/BusinessCrud";
+import {getDataByParams, queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/endpoints";
-import {LineageDetailInfo} from "@/types/DevOps/data";
+import {Jobs, LineageDetailInfo} from "@/types/DevOps/data";
+import {isStatusDone} from "@/pages/DataStudioNew/function";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -78,6 +79,7 @@ export  type FlinkSQLState = {
   secondLevelOwners: number[];
   createTime: Date;
   updateTime: Date;
+  status: string
 }
 
 const toolbarSize = 40;
@@ -115,7 +117,8 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     envId: -1,
     versionId: 0,
     createTime: new Date(),
-    updateTime: new Date()
+    updateTime: new Date(),
+    status: ''
   });
 
   const formRef = useRef<ProFormInstance>();
@@ -260,20 +263,20 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
                 }
               })
             }}/>
-            <RunToolBarButton showDesc={showDesc} desc={"血缘"} icon={<PartitionOutlined/>} onClick={async ()=>{
-                const { type, dialect, databaseId, statement, envId, fragment, taskId } = currentState;
-                const params: StudioLineageParams = {
-                  type: 1, // todo: 暂时写死 ,后续优化
-                  dialect: dialect,
-                  envId: envId ?? -1,
-                  fragment: fragment,
-                  statement: statement,
-                  statementSet: true,
-                  databaseId: databaseId ?? 0,
-                  variables: {},
-                  taskId: taskId
-                };
-                const data = await getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params) as LineageDetailInfo
+            <RunToolBarButton showDesc={showDesc} desc={"血缘"} icon={<PartitionOutlined/>} onClick={async () => {
+              const {type, dialect, databaseId, statement, envId, fragment, taskId} = currentState;
+              const params: StudioLineageParams = {
+                type: 1, // todo: 暂时写死 ,后续优化
+                dialect: dialect,
+                envId: envId ?? -1,
+                fragment: fragment,
+                statement: statement,
+                statementSet: true,
+                databaseId: databaseId ?? 0,
+                variables: {},
+                taskId: taskId
+              };
+              const data = await getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params) as LineageDetailInfo
               updateAction({
                 actionType: DataStudioActionType.TASK_RUN_LINEAGE,
                 params: {
@@ -294,23 +297,57 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{height: "100%"}}/>
 
 
-            <RunToolBarButton showDesc={showDesc} color={'green'} desc={"运行"} icon={<CaretRightOutlined/>}
-                              onClick={async () => {
-                                await handleSave()
-                                await executeSql(
-                                  l('pages.datastudio.editor.submitting', '', {jobName: title}),
-                                  params.taskId
-                                );
-                                updateAction({
-                                  actionType: 'run',
-                                  params: {
-                                    taskId: params.taskId,
-                                    envId: currentState.envId
+            {isStatusDone(currentState.status) &&
+              <RunToolBarButton showDesc={showDesc} color={'green'} desc={"运行"} icon={<CaretRightOutlined/>}
+                                onClick={async () => {
+                                  await handleSave()
+                                  updateAction({
+                                    actionType: 'run',
+                                    params: {
+                                      taskId: params.taskId,
+                                      envId: currentState.envId
+                                    }
+                                  })
+                                  const result = await executeSql(
+                                    l('pages.datastudio.editor.submitting', '', {jobName: title}),
+                                    params.taskId
+                                  )
+                                  setCurrentState(prevState => {
+                                    return {
+                                      ...prevState,
+                                      status: result.data.status === "SUCCESS" ? "RUNNING" : result.data.status
+                                    }
+                                  })
+
+                                }}/>}
+            {isStatusDone(currentState.status) &&
+              <RunToolBarButton showDesc={showDesc} color={'red'} desc={"预览"} icon={<BugOutlined/>}/>}
+
+            {!isStatusDone(currentState.status) &&
+              <RunToolBarButton showDesc={showDesc} color={'red'} desc={"停止"} icon={<PauseOutlined/>}
+                                onClick={async () => {
+                                  const result = await cancelTask('', currentState.taskId, false)
+                                  if (result.success) {
+                                    setCurrentState(prevState => {
+                                      return {
+                                        ...prevState,
+                                        status: "CANCEL"
+                                      }
+                                    })
                                   }
-                                })
-                              }}/>
-            <RunToolBarButton showDesc={showDesc} color={'red'} desc={"预览"} icon={<BugOutlined/>}/>
-            <RunToolBarButton showDesc={showDesc} color={'red'} desc={"停止"} icon={<PauseOutlined/>}/>
+
+                                }}/>}
+
+            {!isStatusDone(currentState.status) &&
+              <RunToolBarButton showDesc={showDesc} desc={"运维"} icon={<RotateRightOutlined/>} onClick={async () => {
+                const dataByParams = await queryDataByParams<Jobs.JobInstance>(
+                  API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
+                  {taskId: currentState.taskId}
+                );
+                if (dataByParams) {
+                  window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
+                }
+              }}/>}
 
             <Divider type={'vertical'} style={{height: "100%"}}/>
             <RunToolBarButton showDesc={showDesc} desc={"格式化"} icon={<ClearOutlined/>}/>
@@ -321,7 +358,6 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{height: "100%"}}/>
 
             <RunToolBarButton showDesc={showDesc} desc={"发布"} icon={<FundOutlined/>}/>
-            <RunToolBarButton showDesc={showDesc} desc={"运维"} icon={<RotateRightOutlined/>}/>
 
 
           </Flex>

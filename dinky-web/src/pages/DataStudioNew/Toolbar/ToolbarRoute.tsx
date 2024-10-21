@@ -19,35 +19,33 @@
 
 import {ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
 import {
-  ApartmentOutlined,
-  ConsoleSqlOutlined, DatabaseOutlined,
-  FolderOutlined, FunctionOutlined,
-  HistoryOutlined,
-  InfoCircleOutlined,
-  InsertRowRightOutlined,
-  MonitorOutlined,
-  RightSquareOutlined,
-  SettingOutlined, TableOutlined
+  ConsoleSqlOutlined,
+  DatabaseOutlined,
+  FunctionOutlined,
+  SettingOutlined,
+  TableOutlined,
+  ToolOutlined
 } from '@ant-design/icons';
 import React, {lazy, ReactElement, ReactNode, Suspense} from 'react';
 
 
-export const lazyComponent = (element:ReactNode):ReactElement => {
-return <Suspense fallback={<div>loading...</div>}>{element}</Suspense>
+export const lazyComponent = (element: ReactNode): ReactElement => {
+  return <Suspense fallback={<div>loading...</div>}>{element}</Suspense>
 }
 const Project = lazy(() => import('@/pages/DataStudioNew/Toolbar/Project'));
 const Catalog = lazy(() => import('@/pages/DataStudio/LeftContainer/Catalog'));
-const StartIntro = lazy(()=>import('@/pages/DataStudioNew/StartIntroPage'));
+const StartIntro = lazy(() => import('@/pages/DataStudioNew/StartIntroPage'));
 const DataSource = lazy(() => import('@/pages/DataStudio/LeftContainer/DataSource'));
 const GlobalVariable = lazy(() => import('@/pages/DataStudio/LeftContainer/GlobaleVar'));
 const Service = lazy(() => import('@/pages/DataStudioNew/Toolbar/Service'));
+const Tool = lazy(() => import('@/pages/DataStudioNew/Toolbar/Tool'));
 export const ToolbarRoutes: ToolbarRoute[] = [
   {
     key: 'quick-start',
     title: '快速开始',
     icon: <></>,
     position: 'centerContent',
-    content: () =>lazyComponent(<StartIntro />)
+    content: () => lazyComponent(<StartIntro/>)
   },
   {
     key: 'project',
@@ -55,21 +53,21 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     icon: <ConsoleSqlOutlined/>,
     position: 'leftTop',
     content: () =>
-      lazyComponent(<Project />)
+      lazyComponent(<Project/>)
   },
   {
     key: 'catalog',
     title: 'Catalog',
     icon: <TableOutlined/>,
     position: 'leftTop',
-    content: () => lazyComponent(<Catalog />)
+    content: () => lazyComponent(<Catalog/>)
   },
   {
     key: 'datasource',
     title: '数据源',
     icon: <DatabaseOutlined/>,
     position: 'leftTop',
-    content: () => lazyComponent(<DataSource />)
+    content: () => lazyComponent(<DataSource/>)
   },
   {
     key: 'function',
@@ -78,62 +76,20 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     position: 'leftTop',
     content: () => lazyComponent(<GlobalVariable/>)
   },
-  // {
-  //   key: 'jobConfig',
-  //   title: '作业配置',
-  //   icon: <SettingOutlined/>,
-  //   position: 'right',
-  //   content: () => <>这是测试界面</>
-  // },
-  // {
-  //   key: 'previewConfig',
-  //   title: '预览配置',
-  //   icon: <InsertRowRightOutlined/>,
-  //   position: 'right',
-  //   content: () => <>这是测试界面</>
-  // },
-  // {
-  //   key: 'savePoint',
-  //   title: '保存点',
-  //   icon: <FolderOutlined/>,
-  //   position: 'right',
-  //   content: () => <>这是测试界面</>
-  // },
-  // {
-  //   key: 'history',
-  //   title: '历史版本',
-  //   icon: <HistoryOutlined/>,
-  //   position: 'right',
-  //   content: () => <>这是测试界面</>
-  // },
-  // {
-  //   key: 'jobInfo',
-  //   title: '作业信息',
-  //   icon: <InfoCircleOutlined/>,
-  //   position: 'right',
-  //   content: () => <>这是测试界面</>
-  // },
   {
     key: '服务',
     title: '服务',
-    icon: <SettingOutlined />,
+    icon: <SettingOutlined/>,
     position: 'leftBottom',
-    content: () => lazyComponent(<Service />)
+    content: () => lazyComponent(<Service/>)
   },
   {
-    key: 'result',
-    title: '结果',
-    icon: <MonitorOutlined/>,
+    key: 'tool',
+    title: '工具',
+    icon: <ToolOutlined/>,
     position: 'leftBottom',
-    content: () => <>这是测试界面</>
+    content: () => lazyComponent(<Tool/>)
   },
-  {
-    key: 'lineage',
-    title: '血缘',
-    icon: <ApartmentOutlined/>,
-    position: 'leftBottom',
-    content: () => <>这是测试界面</>
-  }
 ];
 
 export const leftDefaultShowTab: ToolbarRoute = ToolbarRoutes[1];

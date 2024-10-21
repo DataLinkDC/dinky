@@ -25,6 +25,7 @@ import { ToolbarPosition } from '@/pages/DataStudioNew/Toolbar/data.d';
 import {BoxBase, PanelBase} from "rc-dock/es";
 import {LayoutState} from "@/pages/DataStudioNew/model";
 import {LayoutData} from "rc-dock/src/DockData";
+import {JOB_STATUS, JOB_SUBMIT_STATUS} from "@/pages/DevOps/constants";
 
 
 
@@ -119,3 +120,22 @@ export const getLayoutState = (layout: LayoutData): LayoutData => {
       windowbox: undefined
   };
 };
+
+
+export function isStatusDone(type: string) {
+  if (!type) {
+    return true;
+  }
+  switch (type) {
+    case JOB_STATUS.FAILED:
+    case JOB_STATUS.CANCELED:
+    case JOB_STATUS.FINISHED:
+    case JOB_STATUS.UNKNOWN:
+    case JOB_SUBMIT_STATUS.SUCCESS:
+    case JOB_SUBMIT_STATUS.FAILED:
+    case JOB_SUBMIT_STATUS.CANCEL:
+      return true;
+    default:
+      return false;
+  }
+}
