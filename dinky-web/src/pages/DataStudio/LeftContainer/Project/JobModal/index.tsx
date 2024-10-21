@@ -165,9 +165,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
    * @param value
    */
   const validateName = async (rule: any, value: string) => {
-    if (/_/g.test(value)) {
-      return Promise.reject(l('catalog.name.validate.error'));
-    } else if (!value) {
+    if (!value) {
       return Promise.reject(l('catalog.name.placeholder'));
     } else {
       return Promise.resolve();

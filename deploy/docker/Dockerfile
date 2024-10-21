@@ -48,7 +48,7 @@ RUN rm -f  /opt/dinky/extends/flink${FLINK_VERSION}/flink/flink-table-planner-lo
 
 COPY --from=flink-base  /opt/flink/opt/flink-table-planner*.jar /opt/dinky/extends/flink${FLINK_VERSION}/flink/
 
-RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/
+RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && sed -i 's/-Xms512M -Xmx2048M -XX:PermSize=512M/-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0/g' auto.sh
 
 EXPOSE 8888
 

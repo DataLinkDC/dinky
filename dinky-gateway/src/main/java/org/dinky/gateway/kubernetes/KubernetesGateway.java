@@ -84,6 +84,11 @@ public abstract class KubernetesGateway extends AbstractGateway {
     protected void initConfig() {
         flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
         flinkConfig = config.getFlinkConfig();
+        String jobName = flinkConfig.getJobName();
+        if (null != jobName && jobName.contains("_")) {
+            jobName = jobName.replace("_", "-");
+            flinkConfig.setJobName(jobName);
+        }
         k8sConfig = config.getKubernetesConfig();
 
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");

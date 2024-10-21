@@ -300,7 +300,8 @@ public class JobRefreshHandler {
         ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
         ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();
         if (!Asserts.isNull(clusterCfg)
-                && GatewayType.YARN_PER_JOB.getLongValue().equals(clusterInstance.getType())) {
+                && (GatewayType.YARN_PER_JOB.getLongValue().equals(clusterInstance.getType())
+                        || GatewayType.YARN_APPLICATION.getLongValue().equals(clusterInstance.getType()))) {
             try {
                 String appId = jobInfoDetail.getClusterInstance().getName();
 
