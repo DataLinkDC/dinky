@@ -43,6 +43,8 @@
     "@ant-design/pro-table": "^3.17.2",
     "@ant-design/use-emotion-css": "^1.0.4",
     "@antv/g2": "^5.2.5",
+    "@antv/g6": "^5.0.22",
+    "@antv/g6-extension-react": "^0.1.7",
     "@antv/layout": "0.3.25",
     "@antv/x6": "^2.18.1",
     "@antv/x6-plugin-selection": "^2.2.2",

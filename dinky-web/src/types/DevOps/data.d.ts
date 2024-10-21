@@ -293,6 +293,7 @@ export interface LineageRelations {
   id: string;
   srcTableId: string;
   tgtTableId: string;
+  relationship: string;
   srcTableColName: string;
   tgtTableColName: string;
 }
