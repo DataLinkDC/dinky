@@ -131,8 +131,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                     && entry.getKey().startsWith("properties")
                     && Asserts.isNotNullString(entry.getValue())) {
                 properties.setProperty(entry.getKey().replace("properties.", ""), entry.getValue());
-            } else {
-                properties.setProperty(entry.getKey(), entry.getValue());
             }
             logger.info("sink config k/v:{}", properties);
         }
