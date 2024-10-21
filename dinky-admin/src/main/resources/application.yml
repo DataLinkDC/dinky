@@ -165,3 +165,28 @@ knife4j:
 crypto:
   enabled: false
   encryption-password:
+
+---
+#################################################################################################################
+################################################# SSO Config ####################################################
+#################################################################################################################
+#see https://github.com/pac4j/spring-webmvc-pac4j-boot-demo/blob/master/src/main/resources/application.properties
+sso:
+  enabled: false  #enable sso default false
+  redirect: http://localhost:8000/#/user/login?from=sso  #Front-end address
+
+---
+#################################################################################################################
+################################################# pac4j Config ####################################################
+#################################################################################################################
+pac4j:
+  callbackUrl: http://localhost:${server.port}/callback # The callback URL
+  # Put all parameters under `properties`
+  # Check supported sso config parameters for different authentication clients from the below link
+  # https://github.com/pac4j/pac4j/blob/master/documentation/docs/config-module.md
+  properties:
+    principalNameAttribute: login #Authenticate user principal
+    github.id:
+    github.secret:
+
+

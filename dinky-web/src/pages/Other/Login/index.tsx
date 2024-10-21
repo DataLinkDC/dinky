@@ -21,7 +21,7 @@ import Footer from '@/components/Footer';
 import ChooseModal from '@/pages/Other/Login/ChooseModal';
 import { gotoRedirectUrl, initSomeThing, redirectToLogin } from '@/pages/Other/Login/function';
 import LangSwitch from '@/pages/Other/Login/LangSwitch';
-import { chooseTenantSubmit, login, queryDataByParams } from '@/services/BusinessCrud';
+import {chooseTenantSubmit, login, queryDataByParams, ssoToken} from '@/services/BusinessCrud';
 import { API } from '@/services/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { SaTokenInfo, UserBaseInfo } from '@/types/AuthCenter/data.d';
@@ -35,6 +35,8 @@ import React, { useEffect, useState } from 'react';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
 import { TOKEN_KEY } from '@/services/constants';
+import {getData} from "@/services/api";
+import {createSearchParams} from "@@/exports";
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -51,6 +53,32 @@ const Login: React.FC = () => {
       height: '100%'
     };
   });
+  useEffect(() => {
+    if (location.hash==("#/user/login?from=sso")){
+      ssoToken().then(
+        res => {
+          if (res) {
+            setLocalStorageOfToken(JSON.stringify(res));
+          } else {
+            // 如果没有获取到token信息，直接跳转到登录页
+            redirectToLogin();
+          }
+          setInitialState((s) => ({ ...s, currentUser: res.data }));
+          SuccessMessageAsync(l('login.result', '', { msg: res.msg, time: res.time }));
+          const tenantList: UserBaseInfo.Tenant[] = res.data.tenantList;
+          assertTenant(tenantList);
+          if (tenantList && tenantList.length > 1) {
+
+            handleTenantVisible(true);
+          } else {
+             singleTenant(tenantList);
+          }
+        }
+      )
+    }
+
+
+  }, []);
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();

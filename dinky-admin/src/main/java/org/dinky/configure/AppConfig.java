@@ -25,8 +25,17 @@ import org.dinky.interceptor.TenantInterceptor;
 
 import java.util.Locale;
 
+import org.pac4j.core.config.Config;
+import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
+import org.pac4j.springframework.annotation.AnnotationConfig;
+import org.pac4j.springframework.component.ComponentConfig;
+import org.pac4j.springframework.web.SecurityInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -36,6 +45,7 @@ import cn.dev33.satoken.exception.StopMatchException;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * AppConfiguration
@@ -43,7 +53,15 @@ import cn.dev33.satoken.stp.StpUtil;
  * @since 2021/11/28 19:35
  */
 @Configuration
+@Slf4j
+@Import({ComponentConfig.class, AnnotationConfig.class})
+@ComponentScan(basePackages = "org.pac4j.springframework.web")
 public class AppConfig implements WebMvcConfigurer {
+    @Autowired
+    private Config config;
+
+    @Value("${sso.enabled:false}")
+    private boolean ssoEnabled;
     /**
      * Cookie
      *
@@ -86,11 +104,22 @@ public class AppConfig implements WebMvcConfigurer {
                 }))
                 .addPathPatterns("/api/**", "/openapi/**")
                 .excludePathPatterns(
-                        "/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**", "/api/version");
-
+                        "/api/sso/ssoEnableStatus",
+                        "/api/login",
+                        "/api/ldap/ldapEnableStatus",
+                        "/download/**",
+                        "/druid/**",
+                        "/api/version");
+        if (ssoEnabled) {
+            log.info("Load{}", config.getClients().getClients().get(0).getName());
+            registry.addInterceptor(buildInterceptor(
+                            config.getClients().getClients().get(0).getName()))
+                    .addPathPatterns("/api/sso/login")
+                    .addPathPatterns("/api/sso/token");
+        }
         registry.addInterceptor(new TenantInterceptor())
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus")
+                .excludePathPatterns("/api/sso/ssoEnableStatus", "/api/login", "/api/ldap/ldapEnableStatus")
                 .addPathPatterns("/api/alertGroup/**")
                 .addPathPatterns("/api/alertHistory/**")
                 .addPathPatterns("/api/alertInstance/**")
@@ -109,5 +138,9 @@ public class AppConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/fragment/**")
                 .addPathPatterns("/api/git/**")
                 .addPathPatterns("/api/jar/*");
+    }
+
+    private SecurityInterceptor buildInterceptor(final String client) {
+        return new SecurityInterceptor(config, client, JEEHttpActionAdapter.INSTANCE);
     }
 }

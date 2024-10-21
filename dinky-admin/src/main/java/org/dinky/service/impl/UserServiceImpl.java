@@ -63,6 +63,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+import org.pac4j.core.profile.ProfileManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +87,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
+    private final ProfileManager profileManager;
 
     private static final String DEFAULT_PASSWORD = "123456";
 
@@ -177,9 +179,19 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     @Override
     public Result<UserDTO> loginUser(LoginDTO loginDTO) {
         User user = null;
+
         try {
-            // Determine the login method (LDAP or local) based on the flag in loginDTO
-            user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
+
+            switch (loginDTO.getLoginType()) {
+                case LDAP:
+                    user = ldapLogin(loginDTO);
+                    break;
+                case SSO:
+                    user = ssoLogin(loginDTO);
+                    break;
+                default:
+                    user = localLogin(loginDTO);
+            }
         } catch (AuthException e) {
             // Handle authentication exceptions and return the corresponding error status
             return Result.authorizeFailed(e.getStatus());
@@ -208,6 +220,36 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
+    }
+
+    private User ssoLogin(LoginDTO loginDTO) throws AuthException {
+        // Get user from local database by username
+        User user = getUserByUsername(loginDTO.getUsername());
+        if (Asserts.isNull(user)) {
+            // User doesn't exist,Create a user
+            // Get default tenant from system configuration
+            String defaultTeantCode =
+                    SystemConfiguration.getInstances().getLdapDefaultTeant().getValue();
+            Tenant tenant = tenantService.getTenantByTenantCode(defaultTeantCode);
+            User userForm = new User();
+            userForm.setUsername(loginDTO.getUsername());
+            userForm.setNickname(loginDTO.getUsername());
+            userForm.setUserType(UserType.SSO.getCode());
+            userForm.setEnabled(true);
+            userForm.setSuperAdminFlag(false);
+            userForm.setIsDelete(false);
+            this.getBaseMapper().insert(userForm);
+            // Assign the user to the default tenant
+            List<Integer> userIds = getUserIdsByTenantId(tenant.getId());
+            userIds.add(userForm.getId());
+            tenantService.assignUserToTenant(new AssignUserToTenantDTO(tenant.getId(), userIds));
+            return userForm;
+        } else {
+            if (user.getUserType() != UserType.SSO.getCode()) {
+                throw new AuthException(Status.USER_TYPE_ERROR);
+            }
+        }
+        return user;
     }
 
     private void upsertToken(UserDTO userInfo) {
@@ -443,6 +485,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public void outLogin() {
+        if (profileManager != null) {
+            profileManager.logout();
+        }
+
         StpUtil.logout(StpUtil.getLoginIdAsInt());
     }
 
