@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ErrorMessage } from '@/utils/messages';
 import { v4 as uuidv4 } from 'uuid';
 import { TOKEN_KEY } from '@/services/constants';
+
 export type SseData = {
   topic: string;
   data: Record<string, any>;
@@ -39,21 +40,33 @@ export type SubscriberData = {
   params: string[];
   call: (data: SseData) => void;
 };
+
+export type WsState = {
+  wsOnReady: boolean;
+  wsUrl: string;
+};
+
 export default () => {
   const subscriberRef = useRef<SubscriberData[]>([]);
-  const wsUrl = `ws://${window.location.hostname}:${window.location.port}/api/ws/global`;
 
-  const ws = useRef<WebSocket>(new WebSocket(wsUrl));
+  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  const wsUrl = `${protocol}://${window.location.hostname}:${window.location.port}/api/ws/global`;
+  const [wsState, setWsState] = useState<WsState>({ wsOnReady: true, wsUrl });
+
+  const ws = useRef<WebSocket>();
 
   const reconnect = () => {
-    if (ws.current.readyState === WebSocket.OPEN) {
+    if (ws.current && ws.current.readyState === WebSocket.CLOSED) {
       ws.current.close();
     }
     ws.current = new WebSocket(wsUrl);
     ws.current.onopen = () => {
+      setWsState({ wsOnReady: true, wsUrl });
       receiveMessage();
       subscribe();
     };
+    ws.current.onerror = () => setWsState({ wsOnReady: false, wsUrl });
+    ws.current.onclose = () => setWsState({ wsOnReady: false, wsUrl });
   };
 
   const subscribe = () => {
@@ -68,31 +81,36 @@ export default () => {
         topics[sub.topic] = [...topics[sub.topic]];
       }
     });
-    if (ws.current.readyState === WebSocket.CLOSED) {
+    if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
       reconnect();
-    } else {
+    } else if (ws.current.readyState === WebSocket.OPEN) {
       const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
       ws.current.send(JSON.stringify({ token, topics }));
+    } else {
+      //TODO 这里要做些什么
     }
   };
 
   const receiveMessage = () => {
-    ws.current.onmessage = (e) => {
-      try {
-        const data: SseData = JSON.parse(e.data);
-        subscriberRef.current
-          .filter((sub) => sub.topic === data.topic)
-          .filter((sub) => !sub.params || sub.params.find((x) => data.data[x]))
-          .forEach((sub) => sub.call(data));
-      } catch (e: any) {
-        ErrorMessage(e);
-      }
-    };
+    if (ws.current) {
+      ws.current.onmessage = (e) => {
+        try {
+          const data: SseData = JSON.parse(e.data);
+          subscriberRef.current
+            .filter((sub) => sub.topic === data.topic)
+            .filter((sub) => !sub.params || sub.params.find((x) => data.data[x]))
+            .forEach((sub) => sub.call(data));
+        } catch (e: any) {
+          ErrorMessage(e);
+        }
+      };
+    }
   };
+
   useEffect(() => {
     receiveMessage();
     setInterval(() => {
-      if (ws.current.readyState === WebSocket.CLOSED) {
+      if (!ws.current || ws.current.readyState != WebSocket.OPEN) {
         reconnect();
       }
     }, 2000);
@@ -111,6 +129,7 @@ export default () => {
 
   return {
     subscribeTopic,
-    reconnect
+    reconnect,
+    wsState
   };
 };
