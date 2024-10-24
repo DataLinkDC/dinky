@@ -1,29 +1,28 @@
 import {BoxData} from "rc-dock/es";
 import {LayoutState} from "@/pages/DataStudioNew/model";
 import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
-import {PanelData} from "rc-dock/es/DockData";
+import {PanelData, TabData} from "rc-dock/es/DockData";
 import {DockLayout, LayoutData} from "rc-dock";
-import {TabData} from "rc-dock/es/DockData";
 import {Filter} from "rc-dock/es/Algorithm";
 
 
-export const activeTab = (dockLayout:DockLayout,layoutData: LayoutData,sourceTabData:TabData,targetId:string) => {
+export const activeTab = (dockLayout: DockLayout, layoutData: LayoutData, sourceTabData: TabData, targetId: string) => {
   const tabPanel = find(layoutData, sourceTabData.id!!) as PanelData;
   const targetTabPanel = find(layoutData, targetId) as PanelData;
-  if (!tabPanel && targetTabPanel ){
+  if (!tabPanel && targetTabPanel) {
     // 新增tab
-    targetTabPanel.tabs=[sourceTabData,...targetTabPanel.tabs]
+    targetTabPanel.tabs = [sourceTabData, ...targetTabPanel.tabs]
     targetTabPanel.activeId = sourceTabData.id
-  }else {
+  } else {
     // 切换tab
-    if (tabPanel.activeId===sourceTabData.id) {
+    if (tabPanel.activeId === sourceTabData.id) {
       dockLayout.loadLayout(layoutData)
       return;
     }
     if (tabPanel.tabs.length === 0) {
-      tabPanel.tabs=[sourceTabData]
-    }else {
-      if (tabPanel.tabs.some(tab=>tab.id===sourceTabData.id)) {
+      tabPanel.tabs = [sourceTabData]
+    } else {
+      if (tabPanel.tabs.some(tab => tab.id === sourceTabData.id)) {
         tabPanel.activeId = sourceTabData.id
       }
     }
@@ -32,11 +31,11 @@ export const activeTab = (dockLayout:DockLayout,layoutData: LayoutData,sourceTab
   dockLayout.loadLayout(layoutData)
 }
 
-export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute):LayoutData => {
+export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size?: number): LayoutData => {
   // todo 这里有布局混乱导致算法崩溃风险
   const boxData: BoxData = {
     mode: 'vertical',
-    size: 600,
+    size: size ?? 1000,
     children: [
       {
         tabs: [
@@ -58,7 +57,7 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute):Layo
     } else if (route.position === 'leftTop') {
       dockbox.children = [boxData, ...dockbox.children]
     } else if (route.position === 'leftBottom') {
-      return  {
+      return {
         ...layoutData,
         dockbox: {
           mode: 'vertical',
@@ -109,7 +108,7 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute):Layo
     }
 
   }
-  return  layoutData
+  return layoutData
 
 }
 
@@ -123,7 +122,6 @@ export const findToolbarPositionByTabId = (toolbar: LayoutState['toolbar'], tabI
   }
   return undefined
 }
-
 
 
 export function find(layout: LayoutData, id: string, filter: Filter = Filter.AnyTabPanel): PanelData | TabData | BoxData | undefined {
@@ -150,6 +148,7 @@ export function find(layout: LayoutData, id: string, filter: Filter = Filter.Any
 
   return result;
 }
+
 function findInBox(box: BoxData | undefined, id: string, filter: Filter): PanelData | TabData | BoxData | undefined {
   let result: PanelData | TabData | BoxData | undefined;
   if ((filter | Filter.Box) && box?.id === id) {

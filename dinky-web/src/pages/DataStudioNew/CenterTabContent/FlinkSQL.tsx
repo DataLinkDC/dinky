@@ -90,7 +90,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [codeEditorWidth, setCodeEditorWidth] = useState(0);
 
-  const [selectRightToolbar, setSelectRightToolbar] = useState<string | null>(null);
+  const [selectRightToolbar, setSelectRightToolbar] = useState<string | undefined>(undefined);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [originStatementValue, setOriginStatementValue] = useState<string>("")
@@ -374,6 +374,13 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             <RunToolBarButton showDesc={showDesc} desc={"格式化"} icon={<ClearOutlined/>}/>
             <RunToolBarButton showDesc={showDesc} desc={"定位"} icon={<EnvironmentOutlined/>} onClick={async () => {
               updateProject({selectedKeys: [params.key]})
+              updateAction({
+                actionType: DataStudioActionType.TASK_RUN_LOCATION,
+                params: {
+                  taskId: params.taskId,
+                  key: params.key
+                }
+              })
             }}/>
 
             <Divider type={'vertical'} style={{height: "100%"}}/>
@@ -407,11 +414,11 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
                 {selectRightToolbar && (
                   <>
                     <CusPanelResizeHandle/>
-                    <Panel className={'right-toolbar-container'} style={{overflowY: 'auto'}}>
+                    <Panel className={'right-toolbar-container'} style={{overflowY: 'auto'}} defaultSize={30}>
                       <Flex gap={5} vertical>
                         <Flex justify={"right"}>
                           <Button key="close" icon={<CloseOutlined/>} type={'text'}
-                                  onClick={() => setSelectRightToolbar(null)}/>
+                                  onClick={() => setSelectRightToolbar(undefined)}/>
                         </Flex>
 
                         {rightToolbarItem.find(item => item.label === selectRightToolbar)?.children}

@@ -540,7 +540,7 @@ export function fixLayoutData(layout: LayoutData, groups?: {[key: string]: TabGr
       }
     }
     if (!(d.size >= 0)) {
-      d.size = 200;
+      d.size = 1000;
     }
     d.minWidth = 0;
     d.minHeight = 0;

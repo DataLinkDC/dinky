@@ -49,7 +49,7 @@ export const BasicConfig = (props: { tempData: TempData,data:FlinkSQLState,onVal
              formRef={formRef} layout={'vertical'} rowProps={{
       gutter: [16, 0],
     }}>
-      <ProForm.Group>
+      <ProForm.Group style={{display:"flex",justifyContent:'center'}}>
         <ProFormDigit
           width={'xs'}
           label={l('pages.datastudio.label.jobConfig.parallelism')}

@@ -11,13 +11,15 @@ import {getTaskSortTypeData} from "@/pages/DataStudio/LeftContainer/Project/serv
 import type {ButtonType} from "antd/es/button/buttonHelpers";
 import {connect, useRequest} from "@@/exports";
 import {API_CONSTANTS} from "@/services/endpoints";
-import {buildProjectTree, generateList, searchInTree} from "@/pages/DataStudio/LeftContainer/Project/function";
 import {TaskOwnerLockingStrategy} from "@/types/SettingCenter/data.d";
 import {useModel} from "@umijs/max";
 import {debounce} from "@/utils/function";
 import {LayoutState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
+import type RcTree from 'rc-tree';
+import {generateList, searchInTree} from "@/utils/treeUtils";
+import {buildProjectTree} from "@/pages/DataStudioNew/Toolbar/Project/function";
 
 export const Project: React.FC<connect> = (props: any) => {
   const {project: {expandKeys, selectedKeys}, action: {actionType, params},updateProject,updateAction,addCenterTab} = props;
@@ -35,6 +37,7 @@ export const Project: React.FC<connect> = (props: any) => {
   });
 
   const ref = useRef<HTMLDivElement>(null);
+  const treeRef = useRef<RcTree>(null);
   const [treeHeight, setTreeHeight] = useState(0);
   const [selectCatalogueSortTypeData, setSelectCatalogueSortTypeData] = useState<{
     sortValue: string;
@@ -67,6 +70,18 @@ export const Project: React.FC<connect> = (props: any) => {
       case DataStudioActionType.PROJECT_RIGHT_CLICK:
         console.log('project-right-click', params)
         break;
+      case DataStudioActionType.TASK_RUN_LOCATION:
+        // 寻找折叠的key列表
+        const expandedKeys: string[] = searchInTree(
+          generateList(data, []),
+          data,
+          params.key,
+          'equal'
+        )
+        updateProject({expandKeys: [...expandKeys,...expandedKeys] })
+
+        treeRef.current!!.scrollTo({key: params.key})
+        break
     }
 
   }, [actionType, params]);
@@ -238,6 +253,7 @@ export const Project: React.FC<connect> = (props: any) => {
 
         {data?.length ? (
           <DirectoryTree
+            ref={treeRef}
             showLine
             switcherIcon={<DownOutlined/>}
             className={'treeList'}

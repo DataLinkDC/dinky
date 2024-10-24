@@ -54,10 +54,11 @@ const quickGuideTab: TabData = {
 export const layout: LayoutData = {
   dockbox: {
     mode: 'vertical',
+    size:1000,
     children: [
       {
         mode: 'horizontal',
-        size: 200,
+        size: 600,
         children: [
           {
             mode: 'vertical',
@@ -69,7 +70,7 @@ export const layout: LayoutData = {
                     content: <></>,
                     id: leftDefaultShowTab.key,
                     title: leftDefaultShowTab.title,
-                    minHeight: 50,
+                    minHeight: 30,
                     group: leftDefaultShowTab.position
                   }
                 ]
@@ -77,7 +78,7 @@ export const layout: LayoutData = {
             ]
           },
           {
-            size: 1000,
+            size: 800,
             tabs: [quickGuideTab],
             panelLock: {panelStyle: 'main'}
           }

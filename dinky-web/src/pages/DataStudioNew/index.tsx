@@ -73,8 +73,8 @@ const DataStudioNew: React.FC = (props: any) => {
 
   useAsyncEffect(async () => {
     updateAction({
-      actionType: undefined,
-      params: undefined
+      actionType: null,
+      params: null
     })
     await queryFlinkEnv()
     await queryFlinkCluster()
@@ -84,16 +84,20 @@ const DataStudioNew: React.FC = (props: any) => {
   }, [])
   useEffect(() => {
     const {actionType, params} = layoutState.action
-    if ((typeof actionType) ==='string' &&actionType?.includes("task-run-")) {
+    if (actionType?.includes("task-run-")) {
       const dockLayout = dockLayoutRef.current!!;
-      let serviceRoute: ToolbarRoute;
-      serviceRoute = layoutState.toolbar.leftTop.allTabs.find((x: string) => x === "service");
-      if (!serviceRoute) {
-        serviceRoute = layoutState.toolbar.leftBottom.allTabs.find((x: string) => x === "service");
+      let position: ToolbarPosition = 'leftBottom';
+      const key = "service";
+      if (layoutState.toolbar.leftBottom.allTabs.find((x: string) => x === key)) {
+        position = 'leftBottom'
+      } else if (layoutState.toolbar.leftTop.allTabs.find((x: string) => x === key)) {
+        position = 'leftTop'
+      } else if (layoutState.toolbar.right.allTabs.find((x: string) => x === key)) {
+        position = 'right'
       }
-      if (!serviceRoute) {
-        serviceRoute = layoutState.toolbar.right.allTabs.find((x: string) => x === "service");
-      }
+      const serviceRoute: ToolbarRoute = {
+        ...ToolbarRoutes.find(item => item.key === key)!!, position: position
+      };
       const currentSelect = layoutState.toolbar[serviceRoute.position].currentSelect;
       if (!currentSelect) {
         // 添加panel
@@ -158,7 +162,7 @@ const DataStudioNew: React.FC = (props: any) => {
     const currentSelect = layoutState.toolbar[route.position].currentSelect;
     if (!currentSelect) {
       // 添加panel
-      const layout = Algorithm.fixLayoutData(createNewPanel(layoutState.layoutData, route), dockLayout.props.groups);
+      const layout = Algorithm.fixLayoutData(createNewPanel(layoutState.layoutData, route, layoutState.layoutSize[route.position]), dockLayout.props.groups);
       dockLayout.changeLayout(layout, route.key, "update", false)
     } else if (currentSelect === route.key) {
       // 取消选中
@@ -181,19 +185,21 @@ const DataStudioNew: React.FC = (props: any) => {
   const loadTab = (tab: TabData) => {
     const {id, title, group} = tab;
     if (group !== "centerContent") {
-      const route = ToolbarRoutes.find((x) => x.key === id);
+      const route = ToolbarRoutes.find((x) => x.key === id) as ToolbarRoute;
+      const content = ToolbarRoutes.find(item => item.key === route.key)!!.content();
+      const autoFreeze = route.key !== "service";
       return {
         ...tab,
         content: <KeepAlive
-          cacheKey={route?.key}>{ToolbarRoutes.find(item => item.key === route?.key)?.content()}</KeepAlive>,
+          cacheKey={route.key} autoFreeze={autoFreeze}>{content}</KeepAlive>,
         title
       };
     } else {
       if (id === "quick-start") {
-        const route = ToolbarRoutes.find((x) => x.key === id);
+        const route = ToolbarRoutes.find((x) => x.key === id) as ToolbarRoute;
         return {
           ...tab,
-          content: ToolbarRoutes.find(item => item.key === route?.key)?.content(),
+          content: ToolbarRoutes.find(item => item.key === route.key)!!.content(),
           title
         };
       }
@@ -270,7 +276,7 @@ const DataStudioNew: React.FC = (props: any) => {
   };
   return (
     <PageContainer
-      breadcrumb={undefined}
+      breadcrumb={{}}
       title={false}
       childrenContentStyle={{margin: 0, padding: 0}}
     >

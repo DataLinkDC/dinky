@@ -79,6 +79,12 @@ export type LayoutState = {
    * en: Basic layout data
    */
   layoutData: LayoutBase;
+  layoutSize: {
+    leftTop: number,
+    leftBottom: number,
+    right: number,
+    centerContent?: number | undefined
+  },
   /**
    * zh: 工具栏布局
    * en: Toolbar layouts
@@ -240,6 +246,11 @@ const StudioModel: StudioModelType = {
       alertGroup: [],
       flinkConfigOptions: [],
       flinkUdfOptions: []
+    },
+    layoutSize: {
+      leftTop: 200,
+      leftBottom: 400,
+      right: 200
     }
   },
   effects: {
@@ -330,6 +341,7 @@ const StudioModel: StudioModelType = {
             if (state.toolbar[toolbarPosition].currentSelect === currentTabId) {
               state.toolbar[toolbarPosition].currentSelect = undefined;
             }
+            state.layoutSize[toolbarPosition] = dockLayout.find(currentTabId)?.parent?.size ?? 200;
           } else {
             if (state.centerContent.tabs.map(x => x.id).includes(currentTabId)) {
               // 中间内容
@@ -397,7 +409,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    updateCenterTab(state, {id, tabType, title, params,isUpdate}) {
+    updateCenterTab(state, {id, tabType, title, params, isUpdate}) {
       return {
         ...state,
         centerContent: {

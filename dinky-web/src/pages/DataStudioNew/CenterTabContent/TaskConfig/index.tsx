@@ -25,7 +25,7 @@ export default (props: { tempData: TempData,data:FlinkSQLState,onValuesChange?: 
         layout='vertical'
         onValuesChange={props.onValuesChange}
       >
-        <ProFormGroup>
+        <ProFormGroup style={{display:"flex",justifyContent:'center'}}>
           <ProFormSwitch
             label={l('pages.datastudio.label.execConfig.changelog')}
             name='useChangeLog'
