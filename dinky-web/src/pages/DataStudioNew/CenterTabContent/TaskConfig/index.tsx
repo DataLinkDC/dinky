@@ -7,6 +7,7 @@ import {SWITCH_OPTIONS} from "@/services/constants";
 import {TempData} from "@/pages/DataStudioNew/type";
 import {BasicConfig} from "@/pages/DataStudioNew/CenterTabContent/TaskConfig/BasicConfig";
 import {FlinkSQLState} from "@/pages/DataStudioNew/CenterTabContent/FlinkSQL";
+import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 
 export default (props: { tempData: TempData,data:FlinkSQLState,onValuesChange?: (changedValues: any, values: FlinkSQLState) => void }) => {
 

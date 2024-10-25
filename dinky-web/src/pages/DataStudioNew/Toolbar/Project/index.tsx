@@ -21,7 +21,7 @@ import type RcTree from 'rc-tree';
 import {generateList, searchInTree} from "@/utils/treeUtils";
 import {buildProjectTree} from "@/pages/DataStudioNew/Toolbar/Project/function";
 
-export const Project: React.FC<connect> = (props: any) => {
+export const Project= (props: any) => {
   const {project: {expandKeys, selectedKeys}, action: {actionType, params},updateProject,updateAction,addCenterTab} = props;
   const {initialState} = useModel('@@initialState');
 

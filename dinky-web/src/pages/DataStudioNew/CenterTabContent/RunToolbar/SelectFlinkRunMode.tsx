@@ -2,7 +2,6 @@ import {ProFormCascader} from "@ant-design/pro-form/lib";
 import {CascaderProps, Tag} from "antd";
 import {DefaultOptionType} from "antd/es/select";
 import {FlinkCluster} from "@/pages/DataStudioNew/type";
-import {l} from "@/utils/intl";
 
 
 type Option = {
@@ -15,7 +14,7 @@ export const SelectFlinkRunMode = (props: { data: FlinkCluster[] }) => {
   const {data} = props
   const optionDict = {
     "local": [],
-    "standalone":  [],
+    "standalone": [],
     "yarn-session": [],
     "yarn-per-job": [],
     "yarn-application": [],
@@ -41,18 +40,19 @@ export const SelectFlinkRunMode = (props: { data: FlinkCluster[] }) => {
   const options = [{
     value: 'local',
     label: "local"
-  },...Object.keys(optionDict).filter(key => optionDict[key].length > 0).map((key) => {
+  }, ...Object.keys(optionDict).filter(key => optionDict[key].length > 0).map((key) => {
     return {
       value: key,
       label: key,
       children: optionDict[key]
     }
   })]
-
+  console.log(data)
   const displayRender: CascaderProps<DefaultOptionType>['displayRender'] = (labels, selectedOptions = []) =>
+
     labels.map((label, i) => {
       const option = selectedOptions[i];
-      return (i === labels.length - 1) && (
+      return option && (i === labels.length - 1) && (
         <span key={label}>
           {label} {labels.length > 1 &&
           <Tag color={option.enabled ? 'processing' : 'error'}>{selectedOptions[0].label}</Tag>}
@@ -63,12 +63,12 @@ export const SelectFlinkRunMode = (props: { data: FlinkCluster[] }) => {
     <ProFormCascader
       name={['flinkMode']}
       rules={[
-        { required: true }
+        {required: true}
       ]}
       fieldProps={{
         options: options,
         displayRender: displayRender,
-        allowClear:false
+        allowClear: false
       }}
     />
   )

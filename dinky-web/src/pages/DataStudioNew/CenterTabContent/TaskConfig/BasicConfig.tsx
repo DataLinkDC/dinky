@@ -17,6 +17,7 @@ import {ProFormFlinkUdfConfig} from "@/pages/DataStudioNew/CenterTabContent/Task
 import React, {useEffect, useRef, useState} from "react";
 import {TempData} from "@/pages/DataStudioNew/type";
 import {FlinkSQLState} from "@/pages/DataStudioNew/CenterTabContent/FlinkSQL";
+import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 
 export const BasicConfig = (props: { tempData: TempData,data:FlinkSQLState,onValuesChange?: (changedValues: any, values: FlinkSQLState) => void }) => {
   const {alertGroup, flinkConfigOptions, flinkUdfOptions} = props.tempData;
@@ -45,6 +46,7 @@ export const BasicConfig = (props: { tempData: TempData,data:FlinkSQLState,onVal
   return <div ref={divRef}>
     <ProForm initialValues={{...props.data}}
              submitter={false}
+             disabled={props.data?.step === JOB_LIFE_CYCLE.PUBLISH}
              onValuesChange={props.onValuesChange}
              formRef={formRef} layout={'vertical'} rowProps={{
       gutter: [16, 0],

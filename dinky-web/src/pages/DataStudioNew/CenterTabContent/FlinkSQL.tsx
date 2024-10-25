@@ -15,6 +15,7 @@ import {
   CloseOutlined,
   EnvironmentOutlined,
   FundOutlined,
+  MergeCellsOutlined,
   PartitionOutlined,
   PauseOutlined,
   RotateRightOutlined,
@@ -25,7 +26,7 @@ import {connect} from "@umijs/max";
 import CusPanelResizeHandle from "@/pages/DataStudioNew/components/CusPanelResizeHandle";
 import {ProForm, ProFormInstance} from "@ant-design/pro-components";
 import {useAsyncEffect} from "ahooks";
-import {getTaskDetails, putTask} from "@/pages/DataStudio/LeftContainer/Project/service";
+import {getTaskDetails} from "@/pages/DataStudio/LeftContainer/Project/service";
 import {SelectFlinkEnv} from "@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkEnv";
 import {SelectFlinkRunMode} from "@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkRunMode";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
@@ -36,19 +37,31 @@ import {FlinkTaskRunType, StudioLineageParams} from "@/pages/DataStudioNew/type"
 import {TaskExtConfig} from "@/types/Studio/data";
 import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 import {debounce} from "lodash";
-import {cancelTask, executeSql, explainSql, getJobPlan} from "@/pages/DataStudio/HeaderContainer/service";
+import {
+  cancelTask,
+  changeTaskLife,
+  executeSql,
+  explainSql,
+  getJobPlan
+} from "@/pages/DataStudio/HeaderContainer/service";
 import {l} from "@/utils/intl";
 import {editor} from "monaco-editor";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
-import {getDataByParams, queryDataByParams} from "@/services/BusinessCrud";
+import {getDataByParams, handlePutDataJson, queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/endpoints";
 import {Jobs, LineageDetailInfo} from "@/types/DevOps/data";
 import {isStatusDone} from "@/pages/DataStudioNew/function";
 import {debugTask} from "@/pages/DataStudioNew/service";
+import {PushpinIcon} from "@/components/Icons/CustomIcons";
+import {assert} from "@/pages/DataStudio/function";
+import {DIALECT} from "@/services/constants";
+import {isSql} from "@/pages/DataStudio/HeaderContainer/function";
+import {SysConfigStateType} from "@/pages/SettingCenter/GlobalSetting/model";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
   tabData: CenterTab;
+  activeTab?: string | undefined
 }
 
 export type TaskParams = {
@@ -84,9 +97,22 @@ export  type FlinkSQLState = {
 }
 
 const toolbarSize = 40;
+const dividerHeight = 24;
+
+
 export const FlinkSQL = (props: FlinkSqlProps & any) => {
-  const {showDesc, tempData, updateAction, updateProject, updateCenterTab} = props;
-  const {params, title} = props.tabData as CenterTab;
+  const {
+    showDesc,
+    tempData,
+    updateAction,
+    updateProject,
+    updateCenterTab,
+    activeTab,
+    enabledDs,
+    taskOwnerLockingStrategy,
+    dsConfig
+  } = props;
+  const {params, title, id} = props.tabData as CenterTab;
   const containerRef = useRef<HTMLDivElement>(null);
   const [codeEditorWidth, setCodeEditorWidth] = useState(0);
 
@@ -186,6 +212,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     }
     setCurrentState({...currentState, ...allValues})
   }
+  const hotKeyConfig = {enable: activeTab === id}
 
   const rightToolbarItem: TabsProps['items'] = [{
     label: '配置',
@@ -195,21 +222,167 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     label: '信息',
     key: 'info',
     children: <TaskInfo params={{...currentState}}/>
-  }, {
-    label: '历史版本',
-    key: 'historyVersion',
-    children: <HistoryVersion taskId={currentState.taskId} statement={currentState.statement}
-                              updateTime={currentState.updateTime}/>
-  },
+  }
   ]
-
-
-  const handleSave = async () => {
-    await putTask(currentState)
-    updateCenterTab({...props.tabData, isUpdate: false})
+  if (assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
+    rightToolbarItem.push({
+      label: '历史版本',
+      key: 'historyVersion',
+      children: <HistoryVersion taskId={currentState.taskId} statement={currentState.statement}
+                                updateTime={currentState.updateTime}/>
+    })
   }
 
 
+  const handleSave = async () => {
+    // await putTask(currentState)
+    const saved = await handlePutDataJson(API_CONSTANTS.TASK, currentState);
+    updateCenterTab({...props.tabData, isUpdate: false})
+  }
+
+  const handleCheck = async () => {
+    const res = await explainSql(
+      l('pages.datastudio.editor.checking', '', {jobName: currentState?.name}),
+      {...currentState}
+    );
+    updateAction({
+      actionType: DataStudioActionType.TASK_RUN_CHECK,
+      params: {
+        taskId: params.taskId,
+        data: res.data
+      }
+    })
+  };
+  const handleDAG = async () => {
+    const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), currentState);
+    updateAction({
+      actionType: DataStudioActionType.TASK_RUN_DAG,
+      params: {
+        taskId: params.taskId,
+        data: res.data
+      }
+    })
+  }
+
+  const handleLineage = async () => {
+    const {type, dialect, databaseId, statement, envId, fragment, taskId} = currentState;
+    const params: StudioLineageParams = {
+      type: 1, // todo: 暂时写死 ,后续优化
+      dialect: dialect,
+      envId: envId ?? -1,
+      fragment: fragment,
+      statement: statement,
+      statementSet: true,
+      databaseId: databaseId ?? 0,
+      variables: {},
+      taskId: taskId
+    };
+    const data = await getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params) as LineageDetailInfo
+    updateAction({
+      actionType: DataStudioActionType.TASK_RUN_LINEAGE,
+      params: {
+        taskId: params.taskId,
+        data: data
+      }
+    })
+  }
+
+  const handleSubmit = async () => {
+    await handleSave()
+    updateAction({
+      actionType: DataStudioActionType.TASK_RUN_SUBMIT,
+      params: {
+        taskId: params.taskId,
+        envId: currentState.envId
+      }
+    })
+    const result = await executeSql(
+      l('pages.datastudio.editor.submitting', '', {jobName: title}),
+      params.taskId
+    )
+    if (result.success) {
+      setCurrentState(prevState => {
+        return {
+          ...prevState,
+          status: result.data.status === "SUCCESS" ? "RUNNING" : result.data.status
+        }
+      })
+    }
+  }
+
+  const handleDebug = async () => {
+    const res = await debugTask(
+      l('pages.datastudio.editor.debugging', '', {jobName: currentState.name}),
+      {...currentState}
+    );
+    if (res?.success && res?.data?.result?.success) {
+      updateAction({
+        actionType: DataStudioActionType.TASK_RUN_DEBUG,
+        params: {
+          taskId: params.taskId,
+        }
+      })
+      setCurrentState(prevState => {
+        return {
+          ...prevState,
+          status: res.data.status === "SUCCESS" ? "RUNNING" : res.data.status
+        }
+      })
+    }
+  }
+  const handleStop = async () => {
+    const result = await cancelTask('', currentState.taskId, false)
+    if (result.success) {
+      setCurrentState(prevState => {
+        return {
+          ...prevState,
+          status: "CANCEL"
+        }
+      })
+    }
+
+  }
+
+  const handleGotoDevOps = async () => {
+    const dataByParams = await queryDataByParams<Jobs.JobInstance>(
+      API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
+      {taskId: currentState.taskId}
+    );
+    if (dataByParams) {
+      window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
+    }
+  }
+
+  const handleLocation = async () => {
+    updateProject({selectedKeys: [params.key]})
+    updateAction({
+      actionType: DataStudioActionType.TASK_RUN_LOCATION,
+      params: {
+        taskId: params.taskId,
+        key: params.key
+      }
+    })
+  }
+  const handleChangeJobLife = async () => {
+    if (JOB_LIFE_CYCLE.PUBLISH == currentState.step) {
+      await changeTaskLife(
+        l('global.table.lifecycle.offline'),
+        currentState.taskId,
+        JOB_LIFE_CYCLE.DEVELOP
+      );
+      currentState.step = JOB_LIFE_CYCLE.DEVELOP;
+    } else {
+      await handleSave();
+      await changeTaskLife(
+        l('global.table.lifecycle.publishing'),
+        currentState.taskId,
+        JOB_LIFE_CYCLE.PUBLISH
+      );
+      currentState.step = JOB_LIFE_CYCLE.PUBLISH;
+
+    }
+    setCurrentState(prevState => ({...prevState, step: currentState.step}))
+  };
   return (
     <Skeleton loading={loading} active
               title={false}
@@ -233,159 +406,111 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
           onValuesChange={debounce(onValuesChange, 500)}
           syncToInitialValues
         >
-          <Flex className={"run-toolbar"}>
+          <Flex className={"run-toolbar"} wrap>
             {/* 运行工具栏*/}
-            {/*todo 按钮可能会超过当前布局，解决方案：超过布局的按钮需要用更多来显示*/}
-            <RunToolBarButton showDesc={showDesc} desc={"保存"} icon={<SaveOutlined/>} onClick={handleSave}/>
-            <RunToolBarButton showDesc={showDesc} desc={"检查"} icon={<AuditOutlined/>} onClick={async () => {
-              let param = {
-                ...currentState
-              };
-              const res = await explainSql(
-                l('pages.datastudio.editor.checking', '', {jobName: currentState?.name}),
-                param
-              );
-              updateAction({
-                actionType: DataStudioActionType.TASK_RUN_CHECK,
-                params: {
-                  taskId: params.taskId,
-                  data: res.data
-                }
-              })
+            <RunToolBarButton showDesc={showDesc} desc={l('button.save')} icon={<SaveOutlined/>} onClick={handleSave}
+                              disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH}
+                              hotKey={{
+                                ...hotKeyConfig,
+                                hotKeyDesc: 'Ctrl/Command +S',
+                                hotKeyHandle: (e: KeyboardEvent) => ((e.ctrlKey && e.key === 's') || (e.metaKey && e.key === 's'))
+                              }}/>
+            <RunToolBarButton showDesc={showDesc} desc={l('pages.datastudio.editor.check')} icon={<AuditOutlined/>}
+                              onClick={handleCheck} isShow={assert(
+                currentState.dialect,
+                [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG],
+                true,
+                'notIncludes'
+              ) &&
+              !isSql(currentState.dialect)}
+                              hotKey={{
+                                ...hotKeyConfig,
+                                hotKeyDesc: 'Alt+2/@',
+                                hotKeyHandle: (e: KeyboardEvent) => ((e.altKey && e.code === 'Digit2') || (e.altKey && e.key === '@'))
+                              }}/>
+            <RunToolBarButton showDesc={showDesc} desc={l('button.graph')}
+                              isShow={assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')}
+                              icon={<ApartmentOutlined/>} onClick={handleDAG}/>
+            <RunToolBarButton showDesc={showDesc} desc={"血缘"} icon={<PartitionOutlined/>} onClick={handleLineage}/>
 
-            }}/>
-            <RunToolBarButton showDesc={showDesc} desc={"预览DAG"} icon={<ApartmentOutlined/>} onClick={async () => {
-              const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), currentState);
-              updateAction({
-                actionType: DataStudioActionType.TASK_RUN_DAG,
-                params: {
-                  taskId: params.taskId,
-                  data: res.data
-                }
-              })
-            }}/>
-            <RunToolBarButton showDesc={showDesc} desc={"血缘"} icon={<PartitionOutlined/>} onClick={async () => {
-              const {type, dialect, databaseId, statement, envId, fragment, taskId} = currentState;
-              const params: StudioLineageParams = {
-                type: 1, // todo: 暂时写死 ,后续优化
-                dialect: dialect,
-                envId: envId ?? -1,
-                fragment: fragment,
-                statement: statement,
-                statementSet: true,
-                databaseId: databaseId ?? 0,
-                variables: {},
-                taskId: taskId
-              };
-              const data = await getDataByParams(API_CONSTANTS.STUDIO_GET_LINEAGE, params) as LineageDetailInfo
-              updateAction({
-                actionType: DataStudioActionType.TASK_RUN_LINEAGE,
-                params: {
-                  taskId: params.taskId,
-                  data: data
-                }
-              })
-            }}/>
-
-            <Divider type={'vertical'} style={{height: "100%"}}/>
+            {assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes') &&
+              <>
+                <Divider type={'vertical'} style={{height: dividerHeight}}/>
+                <SelectFlinkEnv flinkEnv={tempData.flinkEnv} value={currentState.envId}
+                                onChange={value => setCurrentState(prevState => ({...prevState, envId: value}))}/>
+                <SelectFlinkRunMode data={tempData.flinkCluster}/>
+              </>}
 
 
-            <SelectFlinkEnv flinkEnv={tempData.flinkEnv} value={currentState.envId}
-                            onChange={value => setCurrentState(prevState => ({...prevState, envId: value}))}/>
+            {assert(
+              currentState.dialect,
+              [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV],
+              true,
+              'notIncludes'
+            ) && <Divider type={'vertical'} style={{height: dividerHeight}}/>}
 
-            <SelectFlinkRunMode data={tempData.flinkCluster}/>
 
-            <Divider type={'vertical'} style={{height: "100%"}}/>
+            <RunToolBarButton isShow={isStatusDone(currentState.status) &&
+              assert(
+                currentState.dialect,
+                [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV],
+                true,
+                'notIncludes'
+              )} showDesc={showDesc} color={'green'}
+                              desc={l('pages.datastudio.editor.exec')} icon={<CaretRightOutlined/>}
+                              onClick={handleSubmit}
+                              hotKey={{
+                                ...hotKeyConfig,
+                                hotKeyDesc: 'Shift+F10',
+                                hotKeyHandle: (e: KeyboardEvent) => (e.shiftKey && e.key === 'F10')
+                              }}/>
+            <RunToolBarButton
+              isShow={isStatusDone(currentState.status) && assert(currentState.dialect, [DIALECT.FLINK_SQL], true, 'includes')}
+              showDesc={showDesc} color={'red'} desc={l('pages.datastudio.editor.debug')}
+              icon={<BugOutlined/>} onClick={handleDebug}
+              hotKey={{
+                ...hotKeyConfig,
+                hotKeyDesc: 'Shift+F9',
+                hotKeyHandle: (e: KeyboardEvent) => (e.shiftKey && e.key === 'F9')
+              }}/>
 
 
-            {isStatusDone(currentState.status) &&
-              <RunToolBarButton showDesc={showDesc} color={'green'} desc={"运行"} icon={<CaretRightOutlined/>}
-                                onClick={async () => {
-                                  await handleSave()
-                                  updateAction({
-                                    actionType: DataStudioActionType.TASK_RUN_SUBMIT,
-                                    params: {
-                                      taskId: params.taskId,
-                                      envId: currentState.envId
-                                    }
-                                  })
-                                  const result = await executeSql(
-                                    l('pages.datastudio.editor.submitting', '', {jobName: title}),
-                                    params.taskId
-                                  )
-                                  if (result.success){
-                                    setCurrentState(prevState => {
-                                      return {
-                                        ...prevState,
-                                        status: result.data.status === "SUCCESS" ? "RUNNING" : result.data.status
-                                      }
-                                    })
-                                  }
-                                }}/>}
-            {isStatusDone(currentState.status) &&
-              <RunToolBarButton showDesc={showDesc} color={'red'} desc={"预览"} icon={<BugOutlined/>} onClick={async ()=>{
-                const res = await debugTask(
-                  l('pages.datastudio.editor.debugging', '', { jobName: currentState.name }),
-                  { ...currentState }
-                );
-                if (res?.success && res?.data?.result?.success){
-                  updateAction({
-                    actionType: DataStudioActionType.TASK_RUN_DEBUG,
-                    params: {
-                      taskId: params.taskId,
-                    }
-                  })
-                  setCurrentState(prevState => {
-                    return {
-                      ...prevState,
-                      status: res.data.status === "SUCCESS" ? "RUNNING" : res.data.status
-                    }
-                  })
-                }
-              }}/>}
+            <RunToolBarButton isShow={!isStatusDone(currentState.status)} showDesc={showDesc} color={'red'}
+                              desc={l('pages.datastudio.editor.stop')} icon={<PauseOutlined/>} onClick={handleStop}
+                              hotKey={{
+                                ...hotKeyConfig,
+                                hotKeyDesc: 'Ctrl+F2',
+                                hotKeyHandle: (e: KeyboardEvent) => (e.ctrlKey && e.key === 'F2')
+                              }}/>
 
-            {!isStatusDone(currentState.status) &&
-              <RunToolBarButton showDesc={showDesc} color={'red'} desc={"停止"} icon={<PauseOutlined/>}
-                                onClick={async () => {
-                                  const result = await cancelTask('', currentState.taskId, false)
-                                  if (result.success) {
-                                    setCurrentState(prevState => {
-                                      return {
-                                        ...prevState,
-                                        status: "CANCEL"
-                                      }
-                                    })
-                                  }
+            <RunToolBarButton
+              isShow={!isStatusDone(currentState.status) && assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')}
+              showDesc={showDesc} desc={l('pages.datastudio.to.jobDetail')}
+              icon={<RotateRightOutlined/>} onClick={handleGotoDevOps}/>
 
-                                }}/>}
-
-            {!isStatusDone(currentState.status) &&
-              <RunToolBarButton showDesc={showDesc} desc={"运维"} icon={<RotateRightOutlined/>} onClick={async () => {
-                const dataByParams = await queryDataByParams<Jobs.JobInstance>(
-                  API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
-                  {taskId: currentState.taskId}
-                );
-                if (dataByParams) {
-                  window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
-                }
-              }}/>}
-
-            <Divider type={'vertical'} style={{height: "100%"}}/>
+            <Divider type={'vertical'} style={{height: dividerHeight}}/>
             <RunToolBarButton showDesc={showDesc} desc={"格式化"} icon={<ClearOutlined/>}/>
-            <RunToolBarButton showDesc={showDesc} desc={"定位"} icon={<EnvironmentOutlined/>} onClick={async () => {
-              updateProject({selectedKeys: [params.key]})
-              updateAction({
-                actionType: DataStudioActionType.TASK_RUN_LOCATION,
-                params: {
-                  taskId: params.taskId,
-                  key: params.key
-                }
-              })
-            }}/>
+            <RunToolBarButton showDesc={showDesc} desc={"定位"} icon={<EnvironmentOutlined/>} onClick={handleLocation}/>
 
-            <Divider type={'vertical'} style={{height: "100%"}}/>
+            <Divider type={'vertical'} style={{height: dividerHeight}}/>
 
-            <RunToolBarButton showDesc={showDesc} desc={"发布"} icon={<FundOutlined/>}/>
+            <RunToolBarButton isShow={JOB_LIFE_CYCLE.PUBLISH !== currentState.step} showDesc={showDesc}
+                              desc={l('button.publish')} icon={<FundOutlined/>} onClick={handleChangeJobLife}/>
+            <RunToolBarButton isShow={JOB_LIFE_CYCLE.PUBLISH === currentState.step} showDesc={showDesc}
+                              desc={l('button.offline')} icon={<MergeCellsOutlined/>} onClick={handleChangeJobLife}/>
+            <RunToolBarButton showDesc={showDesc} desc={l('button.push')} icon={<PushpinIcon className={'blue-icon'}/>}
+                              isShow={enabledDs && JOB_LIFE_CYCLE.PUBLISH === currentState.step &&
+                                assert(
+                                  currentState.dialect,
+                                  [DIALECT.FLINKSQLENV, DIALECT.SCALA, DIALECT.JAVA, DIALECT.PYTHON_LONG],
+                                  true,
+                                  'notIncludes'
+                                )}
+                              hotKey={{
+                                ...hotKeyConfig,
+                                hotKeyDesc: 'Ctrl+E',
+                                hotKeyHandle: (e: KeyboardEvent) => (e.ctrlKey && e.key === 'E')
+                              }}/>
 
 
           </Flex>
@@ -429,6 +554,8 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
                 )}
               </PanelGroup>
             </Col>
+
+            {/*渲染右边更多扩展栏*/}
             <Flex wrap vertical className={'right-toolbar'} style={{width: toolbarSize,}}>
               {rightToolbarItem.map(item => item.label?.toString()).map((item) => (
                 <div key={item}
@@ -448,7 +575,11 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
 }
 
 export default connect(
-  ({DataStudio}: { DataStudio: LayoutState }) => ({
+  ({DataStudio, SysConfig}: { DataStudio: LayoutState, SysConfig: SysConfigStateType }) => ({
     showDesc: DataStudio.toolbar.showDesc,
-    tempData: DataStudio.tempData
+    tempData: DataStudio.tempData,
+    activeTab: DataStudio.centerContent.activeTab,
+    dsConfig: SysConfig.dsConfig,
+    enabledDs: SysConfig.enabledDs,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   }), mapDispatchToProps)(FlinkSQL);

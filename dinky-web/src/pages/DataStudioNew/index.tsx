@@ -25,7 +25,7 @@ import {Col, Row, theme} from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import {RightContextMenuState} from '@/pages/DataStudioNew/data.d';
-import {getAllPanel, handleRightClick, InitContextMenuPosition} from '@/pages/DataStudioNew/function';
+import {getAllPanel, getTabIcon, handleRightClick, InitContextMenuPosition} from '@/pages/DataStudioNew/function';
 import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
 import {MenuInfo} from 'rc-menu/es/interface';
 import {lazyComponent, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
@@ -39,8 +39,6 @@ import {activeTab, createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunctio
 import * as Algorithm from "./Algorithm";
 import {PanelData} from "rc-dock/lib/DockData";
 import {useAsyncEffect} from "ahooks";
-import {getIcon} from "@/utils/function";
-import {undefined} from "@umijs/utils/compiled/zod";
 
 const {useToken} = theme;
 const FlinkSQL = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/FlinkSQL'));
@@ -192,7 +190,9 @@ const DataStudioNew: React.FC = (props: any) => {
         ...tab,
         content: <KeepAlive
           cacheKey={route.key} autoFreeze={autoFreeze}>{content}</KeepAlive>,
-        title
+        title,
+        minHeight: 30,
+        minWidth: 200
       };
     } else {
       if (id === "quick-start") {
@@ -200,17 +200,20 @@ const DataStudioNew: React.FC = (props: any) => {
         return {
           ...tab,
           content: ToolbarRoutes.find(item => item.key === route.key)!!.content(),
-          title
+          title,
+          minHeight: 30,
+          minWidth: 200
         };
       }
       const tabData = (layoutState.centerContent.tabs as CenterTab[]).find((x) => x.id === id)!!;
 
       const getTitle = () => {
         if (tabData.tabType === "task") {
+          const titleContent = <>{getTabIcon(tabData.params.dialect, 16)}  {tabData.title}</>
           if (tabData.isUpdate) {
-            return <span style={{color: '#52c41a'}}>{getIcon(tabData.params.dialect)}{tabData.title}{"  *"}</span>
+            return <span style={{color: '#52c41a'}}>{titleContent}{"  *"}</span>
           }
-          return <span>{getIcon(tabData.params.dialect)}{tabData.title}</span>
+          return <span>{titleContent}</span>
         } else {
           return tabData.title
         }
@@ -220,7 +223,12 @@ const DataStudioNew: React.FC = (props: any) => {
         ...tab,
         title: getTitle(),
         closable: true,
-        content: <KeepAlive cacheKey={tabData.id}>{lazyComponent(<FlinkSQL tabData={tabData}/>)}</KeepAlive>,
+        content: <KeepAlive cacheKey={tabData.id} autoFreeze={true}
+                            when={() => !(layoutState.centerContent.tabs as CenterTab[]).some((x) => x.id === id)}>
+          {lazyComponent(<FlinkSQL tabData={tabData}/>)}
+        </KeepAlive>,
+        minHeight: 30,
+        minWidth: 200
       };
     }
 

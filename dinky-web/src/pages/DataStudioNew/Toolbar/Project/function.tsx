@@ -20,7 +20,6 @@
 import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
 import { assert, lockTask, showAllOwners } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
-import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { DIALECT } from '@/services/constants';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
@@ -30,6 +29,7 @@ import { l } from '@/utils/intl';
 import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Space, Tooltip } from 'antd';
 import { Key } from 'react';
+import {getTabIcon} from "@/pages/DataStudioNew/function";
 
 /**
  * generate list of tree node from data
