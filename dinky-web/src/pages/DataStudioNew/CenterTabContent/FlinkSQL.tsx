@@ -236,7 +236,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
 
   const handleSave = async () => {
     // await putTask(currentState)
-    const saved = await handlePutDataJson(API_CONSTANTS.TASK, currentState);
+    await handlePutDataJson(API_CONSTANTS.TASK, currentState);
     updateCenterTab({...props.tabData, isUpdate: false})
   }
 
