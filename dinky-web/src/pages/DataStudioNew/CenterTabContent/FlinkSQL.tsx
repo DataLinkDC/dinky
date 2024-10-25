@@ -214,16 +214,16 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
   }
   const hotKeyConfig = {enable: activeTab === id}
 
-  const rightToolbarItem: TabsProps['items'] = [{
-    label: '配置',
-    key: 'config',
-    children: <TaskConfig tempData={tempData} data={currentState} onValuesChange={debounce(onValuesChange, 500)}/>
-  }, {
-    label: '信息',
-    key: 'info',
-    children: <TaskInfo params={{...currentState}}/>
+  const rightToolbarItem: TabsProps['items'] = []
+  if (isSql(currentState.dialect) || assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
+    rightToolbarItem.push(
+      {
+        label: '配置',
+        key: 'config',
+        children: <TaskConfig tempData={tempData} data={currentState} onValuesChange={debounce(onValuesChange, 500)}/>
+      }
+    )
   }
-  ]
   if (assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
     rightToolbarItem.push({
       label: '历史版本',
@@ -232,6 +232,11 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
                                 updateTime={currentState.updateTime}/>
     })
   }
+  rightToolbarItem.push({
+    label: '信息',
+    key: 'info',
+    children: <TaskInfo params={{...currentState}}/>
+  })
 
 
   const handleSave = async () => {
