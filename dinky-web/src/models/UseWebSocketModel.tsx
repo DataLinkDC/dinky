@@ -87,7 +87,7 @@ export default () => {
       const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
       ws.current.send(JSON.stringify({ token, topics }));
     } else {
-      //TODO 这里要做些什么
+      //TODO do someting
     }
   };
 
