@@ -41,7 +41,8 @@ import {PanelData} from "rc-dock/lib/DockData";
 import {useAsyncEffect} from "ahooks";
 
 const {useToken} = theme;
-const FlinkSQL = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/FlinkSQL'));
+const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
+const DataSourceDetail = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/DataSourceDetail'));
 
 const DataStudioNew: React.FC = (props: any) => {
   const {
@@ -58,6 +59,7 @@ const DataStudioNew: React.FC = (props: any) => {
     queryAlertGroup,
     queryFlinkConfigOptions,
     queryFlinkUdfOptions,
+    queryDataSourceDataList
   } = props
   const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
@@ -69,6 +71,7 @@ const DataStudioNew: React.FC = (props: any) => {
     position: InitContextMenuPosition
   });
 
+
   useAsyncEffect(async () => {
     updateAction({
       actionType: null,
@@ -79,6 +82,7 @@ const DataStudioNew: React.FC = (props: any) => {
     await queryAlertGroup()
     await queryFlinkConfigOptions()
     await queryFlinkUdfOptions()
+    await queryDataSourceDataList()
   }, [])
   useEffect(() => {
     const {actionType, params} = layoutState.action
@@ -208,24 +212,40 @@ const DataStudioNew: React.FC = (props: any) => {
       const tabData = (layoutState.centerContent.tabs as CenterTab[]).find((x) => x.id === id)!!;
 
       const getTitle = () => {
-        if (tabData.tabType === "task") {
-          const titleContent = <>{getTabIcon(tabData.params.dialect, 16)}  {tabData.title}</>
-          if (tabData.isUpdate) {
-            return <span style={{color: '#52c41a'}}>{titleContent}{"  *"}</span>
-          }
-          return <span>{titleContent}</span>
-        } else {
-          return tabData.title
+        switch (tabData.tabType) {
+          case "task":
+            const titleContent = <>{getTabIcon(tabData.params.dialect, 16)} {tabData.title}</>
+            if (tabData.isUpdate) {
+              return <span style={{color: '#52c41a'}}>{titleContent}{"  *"}</span>
+            }
+            return <span>{titleContent}</span>
+          case "dataSource":
+            const dialect = tabData.params.type
+            return <>{getTabIcon(dialect, 16)} {tabData.title}</>
+          default:
+            return <>{tabData.title}</>
         }
       }
+
+      let content = <></>;
+      const currentData = (layoutState.centerContent.tabs as CenterTab[]).find((tab) => id == tab.id);
+
       // todo 添加中间tab内容
+      switch (tabData.tabType) {
+        case "task":
+          content = <SqlTask tabData={tabData}/>
+          break;
+        case "dataSource":
+          content = <DataSourceDetail {...currentData!!}/>
+          break;
+      }
       return {
         ...tab,
         title: getTitle(),
         closable: true,
         content: <KeepAlive cacheKey={tabData.id} autoFreeze={true}
                             when={() => !(layoutState.centerContent.tabs as CenterTab[]).some((x) => x.id === id)}>
-          {lazyComponent(<FlinkSQL tabData={tabData}/>)}
+          {lazyComponent(content)}
         </KeepAlive>,
         minHeight: 30,
         minWidth: 200
@@ -329,7 +349,7 @@ const DataStudioNew: React.FC = (props: any) => {
             <DockLayout
               ref={dockLayoutRef}
               layout={layoutState.layoutData}
-              groups={groups(layoutState, updateAction)}
+              groups={groups(updateAction)}
               dropMode={'edge'}
               style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
               onLayoutChange={(newLayout, currentTabId, direction) => {

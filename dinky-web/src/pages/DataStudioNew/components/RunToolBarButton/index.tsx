@@ -1,4 +1,4 @@
-import React, {ReactNode, useCallback, useEffect, useState} from "react";
+import React, {memo, ReactNode, useCallback, useEffect, useState} from "react";
 import {Button, Tooltip} from "antd";
 import {sleep} from "@antfu/utils";
 
@@ -21,45 +21,48 @@ export type RunToolBarButtonProps = {
   disabled?: boolean
 }
 
-export default (props: RunToolBarButtonProps) => {
-  const {showDesc, desc, icon, onClick, color, sleepTime, hotKey, isShow = true,disabled=false} = props;
-  const [loading, setLoading] = useState(false)
-  const style = color ? {color: color} : {};
+export default memo((props: RunToolBarButtonProps) => {
 
-  const onClickHandle = useCallback(async () => {
-    setLoading(true)
-    if (onClick) {
-      try {
-        await onClick()
-      } catch (e) {
+    const {showDesc, desc, icon, onClick, color, sleepTime, hotKey, isShow = true, disabled = false} = props;
+    const [loading, setLoading] = useState(false)
+    const style = color ? {color: color} : {};
+
+    const onClickHandle = useCallback(async () => {
+      setLoading(true)
+      if (onClick) {
+        try {
+          await onClick()
+        } catch (e) {
+        }
       }
-    }
-    await sleep(sleepTime ?? 500)
-    setLoading(false)
-  }, [onClick, sleepTime])
-  useEffect(() => {
-    const hotKeyFuncHandle = (e: KeyboardEvent) => {
-      if (hotKey?.hotKeyHandle(e)) {
-        e.preventDefault()
-        onClickHandle()
-      }
-    };
-    if (hotKey?.enable) {
-      document.addEventListener('keydown', hotKeyFuncHandle)
-    }
-    return () => {
+      await sleep(sleepTime ?? 500)
+      setLoading(false)
+    }, [onClick, sleepTime])
+    useEffect(() => {
+      const hotKeyFuncHandle = (e: KeyboardEvent) => {
+        if (hotKey?.hotKeyHandle(e)) {
+          e.preventDefault()
+          onClickHandle().then()
+        }
+      };
       if (hotKey?.enable) {
-        document.removeEventListener('keydown', hotKeyFuncHandle)
+        document.addEventListener('keydown', hotKeyFuncHandle)
       }
-    }
-  }, [hotKey?.enable]);
+      return () => {
+        if (hotKey?.enable) {
+          document.removeEventListener('keydown', hotKeyFuncHandle)
+        }
+      }
+    }, [hotKey?.enable]);
 
-
-  const tooltipDesc = hotKey?.enable ? `${desc} : (${hotKey.hotKeyDesc})` : desc;
-  return (isShow && <Tooltip title={tooltipDesc}>
-    <Button disabled={disabled} loading={loading} htmlType={'submit'} type="text" icon={icon} onClick={onClickHandle}
-            style={{...style, padding: '1px 6px'}}>{showDesc ? desc : ""}</Button>
-  </Tooltip>)
-}
-
+    const tooltipDesc = hotKey?.enable ? `${desc} : (${hotKey.hotKeyDesc})` : desc;
+    return (isShow && <Tooltip title={tooltipDesc}>
+      <Button disabled={disabled} loading={loading} htmlType={'submit'} type="text" icon={icon} onClick={onClickHandle}
+              style={{...style, padding: '1px 6px'}}>{showDesc ? desc : ""}</Button>
+    </Tooltip>)
+  }
+  , (prevProps, nextProps) => {
+    return prevProps.disabled === nextProps.disabled && prevProps.isShow === nextProps.isShow && prevProps.onClick === nextProps.onClick;
+  }
+)
 

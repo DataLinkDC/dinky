@@ -10,7 +10,7 @@ import {
   ProjectDTO,
   ProjectState,
   SaveToolbarLayoutDTO,
-  SetLayoutDTO,
+  SetLayoutDTO, TaskState,
   TempData,
   TempDataDTO,
   UpdateActionDTO
@@ -30,13 +30,14 @@ import {
 import {Alert} from "@/types/RegCenter/data";
 import {showAlertGroup} from "@/pages/RegCenter/Alert/AlertGroup/service";
 import {DefaultOptionType} from "antd/es/select";
+import {getDataSourceList} from "@/pages/DataStudioNew/Toolbar/DataSource/service";
 
 /**
  * @description:
  *  zh: 中间tab 类型
  *  en: Center tab type
  */
-export type CenterTabType = "web" | "task"
+export type CenterTabType = "web" | "task" | "dataSource"
 
 
 /**
@@ -157,7 +158,7 @@ export type LayoutState = {
      * zh: 参数
      * en: Params
      */
-    params?: Record<string, any>
+    params?: Record<string, any> | TaskState
   },
   /**
    * zh: 临时数据
@@ -176,6 +177,7 @@ export type StudioModelType = {
     queryAlertGroup: Effect;
     queryFlinkConfigOptions: Effect;
     queryFlinkUdfOptions: Effect;
+    queryDataSourceDataList: Effect;
   },
   reducers: {
     // 保存布局
@@ -245,7 +247,8 @@ const StudioModel: StudioModelType = {
       flinkCluster: [],
       alertGroup: [],
       flinkConfigOptions: [],
-      flinkUdfOptions: []
+      flinkUdfOptions: [],
+      dataSourceDataList: []
     },
     layoutSize: {
       leftTop: 200,
@@ -319,6 +322,19 @@ const StudioModel: StudioModelType = {
         payload: {
           ...tempData,
           flinkUdfOptions: data
+        }
+      });
+    },
+    * queryDataSourceDataList({}, {call, put, select}) {
+      const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
+      const data: [] = yield call(getDataSourceList);
+
+      // 移除数据，并保留当前类别的属性
+      yield put({
+        type: 'saveTempData',
+        payload: {
+          ...tempData,
+          dataSourceDataList: data
         }
       });
     },

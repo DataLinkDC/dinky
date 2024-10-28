@@ -28,12 +28,12 @@ import {
   CloseOutlined,
   ImportOutlined,
   PlusCircleOutlined,
+  ReloadOutlined,
   SelectOutlined,
   ShrinkOutlined,
   SwitcherOutlined
 } from '@ant-design/icons';
 import {leftDefaultShowTab} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {LayoutState} from "@/pages/DataStudioNew/model";
 import {l} from "@/utils/intl";
 import * as Algorithm from "rc-dock/src/Algorithm";
 import {createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
@@ -54,7 +54,7 @@ const quickGuideTab: TabData = {
 export const layout: LayoutData = {
   dockbox: {
     mode: 'vertical',
-    size:1000,
+    size: 1000,
     children: [
       {
         mode: 'horizontal',
@@ -133,7 +133,7 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
         title='Dock'
         onClick={() => {
           // @ts-ignore
-          const route:ToolbarRoute = {
+          const route: ToolbarRoute = {
             key: panelData.activeId as string,
             // 标题
             title: panelData.activeId as string,
@@ -144,8 +144,8 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
           // @ts-ignore
           const layout = Algorithm.fixLayoutData(createNewPanel(context.state.layout, route), context.props.groups);
           // @ts-ignore
-          context.changeLayout(layout, route.key,"update",false)
-          context.dockMove(panelData,null,"remove")
+          context.changeLayout(layout, route.key, "update", false)
+          context.dockMove(panelData, null, "remove")
         }
         }
       />
@@ -154,76 +154,84 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
   return buttons;
 };
 
-const toolbarPanelExtraButtons = (panelData: PanelData, context: DockContext) => {
-  const buttons = centerPanelExtraButtons(panelData, context);
-  buttons.push(
-    <CloseOutlined
-      className='my-panel-extra-btn'
-      key='close'
-      title='关闭'
-      onClick={() => context.dockMove(panelData, null, 'remove')}
-    />
-  );
-  return buttons;
+const toolbarPanelExtraButtons = (panelData: PanelData, context: DockContext, updateAction: any) => {
+  const buttons = [];
+  if (panelData.activeId === "project") {
+    buttons.push(
+      <PlusCircleOutlined
+        className='my-panel-extra-btn'
+        key='right.menu.createRoot'
+        title={l('right.menu.createRoot')}
+        onClick={() => {
+        }}
+      />
+    );
+    buttons.push(
+      <ArrowsAltOutlined
+        className='my-panel-extra-btn'
+        key='button.expand-all'
+        title={l('button.expand-all')}
+        onClick={() => {
+          updateAction({actionType: DataStudioActionType.PROJECT_EXPAND_ALL, params: {}})
+        }}
+      />
+    );
+    buttons.push(
+      <ShrinkOutlined
+        className='my-panel-extra-btn'
+        key='button.collapse-all'
+        title={l('button.collapse-all')}
+        onClick={() => {
+          updateAction({actionType: DataStudioActionType.PROJECT_COLLAPSE_ALL, params: {}})
+        }}
+      />
+    );
+  } else if (panelData.activeId === "catalog") {
+    buttons.push(
+      <ReloadOutlined
+        className='my-panel-extra-btn'
+        key='button.collapse-all'
+        title={l('button.collapse-all')}
+        onClick={() => {
+          updateAction({actionType: DataStudioActionType.CATALOG_REFRESH, params: {}})
+        }}
+      />
+    );
+
+  }
+  const close = <CloseOutlined
+    className='my-panel-extra-btn'
+    key='close'
+    title='关闭'
+    onClick={() => context.dockMove(panelData, null, 'remove')}
+  />
+  return [...buttons, ...centerPanelExtraButtons(panelData, context), close];
 };
-const toolbarPanelExtra = (panelData: PanelData, context: DockContext) => {
-  return <>{toolbarPanelExtraButtons(panelData, context).map((button) => button)}</>;
+const toolbarPanelExtra = (panelData: PanelData, context: DockContext, updateAction: any) => {
+  return <>{toolbarPanelExtraButtons(panelData, context, updateAction).map((button) => button)}</>;
 };
 
-export const groups = (layoutState: LayoutState, updateAction: (params: {
+export const groups = (updateAction: (params: {
   actionType: string,
   params: Record<string, any>
 }) => void): { [key: string]: TabGroup } => {
+  const panelExtra = (panelData: PanelData, context: DockContext) => {
+    return toolbarPanelExtra(panelData, context, updateAction)
+  }
   return {
     leftTop: {
       floatable: true,
-      // panelExtra: toolbarPanelExtra,
-      panelExtra: (panelData: PanelData, context: DockContext) => {
-        if (panelData.activeId === "project") {
-          const btns = [];
-          btns.push(
-            <PlusCircleOutlined
-              className='my-panel-extra-btn'
-              key='right.menu.createRoot'
-              title={l('right.menu.createRoot')}
-              onClick={() => {
-              }}
-            />
-          );
-          btns.push(
-            <ArrowsAltOutlined
-              className='my-panel-extra-btn'
-              key='button.expand-all'
-              title={l('button.expand-all')}
-              onClick={() => {
-                updateAction({actionType: DataStudioActionType.PROJECT_EXPAND_ALL, params: {}})
-              }}
-            />
-          );
-          btns.push(
-            <ShrinkOutlined
-              className='my-panel-extra-btn'
-              key='button.collapse-all'
-              title={l('button.collapse-all')}
-              onClick={() => {
-                updateAction({actionType: DataStudioActionType.PROJECT_COLLAPSE_ALL, params: {}})
-              }}
-            />
-          );
-          return <>{[...btns, ...toolbarPanelExtraButtons(panelData, context)].map((button) => button)}</>
-        }
-        return <>{toolbarPanelExtraButtons(panelData, context).map((button) => button)}</>
-      },
+      panelExtra: panelExtra,
       newWindow: true
     },
     leftBottom: {
       floatable: true,
-      panelExtra: toolbarPanelExtra,
+      panelExtra: panelExtra,
       newWindow: true
     },
     right: {
       floatable: true,
-      panelExtra: toolbarPanelExtra,
+      panelExtra: panelExtra,
       newWindow: true
     },
     //  中间内容group

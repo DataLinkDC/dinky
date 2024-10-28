@@ -1,10 +1,9 @@
 import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
 import {Button, Col, Divider, Flex, Row, Skeleton, TabsProps} from "antd";
 import "./index.less"
-import React, {useEffect, useRef, useState} from "react";
-import {handleInitEditorAndLanguageOnBeforeMount} from "@/components/CustomEditor/function";
-import {convertCodeEditTheme} from "@/utils/function";
-import {Editor} from "@monaco-editor/react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {registerEditorKeyBindingAndAction} from "@/utils/function";
+import {Monaco} from "@monaco-editor/react";
 import {Panel, PanelGroup} from "react-resizable-panels";
 import {
   ApartmentOutlined,
@@ -33,8 +32,7 @@ import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {TaskInfo} from "@/pages/DataStudioNew/CenterTabContent/TaskInfo";
 import TaskConfig from "@/pages/DataStudioNew/CenterTabContent/TaskConfig";
 import {HistoryVersion} from "@/pages/DataStudioNew/CenterTabContent/HistoryVersion";
-import {FlinkTaskRunType, StudioLineageParams} from "@/pages/DataStudioNew/type";
-import {TaskExtConfig} from "@/types/Studio/data";
+import {FlinkTaskRunType, StudioLineageParams, TaskState} from "@/pages/DataStudioNew/type";
 import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 import {debounce} from "lodash";
 import {
@@ -57,6 +55,9 @@ import {assert} from "@/pages/DataStudio/function";
 import {DIALECT} from "@/services/constants";
 import {isSql} from "@/pages/DataStudio/HeaderContainer/function";
 import {SysConfigStateType} from "@/pages/SettingCenter/GlobalSetting/model";
+import DiffModal from "@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal";
+import {matchLanguage} from "@/pages/DataStudio/MiddleContainer/function";
+import CodeEdit from "@/components/CustomEditor/CodeEdit";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -69,38 +70,12 @@ export type TaskParams = {
   key: number;
 }
 
-export  type FlinkSQLState = {
-  taskId: number;
-  statement: string;
-  name: string;
-  type: FlinkTaskRunType;
-  dialect: string
-  envId: number;
-  versionId: number;
-  savePointStrategy: number;
-  savePointPath: string;
-  parallelism: number;
-  fragment: boolean;
-  batchModel: boolean;
-  clusterId?: number | null;
-  clusterConfigurationId?: number | null;
-  databaseId?: number;
-  alertGroupId?: number;
-  configJson: TaskExtConfig;
-  note: string;
-  step: number;
-  firstLevelOwner: number;
-  secondLevelOwners: number[];
-  createTime: Date;
-  updateTime: Date;
-  status: string
-}
 
 const toolbarSize = 40;
 const dividerHeight = 24;
 
 
-export const FlinkSQL = (props: FlinkSqlProps & any) => {
+export const SqlTask = (props: FlinkSqlProps & any) => {
   const {
     showDesc,
     tempData,
@@ -114,13 +89,14 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
   } = props;
   const {params, title, id} = props.tabData as CenterTab;
   const containerRef = useRef<HTMLDivElement>(null);
+  const editorInstance = useRef<Monaco>(null);
   const [codeEditorWidth, setCodeEditorWidth] = useState(0);
 
   const [selectRightToolbar, setSelectRightToolbar] = useState<string | undefined>(undefined);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [originStatementValue, setOriginStatementValue] = useState<string>("")
-  const [currentState, setCurrentState] = useState<FlinkSQLState>({
+  const [currentState, setCurrentState] = useState<TaskState>({
     alertGroupId: -1,
     batchModel: false,
     configJson: {
@@ -147,6 +123,9 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     updateTime: new Date(),
     status: ''
   });
+  // 代码恢复
+  const [openDiffModal, setOpenDiffModal] = useState(false)
+  const [diff, setDiff] = useState<any>([]);
 
   const formRef = useRef<ProFormInstance>();
 
@@ -154,12 +133,27 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId)
     if (taskDetail) {
+      const statement = params.statement ?? taskDetail.statement
+      const newParams = {...taskDetail, taskId: params.taskId, statement}
       // @ts-ignore
-      setCurrentState({...taskDetail, taskId: params.taskId})
-      setOriginStatementValue(taskDetail.statement)
+      setCurrentState(newParams)
+      updateCenterTab({...props.tabData, params: newParams})
+
+      setOriginStatementValue(statement)
+
+      if (params?.statement && params?.statement !== taskDetail.statement) {
+        setDiff([{key: 'statement', server: taskDetail.statement, cache: params.statement}])
+        setOpenDiffModal(true)
+        updateCenterTab({
+          ...props.tabData,
+          isUpdate: true,
+          params: {...newParams}
+        })
+      }
     }
     setLoading(false)
   }, [])
+
   // 数据初始化
   useEffect(() => {
     if (!containerRef.current) {
@@ -180,6 +174,40 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     };
   }, [loading])
 
+
+  const editorDidMount = (editor: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    editor.layout();
+    editor.focus();
+    // @ts-ignore
+    editorInstance.current = editor;
+    // @ts-ignore
+    editor['id'] = currentState.taskId;
+
+    editor.onDidChangeCursorPosition((e) => {
+      // props.footContainerCacher.cache.codePosition = [e.position.lineNumber, e.position.column];
+      // dispatch({
+      //   type: STUDIO_MODEL.saveFooterValue,
+      //   payload: { ...props.footContainerCacher.cache }
+      // });
+    });
+    registerEditorKeyBindingAndAction(editor);
+  };
+
+  const updateTask = (useServerVersion: boolean) => {
+    const statement = useServerVersion ? diff[0].server : diff[0].cache;
+    if (useServerVersion) {
+      updateCenterTab({
+        ...props.tabData,
+        isUpdate: false,
+        params: {...currentState, statement}
+      })
+    }
+    setCurrentState(prevState => ({...prevState, statement}))
+    setOriginStatementValue(statement)
+
+    setOpenDiffModal(false)
+  }
+
   const getFlinkMode = () => {
     if (currentState.type === 'local') {
       return ['local']
@@ -190,11 +218,15 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     return [currentState.type, currentState.clusterConfigurationId]
   }
   const onEditorChange = (value: string | undefined, ev: editor.IModelContentChangedEvent) => {
-    updateCenterTab({...props.tabData, isUpdate: originStatementValue !== value})
+    updateCenterTab({
+      ...props.tabData,
+      isUpdate: originStatementValue !== value,
+      params: {...currentState, statement: value ?? ''}
+    })
     setCurrentState(prevState => ({...prevState, statement: value ?? ''}))
   }
 
-  const onValuesChange = (changedValues: any, allValues: FlinkSQLState) => {
+  const onValuesChange = (changedValues: any, allValues: TaskState) => {
     if ('flinkMode' in allValues) {
       const mode = (allValues['flinkMode'] as [string, number])[0] as FlinkTaskRunType
       if (mode === 'local') {
@@ -211,6 +243,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
       allValues.type = mode
     }
     setCurrentState({...currentState, ...allValues})
+    updateCenterTab({...props.tabData, isUpdate: true, params: {...currentState, ...allValues}})
   }
   const hotKeyConfig = {enable: activeTab === id}
 
@@ -239,13 +272,13 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
   })
 
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     // await putTask(currentState)
     await handlePutDataJson(API_CONSTANTS.TASK, currentState);
     updateCenterTab({...props.tabData, isUpdate: false})
-  }
+  }, [currentState, updateCenterTab, props.tabData])
 
-  const handleCheck = async () => {
+  const handleCheck = useCallback(async () => {
     const res = await explainSql(
       l('pages.datastudio.editor.checking', '', {jobName: currentState?.name}),
       {...currentState}
@@ -257,8 +290,8 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
         data: res.data
       }
     })
-  };
-  const handleDAG = async () => {
+  }, [currentState, updateAction]);
+  const handleDAG = useCallback(async () => {
     const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), currentState);
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_DAG,
@@ -267,9 +300,9 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
         data: res.data
       }
     })
-  }
+  }, [currentState, updateAction])
 
-  const handleLineage = async () => {
+  const handleLineage = useCallback(async () => {
     const {type, dialect, databaseId, statement, envId, fragment, taskId} = currentState;
     const params: StudioLineageParams = {
       type: 1, // todo: 暂时写死 ,后续优化
@@ -290,9 +323,9 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
         data: data
       }
     })
-  }
+  }, [currentState, updateAction])
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     await handleSave()
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_SUBMIT,
@@ -313,9 +346,9 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
         }
       })
     }
-  }
+  }, [updateAction, currentState.envId, handleSave])
 
-  const handleDebug = async () => {
+  const handleDebug = useCallback(async () => {
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', {jobName: currentState.name}),
       {...currentState}
@@ -334,8 +367,9 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
         }
       })
     }
-  }
-  const handleStop = async () => {
+  }, [currentState, updateAction])
+
+  const handleStop = useCallback(async () => {
     const result = await cancelTask('', currentState.taskId, false)
     if (result.success) {
       setCurrentState(prevState => {
@@ -345,10 +379,9 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
         }
       })
     }
+  }, [currentState.taskId])
 
-  }
-
-  const handleGotoDevOps = async () => {
+  const handleGotoDevOps = useCallback(async () => {
     const dataByParams = await queryDataByParams<Jobs.JobInstance>(
       API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
       {taskId: currentState.taskId}
@@ -356,19 +389,19 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
     if (dataByParams) {
       window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
     }
-  }
+  }, [currentState.taskId])
 
-  const handleLocation = async () => {
-    updateProject({selectedKeys: [params.key]})
+  const handleLocation = useCallback(async () => {
+    const key = Number(id.replace("project_", ""))
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_LOCATION,
       params: {
         taskId: params.taskId,
-        key: params.key
+        key: key
       }
     })
-  }
-  const handleChangeJobLife = async () => {
+  }, [updateAction])
+  const handleChangeJobLife = useCallback(async () => {
     if (JOB_LIFE_CYCLE.PUBLISH == currentState.step) {
       await changeTaskLife(
         l('global.table.lifecycle.offline'),
@@ -387,7 +420,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
 
     }
     setCurrentState(prevState => ({...prevState, step: currentState.step}))
-  };
+  }, [handleSave, currentState.step, currentState.taskId]);
   return (
     <Skeleton loading={loading} active
               title={false}
@@ -395,6 +428,13 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
                 rows: 5,
                 width: '100%'
               }}>
+      <DiffModal
+        diffs={diff}
+        open={openDiffModal}
+        language={matchLanguage(currentState.dialect)}
+        fileName={currentState.name}
+        onUse={updateTask}
+      />
       <Flex vertical style={{height: 'inherit', width: '100%'}} ref={containerRef}>
         <ProForm
           size={'middle'}
@@ -411,7 +451,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
           onValuesChange={debounce(onValuesChange, 500)}
           syncToInitialValues
         >
-          <Flex className={"run-toolbar"} wrap>
+          <Flex className={"run-toolbar"} wrap gap={2}>
             {/* 运行工具栏*/}
             <RunToolBarButton showDesc={showDesc} desc={l('button.save')} icon={<SaveOutlined/>} onClick={handleSave}
                               disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH}
@@ -441,8 +481,7 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             {assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes') &&
               <>
                 <Divider type={'vertical'} style={{height: dividerHeight}}/>
-                <SelectFlinkEnv flinkEnv={tempData.flinkEnv} value={currentState.envId}
-                                onChange={value => setCurrentState(prevState => ({...prevState, envId: value}))}/>
+                <SelectFlinkEnv flinkEnv={tempData.flinkEnv}/>
                 <SelectFlinkRunMode data={tempData.flinkCluster}/>
               </>}
 
@@ -525,20 +564,38 @@ export const FlinkSQL = (props: FlinkSqlProps & any) => {
             <Col style={{width: codeEditorWidth - toolbarSize, height: '100%'}}>
               <PanelGroup direction={"horizontal"}>
                 <Panel>
-                  <Editor
-                    beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco, true)}
-                    width={'100%'}
-                    height={"100%"}
-                    value={currentState.statement}
-                    language={"sql"}
-                    options={{minimap: {enabled: true, side: 'right'}, scrollBeyondLastLine: false}}
-                    // options={finalEditorOptions}
-                    className={'editor-develop'}
-                    // onMount={editorDidMountChange}
+                  {/*<Editor*/}
+                  {/*  beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco, true)}*/}
+                  {/*  width={'100%'}*/}
+                  {/*  height={"100%"}*/}
+                  {/*  value={currentState.statement}*/}
+                  {/*  language={"sql"}*/}
+                  {/*  options={{minimap: {enabled: true, side: 'right'}, scrollBeyondLastLine: false}}*/}
+                  {/*  // options={finalEditorOptions}*/}
+                  {/*  className={'editor-develop'}*/}
+                  {/*  // onMount={editorDidMountChange}*/}
+                  {/*  onChange={debounce(onEditorChange, 500)}*/}
+                  {/*  //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题*/}
+                  {/*  //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash*/}
+                  {/*  theme={convertCodeEditTheme()}*/}
+                  {/*/>*/}
+                  <CodeEdit
+                    monacoRef={editorInstance}
+                    code={currentState.statement}
+                    language={matchLanguage(currentState.dialect)}
+                    editorDidMount={editorDidMount}
                     onChange={debounce(onEditorChange, 500)}
-                    //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题
-                    //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash
-                    theme={convertCodeEditTheme()}
+                    enableSuggestions={true}
+                    options={{
+                      // readOnlyMessage: {
+                      //   value: isLockTask
+                      //     ? l('pages.datastudio.editor.onlyread.lock')
+                      //     : l('pages.datastudio.editor.onlyread')
+                      // },
+                      readOnly: currentState?.step == JOB_LIFE_CYCLE.PUBLISH,
+                      scrollBeyondLastLine: false,
+                      wordWrap: 'on'
+                    }}
                   />
                 </Panel>
                 {selectRightToolbar && (
@@ -587,4 +644,4 @@ export default connect(
     dsConfig: SysConfig.dsConfig,
     enabledDs: SysConfig.enabledDs,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
-  }), mapDispatchToProps)(FlinkSQL);
+  }), mapDispatchToProps)(SqlTask);

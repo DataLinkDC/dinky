@@ -48,6 +48,7 @@ export enum DataStudioActionType {
   PROJECT_COLLAPSE_ALL = 'project-collapse-all',
   PROJECT_EXPAND_ALL = 'project-expand-all',
   PROJECT_RIGHT_CLICK = 'project-right-click',
+  CATALOG_REFRESH = 'CATALOG_REFRESH',
   TASK_RUN_CHECK = 'task-run-check',
   TASK_RUN_DAG = 'task-run-dag',
   TASK_RUN_LINEAGE = 'task-run-lineage',

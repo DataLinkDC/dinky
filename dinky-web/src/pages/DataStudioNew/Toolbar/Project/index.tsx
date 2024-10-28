@@ -78,8 +78,7 @@ export const Project= (props: any) => {
           params.key,
           'equal'
         )
-        updateProject({expandKeys: [...expandKeys,...expandedKeys] })
-
+        updateProject({expandKeys: [...expandKeys,...expandedKeys],selectedKeys:[params.key] })
         treeRef.current!!.scrollTo({key: params.key})
         break
     }

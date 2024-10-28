@@ -16,10 +16,10 @@ import {ProFormFlinkConfig} from "@/pages/DataStudioNew/CenterTabContent/TaskCon
 import {ProFormFlinkUdfConfig} from "@/pages/DataStudioNew/CenterTabContent/TaskConfig/ProFormFlinkUdfConfig";
 import React, {useEffect, useRef, useState} from "react";
 import {TempData} from "@/pages/DataStudioNew/type";
-import {FlinkSQLState} from "@/pages/DataStudioNew/CenterTabContent/FlinkSQL";
+import {TaskState} from "@/pages/DataStudioNew/CenterTabContent/SqlTask";
 import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 
-export const BasicConfig = (props: { tempData: TempData,data:FlinkSQLState,onValuesChange?: (changedValues: any, values: FlinkSQLState) => void }) => {
+export const BasicConfig = (props: { tempData: TempData,data:TaskState,onValuesChange?: (changedValues: any, values: TaskState) => void }) => {
   const {alertGroup, flinkConfigOptions, flinkUdfOptions} = props.tempData;
   const formRef = useRef<ProFormInstance>();
   const [containerWidth, setContainerWidth] = useState<number>(0);

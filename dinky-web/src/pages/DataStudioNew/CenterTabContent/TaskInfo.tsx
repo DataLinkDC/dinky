@@ -20,9 +20,9 @@
 import {l} from '@/utils/intl';
 import {Descriptions} from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
-import {FlinkSQLState} from "@/pages/DataStudioNew/CenterTabContent/FlinkSQL";
+import {TaskState} from "@/pages/DataStudioNew/CenterTabContent/SqlTask";
 
-export const TaskInfo = (props: { params: FlinkSQLState }) => {
+export const TaskInfo = (props: { params: TaskState }) => {
   const {
     params: {taskId, name, dialect, versionId}
   } = props;

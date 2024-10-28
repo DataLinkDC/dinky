@@ -4,8 +4,9 @@ import {AnyAction} from "@@/plugin-dva/types";
 import {DropDirection, LayoutBase} from "rc-dock/src/DockData";
 import {CenterTab} from "@/pages/DataStudioNew/model";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
-import {Alert} from "@/types/RegCenter/data";
+import {Alert, DataSources} from "@/types/RegCenter/data";
 import {DefaultOptionType} from "antd/es/select";
+import {TaskExtConfig} from "@/types/Studio/data";
 
 /**
  * @description:
@@ -196,6 +197,12 @@ export type TempData = {
    * en: flink udf config options.
    */
   flinkUdfOptions: DefaultOptionType[];
+  /**
+   * @description:
+   * zh: 数据源列表
+   * en: Data source list.
+   */
+  dataSourceDataList: DataSources.DataSource[];
 }
 
 /**
@@ -222,6 +229,33 @@ export type EnvType = {
 };
 
 
+
+export  type TaskState = {
+  taskId: number;
+  statement: string;
+  name: string;
+  type: FlinkTaskRunType;
+  dialect: string
+  envId: number;
+  versionId: number;
+  savePointStrategy: number;
+  savePointPath: string;
+  parallelism: number;
+  fragment: boolean;
+  batchModel: boolean;
+  clusterId?: number | null;
+  clusterConfigurationId?: number | null;
+  databaseId?: number;
+  alertGroupId?: number;
+  configJson: TaskExtConfig;
+  note: string;
+  step: number;
+  firstLevelOwner: number;
+  secondLevelOwners: number[];
+  createTime: Date;
+  updateTime: Date;
+  status: string
+}
 /**
  * @description:
  * zh: 任务血缘参数

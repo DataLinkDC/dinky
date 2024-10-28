@@ -79,6 +79,10 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryFlinkUdfOptions
       }),
+    queryDataSourceDataList: () =>
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.queryDataSourceDataList
+      }),
 
   }
 }

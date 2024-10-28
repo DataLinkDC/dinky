@@ -85,8 +85,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
     editorDidMount,
-    monacoRef,
-    tabs: { activeKey }
+    monacoRef
   } = props;
 
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(
@@ -105,7 +104,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     async (model: ITextModel, position: monaco.Position) => {
       return buildAllSuggestions(model, position);
     },
-    [code, activeKey]
+    []
   );
 
   // memo
@@ -316,6 +315,5 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  suggestionsData: Studio.suggestions,
-  tabs: Studio.tabs
+  suggestionsData: Studio.suggestions
 }))(memo(CodeEdit));
