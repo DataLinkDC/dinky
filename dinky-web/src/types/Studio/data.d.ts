@@ -140,6 +140,7 @@ export type K8sConfig = {
   podTemplate: string;
   jmPodTemplate: string;
   tmPodTemplate: string;
+  ingressConfig: Map<string, string>;
 };
 
 export type FlinkConfig = {
