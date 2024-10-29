@@ -125,15 +125,9 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size
                   children: [...(dockbox.children[i] as PanelData[])]
                 }
               } else {
-                // const boxData = []
-                // if ((dockbox.children[i][0] as PanelData).group === 'leftTop') {
-                //   boxData = [dockbox.children[i], panelData]
-                // } else if ((dockbox.children[i][0] as PanelData).group === 'right') {
-                //   boxData = [panelData, dockbox.children[i]]
-                // }
-
-                // box
-                (dockbox.children[i] as BoxData).children = [boxData, ...(dockbox.children[i] as BoxData).children]
+                if ((dockbox.children[i].children[0] as PanelData).group === 'leftTop') {
+                  (dockbox.children[i] as BoxData).children =[dockbox.children[i].children[0], panelData,...dockbox.children[i].children.slice(1)]
+                }
               }
             }
             break
