@@ -23,7 +23,7 @@ import { MonacoEditorOptions } from '@/types/Public/data';
 import { convertCodeEditTheme } from '@/utils/function';
 
 import { Col, Row } from 'antd';
-import {editor} from 'monaco-editor';
+import { editor } from 'monaco-editor';
 import { EditorLanguage } from 'monaco-editor/esm/metadata';
 
 import FullscreenBtn from '@/components/CustomEditor/FullscreenBtn';
@@ -43,7 +43,7 @@ export type CodeShowFormProps = {
   code: string;
   lineNumbers?: LineNumbersType;
   enableMiniMap?: boolean;
-  autoWrap?: "on" | "off" | "wordWrapColumn" | "bounded" | undefined;
+  autoWrap?: 'on' | 'off' | 'wordWrapColumn' | 'bounded' | undefined;
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
   fullScreenBtn?: boolean;
@@ -220,7 +220,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   return (
     <>
-      <Row wrap={false} style={{height:'100%'}}>
+      <Row wrap={false} style={{ height: '100%' }}>
         <Col flex='auto'>
           {/* fullScreen button */}
           {fullScreenBtn && (

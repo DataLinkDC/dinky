@@ -17,16 +17,16 @@
  *
  */
 
-import {DockLayout} from "rc-dock";
-import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
-import {AnyAction} from "@@/plugin-dva/types";
-import {DropDirection, LayoutBase} from "rc-dock/src/DockData";
-import {CenterTab} from "@/pages/DataStudioNew/model";
-import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
-import {Alert, DataSources} from "@/types/RegCenter/data";
-import {DefaultOptionType} from "antd/es/select";
-import {TaskExtConfig, TaskInfo} from "@/types/Studio/data";
-import {TaskDataBaseType} from "@/pages/DataStudio/model";
+import { DockLayout } from 'rc-dock';
+import { ToolbarPosition, ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { AnyAction } from '@@/plugin-dva/types';
+import { DropDirection, LayoutBase } from 'rc-dock/src/DockData';
+import { CenterTab } from '@/pages/DataStudioNew/model';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
+import { Alert, DataSources } from '@/types/RegCenter/data';
+import { DefaultOptionType } from 'antd/es/select';
+import { TaskExtConfig, TaskInfo } from '@/types/Studio/data';
+import { TaskDataBaseType } from '@/pages/DataStudio/model';
 
 /**
  * @description:
@@ -69,7 +69,6 @@ export interface HandleLayoutChangeDTO extends AnyAction {
   direction?: DropDirection;
 }
 
-
 export interface PayloadType extends AnyAction {
   dockLayout: DockLayout;
   route: ToolbarRoute;
@@ -98,7 +97,7 @@ export interface SaveToolbarLayoutDTO extends AnyAction {
    * zh: 工具栏路由列表
    * en: Toolbar route list.
    */
-  list: string[]
+  list: string[];
 }
 
 /**
@@ -106,16 +105,14 @@ export interface SaveToolbarLayoutDTO extends AnyAction {
  *  zh: 中心面板 DTO
  *  en: Center panel DTO.
  */
-export interface CenterTabDTO extends AnyAction, CenterTab {
-}
+export interface CenterTabDTO extends AnyAction, CenterTab {}
 
 /**
  * @description:
  * zh: 项目 DTO
  * en: Project DTO.
  */
-export interface ProjectDTO extends AnyAction, ProjectState {
-}
+export interface ProjectDTO extends AnyAction, ProjectState {}
 
 /**
  * @description:
@@ -142,8 +139,7 @@ export interface UpdateActionDTO extends AnyAction {
  * zh: 临时数据 DTO
  * en: Temporary data DTO.
  */
-export interface TempDataDTO extends AnyAction {
-}
+export interface TempDataDTO extends AnyAction {}
 
 /**
  * @description:
@@ -151,15 +147,14 @@ export interface TempDataDTO extends AnyAction {
  *  en: Run type.
  */
 export type FlinkTaskRunType =
-  'local'
+  | 'local'
   | 'standalone'
   | 'yarn-session'
   | 'yarn-per-job'
   | 'yarn-application'
   | 'kubernetes-session'
   | 'kubernetes-application'
-  | 'kubernetes-application-operator'
-
+  | 'kubernetes-application-operator';
 
 /**
  * @description:
@@ -178,8 +173,8 @@ export type ProjectState = {
    * zh: 选中的 key
    * en: Selected key.
    */
-  selectedKeys?: number[]
-}
+  selectedKeys?: number[];
+};
 
 /**
  * @description:
@@ -223,7 +218,7 @@ export type TempData = {
    * en: Data source list.
    */
   dataSourceDataList: DataSources.DataSource[];
-}
+};
 
 /**
  * @description:
@@ -235,7 +230,7 @@ export type FlinkCluster = {
   name: string;
   enabled: boolean;
   type: FlinkTaskRunType;
-}
+};
 
 /**
  * @description:
@@ -248,14 +243,12 @@ export type EnvType = {
   fragment?: boolean;
 };
 
-
-
-export  type TaskState = {
+export type TaskState = {
   taskId: number;
   statement: string;
   name: string;
   type: FlinkTaskRunType;
-  dialect: string
+  dialect: string;
   envId: number;
   versionId: number;
   savePointStrategy: number;
@@ -274,8 +267,8 @@ export  type TaskState = {
   secondLevelOwners: number[];
   createTime: Date;
   updateTime: Date;
-  status: string
-}
+  status: string;
+};
 /**
  * @description:
  * zh: 任务血缘参数

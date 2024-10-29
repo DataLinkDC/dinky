@@ -17,20 +17,20 @@
  *
  */
 
-import {handleGetOption, handleGetOptionWithoutMsg} from '@/services/BusinessCrud';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {transformTableDataToCsv} from '@/utils/function';
-import {l} from '@/utils/intl';
-import {QuestionCircleOutlined, SearchOutlined, SyncOutlined} from '@ant-design/icons';
-import {Highlight} from '@ant-design/pro-layout/es/components/Help/Search';
-import {Button, Empty, Flex, Input, InputRef, Space, Table, Tabs, Tooltip} from 'antd';
-import {ColumnsType, ColumnType} from 'antd/es/table';
-import {FilterConfirmProps} from 'antd/es/table/interface';
-import {DataIndex} from 'rc-table/es/interface';
-import React, {useEffect, useRef, useState} from 'react';
-import {useAsyncEffect} from 'ahooks';
-import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
-import {isSql} from "@/pages/DataStudioNew/utils";
+import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { transformTableDataToCsv } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { QuestionCircleOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
+import { Button, Empty, Flex, Input, InputRef, Space, Table, Tabs, Tooltip } from 'antd';
+import { ColumnsType, ColumnType } from 'antd/es/table';
+import { FilterConfirmProps } from 'antd/es/table/interface';
+import { DataIndex } from 'rc-table/es/interface';
+import React, { useEffect, useRef, useState } from 'react';
+import { useAsyncEffect } from 'ahooks';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
+import { isSql } from '@/pages/DataStudioNew/utils';
 
 type Data = {
   [c: string]: any;
@@ -38,9 +38,11 @@ type Data = {
   rowData?: object[];
 };
 type DataList = Data[];
-export default (props: { taskId: number, action: any,dialect:string }) => {
+export default (props: { taskId: number; action: any; dialect: string }) => {
   const {
-    taskId, action: {actionType, params},dialect
+    taskId,
+    action: { actionType, params },
+    dialect
   } = props;
 
   const [data, setData] = useState<Data>({});
@@ -52,7 +54,7 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
   const searchInput = useRef<InputRef>(null);
   useEffect(() => {
     if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
-      setData({columns: params.columns, rowData: params.rowData});
+      setData({ columns: params.columns, rowData: params.rowData });
     }
   }, [props.action]);
 
@@ -70,30 +72,30 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
     setSearchedColumn(dataIndex.toString());
   };
   const getColumnSearchProps = (dataIndex: string): ColumnType<Data> => ({
-    filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
-      <div style={{padding: 8}} onKeyDown={(e) => e.stopPropagation()}>
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{marginBottom: 8, display: 'block'}}
+          style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
             type='primary'
             onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-            icon={<SearchOutlined/>}
+            icon={<SearchOutlined />}
             size='small'
-            style={{width: 90}}
+            style={{ width: 90 }}
           >
             {l('button.search')}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size='small'
-            style={{width: 90}}
+            style={{ width: 90 }}
           >
             {l('button.reset')}
           </Button>
@@ -101,7 +103,7 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{color: filtered ? '#1677ff' : undefined}}/>
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -115,7 +117,7 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
     },
     render: (text) =>
       searchedColumn === dataIndex ? (
-        <Highlight label={text ? text.toString() : ''} words={[searchText]}/>
+        <Highlight label={text ? text.toString() : ''} words={[searchText]} />
       ) : (
         text
       )
@@ -150,7 +152,7 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
       setData({});
       setDataList([]);
       await loadData();
-    }else {
+    } else {
       setLoading(false);
     }
   }, []);
@@ -175,14 +177,8 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
   const renderFlinkSQLContent = () => {
     return (
       <>
-
         {!isSql(dialect) && !data.destroyed ? (
-          <Button
-            loading={loading}
-            type='primary'
-            onClick={showDetail}
-            icon={<SyncOutlined/>}
-          >
+          <Button loading={loading} type='primary' onClick={showDetail} icon={<SyncOutlined />}>
             {l('pages.datastudio.label.result.query.latest.data')}
           </Button>
         ) : undefined}
@@ -213,15 +209,15 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
             placement='top'
             title={l('pages.datastudio.label.result.query.latest.data.truncate')}
           >
-            <QuestionCircleOutlined/>
+            <QuestionCircleOutlined />
           </Tooltip>
         ) : undefined}
       </>
     );
   };
-  console.log(data)
+  console.log(data);
   return (
-    <div style={{width: '100%', paddingInline: 10}}>
+    <div style={{ width: '100%', paddingInline: 10 }}>
       <Flex justify={'right'}>
         {renderTips()}
         {renderDownloadButton()}
@@ -231,9 +227,9 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
         <Table
           columns={getColumns(data.columns)}
           size='small'
-          scroll={{x: 'max-content'}}
+          scroll={{ x: 'max-content' }}
           dataSource={data.rowData?.map((item: any, index: number) => {
-            return {...item, key: index};
+            return { ...item, key: index };
           })}
           loading={loading}
         />
@@ -245,9 +241,9 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
                 <Table
                   columns={getColumns(data.columns)}
                   size='small'
-                  scroll={{x: 'max-content'}}
+                  scroll={{ x: 'max-content' }}
                   dataSource={data.rowData?.map((item: any, index: number) => {
-                    return {...item, key: index};
+                    return { ...item, key: index };
                   })}
                   loading={loading}
                 />
@@ -256,7 +252,7 @@ export default (props: { taskId: number, action: any,dialect:string }) => {
           })}
         </Tabs>
       ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
     </div>
   );

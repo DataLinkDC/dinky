@@ -17,14 +17,14 @@
  *
  */
 
-import {DockLayout, TabData} from 'rc-dock';
-import React, {lazy, useEffect, useMemo, useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
+import { DockLayout, TabData } from 'rc-dock';
+import React, { lazy, useEffect, useMemo, useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
 import 'rc-dock/dist/rc-dock.css';
-import {Col, Row, theme} from 'antd';
+import { Col, Row, theme } from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
-import {RightContextMenuState} from '@/pages/DataStudioNew/data.d';
+import { RightContextMenuState } from '@/pages/DataStudioNew/data.d';
 import {
   getAllPanel,
   getLayoutState,
@@ -32,23 +32,25 @@ import {
   handleRightClick,
   InitContextMenuPosition
 } from '@/pages/DataStudioNew/function';
-import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
-import {MenuInfo} from 'rc-menu/es/interface';
-import {lazyComponent, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {ToolbarPosition, ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
-import {groups} from '@/pages/DataStudioNew/ContentLayout';
-import {connect} from "umi";
-import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
-import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
-import {AliveScope, KeepAlive} from "react-activation";
-import {activeTab, createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
-import * as Algorithm from "./Algorithm";
-import {PanelData} from "rc-dock/lib/DockData";
-import {useAsyncEffect} from "ahooks";
+import RightContextMenu, { useRightMenuItem } from '@/pages/DataStudioNew/RightContextMenu';
+import { MenuInfo } from 'rc-menu/es/interface';
+import { lazyComponent, ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import { ToolbarPosition, ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { groups } from '@/pages/DataStudioNew/ContentLayout';
+import { connect } from 'umi';
+import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { AliveScope, KeepAlive } from 'react-activation';
+import { activeTab, createNewPanel } from '@/pages/DataStudioNew/DockLayoutFunction';
+import * as Algorithm from './Algorithm';
+import { PanelData } from 'rc-dock/lib/DockData';
+import { useAsyncEffect } from 'ahooks';
 
-const {useToken} = theme;
+const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
-const DataSourceDetail = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/DataSourceDetail'));
+const DataSourceDetail = lazy(
+  () => import('@/pages/DataStudioNew/CenterTabContent/DataSourceDetail')
+);
 
 let didMount = false;
 const DataStudioNew: React.FC = (props: any) => {
@@ -67,11 +69,11 @@ const DataStudioNew: React.FC = (props: any) => {
     queryFlinkConfigOptions,
     queryFlinkUdfOptions,
     queryDataSourceDataList
-  } = props
-  const {token} = useToken();
+  } = props;
+  const { token } = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
 
-  const menuItem = useRightMenuItem({dataStudioState});
+  const menuItem = useRightMenuItem({ dataStudioState });
   // 右键弹出框状态
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,
@@ -80,10 +82,10 @@ const DataStudioNew: React.FC = (props: any) => {
 
   const layout = useMemo(() => {
     const layoutData = getLayoutState(dataStudioState.layoutData, didMount);
-    if (!didMount){
+    if (!didMount) {
       setLayout({
         layout: layoutData
-      })
+      });
     }
     didMount = true;
     return layoutData;
@@ -93,65 +95,81 @@ const DataStudioNew: React.FC = (props: any) => {
     updateAction({
       actionType: null,
       params: null
-    })
-    await queryFlinkEnv()
-    await queryFlinkCluster()
-    await queryAlertGroup()
-    await queryFlinkConfigOptions()
-    await queryFlinkUdfOptions()
-    await queryDataSourceDataList()
-  }, [])
+    });
+    await queryFlinkEnv();
+    await queryFlinkCluster();
+    await queryAlertGroup();
+    await queryFlinkConfigOptions();
+    await queryFlinkUdfOptions();
+    await queryDataSourceDataList();
+  }, []);
   useEffect(() => {
-    const {actionType, params} = dataStudioState.action
-    if (actionType?.includes("task-run-")) {
+    const { actionType, params } = dataStudioState.action;
+    if (actionType?.includes('task-run-')) {
       const dockLayout = dockLayoutRef.current!!;
       let position: ToolbarPosition = 'leftBottom';
-      const key = "service";
+      const key = 'service';
       if (dataStudioState.toolbar.leftBottom.allTabs.find((x: string) => x === key)) {
-        position = 'leftBottom'
+        position = 'leftBottom';
       } else if (dataStudioState.toolbar.leftTop.allTabs.find((x: string) => x === key)) {
-        position = 'leftTop'
+        position = 'leftTop';
       } else if (dataStudioState.toolbar.right.allTabs.find((x: string) => x === key)) {
-        position = 'right'
+        position = 'right';
       }
       const serviceRoute: ToolbarRoute = {
-        ...ToolbarRoutes.find(item => item.key === key)!!, position: position
+        ...ToolbarRoutes.find((item) => item.key === key)!!,
+        position: position
       };
       const currentSelect = dataStudioState.toolbar[serviceRoute.position].currentSelect;
       if (!currentSelect) {
         // 添加panel
-        const layout = Algorithm.fixLayoutData(createNewPanel(dataStudioState.layoutData, serviceRoute), dockLayout.props.groups);
-        dockLayout.changeLayout(layout, serviceRoute.key, "update", false)
+        const layout = Algorithm.fixLayoutData(
+          createNewPanel(dataStudioState.layoutData, serviceRoute),
+          dockLayout.props.groups
+        );
+        dockLayout.changeLayout(layout, serviceRoute.key, 'update', false);
       } else {
         //  切换tab
-        dockLayout.updateTab(currentSelect, {
-          id: serviceRoute.key,
-          content: <></>,
-          title: serviceRoute.title,
-          group: serviceRoute.position
-        }, true)
+        dockLayout.updateTab(
+          currentSelect,
+          {
+            id: serviceRoute.key,
+            content: <></>,
+            title: serviceRoute.title,
+            group: serviceRoute.position
+          },
+          true
+        );
       }
     }
-
   }, [dataStudioState.action]);
 
   useEffect(() => {
     if (dockLayoutRef.current) {
       if (dataStudioState.centerContent.activeTab) {
         // 中间tab变化
-        const tab = (dataStudioState.centerContent.tabs as CenterTab[]).find(x => x.id === dataStudioState.centerContent.activeTab)!!;
-        const centerContent = getAllPanel(dockLayoutRef.current.getLayout()).find((x) => x.group === "centerContent")!!;
+        const tab = (dataStudioState.centerContent.tabs as CenterTab[]).find(
+          (x) => x.id === dataStudioState.centerContent.activeTab
+        )!!;
+        const centerContent = getAllPanel(dockLayoutRef.current.getLayout()).find(
+          (x) => x.group === 'centerContent'
+        )!!;
         const tabData: TabData = {
           closable: true,
           id: tab.id,
           content: <></>,
           title: tab.title,
-          group: "centerContent"
-        }
+          group: 'centerContent'
+        };
         if (dataStudioState.centerContent.tabs.length === 1) {
-          dockLayoutRef.current.updateTab(centerContent.activeId!!, tabData, true)
+          dockLayoutRef.current.updateTab(centerContent.activeId!!, tabData, true);
         } else {
-          activeTab(dockLayoutRef.current, dataStudioState.layoutData, tabData, centerContent.activeId!!)
+          activeTab(
+            dockLayoutRef.current,
+            dataStudioState.layoutData,
+            tabData,
+            centerContent.activeId!!
+          );
         }
       }
     }
@@ -164,14 +182,14 @@ const DataStudioNew: React.FC = (props: any) => {
   const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
 
   const handleMenuClick = (values: MenuInfo) => {
-    setRightContextMenuState((prevState) => ({...prevState, show: false}));
+    setRightContextMenuState((prevState) => ({ ...prevState, show: false }));
 
     switch (values.key) {
       case 'showToolbarDesc':
       case 'hideToolbarDesc':
-        handleToolbarShowDesc()
+        handleToolbarShowDesc();
         break;
-      case "saveLayout":
+      case 'saveLayout':
         break;
     }
   };
@@ -181,95 +199,132 @@ const DataStudioNew: React.FC = (props: any) => {
     const currentSelect = dataStudioState.toolbar[route.position].currentSelect;
     if (!currentSelect) {
       // 添加panel
-      const layout = Algorithm.fixLayoutData(createNewPanel(dataStudioState.layoutData, route, dataStudioState.layoutSize[route.position]), dockLayout.props.groups);
-      dockLayout.changeLayout(layout, route.key, "update", false)
+      const layout = Algorithm.fixLayoutData(
+        createNewPanel(
+          dataStudioState.layoutData,
+          route,
+          dataStudioState.layoutSize[route.position]
+        ),
+        dockLayout.props.groups
+      );
+      dockLayout.changeLayout(layout, route.key, 'update', false);
     } else if (currentSelect === route.key) {
       // 取消选中
       dockLayout.dockMove(dockLayout.find(route.key) as TabData, null, 'remove');
     } else {
       //  切换tab
-      dockLayout.updateTab(currentSelect, {
-        id: route.key,
-        content: <></>,
-        title: route.title,
-        group: route.position
-      }, true)
+      dockLayout.updateTab(
+        currentSelect,
+        {
+          id: route.key,
+          content: <></>,
+          title: route.title,
+          group: route.position
+        },
+        true
+      );
     }
   };
 
   const saveTab = (tabData: TabData & any) => {
-    let {id, group, title} = tabData;
-    return {id, group, title};
+    let { id, group, title } = tabData;
+    return { id, group, title };
   };
   const loadTab = (tab: TabData) => {
-    const {id, title, group} = tab;
-    if (group !== "centerContent") {
+    const { id, title, group } = tab;
+    if (group !== 'centerContent') {
       const route = ToolbarRoutes.find((x) => x.key === id) as ToolbarRoute;
-      const content = ToolbarRoutes.find(item => item.key === route.key)!!.content();
-      const autoFreeze = route.key !== "service";
+      const content = ToolbarRoutes.find((item) => item.key === route.key)!!.content();
+      const autoFreeze = route.key !== 'service';
       return {
         ...tab,
-        content: <KeepAlive
-          cacheKey={route.key} autoFreeze={autoFreeze}>{content}</KeepAlive>,
+        content: (
+          <KeepAlive cacheKey={route.key} autoFreeze={autoFreeze}>
+            {content}
+          </KeepAlive>
+        ),
         title,
         minHeight: 30,
         minWidth: 200
       };
     } else {
-      if (id === "quick-start") {
+      if (id === 'quick-start') {
         const route = ToolbarRoutes.find((x) => x.key === id) as ToolbarRoute;
         return {
           ...tab,
-          content: ToolbarRoutes.find(item => item.key === route.key)!!.content(),
+          content: ToolbarRoutes.find((item) => item.key === route.key)!!.content(),
           title,
           minHeight: 30,
           minWidth: 200
         };
       }
-      const tabData = (dataStudioState.centerContent.tabs as CenterTab[]).find((x) => x.id === id)!!;
+      const tabData = (dataStudioState.centerContent.tabs as CenterTab[]).find(
+        (x) => x.id === id
+      )!!;
 
       const getTitle = () => {
         switch (tabData.tabType) {
-          case "task":
-            const titleContent = <>{getTabIcon(tabData.params.dialect, 16)} {tabData.title}</>
+          case 'task':
+            const titleContent = (
+              <>
+                {getTabIcon(tabData.params.dialect, 16)} {tabData.title}
+              </>
+            );
             if (tabData.isUpdate) {
-              return <span style={{color: '#52c41a'}}>{titleContent}{"  *"}</span>
+              return (
+                <span style={{ color: '#52c41a' }}>
+                  {titleContent}
+                  {'  *'}
+                </span>
+              );
             }
-            return <span>{titleContent}</span>
-          case "dataSource":
-            const dialect = tabData.params.type
-            return <>{getTabIcon(dialect, 16)} {tabData.title}</>
+            return <span>{titleContent}</span>;
+          case 'dataSource':
+            const dialect = tabData.params.type;
+            return (
+              <>
+                {getTabIcon(dialect, 16)} {tabData.title}
+              </>
+            );
           default:
-            return <>{tabData.title}</>
+            return <>{tabData.title}</>;
         }
-      }
+      };
 
       let content = <></>;
-      const currentData = (dataStudioState.centerContent.tabs as CenterTab[]).find((tab) => id == tab.id);
+      const currentData = (dataStudioState.centerContent.tabs as CenterTab[]).find(
+        (tab) => id == tab.id
+      );
 
       // todo 添加中间tab内容
       switch (tabData.tabType) {
-        case "task":
-          content = <SqlTask tabData={tabData}/>
+        case 'task':
+          content = <SqlTask tabData={tabData} />;
           break;
-        case "dataSource":
-          content = <DataSourceDetail {...currentData!!}/>
+        case 'dataSource':
+          content = <DataSourceDetail {...currentData!!} />;
           break;
       }
       return {
         ...tab,
         title: getTitle(),
         closable: true,
-        content: <KeepAlive cacheKey={tabData.id} autoFreeze={true}
-                            when={() => !(dataStudioState.centerContent.tabs as CenterTab[]).some((x) => x.id === id)}>
-          {lazyComponent(content)}
-        </KeepAlive>,
+        content: (
+          <KeepAlive
+            cacheKey={tabData.id}
+            autoFreeze={true}
+            when={() =>
+              !(dataStudioState.centerContent.tabs as CenterTab[]).some((x) => x.id === id)
+            }
+          >
+            {lazyComponent(content)}
+          </KeepAlive>
+        ),
         minHeight: 30,
         minWidth: 200
       };
     }
-
-  }
+  };
   // 保存工具栏按钮位置布局
   const saveToolbarLayoutHandle = (position: ToolbarPosition, list: string[]) => {
     const dockLayout = dockLayoutRef.current!!;
@@ -283,57 +338,62 @@ const DataStudioNew: React.FC = (props: any) => {
         title: ToolbarRoutes.find((x) => x.key === addSelect)!!.title,
         content: <></>,
         group: position
-      }
+      };
       // 查找被移动的toolbar位置，先删除，再添加
       const getMoveToolbarPosition = (): ToolbarPosition | undefined => {
         if (dataStudioState.toolbar.leftTop.allTabs.includes(addSelect)) {
-          return 'leftTop'
+          return 'leftTop';
         }
         if (dataStudioState.toolbar.leftBottom.allTabs.includes(addSelect)) {
-          return 'leftBottom'
+          return 'leftBottom';
         }
         if (dataStudioState.toolbar.right.allTabs.includes(addSelect)) {
-          return 'right'
+          return 'right';
         }
-      }
-      const moveToolbarPosition = getMoveToolbarPosition()
+      };
+      const moveToolbarPosition = getMoveToolbarPosition();
       if (moveToolbarPosition) {
         if (dataStudioState.toolbar[moveToolbarPosition].currentSelect === addSelect) {
           if (currentSelect) {
-            dockLayout.updateTab(currentSelect, tabData, true)
-            dockLayout.dockMove((dockLayout.find(addSelect) as TabData), null, 'remove')
+            dockLayout.updateTab(currentSelect, tabData, true);
+            dockLayout.dockMove(dockLayout.find(addSelect) as TabData, null, 'remove');
           } else {
-            const route = {...ToolbarRoutes.find((x) => x.key === addSelect)!!, position: position};
-            let layout = Algorithm.removeFromLayout(dockLayout.getLayout(), dockLayout.find(addSelect) as TabData);
-            layout = Algorithm.fixLayoutData(createNewPanel(layout, route), dockLayout.props.groups,dataStudioState.layoutSize[route.position]);
-            dockLayout.changeLayout(layout, route.key, "update", false)
+            const route = {
+              ...ToolbarRoutes.find((x) => x.key === addSelect)!!,
+              position: position
+            };
+            let layout = Algorithm.removeFromLayout(
+              dockLayout.getLayout(),
+              dockLayout.find(addSelect) as TabData
+            );
+            layout = Algorithm.fixLayoutData(
+              createNewPanel(layout, route),
+              dockLayout.props.groups,
+              dataStudioState.layoutSize[route.position]
+            );
+            dockLayout.changeLayout(layout, route.key, 'update', false);
           }
         }
       }
     }
 
-
     saveToolbarLayout({
       dockLayout: dockLayoutRef.current!!,
       position,
       list
-    })
+    });
   };
   return (
-    <PageContainer
-      breadcrumb={{}}
-      title={false}
-      childrenContentStyle={{margin: 0, padding: 0}}
-    >
-      <Row style={{height: 'calc(100vh - 81px)'}}>
+    <PageContainer breadcrumb={{}} title={false} childrenContentStyle={{ margin: 0, padding: 0 }}>
+      <Row style={{ height: 'calc(100vh - 81px)' }}>
         {/*左边工具栏*/}
         <Col
-          style={{width: toolbarWidth, height: 'inherit'}}
+          style={{ width: toolbarWidth, height: 'inherit' }}
           flex='none'
           onContextMenu={rightContextMenuHandle}
         >
           {/*左上工具栏*/}
-          <Col style={{width: 'inherit', height: '50%'}}>
+          <Col style={{ width: 'inherit', height: '50%' }}>
             <Toolbar
               showDesc={dataStudioState.toolbar.showDesc}
               position={'leftTop'}
@@ -361,37 +421,50 @@ const DataStudioNew: React.FC = (props: any) => {
         </Col>
 
         {/* 中间内容栏*/}
-        <Col style={{height: 'inherit'}} flex='auto'>
+        <Col style={{ height: 'inherit' }} flex='auto'>
           <AliveScope>
             <DockLayout
               ref={dockLayoutRef}
               layout={layout}
-              groups={groups(updateAction,setLayout)}
+              groups={groups(updateAction, setLayout)}
               dropMode={'edge'}
-              style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
+              style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
               onLayoutChange={(newLayout, currentTabId, direction) => {
                 // todo 这里移到方向会导致布局和算法异常，先暂时规避掉
-                if (direction === 'left' || direction === 'right' || direction === 'top' || direction === 'bottom' || direction === 'middle') {
-                  return
+                if (
+                  direction === 'left' ||
+                  direction === 'right' ||
+                  direction === 'top' ||
+                  direction === 'bottom' ||
+                  direction === 'middle'
+                ) {
+                  return;
                 }
                 // 移除centerContent中的tab
-                if (currentTabId && direction === "remove" && (dockLayoutRef.current?.find(currentTabId) as PanelData)?.group === "centerContent") {
+                if (
+                  currentTabId &&
+                  direction === 'remove' &&
+                  (dockLayoutRef.current?.find(currentTabId) as PanelData)?.group ===
+                    'centerContent'
+                ) {
                   if (dataStudioState.centerContent.tabs.length === 1) {
-                    dockLayoutRef.current?.updateTab(currentTabId, {
-                      closable: false,
-                      id: 'quick-start',
-                      title: '快速开始',
-                      content: (
-                        <></>
-                      ),
-                      group: 'centerContent'
-                    }, false)
+                    dockLayoutRef.current?.updateTab(
+                      currentTabId,
+                      {
+                        closable: false,
+                        id: 'quick-start',
+                        title: '快速开始',
+                        content: <></>,
+                        group: 'centerContent'
+                      },
+                      false
+                    );
                   } else {
                     setLayout({
                       layout: newLayout
-                    })
+                    });
                   }
-                  removeCenterTab(currentTabId)
+                  removeCenterTab(currentTabId);
                   return;
                 }
                 // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
@@ -400,9 +473,8 @@ const DataStudioNew: React.FC = (props: any) => {
                   newLayout,
                   currentTabId,
                   direction
-                })
-              }
-              }
+                });
+              }}
               saveTab={saveTab}
               loadTab={loadTab}
             />
@@ -411,7 +483,7 @@ const DataStudioNew: React.FC = (props: any) => {
 
         {/*右边工具栏*/}
         <Col
-          style={{width: toolbarWidth, height: 'inherit'}}
+          style={{ width: toolbarWidth, height: 'inherit' }}
           flex='none'
           onContextMenu={rightContextMenuHandle}
         >
@@ -426,13 +498,13 @@ const DataStudioNew: React.FC = (props: any) => {
       </Row>
 
       {/*@ts-ignore*/}
-      <FooterContainer token={token}/>
+      <FooterContainer token={token} />
 
       {/*右键菜单*/}
       <RightContextMenu
         contextMenuPosition={rightContextMenuState.position}
         open={rightContextMenuState.show}
-        openChange={() => setRightContextMenuState((prevState) => ({...prevState, show: false}))}
+        openChange={() => setRightContextMenuState((prevState) => ({ ...prevState, show: false }))}
         items={menuItem}
         onClick={handleMenuClick}
       />
@@ -441,6 +513,8 @@ const DataStudioNew: React.FC = (props: any) => {
 };
 
 export default connect(
-  ({DataStudio}: { DataStudio: DataStudioState }) => ({
-    dataStudioState: DataStudio,
-  }), mapDispatchToProps)(DataStudioNew);
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
+    dataStudioState: DataStudio
+  }),
+  mapDispatchToProps
+)(DataStudioNew);

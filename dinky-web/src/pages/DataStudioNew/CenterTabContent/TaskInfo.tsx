@@ -17,18 +17,18 @@
  *
  */
 
-import {l} from '@/utils/intl';
-import {Descriptions} from 'antd';
+import { l } from '@/utils/intl';
+import { Descriptions } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
-import {TaskState} from "@/pages/DataStudioNew/CenterTabContent/SqlTask";
+import { TaskState } from '@/pages/DataStudioNew/CenterTabContent/SqlTask';
 
 export const TaskInfo = (props: { params: TaskState }) => {
   const {
-    params: {taskId, name, dialect, versionId}
+    params: { taskId, name, dialect, versionId }
   } = props;
 
   return (
-    <div style={{paddingInline: 8}}>
+    <div style={{ paddingInline: 8 }}>
       <Descriptions bordered size='small' column={1}>
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
           <Paragraph copyable>{taskId}</Paragraph>

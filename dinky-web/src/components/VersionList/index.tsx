@@ -23,7 +23,6 @@ import { DeliveredProcedureOutlined } from '@ant-design/icons';
 import { List, Skeleton, Space, Tag, Tooltip } from 'antd';
 import { ListItemTypeProps } from 'antd/es/list/Item';
 
-
 export type TaskVersionListItem = {
   id: number;
   taskId?: number;

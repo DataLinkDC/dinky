@@ -17,41 +17,54 @@
  *
  */
 
-import {  RightContextMenuState } from '@/pages/DataStudioNew/data.d';
-import {createContext, Dispatch, SetStateAction} from 'react';
+import { RightContextMenuState } from '@/pages/DataStudioNew/data.d';
+import { createContext, Dispatch, SetStateAction } from 'react';
 import { ContextMenuPosition } from '@/types/Public/state';
-import {DockLayout, DropDirection, LayoutBase} from 'rc-dock';
+import { DockLayout, DropDirection, LayoutBase } from 'rc-dock';
 import { ToolbarPosition } from '@/pages/DataStudioNew/Toolbar/data.d';
-import {BoxBase, PanelBase} from "rc-dock/es";
-import {DataStudioState} from "@/pages/DataStudioNew/model";
-import {LayoutData} from "rc-dock/src/DockData";
-import {JOB_STATUS, JOB_SUBMIT_STATUS} from "@/pages/DevOps/constants";
+import { BoxBase, PanelBase } from 'rc-dock/es';
+import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { LayoutData } from 'rc-dock/src/DockData';
+import { JOB_STATUS, JOB_SUBMIT_STATUS } from '@/pages/DevOps/constants';
 import {
-  FileIcon, FlinkJarSvg, FlinkSQLEnvSvg, FlinkSQLSvg,
-  JavaSvg, LogSvg,
+  FileIcon,
+  FlinkJarSvg,
+  FlinkSQLEnvSvg,
+  FlinkSQLSvg,
+  JavaSvg,
+  LogSvg,
   MarkDownSvg,
   PythonSvg,
-  ScalaSvg, ShellSvg,
+  ScalaSvg,
+  ShellSvg,
   XMLSvg,
   YAMLSvg
-} from "@/components/Icons/CodeLanguageIcon";
-import {DIALECT} from "@/services/constants";
+} from '@/components/Icons/CodeLanguageIcon';
+import { DIALECT } from '@/services/constants';
 import {
-  ClickHouseIcons, DorisIcons, HiveIcons,
+  ClickHouseIcons,
+  DorisIcons,
+  HiveIcons,
   MysqlIcons,
-  OracleIcons, PhoenixIcons,
-  PostgresqlIcons, PrestoIcons,
+  OracleIcons,
+  PhoenixIcons,
+  PostgresqlIcons,
+  PrestoIcons,
   SQLIcons,
-  SqlServerIcons, StarRocksIcons
-} from "@/components/Icons/DBIcons";
-import {CodeTwoTone} from "@ant-design/icons";
-
-
+  SqlServerIcons,
+  StarRocksIcons
+} from '@/components/Icons/DBIcons';
+import { CodeTwoTone } from '@ant-design/icons';
 
 // 遍历layout，获取所有激活和打开的tab
 export const getAllPanel = (newLayout: LayoutBase) => {
-  return [...getBoxPanels(newLayout.dockbox), ...getBoxPanels(newLayout.floatbox), ...getBoxPanels(newLayout.maxbox), ...getBoxPanels(newLayout.windowbox)]
-}
+  return [
+    ...getBoxPanels(newLayout.dockbox),
+    ...getBoxPanels(newLayout.floatbox),
+    ...getBoxPanels(newLayout.maxbox),
+    ...getBoxPanels(newLayout.windowbox)
+  ];
+};
 
 const getBoxPanels = (layout: BoxBase | undefined) => {
   const tabs: PanelBase[] = [];
@@ -67,10 +80,7 @@ const getBoxPanels = (layout: BoxBase | undefined) => {
     }
   });
   return tabs;
-}
-
-
-
+};
 
 export const handleRightClick = (
   e: any,
@@ -122,27 +132,26 @@ export const getDockPositionByToolbarPosition = (position: ToolbarPosition): Dro
   }
 };
 
-export const getLayoutState = (layout: LayoutData,didInit:boolean): LayoutData => {
-  if (didInit){
+export const getLayoutState = (layout: LayoutData, didInit: boolean): LayoutData => {
+  if (didInit) {
     return layout;
   }
   let floatbox = layout?.floatbox;
   if (layout?.windowbox?.children) {
     if (floatbox) {
       layout.windowbox.children.forEach((item) => {
-        layout.floatbox!!.children.push({...item});
+        layout.floatbox!!.children.push({ ...item });
       });
     } else {
       floatbox = layout.windowbox;
     }
   }
   return {
-      ...layout,
-      floatbox,
-      windowbox: undefined
+    ...layout,
+    floatbox,
+    windowbox: undefined
   };
 };
-
 
 export function isStatusDone(type: string) {
   if (!type) {

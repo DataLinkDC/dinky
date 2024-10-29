@@ -17,36 +17,42 @@
  *
  */
 
-import {Button, Col, Divider, Dropdown, Empty, Flex, MenuProps, Skeleton} from "antd";
-import Search from "antd/es/input/Search";
-import {l} from "@/utils/intl";
-import {DownOutlined, SortAscendingOutlined} from "@ant-design/icons";
-import React, {Key, useEffect, useRef, useState} from "react";
-import DirectoryTree from "antd/es/tree/DirectoryTree";
-import {TreeVo} from "@/pages/DataStudio/model";
-import {ItemType} from "antd/es/menu/interface";
-import {useAsyncEffect} from "ahooks";
-import {getTaskSortTypeData} from "@/pages/DataStudio/LeftContainer/Project/service";
-import type {ButtonType} from "antd/es/button/buttonHelpers";
-import {connect, useRequest} from "@@/exports";
-import {API_CONSTANTS} from "@/services/endpoints";
-import {TaskOwnerLockingStrategy} from "@/types/SettingCenter/data.d";
-import {useModel} from "@umijs/max";
-import {debounce} from "@/utils/function";
-import {DataStudioState} from "@/pages/DataStudioNew/model";
-import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
-import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
+import { Button, Col, Divider, Dropdown, Empty, Flex, MenuProps, Skeleton } from 'antd';
+import Search from 'antd/es/input/Search';
+import { l } from '@/utils/intl';
+import { DownOutlined, SortAscendingOutlined } from '@ant-design/icons';
+import React, { Key, useEffect, useRef, useState } from 'react';
+import DirectoryTree from 'antd/es/tree/DirectoryTree';
+import { TreeVo } from '@/pages/DataStudio/model';
+import { ItemType } from 'antd/es/menu/interface';
+import { useAsyncEffect } from 'ahooks';
+import { getTaskSortTypeData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import type { ButtonType } from 'antd/es/button/buttonHelpers';
+import { connect, useRequest } from '@@/exports';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
+import { useModel } from '@umijs/max';
+import { debounce } from '@/utils/function';
+import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 import type RcTree from 'rc-tree';
-import {generateList, searchInTree} from "@/utils/treeUtils";
-import {buildProjectTree} from "@/pages/DataStudioNew/Toolbar/Project/function";
+import { generateList, searchInTree } from '@/utils/treeUtils';
+import { buildProjectTree } from '@/pages/DataStudioNew/Toolbar/Project/function';
 
-export const Project= (props: any) => {
-  const {project: {expandKeys, selectedKeys}, action: {actionType, params},updateProject,updateAction,addCenterTab} = props;
-  const {initialState} = useModel('@@initialState');
+export const Project = (props: any) => {
+  const {
+    project: { expandKeys, selectedKeys },
+    action: { actionType, params },
+    updateProject,
+    updateAction,
+    addCenterTab
+  } = props;
+  const { initialState } = useModel('@@initialState');
 
   const [searchValue, setSearchValueValue] = useState('');
-  const [treeData, setTreeData] = useState<[]>([])
-  const [sortData, setSortData] = useState()
+  const [treeData, setTreeData] = useState<[]>([]);
+  const [sortData, setSortData] = useState();
   const [sortState, setSortState] = useState<{
     sortIconType: ButtonType;
     selectedSortValue: string[];
@@ -66,28 +72,28 @@ export const Project= (props: any) => {
     sortType: ''
   });
 
-  const {loading, data, refresh} = useRequest(
-    {
-      url: API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA,
-      data: {...selectCatalogueSortTypeData},
-      method: "post"
-    }
-  );
+  const { loading, data, refresh } = useRequest({
+    url: API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA,
+    data: { ...selectCatalogueSortTypeData },
+    method: 'post'
+  });
 
   useEffect(() => {
     switch (actionType) {
       // 折叠
       case DataStudioActionType.PROJECT_COLLAPSE_ALL:
-        updateProject({expandKeys: []})
+        updateProject({ expandKeys: [] });
         break;
       // 展开
       case DataStudioActionType.PROJECT_EXPAND_ALL:
-        const expand = generateList(data, []).filter(item => !item.isLeaf).map((item) => item.key)
-        updateProject({expandKeys: expand})
+        const expand = generateList(data, [])
+          .filter((item) => !item.isLeaf)
+          .map((item) => item.key);
+        updateProject({ expandKeys: expand });
         break;
-        // todo 右键没做
+      // todo 右键没做
       case DataStudioActionType.PROJECT_RIGHT_CLICK:
-        console.log('project-right-click', params)
+        console.log('project-right-click', params);
         break;
       case DataStudioActionType.TASK_RUN_LOCATION:
         // 寻找折叠的key列表
@@ -96,39 +102,39 @@ export const Project= (props: any) => {
           data,
           params.key,
           'equal'
-        )
-        updateProject({expandKeys: [...expandKeys,...expandedKeys],selectedKeys:[params.key] })
-        treeRef.current!!.scrollTo({key: params.key})
-        break
+        );
+        updateProject({ expandKeys: [...expandKeys, ...expandedKeys], selectedKeys: [params.key] });
+        treeRef.current!!.scrollTo({ key: params.key });
+        break;
     }
-
   }, [actionType, params]);
 
   // tree数据初始化
   useAsyncEffect(async () => {
     if (data) {
-      setTreeData(buildProjectTree(
-        data,
-        searchValue,
-        [],
-        initialState?.currentUser?.user,
-        TaskOwnerLockingStrategy.ALL,
-        []
-      ))
+      setTreeData(
+        buildProjectTree(
+          data,
+          searchValue,
+          [],
+          initialState?.currentUser?.user,
+          TaskOwnerLockingStrategy.ALL,
+          []
+        )
+      );
       // 这里需要再次设置expandKeys，因为网络延迟问题，导致第一次设置expandKeys无效
-      updateProject({expandKeys: [...expandKeys]})
+      updateProject({ expandKeys: [...expandKeys] });
     }
-  }, [data, searchValue])
+  }, [data, searchValue]);
   useEffect(() => {
     if (data) {
-      refresh()
+      refresh();
     }
-  }, [selectCatalogueSortTypeData])
-
+  }, [selectCatalogueSortTypeData]);
 
   // 数据初始化
   useEffect(() => {
-    getTaskSortTypeData().then(setSortData)
+    getTaskSortTypeData().then(setSortData);
     // 监控布局宽度高度变化，重新计算树的高度
     const element = ref.current!!;
     const observer = new ResizeObserver((entries) => {
@@ -139,13 +145,12 @@ export const Project= (props: any) => {
     });
     observer.observe(element);
     return () => observer.unobserve(element);
-  }, [])
-
+  }, []);
 
   const onChangeSearch = (e: any) => {
-    let {value} = e.target;
+    let { value } = e.target;
     if (!value) {
-      updateProject({expandKeys: [], selectedKeys: []})
+      updateProject({ expandKeys: [], selectedKeys: [] });
       setSearchValueValue(value);
       return;
     }
@@ -154,50 +159,50 @@ export const Project= (props: any) => {
       data,
       String(value).trim(),
       'contain'
-    )
-    updateProject({expandKeys: expandedKeys, selectedKeys: []})
+    );
+    updateProject({ expandKeys: expandedKeys, selectedKeys: [] });
     setSearchValueValue(value);
   };
   const onExpand = (expandedKeys: Key[]) => {
-    updateProject({expandKeys: expandedKeys})
+    updateProject({ expandKeys: expandedKeys });
   };
 
   const onRightClick = (info: any) => {
     const {
-      node: {isLeaf, key, fullInfo},
+      node: { isLeaf, key, fullInfo },
       node,
       event
     } = info;
-    updateProject({selectedKeys: [key]})
-    updateAction({actionType: DataStudioActionType.PROJECT_RIGHT_CLICK, params: {isLeaf, key}})
+    updateProject({ selectedKeys: [key] });
+    updateAction({ actionType: DataStudioActionType.PROJECT_RIGHT_CLICK, params: { isLeaf, key } });
   };
 
   const onNodeClick = (info: any) => {
     // 选中的key
     const {
-      node: {isLeaf, name, type, parentId, path, key, taskId}
+      node: { isLeaf, name, type, parentId, path, key, taskId }
     } = info;
 
     if (!isLeaf) {
       if (expandKeys?.includes(key)) {
-        updateProject({expandKeys: expandKeys.filter((item: number) => item !== key)})
+        updateProject({ expandKeys: expandKeys.filter((item: number) => item !== key) });
       } else {
-        updateProject({expandKeys: [...expandKeys, key]})
+        updateProject({ expandKeys: [...expandKeys, key] });
       }
     } else {
-      updateProject({selectedKeys: [key]})
+      updateProject({ selectedKeys: [key] });
       addCenterTab({
         id: 'project_' + key,
         title: name,
-        tabType: "task",
-        params:{
+        tabType: 'task',
+        params: {
           taskId: taskId,
           key: key,
-          dialect: type,
+          dialect: type
         }
-      })
+      });
     }
-  }
+  };
 
   function buildSortTreeOptions(trees: TreeVo[] = []): ItemType[] {
     return trees.map((tree) => {
@@ -224,7 +229,7 @@ export const Project= (props: any) => {
       setSelectCatalogueSortTypeData({
         sortValue: '',
         sortType: ''
-      })
+      });
     } else {
       setSortState((prevState) => ({
         ...prevState,
@@ -233,21 +238,24 @@ export const Project= (props: any) => {
       setSelectCatalogueSortTypeData({
         sortValue: sortField,
         sortType: sortType
-      })
+      });
     }
   };
   return (
-    <Flex vertical style={{paddingInline: 5, height: 'inherit'}} ref={ref}>
-      <Skeleton loading={loading} active
-                title={false}
-                paragraph={{
-                  rows: 10,
-                  width: '100%'
-                }}>
+    <Flex vertical style={{ paddingInline: 5, height: 'inherit' }} ref={ref}>
+      <Skeleton
+        loading={loading}
+        active
+        title={false}
+        paragraph={{
+          rows: 10,
+          width: '100%'
+        }}
+      >
         <Col>
           <Flex gap={8} justify={'center'} align={'center'}>
             <Search
-              style={{margin: '8px 0px'}}
+              style={{ margin: '8px 0px' }}
               placeholder={l('global.search.text')}
               onChange={debounce(onChangeSearch, 300)}
               allowClear={true}
@@ -262,18 +270,18 @@ export const Project= (props: any) => {
               }}
               placement='bottomLeft'
             >
-              <Button icon={<SortAscendingOutlined/>} type={sortState.sortIconType}></Button>
+              <Button icon={<SortAscendingOutlined />} type={sortState.sortIconType}></Button>
             </Dropdown>
           </Flex>
 
-          <Divider style={{margin: 3}}/>
+          <Divider style={{ margin: 3 }} />
         </Col>
 
         {data?.length ? (
           <DirectoryTree
             ref={treeRef}
             showLine
-            switcherIcon={<DownOutlined/>}
+            switcherIcon={<DownOutlined />}
             className={'treeList'}
             height={treeHeight}
             onSelect={(_, info) => onNodeClick(info)}
@@ -291,11 +299,14 @@ export const Project= (props: any) => {
           />
         )}
       </Skeleton>
-    </Flex>);
-}
+    </Flex>
+  );
+};
 export default connect(
-  ({DataStudio}: { DataStudio: DataStudioState }) => ({
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
     project: DataStudio.toolbar.project,
     action: DataStudio.action
-  }), mapDispatchToProps)(Project);
+  }),
+  mapDispatchToProps
+)(Project);
 // export default Project;

@@ -18,13 +18,13 @@
  */
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import {l} from '@/utils/intl';
-import {ConsoleSqlOutlined} from '@ant-design/icons';
+import { l } from '@/utils/intl';
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 import ProList from '@ant-design/pro-list';
-import {Drawer, Space, Tag, Typography} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { Drawer, Space, Tag, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
 
-const {Paragraph, Text} = Typography;
+const { Paragraph, Text } = Typography;
 
 type ExplainItem = {
   index: number;
@@ -42,14 +42,14 @@ export type ExplainProps = {
   data: ExplainItem[];
 };
 export default (props: ExplainProps) => {
-  const {data} = props;
+  const { data } = props;
   const [explainData, setExplainData] = useState<ExplainItem[]>([]);
   const [result, setResult] = useState(<Text>{l('pages.datastudio.explain.validate')}</Text>);
   const [showModal, setShowModal] = useState(false);
   const [explainInfo, setExplainInfo] = useState('');
 
   useEffect(() => {
-    const errorExplainData: ExplainItem [] = [];
+    const errorExplainData: ExplainItem[] = [];
     let errorCount: number = 0;
 
     for (let i in data) {
@@ -102,7 +102,7 @@ export default (props: ExplainProps) => {
                 return (
                   <Space size={0}>
                     <Tag color='blue' key={row.type}>
-                      <ConsoleSqlOutlined/> {row.type}
+                      <ConsoleSqlOutlined /> {row.type}
                     </Tag>
                   </Space>
                 );
@@ -115,20 +115,20 @@ export default (props: ExplainProps) => {
                   <>
                     {row.sql ? (
                       <>
-                        <Paragraph ellipsis={{rows: 2, expandable: true, symbol: 'more'}}>
+                        <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
                           {row.sql}
                         </Paragraph>
                       </>
                     ) : null}
                     {row.error ? (
                       <Paragraph>
-                        <CodeShow code={row.error} language='java' height='500px'/>
+                        <CodeShow code={row.error} language='java' height='500px' />
                       </Paragraph>
                     ) : null}
                     {row.explain ? (
                       <a
                         onClick={() => showPlanDrawer(row.explain)}
-                        style={{float: 'right'}}
+                        style={{ float: 'right' }}
                         type={'link'}
                       >
                         Show Plan
@@ -192,7 +192,7 @@ export default (props: ExplainProps) => {
         open={showModal}
       >
         <CodeShow
-          style={{alignItems: 'inherit'}}
+          style={{ alignItems: 'inherit' }}
           code={explainInfo}
           language='java'
           height='92vh'
@@ -201,4 +201,3 @@ export default (props: ExplainProps) => {
     </>
   );
 };
-

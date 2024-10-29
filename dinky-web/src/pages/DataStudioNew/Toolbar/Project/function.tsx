@@ -29,7 +29,7 @@ import { l } from '@/utils/intl';
 import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Space, Tooltip } from 'antd';
 import { Key } from 'react';
-import {getTabIcon} from "@/pages/DataStudioNew/function";
+import { getTabIcon } from '@/pages/DataStudioNew/function';
 
 /**
  * generate list of tree node from data

@@ -17,21 +17,23 @@
  *
  */
 
-import {Flex, Row} from 'antd';
+import { Flex, Row } from 'antd';
 import React from 'react';
 import './index.less';
-import {ToolbarPosition, ToolbarProp} from '@/pages/DataStudioNew/Toolbar/data.d';
-import {ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {ReactSortable} from 'react-sortablejs';
+import { ToolbarPosition, ToolbarProp } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import { ReactSortable } from 'react-sortablejs';
 
 export default React.memo((props: ToolbarProp) => {
-  const {showDesc, onClick, toolbarSelect, position, saveToolbarLayout} = props;
+  const { showDesc, onClick, toolbarSelect, position, saveToolbarLayout } = props;
   const routes = toolbarSelect.allTabs;
-  const currentRoutes = routes.map((value) => ToolbarRoutes.find((item) => item.key === value)!!).map(item => ({
-    ...item,
-    position
-  }));
-  const list = currentRoutes.map((item) => ({id: item.key, name: item.title}));
+  const currentRoutes = routes
+    .map((value) => ToolbarRoutes.find((item) => item.key === value)!!)
+    .map((item) => ({
+      ...item,
+      position
+    }));
+  const list = currentRoutes.map((item) => ({ id: item.key, name: item.title }));
   const justifyContent = position === 'leftBottom' ? 'flex-end' : 'flex-start';
   return (
     <Flex wrap gap={4} justify={'center'} className={'toolbar-side'} id={position}>
@@ -50,12 +52,12 @@ export default React.memo((props: ToolbarProp) => {
         setList={(newState, sortable) => {
           if (sortable) {
             const datas = list.map((item) => item.id);
-            if (newState.length !== datas.length ) {
+            if (newState.length !== datas.length) {
               saveToolbarLayout(
                 sortable?.options.multiDragKey!! as ToolbarPosition,
                 newState.map((item) => item.id)
               );
-            }else {
+            } else {
               for (let i = 0; i < newState.length; i++) {
                 if (newState[i].id !== datas[i]) {
                   // 元素发生改变删除
@@ -67,7 +69,6 @@ export default React.memo((props: ToolbarProp) => {
                 }
               }
             }
-
           }
         }}
       >
@@ -96,7 +97,7 @@ export default React.memo((props: ToolbarProp) => {
                   textAlign: 'center'
                 }}
               >
-                {React.cloneElement(item.icon, {className: 'toolbar-icon'})}
+                {React.cloneElement(item.icon, { className: 'toolbar-icon' })}
               </span>
               {showDesc && <span className={'toolbar-desc'}>{item.title}</span>}
             </Row>

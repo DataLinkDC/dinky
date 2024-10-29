@@ -22,7 +22,7 @@ import { MenuItemType } from 'antd/es/menu/interface';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React from 'react';
 import { RightMenuItemProps } from '@/pages/DataStudioNew/data.d';
-import {DataStudioState} from "@/pages/DataStudioNew/model";
+import { DataStudioState } from '@/pages/DataStudioNew/model';
 
 /**
  * 右键菜单组件props | Right-click menu component props
@@ -67,7 +67,6 @@ const RightContextMenu: React.FC<RightContextMenuProps> = (props) => {
 };
 
 export default RightContextMenu;
-
 
 /**
  * 自定义钩子函数 | Custom hook function.

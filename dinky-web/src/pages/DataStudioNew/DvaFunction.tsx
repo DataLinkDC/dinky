@@ -17,8 +17,8 @@
  *
  */
 
-import {STUDIO_MODEL, STUDIO_MODEL_ASYNC} from "@/pages/DataStudioNew/model";
-import {Dispatch} from "@umijs/max";
+import { STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudioNew/model';
+import { Dispatch } from '@umijs/max';
 import {
   CenterTabDTO,
   HandleLayoutChangeDTO,
@@ -26,7 +26,7 @@ import {
   SaveToolbarLayoutDTO,
   SetLayoutDTO,
   UpdateActionDTO
-} from "@/pages/DataStudioNew/type";
+} from '@/pages/DataStudioNew/type';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
@@ -34,12 +34,12 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch({
         ...payload,
         type: STUDIO_MODEL.setLayout
-      })
+      });
     },
     handleLayoutChange: (payload: HandleLayoutChangeDTO) =>
       dispatch({
         ...payload,
-        type: STUDIO_MODEL.handleLayoutChange,
+        type: STUDIO_MODEL.handleLayoutChange
       }),
     handleToolbarShowDesc: () =>
       dispatch({
@@ -76,7 +76,6 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
         type: STUDIO_MODEL.updateAction
       }),
 
-
     // effects
     queryFlinkEnv: () =>
       dispatch({
@@ -101,7 +100,6 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
     queryDataSourceDataList: () =>
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryDataSourceDataList
-      }),
-
-  }
-}
+      })
+  };
+};

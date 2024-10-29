@@ -18,8 +18,8 @@
  */
 
 import React from 'react';
-import {LayoutData, TabGroup} from 'rc-dock';
-import {DockContext, PanelData, TabData} from 'rc-dock/lib/DockData';
+import { LayoutData, TabGroup } from 'rc-dock';
+import { DockContext, PanelData, TabData } from 'rc-dock/lib/DockData';
 import 'rc-dock/style/index-light.less';
 import './index.less';
 import {
@@ -33,23 +33,20 @@ import {
   ShrinkOutlined,
   SwitcherOutlined
 } from '@ant-design/icons';
-import {leftDefaultShowTab} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {l} from "@/utils/intl";
-import * as Algorithm from "rc-dock/src/Algorithm";
-import {createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
-import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
-import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
+import { leftDefaultShowTab } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import { l } from '@/utils/intl';
+import * as Algorithm from 'rc-dock/src/Algorithm';
+import { createNewPanel } from '@/pages/DataStudioNew/DockLayoutFunction';
+import { ToolbarPosition, ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 
 const quickGuideTab: TabData = {
   closable: false,
   id: 'quick-start',
   title: '快速开始',
-  content: (
-    <></>
-  ),
+  content: <></>,
   group: 'centerContent'
 };
-
 
 export const layout: LayoutData = {
   dockbox: {
@@ -80,7 +77,7 @@ export const layout: LayoutData = {
           {
             size: 800,
             tabs: [quickGuideTab],
-            panelLock: {panelStyle: 'main'}
+            panelLock: { panelStyle: 'main' }
           }
         ]
       },
@@ -142,28 +139,33 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
             position: panelData.group as ToolbarPosition
           };
           // @ts-ignore
-          const layout = Algorithm.fixLayoutData(createNewPanel(context.state.layout, route), context.props.groups);
+          const layout = Algorithm.fixLayoutData(
+            createNewPanel(context.state.layout, route),
+            context.props.groups
+          );
           // @ts-ignore
-          context.changeLayout(layout, route.key, "update", false)
-          context.dockMove(panelData, null, "remove")
-        }
-        }
+          context.changeLayout(layout, route.key, 'update', false);
+          context.dockMove(panelData, null, 'remove');
+        }}
       />
     );
   }
   return buttons;
 };
 
-const toolbarPanelExtraButtons = (panelData: PanelData, context: DockContext, updateAction: any) => {
+const toolbarPanelExtraButtons = (
+  panelData: PanelData,
+  context: DockContext,
+  updateAction: any
+) => {
   const buttons = [];
-  if (panelData.activeId === "project") {
+  if (panelData.activeId === 'project') {
     buttons.push(
       <PlusCircleOutlined
         className='my-panel-extra-btn'
         key='right.menu.createRoot'
         title={l('right.menu.createRoot')}
-        onClick={() => {
-        }}
+        onClick={() => {}}
       />
     );
     buttons.push(
@@ -172,7 +174,7 @@ const toolbarPanelExtraButtons = (panelData: PanelData, context: DockContext, up
         key='button.expand-all'
         title={l('button.expand-all')}
         onClick={() => {
-          updateAction({actionType: DataStudioActionType.PROJECT_EXPAND_ALL, params: {}})
+          updateAction({ actionType: DataStudioActionType.PROJECT_EXPAND_ALL, params: {} });
         }}
       />
     );
@@ -182,42 +184,42 @@ const toolbarPanelExtraButtons = (panelData: PanelData, context: DockContext, up
         key='button.collapse-all'
         title={l('button.collapse-all')}
         onClick={() => {
-          updateAction({actionType: DataStudioActionType.PROJECT_COLLAPSE_ALL, params: {}})
+          updateAction({ actionType: DataStudioActionType.PROJECT_COLLAPSE_ALL, params: {} });
         }}
       />
     );
-  } else if (panelData.activeId === "catalog") {
+  } else if (panelData.activeId === 'catalog') {
     buttons.push(
       <ReloadOutlined
         className='my-panel-extra-btn'
         key='button.collapse-all'
         title={l('button.collapse-all')}
         onClick={() => {
-          updateAction({actionType: DataStudioActionType.CATALOG_REFRESH, params: {}})
+          updateAction({ actionType: DataStudioActionType.CATALOG_REFRESH, params: {} });
         }}
       />
     );
-
   }
-  const close = <CloseOutlined
-    className='my-panel-extra-btn'
-    key='close'
-    title='关闭'
-    onClick={() => context.dockMove(panelData, null, 'remove')}
-  />
+  const close = (
+    <CloseOutlined
+      className='my-panel-extra-btn'
+      key='close'
+      title='关闭'
+      onClick={() => context.dockMove(panelData, null, 'remove')}
+    />
+  );
   return [...buttons, ...centerPanelExtraButtons(panelData, context), close];
 };
 const toolbarPanelExtra = (panelData: PanelData, context: DockContext, updateAction: any) => {
   return <>{toolbarPanelExtraButtons(panelData, context, updateAction).map((button) => button)}</>;
 };
 
-export const groups = (updateAction: (params: {
-  actionType: string,
-  params: Record<string, any>
-}) => void): { [key: string]: TabGroup } => {
+export const groups = (
+  updateAction: (params: { actionType: string; params: Record<string, any> }) => void
+): { [key: string]: TabGroup } => {
   const panelExtra = (panelData: PanelData, context: DockContext) => {
-    return toolbarPanelExtra(panelData, context, updateAction)
-  }
+    return toolbarPanelExtra(panelData, context, updateAction);
+  };
   return {
     leftTop: {
       floatable: true,
@@ -242,5 +244,5 @@ export const groups = (updateAction: (params: {
         return <div>{centerPanelExtraButtons(panelData, context).map((button) => button)}</div>;
       }
     }
-  }
+  };
 };

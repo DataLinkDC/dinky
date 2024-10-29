@@ -34,7 +34,7 @@ export const CODE_EDIT_THEME = {
 export const MonacoEditorOptions = {
   // selectOnLineNumbers: true,
   renderSideBySide: false, //  side by side
-  autoIndent: 'none' as "none" | "keep" | "brackets" | "advanced" | "full" | undefined, //  auto indent
+  autoIndent: 'none' as 'none' | 'keep' | 'brackets' | 'advanced' | 'full' | undefined, //  auto indent
   fontSize: 14, //  font size
   automaticLayout: true, //  auto layout
   scrollBeyondLastLine: false, //is scroll beyond the last line

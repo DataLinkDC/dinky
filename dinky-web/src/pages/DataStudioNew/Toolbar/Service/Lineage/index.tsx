@@ -18,25 +18,20 @@
  */
 
 import LineageGraph from '@/components/LineageGraph';
-import {LineageDetailInfo} from '@/types/DevOps/data';
-import {l} from '@/utils/intl';
-import {Card, Result} from 'antd';
+import { LineageDetailInfo } from '@/types/DevOps/data';
+import { l } from '@/utils/intl';
+import { Card, Result } from 'antd';
 import React from 'react';
 
-
 export default (props: { data: LineageDetailInfo }) => {
-  const {data} = props;
+  const { data } = props;
   return (
-    <Card
-      style={{height: 'inherit'}}
-      hoverable
-      styles={{body: {height: 'inherit'}}}
-    >
+    <Card style={{ height: 'inherit' }} hoverable styles={{ body: { height: 'inherit' } }}>
       {data && (data.tables.length !== 0 || data.relations.length !== 0) ? (
         // todo 刷新没用，可以去掉api
-        <LineageGraph lineageData={data} refreshCallBack={()=>{}}/>
+        <LineageGraph lineageData={data} refreshCallBack={() => {}} />
       ) : (
-        <Result style={{height: 'inherit'}} status='warning' title={l('lineage.getError')}/>
+        <Result style={{ height: 'inherit' }} status='warning' title={l('lineage.getError')} />
       )}
     </Card>
   );

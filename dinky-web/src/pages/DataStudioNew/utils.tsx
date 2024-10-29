@@ -17,7 +17,7 @@
  *
  */
 
-import {DIALECT} from "@/services/constants";
+import { DIALECT } from '@/services/constants';
 
 /**
  * 断言 断言类型值是否在断言类型值列表中 | assert whether the assertion type value is in the assertion type value list
@@ -64,7 +64,6 @@ export const assert = (
   return false;
 };
 
-
 /**
  * @description: 判断是否为 SQL 方言 | assert is sql dialect
  * @param dialect
@@ -109,4 +108,3 @@ export const isNotEmpty = (value: any): boolean => {
 export const isEmpty = (value: any): boolean => {
   return !isNotEmpty(value);
 };
-

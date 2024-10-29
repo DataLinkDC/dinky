@@ -20,10 +20,10 @@
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import useThemeValue from '@/hooks/useThemeValue';
-import {jsonToSql} from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service';
-import {Button, Space} from 'antd';
-import React, {useState} from 'react';
-import {debounce} from "lodash";
+import { jsonToSql } from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service';
+import { Button, Space } from 'antd';
+import React, { useState } from 'react';
+import { debounce } from 'lodash';
 
 const padding = 10;
 
@@ -33,19 +33,18 @@ export const JsonToSql: React.FC = () => {
   const [jsonData, setJsonData] = useState('');
   const [sqlData, setSqlData] = useState('');
   return (
-    <div style={{padding: padding}}>
+    <div style={{ padding: padding }}>
       <Space>
         <Button
           children={'Convert'}
           onClick={async () => {
-            setSqlData(await jsonToSql({data: jsonData}))
+            setSqlData(await jsonToSql({ data: jsonData }));
           }}
         />
       </Space>
 
-      <div style={{display: 'flex', paddingBlockStart: padding}}>
-        <div style={{width: '50%', border}}>
-
+      <div style={{ display: 'flex', paddingBlockStart: padding }}>
+        <div style={{ width: '50%', border }}>
           <CodeEdit
             height={'100%'}
             code={jsonData}
@@ -53,13 +52,13 @@ export const JsonToSql: React.FC = () => {
             onChange={debounce(setJsonData, 500)}
           />
         </div>
-        <div style={{width: '50%'}}>
+        <div style={{ width: '50%' }}>
           <CodeShow
             height={'100%'}
             code={sqlData}
             language={'json'}
-            style={{border}}
-            options={{minimap: {enabled: true}}}
+            style={{ border }}
+            options={{ minimap: { enabled: true } }}
           />
         </div>
       </div>

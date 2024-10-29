@@ -17,40 +17,48 @@
  *
  */
 
-import {BoxData} from "rc-dock/es";
-import {DataStudioState} from "@/pages/DataStudioNew/model";
-import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
-import {PanelData, TabData} from "rc-dock/es/DockData";
-import {DockLayout, LayoutData} from "rc-dock";
-import {Filter} from "rc-dock/es/Algorithm";
+import { BoxData } from 'rc-dock/es';
+import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { ToolbarPosition, ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { PanelData, TabData } from 'rc-dock/es/DockData';
+import { DockLayout, LayoutData } from 'rc-dock';
+import { Filter } from 'rc-dock/es/Algorithm';
 
-
-export const activeTab = (dockLayout: DockLayout, layoutData: LayoutData, sourceTabData: TabData, targetId: string) => {
+export const activeTab = (
+  dockLayout: DockLayout,
+  layoutData: LayoutData,
+  sourceTabData: TabData,
+  targetId: string
+) => {
   const tabPanel = find(layoutData, sourceTabData.id!!) as PanelData;
   const targetTabPanel = find(layoutData, targetId) as PanelData;
   if (!tabPanel && targetTabPanel) {
     // 新增tab
-    targetTabPanel.tabs = [sourceTabData, ...targetTabPanel.tabs]
-    targetTabPanel.activeId = sourceTabData.id
+    targetTabPanel.tabs = [sourceTabData, ...targetTabPanel.tabs];
+    targetTabPanel.activeId = sourceTabData.id;
   } else {
     // 切换tab
     if (tabPanel.activeId === sourceTabData.id) {
-      dockLayout.loadLayout(layoutData)
+      dockLayout.loadLayout(layoutData);
       return;
     }
     if (tabPanel.tabs.length === 0) {
-      tabPanel.tabs = [sourceTabData]
+      tabPanel.tabs = [sourceTabData];
     } else {
-      if (tabPanel.tabs.some(tab => tab.id === sourceTabData.id)) {
-        tabPanel.activeId = sourceTabData.id
+      if (tabPanel.tabs.some((tab) => tab.id === sourceTabData.id)) {
+        tabPanel.activeId = sourceTabData.id;
       }
     }
   }
 
-  dockLayout.loadLayout(layoutData)
-}
+  dockLayout.loadLayout(layoutData);
+};
 
-export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size?: number): LayoutData => {
+export const createNewPanel = (
+  layoutData: LayoutData,
+  route: ToolbarRoute,
+  size?: number
+): LayoutData => {
   // todo 这里有布局混乱导致算法崩溃风险
   const panelData: PanelData = {
     group: route.position,
@@ -63,49 +71,50 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size
         group: route.position
       }
     ]
-  }
+  };
   const boxData: BoxData = {
     mode: 'vertical',
     size: size ?? 1000,
     children: [panelData]
-  }
-
+  };
 
   const dockbox = layoutData.dockbox;
-  if (dockbox.mode === "horizontal") {
-    if (route.position == "right") {
-      (dockbox.children as BoxData[]).push(boxData)
+  if (dockbox.mode === 'horizontal') {
+    if (route.position == 'right') {
+      (dockbox.children as BoxData[]).push(boxData);
     } else if (route.position === 'leftTop') {
-      dockbox.children = [boxData, ...dockbox.children]
+      dockbox.children = [boxData, ...dockbox.children];
     } else if (route.position === 'leftBottom') {
       return {
         ...layoutData,
         dockbox: {
           mode: 'vertical',
-          children: [{
-            mode: 'horizontal',
-            children: [...dockbox.children]
-          }, boxData]
+          children: [
+            {
+              mode: 'horizontal',
+              children: [...dockbox.children]
+            },
+            boxData
+          ]
         }
-      }
+      };
     } else if (route.position === 'centerContent') {
       if (dockbox.children.length === 0) {
-        dockbox.children = [...dockbox.children, boxData]
+        dockbox.children = [...dockbox.children, boxData];
       } else {
         if ((dockbox.children[0] as PanelData).group === 'leftTop') {
-          dockbox.children = [dockbox.children[0], boxData, ...dockbox.children.slice(1)]
+          dockbox.children = [dockbox.children[0], boxData, ...dockbox.children.slice(1)];
         } else if ((dockbox.children[0] as PanelData).group === 'right') {
-          dockbox.children = [boxData, ...dockbox.children]
+          dockbox.children = [boxData, ...dockbox.children];
         }
       }
     }
-
-  } else if (dockbox.mode === "vertical") {
+  } else if (dockbox.mode === 'vertical') {
     if (dockbox.children.length === 0) {
-      dockbox.children.push(boxData)
+      dockbox.children.push(boxData);
     } else {
       if (route.position === 'leftBottom') {
-        dockbox.children.push(boxData)
+        dockbox.children.push(boxData);
       } else {
         for (let i = 0; i < dockbox.children.length; i++) {
           if ((dockbox.children[i] as PanelData).group !== 'leftBottom') {
@@ -115,10 +124,13 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size
                 dockbox.children[i] = {
                   mode: 'horizontal',
                   children: [boxData, dockbox.children[i] as PanelData]
-                }
+                };
               } else {
                 // box
-                (dockbox.children[i] as BoxData).children = [boxData, ...(dockbox.children[i] as BoxData).children]
+                (dockbox.children[i] as BoxData).children = [
+                  boxData,
+                  ...(dockbox.children[i] as BoxData).children
+                ];
               }
             } else if (route.position === 'right') {
               if ('tabs' in dockbox.children[i]) {
@@ -126,53 +138,61 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size
                 dockbox.children[i] = {
                   mode: 'horizontal',
                   children: [dockbox.children[i] as PanelData, boxData]
-                }
+                };
               } else {
                 // box
-                (dockbox.children[i] as BoxData).children.push(boxData)
+                (dockbox.children[i] as BoxData).children.push(boxData);
               }
             } else if (route.position === 'centerContent') {
               if ('tabs' in dockbox.children[i]) {
                 // panel
                 if ((dockbox.children[i] as PanelData).group === 'leftTop') {
-                  dockbox.children[i] = [dockbox.children[i], panelData]
+                  dockbox.children[i] = [dockbox.children[i], panelData];
                 } else if ((dockbox.children[i] as PanelData).group === 'right') {
-                  dockbox.children[i] = [panelData, dockbox.children[i]]
+                  dockbox.children[i] = [panelData, dockbox.children[i]];
                 }
                 dockbox.children[i] = {
                   mode: 'horizontal',
                   children: [...(dockbox.children[i] as PanelData[])]
-                }
+                };
               } else {
                 if ((dockbox.children[i].children[0] as PanelData).group === 'leftTop') {
-                  (dockbox.children[i] as BoxData).children =[dockbox.children[i].children[0], panelData,...dockbox.children[i].children.slice(1)]
+                  (dockbox.children[i] as BoxData).children = [
+                    dockbox.children[i].children[0],
+                    panelData,
+                    ...dockbox.children[i].children.slice(1)
+                  ];
                 }
               }
             }
-            break
+            break;
           }
         }
       }
     }
-
   }
-  return layoutData
+  return layoutData;
+};
 
-}
-
-export const findToolbarPositionByTabId = (toolbar: DataStudioState['toolbar'], tabId: string): ToolbarPosition | undefined => {
+export const findToolbarPositionByTabId = (
+  toolbar: DataStudioState['toolbar'],
+  tabId: string
+): ToolbarPosition | undefined => {
   if (toolbar.leftTop.allOpenTabs.includes(tabId)) {
-    return 'leftTop'
+    return 'leftTop';
   } else if (toolbar.leftBottom.allOpenTabs.includes(tabId)) {
-    return 'leftBottom'
+    return 'leftBottom';
   } else if (toolbar.right.allOpenTabs.includes(tabId)) {
-    return 'right'
+    return 'right';
   }
-  return undefined
-}
+  return undefined;
+};
 
-
-export function find(layout: LayoutData, id: string, filter: Filter = Filter.AnyTabPanel): PanelData | TabData | BoxData | undefined {
+export function find(
+  layout: LayoutData,
+  id: string,
+  filter: Filter = Filter.AnyTabPanel
+): PanelData | TabData | BoxData | undefined {
   let result: PanelData | TabData | BoxData | undefined;
 
   if (filter & Filter.Docked) {
@@ -197,9 +217,13 @@ export function find(layout: LayoutData, id: string, filter: Filter = Filter.Any
   return result;
 }
 
-function findInBox(box: BoxData | undefined, id: string, filter: Filter): PanelData | TabData | BoxData | undefined {
+function findInBox(
+  box: BoxData | undefined,
+  id: string,
+  filter: Filter
+): PanelData | TabData | BoxData | undefined {
   let result: PanelData | TabData | BoxData | undefined;
-  if ((filter | Filter.Box) && box?.id === id) {
+  if (filter | Filter.Box && box?.id === id) {
     return box;
   }
   if (!box?.children) {
@@ -207,11 +231,11 @@ function findInBox(box: BoxData | undefined, id: string, filter: Filter): PanelD
   }
   for (let child of box.children) {
     if ('children' in child) {
-      if (result = findInBox(child, id, filter)) {
+      if ((result = findInBox(child, id, filter))) {
         break;
       }
     } else if ('tabs' in child) {
-      if (result = findInPanel(child, id, filter)) {
+      if ((result = findInPanel(child, id, filter))) {
         break;
       }
     }
@@ -219,8 +243,12 @@ function findInBox(box: BoxData | undefined, id: string, filter: Filter): PanelD
   return result;
 }
 
-function findInPanel(panel: PanelData, id: string, filter: Filter): PanelData | TabData | undefined {
-  if (panel.id === id && (filter & Filter.Panel)) {
+function findInPanel(
+  panel: PanelData,
+  id: string,
+  filter: Filter
+): PanelData | TabData | undefined {
+  if (panel.id === id && filter & Filter.Panel) {
     return panel;
   }
   if (filter & Filter.Tab) {

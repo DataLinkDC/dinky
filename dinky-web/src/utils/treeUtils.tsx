@@ -35,8 +35,8 @@ import { Key } from 'react';
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
     const node = element;
-    const { name, id, parentId, level,isLeaf } = node;
-    list.push({ name, id, key: id, title: name, parentId, level,isLeaf });
+    const { name, id, parentId, level, isLeaf } = node;
+    list.push({ name, id, key: id, title: name, parentId, level, isLeaf });
     if (node.children) {
       generateList(node.children, list);
     }
@@ -210,5 +210,3 @@ export const showBadge = (type: string) => {
       return false;
   }
 };
-
-

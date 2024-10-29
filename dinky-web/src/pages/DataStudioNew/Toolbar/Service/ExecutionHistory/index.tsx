@@ -17,23 +17,23 @@
  *
  */
 
-import {JobDetailInfoModel} from '@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel';
-import {queryList} from '@/services/api';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {JobExecutionHistory} from '@/types/Studio/data';
-import {formatDateToYYYYMMDDHHMMSS} from '@/utils/function';
-import {l} from '@/utils/intl';
-import {ErrorMessage} from '@/utils/messages';
-import {ClusterOutlined, FireOutlined, RocketOutlined} from '@ant-design/icons';
-import {ActionType, ProList} from '@ant-design/pro-components';
-import {ProListMetas} from '@ant-design/pro-list';
-import {Badge, Divider, Space, Tag, Typography} from 'antd';
-import React, {useRef, useState} from 'react';
+import { JobDetailInfoModel } from '@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel';
+import { queryList } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { JobExecutionHistory } from '@/types/Studio/data';
+import { formatDateToYYYYMMDDHHMMSS } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { ErrorMessage } from '@/utils/messages';
+import { ClusterOutlined, FireOutlined, RocketOutlined } from '@ant-design/icons';
+import { ActionType, ProList } from '@ant-design/pro-components';
+import { ProListMetas } from '@ant-design/pro-list';
+import { Badge, Divider, Space, Tag, Typography } from 'antd';
+import React, { useRef, useState } from 'react';
 
-const {Link, Paragraph, Text} = Typography;
+const { Link, Paragraph, Text } = Typography;
 
 export default (props: { taskId: number }) => {
-const {taskId} = props
+  const { taskId } = props;
   const refAction = useRef<ActionType>();
 
   const [modalVisit, setModalVisit] = useState(false);
@@ -57,9 +57,9 @@ const {taskId} = props
             <Link href={`http://${item.jobManagerAddress}`} target='_blank'>
               [{item.jobManagerAddress}]
             </Link>
-            <Divider type='vertical'/>
+            <Divider type='vertical' />
             {l('global.table.startTime')}:{formatDateToYYYYMMDDHHMMSS(item.startTime)}
-            <Divider type='vertical'/>
+            <Divider type='vertical' />
             {l('global.table.finishTime')}:{formatDateToYYYYMMDDHHMMSS(item.endTime)}
           </>
         </Paragraph>
@@ -80,46 +80,46 @@ const {taskId} = props
 
         {item.clusterName ? (
           <Tag color='green' key={item.clusterName}>
-            <ClusterOutlined/> {item.clusterName}
+            <ClusterOutlined /> {item.clusterName}
           </Tag>
         ) : (
           <Tag color='green' key={'local'}>
-            <ClusterOutlined/> {l('pages.devops.jobinfo.localenv')}
+            <ClusterOutlined /> {l('pages.devops.jobinfo.localenv')}
           </Tag>
         )}
         {item.type && (
           <Tag color='blue' key={item.type}>
-            <RocketOutlined/> {item.type}
+            <RocketOutlined /> {item.type}
           </Tag>
         )}
         {item.status == 2 ? (
           <Space>
-            <Badge status='success'/>
+            <Badge status='success' />
             <Text type='success'>{l('global.job.status.success')}</Text>
           </Space>
         ) : item.status == 1 ? (
           <Space>
-            <Badge status='success'/>
+            <Badge status='success' />
             <Text type='secondary'>{l('global.job.status.running')}</Text>
           </Space>
         ) : item.status == 3 ? (
           <Space>
-            <Badge status='error'/>
+            <Badge status='error' />
             <Text type='danger'>{l('global.job.status.failed')}</Text>
           </Space>
         ) : item.status == 4 ? (
           <Space>
-            <Badge status='error'/>
+            <Badge status='error' />
             <Text type='warning'>{l('global.job.status.canceled')}</Text>
           </Space>
         ) : item.status == 0 ? (
           <Space>
-            <Badge status='error'/>
+            <Badge status='error' />
             <Text type='warning'>{l('global.job.status.initiating')}</Text>
           </Space>
         ) : (
           <Space>
-            <Badge status='success'/>
+            <Badge status='success' />
             <Text type='danger'>{l('global.job.status.unknown')}</Text>
           </Space>
         )}
@@ -162,7 +162,7 @@ const {taskId} = props
           return (
             <Space size={0}>
               <Tag color={row.jobId ? 'blue' : 'red'} key={row.jobId}>
-                <FireOutlined/> {row.jobId ?? l('global.job.status.failed-tip')}
+                <FireOutlined /> {row.jobId ?? l('global.job.status.failed-tip')}
               </Tag>
             </Space>
           );
@@ -195,7 +195,7 @@ const {taskId} = props
         title: l('global.table.status'),
         valueType: 'select',
         valueEnum: {
-          '': {text: '全部', status: 'ALL'},
+          '': { text: '全部', status: 'ALL' },
           0: {
             text: '初始化中',
             status: 'INITIALIZE'
@@ -240,13 +240,13 @@ const {taskId} = props
         }}
         size={'small'}
         rowKey='id'
-        params={{taskId: taskId}}
+        params={{ taskId: taskId }}
         dateFormatter={'string'}
         headerTitle={false}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.HISTORY_LIST, {
-            ...{...params, taskId: taskId},
-            sorter: {id: 'descend'},
+            ...{ ...params, taskId: taskId },
+            sorter: { id: 'descend' },
             filter
           })
         }

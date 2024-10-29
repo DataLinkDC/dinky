@@ -19,9 +19,7 @@
 
 import { ContextMenuPosition } from '@/types/Public/state';
 
-import {DataStudioState} from "@/pages/DataStudioNew/model";
-
-
+import { DataStudioState } from '@/pages/DataStudioNew/model';
 
 export type ToolbarSelect = {
   // 当前选中的tab
@@ -42,7 +40,6 @@ export type RightMenuItemProps = {
   dataStudioState: DataStudioState;
 };
 
-
 export enum DataStudioActionType {
   // project
   PROJECT_COLLAPSE_ALL = 'project-collapse-all',
@@ -55,6 +52,5 @@ export enum DataStudioActionType {
   TASK_RUN_SUBMIT = 'task-run-submit',
   TASK_PREVIEW_RESULT = 'task-preview-result',
   TASK_RUN_DEBUG = 'task-run-debug',
-  TASK_RUN_LOCATION = 'task-run-location',
-
+  TASK_RUN_LOCATION = 'task-run-location'
 }

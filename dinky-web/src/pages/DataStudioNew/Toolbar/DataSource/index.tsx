@@ -19,19 +19,19 @@
 
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
-import {handleTest, saveOrUpdateHandle} from '@/pages/RegCenter/DataSource/service';
-import {DataSources} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
-import {DatabaseOutlined, TableOutlined} from '@ant-design/icons';
-import {Key, ProForm} from '@ant-design/pro-components';
-import {CascaderProps, Spin, Tag} from 'antd';
-import {memo, useEffect, useRef, useState} from 'react';
-import {getDataSourceList, showDataSourceTable} from './service';
-import {useAsyncEffect} from "ahooks";
-import {ProFormCascader} from "@ant-design/pro-form/lib";
-import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
-import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
-import {connect} from "@umijs/max";
+import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
+import { DataSources } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { DatabaseOutlined, TableOutlined } from '@ant-design/icons';
+import { Key, ProForm } from '@ant-design/pro-components';
+import { CascaderProps, Spin, Tag } from 'antd';
+import { memo, useEffect, useRef, useState } from 'react';
+import { getDataSourceList, showDataSourceTable } from './service';
+import { useAsyncEffect } from 'ahooks';
+import { ProFormCascader } from '@ant-design/pro-form/lib';
+import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { connect } from '@umijs/max';
 
 interface Option {
   value: number | string;
@@ -40,17 +40,17 @@ interface Option {
 }
 
 const DataSource = memo((props: any) => {
-  const {addCenterTab, dataSourceDataList} = props;
-  const [dbData, setDbData] = useState<Option[]>([])
-  const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
-  const [expandKeys, setExpandKeys] = useState<Key[]>([])
-  const [selectDatabaseId, setSelectDatabaseId] = useState<number>()
-  const [selectDbType, setSelectDbType] = useState<string>()
+  const { addCenterTab, dataSourceDataList } = props;
+  const [dbData, setDbData] = useState<Option[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
+  const [expandKeys, setExpandKeys] = useState<Key[]>([]);
+  const [selectDatabaseId, setSelectDatabaseId] = useState<number>();
+  const [selectDbType, setSelectDbType] = useState<string>();
 
   const [treeData, setTreeData] = useState<[]>([]);
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
-  const [treeHeight, setTreeHeight] = useState<number>(100)
+  const [treeHeight, setTreeHeight] = useState<number>(100);
   const ref = useRef<HTMLDivElement>(null);
 
   /**
@@ -70,12 +70,12 @@ const DataSource = memo((props: any) => {
     for (let table of tables) {
       table.title = table.name;
       table.key = table.name;
-      table.icon = <DatabaseOutlined/>;
+      table.icon = <DatabaseOutlined />;
       table.children = table.tables;
       for (let child of table.children) {
         child.title = child.name;
         child.key = table.name + '.' + child.name;
-        child.icon = <TableOutlined/>;
+        child.icon = <TableOutlined />;
         child.isLeaf = true;
         child.schema = table.name;
         child.table = child.name;
@@ -95,17 +95,17 @@ const DataSource = memo((props: any) => {
     });
     observer.observe(element);
     return () => observer.unobserve(element);
-  }, [])
+  }, []);
 
   useAsyncEffect(async () => {
     const typeGroup: Record<string, DataSources.DataSource[]> = {};
     // 根据 type分组，做级联
     (dataSourceDataList as DataSources.DataSource[]).forEach((item) => {
       if (!typeGroup[item.type]) {
-        typeGroup[item.type] = []
+        typeGroup[item.type] = [];
       }
-      typeGroup[item.type].push(item)
-    })
+      typeGroup[item.type].push(item);
+    });
     const options: Option[] = Object.keys(typeGroup).map((type) => ({
       label: type,
       value: type,
@@ -113,8 +113,8 @@ const DataSource = memo((props: any) => {
         label: item.name,
         value: item.id
       }))
-    }))
-    setDbData(options)
+    }));
+    setDbData(options);
   }, []);
 
   /**
@@ -136,7 +136,6 @@ const DataSource = memo((props: any) => {
   //   });
   // };
 
-
   /**
    * 树节点点击事件 添加tab页 并传递参数
    * @param keys
@@ -144,10 +143,10 @@ const DataSource = memo((props: any) => {
    */
   const handleTreeNodeClick = async (keys: Key[], info: any) => {
     // 选中的key
-    setSelectedKeys(keys)
+    setSelectedKeys(keys);
 
     const {
-      node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}
+      node: { isLeaf, parentId: schemaName, name: tableName, fullInfo }
     } = info;
 
     if (!isLeaf) {
@@ -155,14 +154,17 @@ const DataSource = memo((props: any) => {
     }
 
     addCenterTab({
-      id: 'DataSource/' + [selectDatabaseId, schemaName, tableName].join("/"),
+      id: 'DataSource/' + [selectDatabaseId, schemaName, tableName].join('/'),
       tabType: 'dataSource',
       title: [schemaName, tableName].join('.'),
       isUpdate: false,
       params: {
-        selectDatabaseId, schemaName, tableName, type: selectDbType
+        selectDatabaseId,
+        schemaName,
+        tableName,
+        type: selectDbType
       }
-    } as CenterTab)
+    } as CenterTab);
   };
 
   /**
@@ -170,7 +172,7 @@ const DataSource = memo((props: any) => {
    * @param {number} databaseId
    */
   const handleSelectDataBaseId = (databaseId: number) => {
-    setSelectDatabaseId(databaseId)
+    setSelectDatabaseId(databaseId);
     onChangeDataBase(databaseId);
   };
 
@@ -179,25 +181,26 @@ const DataSource = memo((props: any) => {
    * @param {Key[]} expandedKeys
    */
   const handleTreeExpand = (expandedKeys: Key[]) => {
-    setExpandKeys(expandedKeys)
+    setExpandKeys(expandedKeys);
   };
 
-  const cascaderDisplayRender: CascaderProps<Option>['displayRender'] = (labels, selectedOptions = []) =>
+  const cascaderDisplayRender: CascaderProps<Option>['displayRender'] = (
+    labels,
+    selectedOptions = []
+  ) =>
     labels.map((label, i) => {
       const option = selectedOptions[i];
       if (i === labels.length - 1) {
-        return (
-          <span key={option.value}>
-          {option.label}
-        </span>
-        );
+        return <span key={option.value}>{option.label}</span>;
       }
-      return <Tag key={option.value} color='processing'>
-        {option.value}
-      </Tag>;
-    })
+      return (
+        <Tag key={option.value} color='processing'>
+          {option.value}
+        </Tag>
+      );
+    });
   return (
-    <div style={{paddingInline: 6, height: 'inherit'}} ref={ref}>
+    <div style={{ paddingInline: 6, height: 'inherit' }} ref={ref}>
       <Spin spinning={isLoadingDatabase} delay={500}>
         <DataSourceModal
           values={{}}
@@ -206,15 +209,14 @@ const DataSource = memo((props: any) => {
           onTest={(value) => handleTest(value)}
           onSubmit={async (value) => {
             await saveOrUpdateHandle(value);
-            const data = await getDataSourceList() ?? [];
+            const data = (await getDataSourceList()) ?? [];
           }}
         />
         <ProForm
-          style={{height: 40, marginTop: 10}}
-          initialValues={{selectDb: selectDatabaseId}}
+          style={{ height: 40, marginTop: 10 }}
+          initialValues={{ selectDb: selectDatabaseId }}
           submitter={false}
         >
-
           <ProFormCascader
             allowClear={false}
             name={'selectDb'}
@@ -223,8 +225,8 @@ const DataSource = memo((props: any) => {
               options: dbData,
               displayRender: cascaderDisplayRender,
               onChange: (value) => {
-                setSelectDbType(value[0])
-                handleSelectDataBaseId(value[value.length - 1] as number)
+                setSelectDbType(value[0]);
+                handleSelectDataBaseId(value[value.length - 1] as number);
               },
               showSearch: true
             }}
@@ -240,10 +242,12 @@ const DataSource = memo((props: any) => {
         />
       </Spin>
     </div>
-
-  )
+  );
 });
 
-export default connect(({DataStudio}: { DataStudio: DataStudioState }) => ({
-  dataSourceDataList: DataStudio.tempData.dataSourceDataList
-}), mapDispatchToProps)(DataSource);
+export default connect(
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
+    dataSourceDataList: DataStudio.tempData.dataSourceDataList
+  }),
+  mapDispatchToProps
+)(DataSource);

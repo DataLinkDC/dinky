@@ -20,7 +20,7 @@
 import { handleGetOption, queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
-import {DataSources} from "@/types/RegCenter/data";
+import { DataSources } from '@/types/RegCenter/data';
 
 /*--- 刷新 元数据表 ---*/
 export async function showDataSourceTable(id: number) {

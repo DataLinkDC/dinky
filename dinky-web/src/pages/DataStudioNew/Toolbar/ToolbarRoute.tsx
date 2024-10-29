@@ -17,7 +17,7 @@
  *
  */
 
-import {ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
+import { ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
 import {
   ConsoleSqlOutlined,
   DatabaseOutlined,
@@ -26,12 +26,11 @@ import {
   TableOutlined,
   ToolOutlined
 } from '@ant-design/icons';
-import React, {lazy, ReactElement, ReactNode, Suspense} from 'react';
-
+import React, { lazy, ReactElement, ReactNode, Suspense } from 'react';
 
 export const lazyComponent = (element: ReactNode): ReactElement => {
-  return <Suspense fallback={<div>loading...</div>}>{element}</Suspense>
-}
+  return <Suspense fallback={<div>loading...</div>}>{element}</Suspense>;
+};
 const Project = lazy(() => import('@/pages/DataStudioNew/Toolbar/Project'));
 const StartIntro = lazy(() => import('@/pages/DataStudioNew/StartIntroPage'));
 const DataSource = lazy(() => import('@/pages/DataStudioNew/Toolbar/DataSource'));
@@ -45,51 +44,50 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     title: '快速开始',
     icon: <></>,
     position: 'centerContent',
-    content: () => lazyComponent(<StartIntro/>)
+    content: () => lazyComponent(<StartIntro />)
   },
   {
     key: 'project',
     title: '项目',
-    icon: <ConsoleSqlOutlined/>,
+    icon: <ConsoleSqlOutlined />,
     position: 'leftTop',
-    content: () => lazyComponent(<Project/>)
+    content: () => lazyComponent(<Project />)
   },
   {
     key: 'catalog',
     title: 'Catalog',
-    icon: <TableOutlined/>,
+    icon: <TableOutlined />,
     position: 'right',
-    content: () => lazyComponent(<Catalog/>)
+    content: () => lazyComponent(<Catalog />)
   },
   {
     key: 'datasource',
     title: '数据源',
-    icon: <DatabaseOutlined/>,
+    icon: <DatabaseOutlined />,
     position: 'leftTop',
-    content: () => lazyComponent(<DataSource/>)
+    content: () => lazyComponent(<DataSource />)
   },
   {
     key: 'function',
     title: '函数',
-    icon: <FunctionOutlined/>,
+    icon: <FunctionOutlined />,
     position: 'leftTop',
-    content: () => lazyComponent(<GlobalVariable/>)
+    content: () => lazyComponent(<GlobalVariable />)
   },
   {
     key: 'service',
     title: '服务',
-    icon: <SettingOutlined/>,
+    icon: <SettingOutlined />,
     position: 'leftBottom',
-    content: () => lazyComponent(<Service/>)
+    content: () => lazyComponent(<Service />)
   },
   {
     key: 'tool',
     title: '工具',
-    icon: <ToolOutlined/>,
+    icon: <ToolOutlined />,
     position: 'leftBottom',
-    content: () => lazyComponent(<Tool/>)
-  },
+    content: () => lazyComponent(<Tool />)
+  }
 ];
 
 export const leftDefaultShowTab: ToolbarRoute = ToolbarRoutes[1];
-
