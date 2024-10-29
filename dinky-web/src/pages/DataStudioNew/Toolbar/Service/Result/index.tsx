@@ -38,9 +38,9 @@ type Data = {
   rowData?: object[];
 };
 type DataList = Data[];
-export default (props: { taskId: number, action: any }) => {
+export default (props: { taskId: number, action: any,dialect:string }) => {
   const {
-    taskId, action: {actionType, params}
+    taskId, action: {actionType, params},dialect
   } = props;
 
   const [data, setData] = useState<Data>({});
@@ -146,7 +146,7 @@ export default (props: { taskId: number, action: any }) => {
   };
 
   useAsyncEffect(async () => {
-    if (!isSql(params.dialect)) {
+    if (!isSql(dialect)) {
       setData({});
       setDataList([]);
       await loadData();
@@ -176,7 +176,7 @@ export default (props: { taskId: number, action: any }) => {
     return (
       <>
 
-        {!isSql(params.dialect) && !data.destroyed ? (
+        {!isSql(dialect) && !data.destroyed ? (
           <Button
             loading={loading}
             type='primary'

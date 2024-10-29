@@ -16,6 +16,7 @@
  *  limitations under the License.
  *
  */
+
 import { DIALECT } from '@/services/constants';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';

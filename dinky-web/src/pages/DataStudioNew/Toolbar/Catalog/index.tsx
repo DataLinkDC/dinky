@@ -17,7 +17,6 @@
  *
  */
 
-
 import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc';
 import {DIALECT} from '@/services/constants';
 import {l} from '@/utils/intl';
