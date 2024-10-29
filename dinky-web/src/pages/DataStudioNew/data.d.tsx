@@ -19,7 +19,7 @@
 
 import { ContextMenuPosition } from '@/types/Public/state';
 
-import {LayoutState} from "@/pages/DataStudioNew/model";
+import {DataStudioState} from "@/pages/DataStudioNew/model";
 
 
 
@@ -39,7 +39,7 @@ export type RightContextMenuState = {
 };
 
 export type RightMenuItemProps = {
-  layoutState: LayoutState;
+  dataStudioState: DataStudioState;
 };
 
 
@@ -53,6 +53,7 @@ export enum DataStudioActionType {
   TASK_RUN_DAG = 'task-run-dag',
   TASK_RUN_LINEAGE = 'task-run-lineage',
   TASK_RUN_SUBMIT = 'task-run-submit',
+  TASK_PREVIEW_RESULT = 'task-preview-result',
   TASK_RUN_DEBUG = 'task-run-debug',
   TASK_RUN_LOCATION = 'task-run-location',
 

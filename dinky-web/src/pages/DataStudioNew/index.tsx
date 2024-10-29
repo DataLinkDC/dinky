@@ -18,21 +18,27 @@
  */
 
 import {DockLayout, TabData} from 'rc-dock';
-import React, {lazy, useEffect, useRef, useState} from 'react';
+import React, {lazy, useEffect, useMemo, useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import 'rc-dock/dist/rc-dock.css';
 import {Col, Row, theme} from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import {RightContextMenuState} from '@/pages/DataStudioNew/data.d';
-import {getAllPanel, getTabIcon, handleRightClick, InitContextMenuPosition} from '@/pages/DataStudioNew/function';
+import {
+  getAllPanel,
+  getLayoutState,
+  getTabIcon,
+  handleRightClick,
+  InitContextMenuPosition
+} from '@/pages/DataStudioNew/function';
 import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
 import {MenuInfo} from 'rc-menu/es/interface';
 import {lazyComponent, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import {ToolbarPosition, ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
 import {groups} from '@/pages/DataStudioNew/ContentLayout';
 import {connect} from "umi";
-import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
+import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {AliveScope, KeepAlive} from "react-activation";
 import {activeTab, createNewPanel} from "@/pages/DataStudioNew/DockLayoutFunction";
@@ -44,9 +50,10 @@ const {useToken} = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/DataSourceDetail'));
 
+let didMount = false;
 const DataStudioNew: React.FC = (props: any) => {
   const {
-    layoutState,
+    dataStudioState,
     handleToolbarShowDesc,
     saveToolbarLayout,
     handleLayoutChange,
@@ -64,13 +71,23 @@ const DataStudioNew: React.FC = (props: any) => {
   const {token} = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
 
-  const menuItem = useRightMenuItem({layoutState});
+  const menuItem = useRightMenuItem({dataStudioState});
   // 右键弹出框状态
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,
     position: InitContextMenuPosition
   });
 
+  const layout = useMemo(() => {
+    const layoutData = getLayoutState(dataStudioState.layoutData, didMount);
+    if (!didMount){
+      setLayout({
+        layout: layoutData
+      })
+    }
+    didMount = true;
+    return layoutData;
+  }, [dataStudioState.layoutData, setLayout]);
 
   useAsyncEffect(async () => {
     updateAction({
@@ -85,25 +102,25 @@ const DataStudioNew: React.FC = (props: any) => {
     await queryDataSourceDataList()
   }, [])
   useEffect(() => {
-    const {actionType, params} = layoutState.action
+    const {actionType, params} = dataStudioState.action
     if (actionType?.includes("task-run-")) {
       const dockLayout = dockLayoutRef.current!!;
       let position: ToolbarPosition = 'leftBottom';
       const key = "service";
-      if (layoutState.toolbar.leftBottom.allTabs.find((x: string) => x === key)) {
+      if (dataStudioState.toolbar.leftBottom.allTabs.find((x: string) => x === key)) {
         position = 'leftBottom'
-      } else if (layoutState.toolbar.leftTop.allTabs.find((x: string) => x === key)) {
+      } else if (dataStudioState.toolbar.leftTop.allTabs.find((x: string) => x === key)) {
         position = 'leftTop'
-      } else if (layoutState.toolbar.right.allTabs.find((x: string) => x === key)) {
+      } else if (dataStudioState.toolbar.right.allTabs.find((x: string) => x === key)) {
         position = 'right'
       }
       const serviceRoute: ToolbarRoute = {
         ...ToolbarRoutes.find(item => item.key === key)!!, position: position
       };
-      const currentSelect = layoutState.toolbar[serviceRoute.position].currentSelect;
+      const currentSelect = dataStudioState.toolbar[serviceRoute.position].currentSelect;
       if (!currentSelect) {
         // 添加panel
-        const layout = Algorithm.fixLayoutData(createNewPanel(layoutState.layoutData, serviceRoute), dockLayout.props.groups);
+        const layout = Algorithm.fixLayoutData(createNewPanel(dataStudioState.layoutData, serviceRoute), dockLayout.props.groups);
         dockLayout.changeLayout(layout, serviceRoute.key, "update", false)
       } else {
         //  切换tab
@@ -116,13 +133,13 @@ const DataStudioNew: React.FC = (props: any) => {
       }
     }
 
-  }, [layoutState.action]);
+  }, [dataStudioState.action]);
 
   useEffect(() => {
     if (dockLayoutRef.current) {
-      if (layoutState.centerContent.activeTab) {
+      if (dataStudioState.centerContent.activeTab) {
         // 中间tab变化
-        const tab = (layoutState.centerContent.tabs as CenterTab[]).find(x => x.id === layoutState.centerContent.activeTab)!!;
+        const tab = (dataStudioState.centerContent.tabs as CenterTab[]).find(x => x.id === dataStudioState.centerContent.activeTab)!!;
         const centerContent = getAllPanel(dockLayoutRef.current.getLayout()).find((x) => x.group === "centerContent")!!;
         const tabData: TabData = {
           closable: true,
@@ -131,17 +148,17 @@ const DataStudioNew: React.FC = (props: any) => {
           title: tab.title,
           group: "centerContent"
         }
-        if (layoutState.centerContent.tabs.length === 1) {
+        if (dataStudioState.centerContent.tabs.length === 1) {
           dockLayoutRef.current.updateTab(centerContent.activeId!!, tabData, true)
         } else {
-          activeTab(dockLayoutRef.current, layoutState.layoutData, tabData, centerContent.activeId!!)
+          activeTab(dockLayoutRef.current, dataStudioState.layoutData, tabData, centerContent.activeId!!)
         }
       }
     }
-  }, [layoutState.centerContent]);
+  }, [dataStudioState.centerContent]);
 
   // 工具栏宽度
-  const toolbarWidth = layoutState.toolbar.showDesc ? 60 : 30;
+  const toolbarWidth = dataStudioState.toolbar.showDesc ? 60 : 30;
 
   //  右键菜单handle
   const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
@@ -161,10 +178,10 @@ const DataStudioNew: React.FC = (props: any) => {
 
   const toolbarOnClick = (route: ToolbarRoute) => {
     const dockLayout = dockLayoutRef.current!!;
-    const currentSelect = layoutState.toolbar[route.position].currentSelect;
+    const currentSelect = dataStudioState.toolbar[route.position].currentSelect;
     if (!currentSelect) {
       // 添加panel
-      const layout = Algorithm.fixLayoutData(createNewPanel(layoutState.layoutData, route, layoutState.layoutSize[route.position]), dockLayout.props.groups);
+      const layout = Algorithm.fixLayoutData(createNewPanel(dataStudioState.layoutData, route, dataStudioState.layoutSize[route.position]), dockLayout.props.groups);
       dockLayout.changeLayout(layout, route.key, "update", false)
     } else if (currentSelect === route.key) {
       // 取消选中
@@ -209,7 +226,7 @@ const DataStudioNew: React.FC = (props: any) => {
           minWidth: 200
         };
       }
-      const tabData = (layoutState.centerContent.tabs as CenterTab[]).find((x) => x.id === id)!!;
+      const tabData = (dataStudioState.centerContent.tabs as CenterTab[]).find((x) => x.id === id)!!;
 
       const getTitle = () => {
         switch (tabData.tabType) {
@@ -228,7 +245,7 @@ const DataStudioNew: React.FC = (props: any) => {
       }
 
       let content = <></>;
-      const currentData = (layoutState.centerContent.tabs as CenterTab[]).find((tab) => id == tab.id);
+      const currentData = (dataStudioState.centerContent.tabs as CenterTab[]).find((tab) => id == tab.id);
 
       // todo 添加中间tab内容
       switch (tabData.tabType) {
@@ -244,7 +261,7 @@ const DataStudioNew: React.FC = (props: any) => {
         title: getTitle(),
         closable: true,
         content: <KeepAlive cacheKey={tabData.id} autoFreeze={true}
-                            when={() => !(layoutState.centerContent.tabs as CenterTab[]).some((x) => x.id === id)}>
+                            when={() => !(dataStudioState.centerContent.tabs as CenterTab[]).some((x) => x.id === id)}>
           {lazyComponent(content)}
         </KeepAlive>,
         minHeight: 30,
@@ -257,9 +274,9 @@ const DataStudioNew: React.FC = (props: any) => {
   const saveToolbarLayoutHandle = (position: ToolbarPosition, list: string[]) => {
     const dockLayout = dockLayoutRef.current!!;
     //todo 思考：当工具栏布局更新时，选择的tab是否需要更新到对应的位置
-    const currentSelect: string = layoutState.toolbar[position].currentSelect;
+    const currentSelect: string = dataStudioState.toolbar[position].currentSelect;
     // 如果新的布局中有tab,说明toolbar被移动了
-    const addSelect = list.find((x) => !layoutState.toolbar[position].allTabs.includes(x));
+    const addSelect = list.find((x) => !dataStudioState.toolbar[position].allTabs.includes(x));
     if (addSelect) {
       const tabData = {
         id: addSelect,
@@ -269,26 +286,26 @@ const DataStudioNew: React.FC = (props: any) => {
       }
       // 查找被移动的toolbar位置，先删除，再添加
       const getMoveToolbarPosition = (): ToolbarPosition | undefined => {
-        if (layoutState.toolbar.leftTop.allTabs.includes(addSelect)) {
+        if (dataStudioState.toolbar.leftTop.allTabs.includes(addSelect)) {
           return 'leftTop'
         }
-        if (layoutState.toolbar.leftBottom.allTabs.includes(addSelect)) {
+        if (dataStudioState.toolbar.leftBottom.allTabs.includes(addSelect)) {
           return 'leftBottom'
         }
-        if (layoutState.toolbar.right.allTabs.includes(addSelect)) {
+        if (dataStudioState.toolbar.right.allTabs.includes(addSelect)) {
           return 'right'
         }
       }
       const moveToolbarPosition = getMoveToolbarPosition()
       if (moveToolbarPosition) {
-        if (layoutState.toolbar[moveToolbarPosition].currentSelect === addSelect) {
+        if (dataStudioState.toolbar[moveToolbarPosition].currentSelect === addSelect) {
           if (currentSelect) {
             dockLayout.updateTab(currentSelect, tabData, true)
             dockLayout.dockMove((dockLayout.find(addSelect) as TabData), null, 'remove')
           } else {
             const route = {...ToolbarRoutes.find((x) => x.key === addSelect)!!, position: position};
             let layout = Algorithm.removeFromLayout(dockLayout.getLayout(), dockLayout.find(addSelect) as TabData);
-            layout = Algorithm.fixLayoutData(createNewPanel(layout, route), dockLayout.props.groups);
+            layout = Algorithm.fixLayoutData(createNewPanel(layout, route), dockLayout.props.groups,dataStudioState.layoutSize[route.position]);
             dockLayout.changeLayout(layout, route.key, "update", false)
           }
         }
@@ -318,10 +335,10 @@ const DataStudioNew: React.FC = (props: any) => {
           {/*左上工具栏*/}
           <Col style={{width: 'inherit', height: '50%'}}>
             <Toolbar
-              showDesc={layoutState.toolbar.showDesc}
+              showDesc={dataStudioState.toolbar.showDesc}
               position={'leftTop'}
               onClick={toolbarOnClick}
-              toolbarSelect={layoutState.toolbar.leftTop}
+              toolbarSelect={dataStudioState.toolbar.leftTop}
               saveToolbarLayout={saveToolbarLayoutHandle}
             />
           </Col>
@@ -334,10 +351,10 @@ const DataStudioNew: React.FC = (props: any) => {
             }}
           >
             <Toolbar
-              showDesc={layoutState.toolbar.showDesc}
+              showDesc={dataStudioState.toolbar.showDesc}
               position={'leftBottom'}
               onClick={toolbarOnClick}
-              toolbarSelect={layoutState.toolbar.leftBottom}
+              toolbarSelect={dataStudioState.toolbar.leftBottom}
               saveToolbarLayout={saveToolbarLayoutHandle}
             />
           </Col>
@@ -348,8 +365,8 @@ const DataStudioNew: React.FC = (props: any) => {
           <AliveScope>
             <DockLayout
               ref={dockLayoutRef}
-              layout={layoutState.layoutData}
-              groups={groups(updateAction)}
+              layout={layout}
+              groups={groups(updateAction,setLayout)}
               dropMode={'edge'}
               style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
               onLayoutChange={(newLayout, currentTabId, direction) => {
@@ -359,7 +376,7 @@ const DataStudioNew: React.FC = (props: any) => {
                 }
                 // 移除centerContent中的tab
                 if (currentTabId && direction === "remove" && (dockLayoutRef.current?.find(currentTabId) as PanelData)?.group === "centerContent") {
-                  if (layoutState.centerContent.tabs.length === 1) {
+                  if (dataStudioState.centerContent.tabs.length === 1) {
                     dockLayoutRef.current?.updateTab(currentTabId, {
                       closable: false,
                       id: 'quick-start',
@@ -399,10 +416,10 @@ const DataStudioNew: React.FC = (props: any) => {
           onContextMenu={rightContextMenuHandle}
         >
           <Toolbar
-            showDesc={layoutState.toolbar.showDesc}
+            showDesc={dataStudioState.toolbar.showDesc}
             position={'right'}
             onClick={toolbarOnClick}
-            toolbarSelect={layoutState.toolbar.right}
+            toolbarSelect={dataStudioState.toolbar.right}
             saveToolbarLayout={saveToolbarLayoutHandle}
           />
         </Col>
@@ -424,6 +441,6 @@ const DataStudioNew: React.FC = (props: any) => {
 };
 
 export default connect(
-  ({DataStudio}: { DataStudio: LayoutState }) => ({
-    layoutState: DataStudio,
+  ({DataStudio}: { DataStudio: DataStudioState }) => ({
+    dataStudioState: DataStudio,
   }), mapDispatchToProps)(DataStudioNew);

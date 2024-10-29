@@ -23,7 +23,7 @@ import { ContextMenuPosition } from '@/types/Public/state';
 import {DockLayout, DropDirection, LayoutBase} from 'rc-dock';
 import { ToolbarPosition } from '@/pages/DataStudioNew/Toolbar/data.d';
 import {BoxBase, PanelBase} from "rc-dock/es";
-import {LayoutState} from "@/pages/DataStudioNew/model";
+import {DataStudioState} from "@/pages/DataStudioNew/model";
 import {LayoutData} from "rc-dock/src/DockData";
 import {JOB_STATUS, JOB_SUBMIT_STATUS} from "@/pages/DevOps/constants";
 import {
@@ -122,12 +122,15 @@ export const getDockPositionByToolbarPosition = (position: ToolbarPosition): Dro
   }
 };
 
-export const getLayoutState = (layout: LayoutData): LayoutData => {
+export const getLayoutState = (layout: LayoutData,didInit:boolean): LayoutData => {
+  if (didInit){
+    return layout;
+  }
   let floatbox = layout?.floatbox;
   if (layout?.windowbox?.children) {
     if (floatbox) {
       layout.windowbox.children.forEach((item) => {
-        layout.floatbox!!.children.push(item);
+        layout.floatbox!!.children.push({...item});
       });
     } else {
       floatbox = layout.windowbox;

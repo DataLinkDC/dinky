@@ -30,7 +30,7 @@ import {DefaultOptionType} from 'rc-select/lib/Select';
 import React, {useEffect, useState} from 'react';
 import {getMSCatalogs, getMSColumns, getMSSchemaInfo} from './service';
 import {useAsyncEffect} from 'ahooks';
-import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
+import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {isSql} from "@/pages/DataStudioNew/utils";
 import {TableDataNode} from "@/pages/DataStudioNew/Toolbar/Catalog/data";
@@ -378,7 +378,7 @@ const Catalog = (props: {
   );
 };
 export default connect(
-  ({DataStudio}: { DataStudio: LayoutState }) => ({
+  ({DataStudio}: { DataStudio: DataStudioState }) => ({
     tabs: DataStudio.centerContent.tabs,
     activeTab: DataStudio.centerContent.activeTab,
     actionType: DataStudio.action.actionType,

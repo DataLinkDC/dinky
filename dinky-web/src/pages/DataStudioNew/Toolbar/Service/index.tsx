@@ -1,5 +1,5 @@
 import {connect} from "@@/exports";
-import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
+import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {Flex, Tabs, TabsProps, TreeDataNode} from "antd";
 import {Panel, PanelGroup} from "react-resizable-panels";
@@ -29,6 +29,8 @@ import Result from "@/pages/DataStudioNew/Toolbar/Service/Result";
 import {getTabIcon} from "@/pages/DataStudioNew/function";
 import {assert} from "@/pages/DataStudio/function";
 import {DIALECT} from "@/services/constants";
+import {TableData} from "@/pages/DataStudioNew/Toolbar/Service/TableData";
+import {isSql} from "@/pages/DataStudioNew/utils";
 
 
 const Service = (props: { showDesc: boolean, tabs: CenterTab[], action: any }) => {
@@ -149,6 +151,14 @@ const Service = (props: { showDesc: boolean, tabs: CenterTab[], action: any }) =
           [params.taskId]: actionType
         }
       ))
+    } else if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
+      setTabActiveKey(prevState => (
+        {
+          ...prevState,
+          [params.taskId]: DataStudioActionType.TASK_RUN_DEBUG
+        }
+      ))
+
     }
 
   }, [props.action]);
@@ -170,17 +180,20 @@ const Service = (props: { showDesc: boolean, tabs: CenterTab[], action: any }) =
 
         treeData.forEach((node) => {
           const dialect = tab.params.dialect
-          const icon = getTabIcon(dialect, 20)
-          if (node.key === 'Task') {
-            let currentDialectTree = node.children!!.find((child) => child.key === dialect) as TreeDataNode;
-            if (!currentDialectTree) {
-              node.children!!.push({title: dialect, key: dialect, icon: icon, children: []})
-              currentDialectTree = node.children!!.find((child) => child.key === dialect) as TreeDataNode
+          if (assert(dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes') || isSql(dialect)){
+            const icon = getTabIcon(dialect, 20)
+            if (node.key === 'Task') {
+              let currentDialectTree = node.children!!.find((child) => child.key === dialect) as TreeDataNode;
+              if (!currentDialectTree) {
+                node.children!!.push({title: dialect, key: dialect, icon: icon, children: []})
+                currentDialectTree = node.children!!.find((child) => child.key === dialect) as TreeDataNode
+              }
+              currentDialectTree.children!!.push(
+                {title: tab.title, key: tab.params.taskId, icon: icon, isLeaf: true}
+              )
             }
-            currentDialectTree.children!!.push(
-              {title: tab.title, key: tab.params.taskId, icon: icon, isLeaf: true}
-            )
           }
+
         })
       }
     })
@@ -203,7 +216,7 @@ const Service = (props: { showDesc: boolean, tabs: CenterTab[], action: any }) =
           key: DataStudioActionType.TASK_RUN_DEBUG,
           label: '结果',
           icon: <TableOutlined/>,
-          children: <Result taskId={taskId}/>,
+          children: <Result taskId={taskId} action={props.action}/>,
         },
       ];
       const taskParams = tabs.find((tab) => tab.params.taskId === taskId)!!.params
@@ -213,6 +226,14 @@ const Service = (props: { showDesc: boolean, tabs: CenterTab[], action: any }) =
           label: '执行历史',
           icon: <HistoryOutlined/>,
           children: <ExecutionHistory taskId={taskId}/>,
+        })
+      }
+      if (assert(taskParams?.dialect, [DIALECT.FLINK_SQL], true, 'includes')){
+        items.push({
+          key: 'tableData',
+          label: '表数据',
+          icon: <HistoryOutlined/>,
+          children: <TableData statement={taskParams?.statement}/>,
         })
       }
 
@@ -272,7 +293,7 @@ const Service = (props: { showDesc: boolean, tabs: CenterTab[], action: any }) =
 
 
 export default connect(
-  ({DataStudio}: { DataStudio: LayoutState }) => ({
+  ({DataStudio}: { DataStudio: DataStudioState }) => ({
     project: DataStudio.toolbar.project,
     action: DataStudio.action,
     showDesc: DataStudio.toolbar.showDesc,

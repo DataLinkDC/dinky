@@ -1,4 +1,4 @@
-import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
+import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
 import {Button, Col, Divider, Flex, Row, Skeleton, TabsProps} from "antd";
 import "./index.less"
 import React, {useCallback, useEffect, useRef, useState} from "react";
@@ -89,7 +89,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
   } = props;
   const {params, title, id} = props.tabData as CenterTab;
   const containerRef = useRef<HTMLDivElement>(null);
-  const editorInstance = useRef<Monaco>(null);
+  const editorInstance = useRef<editor.IStandaloneCodeEditor>(null);
   const [codeEditorWidth, setCodeEditorWidth] = useState(0);
 
   const [selectRightToolbar, setSelectRightToolbar] = useState<string | undefined>(undefined);
@@ -182,7 +182,6 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
     editorInstance.current = editor;
     // @ts-ignore
     editor['id'] = currentState.taskId;
-
     editor.onDidChangeCursorPosition((e) => {
       // props.footContainerCacher.cache.codePosition = [e.position.lineNumber, e.position.column];
       // dispatch({
@@ -243,7 +242,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
       allValues.type = mode
     }
     setCurrentState({...currentState, ...allValues})
-    updateCenterTab({...props.tabData, isUpdate: true, params: {...currentState, ...allValues}})
+    updateCenterTab({...props.tabData, params: {...currentState, ...allValues}})
   }
   const hotKeyConfig = {enable: activeTab === id}
 
@@ -330,13 +329,13 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_SUBMIT,
       params: {
-        taskId: params.taskId,
+        taskId: currentState.taskId,
         envId: currentState.envId
       }
     })
     const result = await executeSql(
       l('pages.datastudio.editor.submitting', '', {jobName: title}),
-      params.taskId
+      currentState.taskId
     )
     if (result.success) {
       setCurrentState(prevState => {
@@ -345,8 +344,19 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
           status: result.data.status === "SUCCESS" ? "RUNNING" : result.data.status
         }
       })
+      if (isSql(currentState.dialect) && result?.data?.result?.success) {
+        updateAction({
+          actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
+          params: {
+            taskId: currentState.taskId,
+            dialect: currentState.dialect,
+            columns: result.data.result.columns,
+            rowData: result.data.result.rowData
+          }
+        })
+      }
     }
-  }, [updateAction, currentState.envId, handleSave])
+  }, [updateAction, currentState.envId, handleSave, currentState.taskId, currentState.dialect])
 
   const handleDebug = useCallback(async () => {
     const res = await debugTask(
@@ -391,6 +401,9 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
     }
   }, [currentState.taskId])
 
+  const handleFormat = useCallback(async () => {
+    editorInstance.current?.getAction('format')?.run();
+  }, [editorInstance.current])
   const handleLocation = useCallback(async () => {
     const key = Number(id.replace("project_", ""))
     updateAction({
@@ -533,7 +546,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               icon={<RotateRightOutlined/>} onClick={handleGotoDevOps}/>
 
             <Divider type={'vertical'} style={{height: dividerHeight}}/>
-            <RunToolBarButton showDesc={showDesc} desc={"格式化"} icon={<ClearOutlined/>}/>
+            <RunToolBarButton showDesc={showDesc} desc={"格式化"} icon={<ClearOutlined/>} onClick={handleFormat}/>
             <RunToolBarButton showDesc={showDesc} desc={"定位"} icon={<EnvironmentOutlined/>} onClick={handleLocation}/>
 
             <Divider type={'vertical'} style={{height: dividerHeight}}/>
@@ -637,7 +650,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
 }
 
 export default connect(
-  ({DataStudio, SysConfig}: { DataStudio: LayoutState, SysConfig: SysConfigStateType }) => ({
+  ({DataStudio, SysConfig}: { DataStudio: DataStudioState, SysConfig: SysConfigStateType }) => ({
     showDesc: DataStudio.toolbar.showDesc,
     tempData: DataStudio.tempData,
     activeTab: DataStudio.centerContent.activeTab,

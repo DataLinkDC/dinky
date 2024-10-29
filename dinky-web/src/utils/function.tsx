@@ -186,7 +186,7 @@ function registerEditorAction(editorInstance?: editor.IStandaloneCodeEditor) {
   editorInstance?.addAction({
     id: 'format',
     label: l('shortcut.key.format'),
-    keybindings: [KeyMod.CtrlCmd | KeyCode.Digit3],
+    keybindings: [(KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KeyL)],
     contextMenuGroupId: 'custom',
     contextMenuOrder: 1.5,
     run: () => {

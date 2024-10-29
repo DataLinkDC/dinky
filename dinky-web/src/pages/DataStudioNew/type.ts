@@ -6,7 +6,8 @@ import {CenterTab} from "@/pages/DataStudioNew/model";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
 import {Alert, DataSources} from "@/types/RegCenter/data";
 import {DefaultOptionType} from "antd/es/select";
-import {TaskExtConfig} from "@/types/Studio/data";
+import {TaskExtConfig, TaskInfo} from "@/types/Studio/data";
+import {TaskDataBaseType} from "@/pages/DataStudio/model";
 
 /**
  * @description:
@@ -272,3 +273,5 @@ export interface StudioLineageParams {
   variables: any;
   taskId: number;
 }
+
+export type TaskDataType = TaskDataBaseType & TaskInfo & Record<string, any>;

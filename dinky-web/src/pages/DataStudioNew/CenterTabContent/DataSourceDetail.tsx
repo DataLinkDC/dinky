@@ -1,4 +1,4 @@
-import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
+import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
 import {QueryParams} from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data";
 import {connect} from "@@/exports";
@@ -10,5 +10,5 @@ import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
   return <RightTagsRouter  queryParams={queryParams}  />;
 }
 export default connect(
-  ({DataStudio}: { DataStudio: LayoutState }) => ({
+  ({DataStudio}: { DataStudio: DataStudioState }) => ({
   }), mapDispatchToProps)(DataSourceDetail);

@@ -58,7 +58,7 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     key: 'catalog',
     title: 'Catalog',
     icon: <TableOutlined/>,
-    position: 'leftTop',
+    position: 'right',
     content: () => lazyComponent(<Catalog/>)
   },
   {

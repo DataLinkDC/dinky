@@ -14,7 +14,7 @@ import {API_CONSTANTS} from "@/services/endpoints";
 import {TaskOwnerLockingStrategy} from "@/types/SettingCenter/data.d";
 import {useModel} from "@umijs/max";
 import {debounce} from "@/utils/function";
-import {LayoutState} from "@/pages/DataStudioNew/model";
+import {DataStudioState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
 import type RcTree from 'rc-tree';
@@ -275,7 +275,7 @@ export const Project= (props: any) => {
     </Flex>);
 }
 export default connect(
-  ({DataStudio}: { DataStudio: LayoutState }) => ({
+  ({DataStudio}: { DataStudio: DataStudioState }) => ({
     project: DataStudio.toolbar.project,
     action: DataStudio.action
   }), mapDispatchToProps)(Project);

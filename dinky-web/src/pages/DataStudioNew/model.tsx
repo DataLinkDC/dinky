@@ -74,7 +74,7 @@ export type CenterTab = {
  *  zh: 布局状态
  *  en: Layout state
  */
-export type LayoutState = {
+export type DataStudioState = {
   /**
    * zh: 基础布局数据
    * en: Basic layout data
@@ -170,7 +170,7 @@ export type LayoutState = {
 
 export type StudioModelType = {
   namespace: string;
-  state: LayoutState;
+  state: DataStudioState;
   effects: {
     queryFlinkEnv: Effect;
     queryFlinkCluster: Effect;
@@ -181,24 +181,24 @@ export type StudioModelType = {
   },
   reducers: {
     // 保存布局
-    setLayout: Reducer<LayoutState, SetLayoutDTO>;
+    setLayout: Reducer<DataStudioState, SetLayoutDTO>;
     // 监听布局变化
-    handleLayoutChange: Reducer<LayoutState, HandleLayoutChangeDTO>;
+    handleLayoutChange: Reducer<DataStudioState, HandleLayoutChangeDTO>;
     // 操作工具栏显示描述
-    handleToolbarShowDesc: Reducer<LayoutState>;
+    handleToolbarShowDesc: Reducer<DataStudioState>;
     // 保存工具栏布局
-    saveToolbarLayout: Reducer<LayoutState, SaveToolbarLayoutDTO>;
+    saveToolbarLayout: Reducer<DataStudioState, SaveToolbarLayoutDTO>;
     // 更新中间tab
-    updateCenterTab: Reducer<LayoutState, CenterTabDTO>;
+    updateCenterTab: Reducer<DataStudioState, CenterTabDTO>;
     // 添加中间tab
-    addCenterTab: Reducer<LayoutState, CenterTabDTO>;
+    addCenterTab: Reducer<DataStudioState, CenterTabDTO>;
     // 删除中间tab
-    removeCenterTab: Reducer<LayoutState>;
+    removeCenterTab: Reducer<DataStudioState>;
     //更新 project
-    updateProject: Reducer<LayoutState, ProjectDTO>;
+    updateProject: Reducer<DataStudioState, ProjectDTO>;
     // 更新操作
-    updateAction: Reducer<LayoutState, UpdateActionDTO>;
-    saveTempData: Reducer<LayoutState, TempDataDTO>;
+    updateAction: Reducer<DataStudioState, UpdateActionDTO>;
+    saveTempData: Reducer<DataStudioState, TempDataDTO>;
   };
 }
 
@@ -467,7 +467,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    removeCenterTab: function (prevState: LayoutState, {id}): LayoutState {
+    removeCenterTab: function (prevState: DataStudioState, {id}): DataStudioState {
       const tabs = prevState.centerContent.tabs.filter((x) => x.id !== id);
 
       return {
@@ -500,7 +500,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    saveTempData: function (prevState: LayoutState, action: TempDataDTO): LayoutState {
+    saveTempData: function (prevState: DataStudioState, action: TempDataDTO): DataStudioState {
       return {
         ...prevState,
         tempData: action.payload

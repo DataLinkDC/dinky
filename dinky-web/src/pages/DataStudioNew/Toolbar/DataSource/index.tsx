@@ -29,7 +29,7 @@ import {memo, useEffect, useRef, useState} from 'react';
 import {getDataSourceList, showDataSourceTable} from './service';
 import {useAsyncEffect} from "ahooks";
 import {ProFormCascader} from "@ant-design/pro-form/lib";
-import {CenterTab, LayoutState} from "@/pages/DataStudioNew/model";
+import {CenterTab, DataStudioState} from "@/pages/DataStudioNew/model";
 import {mapDispatchToProps} from "@/pages/DataStudioNew/DvaFunction";
 import {connect} from "@umijs/max";
 
@@ -244,6 +244,6 @@ const DataSource = memo((props: any) => {
   )
 });
 
-export default connect(({DataStudio}: { DataStudio: LayoutState }) => ({
+export default connect(({DataStudio}: { DataStudio: DataStudioState }) => ({
   dataSourceDataList: DataStudio.tempData.dataSourceDataList
 }), mapDispatchToProps)(DataSource);

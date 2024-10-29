@@ -27,8 +27,10 @@ import {Button, Empty, Flex, Input, InputRef, Space, Table, Tabs, Tooltip} from 
 import {ColumnsType, ColumnType} from 'antd/es/table';
 import {FilterConfirmProps} from 'antd/es/table/interface';
 import {DataIndex} from 'rc-table/es/interface';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useAsyncEffect} from 'ahooks';
+import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
+import {isSql} from "@/pages/DataStudioNew/utils";
 
 type Data = {
   [c: string]: any;
@@ -36,10 +38,11 @@ type Data = {
   rowData?: object[];
 };
 type DataList = Data[];
-export default (props: { taskId: number }) => {
+export default (props: { taskId: number, action: any }) => {
   const {
-    taskId
+    taskId, action: {actionType, params}
   } = props;
+
   const [data, setData] = useState<Data>({});
   const [dataList, setDataList] = useState<DataList>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,6 +50,12 @@ export default (props: { taskId: number }) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+  useEffect(() => {
+    if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
+      setData({columns: params.columns, rowData: params.rowData});
+    }
+  }, [props.action]);
+
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
@@ -137,9 +146,13 @@ export default (props: { taskId: number }) => {
   };
 
   useAsyncEffect(async () => {
-    setData({});
-    setDataList([]);
-    await loadData();
+    if (!isSql(params.dialect)) {
+      setData({});
+      setDataList([]);
+      await loadData();
+    }else {
+      setLoading(false);
+    }
   }, []);
 
   const getColumns = (columns: string[] = []) => {
@@ -162,7 +175,8 @@ export default (props: { taskId: number }) => {
   const renderFlinkSQLContent = () => {
     return (
       <>
-        {!data.destroyed ? (
+
+        {!isSql(params.dialect) && !data.destroyed ? (
           <Button
             loading={loading}
             type='primary'
@@ -205,7 +219,7 @@ export default (props: { taskId: number }) => {
       </>
     );
   };
-
+  console.log(data)
   return (
     <div style={{width: '100%', paddingInline: 10}}>
       <Flex justify={'right'}>

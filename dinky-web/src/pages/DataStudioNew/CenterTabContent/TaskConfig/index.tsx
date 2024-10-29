@@ -29,7 +29,7 @@ export default (props: {
   if (isSql(data.dialect) || assert(data.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
     const renderOtherConfig = () => {
       if (isSql(data.dialect)) {
-        const dataSourceData: Record<number, React.ReactNode> = {};
+        const dataSourceData: Record<string, React.ReactNode> = {};
         const databaseDataList = tempData.dataSourceDataList;
         databaseDataList
           .filter((x) => x.type.toLowerCase() === data?.dialect.toLowerCase())
@@ -47,6 +47,7 @@ export default (props: {
           width={'sm'}
           name={'databaseId'}
           label={l('pages.datastudio.label.execConfig.selectDatabase')}
+          convertValue={(value) => String(value)}
           valueEnum={dataSourceData}
           placeholder='Please select a dataSource'
           rules={[{required: true, message: 'Please select your dataSource!'}]}

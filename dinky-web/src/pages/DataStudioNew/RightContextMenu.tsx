@@ -22,6 +22,7 @@ import { MenuItemType } from 'antd/es/menu/interface';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React from 'react';
 import { RightMenuItemProps } from '@/pages/DataStudioNew/data.d';
+import {DataStudioState} from "@/pages/DataStudioNew/model";
 
 /**
  * 右键菜单组件props | Right-click menu component props
@@ -74,7 +75,7 @@ export default RightContextMenu;
  * @param props RightMenuItemProps
  */
 export const useRightMenuItem = (props: RightMenuItemProps) => {
-  const { layoutState } = props;
+  const { dataStudioState } = props;
   const menuItem: MenuItemType[] = [];
   menuItem.push({
     key: 'saveLayout',
@@ -82,7 +83,7 @@ export const useRightMenuItem = (props: RightMenuItemProps) => {
   });
 
   // 显示工具窗口名称 | Show toolbar window name.
-  if (layoutState.toolbar.showDesc) {
+  if (dataStudioState.toolbar.showDesc) {
     menuItem.push({
       key: 'hideToolbarDesc',
       label: '隐藏工具栏窗口名称'

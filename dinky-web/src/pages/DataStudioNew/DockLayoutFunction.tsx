@@ -1,5 +1,5 @@
 import {BoxData} from "rc-dock/es";
-import {LayoutState} from "@/pages/DataStudioNew/model";
+import {DataStudioState} from "@/pages/DataStudioNew/model";
 import {ToolbarPosition, ToolbarRoute} from "@/pages/DataStudioNew/Toolbar/data.d";
 import {PanelData, TabData} from "rc-dock/es/DockData";
 import {DockLayout, LayoutData} from "rc-dock";
@@ -33,22 +33,24 @@ export const activeTab = (dockLayout: DockLayout, layoutData: LayoutData, source
 
 export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size?: number): LayoutData => {
   // todo 这里有布局混乱导致算法崩溃风险
-  const boxData: BoxData = {
-    mode: 'vertical',
-    size: size ?? 1000,
-    children: [
+  const panelData: PanelData = {
+    group: route.position,
+    size,
+    tabs: [
       {
-        tabs: [
-          {
-            id: route.key,
-            content: <></>,
-            title: route.title,
-            group: route.position
-          }
-        ]
+        id: route.key,
+        content: <></>,
+        title: route.title,
+        group: route.position
       }
     ]
   }
+  const boxData: BoxData = {
+    mode: 'vertical',
+    size: size ?? 1000,
+    children: [panelData]
+  }
+
 
   const dockbox = layoutData.dockbox;
   if (dockbox.mode === "horizontal") {
@@ -65,6 +67,16 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size
             mode: 'horizontal',
             children: [...dockbox.children]
           }, boxData]
+        }
+      }
+    } else if (route.position === 'centerContent') {
+      if (dockbox.children.length === 0) {
+        dockbox.children = [...dockbox.children, boxData]
+      } else {
+        if ((dockbox.children[0] as PanelData).group === 'leftTop') {
+          dockbox.children = [dockbox.children[0], boxData, ...dockbox.children.slice(1)]
+        } else if ((dockbox.children[0] as PanelData).group === 'right') {
+          dockbox.children = [boxData, ...dockbox.children]
         }
       }
     }
@@ -100,6 +112,29 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size
                 // box
                 (dockbox.children[i] as BoxData).children.push(boxData)
               }
+            } else if (route.position === 'centerContent') {
+              if ('tabs' in dockbox.children[i]) {
+                // panel
+                if ((dockbox.children[i] as PanelData).group === 'leftTop') {
+                  dockbox.children[i] = [dockbox.children[i], panelData]
+                } else if ((dockbox.children[i] as PanelData).group === 'right') {
+                  dockbox.children[i] = [panelData, dockbox.children[i]]
+                }
+                dockbox.children[i] = {
+                  mode: 'horizontal',
+                  children: [...(dockbox.children[i] as PanelData[])]
+                }
+              } else {
+                // const boxData = []
+                // if ((dockbox.children[i][0] as PanelData).group === 'leftTop') {
+                //   boxData = [dockbox.children[i], panelData]
+                // } else if ((dockbox.children[i][0] as PanelData).group === 'right') {
+                //   boxData = [panelData, dockbox.children[i]]
+                // }
+
+                // box
+                (dockbox.children[i] as BoxData).children = [boxData, ...(dockbox.children[i] as BoxData).children]
+              }
             }
             break
           }
@@ -112,7 +147,7 @@ export const createNewPanel = (layoutData: LayoutData, route: ToolbarRoute, size
 
 }
 
-export const findToolbarPositionByTabId = (toolbar: LayoutState['toolbar'], tabId: string): ToolbarPosition | undefined => {
+export const findToolbarPositionByTabId = (toolbar: DataStudioState['toolbar'], tabId: string): ToolbarPosition | undefined => {
   if (toolbar.leftTop.allOpenTabs.includes(tabId)) {
     return 'leftTop'
   } else if (toolbar.leftBottom.allOpenTabs.includes(tabId)) {
