@@ -36,9 +36,10 @@ import {
   ProFormItem,
   ProFormList,
   ProFormSelect,
+  ProFormSwitch,
   ProFormText
 } from '@ant-design/pro-components';
-import { Button, Col, Divider, Row, Space, Typography, Upload, UploadProps } from 'antd';
+import { Button, Col, Divider, Form, Row, Space, Typography, Upload, UploadProps } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { RcFile } from 'antd/es/upload/interface';
 import { Values } from 'async-validator';
@@ -152,6 +153,11 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
     }
   ];
 
+  const ingressEnabled = Form.useWatch(
+    ['config', 'kubernetesConfig', 'ingressConfig', 'kubernetes.ingress.enabled'],
+    form
+  );
+
   return (
     <>
       <Divider>{l('rc.cc.k8sConfig')}</Divider>
@@ -191,6 +197,24 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
               placeholder={l('rc.cc.flinkConfigPathPlaceholder')}
               tooltip={l('rc.cc.flinkConfigPathHelp')}
             />
+            {type && type === ClusterType.KUBERNETES_APPLICATION && (
+              <ProFormSwitch
+                name={['config', 'kubernetesConfig', 'ingressConfig', 'kubernetes.ingress.enabled']}
+                label={l('rc.cc.k8s.ingress.enabled')}
+                initialValue={false}
+                checkedChildren={l('button.enable')}
+                unCheckedChildren={l('button.disable')}
+              />
+            )}
+            {type && type === ClusterType.KUBERNETES_APPLICATION && ingressEnabled && (
+              <ProFormText
+                tooltip={l('rc.cc.k8s.ingress.domainHelp')}
+                name={['config', 'kubernetesConfig', 'ingressConfig', 'kubernetes.ingress.domain']}
+                label={l('rc.cc.k8s.ingress.domain')}
+                rules={[{ required: true }]}
+                placeholder={l('rc.cc.k8s.ingress.domainHelp')}
+              />
+            )}
           </ProFormGroup>
           <ProFormList
             name={['config', 'flinkConfig', 'flinkConfigList']}

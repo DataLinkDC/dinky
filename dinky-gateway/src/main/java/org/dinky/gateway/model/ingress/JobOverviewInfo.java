@@ -17,13 +17,30 @@
  *
  */
 
-package org.dinky.gateway.kubernetes.utils;
+package org.dinky.gateway.model.ingress;
 
-/** Constants for kubernetes. */
-public class DinkyKubernetsConstants {
-    public static final String DINKY_CONF_VOLUME = "dinky-config-volume";
-    public static final String DINKY_CONF_VOLUME_PERFIX = "dinky-config-";
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    public static final String DINKY_K8S_INGRESS_ENABLED_KEY = "kubernetes.ingress.enabled";
-    public static final String DINKY_K8S_INGRESS_DOMAIN_KEY = "kubernetes.ingress.domain";
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class JobOverviewInfo {
+
+    private String jid;
+
+    private String name;
+
+    private String state;
+
+    private Long startTime;
+
+    private Long endTime;
+
+    private Long duration;
+
+    private Long lastModification;
+
+    private JobOverviewTaskInfo tasks;
 }

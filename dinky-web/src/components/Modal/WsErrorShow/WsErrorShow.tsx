@@ -17,13 +17,17 @@
  *
  */
 
-package org.dinky.gateway.kubernetes.utils;
+import { Button, Result } from 'antd';
+import { WsState } from '@/models/UseWebSocketModel';
+import * as React from 'react';
+import { l } from '@/utils/intl';
 
-/** Constants for kubernetes. */
-public class DinkyKubernetsConstants {
-    public static final String DINKY_CONF_VOLUME = "dinky-config-volume";
-    public static final String DINKY_CONF_VOLUME_PERFIX = "dinky-config-";
+const WsErrorShow = (props: { state: WsState; extra?: React.ReactNode }) => {
+  const { state, extra } = props;
 
-    public static final String DINKY_K8S_INGRESS_ENABLED_KEY = "kubernetes.ingress.enabled";
-    public static final String DINKY_K8S_INGRESS_DOMAIN_KEY = "kubernetes.ingress.domain";
-}
+  return (
+    <Result status='error' title={l('global.ws.failed')} subTitle={state.wsUrl} extra={extra} />
+  );
+};
+
+export default WsErrorShow;

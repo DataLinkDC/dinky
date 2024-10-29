@@ -1113,6 +1113,11 @@ export default {
   'rc.udf.register.deleteConfirm': 'Are you sure you want to delete this UDF? ',
   'rc.udf.register': 'Register UDF',
   'rc.udf.register.select': 'Please select a non-directory node',
+  // ingress
+  'rc.cc.k8s.ingress.enabled': 'Kubernetes ingress enable',
+  'rc.cc.k8s.ingress.enabledHelp': 'Kubernetes ingress enable! eg',
+  'rc.cc.k8s.ingress.domain': 'Kubernetes ingress domain address',
+  'rc.cc.k8s.ingress.domainHelp': 'Kubernetes ingress domain address! eg',
   /**
    *
    * role
@@ -1217,6 +1222,7 @@ export default {
   'sys.ldap.settings.keyword':
     'You can enter your username/nickname for search, support fuzzy queries, enter keywords and press enter to complete the search',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
+  'sys.setting.ingress': 'Ingress configuration',
   /**
    *
    * tenant

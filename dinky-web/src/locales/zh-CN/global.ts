@@ -232,5 +232,8 @@ export default {
   'global.job.status.failed-tip': '未成功提交到集群,无法获取任务名称/作业ID',
 
   'global.operation.unable': '无法操作',
-  'global.operation.able': '可以操作'
+  'global.operation.able': '可以操作',
+
+  //WS
+  'global.ws.failed': '连接WebSocket失败'
 };
