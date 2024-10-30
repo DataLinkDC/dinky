@@ -18,22 +18,28 @@
  */
 
 import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc';
-import {DIALECT} from '@/services/constants';
-import {l} from '@/utils/intl';
-import {AppstoreOutlined, BlockOutlined, DownOutlined, FunctionOutlined, TableOutlined} from '@ant-design/icons';
-import {connect} from '@umijs/max';
-import {Button, Col, Empty, Flex, Modal, Row, Select, Spin} from 'antd';
-import {DataNode} from 'antd/es/tree';
+import { DIALECT } from '@/services/constants';
+import { l } from '@/utils/intl';
+import {
+  AppstoreOutlined,
+  BlockOutlined,
+  DownOutlined,
+  FunctionOutlined,
+  TableOutlined
+} from '@ant-design/icons';
+import { connect } from '@umijs/max';
+import { Button, Col, Empty, Flex, Modal, Row, Select, Spin } from 'antd';
+import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
-import {DefaultOptionType} from 'rc-select/lib/Select';
-import React, {useEffect, useState} from 'react';
-import {getMSCatalogs, getMSColumns, getMSSchemaInfo} from './service';
-import {useAsyncEffect} from 'ahooks';
-import {CenterTab, DataStudioState} from '@/pages/DataStudioNew/model';
-import {mapDispatchToProps} from '@/pages/DataStudioNew/DvaFunction';
-import {isSql} from '@/pages/DataStudioNew/utils';
-import {TableDataNode} from '@/pages/DataStudioNew/Toolbar/Catalog/data';
-import {DataStudioActionType} from '@/pages/DataStudioNew/data.d';
+import { DefaultOptionType } from 'rc-select/lib/Select';
+import React, { useEffect, useState } from 'react';
+import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
+import { useAsyncEffect } from 'ahooks';
+import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { isSql } from '@/pages/DataStudioNew/utils';
+import { TableDataNode } from '@/pages/DataStudioNew/Toolbar/Catalog/data';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 
 type CatalogState = {
   envId?: number;
@@ -49,7 +55,7 @@ const Catalog = (props: {
   actionType?: DataStudioActionType;
   updateAction: any;
 }) => {
-  const {tabs, activeTab, actionType, updateAction} = props;
+  const { tabs, activeTab, actionType, updateAction } = props;
   const [catalogSelect, setCatalogSelect] = useState<DefaultOptionType[]>([]);
   const [catalog, setCatalog] = useState<string>('default_catalog');
   const [database, setDatabase] = useState<string>('');
@@ -70,7 +76,7 @@ const Catalog = (props: {
       currentData?.params?.dialect?.toLowerCase() === DIALECT.FLINKSQLENV
     ) {
       const {
-        params: {taskId, fragment}
+        params: { taskId, fragment }
       } = currentData!!;
       const dialect = currentData?.params?.dialect?.toLowerCase() as string;
       let envId: number | undefined;
@@ -118,7 +124,7 @@ const Catalog = (props: {
 
   useAsyncEffect(async () => {
     if (table && currentState) {
-      const {envId, dialect, databaseId} = currentState;
+      const { envId, dialect, databaseId } = currentState;
       setLoading(true);
       const res = await getMSColumns({
         envId,
@@ -130,7 +136,7 @@ const Catalog = (props: {
       });
       setLoading(false);
       // @ts-ignore
-      setRow({...row, columns: res});
+      setRow({ ...row, columns: res });
     }
   }, [table]);
 
@@ -138,7 +144,7 @@ const Catalog = (props: {
     if (!currentState) {
       return;
     }
-    const {envId, dialect, databaseId, fragment, engine} = currentState;
+    const { envId, dialect, databaseId, fragment, engine } = currentState;
     setTreeData([]);
     setLoading(true);
     const names = catalogAndDatabase.split('.');
@@ -177,7 +183,7 @@ const Catalog = (props: {
             driverType: '',
             title: t.name,
             key: t.name,
-            icon: <TableOutlined/>,
+            icon: <TableOutlined />,
             isLeaf: true,
             isTable: true,
             name: t.name,
@@ -204,7 +210,7 @@ const Catalog = (props: {
             viewsData.push({
               title: res.views[i],
               key: res.views[i],
-              icon: <BlockOutlined/>,
+              icon: <BlockOutlined />,
               isLeaf: true
             });
           }
@@ -221,7 +227,7 @@ const Catalog = (props: {
             functionsData.push({
               title: res.functions[i],
               key: res.functions[i],
-              icon: <FunctionOutlined/>,
+              icon: <FunctionOutlined />,
               isLeaf: true
             });
           }
@@ -238,7 +244,7 @@ const Catalog = (props: {
             userFunctionsData.push({
               title: res.userFunctions[i],
               key: res.userFunctions[i],
-              icon: <FunctionOutlined/>,
+              icon: <FunctionOutlined />,
               isLeaf: true
             });
           }
@@ -255,7 +261,7 @@ const Catalog = (props: {
             modulesData.push({
               title: res.modules[i],
               key: res.modules[i],
-              icon: <AppstoreOutlined/>,
+              icon: <AppstoreOutlined />,
               isLeaf: true
             });
           }
@@ -268,15 +274,14 @@ const Catalog = (props: {
 
         setTreeData(treeDataTmp);
       })
-      .catch(() => {
-      });
+      .catch(() => {});
   };
 
   const getCatalogs = async () => {
     if (!currentState) {
       return;
     }
-    const {envId, dialect, databaseId, fragment, engine} = currentState;
+    const { envId, dialect, databaseId, fragment, engine } = currentState;
     if (envId || databaseId) {
       setLoading(true);
       setTreeData([]);
@@ -332,13 +337,13 @@ const Catalog = (props: {
   };
   // <Empty description={l('pages.datastudio.catalog.openMission')}/>;
   return (
-    <Spin spinning={loading} style={{height: 'inherit'}}>
-      <Flex vertical style={{paddingInline: 10, paddingBlock: 5, height: '100%'}}>
-        <Row style={{paddingBlock: 10}}>
+    <Spin spinning={loading} style={{ height: 'inherit' }}>
+      <Flex vertical style={{ paddingInline: 10, paddingBlock: 5, height: '100%' }}>
+        <Row style={{ paddingBlock: 10 }}>
           <Col span={24}>
             <Select
               value={database ? database : null}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               placeholder={l('pages.datastudio.catalog.catalogSelect')}
               optionLabelProp='label'
               onChange={onChangeMetaStoreCatalogs}
@@ -350,13 +355,13 @@ const Catalog = (props: {
         {treeData.length > 0 ? (
           <DirectoryTree
             showIcon
-            switcherIcon={<DownOutlined/>}
+            switcherIcon={<DownOutlined />}
             treeData={treeData}
-            onRightClick={({node}: any) => openColumnInfo(node)}
+            onRightClick={({ node }: any) => openColumnInfo(node)}
             onSelect={(_, info: any) => openColumnInfo(info.node)}
           />
         ) : (
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
         )}
       </Flex>
       <Modal
@@ -377,13 +382,13 @@ const Catalog = (props: {
           </Button>
         ]}
       >
-        <SchemaDesc tableInfo={row}/>
+        <SchemaDesc tableInfo={row} />
       </Modal>
     </Spin>
   );
 };
 export default connect(
-  ({DataStudio}: { DataStudio: DataStudioState }) => ({
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
     tabs: DataStudio.centerContent.tabs,
     activeTab: DataStudio.centerContent.activeTab,
     actionType: DataStudio.action.actionType
