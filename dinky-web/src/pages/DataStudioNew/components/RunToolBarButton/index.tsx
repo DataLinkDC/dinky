@@ -105,7 +105,8 @@ export default memo(
     return (
       prevProps.disabled === nextProps.disabled &&
       prevProps.isShow === nextProps.isShow &&
-      prevProps.onClick === nextProps.onClick
+      prevProps.onClick === nextProps.onClick &&
+      prevProps.showDesc === nextProps.showDesc
     );
   }
 );

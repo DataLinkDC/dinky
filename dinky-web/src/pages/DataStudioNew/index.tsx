@@ -189,8 +189,6 @@ const DataStudioNew: React.FC = (props: any) => {
       case 'hideToolbarDesc':
         handleToolbarShowDesc();
         break;
-      case 'saveLayout':
-        break;
     }
   };
 
@@ -267,7 +265,7 @@ const DataStudioNew: React.FC = (props: any) => {
           case 'task':
             const titleContent = (
               <>
-                {getTabIcon(tabData.params.dialect, 16)} {tabData.title}
+                {getTabIcon(tabData.params.dialect, 19)} {tabData.title}
               </>
             );
             if (tabData.isUpdate) {
@@ -283,7 +281,7 @@ const DataStudioNew: React.FC = (props: any) => {
             const dialect = tabData.params.type;
             return (
               <>
-                {getTabIcon(dialect, 16)} {tabData.title}
+                {getTabIcon(dialect, 19)} {tabData.title}
               </>
             );
           default:

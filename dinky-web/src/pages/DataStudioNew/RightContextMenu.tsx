@@ -76,10 +76,6 @@ export default RightContextMenu;
 export const useRightMenuItem = (props: RightMenuItemProps) => {
   const { dataStudioState } = props;
   const menuItem: MenuItemType[] = [];
-  menuItem.push({
-    key: 'saveLayout',
-    label: '保存布局'
-  });
 
   // 显示工具窗口名称 | Show toolbar window name.
   if (dataStudioState.toolbar.showDesc) {
