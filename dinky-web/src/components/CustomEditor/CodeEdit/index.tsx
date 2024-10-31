@@ -18,17 +18,17 @@
  */
 
 import * as monaco from 'monaco-editor';
-import {editor, languages, Position} from 'monaco-editor';
+import { editor, languages, Position } from 'monaco-editor';
 
-import {buildAllSuggestionsToEditor} from '@/components/CustomEditor/CodeEdit/function';
-import {handleInitEditorAndLanguageOnBeforeMount} from '@/components/CustomEditor/function';
-import {MonacoEditorOptions, SuggestionInfo} from '@/types/Public/data';
-import {convertCodeEditTheme} from '@/utils/function';
-import {Editor, loader, Monaco, OnChange} from '@monaco-editor/react';
-import {connect} from '@umijs/max';
+import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
+import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
+import { MonacoEditorOptions, SuggestionInfo } from '@/types/Public/data';
+import { convertCodeEditTheme } from '@/utils/function';
+import { Editor, loader, Monaco, OnChange } from '@monaco-editor/react';
+import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import {memo, useCallback, useRef} from 'react';
-import {DataStudioState} from "@/pages/DataStudioNew/model";
+import { memo, useCallback, useRef } from 'react';
+import { DataStudioState } from '@/pages/DataStudioNew/model';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -36,11 +36,10 @@ import CompletionList = languages.CompletionList;
 import ProviderResult = languages.ProviderResult;
 import LanguageSelector = languages.LanguageSelector;
 
-loader.config({monaco});
+loader.config({ monaco });
 
 let provider = {
-  dispose: () => {
-  }
+  dispose: () => {}
 };
 
 export type CodeEditFormProps = {
@@ -188,7 +187,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
 
       const model = editor.getModel();
       if (model) {
-        const segmenter = new Intl.Segmenter('en', {granularity: 'word'});
+        const segmenter = new Intl.Segmenter('en', { granularity: 'word' });
         const segments = segmenter.segment(model.getValue());
         const segmentedWords = [];
         for (const segment of segments) {
@@ -317,6 +316,6 @@ const CodeEdit = (props: CodeEditFormProps) => {
   );
 };
 
-export default connect(({DataStudio}: { DataStudio: DataStudioState }) => ({
+export default connect(({ DataStudio }: { DataStudio: DataStudioState }) => ({
   suggestionsData: DataStudio.tempData.suggestions
 }))(memo(CodeEdit));

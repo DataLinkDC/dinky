@@ -19,11 +19,11 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import useThemeValue from '@/hooks/useThemeValue';
-import {jsonToSql} from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service';
-import {Button, Flex, Space} from 'antd';
-import React, {useState} from 'react';
-import {debounce} from 'lodash';
-import CodeShow from "@/components/CustomEditor/CodeShow";
+import { jsonToSql } from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service';
+import { Button, Flex, Space } from 'antd';
+import React, { useState } from 'react';
+import { debounce } from 'lodash';
+import CodeShow from '@/components/CustomEditor/CodeShow';
 
 const padding = 10;
 
@@ -33,33 +33,33 @@ export const JsonToSql: React.FC = () => {
   const [jsonData, setJsonData] = useState<string>();
   const [sqlData, setSqlData] = useState<string>();
   return (
-    <Flex vertical style={{height: '100%'}}>
+    <Flex vertical style={{ height: '100%' }}>
       <Space>
         <Button
           children={'Convert'}
           onClick={async () => {
-            const schema = await jsonToSql({data: jsonData}) as string
+            const schema = (await jsonToSql({ data: jsonData })) as string;
             setSqlData(`create table xxx(\n${schema})`);
           }}
         />
       </Space>
 
-      <Flex style={{paddingBlockStart: padding, height: '100%'}}>
-        <div style={{width: '50%', border}}>
+      <Flex style={{ paddingBlockStart: padding, height: '100%' }}>
+        <div style={{ width: '50%', border }}>
           <CodeEdit
             height={'100%'}
-            code={jsonData ?? ""}
+            code={jsonData ?? ''}
             language={'json'}
             onChange={setJsonData}
           />
         </div>
-        <div style={{width: '50%'}}>
+        <div style={{ width: '50%' }}>
           <CodeShow
             height={'100%'}
-            code={sqlData ?? ""}
+            code={sqlData ?? ''}
             language={'sql'}
-            style={{border}}
-            options={{minimap: {enabled: true}}}
+            style={{ border }}
+            options={{ minimap: { enabled: true } }}
           />
         </div>
       </Flex>

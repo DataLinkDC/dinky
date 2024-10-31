@@ -17,11 +17,11 @@
  *
  */
 
-import {DataStudioActionType, ToolbarSelect} from '@/pages/DataStudioNew/data.d';
-import {Effect, Reducer} from '@@/plugin-dva/types';
-import {createModelTypes} from '@/utils/modelUtils';
-import {leftDefaultShowTab, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {layout} from '@/pages/DataStudioNew/ContentLayout';
+import { DataStudioActionType, ToolbarSelect } from '@/pages/DataStudioNew/data.d';
+import { Effect, Reducer } from '@@/plugin-dva/types';
+import { createModelTypes } from '@/utils/modelUtils';
+import { leftDefaultShowTab, ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import { layout } from '@/pages/DataStudioNew/ContentLayout';
 import {
   CenterTabDTO,
   FlinkCluster,
@@ -35,11 +35,11 @@ import {
   TempDataDTO,
   UpdateActionDTO
 } from '@/pages/DataStudioNew/type';
-import {LayoutBase} from 'rc-dock/src/DockData';
-import {getAllPanel} from '@/pages/DataStudioNew/function';
-import {ToolbarPosition} from '@/pages/DataStudioNew/Toolbar/data.d';
-import {findToolbarPositionByTabId} from '@/pages/DataStudioNew/DockLayoutFunction';
-import {EnvType} from '@/pages/DataStudio/model';
+import { LayoutBase } from 'rc-dock/src/DockData';
+import { getAllPanel } from '@/pages/DataStudioNew/function';
+import { ToolbarPosition } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { findToolbarPositionByTabId } from '@/pages/DataStudioNew/DockLayoutFunction';
+import { EnvType } from '@/pages/DataStudio/model';
 import {
   getClusterConfigurationData,
   getEnvData,
@@ -48,10 +48,10 @@ import {
   getSessionData,
   querySuggestionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
-import {Alert} from '@/types/RegCenter/data';
-import {showAlertGroup} from '@/pages/RegCenter/Alert/AlertGroup/service';
-import {DefaultOptionType} from 'antd/es/select';
-import {getDataSourceList} from '@/pages/DataStudioNew/Toolbar/DataSource/service';
+import { Alert } from '@/types/RegCenter/data';
+import { showAlertGroup } from '@/pages/RegCenter/Alert/AlertGroup/service';
+import { DefaultOptionType } from 'antd/es/select';
+import { getDataSourceList } from '@/pages/DataStudioNew/Toolbar/DataSource/service';
 
 /**
  * @description:
@@ -278,7 +278,7 @@ const StudioModel: StudioModelType = {
     }
   },
   effects: {
-    * queryFlinkEnv({payload}, {call, put, select}) {
+    *queryFlinkEnv({ payload }, { call, put, select }) {
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const response: EnvType[] = yield call(getEnvData, payload);
       // 移除数据，并保留当前类别的属性
@@ -294,7 +294,7 @@ const StudioModel: StudioModelType = {
         }
       });
     },
-    * queryFlinkCluster({payload}, {call, put, select}) {
+    *queryFlinkCluster({ payload }, { call, put, select }) {
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const sessionData: FlinkCluster[] = yield call(getSessionData, payload);
       const clusterConfigurationData: FlinkCluster[] = yield call(
@@ -316,7 +316,7 @@ const StudioModel: StudioModelType = {
         }
       });
     },
-    * queryAlertGroup({}, {call, put, select}) {
+    *queryAlertGroup({}, { call, put, select }) {
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const data: Alert.AlertGroup[] = yield call(showAlertGroup);
       // 移除数据，并保留当前类别的属性
@@ -328,7 +328,7 @@ const StudioModel: StudioModelType = {
         }
       });
     },
-    * queryFlinkConfigOptions({}, {call, put, select}) {
+    *queryFlinkConfigOptions({}, { call, put, select }) {
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const data: DefaultOptionType[] = yield call(getFlinkConfigs);
       // 移除数据，并保留当前类别的属性
@@ -340,7 +340,7 @@ const StudioModel: StudioModelType = {
         }
       });
     },
-    * queryFlinkUdfOptions({}, {call, put, select}) {
+    *queryFlinkUdfOptions({}, { call, put, select }) {
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const data: [] = yield call(getFlinkUdfOptions);
 
@@ -353,7 +353,7 @@ const StudioModel: StudioModelType = {
         }
       });
     },
-    * queryDataSourceDataList({}, {call, put, select}) {
+    *queryDataSourceDataList({}, { call, put, select }) {
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
       const data: [] = yield call(getDataSourceList);
 
@@ -366,9 +366,9 @@ const StudioModel: StudioModelType = {
         }
       });
     },
-    * querySuggestions({}, {call, put, select}) {
+    *querySuggestions({}, { call, put, select }) {
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
-      const data: [] = yield call(querySuggestionData, {enableSchemaSuggestions: false});
+      const data: [] = yield call(querySuggestionData, { enableSchemaSuggestions: false });
 
       // 移除数据，并保留当前类别的属性
       yield put({
@@ -381,13 +381,13 @@ const StudioModel: StudioModelType = {
     }
   },
   reducers: {
-    setLayout(state, {layout}) {
+    setLayout(state, { layout }) {
       return {
         ...state,
         layoutData: layout
       };
     },
-    handleLayoutChange(state, {dockLayout, newLayout, currentTabId, direction}) {
+    handleLayoutChange(state, { dockLayout, newLayout, currentTabId, direction }) {
       if (direction === 'remove') {
         // 删除工具栏选中
         if (currentTabId) {
@@ -395,7 +395,7 @@ const StudioModel: StudioModelType = {
           if (toolbarPosition) {
             state.toolbar[toolbarPosition].allOpenTabs = state.toolbar[
               toolbarPosition
-              ].allOpenTabs?.filter((t) => t !== currentTabId);
+            ].allOpenTabs?.filter((t) => t !== currentTabId);
             if (state.toolbar[toolbarPosition].currentSelect === currentTabId) {
               state.toolbar[toolbarPosition].currentSelect = undefined;
             }
@@ -449,7 +449,7 @@ const StudioModel: StudioModelType = {
         }
       });
       state.layoutData = newLayout;
-      return {...state};
+      return { ...state };
     },
     // 操作工具栏显示描述
     handleToolbarShowDesc(state, {}) {
@@ -462,7 +462,7 @@ const StudioModel: StudioModelType = {
       };
     },
     // 保存工具栏布局
-    saveToolbarLayout(state, {position, list}) {
+    saveToolbarLayout(state, { position, list }) {
       return {
         ...state,
         toolbar: {
@@ -474,7 +474,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    updateCenterTab(state, {id, tabType, title, params, isUpdate}) {
+    updateCenterTab(state, { id, tabType, title, params, isUpdate }) {
       return {
         ...state,
         centerContent: {
@@ -495,7 +495,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    addCenterTab(state, {id, tabType, title, params}) {
+    addCenterTab(state, { id, tabType, title, params }) {
       const newTab = {
         id,
         tabType,
@@ -516,7 +516,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    removeCenterTab: function (prevState: DataStudioState, {id}): DataStudioState {
+    removeCenterTab: function (prevState: DataStudioState, { id }): DataStudioState {
       const tabs = prevState.centerContent.tabs.filter((x) => x.id !== id);
 
       return {
@@ -531,7 +531,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    updateProject(state, {expandKeys, selectedKeys}) {
+    updateProject(state, { expandKeys, selectedKeys }) {
       return {
         ...state,
         toolbar: {
@@ -543,7 +543,7 @@ const StudioModel: StudioModelType = {
         }
       };
     },
-    updateAction(state, {actionType, params}) {
+    updateAction(state, { actionType, params }) {
       return {
         ...state,
         action: {

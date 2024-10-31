@@ -199,12 +199,11 @@ export default defineConfig({
   dva: {},
 
   chainWebpack: (memo) => {
-
     memo.plugin('monaco-editor-webpack-plugin').use(MonacoWebpackPlugin, [
       // 按需配置
-      { languages: ['shell','json','java','sql','python','scala','yaml'] },
+      { languages: ['shell', 'json', 'java', 'sql', 'python', 'scala', 'yaml'] }
     ]);
 
     return memo;
-  },
+  }
 });

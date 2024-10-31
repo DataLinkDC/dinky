@@ -17,38 +17,38 @@
  *
  */
 
-import {Button, Col, Divider, Dropdown, Empty, Flex, MenuProps, Skeleton} from 'antd';
+import { Button, Col, Divider, Dropdown, Empty, Flex, MenuProps, Skeleton } from 'antd';
 import Search from 'antd/es/input/Search';
-import {l} from '@/utils/intl';
-import {DownOutlined, SortAscendingOutlined} from '@ant-design/icons';
-import React, {Key, useEffect, useRef, useState} from 'react';
+import { l } from '@/utils/intl';
+import { DownOutlined, SortAscendingOutlined } from '@ant-design/icons';
+import React, { Key, useEffect, useRef, useState } from 'react';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
-import {TreeVo} from '@/pages/DataStudio/model';
-import {ItemType} from 'antd/es/menu/interface';
-import {useAsyncEffect} from 'ahooks';
-import {getTaskSortTypeData} from '@/pages/DataStudio/LeftContainer/Project/service';
-import type {ButtonType} from 'antd/es/button/buttonHelpers';
-import {connect, useRequest} from '@@/exports';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {TaskOwnerLockingStrategy} from '@/types/SettingCenter/data.d';
-import {useModel} from '@umijs/max';
-import {debounce} from '@/utils/function';
-import {DataStudioState} from '@/pages/DataStudioNew/model';
-import {mapDispatchToProps} from '@/pages/DataStudioNew/DvaFunction';
-import {DataStudioActionType} from '@/pages/DataStudioNew/data.d';
+import { TreeVo } from '@/pages/DataStudio/model';
+import { ItemType } from 'antd/es/menu/interface';
+import { useAsyncEffect } from 'ahooks';
+import { getTaskSortTypeData } from '@/pages/DataStudio/LeftContainer/Project/service';
+import type { ButtonType } from 'antd/es/button/buttonHelpers';
+import { connect, useRequest } from '@@/exports';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
+import { useModel } from '@umijs/max';
+import { debounce } from '@/utils/function';
+import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 import type RcTree from 'rc-tree';
-import {generateList, searchInTree} from '@/utils/treeUtils';
-import {buildProjectTree} from '@/pages/DataStudioNew/Toolbar/Project/function';
+import { generateList, searchInTree } from '@/utils/treeUtils';
+import { buildProjectTree } from '@/pages/DataStudioNew/Toolbar/Project/function';
 
 export const Project = (props: any) => {
   const {
-    project: {expandKeys, selectedKeys},
-    action: {actionType, params},
+    project: { expandKeys, selectedKeys },
+    action: { actionType, params },
     updateProject,
     updateAction,
     addCenterTab
   } = props;
-  const {initialState} = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
 
   const [searchValue, setSearchValueValue] = useState('');
   const [treeData, setTreeData] = useState<[]>([]);
@@ -72,9 +72,9 @@ export const Project = (props: any) => {
     sortType: ''
   });
 
-  const {loading, data, refresh} = useRequest({
+  const { loading, data, refresh } = useRequest({
     url: API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA,
-    data: {...selectCatalogueSortTypeData},
+    data: { ...selectCatalogueSortTypeData },
     method: 'post'
   });
 
@@ -82,14 +82,14 @@ export const Project = (props: any) => {
     switch (actionType) {
       // 折叠
       case DataStudioActionType.PROJECT_COLLAPSE_ALL:
-        updateProject({expandKeys: []});
+        updateProject({ expandKeys: [] });
         break;
       // 展开
       case DataStudioActionType.PROJECT_EXPAND_ALL:
         const expand = generateList(data, [])
           .filter((item) => !item.isLeaf)
           .map((item) => item.key);
-        updateProject({expandKeys: expand});
+        updateProject({ expandKeys: expand });
         break;
       // todo 右键没做
       case DataStudioActionType.PROJECT_RIGHT_CLICK:
@@ -103,8 +103,8 @@ export const Project = (props: any) => {
           params.key,
           'equal'
         );
-        updateProject({expandKeys: [...expandKeys, ...expandedKeys], selectedKeys: [params.key]});
-        treeRef.current!!.scrollTo({key: params.key});
+        updateProject({ expandKeys: [...expandKeys, ...expandedKeys], selectedKeys: [params.key] });
+        treeRef.current!!.scrollTo({ key: params.key });
         break;
     }
   }, [actionType, params]);
@@ -123,7 +123,7 @@ export const Project = (props: any) => {
         )
       );
       // 这里需要再次设置expandKeys，因为网络延迟问题，导致第一次设置expandKeys无效
-      updateProject({expandKeys: [...expandKeys]});
+      updateProject({ expandKeys: [...expandKeys] });
     }
   }, [data, searchValue]);
   useEffect(() => {
@@ -148,9 +148,9 @@ export const Project = (props: any) => {
   }, []);
 
   const onChangeSearch = (e: any) => {
-    let {value} = e.target;
+    let { value } = e.target;
     if (!value) {
-      updateProject({expandKeys: [], selectedKeys: []});
+      updateProject({ expandKeys: [], selectedKeys: [] });
       setSearchValueValue(value);
       return;
     }
@@ -160,37 +160,37 @@ export const Project = (props: any) => {
       String(value).trim(),
       'contain'
     );
-    updateProject({expandKeys: expandedKeys, selectedKeys: []});
+    updateProject({ expandKeys: expandedKeys, selectedKeys: [] });
     setSearchValueValue(value);
   };
   const onExpand = (expandedKeys: Key[]) => {
-    updateProject({expandKeys: expandedKeys});
+    updateProject({ expandKeys: expandedKeys });
   };
 
   const onRightClick = (info: any) => {
     const {
-      node: {isLeaf, key, fullInfo},
+      node: { isLeaf, key, fullInfo },
       node,
       event
     } = info;
-    updateProject({selectedKeys: [key]});
-    updateAction({actionType: DataStudioActionType.PROJECT_RIGHT_CLICK, params: {isLeaf, key}});
+    updateProject({ selectedKeys: [key] });
+    updateAction({ actionType: DataStudioActionType.PROJECT_RIGHT_CLICK, params: { isLeaf, key } });
   };
 
   const onNodeClick = (info: any) => {
     // 选中的key
     const {
-      node: {isLeaf, name, type, parentId, path, key, taskId}
+      node: { isLeaf, name, type, parentId, path, key, taskId }
     } = info;
 
     if (!isLeaf) {
       if (expandKeys?.includes(key)) {
-        updateProject({expandKeys: expandKeys.filter((item: number) => item !== key)});
+        updateProject({ expandKeys: expandKeys.filter((item: number) => item !== key) });
       } else {
-        updateProject({expandKeys: [...expandKeys, key]});
+        updateProject({ expandKeys: [...expandKeys, key] });
       }
     } else {
-      updateProject({selectedKeys: [key]});
+      updateProject({ selectedKeys: [key] });
       addCenterTab({
         id: 'project_' + key,
         title: name,
@@ -242,7 +242,7 @@ export const Project = (props: any) => {
     }
   };
   return (
-    <Flex vertical style={{paddingInline: 5, height: 'inherit'}} ref={ref}>
+    <Flex vertical style={{ paddingInline: 5, height: 'inherit' }} ref={ref}>
       <Skeleton
         loading={loading}
         active
@@ -255,7 +255,7 @@ export const Project = (props: any) => {
         <Col>
           <Flex gap={8} justify={'center'} align={'center'}>
             <Search
-              style={{margin: '8px 0px'}}
+              style={{ margin: '8px 0px' }}
               placeholder={l('global.search.text')}
               onChange={debounce(onChangeSearch, 300)}
               allowClear={true}
@@ -270,18 +270,18 @@ export const Project = (props: any) => {
               }}
               placement='bottomLeft'
             >
-              <Button icon={<SortAscendingOutlined/>} type={sortState.sortIconType}></Button>
+              <Button icon={<SortAscendingOutlined />} type={sortState.sortIconType}></Button>
             </Dropdown>
           </Flex>
 
-          <Divider style={{margin: 3}}/>
+          <Divider style={{ margin: 3 }} />
         </Col>
 
         {data?.length && treeHeight > 0 ? (
           <DirectoryTree
             ref={treeRef}
             showLine
-            switcherIcon={<DownOutlined/>}
+            switcherIcon={<DownOutlined />}
             className={'treeList'}
             height={treeHeight}
             onSelect={(_, info) => onNodeClick(info)}
@@ -303,7 +303,7 @@ export const Project = (props: any) => {
   );
 };
 export default connect(
-  ({DataStudio}: { DataStudio: DataStudioState }) => ({
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
     project: DataStudio.toolbar.project,
     action: DataStudio.action
   }),
