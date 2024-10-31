@@ -114,7 +114,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
       if (!taskItem.some((item) => item.key === actionType)) {
         setTaskItems((prevState) => ({
           ...prevState,
-          [params.taskId]: [...taskItem,route]
+          [params.taskId]: [...taskItem, route]
         }));
       } else {
         setTaskItems((prevState) => {
