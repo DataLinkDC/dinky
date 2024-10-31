@@ -100,6 +100,10 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
     queryDataSourceDataList: () =>
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryDataSourceDataList
+      }),
+    querySuggestions: () =>
+      dispatch({
+        type: STUDIO_MODEL_ASYNC.querySuggestions
       })
   };
 };

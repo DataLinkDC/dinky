@@ -215,7 +215,6 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       </>
     );
   };
-  console.log(data);
   return (
     <div style={{ width: '100%', paddingInline: 10 }}>
       <Flex justify={'right'}>

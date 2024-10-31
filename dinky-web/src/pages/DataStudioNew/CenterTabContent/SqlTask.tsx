@@ -83,12 +83,6 @@ export type FlinkSqlProps = {
   tabData: CenterTab;
   activeTab?: string | undefined;
 };
-
-export type TaskParams = {
-  taskId: number;
-  key: number;
-};
-
 const toolbarSize = 40;
 const dividerHeight = 24;
 

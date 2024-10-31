@@ -18,33 +18,35 @@
  */
 
 import * as monaco from 'monaco-editor';
-import { editor, languages, Position } from 'monaco-editor';
+import {editor, languages, Position} from 'monaco-editor';
 
-import { buildAllSuggestionsToEditor } from '@/components/CustomEditor/CodeEdit/function';
-import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEditor/function';
-import { StateType } from '@/pages/DataStudio/model';
-import { MonacoEditorOptions, SuggestionInfo } from '@/types/Public/data';
-import { convertCodeEditTheme } from '@/utils/function';
-import { Editor, loader, Monaco, OnChange } from '@monaco-editor/react';
-import { connect } from '@umijs/max';
+import {buildAllSuggestionsToEditor} from '@/components/CustomEditor/CodeEdit/function';
+import {handleInitEditorAndLanguageOnBeforeMount} from '@/components/CustomEditor/function';
+import {MonacoEditorOptions, SuggestionInfo} from '@/types/Public/data';
+import {convertCodeEditTheme} from '@/utils/function';
+import {Editor, loader, Monaco, OnChange} from '@monaco-editor/react';
+import {connect} from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import { memo, useCallback, useRef } from 'react';
+import {memo, useCallback, useRef} from 'react';
+import {DataStudioState} from "@/pages/DataStudioNew/model";
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
 import CompletionList = languages.CompletionList;
 import ProviderResult = languages.ProviderResult;
+import LanguageSelector = languages.LanguageSelector;
 
-loader.config({ monaco });
+loader.config({monaco});
 
 let provider = {
-  dispose: () => {}
+  dispose: () => {
+  }
 };
 
 export type CodeEditFormProps = {
   height?: string;
   width?: string;
-  language?: string;
+  language: string;
   options?: any;
   onChange?: OnChange;
   code: string;
@@ -57,7 +59,7 @@ export type CodeEditFormProps = {
   monacoRef?: any;
 };
 
-const CodeEdit = (props: CodeEditFormProps & connect) => {
+const CodeEdit = (props: CodeEditFormProps) => {
   /**
    * 1. height: edit height
    * 2. width: edit width
@@ -82,6 +84,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
     lineNumbers, // show lineNumbers
     enableSuggestions = false, // enable suggestions
     enableSuggestionPreview = false, // enable suggestion preview
+    // @ts-ignore
     suggestionsData, // suggestions data
     autoWrap = 'on', // auto wrap
     editorDidMount,
@@ -112,7 +115,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
   function reloadCompilation(monacoIns: Monaco, segmentedWords: string[]) {
     provider.dispose();
-    provider = monacoIns.languages.registerCompletionItemProvider(language, {
+    provider = monacoIns.languages.registerCompletionItemProvider(language!!, {
       provideCompletionItems: (
         model: editor.ITextModel,
         position: Position,
@@ -185,7 +188,7 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
 
       const model = editor.getModel();
       if (model) {
-        const segmenter = new Intl.Segmenter('en', { granularity: 'word' });
+        const segmenter = new Intl.Segmenter('en', {granularity: 'word'});
         const segments = segmenter.segment(model.getValue());
         const segmentedWords = [];
         for (const segment of segments) {
@@ -314,6 +317,6 @@ const CodeEdit = (props: CodeEditFormProps & connect) => {
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  suggestionsData: Studio.suggestions
+export default connect(({DataStudio}: { DataStudio: DataStudioState }) => ({
+  suggestionsData: DataStudio.tempData.suggestions
 }))(memo(CodeEdit));
