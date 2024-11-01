@@ -17,13 +17,13 @@
  *
  */
 
-import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
-import { Button, Col, Divider, Flex, Row, Skeleton, TabsProps } from 'antd';
+import {CenterTab, DataStudioState} from '@/pages/DataStudioNew/model';
+import {Button, Col, Divider, Flex, Row, Skeleton, TabsProps} from 'antd';
 import './index.less';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { registerEditorKeyBindingAndAction } from '@/utils/function';
-import { Monaco } from '@monaco-editor/react';
-import { Panel, PanelGroup } from 'react-resizable-panels';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {registerEditorKeyBindingAndAction} from '@/utils/function';
+import {Monaco} from '@monaco-editor/react';
+import {Panel, PanelGroup} from 'react-resizable-panels';
 import {
   ApartmentOutlined,
   AuditOutlined,
@@ -31,7 +31,7 @@ import {
   CaretRightOutlined,
   ClearOutlined,
   CloseOutlined,
-  EnvironmentOutlined,
+  EnvironmentOutlined, FullscreenExitOutlined, FullscreenOutlined,
   FundOutlined,
   MergeCellsOutlined,
   PartitionOutlined,
@@ -40,20 +40,20 @@ import {
   SaveOutlined
 } from '@ant-design/icons';
 import RunToolBarButton from '@/pages/DataStudioNew/components/RunToolBarButton';
-import { connect } from '@umijs/max';
+import {connect} from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudioNew/components/CusPanelResizeHandle';
-import { ProForm, ProFormInstance } from '@ant-design/pro-components';
-import { useAsyncEffect } from 'ahooks';
-import { getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
-import { SelectFlinkEnv } from '@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkEnv';
-import { SelectFlinkRunMode } from '@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkRunMode';
-import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
-import { TaskInfo } from '@/pages/DataStudioNew/CenterTabContent/TaskInfo';
+import {ProForm, ProFormInstance} from '@ant-design/pro-components';
+import {useAsyncEffect, useFullscreen} from 'ahooks';
+import {getTaskDetails} from '@/pages/DataStudio/LeftContainer/Project/service';
+import {SelectFlinkEnv} from '@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkEnv';
+import {SelectFlinkRunMode} from '@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkRunMode';
+import {mapDispatchToProps} from '@/pages/DataStudioNew/DvaFunction';
+import {TaskInfo} from '@/pages/DataStudioNew/CenterTabContent/TaskInfo';
 import TaskConfig from '@/pages/DataStudioNew/CenterTabContent/TaskConfig';
-import { HistoryVersion } from '@/pages/DataStudioNew/CenterTabContent/HistoryVersion';
-import { FlinkTaskRunType, StudioLineageParams, TaskState } from '@/pages/DataStudioNew/type';
-import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
-import { debounce } from 'lodash';
+import {HistoryVersion} from '@/pages/DataStudioNew/CenterTabContent/HistoryVersion';
+import {FlinkTaskRunType, StudioLineageParams, TaskState} from '@/pages/DataStudioNew/type';
+import {JOB_LIFE_CYCLE} from '@/pages/DevOps/constants';
+import {debounce} from 'lodash';
 import {
   cancelTask,
   changeTaskLife,
@@ -61,21 +61,21 @@ import {
   explainSql,
   getJobPlan
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { l } from '@/utils/intl';
-import { editor } from 'monaco-editor';
-import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
-import { getDataByParams, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { Jobs, LineageDetailInfo } from '@/types/DevOps/data';
-import { isStatusDone } from '@/pages/DataStudioNew/function';
-import { debugTask } from '@/pages/DataStudioNew/service';
-import { PushpinIcon } from '@/components/Icons/CustomIcons';
-import { assert } from '@/pages/DataStudio/function';
-import { DIALECT } from '@/services/constants';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
-import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import {l} from '@/utils/intl';
+import {editor} from 'monaco-editor';
+import {DataStudioActionType} from '@/pages/DataStudioNew/data.d';
+import {getDataByParams, handlePutDataJson, queryDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {Jobs, LineageDetailInfo} from '@/types/DevOps/data';
+import {isStatusDone} from '@/pages/DataStudioNew/function';
+import {debugTask} from '@/pages/DataStudioNew/service';
+import {PushpinIcon} from '@/components/Icons/CustomIcons';
+import {assert} from '@/pages/DataStudio/function';
+import {DIALECT} from '@/services/constants';
+import {isSql} from '@/pages/DataStudio/HeaderContainer/function';
+import {SysConfigStateType} from '@/pages/SettingCenter/GlobalSetting/model';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
-import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
+import {matchLanguage} from '@/pages/DataStudio/MiddleContainer/function';
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 
 export type FlinkSqlProps = {
@@ -98,7 +98,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
     taskOwnerLockingStrategy,
     dsConfig
   } = props;
-  const { params, title, id } = props.tabData as CenterTab;
+  const {params, title, id} = props.tabData as CenterTab;
   const containerRef = useRef<HTMLDivElement>(null);
   const editorInstance = useRef<editor.IStandaloneCodeEditor>(null);
   const [codeEditorWidth, setCodeEditorWidth] = useState(0);
@@ -139,25 +139,26 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
   const [diff, setDiff] = useState<any>([]);
 
   const formRef = useRef<ProFormInstance>();
+  const [isFullscreen, {enterFullscreen, exitFullscreen}] = useFullscreen(containerRef);
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId);
     if (taskDetail) {
       const statement = params.statement ?? taskDetail.statement;
-      const newParams = { ...taskDetail, taskId: params.taskId, statement };
+      const newParams = {...taskDetail, taskId: params.taskId, statement};
       // @ts-ignore
       setCurrentState(newParams);
-      updateCenterTab({ ...props.tabData, params: newParams });
+      updateCenterTab({...props.tabData, params: newParams});
 
       setOriginStatementValue(statement);
 
       if (params?.statement && params?.statement !== taskDetail.statement) {
-        setDiff([{ key: 'statement', server: taskDetail.statement, cache: params.statement }]);
+        setDiff([{key: 'statement', server: taskDetail.statement, cache: params.statement}]);
         setOpenDiffModal(true);
         updateCenterTab({
           ...props.tabData,
           isUpdate: true,
-          params: { ...newParams }
+          params: {...newParams}
         });
       }
     }
@@ -167,7 +168,8 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
   // 数据初始化
   useEffect(() => {
     if (!containerRef.current) {
-      return () => {};
+      return () => {
+      };
     }
     // 监控布局宽度高度变化，重新计算树的高度
     const element = containerRef.current!!;
@@ -206,10 +208,10 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
       updateCenterTab({
         ...props.tabData,
         isUpdate: false,
-        params: { ...currentState, statement }
+        params: {...currentState, statement}
       });
     }
-    setCurrentState((prevState) => ({ ...prevState, statement }));
+    setCurrentState((prevState) => ({...prevState, statement}));
     setOriginStatementValue(statement);
 
     setOpenDiffModal(false);
@@ -232,9 +234,9 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
     updateCenterTab({
       ...props.tabData,
       isUpdate: originStatementValue !== value,
-      params: { ...currentState, statement: value ?? '' }
+      params: {...currentState, statement: value ?? ''}
     });
-    setCurrentState((prevState) => ({ ...prevState, statement: value ?? '' }));
+    setCurrentState((prevState) => ({...prevState, statement: value ?? ''}));
   };
 
   const onValuesChange = (changedValues: any, allValues: TaskState) => {
@@ -257,10 +259,10 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
       }
       allValues.type = mode;
     }
-    setCurrentState({ ...currentState, ...allValues });
-    updateCenterTab({ ...props.tabData, params: { ...currentState, ...allValues } });
+    setCurrentState({...currentState, ...allValues});
+    updateCenterTab({...props.tabData, params: {...currentState, ...allValues}});
   };
-  const hotKeyConfig = { enable: activeTab === id };
+  const hotKeyConfig = {enable: activeTab === id};
 
   const rightToolbarItem: TabsProps['items'] = [];
   if (
@@ -295,19 +297,19 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
   rightToolbarItem.push({
     label: '信息',
     key: 'info',
-    children: <TaskInfo params={{ ...currentState }} />
+    children: <TaskInfo params={{...currentState}}/>
   });
 
   const handleSave = useCallback(async () => {
     // await putTask(currentState)
     await handlePutDataJson(API_CONSTANTS.TASK, currentState);
-    updateCenterTab({ ...props.tabData, isUpdate: false });
+    updateCenterTab({...props.tabData, isUpdate: false});
   }, [currentState, updateCenterTab, props.tabData]);
 
   const handleCheck = useCallback(async () => {
     const res = await explainSql(
-      l('pages.datastudio.editor.checking', '', { jobName: currentState?.name }),
-      { ...currentState }
+      l('pages.datastudio.editor.checking', '', {jobName: currentState?.name}),
+      {...currentState}
     );
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_CHECK,
@@ -329,7 +331,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
   }, [currentState, updateAction]);
 
   const handleLineage = useCallback(async () => {
-    const { type, dialect, databaseId, statement, envId, fragment, taskId } = currentState;
+    const {type, dialect, databaseId, statement, envId, fragment, taskId} = currentState;
     const params: StudioLineageParams = {
       type: 1, // todo: 暂时写死 ,后续优化
       dialect: dialect,
@@ -364,7 +366,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
       }
     });
     const result = await executeSql(
-      l('pages.datastudio.editor.submitting', '', { jobName: title }),
+      l('pages.datastudio.editor.submitting', '', {jobName: title}),
       currentState.taskId
     );
     if (result.success) {
@@ -390,8 +392,8 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
 
   const handleDebug = useCallback(async () => {
     const res = await debugTask(
-      l('pages.datastudio.editor.debugging', '', { jobName: currentState.name }),
-      { ...currentState }
+      l('pages.datastudio.editor.debugging', '', {jobName: currentState.name}),
+      {...currentState}
     );
     if (res?.success && res?.data?.result?.success) {
       updateAction({
@@ -424,7 +426,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
   const handleGotoDevOps = useCallback(async () => {
     const dataByParams = await queryDataByParams<Jobs.JobInstance>(
       API_CONSTANTS.GET_JOB_INSTANCE_BY_TASK_ID,
-      { taskId: currentState.taskId }
+      {taskId: currentState.taskId}
     );
     if (dataByParams) {
       window.open(`/#/devops/job-detail?id=${dataByParams?.id}`);
@@ -461,7 +463,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
       );
       currentState.step = JOB_LIFE_CYCLE.PUBLISH;
     }
-    setCurrentState((prevState) => ({ ...prevState, step: currentState.step }));
+    setCurrentState((prevState) => ({...prevState, step: currentState.step}));
   }, [handleSave, currentState.step, currentState.taskId]);
   return (
     <Skeleton
@@ -480,7 +482,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
         fileName={currentState.name}
         onUse={updateTask}
       />
-      <Flex vertical style={{ height: 'inherit', width: '100%' }} ref={containerRef}>
+      <Flex vertical style={{height: 'inherit', width: '100%'}} ref={containerRef}>
         <ProForm
           size={'middle'}
           initialValues={{
@@ -501,7 +503,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('button.save')}
-              icon={<SaveOutlined />}
+              icon={<SaveOutlined/>}
               onClick={handleSave}
               disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH}
               hotKey={{
@@ -512,9 +514,27 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               }}
             />
             <RunToolBarButton
+              isShow={!isFullscreen}
+              showDesc={showDesc}
+              desc={"全屏"}
+              icon={<FullscreenOutlined />}
+              onClick={async () => {
+                enterFullscreen()
+              }}
+            />
+            <RunToolBarButton
+              isShow={isFullscreen}
+              showDesc={showDesc}
+              desc={"退出全屏"}
+              icon={<FullscreenExitOutlined />}
+              onClick={async () => {
+                exitFullscreen()
+              }}
+            />
+            <RunToolBarButton
               showDesc={showDesc}
               desc={l('pages.datastudio.editor.check')}
-              icon={<AuditOutlined />}
+              icon={<AuditOutlined/>}
               onClick={handleCheck}
               isShow={
                 assert(
@@ -540,13 +560,13 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
                 true,
                 'includes'
               )}
-              icon={<ApartmentOutlined />}
+              icon={<ApartmentOutlined/>}
               onClick={handleDAG}
             />
             <RunToolBarButton
               showDesc={showDesc}
               desc={'血缘'}
-              icon={<PartitionOutlined />}
+              icon={<PartitionOutlined/>}
               onClick={handleLineage}
             />
 
@@ -557,9 +577,9 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               'includes'
             ) && (
               <>
-                <Divider type={'vertical'} style={{ height: dividerHeight }} />
-                <SelectFlinkEnv flinkEnv={tempData.flinkEnv} />
-                <SelectFlinkRunMode data={tempData.flinkCluster} />
+                <Divider type={'vertical'} style={{height: dividerHeight}}/>
+                <SelectFlinkEnv flinkEnv={tempData.flinkEnv}/>
+                <SelectFlinkRunMode data={tempData.flinkCluster}/>
               </>
             )}
 
@@ -568,7 +588,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV],
               true,
               'notIncludes'
-            ) && <Divider type={'vertical'} style={{ height: dividerHeight }} />}
+            ) && <Divider type={'vertical'} style={{height: dividerHeight}}/>}
 
             <RunToolBarButton
               isShow={
@@ -583,7 +603,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               color={'green'}
               desc={l('pages.datastudio.editor.exec')}
-              icon={<CaretRightOutlined />}
+              icon={<CaretRightOutlined/>}
               onClick={handleSubmit}
               hotKey={{
                 ...hotKeyConfig,
@@ -599,7 +619,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               color={'red'}
               desc={l('pages.datastudio.editor.debug')}
-              icon={<BugOutlined />}
+              icon={<BugOutlined/>}
               onClick={handleDebug}
               hotKey={{
                 ...hotKeyConfig,
@@ -613,7 +633,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               color={'red'}
               desc={l('pages.datastudio.editor.stop')}
-              icon={<PauseOutlined />}
+              icon={<PauseOutlined/>}
               onClick={handleStop}
               hotKey={{
                 ...hotKeyConfig,
@@ -634,44 +654,44 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               }
               showDesc={showDesc}
               desc={l('pages.datastudio.to.jobDetail')}
-              icon={<RotateRightOutlined />}
+              icon={<RotateRightOutlined/>}
               onClick={handleGotoDevOps}
             />
 
-            <Divider type={'vertical'} style={{ height: dividerHeight }} />
+            <Divider type={'vertical'} style={{height: dividerHeight}}/>
             <RunToolBarButton
               showDesc={showDesc}
               desc={'格式化'}
-              icon={<ClearOutlined />}
+              icon={<ClearOutlined/>}
               onClick={handleFormat}
             />
             <RunToolBarButton
               showDesc={showDesc}
               desc={'定位'}
-              icon={<EnvironmentOutlined />}
+              icon={<EnvironmentOutlined/>}
               onClick={handleLocation}
             />
 
-            <Divider type={'vertical'} style={{ height: dividerHeight }} />
+            <Divider type={'vertical'} style={{height: dividerHeight}}/>
 
             <RunToolBarButton
               isShow={JOB_LIFE_CYCLE.PUBLISH !== currentState.step}
               showDesc={showDesc}
               desc={l('button.publish')}
-              icon={<FundOutlined />}
+              icon={<FundOutlined/>}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton
               isShow={JOB_LIFE_CYCLE.PUBLISH === currentState.step}
               showDesc={showDesc}
               desc={l('button.offline')}
-              icon={<MergeCellsOutlined />}
+              icon={<MergeCellsOutlined/>}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('button.push')}
-              icon={<PushpinIcon className={'blue-icon'} />}
+              icon={<PushpinIcon className={'blue-icon'}/>}
               isShow={
                 enabledDs &&
                 JOB_LIFE_CYCLE.PUBLISH === currentState.step &&
@@ -690,26 +710,11 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
             />
           </Flex>
         </ProForm>
-        <Flex flex={1} style={{ height: 0 }}>
-          <Row style={{ width: '100%', height: '100%' }}>
-            <Col style={{ width: codeEditorWidth - toolbarSize, height: '100%' }}>
-              <PanelGroup direction={'horizontal'}>
+        <Flex flex={1} style={{height: 0}} >
+          <Row style={{width: '100%', height: '100%'}}>
+            <Col style={{width: codeEditorWidth - toolbarSize, height: '100%'}} >
+              <PanelGroup direction={'horizontal'} >
                 <Panel>
-                  {/*<Editor*/}
-                  {/*  beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco, true)}*/}
-                  {/*  width={'100%'}*/}
-                  {/*  height={"100%"}*/}
-                  {/*  value={currentState.statement}*/}
-                  {/*  language={"sql"}*/}
-                  {/*  options={{minimap: {enabled: true, side: 'right'}, scrollBeyondLastLine: false}}*/}
-                  {/*  // options={finalEditorOptions}*/}
-                  {/*  className={'editor-develop'}*/}
-                  {/*  // onMount={editorDidMountChange}*/}
-                  {/*  onChange={debounce(onEditorChange, 500)}*/}
-                  {/*  //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题*/}
-                  {/*  //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash*/}
-                  {/*  theme={convertCodeEditTheme()}*/}
-                  {/*/>*/}
                   <CodeEdit
                     monacoRef={editorInstance}
                     code={currentState.statement}
@@ -731,17 +736,17 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
                 </Panel>
                 {selectRightToolbar && (
                   <>
-                    <CusPanelResizeHandle />
+                    <CusPanelResizeHandle/>
                     <Panel
                       className={'right-toolbar-container'}
-                      style={{ overflowY: 'auto' }}
+                      style={{overflowY: 'auto'}}
                       defaultSize={30}
                     >
                       <Flex gap={5} vertical>
                         <Flex justify={'right'}>
                           <Button
                             key='close'
-                            icon={<CloseOutlined />}
+                            icon={<CloseOutlined/>}
                             type={'text'}
                             onClick={() => setSelectRightToolbar(undefined)}
                           />
@@ -759,7 +764,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
             </Col>
 
             {/*渲染右边更多扩展栏*/}
-            <Flex wrap vertical className={'right-toolbar'} style={{ width: toolbarSize }}>
+            <Flex wrap vertical className={'right-toolbar'} style={{width: toolbarSize}}>
               {rightToolbarItem
                 .map((item) => item.label?.toString())
                 .map((item) => (
@@ -783,7 +788,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
 };
 
 export default connect(
-  ({ DataStudio, SysConfig }: { DataStudio: DataStudioState; SysConfig: SysConfigStateType }) => ({
+  ({DataStudio, SysConfig}: { DataStudio: DataStudioState; SysConfig: SysConfigStateType }) => ({
     showDesc: DataStudio.toolbar.showDesc,
     tempData: DataStudio.tempData,
     activeTab: DataStudio.centerContent.activeTab,

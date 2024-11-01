@@ -85,6 +85,7 @@ export default (props: {
             valueEnum={dataSourceData}
             placeholder='Please select a dataSource'
             rules={[{ required: true, message: 'Please select your dataSource!' }]}
+            allowClear={false}
           />
         );
       } else {
