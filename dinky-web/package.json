@@ -45,6 +45,7 @@
     "@antv/x6": "^2.18.1",
     "@antv/x6-plugin-selection": "^2.2.2",
     "@antv/x6-react-shape": "^2.2.3",
+    "@antv/g6": "^5.0.27",
     "@antv/ava-react": "^3.3.2",
     "@babel/runtime": "^7.24.7",
     "@monaco-editor/react": "^4.6.0",
