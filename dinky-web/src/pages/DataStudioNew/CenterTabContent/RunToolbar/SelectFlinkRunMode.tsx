@@ -71,7 +71,6 @@ export const SelectFlinkRunMode = memo((props: { data: FlinkCluster[] }) => {
         };
       })
   ];
-  console.log(data);
   const displayRender: CascaderProps<DefaultOptionType>['displayRender'] = (
     labels,
     selectedOptions = []
