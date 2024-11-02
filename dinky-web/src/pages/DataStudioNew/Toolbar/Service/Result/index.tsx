@@ -21,16 +21,25 @@ import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessC
 import { API_CONSTANTS } from '@/services/endpoints';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { QuestionCircleOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import {
+  DownloadOutlined,
+  QuestionCircleOutlined,
+  SearchOutlined,
+  SyncOutlined
+} from '@ant-design/icons';
 import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
-import { Button, Empty, Flex, Input, InputRef, Space, Table, Tabs, Tooltip } from 'antd';
+import { Button, Empty, Flex, Input, InputRef, Modal, Space, Table, Tabs, Tooltip } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import { useAsyncEffect } from 'ahooks';
 import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 import { isSql } from '@/pages/DataStudioNew/utils';
+import { ProTable } from '@ant-design/pro-components';
+import { getInsights } from '@antv/ava';
+import { InsightCard } from '@antv/ava-react';
+import type { InsightsResult } from '@antv/ava/lib/insight/types';
 
 type Data = {
   [c: string]: any;
@@ -48,7 +57,9 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   const [data, setData] = useState<Data>({});
   const [dataList, setDataList] = useState<DataList>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const [openAVA, setOpenAVA] = useState<boolean>(false);
+  const [avaResult, setAvaResult] = useState<InsightsResult>();
+  const [isPending, startTransition] = useTransition();
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -68,8 +79,13 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
     dataIndex: DataIndex
   ) => {
     confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex.toString());
+    if (selectedKeys.length > 0) {
+      setSearchText(selectedKeys[0]);
+      setSearchedColumn(dataIndex.toString());
+    } else {
+      setSearchText('');
+      setSearchedColumn('');
+    }
   };
   const getColumnSearchProps = (dataIndex: string): ColumnType<Data> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -192,13 +208,25 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
         type: 'text/csv'
       });
       const url = URL.createObjectURL(csvDataBlob);
-      return (
-        <Button type='link' href={url}>
-          Export Csv
-        </Button>
-      );
+      return <Button type='link' href={url} icon={<DownloadOutlined />} title={'Export Csv'} />;
     }
     return undefined;
+  };
+  const renderAVA = () => {
+    return (
+      <Button
+        type='link'
+        title={'自动洞察'}
+        onClick={() => {
+          setOpenAVA(true);
+          startTransition(() => {
+            setAvaResult(getInsights(data.rowData));
+          });
+        }}
+      >
+        AVA
+      </Button>
+    );
   };
 
   const renderTips = () => {
@@ -215,23 +243,29 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       </>
     );
   };
-  console.log(data);
+  const handleCloseAva = useCallback(() => setOpenAVA(false), []);
   return (
     <div style={{ width: '100%', paddingInline: 10 }}>
       <Flex justify={'right'}>
         {renderTips()}
-        {renderDownloadButton()}
         {renderFlinkSQLContent()}
       </Flex>
       {data.columns ? (
-        <Table
+        <ProTable
+          cardBordered
           columns={getColumns(data.columns)}
           size='small'
           scroll={{ x: 'max-content' }}
           dataSource={data.rowData?.map((item: any, index: number) => {
             return { ...item, key: index };
           })}
+          options={{ fullScreen: true, density: false }}
+          search={false}
           loading={loading}
+          toolBarRender={() => [renderDownloadButton(), renderAVA()]}
+          pagination={{
+            showSizeChanger: true
+          }}
         />
       ) : dataList.length > 0 ? (
         <Tabs defaultActiveKey='0'>
@@ -254,6 +288,31 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       ) : (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
+      <Modal
+        open={openAVA}
+        loading={isPending}
+        width={'80%'}
+        onClose={handleCloseAva}
+        onCancel={handleCloseAva}
+        footer={[
+          <Button key='submit' type='primary' loading={loading} onClick={handleCloseAva}>
+            Ok
+          </Button>
+        ]}
+      >
+        <div key='plot' style={{ flex: 5, height: '100%' }}>
+          {avaResult?.insights &&
+            avaResult.insights.map((insight, index) => {
+              return (
+                <InsightCard
+                  insightInfo={insight}
+                  key={index}
+                  visualizationOptions={{ lang: 'zh-CN' }}
+                />
+              );
+            })}
+        </div>
+      </Modal>
     </div>
   );
 };

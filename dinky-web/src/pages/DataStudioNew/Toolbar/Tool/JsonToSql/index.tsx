@@ -18,50 +18,51 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import CodeShow from '@/components/CustomEditor/CodeShow';
 import useThemeValue from '@/hooks/useThemeValue';
 import { jsonToSql } from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service';
-import { Button, Space } from 'antd';
+import { Button, Flex, Space } from 'antd';
 import React, { useState } from 'react';
 import { debounce } from 'lodash';
+import CodeShow from '@/components/CustomEditor/CodeShow';
 
 const padding = 10;
 
 export const JsonToSql: React.FC = () => {
   const themeValue = useThemeValue();
   const border = `1px solid ${themeValue.borderColor}`;
-  const [jsonData, setJsonData] = useState('');
-  const [sqlData, setSqlData] = useState('');
+  const [jsonData, setJsonData] = useState<string>();
+  const [sqlData, setSqlData] = useState<string>();
   return (
-    <div style={{ padding: padding }}>
+    <Flex vertical style={{ height: '100%' }}>
       <Space>
         <Button
           children={'Convert'}
           onClick={async () => {
-            setSqlData(await jsonToSql({ data: jsonData }));
+            const schema = (await jsonToSql({ data: jsonData })) as string;
+            setSqlData(`create table xxx(\n${schema})`);
           }}
         />
       </Space>
 
-      <div style={{ display: 'flex', paddingBlockStart: padding }}>
+      <Flex style={{ paddingBlockStart: padding, height: '100%' }}>
         <div style={{ width: '50%', border }}>
           <CodeEdit
             height={'100%'}
-            code={jsonData}
+            code={jsonData ?? ''}
             language={'json'}
-            onChange={debounce(setJsonData, 500)}
+            onChange={setJsonData}
           />
         </div>
         <div style={{ width: '50%' }}>
           <CodeShow
             height={'100%'}
-            code={sqlData}
-            language={'json'}
+            code={sqlData ?? ''}
+            language={'sql'}
             style={{ border }}
             options={{ minimap: { enabled: true } }}
           />
         </div>
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 };

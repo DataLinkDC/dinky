@@ -45,7 +45,8 @@ import {
   getEnvData,
   getFlinkConfigs,
   getFlinkUdfOptions,
-  getSessionData
+  getSessionData,
+  querySuggestionData
 } from '@/pages/DataStudio/RightContainer/JobConfig/service';
 import { Alert } from '@/types/RegCenter/data';
 import { showAlertGroup } from '@/pages/RegCenter/Alert/AlertGroup/service';
@@ -196,6 +197,7 @@ export type StudioModelType = {
     queryFlinkConfigOptions: Effect;
     queryFlinkUdfOptions: Effect;
     queryDataSourceDataList: Effect;
+    querySuggestions: Effect;
   };
   reducers: {
     // 保存布局
@@ -266,7 +268,8 @@ const StudioModel: StudioModelType = {
       alertGroup: [],
       flinkConfigOptions: [],
       flinkUdfOptions: [],
-      dataSourceDataList: []
+      dataSourceDataList: [],
+      suggestions: []
     },
     layoutSize: {
       leftTop: 200,
@@ -360,6 +363,19 @@ const StudioModel: StudioModelType = {
         payload: {
           ...tempData,
           dataSourceDataList: data
+        }
+      });
+    },
+    *querySuggestions({}, { call, put, select }) {
+      const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
+      const data: [] = yield call(querySuggestionData, { enableSchemaSuggestions: false });
+
+      // 移除数据，并保留当前类别的属性
+      yield put({
+        type: 'saveTempData',
+        payload: {
+          ...tempData,
+          suggestions: data
         }
       });
     }

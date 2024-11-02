@@ -24,13 +24,14 @@ import { Flex, Tabs, TabsProps, TreeDataNode } from 'antd';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import './index.less';
-import React, { Key, useEffect, useState } from 'react';
+import React, { Key, useEffect, useMemo, useState } from 'react';
 import {
   ApartmentOutlined,
   ArrowsAltOutlined,
   AuditOutlined,
   CodeOutlined,
   HistoryOutlined,
+  MonitorOutlined,
   PartitionOutlined,
   ShrinkOutlined,
   TableOutlined
@@ -50,6 +51,7 @@ import { assert } from '@/pages/DataStudio/function';
 import { DIALECT } from '@/services/constants';
 import { TableData } from '@/pages/DataStudioNew/Toolbar/Service/TableData';
 import { isSql } from '@/pages/DataStudioNew/utils';
+import { LineageNew } from '@/pages/DataStudioNew/Toolbar/Service/LineageNew';
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {
@@ -72,6 +74,31 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
     });
     return keys;
   };
+  const router = useMemo(() => {
+    if (!params?.data) {
+      return {};
+    }
+    return {
+      [DataStudioActionType.TASK_RUN_CHECK]: {
+        key: actionType,
+        label: '检查',
+        icon: <AuditOutlined />,
+        children: <Explain data={params.data} />
+      },
+      [DataStudioActionType.TASK_RUN_DAG]: {
+        key: actionType,
+        label: 'DAG',
+        icon: <ApartmentOutlined />,
+        children: <FlinkGraph data={params.data} />
+      },
+      [DataStudioActionType.TASK_RUN_LINEAGE]: {
+        key: actionType,
+        label: '血缘',
+        icon: <PartitionOutlined />,
+        children: <Lineage data={params.data} />
+      }
+    };
+  }, [actionType, params?.data]);
   const expandAll = () => {
     setExpandKeys(getAllNodeKeys(treeData));
   };
@@ -81,24 +108,19 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
     }
     const taskItem = taskItems[params.taskId] ?? [];
     setSelectedKey([params.taskId]);
-    if (actionType === DataStudioActionType.TASK_RUN_CHECK) {
+
+    if (router.hasOwnProperty(actionType)) {
+      // @ts-ignore
+      const route = router[actionType];
       if (!taskItem.some((item) => item.key === actionType)) {
         setTaskItems((prevState) => ({
           ...prevState,
-          [params.taskId]: [
-            ...taskItem,
-            {
-              key: actionType,
-              label: '检查',
-              icon: <AuditOutlined />,
-              children: <Explain data={params.data} />
-            }
-          ]
+          [params.taskId]: [...taskItem, route]
         }));
       } else {
         setTaskItems((prevState) => {
           const item = prevState[params.taskId]!!;
-          item.find((item) => item.key === actionType)!!.children = <Explain data={params.data} />;
+          item.find((item) => item.key === actionType)!!.children = route.children;
           return { ...prevState };
         });
       }
@@ -106,71 +128,21 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         ...prevState,
         [params.taskId]: actionType
       }));
-    } else if (actionType === DataStudioActionType.TASK_RUN_DAG) {
-      if (!taskItem.some((item) => item.key === actionType)) {
-        setTaskItems((prevState) => ({
+    } else {
+      if (
+        actionType === DataStudioActionType.TASK_RUN_SUBMIT ||
+        actionType === DataStudioActionType.TASK_RUN_DEBUG
+      ) {
+        setTabActiveKey((prevState) => ({
           ...prevState,
-          [params.taskId]: [
-            ...taskItem,
-            {
-              key: actionType,
-              label: 'DAG',
-              icon: <ApartmentOutlined />,
-              children: <FlinkGraph data={params.data} />
-            }
-          ]
+          [params.taskId]: actionType
         }));
-      } else {
-        setTaskItems((prevState) => {
-          const item = prevState[params.taskId]!!;
-          item.find((item) => item.key === actionType)!!.children = (
-            <FlinkGraph data={params.data} />
-          );
-          return { ...prevState };
-        });
-      }
-      setTabActiveKey((prevState) => ({
-        ...prevState,
-        [params.taskId]: actionType
-      }));
-    } else if (actionType === DataStudioActionType.TASK_RUN_LINEAGE) {
-      if (!taskItem.some((item) => item.key === actionType)) {
-        setTaskItems((prevState) => ({
+      } else if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
+        setTabActiveKey((prevState) => ({
           ...prevState,
-          [params.taskId]: [
-            ...taskItem,
-            {
-              key: actionType,
-              label: '血缘',
-              icon: <PartitionOutlined />,
-              children: <Lineage data={params.data} />
-            }
-          ]
+          [params.taskId]: DataStudioActionType.TASK_RUN_DEBUG
         }));
-      } else {
-        setTaskItems((prevState) => {
-          const item = prevState[params.taskId]!!;
-          item.find((item) => item.key === actionType)!!.children = <Lineage data={params.data} />;
-          return { ...prevState };
-        });
       }
-      setTabActiveKey((prevState) => ({
-        ...prevState,
-        [params.taskId]: actionType
-      }));
-    } else if (
-      actionType === DataStudioActionType.TASK_RUN_SUBMIT ||
-      actionType === DataStudioActionType.TASK_RUN_DEBUG
-    ) {
-      setTabActiveKey((prevState) => ({
-        ...prevState,
-        [params.taskId]: actionType
-      }));
-    } else if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
-      setTabActiveKey((prevState) => ({
-        ...prevState,
-        [params.taskId]: DataStudioActionType.TASK_RUN_DEBUG
-      }));
     }
   }, [props.action]);
 
@@ -224,7 +196,20 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
   const renderContent = () => {
     if (selectedKey.length === 1) {
       const taskId = selectedKey[0] as number;
-      const taskParams = tabs.find((tab) => tab.params.taskId === taskId)!!.params;
+      const taskParams = tabs.find((tab) => tab.params.taskId === taskId)?.params;
+      if (!taskParams) {
+        setSelectedKey([]);
+        setTaskItems((prevState) => {
+          const newState = { ...prevState };
+          delete newState[taskId];
+          return newState;
+        });
+        setTabActiveKey((prevState) => {
+          const newState = { ...prevState };
+          delete newState[taskId];
+          return newState;
+        });
+      }
       const items: TabsProps['items'] = [
         {
           key: DataStudioActionType.TASK_RUN_SUBMIT,
@@ -235,9 +220,15 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         {
           key: DataStudioActionType.TASK_RUN_DEBUG,
           label: '结果',
-          icon: <TableOutlined />,
+          icon: <MonitorOutlined />,
           children: <Result taskId={taskId} action={props.action} dialect={taskParams?.dialect} />
         }
+        // {
+        //   key: "new-lineage",
+        //   label: '新血缘',
+        //   icon: <MonitorOutlined/>,
+        //   children: <LineageNew/>
+        // }
       ];
       if (assert(taskParams?.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
         items.push({
@@ -251,7 +242,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         items.push({
           key: 'tableData',
           label: '表数据',
-          icon: <HistoryOutlined />,
+          icon: <TableOutlined />,
           children: <TableData statement={taskParams?.statement} />
         });
       }

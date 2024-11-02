@@ -20,6 +20,7 @@
 import { Tabs } from 'antd';
 import TextComparison from '@/pages/DataStudioNew/Toolbar/Tool/TextComparison';
 import { JsonToSql } from '@/pages/DataStudioNew/Toolbar/Tool/JsonToSql';
+import './index.less';
 
 export default () => {
   const items = [
@@ -35,8 +36,8 @@ export default () => {
     }
   ];
   return (
-    <div style={{ padding: 10 }}>
-      <Tabs items={items} size={'small'} />
+    <div style={{ padding: 10, height: '100%' }}>
+      <Tabs items={items} size={'small'} style={{ height: '100%' }} />
     </div>
   );
 };

@@ -27,6 +27,7 @@ import { Alert, DataSources } from '@/types/RegCenter/data';
 import { DefaultOptionType } from 'antd/es/select';
 import { TaskExtConfig, TaskInfo } from '@/types/Studio/data';
 import { TaskDataBaseType } from '@/pages/DataStudio/model';
+import { SuggestionInfo } from '@/types/Public/data';
 
 /**
  * @description:
@@ -218,6 +219,7 @@ export type TempData = {
    * en: Data source list.
    */
   dataSourceDataList: DataSources.DataSource[];
+  suggestions: SuggestionInfo[];
 };
 
 /**

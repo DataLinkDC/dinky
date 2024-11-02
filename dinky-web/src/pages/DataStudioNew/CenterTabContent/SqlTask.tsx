@@ -32,6 +32,8 @@ import {
   ClearOutlined,
   CloseOutlined,
   EnvironmentOutlined,
+  FullscreenExitOutlined,
+  FullscreenOutlined,
   FundOutlined,
   MergeCellsOutlined,
   PartitionOutlined,
@@ -43,7 +45,7 @@ import RunToolBarButton from '@/pages/DataStudioNew/components/RunToolBarButton'
 import { connect } from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudioNew/components/CusPanelResizeHandle';
 import { ProForm, ProFormInstance } from '@ant-design/pro-components';
-import { useAsyncEffect } from 'ahooks';
+import { useAsyncEffect, useFullscreen } from 'ahooks';
 import { getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { SelectFlinkEnv } from '@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkEnv';
 import { SelectFlinkRunMode } from '@/pages/DataStudioNew/CenterTabContent/RunToolbar/SelectFlinkRunMode';
@@ -83,12 +85,6 @@ export type FlinkSqlProps = {
   tabData: CenterTab;
   activeTab?: string | undefined;
 };
-
-export type TaskParams = {
-  taskId: number;
-  key: number;
-};
-
 const toolbarSize = 40;
 const dividerHeight = 24;
 
@@ -145,6 +141,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
   const [diff, setDiff] = useState<any>([]);
 
   const formRef = useRef<ProFormInstance>();
+  const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId);
@@ -518,6 +515,24 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
               }}
             />
             <RunToolBarButton
+              isShow={!isFullscreen}
+              showDesc={showDesc}
+              desc={'全屏'}
+              icon={<FullscreenOutlined />}
+              onClick={async () => {
+                enterFullscreen();
+              }}
+            />
+            <RunToolBarButton
+              isShow={isFullscreen}
+              showDesc={showDesc}
+              desc={'退出全屏'}
+              icon={<FullscreenExitOutlined />}
+              onClick={async () => {
+                exitFullscreen();
+              }}
+            />
+            <RunToolBarButton
               showDesc={showDesc}
               desc={l('pages.datastudio.editor.check')}
               icon={<AuditOutlined />}
@@ -701,21 +716,6 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
             <Col style={{ width: codeEditorWidth - toolbarSize, height: '100%' }}>
               <PanelGroup direction={'horizontal'}>
                 <Panel>
-                  {/*<Editor*/}
-                  {/*  beforeMount={(monaco) => handleInitEditorAndLanguageOnBeforeMount(monaco, true)}*/}
-                  {/*  width={'100%'}*/}
-                  {/*  height={"100%"}*/}
-                  {/*  value={currentState.statement}*/}
-                  {/*  language={"sql"}*/}
-                  {/*  options={{minimap: {enabled: true, side: 'right'}, scrollBeyondLastLine: false}}*/}
-                  {/*  // options={finalEditorOptions}*/}
-                  {/*  className={'editor-develop'}*/}
-                  {/*  // onMount={editorDidMountChange}*/}
-                  {/*  onChange={debounce(onEditorChange, 500)}*/}
-                  {/*  //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题*/}
-                  {/*  //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash*/}
-                  {/*  theme={convertCodeEditTheme()}*/}
-                  {/*/>*/}
                   <CodeEdit
                     monacoRef={editorInstance}
                     code={currentState.statement}

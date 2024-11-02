@@ -277,7 +277,7 @@ export const Project = (props: any) => {
           <Divider style={{ margin: 3 }} />
         </Col>
 
-        {data?.length ? (
+        {data?.length && treeHeight > 0 ? (
           <DirectoryTree
             ref={treeRef}
             showLine
