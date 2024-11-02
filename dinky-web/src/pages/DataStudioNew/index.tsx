@@ -45,6 +45,7 @@ import { activeTab, createNewPanel } from '@/pages/DataStudioNew/DockLayoutFunct
 import * as Algorithm from './Algorithm';
 import { PanelData } from 'rc-dock/lib/DockData';
 import { useAsyncEffect } from 'ahooks';
+import {THEME} from "@/types/Public/data";
 
 const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
@@ -176,7 +177,7 @@ const DataStudioNew: React.FC = (props: any) => {
   }, [dataStudioState.centerContent]);
 
   // 工具栏宽度
-  const toolbarWidth = dataStudioState.toolbar.showDesc ? 60 : 30;
+  const toolbarWidth = dataStudioState.toolbar.showDesc ? 60 : 40;
 
   //  右键菜单handle
   const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
@@ -386,7 +387,12 @@ const DataStudioNew: React.FC = (props: any) => {
       <Row style={{ height: 'calc(100vh - 81px)' }}>
         {/*左边工具栏*/}
         <Col
-          style={{ width: toolbarWidth, height: 'inherit' }}
+          style={{
+            width: toolbarWidth,
+            height: 'inherit',
+            padding: '3px',
+            background: localStorage.getItem(THEME.NAV_THEME) == THEME.light ? '#fff' : '#1f1f1f'
+        }}
           flex='none'
           onContextMenu={rightContextMenuHandle}
         >
