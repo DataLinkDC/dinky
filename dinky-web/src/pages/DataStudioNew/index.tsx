@@ -45,7 +45,7 @@ import { activeTab, createNewPanel } from '@/pages/DataStudioNew/DockLayoutFunct
 import * as Algorithm from './Algorithm';
 import { PanelData } from 'rc-dock/lib/DockData';
 import { useAsyncEffect } from 'ahooks';
-import {THEME} from "@/types/Public/data";
+import { THEME } from '@/types/Public/data';
 
 const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
