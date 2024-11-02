@@ -18,7 +18,7 @@
  */
 
 import {
-  assert,
+  assert, convertMockResultToList,
   getCurrentData,
   getCurrentTab,
   isDataStudioTabsItemType,
@@ -133,9 +133,9 @@ const Result = (props: any) => {
     }
 
     const consoleData = currentTabs.console;
-    if (consoleData.result && !isRefresh) {
+    if (consoleData.result && !isRefresh && !consoleData.result.mockSinkResult) {
       setData(consoleData.result);
-    } else if (consoleData.results && !isRefresh) {
+    } else if (consoleData.results && !isRefresh && !consoleData.result.mockSinkResult) {
       setDataList(consoleData.results);
     } else {
       if (assert(current?.dialect, [DIALECT.FLINK_SQL], true, 'includes')) {
@@ -162,8 +162,14 @@ const Result = (props: any) => {
             );
             const data = tableData.data;
             if (tableData.success && data?.success) {
-              consoleData.result = data;
-              setData(data);
+              //mockSinkResult
+              if (data.mockSinkResult == true) {
+                consoleData.results = convertMockResultToList(data);
+                setDataList(consoleData.results);
+              } else {
+                consoleData.result = data;
+                setData(data);
+              }
             } else {
               consoleData.result = {};
               setData({});
@@ -270,7 +276,7 @@ const Result = (props: any) => {
         <Tabs defaultActiveKey='0'>
           {dataList.map((data, index) => {
             return (
-              <Tabs.TabPane key={index} tab={`Table ${index + 1}`}>
+              <Tabs.TabPane key={index} tab={data.tableName}>
                 <Table
                   columns={getColumns(data.columns)}
                   size='small'

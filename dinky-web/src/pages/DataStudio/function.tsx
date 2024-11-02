@@ -29,14 +29,14 @@ import {
   TabsPageType,
   TaskDataType
 } from '@/pages/DataStudio/model';
-import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
-import { DIALECT } from '@/services/constants';
-import { UserBaseInfo } from '@/types/AuthCenter/data.d';
-import { Cluster, DataSources } from '@/types/RegCenter/data';
-import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
-import { l } from '@/utils/intl';
-import { Dispatch } from '@@/plugin-dva/types';
-import { Col, Row } from 'antd';
+import {CONFIG_MODEL_ASYNC} from '@/pages/SettingCenter/GlobalSetting/model';
+import {DIALECT} from '@/services/constants';
+import {UserBaseInfo} from '@/types/AuthCenter/data.d';
+import {Cluster, DataSources} from '@/types/RegCenter/data';
+import {TaskOwnerLockingStrategy} from '@/types/SettingCenter/data.d';
+import {l} from '@/utils/intl';
+import {Dispatch} from '@@/plugin-dva/types';
+import {Col, Row} from 'antd';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) =>
@@ -246,9 +246,9 @@ export const getFooterValue = (panes: any, activeKey: string): Partial<FooterTyp
   const currentTab = getCurrentTab(panes, activeKey);
   return isDataStudioTabsItemType(currentTab)
     ? {
-        codePosition: [1, 1],
-        codeType: currentTab.subType
-      }
+      codePosition: [1, 1],
+      codeType: currentTab.subType
+    }
     : {};
 };
 
@@ -391,4 +391,45 @@ export const isNotEmpty = (value: any): boolean => {
  */
 export const isEmpty = (value: any): boolean => {
   return !isNotEmpty(value);
+};
+
+/**
+ * 转换多表的SelectResult
+ * @param data
+ */
+export const convertMockResultToList = (data: any): any [] => {
+  const rowDataResults: any[] = [];
+  // 对于每个MockResult的Column，一个元素代表一个表信息
+  data.columns.forEach((columnString: string) => {
+    // 当前表的column信息
+    let columnArr: string[] = [];
+    // 当前表的row data信息
+    const rowDataArr: string[] = [];
+    // 表名
+    let tableName: string = '';
+    //解析当前表单信息
+    const columnJsonInfo = JSON.parse(columnString);
+    // 提取column信息
+    if (columnJsonInfo['dinkySinkResultColumnIdentifier']) {
+      columnArr = columnJsonInfo['dinkySinkResultColumnIdentifier']
+    }
+    // 提取表名
+    if (columnJsonInfo['dinkySinkResultTableIdentifier']) {
+      tableName = columnJsonInfo['dinkySinkResultTableIdentifier'];
+    }
+    // 遍历column信息
+    data.rowData.forEach((rowDataElement: any) => {
+      if (rowDataElement.dinkySinkResultTableIdentifier == tableName) {
+        rowDataArr.push(rowDataElement);
+      }
+    })
+    // 构建constant对象
+    const rowDataResult = {
+      'tableName': tableName, columns: columnArr, rowData: rowDataArr
+    };
+    rowDataResults.push(rowDataResult);
+  });
+
+  console.log(rowDataResults)
+  return rowDataResults;
 };
