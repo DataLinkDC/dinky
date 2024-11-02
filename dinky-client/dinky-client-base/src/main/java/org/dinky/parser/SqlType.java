@@ -19,10 +19,10 @@
 
 package org.dinky.parser;
 
+import com.google.common.collect.Lists;
+
 import java.util.List;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.Lists;
 
 /**
  * SqlType
@@ -39,6 +39,8 @@ public enum SqlType {
     ALTER("ALTER", "^ALTER.*", SqlCategory.DDL),
 
     INSERT("INSERT", "^INSERT.*", SqlCategory.DML),
+
+    MOCKED_INSERT("MOCKED_INSERT", "^MOCKED_INSERT.*", SqlCategory.DML),
 
     DESC("DESC", "^DESC.*", SqlCategory.DDL),
 

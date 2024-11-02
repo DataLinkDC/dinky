@@ -48,6 +48,8 @@ public interface ResultBuilder {
                 return new ShowResultBuilder(id);
             case INSERT:
                 return new InsertResultBuilder();
+            case MOCKED_INSERT:
+                return new MockResultBuilder(id, maxRowNum, isAutoCancel);
             default:
                 return new DDLResultBuilder();
         }
