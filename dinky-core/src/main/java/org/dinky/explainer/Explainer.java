@@ -19,18 +19,6 @@
 
 package org.dinky.explainer;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.StrBuilder;
-import cn.hutool.core.text.StrFormatter;
-import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.api.dag.Pipeline;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
@@ -57,12 +45,37 @@ import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.trans.parse.SetSqlParseStrategy;
-import org.dinky.utils.*;
+import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.FlinkStreamEnvironmentUtil;
+import org.dinky.utils.IpUtil;
+import org.dinky.utils.LogUtil;
+import org.dinky.utils.SqlUtil;
+import org.dinky.utils.URLUtils;
+
+import org.apache.flink.api.dag.Pipeline;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Sets;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.StrBuilder;
+import cn.hutool.core.text.StrFormatter;
+import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Explainer
@@ -170,7 +183,8 @@ public class Explainer {
                 statementList.add(statement);
             }
         }
-        JobParam jobParam = new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList), parsedSql.toString());
+        JobParam jobParam =
+                new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList), parsedSql.toString());
         if (jobManager.getConfig().isMockSinkFunction()) {
             MockStatementExplainer.jobParamMock(jobParam);
         }

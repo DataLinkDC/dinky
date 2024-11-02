@@ -1,8 +1,24 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.explainer.mock;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.calcite.sql.SqlInsert;
-import org.apache.calcite.sql.parser.SqlParser;
 import org.dinky.assertion.Asserts;
 import org.dinky.connector.mock.sink.MockDynamicTableSinkFactory;
 import org.dinky.job.JobParam;
@@ -10,16 +26,26 @@ import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
 import org.dinky.utils.JsonUtils;
 
+import org.apache.calcite.sql.SqlInsert;
+import org.apache.calcite.sql.parser.SqlParser;
+
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MockStatementExplainer {
 
-
-    public static final String PATTERN_STR = "CREATE\\s+TABLE\\s+(\\w+)\\s*\\(\\s*([\\s\\S]*?)\\s*\\)\\s*WITH\\s*\\(\\s*([\\s\\S]*?)\\s*\\)";
+    public static final String PATTERN_STR =
+            "CREATE\\s+TABLE\\s+(\\w+)\\s*\\(\\s*([\\s\\S]*?)\\s*\\)\\s*WITH\\s*\\(\\s*([\\s\\S]*?)\\s*\\)";
     public static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE);
     public static final String MOCK_SQL_TEMPLATE = "CREATE TABLE {0} ({1}) WITH ({2})";
 
@@ -35,7 +61,8 @@ public class MockStatementExplainer {
         List<StatementParam> mockedDdl = new ArrayList<>();
         for (StatementParam ddl : jobParam.getDdl()) {
             // table name check
-            String tableName = getDdlTableName(ddl.getValue().replaceAll("\\n", " ").replaceAll(" +", " "));
+            String tableName =
+                    getDdlTableName(ddl.getValue().replaceAll("\\n", " ").replaceAll(" +", " "));
             // mock connector
             if (Asserts.isNotNull(tableName) && tablesNeedMock.contains(tableName.toUpperCase())) {
                 mockedDdl.add(new StatementParam(getSinkMockDdlStatement(ddl.getValue()), SqlType.CREATE));
@@ -58,7 +85,8 @@ public class MockStatementExplainer {
         for (StatementParam statement : transStatements) {
             if (statement.getType().equals(SqlType.INSERT)) {
                 try {
-                    SqlInsert sqlInsert = (SqlInsert) SqlParser.create(statement.getValue()).parseQuery();
+                    SqlInsert sqlInsert =
+                            (SqlInsert) SqlParser.create(statement.getValue()).parseQuery();
                     insertTables.add(sqlInsert.getTargetTable().toString());
                 } catch (Exception e) {
                     log.error("Statement parse error, statement: {}", statement.getValue());
@@ -128,5 +156,4 @@ public class MockStatementExplainer {
         }
         return options;
     }
-
 }

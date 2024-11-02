@@ -209,10 +209,10 @@ public class TaskDTO extends AbstractStatementDTO {
     private boolean useAutoCancel = true;
 
     @ApiModelProperty(
-    value = "Flag indicating whether to mock sink function",
-    dataType = "boolean",
-    example = "true",
-    notes = "Flag indicating whether to mock sink function")
+            value = "Flag indicating whether to mock sink function",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to mock sink function")
     private boolean mockSinkFunction = true;
 
     @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")

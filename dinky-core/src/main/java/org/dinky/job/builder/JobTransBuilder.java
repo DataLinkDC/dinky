@@ -19,9 +19,6 @@
 
 package org.dinky.job.builder;
 
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.table.api.TableResult;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.enums.GatewayType;
@@ -33,9 +30,17 @@ import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.job.*;
+import org.dinky.job.Job;
+import org.dinky.job.JobBuilder;
+import org.dinky.job.JobConfig;
+import org.dinky.job.JobManager;
+import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
 import org.dinky.utils.URLUtils;
+
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.table.api.TableResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
