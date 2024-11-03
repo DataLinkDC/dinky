@@ -86,6 +86,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                                 x.setType(resources.getType());
                                 x.setUserId(resources.getUserId());
                             }
+                            x.setId(Math.abs(x.getId()));
+                            x.setPid(Math.abs(x.getPid()));
                         })
                         .collect(Collectors.toList());
         // not delete root directory
