@@ -134,7 +134,8 @@ public class AdminController {
     @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
     @ApiImplicitParam(name = "isExternalCall", value = "isExternalCall", dataTypeClass = Boolean.class)
     @SaCheckLogin
-    public Result<Object> getVersionInfo(@RequestParam(required = false,defaultValue = "true") boolean isExternalCall) {
+    public Result<Object> getVersionInfo(
+            @RequestParam(required = false, defaultValue = "true") boolean isExternalCall) {
         if (isExternalCall) {
             return Result.succeed((Object) DinkyVersion.getShortVersion());
         }
