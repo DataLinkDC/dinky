@@ -17,13 +17,13 @@
  *
  */
 
-import {DockLayout, TabData} from 'rc-dock';
-import React, {lazy, useEffect, useMemo, useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import {Col, Row, Spin, theme} from 'antd';
+import { DockLayout, TabData } from 'rc-dock';
+import React, { lazy, useEffect, useMemo, useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import { Col, Row, Spin, theme } from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
-import {RightContextMenuState} from '@/pages/DataStudioNew/data.d';
+import { RightContextMenuState } from '@/pages/DataStudioNew/data.d';
 import {
   getAllPanel,
   getLayoutState,
@@ -31,26 +31,26 @@ import {
   handleRightClick,
   InitContextMenuPosition
 } from '@/pages/DataStudioNew/function';
-import 'rc-dock/dist/rc-dock.css'
-import RightContextMenu, {useRightMenuItem} from '@/pages/DataStudioNew/RightContextMenu';
-import {MenuInfo} from 'rc-menu/es/interface';
-import {lazyComponent, ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {ToolbarPosition, ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
-import {groups} from '@/pages/DataStudioNew/ContentLayout';
-import {connect} from 'umi';
-import {CenterTab, DataStudioState} from '@/pages/DataStudioNew/model';
-import {mapDispatchToProps} from '@/pages/DataStudioNew/DvaFunction';
-import {AliveScope, KeepAlive, useAliveController} from 'react-activation';
-import {activeTab, createNewPanel} from '@/pages/DataStudioNew/DockLayoutFunction';
+import 'rc-dock/dist/rc-dock.css';
+import RightContextMenu, { useRightMenuItem } from '@/pages/DataStudioNew/RightContextMenu';
+import { MenuInfo } from 'rc-menu/es/interface';
+import { lazyComponent, ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import { ToolbarPosition, ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { groups } from '@/pages/DataStudioNew/ContentLayout';
+import { connect } from 'umi';
+import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { AliveScope, KeepAlive, useAliveController } from 'react-activation';
+import { activeTab, createNewPanel } from '@/pages/DataStudioNew/DockLayoutFunction';
 import * as Algorithm from './Algorithm';
-import {PanelData} from 'rc-dock/lib/DockData';
-import {useAsyncEffect} from 'ahooks';
-import {THEME} from '@/types/Public/data';
-import {useTheme} from "@/hooks/useThemeValue";
-import {DataStudioContext} from "@/pages/DataStudioNew/DataStudioContext";
-import exports from "@umijs/bundler-webpack/compiled/webpack";
+import { PanelData } from 'rc-dock/lib/DockData';
+import { useAsyncEffect } from 'ahooks';
+import { THEME } from '@/types/Public/data';
+import { useTheme } from '@/hooks/useThemeValue';
+import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
+import exports from '@umijs/bundler-webpack/compiled/webpack';
 
-const {useToken} = theme;
+const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(
   () => import('@/pages/DataStudioNew/CenterTabContent/DataSourceDetail')
@@ -75,10 +75,10 @@ const DataStudioNew: React.FC = (props: any) => {
     queryDataSourceDataList,
     querySuggestions
   } = props;
-  const {token} = useToken();
+  const { token } = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
-  const {drop} = useAliveController();
-  const menuItem = useRightMenuItem({dataStudioState});
+  const { drop } = useAliveController();
+  const menuItem = useRightMenuItem({ dataStudioState });
   // 右键弹出框状态
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,
@@ -113,7 +113,7 @@ const DataStudioNew: React.FC = (props: any) => {
     setLoading(false);
   }, []);
   useEffect(() => {
-    const {actionType, params} = dataStudioState.action;
+    const { actionType, params } = dataStudioState.action;
     if (actionType?.includes('task-run-')) {
       const dockLayout = dockLayoutRef.current!!;
       let position: ToolbarPosition = 'leftBottom';
@@ -191,7 +191,7 @@ const DataStudioNew: React.FC = (props: any) => {
   const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
 
   const handleMenuClick = (values: MenuInfo) => {
-    setRightContextMenuState((prevState) => ({...prevState, show: false}));
+    setRightContextMenuState((prevState) => ({ ...prevState, show: false }));
 
     switch (values.key) {
       case 'showToolbarDesc':
@@ -234,11 +234,11 @@ const DataStudioNew: React.FC = (props: any) => {
   };
 
   const saveTab = (tabData: TabData & any) => {
-    let {id, group, title} = tabData;
-    return {id, group, title};
+    let { id, group, title } = tabData;
+    return { id, group, title };
   };
   const loadTab = (tab: TabData) => {
-    const {id, title, group} = tab;
+    const { id, title, group } = tab;
     if (group !== 'centerContent') {
       const route = ToolbarRoutes.find((x) => x.key === id) as ToolbarRoute;
       const content = ToolbarRoutes.find((item) => item.key === route.key)!!.content();
@@ -279,7 +279,7 @@ const DataStudioNew: React.FC = (props: any) => {
             );
             if (tabData.isUpdate) {
               return (
-                <span style={{color: '#52c41a'}}>
+                <span style={{ color: '#52c41a' }}>
                   {titleContent}
                   {'  *'}
                 </span>
@@ -306,7 +306,7 @@ const DataStudioNew: React.FC = (props: any) => {
       // todo 添加中间tab内容
       switch (tabData.tabType) {
         case 'task':
-          content = <SqlTask tabData={tabData}/>;
+          content = <SqlTask tabData={tabData} />;
           break;
         case 'dataSource':
           content = <DataSourceDetail {...currentData} />;
@@ -392,23 +392,24 @@ const DataStudioNew: React.FC = (props: any) => {
     });
   };
   return (
-    <DataStudioContext.Provider value={{theme: theme}}>
-      <PageContainer breadcrumb={{}} title={false} childrenContentStyle={{margin: 0, padding: 0}}>
+    <DataStudioContext.Provider value={{ theme: theme }}>
+      <PageContainer breadcrumb={{}} title={false} childrenContentStyle={{ margin: 0, padding: 0 }}>
         <Spin spinning={loading} size={'large'} tip={'loading'}>
-          <Row style={{height: 'calc(100vh - 81px)'}}>
+          <Row style={{ height: 'calc(100vh - 81px)' }}>
             {/*左边工具栏*/}
             <Col
               style={{
                 width: toolbarWidth,
                 height: 'inherit',
                 padding: '3px',
-                background: localStorage.getItem(THEME.NAV_THEME) == THEME.light ? '#fff' : '#1f1f1f'
+                background:
+                  localStorage.getItem(THEME.NAV_THEME) == THEME.light ? '#fff' : '#1f1f1f'
               }}
               flex='none'
               onContextMenu={rightContextMenuHandle}
             >
               {/*左上工具栏*/}
-              <Col style={{width: 'inherit', height: '50%'}}>
+              <Col style={{ width: 'inherit', height: '50%' }}>
                 <Toolbar
                   showDesc={dataStudioState.toolbar.showDesc}
                   position={'leftTop'}
@@ -436,14 +437,14 @@ const DataStudioNew: React.FC = (props: any) => {
             </Col>
 
             {/* 中间内容栏*/}
-            <Col style={{height: 'inherit'}} flex='auto'>
+            <Col style={{ height: 'inherit' }} flex='auto'>
               <AliveScope>
                 <DockLayout
                   ref={dockLayoutRef}
                   layout={layout}
                   groups={groups(updateAction)}
                   dropMode={'edge'}
-                  style={{position: 'absolute', left: 0, top: 0, right: 0, bottom: 0}}
+                  style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
                   onLayoutChange={async (newLayout, currentTabId, direction) => {
                     // todo 这里移到方向会导致布局和算法异常，先暂时规避掉
                     if (
@@ -460,7 +461,7 @@ const DataStudioNew: React.FC = (props: any) => {
                       currentTabId &&
                       direction === 'remove' &&
                       (dockLayoutRef.current?.find(currentTabId) as PanelData)?.group ===
-                      'centerContent'
+                        'centerContent'
                     ) {
                       drop(currentTabId).then();
 
@@ -500,7 +501,7 @@ const DataStudioNew: React.FC = (props: any) => {
 
             {/*右边工具栏*/}
             <Col
-              style={{width: toolbarWidth, height: 'inherit'}}
+              style={{ width: toolbarWidth, height: 'inherit' }}
               flex='none'
               onContextMenu={rightContextMenuHandle}
             >
@@ -515,14 +516,14 @@ const DataStudioNew: React.FC = (props: any) => {
           </Row>
 
           {/*@ts-ignore*/}
-          <FooterContainer token={token}/>
+          <FooterContainer token={token} />
 
           {/*右键菜单*/}
           <RightContextMenu
             contextMenuPosition={rightContextMenuState.position}
             open={rightContextMenuState.show}
             openChange={() =>
-              setRightContextMenuState((prevState) => ({...prevState, show: false}))
+              setRightContextMenuState((prevState) => ({ ...prevState, show: false }))
             }
             items={menuItem}
             onClick={handleMenuClick}
@@ -534,7 +535,7 @@ const DataStudioNew: React.FC = (props: any) => {
 };
 
 export default connect(
-  ({DataStudio}: { DataStudio: DataStudioState }) => ({
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
     dataStudioState: DataStudio
   }),
   mapDispatchToProps
