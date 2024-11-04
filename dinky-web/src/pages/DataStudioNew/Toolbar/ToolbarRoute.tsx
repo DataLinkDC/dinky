@@ -32,7 +32,7 @@ export const lazyComponent = (element: ReactNode): ReactElement => {
   return <Suspense fallback={<div>loading...</div>}>{element}</Suspense>;
 };
 const Project = lazy(() => import('@/pages/DataStudioNew/Toolbar/Project'));
-const StartIntro = lazy(() => import('@/pages/DataStudioNew/StartIntroPage'));
+const StartIntro = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/StartIntroPage'));
 const DataSource = lazy(() => import('@/pages/DataStudioNew/Toolbar/DataSource'));
 const GlobalVariable = lazy(() => import('@/pages/DataStudioNew/Toolbar/GlobalVariable'));
 const Service = lazy(() => import('@/pages/DataStudioNew/Toolbar/Service'));

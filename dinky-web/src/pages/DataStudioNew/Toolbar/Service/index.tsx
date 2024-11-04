@@ -95,7 +95,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         key: actionType,
         label: '血缘',
         icon: <PartitionOutlined />,
-        children: <Lineage data={params.data} />
+        children: <LineageNew data={params.data} />
       }
     };
   }, [actionType, params?.data]);
@@ -223,12 +223,6 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
           icon: <MonitorOutlined />,
           children: <Result taskId={taskId} action={props.action} dialect={taskParams?.dialect} />
         }
-        // {
-        //   key: "new-lineage",
-        //   label: '新血缘',
-        //   icon: <MonitorOutlined/>,
-        //   children: <LineageNew/>
-        // }
       ];
       if (assert(taskParams?.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
         items.push({
