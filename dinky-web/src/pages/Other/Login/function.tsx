@@ -47,7 +47,7 @@ export const redirectToLogin = (tipMsg: string) => {
 export const initSomeThing = () => {
   //  initialize setting theme
   setLocalThemeToStorage();
-  queryDataByParams<string>(API_CONSTANTS.GET_SERVICE_VERSION).then((result) => {
+  queryDataByParams<string>(API_CONSTANTS.GET_SERVICE_VERSION, {isExternalCall: false}).then((result) => {
     if (result && result != getValueFromLocalStorage(SERVER_VERSION)) {
       console.log('current version:', getValueFromLocalStorage(SERVER_VERSION));
       console.log('update server version:', result);
