@@ -169,7 +169,7 @@ public class JobManager {
 
     // return dinkyclassloader
     public DinkyClassLoader getDinkyClassLoader() {
-        return dinkyClassLoader.get();
+        return Asserts.isNotNull(dinkyClassLoader.get()) ? dinkyClassLoader.get() : DinkyClassLoader.build();
     }
 
     // return udfPathContextHolder
@@ -219,15 +219,15 @@ public class JobManager {
     }
 
     private boolean ready() {
-        return handler.init(job);
+        return isPlanMode || handler.init(job);
     }
 
     private boolean success() {
-        return handler.success();
+        return isPlanMode || handler.success();
     }
 
     private boolean failed() {
-        return handler.failed();
+        return isPlanMode || handler.failed();
     }
 
     public boolean close() {
