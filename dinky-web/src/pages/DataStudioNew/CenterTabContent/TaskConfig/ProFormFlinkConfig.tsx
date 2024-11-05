@@ -20,11 +20,7 @@
 import { Button, Col, Flex, Row, Space, Tooltip } from 'antd';
 import { l } from '@/utils/intl';
 import { QuestionCircleOutlined, SwapOutlined } from '@ant-design/icons';
-import {
-  ProFormGroup,
-  ProFormList,
-  ProFormText
-} from '@ant-design/pro-components';
+import { ProFormGroup, ProFormList, ProFormText } from '@ant-design/pro-components';
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
 import React, { useState } from 'react';
 import { DefaultOptionType } from 'antd/es/select';

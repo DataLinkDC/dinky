@@ -17,15 +17,15 @@
  *
  */
 
-import {Flex, Row} from 'antd';
+import { Flex, Row } from 'antd';
 import React from 'react';
 import './index.less';
-import {ToolbarPosition, ToolbarProp} from '@/pages/DataStudioNew/Toolbar/data.d';
-import {ToolbarRoutes} from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
-import {ReactSortable} from 'react-sortablejs';
+import { ToolbarPosition, ToolbarProp } from '@/pages/DataStudioNew/Toolbar/data.d';
+import { ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
+import { ReactSortable } from 'react-sortablejs';
 
 export default React.memo((props: ToolbarProp) => {
-  const {showDesc, onClick, toolbarSelect, position, saveToolbarLayout, height} = props;
+  const { showDesc, onClick, toolbarSelect, position, saveToolbarLayout, height } = props;
   const routes = toolbarSelect.allTabs;
   const currentRoutes = routes
     .map((value) => ToolbarRoutes.find((item) => item.key === value)!!)
@@ -33,7 +33,7 @@ export default React.memo((props: ToolbarProp) => {
       ...item,
       position
     }));
-  const list = currentRoutes.map((item) => ({id: item.key, name: item.title}));
+  const list = currentRoutes.map((item) => ({ id: item.key, name: item.title }));
   const justifyContent = position === 'leftBottom' ? 'flex-end' : 'flex-start';
   return (
     <Flex wrap gap={1} justify={'center'} className={'toolbar-side'} id={position}>
@@ -84,7 +84,7 @@ export default React.memo((props: ToolbarProp) => {
             <Row
               id={item.key}
               className={className}
-              style={{height}}
+              style={{ height }}
               align={'middle'}
               justify={'center'}
               key={item.key}
@@ -98,7 +98,10 @@ export default React.memo((props: ToolbarProp) => {
                   textAlign: 'center'
                 }}
               >
-                {React.cloneElement(item.icon, {className: 'toolbar-icon', style: {fontSize: height === 60 ? 25 : 20}})}
+                {React.cloneElement(item.icon, {
+                  className: 'toolbar-icon',
+                  style: { fontSize: height === 60 ? 25 : 20 }
+                })}
               </span>
               {showDesc && <span className={'toolbar-desc'}>{item.title}</span>}
             </Row>

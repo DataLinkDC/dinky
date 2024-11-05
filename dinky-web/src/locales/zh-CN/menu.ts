@@ -111,5 +111,5 @@ export default {
   'menu.datastudio.tool.text-comparison': '文本比对',
   'menu.datastudio.tool.jsonToSql': 'JSON转Flink-SQL',
   'menu.datastudio.task.baseConfig': '基础配置',
-  'menu.datastudio.task.previewConfig': '预览配置',
+  'menu.datastudio.task.previewConfig': '预览配置'
 };

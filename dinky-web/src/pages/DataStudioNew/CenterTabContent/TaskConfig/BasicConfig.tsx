@@ -25,32 +25,31 @@ import {
   ProFormSwitch,
   ProFormText
 } from '@ant-design/pro-components';
-import {l} from '@/utils/intl';
-import {InfoCircleOutlined} from '@ant-design/icons';
-import {SWITCH_OPTIONS} from '@/services/constants';
-import {SAVE_POINT_TYPE} from '@/pages/DataStudio/constants';
-import {ProFormDependency} from '@ant-design/pro-form';
-import {buildAlertGroupOptions} from '@/pages/DataStudio/RightContainer/JobConfig/function';
-import {ProFormFlinkConfig} from '@/pages/DataStudioNew/CenterTabContent/TaskConfig/ProFormFlinkConfig';
-import {ProFormFlinkUdfConfig} from '@/pages/DataStudioNew/CenterTabContent/TaskConfig/ProFormFlinkUdfConfig';
-import React, {useEffect, useRef, useState} from 'react';
-import {TaskState, TempData} from '@/pages/DataStudioNew/type';
-import {JOB_LIFE_CYCLE} from '@/pages/DevOps/constants';
+import { l } from '@/utils/intl';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { SWITCH_OPTIONS } from '@/services/constants';
+import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
+import { ProFormDependency } from '@ant-design/pro-form';
+import { buildAlertGroupOptions } from '@/pages/DataStudio/RightContainer/JobConfig/function';
+import { ProFormFlinkConfig } from '@/pages/DataStudioNew/CenterTabContent/TaskConfig/ProFormFlinkConfig';
+import { ProFormFlinkUdfConfig } from '@/pages/DataStudioNew/CenterTabContent/TaskConfig/ProFormFlinkUdfConfig';
+import React, { useEffect, useRef, useState } from 'react';
+import { TaskState, TempData } from '@/pages/DataStudioNew/type';
+import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 
 export const BasicConfig = (props: {
   tempData: TempData;
   data: TaskState;
   onValuesChange?: (changedValues: any, values: TaskState) => void;
 }) => {
-  const {alertGroup, flinkConfigOptions, flinkUdfOptions} = props.tempData;
+  const { alertGroup, flinkConfigOptions, flinkUdfOptions } = props.tempData;
   const formRef = useRef<ProFormInstance>();
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
   const divRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!divRef.current) {
-      return () => {
-      };
+      return () => {};
     }
     // 监控布局宽度高度变化，重新计算树的高度
     const element = divRef.current!!;
@@ -68,7 +67,7 @@ export const BasicConfig = (props: {
   return (
     <div ref={divRef}>
       <ProForm
-        initialValues={{...props.data}}
+        initialValues={{ ...props.data }}
         submitter={false}
         disabled={props.data?.step === JOB_LIFE_CYCLE.PUBLISH}
         onValuesChange={props.onValuesChange}
@@ -78,7 +77,7 @@ export const BasicConfig = (props: {
           gutter: [16, 0]
         }}
       >
-        <ProForm.Group style={{display: 'flex', justifyContent: 'center'}}>
+        <ProForm.Group style={{ display: 'flex', justifyContent: 'center' }}>
           <ProFormDigit
             width={'xs'}
             label={l('pages.datastudio.label.jobConfig.parallelism')}
@@ -93,7 +92,7 @@ export const BasicConfig = (props: {
             valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.fragment.tip'),
-              icon: <InfoCircleOutlined/>
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -103,7 +102,7 @@ export const BasicConfig = (props: {
             valuePropName='checked'
             tooltip={{
               title: l('pages.datastudio.label.jobConfig.batchmode.tip'),
-              icon: <InfoCircleOutlined/>
+              icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
           />
@@ -116,7 +115,7 @@ export const BasicConfig = (props: {
           allowClear={false}
         />
         <ProFormDependency name={['savePointStrategy']}>
-          {({savePointStrategy}) => {
+          {({ savePointStrategy }) => {
             if (savePointStrategy === 3) {
               return (
                 <ProFormText
@@ -147,9 +146,9 @@ export const BasicConfig = (props: {
               ?.getFieldValue(['configJson', 'customConfig'])
               ?.map((item: { key: string; value: string }) => {
                 if (item.key || item.value) {
-                  return (item.key ?? '') + ' : ' + (item.value ?? '')
+                  return (item.key ?? '') + ' : ' + (item.value ?? '');
                 }
-                return ''
+                return '';
               })
               ?.join('\n')
           }

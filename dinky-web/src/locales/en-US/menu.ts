@@ -112,7 +112,5 @@ export default {
   'menu.datastudio.tool.text-comparison': 'Text Comparison',
   'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL',
   'menu.datastudio.task.baseConfig': 'Basic Configuration',
-  'menu.datastudio.task.previewConfig': 'Preview Configuration',
-
-
+  'menu.datastudio.task.previewConfig': 'Preview Configuration'
 };
