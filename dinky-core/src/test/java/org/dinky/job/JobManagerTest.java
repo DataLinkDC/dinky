@@ -21,8 +21,6 @@ package org.dinky.job;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.dinky.context.CustomTableEnvironmentContext;
-import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.ExplainResult;
 
@@ -33,9 +31,9 @@ import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMap
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 class JobManagerTest {
 
@@ -45,16 +43,7 @@ class JobManagerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @BeforeEach
-    void setUp() {}
-
-    @AfterEach
-    void tearDown() throws Exception {
-        CustomTableEnvironmentContext.clear();
-        RowLevelPermissionsContext.clear();
-    }
-
-    void initLocalStreamEnvironment() {
+    void initLocalStreamPlanEnvironment() {
         config = JobConfig.builder()
                 .fragment(true)
                 .statementSet(true)
@@ -72,25 +61,138 @@ class JobManagerTest {
         jobManager = JobManager.buildPlanMode(config);
     }
 
-    @Test
-    void testExplainSingleSql() throws Exception {
-        initLocalStreamEnvironment();
-        String statement =
-                IOUtils.toString(Resources.getResource("flink/sql/single-insert.sql"), StandardCharsets.UTF_8);
-        ExplainResult explainResult = jobManager.explainSql(statement);
-        assertNotNull(explainResult);
-        assertTrue(explainResult.isCorrect());
-        assertEquals(3, explainResult.getTotal());
+    void initLocalBatchPlanEnvironment() {
+        config = JobConfig.builder()
+                .fragment(true)
+                .statementSet(true)
+                .type(GatewayType.LOCAL.getLongValue())
+                .parallelism(1)
+                .maxRowNum(100)
+                .useAutoCancel(true)
+                .useChangeLog(false)
+                .useRemote(false)
+                .useResult(true)
+                .batchModel(true)
+                .jobName("Test")
+                .checkpoint(1000)
+                .build();
+        jobManager = JobManager.buildPlanMode(config);
     }
 
     @Test
-    void testExplainStatementSet() throws IOException {
-        initLocalStreamEnvironment();
-        String statement =
-                IOUtils.toString(Resources.getResource("flink/sql/statement-set-insert.sql"), StandardCharsets.UTF_8);
+    void testExplainSql() throws Exception {
+        checkExplainStreamSqlFromFile("flink/sql/statement-set-stream.sql", 16);
+        checkExplainBatchSqlFromFile("flink/sql/statement-set-batch.sql", 16);
+    }
+
+    @Test
+    void testGetStreamGraph() throws Exception {
+        checkGetStreamGraphFromFile("flink/sql/statement-set-stream.sql", 26);
+        checkGetBatchStreamGraphFromFile("flink/sql/statement-set-batch.sql", 29);
+    }
+
+    @Test
+    void testGetJobPlanJson() throws Exception {
+        checkGetStreamJobPlanJsonFromFile("flink/sql/statement-set-stream.sql");
+        checkGetBatchJobPlanJsonFromFile("flink/sql/statement-set-batch.sql");
+    }
+
+    @Test
+    void testExecuteSql() throws Exception {
+        checkStreamExecuteSqlFromFile("flink/sql/statement-set-stream.sql");
+        checkBatchExecuteSqlFromFile("flink/sql/statement-set-batch.sql");
+    }
+
+    @Test
+    void testExplainSqlSingle() throws Exception {
+        checkExplainStreamSqlFromFile("flink/sql/statement-set-stream.sql", 18);
+    }
+
+    private void checkExplainStreamSqlFromFile(String path, int total) throws IOException {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalStreamPlanEnvironment();
+        checkExplainSql(statement, total);
+        jobManager.close();
+    }
+
+    private void checkExplainBatchSqlFromFile(String path, int total) throws IOException {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalBatchPlanEnvironment();
+        checkExplainSql(statement, total);
+        jobManager.close();
+    }
+
+    private void checkExplainSql(String statement, int total) throws IOException {
         ExplainResult explainResult = jobManager.explainSql(statement);
         assertNotNull(explainResult);
         assertTrue(explainResult.isCorrect());
-        assertEquals(4, explainResult.getTotal());
+        assertEquals(total, explainResult.getTotal());
+        explainResult.getSqlExplainResults().forEach(sqlExplainResult -> {
+            assertTrue(sqlExplainResult.isParseTrue());
+            assertTrue(sqlExplainResult.isExplainTrue());
+            if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
+                throw new RuntimeException(sqlExplainResult.getError());
+            }
+        });
+    }
+
+    private void checkGetStreamGraphFromFile(String path, int total) throws IOException {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalStreamPlanEnvironment();
+        checkGetStreamGraph(statement, total);
+        jobManager.close();
+    }
+
+    private void checkGetBatchStreamGraphFromFile(String path, int total) throws IOException {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalBatchPlanEnvironment();
+        checkGetStreamGraph(statement, total);
+        jobManager.close();
+    }
+
+    private void checkGetStreamGraph(String statement, int total) throws IOException {
+        ObjectNode streamGraph = jobManager.getStreamGraph(statement);
+        assertNotNull(streamGraph);
+        assertNotNull(streamGraph.get("nodes"));
+        assertEquals(total, streamGraph.get("nodes").size());
+    }
+
+    private void checkGetStreamJobPlanJsonFromFile(String path) throws IOException {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalStreamPlanEnvironment();
+        checkGetJobPlanJson(statement);
+        jobManager.close();
+    }
+
+    private void checkGetBatchJobPlanJsonFromFile(String path) throws IOException {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalBatchPlanEnvironment();
+        checkGetJobPlanJson(statement);
+        jobManager.close();
+    }
+
+    private void checkGetJobPlanJson(String statement) throws IOException {
+        String jobPlanJson = jobManager.getJobPlanJson(statement);
+        assertNotNull(jobPlanJson);
+    }
+
+    private void checkStreamExecuteSqlFromFile(String path) throws Exception {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalStreamPlanEnvironment();
+        checkExecuteSql(statement);
+        jobManager.close();
+    }
+
+    private void checkBatchExecuteSqlFromFile(String path) throws Exception {
+        String statement = IOUtils.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+        initLocalBatchPlanEnvironment();
+        checkExecuteSql(statement);
+        jobManager.close();
+    }
+
+    private void checkExecuteSql(String statement) throws Exception {
+        JobResult jobResult = jobManager.executeSql(statement);
+        assertNotNull(jobResult);
+        assertTrue(jobResult.isSuccess());
     }
 }

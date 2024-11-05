@@ -30,6 +30,7 @@ import org.dinky.utils.KerberosUtil;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
+import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.core.execution.JobClient;
@@ -44,6 +45,7 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 
@@ -240,6 +242,26 @@ public abstract class Executor {
         addJar(Arrays.stream(jarPath).map(URLUtil::getURL).map(URL::toString).toArray(String[]::new));
     }
 
+    public void addModifyOperations(ModifyOperation modifyOperation) {
+        tableEnvironment.addModifyOperations(modifyOperation);
+    }
+
+    public void clearModifyOperations() {
+        tableEnvironment.clearModifyOperations();
+    }
+
+    public void addOperator(Transformation transformation) {
+        tableEnvironment.addOperator(transformation);
+    }
+
+    public List<Transformation<?>> transOperatoinsToTransformation(List<ModifyOperation> modifyOperations) {
+        return tableEnvironment.transOperatoinsToTransformation(modifyOperations);
+    }
+
+    public CatalogManager getCatalogManager() {
+        return tableEnvironment.getCatalogManager();
+    }
+
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
         if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
@@ -280,6 +302,11 @@ public abstract class Executor {
         return getStreamGraphJsonNode(getStreamGraph());
     }
 
+    public JobPlanInfo getJobPlanInfo() {
+        StreamGraph streamGraph = getStreamGraphFromModifyOperations(tableEnvironment.getModifyOperations());
+        return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
+    }
+
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
         return tableEnvironment.getJobPlanInfo(statements);
     }
@@ -298,6 +325,14 @@ public abstract class Executor {
         return tableEnvironment.getModifyOperationFromInsert(statement);
     }
 
+    public Operation getOperationFromStatement(String statement) {
+        return tableEnvironment.getOperationFromStatement(statement);
+    }
+
+    public StreamGraph getStreamGraph2() {
+        return tableEnvironment.getStreamGraph();
+    }
+
     public StreamGraph getStreamGraphFromModifyOperations(List<ModifyOperation> modifyOperations) {
         return tableEnvironment.getStreamGraphFromModifyOperations(modifyOperations);
     }
@@ -310,6 +345,10 @@ public abstract class Executor {
 
     public TableResult executeModifyOperations(List<ModifyOperation> modifyOperations) throws Exception {
         return tableEnvironment.executeInternal(modifyOperations);
+    }
+
+    public TableResult executeOperation(Operation operation) {
+        return tableEnvironment.executeInternal(operation);
     }
 
     public String explainStatementSet(List<String> statements) {

@@ -377,14 +377,11 @@ public class JobManager {
     }*/
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement)
-                .getStreamGraph(statement);
+        return Explainer.build(executor, useStatementSet, this).getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
         return Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement)
                 .getJobPlanInfo(statement)
                 .getJsonPlan();
     }

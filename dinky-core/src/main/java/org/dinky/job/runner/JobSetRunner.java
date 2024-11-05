@@ -22,6 +22,7 @@ package org.dinky.job.runner;
 import org.dinky.job.AbstractJobRunner;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobStatement;
+import org.dinky.parser.SqlType;
 import org.dinky.trans.ddl.CustomSetOperation;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,12 @@ public class JobSetRunner extends AbstractJobRunner {
 
     @Override
     public void run(JobStatement jobStatement) throws Exception {
-        CustomSetOperation customSetOperation = new CustomSetOperation(jobStatement.getStatement());
-        customSetOperation.execute(jobManager.getExecutor().getCustomTableEnvironment());
+        if (SqlType.SET.equals(jobStatement.getSqlType())) {
+            CustomSetOperation customSetOperation = new CustomSetOperation(jobStatement.getStatement());
+            customSetOperation.execute(jobManager.getExecutor().getCustomTableEnvironment());
+        } else if (SqlType.RESET.equals(jobStatement.getSqlType())) {
+            // todo: reset
+            throw new RuntimeException("Not support reset operation.");
+        }
     }
 }

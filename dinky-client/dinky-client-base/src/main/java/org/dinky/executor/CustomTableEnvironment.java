@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 
+import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -56,11 +57,25 @@ import cn.hutool.core.util.URLUtil;
 public interface CustomTableEnvironment
         extends StreamTableEnvironment, TableEnvironmentInternal, TableEnvironmentInstance {
 
+    void addModifyOperations(ModifyOperation modifyOperation);
+
+    List<ModifyOperation> getModifyOperations();
+
+    void addOperator(Transformation transformation);
+
+    void clearModifyOperations();
+
+    List<Transformation<?>> transOperatoinsToTransformation(List<ModifyOperation> modifyOperations);
+
     ObjectNode getStreamGraph(String statement);
+
+    StreamGraph getStreamGraph();
 
     JobPlanInfo getJobPlanInfo(List<String> statements);
 
     StreamGraph getStreamGraphFromInserts(List<String> statements);
+
+    Operation getOperationFromStatement(String statement);
 
     ModifyOperation getModifyOperationFromInsert(String statement);
 

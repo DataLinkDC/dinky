@@ -23,6 +23,9 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+
 import java.time.LocalDateTime;
 
 import cn.hutool.core.text.StrFormatter;
@@ -60,5 +63,21 @@ public abstract class AbstractJobRunner implements JobRunner {
             resultBuilder.explainTime(LocalDateTime.now());
             return resultBuilder.build();
         }
+    }
+
+    public StreamGraph getStreamGraph(JobStatement jobStatement) {
+        explain(jobStatement);
+        if (jobStatement.isFinalExecutableStatement()) {
+            return jobManager.getExecutor().getStreamGraph();
+        }
+        return null;
+    }
+
+    public JobPlanInfo getJobPlanInfo(JobStatement jobStatement) {
+        explain(jobStatement);
+        if (jobStatement.isFinalExecutableStatement()) {
+            return jobManager.getExecutor().getJobPlanInfo();
+        }
+        return null;
     }
 }

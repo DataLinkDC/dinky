@@ -59,6 +59,8 @@ import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.JSONGenerator;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -70,6 +72,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Sets;
@@ -135,7 +138,7 @@ public class Explainer {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.SET) && SetSqlParseStrategy.INSTANCE.match(statement)) {
+            if (operationType.equals(SqlType.SET) || operationType.equals(SqlType.RESET)) {
                 jobStatementPlan.addJobStatement(statement, JobStatementType.SET, operationType);
             } else if (operationType.equals(SqlType.ADD)) {
                 jobStatementPlan.addJobStatement(statement, JobStatementType.ADD, operationType);
@@ -436,6 +439,32 @@ public class Explainer {
     }
 
     public ObjectNode getStreamGraph(String statement) {
+        log.info("Start explain FlinkSQL...");
+        JobStatementPlan jobStatementPlan = parseStatements(SqlUtil.getStatements(statement));
+        jobStatementPlan.buildFinalExecutableStatement();
+        log.info("Explain FlinkSQL successful");
+        JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(jobManager);
+        for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
+            StreamGraph streamGraph = jobRunnerFactory
+                    .getJobRunner(jobStatement.getStatementType())
+                    .getStreamGraph(jobStatement);
+            if (Asserts.isNotNull(streamGraph)) {
+                JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
+                String json = jsonGenerator.getJSON();
+                ObjectMapper mapper = new ObjectMapper();
+                ObjectNode objectNode = mapper.createObjectNode();
+                try {
+                    objectNode = (ObjectNode) mapper.readTree(json);
+                } catch (JsonProcessingException e) {
+                    log.error("Get stream graph json node error.", e);
+                }
+                return objectNode;
+            }
+        }
+        throw new DinkyException("No StreamGraph found.");
+    }
+
+    public ObjectNode getStreamGraph2(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
         jobParam.getDdl().forEach(statementParam -> executor.executeSql(statementParam.getValue()));
 
@@ -452,6 +481,23 @@ public class Explainer {
     }
 
     public JobPlanInfo getJobPlanInfo(String statement) {
+        log.info("Start explain FlinkSQL...");
+        JobStatementPlan jobStatementPlan = parseStatements(SqlUtil.getStatements(statement));
+        jobStatementPlan.buildFinalExecutableStatement();
+        log.info("Explain FlinkSQL successful");
+        JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(jobManager);
+        for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
+            JobPlanInfo jobPlanInfo = jobRunnerFactory
+                    .getJobRunner(jobStatement.getStatementType())
+                    .getJobPlanInfo(jobStatement);
+            if (Asserts.isNotNull(jobPlanInfo)) {
+                return jobPlanInfo;
+            }
+        }
+        throw new DinkyException("No JobPlanInfo found.");
+    }
+
+    public JobPlanInfo getJobPlanInfo2(String statement) {
         JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
         jobParam.getDdl().forEach(statementParam -> executor.executeSql(statementParam.getValue()));
 

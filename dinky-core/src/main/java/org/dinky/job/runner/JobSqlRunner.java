@@ -40,11 +40,18 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.operations.CollectModifyOperation;
+import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.QueryOperation;
+import org.apache.flink.table.operations.ReplaceTableAsOperation;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -83,9 +90,19 @@ public class JobSqlRunner extends AbstractJobRunner {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
 
         try {
-            ModifyOperation modifyOperation =
-                    jobManager.getExecutor().getModifyOperationFromInsert(jobStatement.getStatement());
-            operations.add(modifyOperation);
+            Operation operation = jobManager.getExecutor().getOperationFromStatement(jobStatement.getStatement());
+            if (operation instanceof CreateTableASOperation) {
+                CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
+                jobManager.getExecutor().executeOperation(createTableASOperation.getCreateTableOperation());
+                operations.add(createTableASOperation.toSinkModifyOperation(
+                        jobManager.getExecutor().getCatalogManager()));
+            } else if (operation instanceof ReplaceTableAsOperation) {
+                ReplaceTableAsOperation replaceTableAsOperation = (ReplaceTableAsOperation) operation;
+                operations.add(replaceTableAsOperation.toSinkModifyOperation(
+                        jobManager.getExecutor().getCatalogManager()));
+            } else if (operation instanceof ModifyOperation || operation instanceof QueryOperation) {
+                operations.add(operation);
+            }
             statements.add(jobStatement.getStatement());
             if (jobStatement.isFinalExecutableStatement()) {
                 SqlExplainResult sqlExplainResult = jobManager.getExecutor().explainOperation(operations);
@@ -115,6 +132,51 @@ public class JobSqlRunner extends AbstractJobRunner {
         } finally {
             resultBuilder.explainTime(LocalDateTime.now());
             return resultBuilder.build();
+        }
+    }
+
+    public StreamGraph getStreamGraph(JobStatement jobStatement) {
+        buildTransformation(jobStatement);
+        if (jobStatement.isFinalExecutableStatement()) {
+            return jobManager.getExecutor().getStreamGraph();
+        }
+        return null;
+    }
+
+    public JobPlanInfo getJobPlanInfo(JobStatement jobStatement) {
+        buildTransformation(jobStatement);
+        if (jobStatement.isFinalExecutableStatement()) {
+            return jobManager.getExecutor().getJobPlanInfo();
+        }
+        return null;
+    }
+
+    private void buildTransformation(JobStatement jobStatement) {
+        Operation operation = jobManager.getExecutor().getOperationFromStatement(jobStatement.getStatement());
+        List<Transformation<?>> transformations = null;
+        if (operation instanceof ModifyOperation) {
+            List<ModifyOperation> singleModifyOperations = new ArrayList<>();
+            if (operation instanceof CreateTableASOperation) {
+                CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
+                jobManager.getExecutor().executeOperation(createTableASOperation.getCreateTableOperation());
+                singleModifyOperations.add(createTableASOperation.toSinkModifyOperation(
+                        jobManager.getExecutor().getCatalogManager()));
+            } else if (operation instanceof ReplaceTableAsOperation) {
+                ReplaceTableAsOperation replaceTableAsOperation = (ReplaceTableAsOperation) operation;
+                singleModifyOperations.add(replaceTableAsOperation.toSinkModifyOperation(
+                        jobManager.getExecutor().getCatalogManager()));
+            } else {
+                singleModifyOperations.add((ModifyOperation) operation);
+            }
+            transformations = jobManager.getExecutor().transOperatoinsToTransformation(singleModifyOperations);
+
+        } else if (operation instanceof QueryOperation) {
+            CollectModifyOperation sinkOperation = new CollectModifyOperation((QueryOperation) operation);
+            transformations =
+                    jobManager.getExecutor().transOperatoinsToTransformation(Collections.singletonList(sinkOperation));
+        }
+        if (transformations != null) {
+            transformations.forEach(jobManager.getExecutor()::addOperator);
         }
     }
 

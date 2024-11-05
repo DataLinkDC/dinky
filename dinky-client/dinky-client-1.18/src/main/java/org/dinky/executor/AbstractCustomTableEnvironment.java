@@ -22,13 +22,16 @@ package org.dinky.executor;
 import org.dinky.data.model.LineageRel;
 import org.dinky.utils.LineageContext;
 
+import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
 import org.apache.flink.table.delegation.Planner;
+import org.apache.flink.table.operations.ModifyOperation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.hutool.core.util.ReflectUtil;
@@ -39,11 +42,28 @@ public abstract class AbstractCustomTableEnvironment
 
     protected StreamTableEnvironment streamTableEnvironment;
     protected ClassLoader userClassLoader;
+    protected List<ModifyOperation> modifyOperations = new ArrayList<>();
 
     protected AbstractCustomTableEnvironment() {}
 
     protected AbstractCustomTableEnvironment(StreamTableEnvironment streamTableEnvironment) {
         this.streamTableEnvironment = streamTableEnvironment;
+    }
+
+    public List<ModifyOperation> getModifyOperations() {
+        return modifyOperations;
+    }
+
+    public void addModifyOperations(ModifyOperation modifyOperation) {
+        modifyOperations.add(modifyOperation);
+    }
+
+    public void addOperator(Transformation transformation) {
+        getStreamExecutionEnvironment().addOperator(transformation);
+    }
+
+    public void clearModifyOperations() {
+        modifyOperations.clear();
     }
 
     @Override

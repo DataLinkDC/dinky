@@ -37,10 +37,6 @@ import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.catalog.CatalogDescriptor;
-import org.apache.flink.table.operations.ExplainOperation;
-import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.QueryOperation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +124,10 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return streamGraph;
     }
 
+    public List<Transformation<?>> transOperatoinsToTransformation(List<ModifyOperation> modifyOperations) {
+        return getPlanner().translate(modifyOperations);
+    }
+
     @Override
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
@@ -151,6 +151,17 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
+    public Operation getOperationFromStatement(String statement) {
+        List<Operation> operations = getParser().parse(statement);
+        if (operations.isEmpty()) {
+            throw new TableException("No statement is parsed.");
+        }
+        if (operations.size() > 1) {
+            throw new TableException("Only single statement is supported.");
+        }
+        return operations.get(0);
+    }
+
     public ModifyOperation getModifyOperationFromInsert(String statement) {
         List<Operation> operations = getParser().parse(statement);
         if (operations.isEmpty()) {
@@ -167,6 +178,10 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
     }
 
+    public StreamGraph getStreamGraph() {
+        return transOperatoinsToStreamGraph(modifyOperations);
+    }
+
     public StreamGraph getStreamGraphFromModifyOperations(List<ModifyOperation> modifyOperations) {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
@@ -181,7 +196,35 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         if (operations.size() != 1) {
             throw new DinkyException("Unsupported SQL explain! explainSql() only accepts a single SQL.");
         }
-        return explainOperation(operations);
+        SqlExplainResult record = new SqlExplainResult();
+        if (operations.isEmpty()) {
+            throw new DinkyException("No statement is explained.");
+        }
+        record.setParseTrue(true);
+        Operation operation = operations.get(0);
+        if (operation instanceof ModifyOperation) {
+            if (operation instanceof ReplaceTableAsOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("RTAS");
+            } else if (operation instanceof CreateTableASOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("CTAS");
+            } else {
+                record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+                record.setType("DML");
+            }
+        } else if (operation instanceof ExplainOperation) {
+            record.setExplain(operation.asSummaryString());
+            record.setType("Explain");
+        } else if (operation instanceof QueryOperation) {
+            record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+            record.setType("DQL");
+        } else {
+            record.setExplain(operation.asSummaryString());
+            record.setType("DDL");
+        }
+        record.setExplainTrue(true);
+        return record;
     }
 
     public SqlExplainResult explainOperation(List<Operation> operations, ExplainDetail... extraDetails) {
@@ -190,19 +233,32 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             throw new DinkyException("No statement is explained.");
         }
         record.setParseTrue(true);
-        Operation operation = operations.get(0);
-        if (operation instanceof ModifyOperation) {
-            record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-            record.setType("Modify DML");
-        } else if (operation instanceof ExplainOperation) {
-            record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-            record.setType("Explain DML");
-        } else if (operation instanceof QueryOperation) {
-            record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-            record.setType("Query DML");
+        if (operations.size() == 1) {
+            Operation operation = operations.get(0);
+            if (operation instanceof ModifyOperation) {
+                if (operation instanceof ReplaceTableAsOperation) {
+                    record.setExplain(operation.asSummaryString());
+                    record.setType("RTAS");
+                } else if (operation instanceof CreateTableASOperation) {
+                    record.setExplain(operation.asSummaryString());
+                    record.setType("CTAS");
+                } else {
+                    record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+                    record.setType("DML");
+                }
+            } else if (operation instanceof ExplainOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("Explain");
+            } else if (operation instanceof QueryOperation) {
+                record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+                record.setType("DQL");
+            } else {
+                record.setExplain(operation.asSummaryString());
+                record.setType("DDL");
+            }
         } else {
-            record.setExplain(operation.asSummaryString());
-            record.setType("DDL");
+            record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+            record.setType("Statement Set");
         }
         record.setExplainTrue(true);
         return record;

@@ -21,9 +21,16 @@ package org.dinky.job;
 
 import org.dinky.data.result.SqlExplainResult;
 
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+
 public interface JobRunner {
 
     void run(JobStatement jobStatement) throws Exception;
 
     SqlExplainResult explain(JobStatement jobStatement);
+
+    StreamGraph getStreamGraph(JobStatement jobStatement);
+
+    JobPlanInfo getJobPlanInfo(JobStatement jobStatement);
 }
