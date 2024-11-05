@@ -19,7 +19,7 @@
 
 import { createContext } from 'react';
 
-type DataStudioContextType = {
+export type DataStudioContextType = {
   theme: 'realDark' | 'light';
 };
 export const DataStudioContext = createContext({

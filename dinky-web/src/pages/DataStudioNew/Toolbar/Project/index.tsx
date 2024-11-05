@@ -140,7 +140,7 @@ export const Project = (props: any) => {
     const observer = new ResizeObserver((entries) => {
       if (entries?.length === 1) {
         // 这里节点理应为一个，减去的高度是为搜索栏的高度
-        setTreeHeight(entries[0].contentRect.height - 55);
+        setTreeHeight(entries[0].contentRect.height - 52);
       }
     });
     observer.observe(element);
@@ -281,6 +281,7 @@ export const Project = (props: any) => {
           <DirectoryTree
             ref={treeRef}
             showLine
+            virtual
             switcherIcon={<DownOutlined />}
             className={'treeList'}
             height={treeHeight}

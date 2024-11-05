@@ -27,7 +27,7 @@ import { convertCodeEditTheme } from '@/utils/function';
 import { Editor, loader, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
-import { memo, useCallback, useRef } from 'react';
+import {memo, useCallback, useContext, useRef} from 'react';
 import { DataStudioState } from '@/pages/DataStudioNew/model';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
@@ -35,6 +35,8 @@ import CompletionContext = languages.CompletionContext;
 import CompletionList = languages.CompletionList;
 import ProviderResult = languages.ProviderResult;
 import LanguageSelector = languages.LanguageSelector;
+import {DevopsContext} from "@/pages/DevOps";
+import {DataStudioContext, DataStudioContextType} from "@/pages/DataStudioNew/DataStudioContext";
 
 loader.config({ monaco });
 
@@ -90,6 +92,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
     monacoRef
   } = props;
 
+  const { theme } = useContext<DataStudioContextType>(DataStudioContext);
   const editorInstance = useRef<editor.IStandaloneCodeEditor | undefined>(
     monacoRef?.current?.editor
   );
@@ -293,7 +296,6 @@ const CodeEdit = (props: CodeEditFormProps) => {
     lineNumbers,
     ...options
   };
-
   return (
     <>
       <div className={'monaco-float'}>
@@ -309,7 +311,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
           onChange={onChange}
           //zh-CN: 因为在 handleInitEditorAndLanguageOnBeforeMount 中已经注册了自定义语言，所以这里的作用仅仅是用来切换主题 不需要重新加载自定义语言的 token 样式 , 所以这里入参需要为空, 否则每次任意的 props 改变时(包括高度等),会出现编辑器闪烁的问题
           //en-US: because the custom language has been registered in handleInitEditorAndLanguageOnBeforeMount, so the only purpose here is to switch the theme, and there is no need to reload the token style of the custom language, so the incoming parameters here need to be empty, otherwise any props change (including height, etc.) will cause the editor to flash
-          theme={convertCodeEditTheme()}
+          theme={theme === 'realDark' ? 'vs-dark' : theme}
         />
       </div>
     </>

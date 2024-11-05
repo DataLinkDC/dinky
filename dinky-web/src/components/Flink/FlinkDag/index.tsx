@@ -280,8 +280,8 @@ const FlinkDag = (props: DagProps) => {
     );
 
     // Adaptive layout
-    const model = new DagreLayout(layoutConfig).layout(flinkData);
-    graph.fromJSON(model);
+    // const model = new DagreLayout(layoutConfig).assign(flinkData);
+    graph.fromJSON(flinkData);
 
     // Automatically zoom to fit
     graph.zoomToFit(zoomOptions);

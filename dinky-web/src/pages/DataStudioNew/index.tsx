@@ -20,7 +20,7 @@
 import { DockLayout, TabData } from 'rc-dock';
 import React, { lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Col, Row, Spin, theme } from 'antd';
+import {Col, ConfigProvider, Row, Spin, theme} from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import { RightContextMenuState } from '@/pages/DataStudioNew/data.d';
@@ -31,7 +31,8 @@ import {
   handleRightClick,
   InitContextMenuPosition
 } from '@/pages/DataStudioNew/function';
-import 'rc-dock/dist/rc-dock.css';
+// import 'rc-dock/dist/rc-dock.css';
+// import 'rc-dock/dist/rc-dock-dark.css';
 import RightContextMenu, { useRightMenuItem } from '@/pages/DataStudioNew/RightContextMenu';
 import { MenuInfo } from 'rc-menu/es/interface';
 import { lazyComponent, ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
@@ -48,8 +49,7 @@ import { useAsyncEffect } from 'ahooks';
 import { THEME } from '@/types/Public/data';
 import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
-import exports from '@umijs/bundler-webpack/compiled/webpack';
-
+import './css/index.less'
 const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(
@@ -393,7 +393,14 @@ const DataStudioNew: React.FC = (props: any) => {
   };
   return (
     <DataStudioContext.Provider value={{ theme: theme }}>
-      <PageContainer breadcrumb={{}} title={false} childrenContentStyle={{ margin: 0, padding: 0 }}>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorBgContainer: 'var(--primary-color)',
+          }
+        }}
+      >
+      <PageContainer breadcrumb={{}} title={false} childrenContentStyle={{ margin: 0, padding: 0 }} className={(theme==='light'?'light-theme' :'dark-theme')+' page-container'}>
         <Spin spinning={loading} size={'large'} tip={'loading'}>
           <Row style={{ height: 'calc(100vh - 81px)' }}>
             {/*左边工具栏*/}
@@ -401,9 +408,6 @@ const DataStudioNew: React.FC = (props: any) => {
               style={{
                 width: toolbarWidth,
                 height: 'inherit',
-                padding: '3px',
-                background:
-                  localStorage.getItem(THEME.NAV_THEME) == THEME.light ? '#fff' : '#1f1f1f'
               }}
               flex='none'
               onContextMenu={rightContextMenuHandle}
@@ -437,7 +441,7 @@ const DataStudioNew: React.FC = (props: any) => {
             </Col>
 
             {/* 中间内容栏*/}
-            <Col style={{ height: 'inherit' }} flex='auto'>
+            <Col style={{ height: 'inherit' }} flex='auto' className={'content-container'}>
               <AliveScope>
                 <DockLayout
                   ref={dockLayoutRef}
@@ -530,6 +534,7 @@ const DataStudioNew: React.FC = (props: any) => {
           />
         </Spin>
       </PageContainer>
+      </ConfigProvider>
     </DataStudioContext.Provider>
   );
 };

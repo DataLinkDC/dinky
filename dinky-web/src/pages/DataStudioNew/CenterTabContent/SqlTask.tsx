@@ -20,7 +20,7 @@
 import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
 import { Button, Col, Divider, Flex, Row, Skeleton, TabsProps } from 'antd';
 import './index.less';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 import { registerEditorKeyBindingAndAction } from '@/utils/function';
 import { Monaco } from '@monaco-editor/react';
 import { Panel, PanelGroup } from 'react-resizable-panels';
@@ -88,7 +88,7 @@ export type FlinkSqlProps = {
 const toolbarSize = 40;
 const dividerHeight = 24;
 
-export const SqlTask = (props: FlinkSqlProps & any) => {
+export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const {
     showDesc,
     tempData,
@@ -786,7 +786,7 @@ export const SqlTask = (props: FlinkSqlProps & any) => {
       </Flex>
     </Skeleton>
   );
-};
+});
 
 export default connect(
   ({ DataStudio, SysConfig }: { DataStudio: DataStudioState; SysConfig: SysConfigStateType }) => ({
