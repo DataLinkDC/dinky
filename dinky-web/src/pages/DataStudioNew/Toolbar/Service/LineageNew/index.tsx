@@ -136,7 +136,7 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
           type: 'react',
           style: {
             size: [240, 20],
-            component: (data) => (
+            component: (data: { data: { name: string } }) => (
               <Flex
                 justify={'center'}
                 align={'center'}

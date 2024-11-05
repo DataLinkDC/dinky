@@ -22,12 +22,11 @@ import { l } from '@/utils/intl';
 import { QuestionCircleOutlined, SwapOutlined } from '@ant-design/icons';
 import {
   ProFormGroup,
-  ProFormInstance,
   ProFormList,
   ProFormText
 } from '@ant-design/pro-components';
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { DefaultOptionType } from 'antd/es/select';
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { calculatorWidth } from '@/pages/DataStudioNew/CenterTabContent/TaskConfig/function';
@@ -82,7 +81,7 @@ export const ProFormFlinkConfig = (props: {
   return (
     <Col>
       <Flex justify={'space-between'}>
-        <Row style={{ gap: 6 }}>
+        <Row style={{ gap: 6 }} align={'middle'}>
           <span>{l('pages.datastudio.label.jobConfig.other')}</span>
           <Tooltip title={l('pages.datastudio.label.jobConfig.other.tip')}>
             <QuestionCircleOutlined />

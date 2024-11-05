@@ -28,6 +28,7 @@ export type ToolbarProp = {
   toolbarSelect: ToolbarSelect;
   position: ToolbarPosition;
   saveToolbarLayout: (position: ToolbarPosition, list: string[]) => void;
+  height: number
 };
 
 // 位置总共分为 左上 左下 右

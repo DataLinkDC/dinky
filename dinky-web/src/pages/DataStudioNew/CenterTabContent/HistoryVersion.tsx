@@ -24,7 +24,7 @@ import { l } from '@/utils/intl';
 import moment from 'moment';
 import { Button, Card, Modal, Tag } from 'antd';
 import { RocketOutlined, SyncOutlined } from '@ant-design/icons';
-import { DiffEditor, Monaco, MonacoDiffEditor } from '@monaco-editor/react';
+import { DiffEditor, MonacoDiffEditor } from '@monaco-editor/react';
 import { convertCodeEditTheme } from '@/utils/function';
 import { handleOption, handleRemoveById } from '@/services/BusinessCrud';
 import VersionList from '@/components/VersionList';

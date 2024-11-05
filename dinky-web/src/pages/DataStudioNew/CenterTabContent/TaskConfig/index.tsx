@@ -46,7 +46,7 @@ export default (props: {
   if (assert(data.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
     items.push({
       key: 'basicConfig',
-      label: '基础配置',
+      label: l('menu.datastudio.task.baseConfig'),
       children: (
         <BasicConfig
           tempData={props.tempData}
@@ -115,7 +115,7 @@ export default (props: {
     };
     items.push({
       key: 'previewConfig',
-      label: '预览配置',
+      label: l('menu.datastudio.task.previewConfig'),
       children: (
         <ProForm
           initialValues={{

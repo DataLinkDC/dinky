@@ -125,17 +125,6 @@ const DataSource = memo((props: any) => {
     onRefreshTreeData(value);
   };
 
-  // btnEvent[0].onClick = () => {
-  //   setShowCreate(true);
-  // };
-  // btnEvent[1].onClick = () => {
-  //   if (!selectDatabaseId) return;
-  //   setIsLoadingDatabase(true);
-  //   clearDataSourceTable(selectDatabaseId).then(() => {
-  //     onChangeDataBase(selectDatabaseId);
-  //   });
-  // };
-
   /**
    * 树节点点击事件 添加tab页 并传递参数
    * @param keys

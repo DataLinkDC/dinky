@@ -185,7 +185,7 @@ const DataStudioNew: React.FC = (props: any) => {
   }, [dataStudioState.centerContent]);
 
   // 工具栏宽度
-  const toolbarWidth = dataStudioState.toolbar.showDesc ? 60 : 40;
+  const toolbarSize = dataStudioState.toolbar.showDesc ? 60 : 40;
 
   //  右键菜单handle
   const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
@@ -411,7 +411,7 @@ const DataStudioNew: React.FC = (props: any) => {
               {/*左边工具栏*/}
               <Col
                 style={{
-                  width: toolbarWidth,
+                  width: toolbarSize,
                   height: 'inherit'
                 }}
                 flex='none'
@@ -420,6 +420,7 @@ const DataStudioNew: React.FC = (props: any) => {
                 {/*左上工具栏*/}
                 <Col style={{ width: 'inherit', height: '50%' }}>
                   <Toolbar
+                    height={toolbarSize}
                     showDesc={dataStudioState.toolbar.showDesc}
                     position={'leftTop'}
                     onClick={toolbarOnClick}
@@ -436,6 +437,7 @@ const DataStudioNew: React.FC = (props: any) => {
                   }}
                 >
                   <Toolbar
+                    height={toolbarSize}
                     showDesc={dataStudioState.toolbar.showDesc}
                     position={'leftBottom'}
                     onClick={toolbarOnClick}
@@ -510,11 +512,12 @@ const DataStudioNew: React.FC = (props: any) => {
 
               {/*右边工具栏*/}
               <Col
-                style={{ width: toolbarWidth, height: 'inherit' }}
+                style={{ width: toolbarSize, height: 'inherit' }}
                 flex='none'
                 onContextMenu={rightContextMenuHandle}
               >
                 <Toolbar
+                  height={toolbarSize}
                   showDesc={dataStudioState.toolbar.showDesc}
                   position={'right'}
                   onClick={toolbarOnClick}

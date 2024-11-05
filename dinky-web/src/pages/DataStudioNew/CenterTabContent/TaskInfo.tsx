@@ -20,7 +20,7 @@
 import { l } from '@/utils/intl';
 import { Descriptions } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
-import { TaskState } from '@/pages/DataStudioNew/CenterTabContent/SqlTask';
+import {TaskState} from "@/pages/DataStudioNew/type";
 
 export const TaskInfo = (props: { params: TaskState }) => {
   const {
@@ -43,6 +43,7 @@ export const TaskInfo = (props: { params: TaskState }) => {
           {versionId}
         </Descriptions.Item>
 
+        // todo 责任人
         {/*<Descriptions.Item label={l('pages.datastudio.label.jobInfo.firstLevelOwner')}>*/}
         {/*  {showFirstLevelOwner(currentInfo?.firstLevelOwner, users)}*/}
         {/*</Descriptions.Item>*/}

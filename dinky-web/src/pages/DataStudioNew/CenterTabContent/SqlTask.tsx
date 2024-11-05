@@ -271,7 +271,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')
   ) {
     rightToolbarItem.push({
-      label: '配置',
+      label: l('button.config'),
       key: 'config',
       children: (
         <TaskConfig
@@ -284,7 +284,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }
   if (assert(currentState.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
     rightToolbarItem.push({
-      label: '历史版本',
+      label: l('menu.datastudio.historyVision'),
       key: 'historyVersion',
       children: (
         <HistoryVersion
@@ -296,7 +296,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     });
   }
   rightToolbarItem.push({
-    label: '信息',
+    label: l('global.info'),
     key: 'info',
     children: <TaskInfo params={{ ...currentState }} />
   });
@@ -517,7 +517,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <RunToolBarButton
               isShow={!isFullscreen}
               showDesc={showDesc}
-              desc={'全屏'}
+              desc={l('global.fullScreen')}
               icon={<FullscreenOutlined />}
               onClick={async () => {
                 enterFullscreen();
@@ -526,7 +526,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <RunToolBarButton
               isShow={isFullscreen}
               showDesc={showDesc}
-              desc={'退出全屏'}
+              desc={l('global.fullScreen.exit')}
               icon={<FullscreenExitOutlined />}
               onClick={async () => {
                 exitFullscreen();
@@ -566,7 +566,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             />
             <RunToolBarButton
               showDesc={showDesc}
-              desc={'血缘'}
+              desc={l('menu.datastudio.lineage')}
               icon={<PartitionOutlined />}
               onClick={handleLineage}
             />
@@ -662,13 +662,13 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{ height: dividerHeight }} />
             <RunToolBarButton
               showDesc={showDesc}
-              desc={'格式化'}
+              desc={l('shortcut.key.format')}
               icon={<ClearOutlined />}
               onClick={handleFormat}
             />
             <RunToolBarButton
               showDesc={showDesc}
-              desc={'定位'}
+              desc={l('button.position')}
               icon={<EnvironmentOutlined />}
               onClick={handleLocation}
             />
