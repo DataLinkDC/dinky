@@ -20,7 +20,7 @@
 import { DockLayout, TabData } from 'rc-dock';
 import React, { lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import {Col, ConfigProvider, Row, Spin, theme} from 'antd';
+import { Col, ConfigProvider, Row, Spin, theme } from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import { RightContextMenuState } from '@/pages/DataStudioNew/data.d';
@@ -49,7 +49,7 @@ import { useAsyncEffect } from 'ahooks';
 import { THEME } from '@/types/Public/data';
 import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
-import './css/index.less'
+import './css/index.less';
 const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(
@@ -396,144 +396,149 @@ const DataStudioNew: React.FC = (props: any) => {
       <ConfigProvider
         theme={{
           token: {
-            colorBgContainer: 'var(--primary-color)',
+            colorBgContainer: 'var(--primary-color)'
           }
         }}
       >
-      <PageContainer breadcrumb={{}} title={false} childrenContentStyle={{ margin: 0, padding: 0 }} className={(theme==='light'?'light-theme' :'dark-theme')+' page-container'}>
-        <Spin spinning={loading} size={'large'} tip={'loading'}>
-          <Row style={{ height: 'calc(100vh - 81px)' }}>
-            {/*左边工具栏*/}
-            <Col
-              style={{
-                width: toolbarWidth,
-                height: 'inherit',
-              }}
-              flex='none'
-              onContextMenu={rightContextMenuHandle}
-            >
-              {/*左上工具栏*/}
-              <Col style={{ width: 'inherit', height: '50%' }}>
-                <Toolbar
-                  showDesc={dataStudioState.toolbar.showDesc}
-                  position={'leftTop'}
-                  onClick={toolbarOnClick}
-                  toolbarSelect={dataStudioState.toolbar.leftTop}
-                  saveToolbarLayout={saveToolbarLayoutHandle}
-                />
-              </Col>
-
-              {/*左下工具栏*/}
+        <PageContainer
+          breadcrumb={{}}
+          title={false}
+          childrenContentStyle={{ margin: 0, padding: 0 }}
+          className={(theme === 'light' ? 'light-theme' : 'dark-theme') + ' page-container'}
+        >
+          <Spin spinning={loading} size={'large'} tip={'loading'}>
+            <Row style={{ height: 'calc(100vh - 81px)' }}>
+              {/*左边工具栏*/}
               <Col
                 style={{
-                  width: 'inherit',
-                  height: '50%'
+                  width: toolbarWidth,
+                  height: 'inherit'
                 }}
+                flex='none'
+                onContextMenu={rightContextMenuHandle}
+              >
+                {/*左上工具栏*/}
+                <Col style={{ width: 'inherit', height: '50%' }}>
+                  <Toolbar
+                    showDesc={dataStudioState.toolbar.showDesc}
+                    position={'leftTop'}
+                    onClick={toolbarOnClick}
+                    toolbarSelect={dataStudioState.toolbar.leftTop}
+                    saveToolbarLayout={saveToolbarLayoutHandle}
+                  />
+                </Col>
+
+                {/*左下工具栏*/}
+                <Col
+                  style={{
+                    width: 'inherit',
+                    height: '50%'
+                  }}
+                >
+                  <Toolbar
+                    showDesc={dataStudioState.toolbar.showDesc}
+                    position={'leftBottom'}
+                    onClick={toolbarOnClick}
+                    toolbarSelect={dataStudioState.toolbar.leftBottom}
+                    saveToolbarLayout={saveToolbarLayoutHandle}
+                  />
+                </Col>
+              </Col>
+
+              {/* 中间内容栏*/}
+              <Col style={{ height: 'inherit' }} flex='auto' className={'content-container'}>
+                <AliveScope>
+                  <DockLayout
+                    ref={dockLayoutRef}
+                    layout={layout}
+                    groups={groups(updateAction)}
+                    dropMode={'edge'}
+                    style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
+                    onLayoutChange={async (newLayout, currentTabId, direction) => {
+                      // todo 这里移到方向会导致布局和算法异常，先暂时规避掉
+                      if (
+                        direction === 'left' ||
+                        direction === 'right' ||
+                        direction === 'top' ||
+                        direction === 'bottom' ||
+                        direction === 'middle'
+                      ) {
+                        return;
+                      }
+                      // 移除centerContent中的tab
+                      if (
+                        currentTabId &&
+                        direction === 'remove' &&
+                        (dockLayoutRef.current?.find(currentTabId) as PanelData)?.group ===
+                          'centerContent'
+                      ) {
+                        drop(currentTabId).then();
+
+                        if (dataStudioState.centerContent.tabs.length === 1) {
+                          dockLayoutRef.current?.updateTab(
+                            currentTabId,
+                            {
+                              closable: false,
+                              id: 'quick-start',
+                              title: '快速开始',
+                              content: <></>,
+                              group: 'centerContent'
+                            },
+                            false
+                          );
+                        } else {
+                          setLayout({
+                            layout: newLayout
+                          });
+                        }
+                        removeCenterTab(currentTabId);
+                        return;
+                      }
+                      // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
+                      handleLayoutChange({
+                        dockLayout: dockLayoutRef.current!!,
+                        newLayout,
+                        currentTabId,
+                        direction
+                      });
+                    }}
+                    saveTab={saveTab}
+                    loadTab={loadTab}
+                  />
+                </AliveScope>
+              </Col>
+
+              {/*右边工具栏*/}
+              <Col
+                style={{ width: toolbarWidth, height: 'inherit' }}
+                flex='none'
+                onContextMenu={rightContextMenuHandle}
               >
                 <Toolbar
                   showDesc={dataStudioState.toolbar.showDesc}
-                  position={'leftBottom'}
+                  position={'right'}
                   onClick={toolbarOnClick}
-                  toolbarSelect={dataStudioState.toolbar.leftBottom}
+                  toolbarSelect={dataStudioState.toolbar.right}
                   saveToolbarLayout={saveToolbarLayoutHandle}
                 />
               </Col>
-            </Col>
+            </Row>
 
-            {/* 中间内容栏*/}
-            <Col style={{ height: 'inherit' }} flex='auto' className={'content-container'}>
-              <AliveScope>
-                <DockLayout
-                  ref={dockLayoutRef}
-                  layout={layout}
-                  groups={groups(updateAction)}
-                  dropMode={'edge'}
-                  style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
-                  onLayoutChange={async (newLayout, currentTabId, direction) => {
-                    // todo 这里移到方向会导致布局和算法异常，先暂时规避掉
-                    if (
-                      direction === 'left' ||
-                      direction === 'right' ||
-                      direction === 'top' ||
-                      direction === 'bottom' ||
-                      direction === 'middle'
-                    ) {
-                      return;
-                    }
-                    // 移除centerContent中的tab
-                    if (
-                      currentTabId &&
-                      direction === 'remove' &&
-                      (dockLayoutRef.current?.find(currentTabId) as PanelData)?.group ===
-                        'centerContent'
-                    ) {
-                      drop(currentTabId).then();
+            {/*@ts-ignore*/}
+            <FooterContainer token={token} />
 
-                      if (dataStudioState.centerContent.tabs.length === 1) {
-                        dockLayoutRef.current?.updateTab(
-                          currentTabId,
-                          {
-                            closable: false,
-                            id: 'quick-start',
-                            title: '快速开始',
-                            content: <></>,
-                            group: 'centerContent'
-                          },
-                          false
-                        );
-                      } else {
-                        setLayout({
-                          layout: newLayout
-                        });
-                      }
-                      removeCenterTab(currentTabId);
-                      return;
-                    }
-                    // 这里必需使用定时器，解决reducer 调用dispatch抛出的Reducers may not dispatch actions 异常
-                    handleLayoutChange({
-                      dockLayout: dockLayoutRef.current!!,
-                      newLayout,
-                      currentTabId,
-                      direction
-                    });
-                  }}
-                  saveTab={saveTab}
-                  loadTab={loadTab}
-                />
-              </AliveScope>
-            </Col>
-
-            {/*右边工具栏*/}
-            <Col
-              style={{ width: toolbarWidth, height: 'inherit' }}
-              flex='none'
-              onContextMenu={rightContextMenuHandle}
-            >
-              <Toolbar
-                showDesc={dataStudioState.toolbar.showDesc}
-                position={'right'}
-                onClick={toolbarOnClick}
-                toolbarSelect={dataStudioState.toolbar.right}
-                saveToolbarLayout={saveToolbarLayoutHandle}
-              />
-            </Col>
-          </Row>
-
-          {/*@ts-ignore*/}
-          <FooterContainer token={token} />
-
-          {/*右键菜单*/}
-          <RightContextMenu
-            contextMenuPosition={rightContextMenuState.position}
-            open={rightContextMenuState.show}
-            openChange={() =>
-              setRightContextMenuState((prevState) => ({ ...prevState, show: false }))
-            }
-            items={menuItem}
-            onClick={handleMenuClick}
-          />
-        </Spin>
-      </PageContainer>
+            {/*右键菜单*/}
+            <RightContextMenu
+              contextMenuPosition={rightContextMenuState.position}
+              open={rightContextMenuState.show}
+              openChange={() =>
+                setRightContextMenuState((prevState) => ({ ...prevState, show: false }))
+              }
+              items={menuItem}
+              onClick={handleMenuClick}
+            />
+          </Spin>
+        </PageContainer>
       </ConfigProvider>
     </DataStudioContext.Provider>
   );

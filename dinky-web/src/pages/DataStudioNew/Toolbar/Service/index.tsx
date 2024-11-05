@@ -17,14 +17,14 @@
  *
  */
 
-import {connect} from '@@/exports';
-import {CenterTab, DataStudioState} from '@/pages/DataStudioNew/model';
-import {mapDispatchToProps} from '@/pages/DataStudioNew/DvaFunction';
-import {Flex, Tabs, TabsProps, TreeDataNode} from 'antd';
-import {Panel, PanelGroup} from 'react-resizable-panels';
+import { connect } from '@@/exports';
+import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { Flex, Tabs, TabsProps, TreeDataNode } from 'antd';
+import { Panel, PanelGroup } from 'react-resizable-panels';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import './index.less';
-import React, {Key, useEffect, useMemo, useState} from 'react';
+import React, { Key, useEffect, useMemo, useState } from 'react';
 import {
   ApartmentOutlined,
   ArrowsAltOutlined,
@@ -40,23 +40,23 @@ import RunToolBarButton from '@/pages/DataStudioNew/components/RunToolBarButton'
 import CusPanelResizeHandle from '@/pages/DataStudioNew/components/CusPanelResizeHandle';
 import Output from '@/pages/DataStudioNew/Toolbar/Service/Output';
 import ExecutionHistory from '@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory';
-import {KeepAlive} from 'react-activation';
-import {DataStudioActionType} from '@/pages/DataStudioNew/data.d';
+import { KeepAlive } from 'react-activation';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 import Explain from '@/pages/DataStudioNew/Toolbar/Service/Explain';
 import FlinkGraph from '@/pages/DataStudioNew/Toolbar/Service/FlinkGraph';
 import Result from '@/pages/DataStudioNew/Toolbar/Service/Result';
-import {getTabIcon} from '@/pages/DataStudioNew/function';
-import {assert} from '@/pages/DataStudio/function';
-import {DIALECT} from '@/services/constants';
-import {TableData} from '@/pages/DataStudioNew/Toolbar/Service/TableData';
-import {isSql} from '@/pages/DataStudioNew/utils';
-import {LineageNew} from '@/pages/DataStudioNew/Toolbar/Service/LineageNew';
+import { getTabIcon } from '@/pages/DataStudioNew/function';
+import { assert } from '@/pages/DataStudio/function';
+import { DIALECT } from '@/services/constants';
+import { TableData } from '@/pages/DataStudioNew/Toolbar/Service/TableData';
+import { isSql } from '@/pages/DataStudioNew/utils';
+import { LineageNew } from '@/pages/DataStudioNew/Toolbar/Service/LineageNew';
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {
     showDesc,
     tabs,
-    action: {actionType, params}
+    action: { actionType, params }
   } = props;
   const [selectedKey, setSelectedKey] = useState<Key[]>([]);
   const [taskItems, setTaskItems] = useState<Record<string, TabsProps['items']>>({});
@@ -81,20 +81,20 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
       [DataStudioActionType.TASK_RUN_CHECK]: {
         key: actionType,
         label: '检查',
-        icon: <AuditOutlined/>,
-        children: <Explain data={params.data}/>
+        icon: <AuditOutlined />,
+        children: <Explain data={params.data} />
       },
       [DataStudioActionType.TASK_RUN_DAG]: {
         key: actionType,
         label: 'DAG',
-        icon: <ApartmentOutlined/>,
-        children: <FlinkGraph data={params.data}/>
+        icon: <ApartmentOutlined />,
+        children: <FlinkGraph data={params.data} />
       },
       [DataStudioActionType.TASK_RUN_LINEAGE]: {
         key: actionType,
         label: '血缘',
-        icon: <PartitionOutlined/>,
-        children: <LineageNew data={params.data}/>
+        icon: <PartitionOutlined />,
+        children: <LineageNew data={params.data} />
       }
     };
   }, [actionType, params?.data]);
@@ -120,7 +120,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         setTaskItems((prevState) => {
           const item = prevState[params.taskId]!!;
           item.find((item) => item.key === actionType)!!.children = route.children;
-          return {...prevState};
+          return { ...prevState };
         });
       }
       setTabActiveKey((prevState) => ({
@@ -172,7 +172,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
                 (child) => child.key === dialect
               ) as TreeDataNode;
               if (!currentDialectTree) {
-                node.children!!.push({title: dialect, key: dialect, icon: icon, children: []});
+                node.children!!.push({ title: dialect, key: dialect, icon: icon, children: [] });
                 currentDialectTree = node.children!!.find(
                   (child) => child.key === dialect
                 ) as TreeDataNode;
@@ -199,12 +199,12 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
       if (!taskParams) {
         setSelectedKey([]);
         setTaskItems((prevState) => {
-          const newState = {...prevState};
+          const newState = { ...prevState };
           delete newState[taskId];
           return newState;
         });
         setTabActiveKey((prevState) => {
-          const newState = {...prevState};
+          const newState = { ...prevState };
           delete newState[taskId];
           return newState;
         });
@@ -213,30 +213,30 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         {
           key: DataStudioActionType.TASK_RUN_SUBMIT,
           label: '输出',
-          icon: <CodeOutlined/>,
-          children: <Output taskId={taskId}/>
+          icon: <CodeOutlined />,
+          children: <Output taskId={taskId} />
         },
         {
           key: DataStudioActionType.TASK_RUN_DEBUG,
           label: '结果',
-          icon: <MonitorOutlined/>,
-          children: <Result taskId={taskId} action={props.action} dialect={taskParams?.dialect}/>
+          icon: <MonitorOutlined />,
+          children: <Result taskId={taskId} action={props.action} dialect={taskParams?.dialect} />
         }
       ];
       if (assert(taskParams?.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')) {
         items.push({
           key: 'history',
           label: '执行历史',
-          icon: <HistoryOutlined/>,
-          children: <ExecutionHistory taskId={taskId}/>
+          icon: <HistoryOutlined />,
+          children: <ExecutionHistory taskId={taskId} />
         });
       }
       if (assert(taskParams?.dialect, [DIALECT.FLINK_SQL], true, 'includes')) {
         items.push({
           key: 'tableData',
           label: '表数据',
-          icon: <TableOutlined/>,
-          children: <TableData statement={taskParams?.statement}/>
+          icon: <TableOutlined />,
+          children: <TableData statement={taskParams?.statement} />
         });
       }
 
@@ -252,19 +252,19 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
               [taskId]: activeKey
             }));
           }}
-          style={{height: '100%'}}
+          style={{ height: '100%' }}
         />
       );
     }
   };
   return (
     <PanelGroup direction={'horizontal'}>
-      <Panel defaultSize={20} style={{display: 'flex', flexDirection: 'column'}}>
+      <Panel defaultSize={20} style={{ display: 'flex', flexDirection: 'column' }}>
         <Flex justify={'right'}>
           <RunToolBarButton
             showDesc={showDesc}
             desc={'全部折叠'}
-            icon={<ShrinkOutlined/>}
+            icon={<ShrinkOutlined />}
             sleepTime={100}
             onClick={async () => {
               setExpandKeys([]);
@@ -273,7 +273,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
           <RunToolBarButton
             showDesc={showDesc}
             desc={'全部展开'}
-            icon={<ArrowsAltOutlined/>}
+            icon={<ArrowsAltOutlined />}
             sleepTime={100}
             onClick={async () => {
               expandAll();
@@ -287,7 +287,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
           onExpand={(expandedKeys) => {
             setExpandKeys(expandedKeys);
           }}
-          onSelect={(selectedKeys, {node}) => {
+          onSelect={(selectedKeys, { node }) => {
             node.isLeaf && setSelectedKey(selectedKeys);
           }}
           blockNode
@@ -296,11 +296,11 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
 
       {selectedKey && selectedKey.length > 0 && selectedKey[0] !== undefined && (
         <>
-          <CusPanelResizeHandle/>
-          <Panel style={{paddingInline: 10}}>
+          <CusPanelResizeHandle />
+          <Panel style={{ paddingInline: 10 }}>
             {/*todo 这里先不用缓存，会导致图渲染大小错误，使用血缘或dag可以复现*/}
             {/*<KeepAlive cacheKey={'service:' + selectedKey[0]} autoFreeze={true} >*/}
-              {renderContent()}
+            {renderContent()}
             {/*</KeepAlive>*/}
           </Panel>
         </>
@@ -310,7 +310,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
 };
 
 export default connect(
-  ({DataStudio}: { DataStudio: DataStudioState }) => ({
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
     project: DataStudio.toolbar.project,
     action: DataStudio.action,
     showDesc: DataStudio.toolbar.showDesc,

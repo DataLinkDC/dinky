@@ -23,23 +23,22 @@
 }
 
 .page-container {
-  background-color: var(--primary-color)
+  background-color: var(--primary-color);
 }
 
 .content-container {
-  background-color: var(--main-background-color)
+  background-color: var(--main-background-color);
 }
 
 .ant-pro-table > .ant-pro-card {
-  background-color: var(--main-background-color)
+  background-color: var(--main-background-color);
 }
-.ant-pro-table .ant-pro-table-search-light-filter{
+.ant-pro-table .ant-pro-table-search-light-filter {
   margin-block-end: 0;
   padding-block: 0;
   padding-inline: 0;
-  background-color: var(--main-background-color)
+  background-color: var(--main-background-color);
 }
-
 
 // scrollbar style --- start ----
 ::-webkit-scrollbar {
@@ -88,7 +87,9 @@ body > .dragging-layer > *:first-child {
   pointer-events: none !important;
   overflow: hidden !important;
   transform: translate(-50%, -50%) !important;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1), inset 0 0 8px rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.1),
+    inset 0 0 8px rgba(255, 255, 255, 0.1);
 }
 
 body > .dragging-layer > .dragging {
@@ -109,7 +110,7 @@ body > .dragging-layer > div:last-child {
 }
 
 .drag-accept-reject::after {
-  content: "🚫";
+  content: '🚫';
 }
 
 .dock {
@@ -206,7 +207,10 @@ body > .dragging-layer > div:last-child {
 .dock-top > .dock-nav .dock-ink-bar-animated,
 .dock-bottom > div > .dock-nav .dock-ink-bar-animated,
 .dock-top > div > .dock-nav .dock-ink-bar-animated {
-  transition: width 0.3s, left 0.3s, right 0.3s;
+  transition:
+    width 0.3s,
+    left 0.3s,
+    right 0.3s;
 }
 
 .dock-content-animated .dock-tabpane {
@@ -274,7 +278,7 @@ body > .dragging-layer > div:last-child {
 }
 
 .dock-tab-close-btn:before {
-  content: "X";
+  content: 'X';
   font-family: emoji;
 }
 
@@ -395,7 +399,7 @@ body > .dragging-layer > div:last-child {
   font-variant: tabular-nums;
   line-height: 1.5715;
   list-style: none;
-  font-feature-settings: "tnum";
+  font-feature-settings: 'tnum';
   position: absolute;
   top: -9999px;
   left: -9999px;
@@ -419,7 +423,10 @@ body > .dragging-layer > div:last-child {
   background-clip: padding-box;
   border-radius: 2px;
   outline: none;
-  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
 }
 
 .dock-dropdown-menu-item {
@@ -841,7 +848,7 @@ body.dock-dragging iframe {
 .dock-panel-max-btn:before,
 .dock-panel-min-btn:before {
   position: absolute;
-  content: " ";
+  content: ' ';
   border: 2px solid #444;
   border-radius: 1px;
   width: 13px;
@@ -874,7 +881,7 @@ body.dock-dragging iframe {
   width: 9px;
   height: 9px;
   border: none;
-  content: "-";
+  content: '-';
   color: #666;
   font-size: 20px;
   line-height: 4px;
