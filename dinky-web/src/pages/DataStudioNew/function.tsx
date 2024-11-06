@@ -55,6 +55,7 @@ import {
   StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { CodeTwoTone } from '@ant-design/icons';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 
 // 遍历layout，获取所有激活和打开的tab
 export const getAllPanel = (newLayout: LayoutBase) => {
@@ -231,4 +232,35 @@ export const getTabIcon = (type: string, size?: number) => {
     default:
       return <FileIcon />;
   }
+};
+
+export const getUserName = (id: Number, users: UserBaseInfo.User[] = []) => {
+  let name = '';
+  const user = users.find((user: UserBaseInfo.User) => user.id === id);
+  if (user && user.username) {
+    name = user.username;
+  }
+  return name;
+};
+
+/**
+ * 构建责任人
+ * @param id
+ * @param users
+ */
+export const showFirstLevelOwner = (id: number, users: UserBaseInfo.User[] = []) => {
+  return getUserName(id, users);
+};
+
+/**
+ * 构建维护人
+ * @param ids
+ * @param users
+ */
+export const showSecondLevelOwners = (ids: number[], users: UserBaseInfo.User[] = []) => {
+  return ids
+    ?.map((id: Number) => {
+      return getUserName(id, users);
+    })
+    ?.join();
 };

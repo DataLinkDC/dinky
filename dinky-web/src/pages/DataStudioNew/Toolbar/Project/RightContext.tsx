@@ -46,6 +46,7 @@ import { DIALECT } from '@/services/constants';
 import { DataStudioState } from '@/pages/DataStudioNew/model';
 import { STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import JobImportModal from '@/pages/DataStudioNew/Toolbar/Project/JobTree/components/JobImportModal';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 
 const { Text } = Typography;
 export type RightContextProps = {
@@ -55,10 +56,18 @@ export type RightContextProps = {
   queryFlinkEnv: any;
   updateCenterTab: any;
   updateAction: any;
+  users: UserBaseInfo.User[];
 };
 export const useRightContext = (props: RightContextProps) => {
-  const { selectKeys, refresh, centerContent, queryFlinkEnv, updateCenterTab, updateAction } =
-    props;
+  const {
+    selectKeys,
+    refresh,
+    centerContent,
+    queryFlinkEnv,
+    updateCenterTab,
+    updateAction,
+    users
+  } = props;
   // 右键弹出框状态
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,
@@ -388,7 +397,7 @@ export const useRightContext = (props: RightContextProps) => {
           values={{}}
           modalVisible={projectState.isCreateTask}
           // todo 责任人
-          users={[]}
+          users={users}
           onCancel={() =>
             setProjectState((prevState) => ({
               ...prevState,
@@ -404,7 +413,7 @@ export const useRightContext = (props: RightContextProps) => {
             title={l('button.edit')}
             values={projectState.value}
             modalVisible={projectState.isEdit}
-            users={[]}
+            users={users}
             onCancel={() =>
               setProjectState((prevState) => ({
                 ...prevState,

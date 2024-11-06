@@ -23,6 +23,7 @@ import { MenuInfo } from 'rc-menu/es/interface';
 import React from 'react';
 import { RightMenuItemProps } from '@/pages/DataStudioNew/data.d';
 import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { l } from '@/utils/intl';
 
 /**
  * 右键菜单组件props | Right-click menu component props
@@ -81,12 +82,25 @@ export const useRightMenuItem = (props: RightMenuItemProps) => {
   if (dataStudioState.toolbar.showDesc) {
     menuItem.push({
       key: 'hideToolbarDesc',
-      label: '隐藏工具栏窗口名称'
+      label: l('datastudio.toolbar.rightClick.hideToolbarDesc')
     });
   } else {
     menuItem.push({
       key: 'showToolbarDesc',
-      label: '显示工具栏窗口名称'
+      label: l('datastudio.toolbar.rightClick.showToolbarDesc')
+    });
+  }
+
+  // 显示紧凑模式
+  if (dataStudioState.theme.compact) {
+    menuItem.push({
+      key: 'closeCompact',
+      label: l('datastudio.toolbar.rightClick.closeCompact')
+    });
+  } else {
+    menuItem.push({
+      key: 'openCompact',
+      label: l('datastudio.toolbar.rightClick.openCompact')
     });
   }
   return menuItem;

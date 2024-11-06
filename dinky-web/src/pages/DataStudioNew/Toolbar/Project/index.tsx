@@ -96,7 +96,8 @@ export const Project = (props: any) => {
     centerContent,
     queryFlinkEnv,
     updateCenterTab,
-    updateAction
+    updateAction,
+    users
   });
 
   useEffect(() => {

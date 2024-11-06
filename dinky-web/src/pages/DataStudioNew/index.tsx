@@ -20,7 +20,7 @@
 import { DockLayout, TabData } from 'rc-dock';
 import React, { lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Col, ConfigProvider, Row, Spin, theme } from 'antd';
+import { Col, ConfigProvider, Row, Spin, theme, theme as antdTheme } from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import { DataStudioActionType, RightContextMenuState } from '@/pages/DataStudioNew/data.d';
@@ -62,6 +62,7 @@ const DataStudioNew: React.FC = (props: any) => {
   const {
     dataStudioState,
     handleToolbarShowDesc,
+    handleThemeCompact,
     saveToolbarLayout,
     handleLayoutChange,
     updateAction,
@@ -87,6 +88,13 @@ const DataStudioNew: React.FC = (props: any) => {
   });
   const [loading, setLoading] = useState<boolean>(true);
   const theme = useTheme() as 'realDark' | 'light';
+  const themeAlgorithm = useMemo(() => {
+    const algorithms = [theme === 'light' ? antdTheme.defaultAlgorithm : antdTheme.darkAlgorithm];
+    if (dataStudioState.theme.compact) {
+      algorithms.push(antdTheme.compactAlgorithm);
+    }
+    return algorithms;
+  }, [dataStudioState.theme.compact, theme]);
 
   const layout = useMemo(() => {
     const layoutData = getLayoutState(dataStudioState.layoutData, didMount);
@@ -106,13 +114,14 @@ const DataStudioNew: React.FC = (props: any) => {
     });
     await queryFlinkEnv();
     await queryFlinkCluster();
+    setLoading(false);
+    // 剩下不重要的可以后续慢加载
     await queryAlertGroup();
     await queryFlinkConfigOptions();
     await queryFlinkUdfOptions();
     await queryDataSourceDataList();
     await querySuggestions();
     await queryUserData({ id: getTenantByLocalStorage() });
-    setLoading(false);
   }, []);
   useEffect(() => {
     const { actionType, params } = dataStudioState.action;
@@ -207,6 +216,10 @@ const DataStudioNew: React.FC = (props: any) => {
       case 'showToolbarDesc':
       case 'hideToolbarDesc':
         handleToolbarShowDesc();
+        break;
+      case 'closeCompact':
+      case 'openCompact':
+        handleThemeCompact();
         break;
     }
   };
@@ -409,7 +422,19 @@ const DataStudioNew: React.FC = (props: any) => {
         theme={{
           token: {
             colorBgContainer: 'var(--primary-color)'
-          }
+          },
+          components: {
+            Table: {
+              headerBg: 'var(--second-color)',
+              rowHoverBg: 'var(--second-color)',
+              rowSelectedBg: 'var(--second-color)',
+              rowSelectedHoverBg: 'var(--second-color)',
+              headerFilterHoverBg: 'var(--primary-color)',
+              headerSortActiveBg: 'var(--primary-color)',
+              headerSortHoverBg: 'var(--primary-color)'
+            }
+          },
+          algorithm: themeAlgorithm
         }}
       >
         <PageContainer

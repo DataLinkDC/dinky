@@ -1372,5 +1372,10 @@ export default {
   'dashboard.theme.shine': 'Purple',
   'dashboard.theme.vintage': 'Vintage',
   'dashboard.theme.westeros': 'Westeros',
-  'dashboard.theme.wonderland': 'Wonderland'
+  'dashboard.theme.wonderland': 'Wonderland',
+
+  'datastudio.toolbar.rightClick.hideToolbarDesc': 'hides the toolbar window name',
+  'datastudio.toolbar.rightClick.showToolbarDesc': 'displays the toolbar window name',
+  'datastudio.toolbar.rightClick.closeCompact': 'turn off compact mode',
+  'datastudio.toolbar.rightClick.openCompact': 'turn on compact mode'
 };
