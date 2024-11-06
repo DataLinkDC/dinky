@@ -370,12 +370,6 @@ public class JobManager {
         return Explainer.build(executor, useStatementSet, this).explainSql(statement);
     }
 
-    /*public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement)
-                .explainSql(statement);
-    }*/
-
     public ObjectNode getStreamGraph(String statement) {
         return Explainer.build(executor, useStatementSet, this).getStreamGraph(statement);
     }

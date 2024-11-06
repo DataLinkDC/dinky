@@ -200,22 +200,16 @@ const Result = (props: any) => {
 
   const renderFlinkSQLContent = () => {
     return (
-      <>
-        {current?.jobInstanceId && !data.destroyed ? (
-          <>
-            <Space>
-              <Button
-                loading={loading}
-                type='primary'
-                onClick={showDetail}
-                icon={<SearchOutlined />}
-              >
-                {l('pages.datastudio.label.result.query.latest.data')}
-              </Button>
-            </Space>
-          </>
-        ) : undefined}
-      </>
+      <Space>
+        <Button
+          loading={loading}
+          type='primary'
+          onClick={showDetail}
+          icon={<SearchOutlined />}
+        >
+          {l('pages.datastudio.label.result.query.latest.data')}
+        </Button>
+      </Space>
     );
   };
   const renderDownloadButton = () => {

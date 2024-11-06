@@ -61,7 +61,7 @@ public interface CustomTableEnvironment
 
     List<ModifyOperation> getModifyOperations();
 
-    void addOperator(Transformation transformation);
+    void addOperator(Transformation<?> transformation);
 
     void clearModifyOperations();
 
@@ -83,7 +83,7 @@ public interface CustomTableEnvironment
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
-    SqlExplainResult explainOperation(List<Operation> operations, ExplainDetail... extraDetails);
+    SqlExplainResult explainModifyOperations(List<ModifyOperation> modifyOperations, ExplainDetail... extraDetails);
 
     StreamExecutionEnvironment getStreamExecutionEnvironment();
 

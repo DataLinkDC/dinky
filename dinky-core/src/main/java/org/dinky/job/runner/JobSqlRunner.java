@@ -40,7 +40,6 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
-import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -65,15 +64,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobSqlRunner extends AbstractJobRunner {
 
-    private List<ModifyOperation> modifyOperations;
     private List<String> statements;
-    private List<Operation> operations;
 
     public JobSqlRunner(JobManager jobManager) {
         this.jobManager = jobManager;
-        this.modifyOperations = new ArrayList<>();
         this.statements = new ArrayList<>();
-        this.operations = new ArrayList<>();
     }
 
     @Override
@@ -94,18 +89,24 @@ public class JobSqlRunner extends AbstractJobRunner {
             if (operation instanceof CreateTableASOperation) {
                 CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
                 jobManager.getExecutor().executeOperation(createTableASOperation.getCreateTableOperation());
-                operations.add(createTableASOperation.toSinkModifyOperation(
-                        jobManager.getExecutor().getCatalogManager()));
+                jobManager
+                        .getExecutor()
+                        .addModifyOperations(createTableASOperation.toSinkModifyOperation(
+                                jobManager.getExecutor().getCatalogManager()));
             } else if (operation instanceof ReplaceTableAsOperation) {
                 ReplaceTableAsOperation replaceTableAsOperation = (ReplaceTableAsOperation) operation;
-                operations.add(replaceTableAsOperation.toSinkModifyOperation(
-                        jobManager.getExecutor().getCatalogManager()));
-            } else if (operation instanceof ModifyOperation || operation instanceof QueryOperation) {
-                operations.add(operation);
+                jobManager
+                        .getExecutor()
+                        .addModifyOperations(replaceTableAsOperation.toSinkModifyOperation(
+                                jobManager.getExecutor().getCatalogManager()));
+            } else if (operation instanceof QueryOperation) {
+                jobManager.getExecutor().addModifyOperations(new CollectModifyOperation((QueryOperation) operation));
+            } else if (operation instanceof ModifyOperation) {
+                jobManager.getExecutor().addModifyOperations((ModifyOperation) operation);
             }
             statements.add(jobStatement.getStatement());
             if (jobStatement.isFinalExecutableStatement()) {
-                SqlExplainResult sqlExplainResult = jobManager.getExecutor().explainOperation(operations);
+                SqlExplainResult sqlExplainResult = jobManager.getExecutor().explainModifyOperations();
                 resultBuilder = SqlExplainResult.newBuilder(sqlExplainResult);
                 resultBuilder.sql(getParsedSql()).index(jobStatement.getIndex());
             } else {
@@ -136,47 +137,29 @@ public class JobSqlRunner extends AbstractJobRunner {
     }
 
     public StreamGraph getStreamGraph(JobStatement jobStatement) {
-        buildTransformation(jobStatement);
+        addModifyOperations(jobStatement);
         if (jobStatement.isFinalExecutableStatement()) {
+            jobManager.getExecutor().addOperatorFromModifyOperations();
             return jobManager.getExecutor().getStreamGraph();
         }
         return null;
     }
 
     public JobPlanInfo getJobPlanInfo(JobStatement jobStatement) {
-        buildTransformation(jobStatement);
+        addModifyOperations(jobStatement);
         if (jobStatement.isFinalExecutableStatement()) {
+            jobManager.getExecutor().addOperatorFromModifyOperations();
             return jobManager.getExecutor().getJobPlanInfo();
         }
         return null;
     }
 
-    private void buildTransformation(JobStatement jobStatement) {
+    private void addModifyOperations(JobStatement jobStatement) {
         Operation operation = jobManager.getExecutor().getOperationFromStatement(jobStatement.getStatement());
-        List<Transformation<?>> transformations = null;
         if (operation instanceof ModifyOperation) {
-            List<ModifyOperation> singleModifyOperations = new ArrayList<>();
-            if (operation instanceof CreateTableASOperation) {
-                CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-                jobManager.getExecutor().executeOperation(createTableASOperation.getCreateTableOperation());
-                singleModifyOperations.add(createTableASOperation.toSinkModifyOperation(
-                        jobManager.getExecutor().getCatalogManager()));
-            } else if (operation instanceof ReplaceTableAsOperation) {
-                ReplaceTableAsOperation replaceTableAsOperation = (ReplaceTableAsOperation) operation;
-                singleModifyOperations.add(replaceTableAsOperation.toSinkModifyOperation(
-                        jobManager.getExecutor().getCatalogManager()));
-            } else {
-                singleModifyOperations.add((ModifyOperation) operation);
-            }
-            transformations = jobManager.getExecutor().transOperatoinsToTransformation(singleModifyOperations);
-
+            jobManager.getExecutor().addModifyOperations((ModifyOperation) operation);
         } else if (operation instanceof QueryOperation) {
-            CollectModifyOperation sinkOperation = new CollectModifyOperation((QueryOperation) operation);
-            transformations =
-                    jobManager.getExecutor().transOperatoinsToTransformation(Collections.singletonList(sinkOperation));
-        }
-        if (transformations != null) {
-            transformations.forEach(jobManager.getExecutor()::addOperator);
+            jobManager.getExecutor().addModifyOperations(new CollectModifyOperation((QueryOperation) operation));
         }
     }
 
@@ -204,12 +187,15 @@ public class JobSqlRunner extends AbstractJobRunner {
     }
 
     private void processWithoutGateway(JobStatement jobStatement) throws Exception {
-        ModifyOperation modifyOperation =
-                jobManager.getExecutor().getModifyOperationFromInsert(jobStatement.getStatement());
-        modifyOperations.add(modifyOperation);
-        statements.add(jobStatement.getStatement());
+        Operation operation = jobManager.getExecutor().getOperationFromStatement(jobStatement.getStatement());
+        if (operation instanceof ModifyOperation) {
+            jobManager.getExecutor().addModifyOperations((ModifyOperation) operation);
+            statements.add(jobStatement.getStatement());
+        } else if (operation instanceof QueryOperation) {
+            log.info("Select statement is skipped when execute sink task in application mode.");
+        }
         if (jobStatement.isFinalExecutableStatement()) {
-            TableResult tableResult = jobManager.getExecutor().executeModifyOperations(modifyOperations);
+            TableResult tableResult = jobManager.getExecutor().executeModifyOperations();
             updateJobWithTableResult(tableResult);
         }
     }
@@ -293,12 +279,11 @@ public class JobSqlRunner extends AbstractJobRunner {
                     .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
         } else {
             ModifyOperation modifyOperation = executor.getModifyOperationFromInsert(jobStatement.getStatement());
-            modifyOperations.add(modifyOperation);
+            jobManager.getExecutor().addModifyOperations(modifyOperation);
             if (!jobStatement.isFinalExecutableStatement()) {
                 return gatewayResult;
             }
-            JobGraph jobGraph = executor.getStreamGraphFromModifyOperations(modifyOperations)
-                    .getJobGraph();
+            JobGraph jobGraph = executor.getStreamGraphModifyOperations().getJobGraph();
             // Perjob mode need to set savepoint restore path, when recovery from savepoint.
             if (Asserts.isNotNullString(config.getSavePointPath())) {
                 jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));

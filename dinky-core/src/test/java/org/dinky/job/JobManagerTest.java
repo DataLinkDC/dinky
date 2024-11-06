@@ -23,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.ExplainResult;
+import org.dinky.executor.ExecutorConfig;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.flink.shaded.guava31.com.google.common.io.Resources;
@@ -53,7 +56,7 @@ class JobManagerTest {
                 .useAutoCancel(true)
                 .useChangeLog(false)
                 .useRemote(false)
-                .useResult(true)
+                .useResult(false)
                 .batchModel(false)
                 .jobName("Test")
                 .checkpoint(1000)
@@ -71,7 +74,7 @@ class JobManagerTest {
                 .useAutoCancel(true)
                 .useChangeLog(false)
                 .useRemote(false)
-                .useResult(true)
+                .useResult(false)
                 .batchModel(true)
                 .jobName("Test")
                 .checkpoint(1000)
@@ -87,8 +90,8 @@ class JobManagerTest {
 
     @Test
     void testGetStreamGraph() throws Exception {
-        checkGetStreamGraphFromFile("flink/sql/statement-set-stream.sql", 26);
-        checkGetBatchStreamGraphFromFile("flink/sql/statement-set-batch.sql", 29);
+        checkGetStreamGraphFromFile("flink/sql/statement-set-stream.sql", 21);
+        checkGetBatchStreamGraphFromFile("flink/sql/statement-set-batch.sql", 23);
     }
 
     @Test
@@ -104,8 +107,13 @@ class JobManagerTest {
     }
 
     @Test
-    void testExplainSqlSingle() throws Exception {
-        checkExplainStreamSqlFromFile("flink/sql/statement-set-stream.sql", 18);
+    void testLineageSqlSingle() throws Exception {
+        String statement =
+                IOUtils.toString(Resources.getResource("flink/sql/single-insert.sql"), StandardCharsets.UTF_8);
+        LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(statement, ExecutorConfig.DEFAULT);
+        assertNotNull(result);
+        assertEquals(2, result.getTables().size());
+        assertEquals(4, result.getRelations().size());
     }
 
     private void checkExplainStreamSqlFromFile(String path, int total) throws IOException {

@@ -45,6 +45,7 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.internal.TableResultInternal;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -213,6 +214,18 @@ public abstract class Executor {
         return tableEnvironment.executeSql(statement);
     }
 
+    public TableResultInternal executeModifyOperations() {
+        return tableEnvironment.executeInternal(tableEnvironment.getModifyOperations());
+    }
+
+    public void addOperatorFromModifyOperations() {
+        List<Transformation<?>> transformations =
+                transOperatoinsToTransformation(tableEnvironment.getModifyOperations());
+        if (transformations != null) {
+            transformations.forEach(this::addOperator);
+        }
+    }
+
     public void initUDF(String... udfFilePath) {
         List<File> jarFiles = DinkyClassLoader.getJarFiles(udfFilePath, null);
         dinkyClassLoader.addURLs(jarFiles);
@@ -270,8 +283,8 @@ public abstract class Executor {
         return null;
     }
 
-    public SqlExplainResult explainOperation(List<Operation> operations, ExplainDetail... extraDetails) {
-        return tableEnvironment.explainOperation(operations, extraDetails);
+    public SqlExplainResult explainModifyOperations(ExplainDetail... extraDetails) {
+        return tableEnvironment.explainModifyOperations(tableEnvironment.getModifyOperations(), extraDetails);
     }
 
     public ObjectNode getStreamGraph(List<String> statements) {
@@ -297,23 +310,12 @@ public abstract class Executor {
         return environment.getStreamGraph();
     }
 
-    public ObjectNode getStreamGraphFromDataStream(List<String> statements) {
-        statements.forEach(this::executeSql);
-        return getStreamGraphJsonNode(getStreamGraph());
+    public StreamGraph getStreamGraphModifyOperations() {
+        return getStreamGraphFromModifyOperations(tableEnvironment.getModifyOperations());
     }
 
     public JobPlanInfo getJobPlanInfo() {
         StreamGraph streamGraph = getStreamGraphFromModifyOperations(tableEnvironment.getModifyOperations());
-        return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
-    }
-
-    public JobPlanInfo getJobPlanInfo(List<String> statements) {
-        return tableEnvironment.getJobPlanInfo(statements);
-    }
-
-    public JobPlanInfo getJobPlanInfoFromDataStream(List<String> statements) {
-        statements.forEach(this::executeSql);
-        StreamGraph streamGraph = getStreamGraph();
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
@@ -329,10 +331,6 @@ public abstract class Executor {
         return tableEnvironment.getOperationFromStatement(statement);
     }
 
-    public StreamGraph getStreamGraph2() {
-        return tableEnvironment.getStreamGraph();
-    }
-
     public StreamGraph getStreamGraphFromModifyOperations(List<ModifyOperation> modifyOperations) {
         return tableEnvironment.getStreamGraphFromModifyOperations(modifyOperations);
     }
@@ -343,18 +341,8 @@ public abstract class Executor {
         return statementSet.execute();
     }
 
-    public TableResult executeModifyOperations(List<ModifyOperation> modifyOperations) throws Exception {
-        return tableEnvironment.executeInternal(modifyOperations);
-    }
-
     public TableResult executeOperation(Operation operation) {
         return tableEnvironment.executeInternal(operation);
-    }
-
-    public String explainStatementSet(List<String> statements) {
-        StatementSet statementSet = tableEnvironment.createStatementSet();
-        statements.forEach(statementSet::addInsertSql);
-        return statementSet.explain();
     }
 
     public List<LineageRel> getLineage(String statement) {
