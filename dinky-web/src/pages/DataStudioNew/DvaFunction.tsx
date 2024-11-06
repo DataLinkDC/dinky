@@ -109,6 +109,6 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryUserData,
         payload: params
-      }),
+      })
   };
 };
