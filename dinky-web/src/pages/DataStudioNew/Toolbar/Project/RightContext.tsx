@@ -56,11 +56,18 @@ export type RightContextProps = {
   queryFlinkEnv: any;
   updateCenterTab: any;
   updateAction: any;
-  users:UserBaseInfo.User[]
+  users: UserBaseInfo.User[];
 };
 export const useRightContext = (props: RightContextProps) => {
-  const { selectKeys, refresh, centerContent, queryFlinkEnv, updateCenterTab, updateAction, users } =
-    props;
+  const {
+    selectKeys,
+    refresh,
+    centerContent,
+    queryFlinkEnv,
+    updateCenterTab,
+    updateAction,
+    users
+  } = props;
   // 右键弹出框状态
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,

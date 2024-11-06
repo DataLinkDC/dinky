@@ -23,7 +23,7 @@ import { MenuInfo } from 'rc-menu/es/interface';
 import React from 'react';
 import { RightMenuItemProps } from '@/pages/DataStudioNew/data.d';
 import { DataStudioState } from '@/pages/DataStudioNew/model';
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
 
 /**
  * 右键菜单组件props | Right-click menu component props

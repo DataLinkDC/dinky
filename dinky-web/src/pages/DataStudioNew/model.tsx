@@ -149,10 +149,10 @@ export type DataStudioState = {
      */
     project: ProjectState;
   };
-  theme:{
+  theme: {
     // 是否开启紧凑模式
-    compact:boolean
-  },
+    compact: boolean;
+  };
 
   /**
    * zh: 中间内容 tab 列表
@@ -265,8 +265,8 @@ const StudioModel: StudioModelType = {
         selectedKeys: []
       }
     },
-    theme:{
-      compact:true
+    theme: {
+      compact: true
     },
     centerContent: {
       tabs: [],
