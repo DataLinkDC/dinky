@@ -17,7 +17,7 @@
  *
  */
 
-import {ToolbarRoute} from '@/pages/DataStudioNew/Toolbar/data.d';
+import { ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
 import {
   ConsoleSqlOutlined,
   DatabaseOutlined,
@@ -26,8 +26,8 @@ import {
   TableOutlined,
   ToolOutlined
 } from '@ant-design/icons';
-import React, {lazy, ReactElement, ReactNode, Suspense} from 'react';
-import {l} from "@/utils/intl";
+import React, { lazy, ReactElement, ReactNode, Suspense } from 'react';
+import { l } from '@/utils/intl';
 
 export const lazyComponent = (element: ReactNode): ReactElement => {
   return <Suspense fallback={<div>loading...</div>}>{element}</Suspense>;
@@ -39,57 +39,56 @@ const GlobalVariable = lazy(() => import('@/pages/DataStudioNew/Toolbar/GlobalVa
 const Service = lazy(() => import('@/pages/DataStudioNew/Toolbar/Service'));
 const Tool = lazy(() => import('@/pages/DataStudioNew/Toolbar/Tool'));
 const Catalog = lazy(() => import('@/pages/DataStudioNew/Toolbar/Catalog'));
-export const ToolbarRoutes:ToolbarRoute[] =
-   [
-    {
-      key: 'quick-start',
-      title: () => l('menu.datastudio.quickStart'),
-      icon: <></>,
-      position: 'centerContent',
-      content: () => lazyComponent(<StartIntro/>)
-    },
-    {
-      key: 'project',
-      title: () => l('menu.datastudio.project'),
-      icon: <ConsoleSqlOutlined/>,
-      position: 'leftTop',
-      content: () => lazyComponent(<Project/>)
-    },
-    {
-      key: 'catalog',
-      title: () => l('menu.datastudio.catalog'),
-      icon: <TableOutlined/>,
-      position: 'right',
-      content: () => lazyComponent(<Catalog/>)
-    },
-    {
-      key: 'datasource',
-      title: () => l('menu.datastudio.datasource'),
-      icon: <DatabaseOutlined/>,
-      position: 'leftTop',
-      content: () => lazyComponent(<DataSource/>)
-    },
-    {
-      key: 'function',
-      title: () => l('menu.registration.fragment'),
-      icon: <FunctionOutlined/>,
-      position: 'leftTop',
-      content: () => lazyComponent(<GlobalVariable/>)
-    },
-    {
-      key: 'service',
-      title: () => l('menu.datastudio.service'),
-      icon: <SettingOutlined/>,
-      position: 'leftBottom',
-      content: () => lazyComponent(<Service/>)
-    },
-    {
-      key: 'tool',
-      title: () => l('menu.datastudio.tool'),
-      icon: <ToolOutlined/>,
-      position: 'leftBottom',
-      content: () => lazyComponent(<Tool/>)
-    }
-  ] ;
+export const ToolbarRoutes: ToolbarRoute[] = [
+  {
+    key: 'quick-start',
+    title: () => l('menu.datastudio.quickStart'),
+    icon: <></>,
+    position: 'centerContent',
+    content: () => lazyComponent(<StartIntro />)
+  },
+  {
+    key: 'project',
+    title: () => l('menu.datastudio.project'),
+    icon: <ConsoleSqlOutlined />,
+    position: 'leftTop',
+    content: () => lazyComponent(<Project />)
+  },
+  {
+    key: 'catalog',
+    title: () => l('menu.datastudio.catalog'),
+    icon: <TableOutlined />,
+    position: 'right',
+    content: () => lazyComponent(<Catalog />)
+  },
+  {
+    key: 'datasource',
+    title: () => l('menu.datastudio.datasource'),
+    icon: <DatabaseOutlined />,
+    position: 'leftTop',
+    content: () => lazyComponent(<DataSource />)
+  },
+  {
+    key: 'function',
+    title: () => l('menu.registration.fragment'),
+    icon: <FunctionOutlined />,
+    position: 'leftTop',
+    content: () => lazyComponent(<GlobalVariable />)
+  },
+  {
+    key: 'service',
+    title: () => l('menu.datastudio.service'),
+    icon: <SettingOutlined />,
+    position: 'leftBottom',
+    content: () => lazyComponent(<Service />)
+  },
+  {
+    key: 'tool',
+    title: () => l('menu.datastudio.tool'),
+    icon: <ToolOutlined />,
+    position: 'leftBottom',
+    content: () => lazyComponent(<Tool />)
+  }
+];
 
-export const leftDefaultShowTab =ToolbarRoutes[1];
+export const leftDefaultShowTab = ToolbarRoutes[1];

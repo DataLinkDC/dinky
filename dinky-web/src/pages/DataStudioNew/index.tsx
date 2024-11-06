@@ -261,7 +261,7 @@ const DataStudioNew: React.FC = (props: any) => {
         return {
           ...tab,
           content: route.content(),
-          title:route.title(),
+          title: route.title(),
           minHeight: 30,
           minWidth: 200
         };

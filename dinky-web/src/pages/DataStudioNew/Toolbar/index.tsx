@@ -18,7 +18,7 @@
  */
 
 import { Flex, Row } from 'antd';
-import React, {useMemo} from 'react';
+import React, { useMemo } from 'react';
 import './index.less';
 import { ToolbarPosition, ToolbarProp } from '@/pages/DataStudioNew/Toolbar/data.d';
 import { ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';

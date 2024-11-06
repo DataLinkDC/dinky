@@ -37,7 +37,7 @@ export type ToolbarPosition = 'leftTop' | 'leftBottom' | 'right' | 'centerConten
 export type ToolbarRoute = {
   key: string;
   // 标题
-  title: ()=>string;
+  title: () => string;
   // 图标
   icon: JSX.Element;
   position: ToolbarPosition;
