@@ -86,6 +86,7 @@ export default {
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
   'button.autoWrap': 'Auto Wrap/Unwrap',
+  'button.output': 'Output',
 
   'menu.menu': 'Menu',
   'right.menu.open': 'Open',

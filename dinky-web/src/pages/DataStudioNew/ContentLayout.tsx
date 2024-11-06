@@ -66,7 +66,7 @@ export const layout: LayoutData = {
                   {
                     content: <></>,
                     id: leftDefaultShowTab.key,
-                    title: leftDefaultShowTab.title,
+                    title: "项目",
                     minHeight: 30,
                     group: leftDefaultShowTab.position
                   }
@@ -133,14 +133,15 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
           const route: ToolbarRoute = {
             key: panelData.activeId as string,
             // 标题
-            title: panelData.activeId as string,
+            title:()=>panelData.activeId as string,
             // 图标
             icon: <> </>,
             position: panelData.group as ToolbarPosition
           };
-          // @ts-ignore
           const layout = Algorithm.fixLayoutData(
+            // @ts-ignore
             createNewPanel(context.state.layout, route),
+            // @ts-ignore
             context.props.groups
           );
           // @ts-ignore

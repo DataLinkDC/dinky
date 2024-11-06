@@ -18,7 +18,7 @@
  */
 
 import { Flex, Row } from 'antd';
-import React from 'react';
+import React, {useMemo} from 'react';
 import './index.less';
 import { ToolbarPosition, ToolbarProp } from '@/pages/DataStudioNew/Toolbar/data.d';
 import { ToolbarRoutes } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
@@ -33,7 +33,7 @@ export default React.memo((props: ToolbarProp) => {
       ...item,
       position
     }));
-  const list = currentRoutes.map((item) => ({ id: item.key, name: item.title }));
+  const list = currentRoutes.map((item) => ({ id: item.key, name: item.title() }));
   const justifyContent = position === 'leftBottom' ? 'flex-end' : 'flex-start';
   return (
     <Flex wrap gap={1} justify={'center'} className={'toolbar-side'} id={position}>
@@ -103,7 +103,7 @@ export default React.memo((props: ToolbarProp) => {
                   style: { fontSize: height === 60 ? 25 : 20 }
                 })}
               </span>
-              {showDesc && <span className={'toolbar-desc'}>{item.title}</span>}
+              {showDesc && <span className={'toolbar-desc'}>{item.title()}</span>}
             </Row>
           );
         })}

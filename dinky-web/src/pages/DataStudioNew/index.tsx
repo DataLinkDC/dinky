@@ -46,7 +46,6 @@ import { activeTab, createNewPanel } from '@/pages/DataStudioNew/DockLayoutFunct
 import * as Algorithm from './Algorithm';
 import { PanelData } from 'rc-dock/lib/DockData';
 import { useAsyncEffect } from 'ahooks';
-import { THEME } from '@/types/Public/data';
 import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
 import './css/index.less';
@@ -63,7 +62,6 @@ const DataStudioNew: React.FC = (props: any) => {
     handleToolbarShowDesc,
     saveToolbarLayout,
     handleLayoutChange,
-    addCenterTab,
     updateAction,
     removeCenterTab,
     setLayout,
@@ -76,6 +74,9 @@ const DataStudioNew: React.FC = (props: any) => {
     querySuggestions
   } = props;
   const { token } = useToken();
+  // const toolbarRoutes = useMemo(() => {
+  //   return ToolbarRoutes()
+  // }, []);
   const dockLayoutRef = useRef<DockLayout>(null);
   const { drop } = useAliveController();
   const menuItem = useRightMenuItem({ dataStudioState });
@@ -113,7 +114,7 @@ const DataStudioNew: React.FC = (props: any) => {
     setLoading(false);
   }, []);
   useEffect(() => {
-    const { actionType, params } = dataStudioState.action;
+    const { actionType } = dataStudioState.action;
     if (actionType?.includes('task-run-')) {
       const dockLayout = dockLayoutRef.current!!;
       let position: ToolbarPosition = 'leftBottom';
@@ -144,7 +145,7 @@ const DataStudioNew: React.FC = (props: any) => {
           {
             id: serviceRoute.key,
             content: <></>,
-            title: serviceRoute.title,
+            title: serviceRoute.title(),
             group: serviceRoute.position
           },
           true
@@ -225,7 +226,7 @@ const DataStudioNew: React.FC = (props: any) => {
         {
           id: route.key,
           content: <></>,
-          title: route.title,
+          title: route.title(),
           group: route.position
         },
         true
@@ -250,7 +251,7 @@ const DataStudioNew: React.FC = (props: any) => {
             {content}
           </KeepAlive>
         ),
-        title,
+        title: route.title(),
         minHeight: 30,
         minWidth: 200
       };
@@ -259,8 +260,8 @@ const DataStudioNew: React.FC = (props: any) => {
         const route = ToolbarRoutes.find((x) => x.key === id) as ToolbarRoute;
         return {
           ...tab,
-          content: ToolbarRoutes.find((item) => item.key === route.key)!!.content(),
-          title,
+          content: route.content(),
+          title:route.title(),
           minHeight: 30,
           minWidth: 200
         };
@@ -343,7 +344,7 @@ const DataStudioNew: React.FC = (props: any) => {
     if (addSelect) {
       const tabData = {
         id: addSelect,
-        title: ToolbarRoutes.find((x) => x.key === addSelect)!!.title,
+        title: ToolbarRoutes.find((x) => x.key === addSelect)!!.title(),
         content: <></>,
         group: position
       };
