@@ -49,6 +49,8 @@ import { useAsyncEffect } from 'ahooks';
 import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
 import './css/index.less';
+import { getTenantByLocalStorage } from '@/utils/function';
+
 const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(
@@ -71,7 +73,8 @@ const DataStudioNew: React.FC = (props: any) => {
     queryFlinkConfigOptions,
     queryFlinkUdfOptions,
     queryDataSourceDataList,
-    querySuggestions
+    querySuggestions,
+    queryUserData
   } = props;
   const { token } = useToken();
   // const toolbarRoutes = useMemo(() => {
@@ -111,6 +114,7 @@ const DataStudioNew: React.FC = (props: any) => {
     await queryFlinkUdfOptions();
     await queryDataSourceDataList();
     await querySuggestions();
+    await queryUserData({ id: getTenantByLocalStorage() });
     setLoading(false);
   }, []);
   useEffect(() => {

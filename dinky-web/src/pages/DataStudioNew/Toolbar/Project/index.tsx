@@ -30,7 +30,6 @@ import { getTaskSortTypeData } from '@/pages/DataStudio/LeftContainer/Project/se
 import type { ButtonType } from 'antd/es/button/buttonHelpers';
 import { connect, useRequest } from '@@/exports';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
 import { useModel } from '@umijs/max';
 import { debounce } from '@/utils/function';
 import { DataStudioState } from '@/pages/DataStudioNew/model';
@@ -39,6 +38,7 @@ import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 import type RcTree from 'rc-tree';
 import { generateList, searchInTree } from '@/utils/treeUtils';
 import { buildProjectTree } from '@/pages/DataStudioNew/Toolbar/Project/function';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 
 export const Project = (props: any) => {
   const {
@@ -46,7 +46,9 @@ export const Project = (props: any) => {
     action: { actionType, params },
     updateProject,
     updateAction,
-    addCenterTab
+    addCenterTab,
+    taskOwnerLockingStrategy,
+    users
   } = props;
   const { initialState } = useModel('@@initialState');
 
@@ -118,8 +120,8 @@ export const Project = (props: any) => {
           searchValue,
           [],
           initialState?.currentUser?.user,
-          TaskOwnerLockingStrategy.ALL,
-          []
+          taskOwnerLockingStrategy,
+          users
         )
       );
       // 这里需要再次设置expandKeys，因为网络延迟问题，导致第一次设置expandKeys无效
@@ -304,9 +306,11 @@ export const Project = (props: any) => {
   );
 };
 export default connect(
-  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
+  ({ DataStudio, SysConfig }: { DataStudio: DataStudioState; SysConfig: SysConfigStateType }) => ({
     project: DataStudio.toolbar.project,
-    action: DataStudio.action
+    action: DataStudio.action,
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
+    users: DataStudio.users
   }),
   mapDispatchToProps
 )(Project);

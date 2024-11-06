@@ -19,10 +19,15 @@
 
 import { handleOption } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { queryDataByParams } from '@/services/BusinessCrud';
 
 export async function explainSql(title: string, params: any) {
   return handleOption(API_CONSTANTS.EXPLAIN_SQL, title, params);
 }
 export async function debugTask(title: string, params: any) {
   return handleOption(API_CONSTANTS.DEBUG_TASK, title, params);
+}
+
+export function getUserData(params: any) {
+  return queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, params);
 }

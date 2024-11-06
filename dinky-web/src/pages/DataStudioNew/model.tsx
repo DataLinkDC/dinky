@@ -52,6 +52,8 @@ import { Alert } from '@/types/RegCenter/data';
 import { showAlertGroup } from '@/pages/RegCenter/Alert/AlertGroup/service';
 import { DefaultOptionType } from 'antd/es/select';
 import { getDataSourceList } from '@/pages/DataStudioNew/Toolbar/DataSource/service';
+import {getUserData} from '@/pages/DataStudioNew/service';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 
 /**
  * @description:
@@ -185,6 +187,7 @@ export type DataStudioState = {
    * en: Temporary data
    */
   tempData: TempData;
+  users: UserBaseInfo.User[];
 };
 
 export type StudioModelType = {
@@ -198,6 +201,7 @@ export type StudioModelType = {
     queryFlinkUdfOptions: Effect;
     queryDataSourceDataList: Effect;
     querySuggestions: Effect;
+    queryUserData: Effect;
   };
   reducers: {
     // 保存布局
@@ -219,6 +223,7 @@ export type StudioModelType = {
     // 更新操作
     updateAction: Reducer<DataStudioState, UpdateActionDTO>;
     saveTempData: Reducer<DataStudioState, TempDataDTO>;
+    saveUserData: Reducer<DataStudioState>;
   };
 };
 
@@ -275,7 +280,8 @@ const StudioModel: StudioModelType = {
       leftTop: 200,
       leftBottom: 400,
       right: 200
-    }
+    },
+    users: []
   },
   effects: {
     *queryFlinkEnv({ payload }, { call, put, select }) {
@@ -377,6 +383,13 @@ const StudioModel: StudioModelType = {
           ...tempData,
           suggestions: data
         }
+      });
+    },
+    *queryUserData({ payload }, { call, put }) {
+      const response: [] = yield call(getUserData, payload);
+      yield put({
+        type: 'saveUserData',
+        payload: response
       });
     }
   },
@@ -556,6 +569,15 @@ const StudioModel: StudioModelType = {
       return {
         ...prevState,
         tempData: action.payload
+      };
+    },
+    saveUserData(state, { payload }) {
+      const users = payload.users.filter((user: UserBaseInfo.User) => {
+        return payload.userIds.includes(user.id);
+      });
+      return {
+        ...state,
+        users: users
       };
     }
   }
