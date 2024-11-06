@@ -17,19 +17,19 @@
  *
  */
 
-import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
-import { assert, lockTask, showAllOwners } from '@/pages/DataStudio/function';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
-import { DIALECT } from '@/services/constants';
-import { UserBaseInfo } from '@/types/AuthCenter/data.d';
-import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
-import { Catalogue } from '@/types/Studio/data.d';
-import { searchTreeNode } from '@/utils/function';
-import { l } from '@/utils/intl';
-import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
-import { Badge, Space, Tooltip } from 'antd';
-import { Key } from 'react';
-import { getTabIcon } from '@/pages/DataStudioNew/function';
+import {LeftBottomKey, RightMenuKey} from '@/pages/DataStudio/data.d';
+import {assert, lockTask, showAllOwners} from '@/pages/DataStudio/function';
+import {isSql} from '@/pages/DataStudio/HeaderContainer/function';
+import {DIALECT} from '@/services/constants';
+import {UserBaseInfo} from '@/types/AuthCenter/data.d';
+import {TaskOwnerLockingStrategy} from '@/types/SettingCenter/data.d';
+import {Catalogue} from '@/types/Studio/data.d';
+import {searchTreeNode} from '@/utils/function';
+import {l} from '@/utils/intl';
+import {LockTwoTone, UnlockTwoTone} from '@ant-design/icons';
+import {Badge, Divider, Space, Tooltip} from 'antd';
+import {Key} from 'react';
+import {getTabIcon} from '@/pages/DataStudioNew/function';
 
 /**
  * generate list of tree node from data
@@ -39,8 +39,8 @@ import { getTabIcon } from '@/pages/DataStudioNew/function';
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
     const node = element;
-    const { name, id, parentId, level } = node;
-    list.push({ name, id, key: id, title: name, parentId, level });
+    const {name, id, parentId, level} = node;
+    list.push({name, id, key: id, title: name, parentId, level});
     if (node.children) {
       generateList(node.children, list);
     }
@@ -236,90 +236,105 @@ export const buildProjectTree = (
 ): any =>
   data
     ? data.map((item: Catalogue) => {
-        const currentPath = path ? [...path, item.name] : [item.name];
-        // 构造生命周期的值
-        const stepValue = buildStepValue(item.task?.step);
-        // 渲染生命周期的 标记点
-        const renderPreFixState = item.isLeaf && showBadge(item.type) && (
-          <>
-            <Badge
-              title={stepValue.title}
-              color={stepValue.color}
-              // status={(stepValue.status as PresetStatusColorType) ?? 'default'}
-            />
-          </>
-        );
+      const currentPath = path ? [...path, item.name] : [item.name];
+      // 构造生命周期的值
+      const stepValue = buildStepValue(item.task?.step);
+      // 渲染生命周期的 标记点
+      const renderPreFixState = item.isLeaf && showBadge(item.type) && (
+        <>
+          <Badge
+            title={stepValue.title}
+            color={stepValue.color}
+            // status={(stepValue.status as PresetStatusColorType) ?? 'default'}
+          />
+        </>
+      );
 
-        // 总渲染 title
-        const renderTitle = (
-          <>
+      // 总渲染 title
+      const renderTitle = (
+        <Space align={'baseline'} size={2}>
+          {searchTreeNode(item.name, searchValue)}
+        </Space>
+      );
+
+      const toolTipTitle = item?.isLeaf
+        ? showAllOwners(item?.task?.firstLevelOwner, item?.task?.secondLevelOwners, users)
+        : <></>;
+
+      // 渲染后缀图标
+      const renderSuffixIcon = (
+        <>
+          {lockTask(
+            item?.task?.firstLevelOwner,
+            item?.task?.secondLevelOwners,
+            currentUser,
+            taskOwnerLockingStrategy
+          ) ? (
             <Tooltip
+              placement={'right'}
               title={
-                item?.isLeaf
-                  ? showAllOwners(item?.task?.firstLevelOwner, item?.task?.secondLevelOwners, users)
-                  : ''
+                <p style={{margin: 0}}>
+                  {l('global.operation.unable')}
+                  {toolTipTitle}
+                </p>
               }
             >
-              <Space align={'baseline'} size={2}>
-                {searchTreeNode(item.name, searchValue)}
-              </Space>
+              <LockTwoTone twoToneColor={'red'}/>
             </Tooltip>
-          </>
-        );
+          ) : (
+            <Tooltip
+              placement={'right'}
+              title={
+                <p style={{margin: 0}}>
+                  {l('global.operation.able')}
+                  <Divider style={{margin: 0}} type={'horizontal'}/>
+                  {toolTipTitle}
+                </p>
+              }
+            >
+              <UnlockTwoTone twoToneColor='gray'/>
+            </Tooltip>
+          )}
+        </>
+      );
 
-        // 渲染后缀图标
-        const renderSuffixIcon = (
+      return {
+        isLeaf: item.isLeaf,
+        name: item.name,
+        parentId: item.parentId,
+        label: searchTreeNode(item.name, searchValue),
+        icon: item.type && item.children.length === 0 && (
+          <Space size={'small'}>
+            {renderPreFixState}
+            {getTabIcon(item.type, 20)}
+          </Space>
+        ),
+        value: item.id,
+        path: currentPath,
+        type: item.type,
+        title: (
           <>
-            {lockTask(
-              item?.task?.firstLevelOwner,
-              item?.task?.secondLevelOwners,
-              currentUser,
-              taskOwnerLockingStrategy
-            ) ? (
-              <LockTwoTone title={l('global.operation.unable')} twoToneColor={'red'} />
-            ) : (
-              <UnlockTwoTone title={l('global.operation.able')} twoToneColor='gray' />
-            )}
-          </>
-        );
-
-        return {
-          isLeaf: item.isLeaf,
-          name: item.name,
-          parentId: item.parentId,
-          label: searchTreeNode(item.name, searchValue),
-          icon: item.type && item.children.length === 0 && (
-            <Space size={'small'}>
-              {renderPreFixState}
-              {getTabIcon(item.type, 20)}
+            {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>}
+            <Space style={{marginLeft: item.isLeaf ? 4 : 0}} align={'baseline'} size={'small'}>
+              {renderTitle}
+              {item.isLeaf && renderSuffixIcon}
             </Space>
-          ),
-          value: item.id,
-          path: currentPath,
-          type: item.type,
-          title: (
-            <>
-              {item.isLeaf && showBadge(item.type) && <>{'\u00A0'.repeat(2)}</>}
-              <Space style={{ marginLeft: item.isLeaf ? 4 : 0 }} align={'baseline'} size={'small'}>
-                {renderTitle}
-                {item.isLeaf && renderSuffixIcon}
-              </Space>
-            </>
-          ),
-          fullInfo: item,
-          key: item.id,
-          id: item.id,
-          taskId: item.taskId,
-          children: buildProjectTree(
-            item.children,
-            searchValue,
-            currentPath,
-            currentUser,
-            taskOwnerLockingStrategy,
-            users
-          )
-        };
-      })
+          </>
+        ),
+        fullInfo: item,
+        key: item.id,
+        id: item.id,
+        taskId: item.taskId,
+        children: buildProjectTree(
+          item.children,
+          searchValue,
+          currentPath,
+          currentUser,
+          taskOwnerLockingStrategy,
+          users
+        )
+      };
+    })
     : [];
 
 export const isUDF = (jobType: string): boolean => {
