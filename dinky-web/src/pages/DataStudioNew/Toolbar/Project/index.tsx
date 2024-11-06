@@ -39,14 +39,23 @@ import type RcTree from 'rc-tree';
 import { generateList, searchInTree } from '@/utils/treeUtils';
 import { buildProjectTree } from '@/pages/DataStudioNew/Toolbar/Project/function';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
+import { Catalogue } from '@/types/Studio/data';
+import { handleAddOrUpdate } from '@/services/BusinessCrud';
+import { handleRightClick } from '@/pages/DataStudioNew/function';
+import { useRightContext } from '@/pages/DataStudioNew/Toolbar/Project/RightContext';
 
 export const Project = (props: any) => {
   const {
+    dispatch,
+    centerContent,
     project: { expandKeys, selectedKeys },
     action: { actionType, params },
     updateProject,
     updateAction,
     addCenterTab,
+    queryFlinkEnv,
+    updateCenterTab,
     taskOwnerLockingStrategy,
     users
   } = props;
@@ -66,6 +75,7 @@ export const Project = (props: any) => {
   const ref = useRef<HTMLDivElement>(null);
   const treeRef = useRef<RcTree>(null);
   const [treeHeight, setTreeHeight] = useState(0);
+  const [openCreateRootDir, setOpenCreateRootDir] = useState(false);
   const [selectCatalogueSortTypeData, setSelectCatalogueSortTypeData] = useState<{
     sortValue: string;
     sortType: string;
@@ -80,6 +90,15 @@ export const Project = (props: any) => {
     method: 'post'
   });
 
+  const { RightContent, setRightContextMenuState, handleProjectRightClick } = useRightContext({
+    selectKeys: selectedKeys,
+    refresh,
+    centerContent,
+    queryFlinkEnv,
+    updateCenterTab,
+    updateAction
+  });
+
   useEffect(() => {
     switch (actionType) {
       // 折叠
@@ -92,6 +111,10 @@ export const Project = (props: any) => {
           .filter((item) => !item.isLeaf)
           .map((item) => item.key);
         updateProject({ expandKeys: expand });
+        break;
+      // 创建根目录
+      case DataStudioActionType.PROJECT_CREATE_ROOT_DIR:
+        setOpenCreateRootDir(true);
         break;
       // todo 右键没做
       case DataStudioActionType.PROJECT_RIGHT_CLICK:
@@ -175,6 +198,7 @@ export const Project = (props: any) => {
       node,
       event
     } = info;
+    handleProjectRightClick(info);
     updateProject({ selectedKeys: [key] });
     updateAction({ actionType: DataStudioActionType.PROJECT_RIGHT_CLICK, params: { isLeaf, key } });
   };
@@ -243,6 +267,31 @@ export const Project = (props: any) => {
       });
     }
   };
+
+  const handleCreateRootDirCancel = () => {
+    setOpenCreateRootDir(false);
+  };
+  /**
+   * 创建根目录, 并刷新目录树
+   * @param {Catalogue} values
+   */
+  const handleCreateRootDirSubmit = async (values: Catalogue) => {
+    await handleAddOrUpdate(
+      API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL,
+      {
+        ...values,
+        isLeaf: false,
+        parentId: 0
+      },
+      () => {},
+      () => {
+        handleCreateRootDirCancel();
+        refresh();
+      }
+    );
+  };
+  //  右键菜单handle
+  const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
   return (
     <Flex vertical style={{ paddingInline: 5, height: 'inherit' }} ref={ref}>
       <Skeleton
@@ -294,6 +343,7 @@ export const Project = (props: any) => {
             selectedKeys={selectedKeys}
             onExpand={onExpand}
             treeData={treeData}
+            onContextMenu={rightContextMenuHandle}
           />
         ) : (
           <Empty
@@ -301,6 +351,15 @@ export const Project = (props: any) => {
             description={l('datastudio.project.create.folder.tip')}
           />
         )}
+
+        <FolderModal
+          title={l('right.menu.createRoot')}
+          modalVisible={openCreateRootDir}
+          onCancel={handleCreateRootDirCancel}
+          onSubmit={handleCreateRootDirSubmit}
+          values={{}}
+        />
+        {RightContent}
       </Skeleton>
     </Flex>
   );
@@ -310,7 +369,8 @@ export default connect(
     project: DataStudio.toolbar.project,
     action: DataStudio.action,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
-    users: DataStudio.users
+    users: DataStudio.users,
+    centerContent: DataStudio.centerContent
   }),
   mapDispatchToProps
 )(Project);
