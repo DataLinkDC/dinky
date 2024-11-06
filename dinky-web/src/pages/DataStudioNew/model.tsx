@@ -52,7 +52,7 @@ import { Alert } from '@/types/RegCenter/data';
 import { showAlertGroup } from '@/pages/RegCenter/Alert/AlertGroup/service';
 import { DefaultOptionType } from 'antd/es/select';
 import { getDataSourceList } from '@/pages/DataStudioNew/Toolbar/DataSource/service';
-import {getUserData} from '@/pages/DataStudioNew/service';
+import { getUserData } from '@/pages/DataStudioNew/service';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 
 /**
