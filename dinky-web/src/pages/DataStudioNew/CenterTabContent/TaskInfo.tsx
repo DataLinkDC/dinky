@@ -21,12 +21,12 @@ import { l } from '@/utils/intl';
 import { Descriptions } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { TaskState } from '@/pages/DataStudioNew/type';
-import {showFirstLevelOwner,showSecondLevelOwners} from '@/pages/DataStudioNew/function'
+import { showFirstLevelOwner, showSecondLevelOwners } from '@/pages/DataStudioNew/function';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 
-export const TaskInfo = (props: { params: TaskState,users: UserBaseInfo.User[] }) => {
+export const TaskInfo = (props: { params: TaskState; users: UserBaseInfo.User[] }) => {
   const {
-    params: { taskId, name, dialect, versionId, firstLevelOwner, secondLevelOwners},
+    params: { taskId, name, dialect, versionId, firstLevelOwner, secondLevelOwners },
     users
   } = props;
 
