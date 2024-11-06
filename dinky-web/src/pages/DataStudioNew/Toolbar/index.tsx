@@ -17,7 +17,7 @@
  *
  */
 
-import { Flex, Row } from 'antd';
+import {Flex, Row, Tooltip} from 'antd';
 import React, { useMemo } from 'react';
 import './index.less';
 import { ToolbarPosition, ToolbarProp } from '@/pages/DataStudioNew/Toolbar/data.d';
@@ -81,17 +81,18 @@ export default React.memo((props: ToolbarProp) => {
             className += ' toolbar-icon-container-open';
           }
           return (
-            <Row
-              id={item.key}
-              className={className}
-              style={{ height }}
-              align={'middle'}
-              justify={'center'}
-              key={item.key}
-              onClick={() => {
-                onClick(item);
-              }}
-            >
+            <Tooltip title={item.title()} placement={'right'} arrow={false} key={item.key}>
+              <Row
+                id={item.key}
+                className={className}
+                style={{ height }}
+                align={'middle'}
+                justify={'center'}
+                key={item.key}
+                onClick={() => {
+                  onClick(item);
+                }}
+              >
               <span
                 style={{
                   width: '100%',
@@ -103,8 +104,9 @@ export default React.memo((props: ToolbarProp) => {
                   style: { fontSize: height === 60 ? 25 : 20 }
                 })}
               </span>
-              {showDesc && <span className={'toolbar-desc'}>{item.title()}</span>}
-            </Row>
+                {showDesc && <span className={'toolbar-desc'}>{item.title()}</span>}
+              </Row>
+            </Tooltip>
           );
         })}
       </ReactSortable>

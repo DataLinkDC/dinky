@@ -23,7 +23,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Col, ConfigProvider, Row, Spin, theme } from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
-import { RightContextMenuState } from '@/pages/DataStudioNew/data.d';
+import {DataStudioActionType, RightContextMenuState} from '@/pages/DataStudioNew/data.d';
 import {
   getAllPanel,
   getLayoutState,
@@ -74,9 +74,6 @@ const DataStudioNew: React.FC = (props: any) => {
     querySuggestions
   } = props;
   const { token } = useToken();
-  // const toolbarRoutes = useMemo(() => {
-  //   return ToolbarRoutes()
-  // }, []);
   const dockLayoutRef = useRef<DockLayout>(null);
   const { drop } = useAliveController();
   const menuItem = useRightMenuItem({ dataStudioState });
@@ -114,7 +111,7 @@ const DataStudioNew: React.FC = (props: any) => {
     setLoading(false);
   }, []);
   useEffect(() => {
-    const { actionType } = dataStudioState.action;
+    const { actionType,params } = dataStudioState.action;
     if (actionType?.includes('task-run-')) {
       const dockLayout = dockLayoutRef.current!!;
       let position: ToolbarPosition = 'leftBottom';
@@ -150,6 +147,14 @@ const DataStudioNew: React.FC = (props: any) => {
           },
           true
         );
+      }
+    }else if (actionType===DataStudioActionType.TASK_DELETE){
+      const current = dockLayoutRef.current;
+      if (current){
+        const currentLayoutData = current.getLayout();
+        const source = Algorithm.find(currentLayoutData,params.id) as TabData;
+        const layoutData = Algorithm.removeFromLayout(currentLayoutData,source );
+        current.changeLayout(layoutData,params.id,'remove',false);
       }
     }
   }, [dataStudioState.action]);
@@ -268,7 +273,11 @@ const DataStudioNew: React.FC = (props: any) => {
       }
       const tabData = (dataStudioState.centerContent.tabs as CenterTab[]).find(
         (x) => x.id === id
-      )!!;
+      );
+      if (!tabData){
+        dockLayoutRef.current?.dockMove(tab, id!!, 'remove');
+        return tab;
+      }
 
       const getTitle = () => {
         switch (tabData.tabType) {

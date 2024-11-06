@@ -166,7 +166,9 @@ const toolbarPanelExtraButtons = (
         className='my-panel-extra-btn'
         key='right.menu.createRoot'
         title={l('right.menu.createRoot')}
-        onClick={() => {}}
+        onClick={() => {
+          updateAction({ actionType: DataStudioActionType.PROJECT_CREATE_ROOT_DIR, params: {} });
+        }}
       />
     );
     buttons.push(
