@@ -1286,5 +1286,10 @@ export default {
   'dashboard.theme.shine': '明亮',
   'dashboard.theme.vintage': '复古',
   'dashboard.theme.westeros': '西部',
-  'dashboard.theme.wonderland': '奇幻'
+  'dashboard.theme.wonderland': '奇幻',
+
+  'datastudio.toolbar.rightClick.hideToolbarDesc':'隐藏工具栏窗口名称',
+  'datastudio.toolbar.rightClick.showToolbarDesc':'显示工具栏窗口名称',
+  'datastudio.toolbar.rightClick.closeCompact':'关闭紧凑模式',
+  'datastudio.toolbar.rightClick.openCompact':'打开紧凑模式',
 };

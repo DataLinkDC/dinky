@@ -234,6 +234,7 @@ export default (props: { taskId: number }) => {
   return (
     <>
       <ProList<JobExecutionHistory>
+        className={'datastudio-theme'}
         actionRef={refAction}
         search={{
           filterType: 'light'

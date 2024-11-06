@@ -252,6 +252,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       </Flex>
       {data.columns ? (
         <ProTable
+          className={'datastudio-theme'}
           cardBordered
           columns={getColumns(data.columns)}
           size='small'

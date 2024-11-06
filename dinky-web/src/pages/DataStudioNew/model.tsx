@@ -149,6 +149,10 @@ export type DataStudioState = {
      */
     project: ProjectState;
   };
+  theme:{
+    // 是否开启紧凑模式
+    compact:boolean
+  },
 
   /**
    * zh: 中间内容 tab 列表
@@ -210,6 +214,8 @@ export type StudioModelType = {
     handleLayoutChange: Reducer<DataStudioState, HandleLayoutChangeDTO>;
     // 操作工具栏显示描述
     handleToolbarShowDesc: Reducer<DataStudioState>;
+    // 切换紧凑模式
+    handleThemeCompact: Reducer<DataStudioState>;
     // 保存工具栏布局
     saveToolbarLayout: Reducer<DataStudioState, SaveToolbarLayoutDTO>;
     // 更新中间tab
@@ -258,6 +264,9 @@ const StudioModel: StudioModelType = {
         expandKeys: [],
         selectedKeys: []
       }
+    },
+    theme:{
+      compact:true
     },
     centerContent: {
       tabs: [],
@@ -471,6 +480,15 @@ const StudioModel: StudioModelType = {
         toolbar: {
           ...state.toolbar,
           showDesc: !state.toolbar.showDesc
+        }
+      };
+    },
+    handleThemeCompact(state, {}) {
+      return {
+        ...state,
+        theme: {
+          ...state.theme,
+          compact: !state.theme.compact
         }
       };
     },
