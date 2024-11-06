@@ -41,7 +41,6 @@ public abstract class AbstractCustomTableEnvironment
 
     protected StreamTableEnvironment streamTableEnvironment;
     protected ClassLoader userClassLoader;
-    protected List<ModifyOperation> modifyOperations = new ArrayList<>();
 
     protected AbstractCustomTableEnvironment() {}
 

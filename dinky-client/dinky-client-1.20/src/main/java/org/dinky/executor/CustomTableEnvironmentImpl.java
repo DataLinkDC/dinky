@@ -23,8 +23,10 @@ import org.dinky.data.exception.DinkyException;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.operations.CustomNewParserImpl;
 
+import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.ExecutionOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -34,18 +36,38 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.ExplainFormat;
+import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.api.config.TableConfigOptions;
 import org.apache.flink.table.api.internal.CachedPlan;
 import org.apache.flink.table.api.internal.TableResultInternal;
+import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.CatalogDescriptor;
+import org.apache.flink.table.catalog.ContextResolvedTable;
+import org.apache.flink.table.catalog.ObjectIdentifier;
+import org.apache.flink.table.catalog.ResolvedCatalogTable;
+import org.apache.flink.table.catalog.StagedTable;
+import org.apache.flink.table.connector.sink.DynamicTableSink;
+import org.apache.flink.table.connector.sink.SinkStagingContext;
+import org.apache.flink.table.connector.sink.abilities.SupportsStaging;
+import org.apache.flink.table.execution.StagingSinkJobStatusHook;
+import org.apache.flink.table.factories.TableFactoryUtil;
+import org.apache.flink.table.module.Module;
+import org.apache.flink.table.module.ModuleManager;
+import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
+import org.apache.flink.table.operations.ReplaceTableAsOperation;
+import org.apache.flink.table.operations.ddl.CreateTableOperation;
+import org.apache.flink.table.operations.utils.ExecutableOperationUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -65,6 +87,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     private static final Logger log = LoggerFactory.getLogger(CustomTableEnvironmentImpl.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
+
+    private List<ModifyOperation> modifyOperations = new ArrayList<>();
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
@@ -93,6 +117,138 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
+    }
+
+    public List<ModifyOperation> getModifyOperations() {
+        return modifyOperations;
+    }
+
+    public void addModifyOperations(ModifyOperation modifyOperation) {
+        if (modifyOperation instanceof CreateTableASOperation) {
+            modifyOperations.add(getModifyOperation((CreateTableASOperation) modifyOperation));
+        } else if (modifyOperation instanceof ReplaceTableAsOperation) {
+            modifyOperations.add(getModifyOperation((ReplaceTableAsOperation) modifyOperation));
+        } else {
+            modifyOperations.add(modifyOperation);
+        }
+    }
+
+    private ModifyOperation getModifyOperation(CreateTableASOperation ctasOperation) {
+        CreateTableOperation createTableOperation = ctasOperation.getCreateTableOperation();
+        ObjectIdentifier tableIdentifier = createTableOperation.getTableIdentifier();
+        Catalog catalog = getCatalogManager().getCatalogOrThrowException(tableIdentifier.getCatalogName());
+        ResolvedCatalogTable catalogTable =
+            getCatalogManager().resolveCatalogTable(createTableOperation.getCatalogTable());
+        Optional<DynamicTableSink> stagingDynamicTableSink =
+            getSupportsStagingDynamicTableSink(createTableOperation, catalog, catalogTable);
+        if (stagingDynamicTableSink.isPresent()) {
+            // use atomic ctas
+            DynamicTableSink dynamicTableSink = stagingDynamicTableSink.get();
+            SupportsStaging.StagingPurpose stagingPurpose = createTableOperation.isIgnoreIfExists()
+                ? SupportsStaging.StagingPurpose.CREATE_TABLE_AS_IF_NOT_EXISTS
+                : SupportsStaging.StagingPurpose.CREATE_TABLE_AS;
+            StagedTable stagedTable =
+                ((SupportsStaging) dynamicTableSink).applyStaging(new SinkStagingContext(stagingPurpose));
+            StagingSinkJobStatusHook stagingSinkJobStatusHook = new StagingSinkJobStatusHook(stagedTable);
+            return ctasOperation.toStagedSinkModifyOperation(tableIdentifier, catalogTable, catalog, dynamicTableSink);
+        }
+        // use non-atomic ctas, create table first
+        executeInternal(createTableOperation);
+        return ctasOperation.toSinkModifyOperation(getCatalogManager());
+    }
+
+    private ModifyOperation getModifyOperation(ReplaceTableAsOperation rtasOperation) {
+        CreateTableOperation createTableOperation = rtasOperation.getCreateTableOperation();
+        ObjectIdentifier tableIdentifier = createTableOperation.getTableIdentifier();
+        // First check if the replacedTable exists
+        Optional<ContextResolvedTable> replacedTable = getCatalogManager().getTable(tableIdentifier);
+        if (!rtasOperation.isCreateOrReplace() && !replacedTable.isPresent()) {
+            throw new TableException(String.format(
+                "The table %s to be replaced doesn't exist. "
+                    + "You can try to use CREATE TABLE AS statement or "
+                    + "CREATE OR REPLACE TABLE AS statement.",
+                tableIdentifier));
+        }
+        Catalog catalog = getCatalogManager().getCatalogOrThrowException(tableIdentifier.getCatalogName());
+        ResolvedCatalogTable catalogTable =
+            getCatalogManager().resolveCatalogTable(createTableOperation.getCatalogTable());
+        Optional<DynamicTableSink> stagingDynamicTableSink =
+            getSupportsStagingDynamicTableSink(createTableOperation, catalog, catalogTable);
+        if (stagingDynamicTableSink.isPresent()) {
+            // use atomic rtas
+            DynamicTableSink dynamicTableSink = stagingDynamicTableSink.get();
+            SupportsStaging.StagingPurpose stagingPurpose = rtasOperation.isCreateOrReplace()
+                ? SupportsStaging.StagingPurpose.CREATE_OR_REPLACE_TABLE_AS
+                : SupportsStaging.StagingPurpose.REPLACE_TABLE_AS;
+
+            StagedTable stagedTable =
+                ((SupportsStaging) dynamicTableSink).applyStaging(new SinkStagingContext(stagingPurpose));
+            StagingSinkJobStatusHook stagingSinkJobStatusHook = new StagingSinkJobStatusHook(stagedTable);
+            return rtasOperation.toStagedSinkModifyOperation(tableIdentifier, catalogTable, catalog, dynamicTableSink);
+        }
+        // non-atomic rtas drop table first if exists, then create
+        if (replacedTable.isPresent()) {
+            getCatalogManager().dropTable(tableIdentifier, false);
+        }
+        executeInternal(createTableOperation);
+        return rtasOperation.toSinkModifyOperation(getCatalogManager());
+    }
+
+    private Optional<DynamicTableSink> getSupportsStagingDynamicTableSink(
+        CreateTableOperation createTableOperation, Catalog catalog, ResolvedCatalogTable catalogTable) {
+        TableConfig tableConfig = getTableEnvironment().getConfig();
+        boolean isStreamingMode = true;
+        RuntimeExecutionMode runtimeExecutionMode =
+            getStreamExecutionEnvironment().getConfiguration().get(ExecutionOptions.RUNTIME_MODE);
+        if (RuntimeExecutionMode.BATCH.equals(runtimeExecutionMode)) {
+            isStreamingMode = false;
+        }
+        if (tableConfig.get(TableConfigOptions.TABLE_RTAS_CTAS_ATOMICITY_ENABLED)) {
+            if (!TableFactoryUtil.isLegacyConnectorOptions(
+                catalog,
+                tableConfig,
+                isStreamingMode,
+                createTableOperation.getTableIdentifier(),
+                catalogTable,
+                createTableOperation.isTemporary())) {
+                try {
+                    DynamicTableSink dynamicTableSink = ExecutableOperationUtils.createDynamicTableSink(
+                        catalog,
+                        () -> (new ModuleManager()).getFactory((Module::getTableSinkFactory)),
+                        createTableOperation.getTableIdentifier(),
+                        catalogTable,
+                        Collections.emptyMap(),
+                        tableConfig,
+                        getUserClassLoader(),
+                        createTableOperation.isTemporary());
+                    if (dynamicTableSink instanceof SupportsStaging) {
+                        return Optional.of(dynamicTableSink);
+                    }
+                } catch (Exception e) {
+                    throw new TableException(
+                        String.format(
+                            "Fail to create DynamicTableSink for the table %s, "
+                                + "maybe the table does not support atomicity of CTAS/RTAS, "
+                                + "please set %s to false and try again.",
+                            createTableOperation.getTableIdentifier(),
+                            TableConfigOptions.TABLE_RTAS_CTAS_ATOMICITY_ENABLED.key()),
+                        e);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void addOperator(Transformation<?> transformation) {
+        getStreamExecutionEnvironment().addOperator(transformation);
+    }
+
+    public void clearModifyOperations() {
+        modifyOperations.clear();
+    }
+
+    public List<Transformation<?>> transOperatoinsToTransformation(List<ModifyOperation> modifyOperations) {
+        return getPlanner().translate(modifyOperations);
     }
 
     @Override
@@ -153,6 +309,17 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
+    public Operation getOperationFromStatement(String statement) {
+        List<Operation> operations = getParser().parse(statement);
+        if (operations.isEmpty()) {
+            throw new TableException("No statement is parsed.");
+        }
+        if (operations.size() > 1) {
+            throw new TableException("Only single statement is supported.");
+        }
+        return operations.get(0);
+    }
+
     public ModifyOperation getModifyOperationFromInsert(String statement) {
         List<Operation> operations = getParser().parse(statement);
         if (operations.isEmpty()) {
@@ -164,15 +331,21 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         Operation operation = operations.get(0);
         if (operation instanceof ModifyOperation) {
             return (ModifyOperation) operation;
+        } else if (operation instanceof QueryOperation) {
+            log.info("Select statement is skipped.");
+            return null;
         } else {
-            throw new TableException("Only insert statement is supported now.");
+            throw new TableException("Only insert or select statement is supported now.");
         }
+    }
+
+    public StreamGraph getStreamGraph() {
+        return transOperatoinsToStreamGraph(modifyOperations);
     }
 
     public StreamGraph getStreamGraphFromModifyOperations(List<ModifyOperation> modifyOperations) {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
-
     @Override
     public void createCatalog(String catalogName, CatalogDescriptor catalogDescriptor) {
         getCatalogManager().createCatalog(catalogName, catalogDescriptor);
@@ -188,10 +361,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         if (operations.size() != 1) {
             throw new DinkyException("Unsupported SQL explain! explainSql() only accepts a single SQL.");
         }
-        return explainOperation(operations);
-    }
-
-    public SqlExplainResult explainOperation(List<Operation> operations, ExplainDetail... extraDetails) {
         SqlExplainResult record = new SqlExplainResult();
         if (operations.isEmpty()) {
             throw new DinkyException("No statement is explained.");
@@ -199,17 +368,54 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         record.setParseTrue(true);
         Operation operation = operations.get(0);
         if (operation instanceof ModifyOperation) {
-            record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-            record.setType("Modify DML");
+            if (operation instanceof ReplaceTableAsOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("RTAS");
+            } else if (operation instanceof CreateTableASOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("CTAS");
+            } else {
+                record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+                record.setType("DML");
+            }
         } else if (operation instanceof ExplainOperation) {
-            record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-            record.setType("Explain DML");
+            record.setExplain(operation.asSummaryString());
+            record.setType("Explain");
         } else if (operation instanceof QueryOperation) {
             record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-            record.setType("Query DML");
+            record.setType("DQL");
         } else {
             record.setExplain(operation.asSummaryString());
             record.setType("DDL");
+        }
+        record.setExplainTrue(true);
+        return record;
+    }
+
+    public SqlExplainResult explainModifyOperations(
+        List<ModifyOperation> modifyOperations, ExplainDetail... extraDetails) {
+        SqlExplainResult record = new SqlExplainResult();
+        if (modifyOperations.isEmpty()) {
+            throw new DinkyException("No modify operation is explained.");
+        }
+        record.setParseTrue(true);
+        if (modifyOperations.size() == 1) {
+            Operation operation = modifyOperations.get(0);
+            if (operation instanceof ReplaceTableAsOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("RTAS");
+            } else if (operation instanceof CreateTableASOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("CTAS");
+            } else {
+                record.setExplain(
+                    getPlanner().explain(new ArrayList<>(modifyOperations), ExplainFormat.TEXT, extraDetails));
+                record.setType("DML");
+            }
+        } else {
+            record.setExplain(
+                getPlanner().explain(new ArrayList<>(modifyOperations), ExplainFormat.TEXT, extraDetails));
+            record.setType("Statement Set");
         }
         record.setExplainTrue(true);
         return record;

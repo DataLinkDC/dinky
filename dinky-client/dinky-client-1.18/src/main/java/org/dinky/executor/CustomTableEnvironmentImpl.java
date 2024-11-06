@@ -86,6 +86,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    private List<ModifyOperation> modifyOperations = new ArrayList<>();
+
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
         injectParser(new CustomNewParserImpl(this, getPlanner().getParser()));

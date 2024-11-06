@@ -25,6 +25,7 @@ import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.parser.CustomParserImpl;
+import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -62,15 +63,18 @@ import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
+import org.apache.flink.table.operations.ddl.CreateTableASOperation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
@@ -81,6 +85,8 @@ import cn.hutool.core.collection.CollUtil;
  * @since 2022/05/08
  */
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
+    private static final Logger log = LoggerFactory.getLogger(CustomTableEnvironmentImpl.class);
+
     private final CustomExtendedOperationExecutorImpl extendedExecutor = new CustomExtendedOperationExecutorImpl(this);
     private static final String UNSUPPORTED_QUERY_IN_EXECUTE_SQL_MSG =
             "Unsupported SQL query! executeSql() only accepts a single SQL statement of type "
@@ -89,6 +95,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                     + "USE CATALOG, USE [CATALOG.]DATABASE, SHOW CATALOGS, SHOW DATABASES, SHOW TABLES, SHOW [USER] FUNCTIONS, SHOW PARTITIONS"
                     + "CREATE VIEW, DROP VIEW, SHOW VIEWS, INSERT, DESCRIBE, LOAD MODULE, UNLOAD "
                     + "MODULE, USE MODULES, SHOW [FULL] MODULES.";
+
+    private List<ModifyOperation> modifyOperations = new ArrayList<>();
 
     public CustomTableEnvironmentImpl(
             CatalogManager catalogManager,
@@ -172,38 +180,59 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 classLoader);
     }
 
-    @Override
+    public List<ModifyOperation> getModifyOperations() {
+        return modifyOperations;
+    }
+
+    public void addModifyOperations(ModifyOperation modifyOperation) {
+        if (modifyOperation instanceof CreateTableASOperation) {
+            CreateTableASOperation ctasOperation = (CreateTableASOperation) modifyOperation;
+            executeInternal(ctasOperation.getCreateTableOperation());
+            modifyOperations.add(ctasOperation.toSinkModifyOperation(getCatalogManager()));
+        } else {
+            modifyOperations.add(modifyOperation);
+        }
+    }
+
+    public void addOperator(Transformation<?> transformation) {
+        getStreamExecutionEnvironment().addOperator(transformation);
+    }
+
+    public void clearModifyOperations() {
+        modifyOperations.clear();
+    }
+
+    public List<Transformation<?>> transOperatoinsToTransformation(List<ModifyOperation> modifyOperations) {
+        return getPlanner().translate(modifyOperations);
+    }
+
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
             throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
-        } else {
-            List<ModifyOperation> modifyOperations = new ArrayList<>();
-            for (int i = 0; i < operations.size(); i++) {
-                if (operations.get(i) instanceof ModifyOperation) {
-                    modifyOperations.add((ModifyOperation) operations.get(i));
-                }
-            }
-            List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
-            for (Transformation<?> transformation : trans) {
-                getStreamExecutionEnvironment().addOperator(transformation);
-            }
-            StreamGraph streamGraph = getStreamExecutionEnvironment().getStreamGraph();
-            if (getConfig().getConfiguration().containsKey(PipelineOptions.NAME.key())) {
-                streamGraph.setJobName(getConfig().getConfiguration().getString(PipelineOptions.NAME));
-            }
-            JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
-            String json = jsonGenerator.getJSON();
-            ObjectMapper mapper = new ObjectMapper();
-            ObjectNode objectNode = mapper.createObjectNode();
-            try {
-                objectNode = (ObjectNode) mapper.readTree(json);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            } finally {
-                return objectNode;
-            }
         }
+
+        List<ModifyOperation> modifyOperations = operations.stream()
+                .filter(ModifyOperation.class::isInstance)
+                .map(ModifyOperation.class::cast)
+                .collect(Collectors.toList());
+
+        StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);
+        JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
+        return JsonUtils.parseObject(jsonGenerator.getJSON());
+    }
+
+    private StreamGraph transOperatoinsToStreamGraph(List<ModifyOperation> modifyOperations) {
+        List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
+        final StreamExecutionEnvironment environment = getStreamExecutionEnvironment();
+        trans.forEach(environment::addOperator);
+
+        StreamGraph streamGraph = environment.getStreamGraph();
+        final Configuration configuration = getConfig().getConfiguration();
+        if (configuration.containsKey(PipelineOptions.NAME.key())) {
+            streamGraph.setJobName(configuration.getString(PipelineOptions.NAME));
+        }
+        return streamGraph;
     }
 
     @Override
@@ -257,6 +286,17 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return streamGraph;
     }
 
+    public Operation getOperationFromStatement(String statement) {
+        List<Operation> operations = getParser().parse(statement);
+        if (operations.isEmpty()) {
+            throw new TableException("No statement is parsed.");
+        }
+        if (operations.size() > 1) {
+            throw new TableException("Only single statement is supported.");
+        }
+        return operations.get(0);
+    }
+
     public ModifyOperation getModifyOperationFromInsert(String statement) {
         List<Operation> operations = getParser().parse(statement);
         if (operations.isEmpty()) {
@@ -268,9 +308,16 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         Operation operation = operations.get(0);
         if (operation instanceof ModifyOperation) {
             return (ModifyOperation) operation;
+        } else if (operation instanceof QueryOperation) {
+            log.info("Select statement is skipped.");
+            return null;
         } else {
-            throw new TableException("Only insert statement is supported now.");
+            throw new TableException("Only insert or select statement is supported now.");
         }
+    }
+
+    public StreamGraph getStreamGraph() {
+        return transOperatoinsToStreamGraph(modifyOperations);
     }
 
     public StreamGraph getStreamGraphFromModifyOperations(List<ModifyOperation> modifyOperations) {
@@ -283,39 +330,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             streamGraph.setJobName(getConfig().getConfiguration().getString(PipelineOptions.NAME));
         }
         return streamGraph;
-    }
-
-    @Override
-    public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
-        List<Operation> operations = getParser().parse(statement);
-        if (operations.size() != 1) {
-            throw new DinkyException("Unsupported SQL explain! explainSql() only accepts a single SQL.");
-        }
-        return explainOperation(operations);
-    }
-
-    public SqlExplainResult explainOperation(List<Operation> operations, ExplainDetail... extraDetails) {
-        SqlExplainResult record = new SqlExplainResult();
-        if (operations.isEmpty()) {
-            throw new DinkyException("No statement is explained.");
-        }
-        record.setParseTrue(true);
-        Operation operation = operations.get(0);
-        if (operation instanceof ModifyOperation) {
-            record.setExplain(getPlanner().explain(operations, extraDetails));
-            record.setType("Modify DML");
-        } else if (operation instanceof ExplainOperation) {
-            record.setExplain(getPlanner().explain(operations, extraDetails));
-            record.setType("Explain DML");
-        } else if (operation instanceof QueryOperation) {
-            record.setExplain(getPlanner().explain(operations, extraDetails));
-            record.setType("Query DML");
-        } else {
-            record.setExplain(operation.asSummaryString());
-            record.setType("DDL");
-        }
-        record.setExplainTrue(true);
-        return record;
     }
 
     @Override
@@ -363,5 +377,62 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                     .build();
         }
         return super.executeInternal(operation);
+    }
+
+    public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
+        List<Operation> operations = getParser().parse(statement);
+        if (operations.size() != 1) {
+            throw new DinkyException("Unsupported SQL explain! explainSql() only accepts a single SQL.");
+        }
+        SqlExplainResult record = new SqlExplainResult();
+        if (operations.isEmpty()) {
+            throw new DinkyException("No statement is explained.");
+        }
+        record.setParseTrue(true);
+        Operation operation = operations.get(0);
+        if (operation instanceof ModifyOperation) {
+            if (operation instanceof CreateTableASOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("CTAS");
+            } else {
+                record.setExplain(getPlanner().explain(operations, extraDetails));
+                record.setType("DML");
+            }
+        } else if (operation instanceof ExplainOperation) {
+            record.setExplain(operation.asSummaryString());
+            record.setType("Explain");
+        } else if (operation instanceof QueryOperation) {
+            record.setExplain(getPlanner().explain(operations, extraDetails));
+            record.setType("DQL");
+        } else {
+            record.setExplain(operation.asSummaryString());
+            record.setType("DDL");
+        }
+        record.setExplainTrue(true);
+        return record;
+    }
+
+    public SqlExplainResult explainModifyOperations(
+            List<ModifyOperation> modifyOperations, ExplainDetail... extraDetails) {
+        SqlExplainResult record = new SqlExplainResult();
+        if (modifyOperations.isEmpty()) {
+            throw new DinkyException("No modify operation is explained.");
+        }
+        record.setParseTrue(true);
+        if (modifyOperations.size() == 1) {
+            Operation operation = modifyOperations.get(0);
+            if (operation instanceof CreateTableASOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("CTAS");
+            } else {
+                record.setExplain(getPlanner().explain(new ArrayList<>(modifyOperations), extraDetails));
+                record.setType("DML");
+            }
+        } else {
+            record.setExplain(getPlanner().explain(new ArrayList<>(modifyOperations), extraDetails));
+            record.setType("Statement Set");
+        }
+        record.setExplainTrue(true);
+        return record;
     }
 }

@@ -36,6 +36,7 @@ import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.operations.CreateTableASOperation;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -58,6 +59,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     private static final Logger log = LoggerFactory.getLogger(CustomTableEnvironmentImpl.class);
+
+    private List<ModifyOperation> modifyOperations = new ArrayList<>();
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
@@ -87,6 +90,32 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
+    }
+
+    public List<ModifyOperation> getModifyOperations() {
+        return modifyOperations;
+    }
+
+    public void addModifyOperations(ModifyOperation modifyOperation) {
+        if (modifyOperation instanceof CreateTableASOperation) {
+            CreateTableASOperation ctasOperation = (CreateTableASOperation) modifyOperation;
+            executeInternal(ctasOperation.getCreateTableOperation());
+            modifyOperations.add(ctasOperation.toSinkModifyOperation(getCatalogManager()));
+        } else {
+            modifyOperations.add(modifyOperation);
+        }
+    }
+
+    public void addOperator(Transformation<?> transformation) {
+        getStreamExecutionEnvironment().addOperator(transformation);
+    }
+
+    public void clearModifyOperations() {
+        modifyOperations.clear();
+    }
+
+    public List<Transformation<?>> transOperatoinsToTransformation(List<ModifyOperation> modifyOperations) {
+        return getPlanner().translate(modifyOperations);
     }
 
     public ObjectNode getStreamGraph(String statement) {
@@ -140,6 +169,17 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
+    public Operation getOperationFromStatement(String statement) {
+        List<Operation> operations = getParser().parse(statement);
+        if (operations.isEmpty()) {
+            throw new TableException("No statement is parsed.");
+        }
+        if (operations.size() > 1) {
+            throw new TableException("Only single statement is supported.");
+        }
+        return operations.get(0);
+    }
+
     public ModifyOperation getModifyOperationFromInsert(String statement) {
         List<Operation> operations = getParser().parse(statement);
         if (operations.isEmpty()) {
@@ -151,9 +191,16 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         Operation operation = operations.get(0);
         if (operation instanceof ModifyOperation) {
             return (ModifyOperation) operation;
+        } else if (operation instanceof QueryOperation) {
+            log.info("Select statement is skipped.");
+            return null;
         } else {
-            throw new TableException("Only insert statement is supported now.");
+            throw new TableException("Only insert or select statement is supported now.");
         }
+    }
+
+    public StreamGraph getStreamGraph() {
+        return transOperatoinsToStreamGraph(modifyOperations);
     }
 
     public StreamGraph getStreamGraphFromModifyOperations(List<ModifyOperation> modifyOperations) {
@@ -165,10 +212,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         if (operations.size() != 1) {
             throw new DinkyException("Unsupported SQL explain! explainSql() only accepts a single SQL.");
         }
-        return explainOperation(operations);
-    }
-
-    public SqlExplainResult explainOperation(List<Operation> operations, ExplainDetail... extraDetails) {
         SqlExplainResult record = new SqlExplainResult();
         if (operations.isEmpty()) {
             throw new DinkyException("No statement is explained.");
@@ -176,17 +219,46 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         record.setParseTrue(true);
         Operation operation = operations.get(0);
         if (operation instanceof ModifyOperation) {
-            record.setExplain(getPlanner().explain(operations, extraDetails));
-            record.setType("Modify DML");
+            if (operation instanceof CreateTableASOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("CTAS");
+            } else {
+                record.setExplain(getPlanner().explain(operations, extraDetails));
+                record.setType("DML");
+            }
         } else if (operation instanceof ExplainOperation) {
-            record.setExplain(getPlanner().explain(operations, extraDetails));
-            record.setType("Explain DML");
+            record.setExplain(operation.asSummaryString());
+            record.setType("Explain");
         } else if (operation instanceof QueryOperation) {
             record.setExplain(getPlanner().explain(operations, extraDetails));
-            record.setType("Query DML");
+            record.setType("DQL");
         } else {
             record.setExplain(operation.asSummaryString());
             record.setType("DDL");
+        }
+        record.setExplainTrue(true);
+        return record;
+    }
+
+    public SqlExplainResult explainModifyOperations(
+            List<ModifyOperation> modifyOperations, ExplainDetail... extraDetails) {
+        SqlExplainResult record = new SqlExplainResult();
+        if (modifyOperations.isEmpty()) {
+            throw new DinkyException("No modify operation is explained.");
+        }
+        record.setParseTrue(true);
+        if (modifyOperations.size() == 1) {
+            Operation operation = modifyOperations.get(0);
+            if (operation instanceof CreateTableASOperation) {
+                record.setExplain(operation.asSummaryString());
+                record.setType("CTAS");
+            } else {
+                record.setExplain(getPlanner().explain(new ArrayList<>(modifyOperations), extraDetails));
+                record.setType("DML");
+            }
+        } else {
+            record.setExplain(getPlanner().explain(new ArrayList<>(modifyOperations), extraDetails));
+            record.setType("Statement Set");
         }
         record.setExplainTrue(true);
         return record;
