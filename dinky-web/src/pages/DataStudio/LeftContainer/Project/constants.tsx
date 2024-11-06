@@ -29,7 +29,7 @@ import {
   UpCircleTwoTone
 } from '@ant-design/icons';
 import { DefaultOptionType } from 'antd/es/select';
-import {MenuItemType} from "antd/es/menu/interface";
+import { MenuItemType } from 'antd/es/menu/interface';
 
 /**
  * 目录级别:

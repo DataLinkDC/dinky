@@ -23,7 +23,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import { Col, ConfigProvider, Row, Spin, theme } from 'antd';
 import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
-import {DataStudioActionType, RightContextMenuState} from '@/pages/DataStudioNew/data.d';
+import { DataStudioActionType, RightContextMenuState } from '@/pages/DataStudioNew/data.d';
 import {
   getAllPanel,
   getLayoutState,
@@ -111,7 +111,7 @@ const DataStudioNew: React.FC = (props: any) => {
     setLoading(false);
   }, []);
   useEffect(() => {
-    const { actionType,params } = dataStudioState.action;
+    const { actionType, params } = dataStudioState.action;
     if (actionType?.includes('task-run-')) {
       const dockLayout = dockLayoutRef.current!!;
       let position: ToolbarPosition = 'leftBottom';
@@ -148,13 +148,13 @@ const DataStudioNew: React.FC = (props: any) => {
           true
         );
       }
-    }else if (actionType===DataStudioActionType.TASK_DELETE){
+    } else if (actionType === DataStudioActionType.TASK_DELETE) {
       const current = dockLayoutRef.current;
-      if (current){
+      if (current) {
         const currentLayoutData = current.getLayout();
-        const source = Algorithm.find(currentLayoutData,params.id) as TabData;
-        const layoutData = Algorithm.removeFromLayout(currentLayoutData,source );
-        current.changeLayout(layoutData,params.id,'remove',false);
+        const source = Algorithm.find(currentLayoutData, params.id) as TabData;
+        const layoutData = Algorithm.removeFromLayout(currentLayoutData, source);
+        current.changeLayout(layoutData, params.id, 'remove', false);
       }
     }
   }, [dataStudioState.action]);
@@ -271,10 +271,8 @@ const DataStudioNew: React.FC = (props: any) => {
           minWidth: 200
         };
       }
-      const tabData = (dataStudioState.centerContent.tabs as CenterTab[]).find(
-        (x) => x.id === id
-      );
-      if (!tabData){
+      const tabData = (dataStudioState.centerContent.tabs as CenterTab[]).find((x) => x.id === id);
+      if (!tabData) {
         dockLayoutRef.current?.dockMove(tab, id!!, 'remove');
         return tab;
       }

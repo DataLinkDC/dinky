@@ -17,9 +17,9 @@
  *
  */
 
-import React, {ReactNode, useCallback, useEffect, useState} from 'react';
-import {Button, Tooltip} from 'antd';
-import {sleep} from '@antfu/utils';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import { Button, Tooltip } from 'antd';
+import { sleep } from '@antfu/utils';
 
 // 快捷键属性
 export type HotKeyProps = {
@@ -52,15 +52,14 @@ export default (props: RunToolBarButtonProps) => {
     disabled = false
   } = props;
   const [loading, setLoading] = useState(false);
-  const style = color ? {color: color} : {};
+  const style = color ? { color: color } : {};
 
   const onClickHandle = useCallback(async () => {
     setLoading(true);
     if (onClick) {
       try {
         await onClick();
-      } catch (e) {
-      }
+      } catch (e) {}
     }
     await sleep(sleepTime ?? 500);
     setLoading(false);
@@ -93,7 +92,7 @@ export default (props: RunToolBarButtonProps) => {
           type='text'
           icon={icon}
           onClick={onClickHandle}
-          style={{...style, padding: '1px 6px'}}
+          style={{ ...style, padding: '1px 6px' }}
         >
           {showDesc ? desc : ''}
         </Button>
