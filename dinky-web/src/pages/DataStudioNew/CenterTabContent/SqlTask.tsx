@@ -98,7 +98,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     activeTab,
     enabledDs,
     taskOwnerLockingStrategy,
-    dsConfig
+    dsConfig,
+    users
   } = props;
   const { params, title, id } = props.tabData as CenterTab;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -298,7 +299,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   rightToolbarItem.push({
     label: l('global.info'),
     key: 'info',
-    children: <TaskInfo params={{ ...currentState }} />
+    children: <TaskInfo params={{ ...currentState }} users={users} />
   });
 
   const handleSave = useCallback(async () => {
@@ -795,7 +796,8 @@ export default connect(
     activeTab: DataStudio.centerContent.activeTab,
     dsConfig: SysConfig.dsConfig,
     enabledDs: SysConfig.enabledDs,
-    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
+    taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy,
+    users: DataStudio.users
   }),
   mapDispatchToProps
 )(SqlTask);

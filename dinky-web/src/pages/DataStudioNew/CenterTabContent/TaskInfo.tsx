@@ -21,10 +21,13 @@ import { l } from '@/utils/intl';
 import { Descriptions } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { TaskState } from '@/pages/DataStudioNew/type';
+import {showFirstLevelOwner,showSecondLevelOwners} from '@/pages/DataStudioNew/function'
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 
-export const TaskInfo = (props: { params: TaskState }) => {
+export const TaskInfo = (props: { params: TaskState,users: UserBaseInfo.User[] }) => {
   const {
-    params: { taskId, name, dialect, versionId }
+    params: { taskId, name, dialect, versionId, firstLevelOwner, secondLevelOwners},
+    users
   } = props;
 
   return (
@@ -42,13 +45,12 @@ export const TaskInfo = (props: { params: TaskState }) => {
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
           {versionId}
         </Descriptions.Item>
-        // todo 责任人
-        {/*<Descriptions.Item label={l('pages.datastudio.label.jobInfo.firstLevelOwner')}>*/}
-        {/*  {showFirstLevelOwner(currentInfo?.firstLevelOwner, users)}*/}
-        {/*</Descriptions.Item>*/}
-        {/*<Descriptions.Item label={l('pages.datastudio.label.jobInfo.secondLevelOwners')}>*/}
-        {/*  {showSecondLevelOwners(currentInfo?.secondLevelOwners, users)}*/}
-        {/*</Descriptions.Item>*/}
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.firstLevelOwner')}>
+          {showFirstLevelOwner(firstLevelOwner, users)}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.secondLevelOwners')}>
+          {showSecondLevelOwners(secondLevelOwners, users)}
+        </Descriptions.Item>
       </Descriptions>
     </div>
   );
