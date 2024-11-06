@@ -185,9 +185,11 @@ public class Explainer {
         }
         JobParam jobParam =
                 new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList), parsedSql.toString());
-        if (jobManager.getConfig().isMockSinkFunction()) {
-            MockStatementExplainer.jobParamMock(jobParam);
-        }
+
+        MockStatementExplainer.build(executor.getCustomTableEnvironment())
+                .isMockSink(jobManager.getConfig().isMockSinkFunction())
+                .jobParamMock(jobParam);
+
         return jobParam;
     }
 
