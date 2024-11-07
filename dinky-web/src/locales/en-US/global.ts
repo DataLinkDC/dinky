@@ -126,6 +126,8 @@ export default {
   'global.stay.tuned': 'Stay tuned',
   'global.mini': 'Mini Size',
   'global.max': 'Max Size',
+  'global.blankOpen': 'Opens in a new window',
+  'global.float': 'Float',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
