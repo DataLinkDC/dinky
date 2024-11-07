@@ -17,22 +17,15 @@
  *
  */
 
-import { Circle, Group, Path } from '@antv/g';
-import {
-  ExtensionCategory,
-  Graph,
-  PathArray,
-  RectCombo,
-  RectComboStyleProps,
-  register
-} from '@antv/g6';
-import { memo, useContext, useEffect, useRef } from 'react';
-import { Flex } from 'antd';
-import { ReactNode } from '@antv/g6-extension-react';
-import { Graphin } from '@antv/graphin';
-import { DagreLayout, GridLayout } from '@antv/layout';
-import { LineageDetailInfo } from '@/types/DevOps/data';
-import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
+import {Circle, Group, Path} from '@antv/g';
+import {ExtensionCategory, Graph, PathArray, RectCombo, RectComboStyleProps, register} from '@antv/g6';
+import {memo, useContext, useEffect, useRef} from 'react';
+import {Flex} from 'antd';
+import {ReactNode} from '@antv/g6-extension-react';
+import {Graphin} from '@antv/graphin';
+import {DagreLayout, GridLayout} from '@antv/layout';
+import {LineageDetailInfo} from '@/types/DevOps/data';
+import {DataStudioContext} from '@/pages/DataStudioNew/DataStudioContext';
 
 const collapse = (x: number, y: number, r: number) => {
   return [
@@ -63,7 +56,7 @@ class RectComboWithExtraButton extends RectCombo {
   }
 
   drawButton(attributes: Required<RectComboStyleProps>) {
-    const { collapsed } = attributes;
+    const {collapsed} = attributes;
     const [, height] = this.getKeySize(attributes);
     const btnR = 8;
     const y = -(height / 2 + btnR);
@@ -72,17 +65,17 @@ class RectComboWithExtraButton extends RectCombo {
     const hitArea = this.upsert(
       'hit-area',
       Circle,
-      { cy: y, r: 10, fill: '#fff', cursor: 'pointer' },
+      {cy: y, r: 10, fill: '#fff', cursor: 'pointer'},
       this
     );
-    this.upsert('button', Path, { stroke: '#3d81f7', d, cursor: 'pointer' }, hitArea!!);
+    this.upsert('button', Path, {stroke: '#3d81f7', d, cursor: 'pointer'}, hitArea!!);
   }
 
   onCreate() {
     this.shapeMap['hit-area'].addEventListener('click', () => {
       const id = this.id;
       const collapsed = !this.attributes.collapsed;
-      const { graph } = this.attributes.context!!;
+      const {graph} = this.attributes.context!!;
       if (collapsed) graph.collapseElement(id);
       else graph.expandElement(id);
     });
@@ -93,8 +86,8 @@ register(ExtensionCategory.COMBO, 'circle-combo-with-extra-button', RectComboWit
 
 register(ExtensionCategory.NODE, 'react', ReactNode);
 export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
-  const { data } = props;
-  const { theme } = useContext(DataStudioContext);
+  const {data} = props;
+  const {theme} = useContext(DataStudioContext);
   const graphRef = useRef<Graph>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -102,7 +95,7 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
     // 监控布局宽度高度变化，重新计算树的高度
     const element = containerRef.current!!;
     const observer = new ResizeObserver((entries) => {
-      if (entries?.length === 1) {
+      if (graphRef.current && entries?.length === 1 && entries[0].contentRect.width > 0 && entries[0].contentRect.height > 0) {
         graphRef.current?.setSize(entries[0].contentRect.width, entries[0].contentRect.height);
       }
     });
@@ -118,10 +111,10 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
     {} as Record<string, string>
   );
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{width: '100%', height: '100%'}}>
       <Graphin
         ref={graphRef}
-        style={{ overflow: 'hidden' }}
+        style={{overflow: 'hidden', display: 'flex', flex: '1 1 auto'}}
         options={{
           autoResize: true,
           theme: theme === 'light' ? theme : 'dark',
@@ -130,14 +123,14 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
               item.columns.map((column) => ({
                 id: item.id + column.name,
                 combo: item.id,
-                data: { name: column.name }
+                data: {name: column.name}
               }))
             ),
             edges: data.relations.map((item) => ({
               source: item.srcTableId + item.srcTableColName,
               target: item.tgtTableId + item.tgtTableColName
             })),
-            combos: data.tables.map((item) => ({ id: item.id }))
+            combos: data.tables.map((item) => ({id: item.id}))
           },
           combo: {
             type: 'circle-combo-with-extra-button',
@@ -166,7 +159,7 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
                 </Flex>
               ),
               port: true,
-              ports: [{ placement: 'right' }, { placement: 'left' }]
+              ports: [{placement: 'right'}, {placement: 'left'}]
             }
           },
           edge: {
@@ -178,7 +171,7 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
           },
           layout: {
             type: 'combo-combined',
-            innerLayout: new GridLayout({ cols: 1, condense: true }),
+            innerLayout: new GridLayout({cols: 1, condense: true}),
             outerLayout: new DagreLayout({
               rankdir: 'LR',
               edgeLabelSpace: false,
@@ -232,16 +225,16 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
               },
               getItems: () => {
                 return [
-                  { id: 'zoom-in', value: 'zoom-in' },
-                  { id: 'zoom-out', value: 'zoom-out' },
-                  { id: 'auto-fit', value: 'auto-fit' }
+                  {id: 'zoom-in', value: 'zoom-in'},
+                  {id: 'zoom-out', value: 'zoom-out'},
+                  {id: 'auto-fit', value: 'auto-fit'}
                 ];
               },
               style: {
                 backgroundColor: 'var(--btn-background-color)'
               }
             },
-            { key: 'background', type: 'background', background: 'var(--primary-color)' }
+            {key: 'background', type: 'background', background: 'var(--primary-color)'}
           ],
           transforms: ['process-parallel-edges'],
           autoFit: 'view'
