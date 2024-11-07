@@ -66,7 +66,7 @@ export const BasicConfig = (props: {
     };
   }, []);
   return (
-    <div ref={divRef}>
+    <div ref={divRef} className={'datastudio-theme'}>
       <ProForm
         initialValues={{ ...props.data }}
         submitter={false}

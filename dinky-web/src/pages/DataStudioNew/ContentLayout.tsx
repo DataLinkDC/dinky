@@ -99,7 +99,7 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
         rotate={90}
         className='my-panel-extra-btn'
         key='float'
-        title='浮动'
+        title={l('global.float')}
         onClick={() => context.dockMove(panelData, null, 'float')}
       />
     );
@@ -108,7 +108,7 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
       <MaximizeIcon
         className='my-panel-extra-btn'
         key='maximize'
-        title={panelData.parent?.mode === 'maximize' ? '恢复' : '最大化'}
+        title={panelData.parent?.mode === 'maximize' ? l('button.recovery') : l('global.max')}
         onClick={() => context.dockMove(panelData, null, 'maximize')}
       />
     );
@@ -119,7 +119,7 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
           rotate={90}
           className='my-panel-extra-btn'
           key='new-window'
-          title='在新窗口打开'
+          title={l('global.blankOpen')}
           onClick={() => context.dockMove(panelData, null, 'new-window')}
         />
       );
@@ -239,7 +239,7 @@ const toolbarPanelExtraButtons = (
     <CloseOutlined
       className='my-panel-extra-btn'
       key='close'
-      title='关闭'
+      title={l('button.close')}
       onClick={() => context.dockMove(panelData, null, 'remove')}
     />
   );

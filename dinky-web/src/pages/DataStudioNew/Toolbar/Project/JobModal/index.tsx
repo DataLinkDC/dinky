@@ -128,6 +128,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     await form.validateFields();
     if (isUDF(formData.type ?? '') && formData.configJson) {
       const { selectKeys } = formData.configJson.udfConfig!!;
+      // @ts-ignore
       formData.configJson.udfConfig.templateId = selectKeys[selectKeys.length - 1];
     }
     // if this type is flink job, init task value and submit

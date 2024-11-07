@@ -101,6 +101,7 @@ export default {
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',
   'menu.datastudio.quickStart': 'Quick Start',
+  'menu.datastudio.flinkSqlClient': 'Flink SQL Client',
 
   'menu.datastudio.tool': 'Tool',
   'menu.datastudio.result': 'Result',

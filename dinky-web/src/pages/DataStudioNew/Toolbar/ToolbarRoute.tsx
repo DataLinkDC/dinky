@@ -19,6 +19,7 @@
 
 import { ToolbarRoute } from '@/pages/DataStudioNew/Toolbar/data.d';
 import {
+  CodeOutlined,
   ConsoleSqlOutlined,
   DatabaseOutlined,
   FunctionOutlined,
@@ -39,6 +40,7 @@ const GlobalVariable = lazy(() => import('@/pages/DataStudioNew/Toolbar/GlobalVa
 const Service = lazy(() => import('@/pages/DataStudioNew/Toolbar/Service'));
 const Tool = lazy(() => import('@/pages/DataStudioNew/Toolbar/Tool'));
 const Catalog = lazy(() => import('@/pages/DataStudioNew/Toolbar/Catalog'));
+const FlinkSqlClient = lazy(() => import('@/pages/DataStudioNew/Toolbar/FlinkSqlClient'));
 export const ToolbarRoutes: ToolbarRoute[] = [
   {
     key: 'quick-start',
@@ -88,6 +90,13 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     icon: <ToolOutlined />,
     position: 'leftBottom',
     content: () => lazyComponent(<Tool />)
+  },
+  {
+    key: 'flinkSqlClient',
+    title: () => l('menu.datastudio.flinkSqlClient'),
+    icon: <CodeOutlined />,
+    position: 'leftBottom',
+    content: () => lazyComponent(<FlinkSqlClient />)
   }
 ];
 

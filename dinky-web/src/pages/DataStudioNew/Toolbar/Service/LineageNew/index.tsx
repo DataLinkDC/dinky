@@ -102,7 +102,12 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
     // 监控布局宽度高度变化，重新计算树的高度
     const element = containerRef.current!!;
     const observer = new ResizeObserver((entries) => {
-      if (entries?.length === 1) {
+      if (
+        graphRef.current &&
+        entries?.length === 1 &&
+        entries[0].contentRect.width > 0 &&
+        entries[0].contentRect.height > 0
+      ) {
         graphRef.current?.setSize(entries[0].contentRect.width, entries[0].contentRect.height);
       }
     });
@@ -121,7 +126,7 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
     <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
       <Graphin
         ref={graphRef}
-        style={{ overflow: 'hidden' }}
+        style={{ overflow: 'hidden', display: 'flex', flex: '1 1 auto' }}
         options={{
           autoResize: true,
           theme: theme === 'light' ? theme : 'dark',
