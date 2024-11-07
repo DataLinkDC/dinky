@@ -84,7 +84,7 @@ export default (props: RunToolBarButtonProps) => {
   const tooltipDesc = hotKey?.enable ? `${desc} : (${hotKey.hotKeyDesc})` : desc;
   return (
     isShow && (
-      <Tooltip title={tooltipDesc}>
+      <Tooltip title={tooltipDesc} placement={'bottom'}>
         <Button
           disabled={disabled}
           loading={loading}
