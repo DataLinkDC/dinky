@@ -26,7 +26,7 @@ import {
   RectComboStyleProps,
   register
 } from '@antv/g6';
-import { memo, useContext, useRef } from 'react';
+import { memo, useContext, useEffect, useRef } from 'react';
 import { Flex } from 'antd';
 import { ReactNode } from '@antv/g6-extension-react';
 import { Graphin } from '@antv/graphin';
@@ -96,7 +96,19 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
   const { data } = props;
   const { theme } = useContext(DataStudioContext);
   const graphRef = useRef<Graph>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    // 监控布局宽度高度变化，重新计算树的高度
+    const element = containerRef.current!!;
+    const observer = new ResizeObserver((entries) => {
+      if (entries?.length === 1) {
+        graphRef.current?.setSize(entries[0].contentRect.width, entries[0].contentRect.height);
+      }
+    });
+    observer.observe(element);
+    return () => observer.unobserve(element);
+  }, []);
   // 把data.tables 的id ,name转成map
   const tablesMap = data.tables.reduce(
     (acc, item) => {
@@ -106,126 +118,135 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
     {} as Record<string, string>
   );
   return (
-    <Graphin
-      ref={graphRef}
-      style={{ overflow: 'hidden' }}
-      options={{
-        autoResize: true,
-        theme: theme === 'light' ? theme : 'dark',
-        data: {
-          nodes: data.tables.flatMap((item) =>
-            item.columns.map((column) => ({
-              id: item.id + column.name,
-              combo: item.id,
-              data: { name: column.name }
-            }))
-          ),
-          edges: data.relations.map((item) => ({
-            source: item.srcTableId + item.srcTableColName,
-            target: item.tgtTableId + item.tgtTableColName
-          })),
-          combos: data.tables.map((item) => ({ id: item.id }))
-        },
-        combo: {
-          type: 'circle-combo-with-extra-button',
-          style: {
-            labelText: (d) => tablesMap[d.id]
-          }
-        },
-        node: {
-          type: 'react',
-          style: {
-            size: [240, 20],
-            component: (data: { data: { name: string } }) => (
-              <Flex
-                justify={'center'}
-                align={'center'}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  background: '#fff',
-                  borderRadius: 5,
-                  border: '1px solid gray'
-                }}
-                vertical
-              >
-                {data.data.name}
-              </Flex>
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+      <Graphin
+        ref={graphRef}
+        style={{ overflow: 'hidden' }}
+        options={{
+          autoResize: true,
+          theme: theme === 'light' ? theme : 'dark',
+          data: {
+            nodes: data.tables.flatMap((item) =>
+              item.columns.map((column) => ({
+                id: item.id + column.name,
+                combo: item.id,
+                data: { name: column.name }
+              }))
             ),
-            port: true,
-            ports: [{ placement: 'right' }, { placement: 'left' }]
-          }
-        },
-        edge: {
-          type: 'cubic-horizontal',
-          style: {
-            labelBackground: true,
-            endArrow: true
-          }
-        },
-        layout: {
-          type: 'combo-combined',
-          // comboPadding: 40,
-          // nodeSize: 0,
-          // spacing: 0,
-          innerLayout: new GridLayout({ cols: 1, condense: true }),
-          outerLayout: new DagreLayout({
-            rankdir: 'LR',
-            edgeLabelSpace: false,
-            nodesep: 5,
-            ranksep: 50
-          })
-        },
-        behaviors: [
-          'drag-canvas',
-          'zoom-canvas',
-          {
-            type: 'hover-activate',
-            degree: 100 // 👈🏻 Activate relations.
-          }
-        ],
-        plugins: [
-          {
-            key: 'grid-line',
-            type: 'grid-line',
-            follow: false,
-            size: 40,
-            stroke: 'var(--border-color)'
+            edges: data.relations.map((item) => ({
+              source: item.srcTableId + item.srcTableColName,
+              target: item.tgtTableId + item.tgtTableColName
+            })),
+            combos: data.tables.map((item) => ({ id: item.id }))
           },
-          {
-            type: 'toolbar',
-            position: 'right-top',
-            onClick: (item: string) => {
-              const graph = graphRef.current;
-              switch (item) {
-                // 放大
-                case 'zoom-in':
-                  graph?.zoomTo(graph?.getZoom() + 0.2);
-                  break;
-                case 'zoom-out':
-                  graph?.zoomBy(0.5);
-                  break;
-                case 'auto-fit':
-                  graph?.fitView();
-                  break;
-              }
-            },
-            getItems: () => {
-              return [
-                { id: 'zoom-in', value: 'zoom-in' },
-                { id: 'zoom-out', value: 'zoom-out' },
-                { id: 'auto-fit', value: 'auto-fit' }
-              ];
-            },
+          combo: {
+            type: 'circle-combo-with-extra-button',
             style: {
-              backgroundColor: 'var(--btn-background-color)'
+              labelText: (d) => tablesMap[d.id]
             }
           },
-          { key: 'background', type: 'background', background: 'var(--primary-color)' }
-        ],
-        transforms: ['process-parallel-edges'],
-        autoFit: 'view'
-      }}
-    />
+          node: {
+            type: 'react',
+            style: {
+              size: [240, 20],
+              component: (data: { data: { name: string } }) => (
+                <Flex
+                  justify={'center'}
+                  align={'center'}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'var(--main-background-color)',
+                    borderRadius: 5,
+                    border: '1px solid gray'
+                  }}
+                  vertical
+                >
+                  {data.data.name}
+                </Flex>
+              ),
+              port: true,
+              ports: [{ placement: 'right' }, { placement: 'left' }]
+            }
+          },
+          edge: {
+            type: 'cubic-horizontal',
+            style: {
+              endArrow: true,
+              endArrowType: 'vee'
+            }
+          },
+          layout: {
+            type: 'combo-combined',
+            innerLayout: new GridLayout({ cols: 1, condense: true }),
+            outerLayout: new DagreLayout({
+              rankdir: 'LR',
+              edgeLabelSpace: false,
+              nodesep: 5,
+              ranksep: 50
+            })
+          },
+          behaviors: [
+            'focus-element',
+            'drag-canvas',
+            'zoom-canvas',
+            {
+              type: 'hover-activate',
+              enable: (event: any) => event.targetType === 'node',
+              degree: 1, // 👈🏻 Activate relations.
+              state: 'highlight',
+              inactiveState: 'dim',
+              onHover: (event: any) => {
+                event.view.setCursor('pointer');
+              },
+              onHoverEnd: (event: any) => {
+                event.view.setCursor('default');
+              }
+            }
+          ],
+          plugins: [
+            {
+              key: 'grid-line',
+              type: 'grid-line',
+              follow: false,
+              size: 40,
+              stroke: 'var(--border-color)'
+            },
+            {
+              type: 'toolbar',
+              position: 'right-top',
+              onClick: (item: string) => {
+                const graph = graphRef.current;
+                switch (item) {
+                  // 放大
+                  case 'zoom-in':
+                    graph?.zoomTo(graph?.getZoom() + 0.2);
+                    break;
+                  case 'zoom-out':
+                    graph?.zoomBy(0.5);
+                    break;
+                  case 'auto-fit':
+                    graph?.fitView();
+                    break;
+                }
+              },
+              getItems: () => {
+                return [
+                  { id: 'zoom-in', value: 'zoom-in' },
+                  { id: 'zoom-out', value: 'zoom-out' },
+                  { id: 'auto-fit', value: 'auto-fit' }
+                ];
+              },
+              style: {
+                backgroundColor: 'var(--btn-background-color)'
+              }
+            },
+            { key: 'background', type: 'background', background: 'var(--primary-color)' }
+          ],
+          transforms: ['process-parallel-edges'],
+          autoFit: 'view'
+        }}
+      />
+    </div>
   );
 });

@@ -263,6 +263,9 @@ export const buildProjectTree = (
           <></>
         );
 
+        // 悬浮延迟时间 1.25 秒
+        const mouseEnterDelay = 1.25;
+
         // 渲染后缀图标
         const renderSuffixIcon = (
           <>
@@ -273,10 +276,12 @@ export const buildProjectTree = (
               taskOwnerLockingStrategy
             ) ? (
               <Tooltip
+                mouseEnterDelay={mouseEnterDelay}
                 placement={'right'}
                 title={
                   <p style={{ margin: 0 }}>
                     {l('global.operation.unable')}
+                    <Divider style={{ margin: 0 }} type={'horizontal'} />
                     {toolTipTitle}
                   </p>
                 }
@@ -285,6 +290,7 @@ export const buildProjectTree = (
               </Tooltip>
             ) : (
               <Tooltip
+                mouseEnterDelay={mouseEnterDelay}
                 placement={'right'}
                 title={
                   <p style={{ margin: 0 }}>
