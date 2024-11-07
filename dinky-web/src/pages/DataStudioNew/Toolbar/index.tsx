@@ -17,7 +17,7 @@
  *
  */
 
-import { Flex, Row, Tooltip } from 'antd';
+import { Flex, Row, Tooltip, Typography } from 'antd';
 import React, { useMemo } from 'react';
 import './index.less';
 import { ToolbarPosition, ToolbarProp } from '@/pages/DataStudioNew/Toolbar/data.d';
@@ -104,7 +104,9 @@ export default React.memo((props: ToolbarProp) => {
                     style: { fontSize: height === 60 ? 25 : 20 }
                   })}
                 </span>
-                {showDesc && <span className={'toolbar-desc'}>{item.title()}</span>}
+                {showDesc &&<Typography.Paragraph className={'toolbar-desc'}>
+                  {item.title()}
+                </Typography.Paragraph> }
               </Row>
             </Tooltip>
           );

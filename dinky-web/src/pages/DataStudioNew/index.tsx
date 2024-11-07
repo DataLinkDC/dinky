@@ -21,7 +21,6 @@ import { DockLayout, TabData } from 'rc-dock';
 import React, { lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Col, ConfigProvider, Row, Spin, theme, theme as antdTheme } from 'antd';
-import FooterContainer from '@/pages/DataStudio/FooterContainer';
 import Toolbar from '@/pages/DataStudioNew/Toolbar';
 import { DataStudioActionType, RightContextMenuState } from '@/pages/DataStudioNew/data.d';
 import {
@@ -50,6 +49,7 @@ import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
 import './css/index.less';
 import { getTenantByLocalStorage } from '@/utils/function';
+import FooterContainer from "@/pages/DataStudioNew/FooterContainer";
 
 const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
@@ -77,7 +77,6 @@ const DataStudioNew: React.FC = (props: any) => {
     querySuggestions,
     queryUserData
   } = props;
-  const { token } = useToken();
   const dockLayoutRef = useRef<DockLayout>(null);
   const { drop } = useAliveController();
   const menuItem = useRightMenuItem({ dataStudioState });
@@ -564,8 +563,7 @@ const DataStudioNew: React.FC = (props: any) => {
               </Col>
             </Row>
 
-            {/*@ts-ignore*/}
-            <FooterContainer token={token} />
+            <FooterContainer />
 
             {/*右键菜单*/}
             <RightContextMenu

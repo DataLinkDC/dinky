@@ -35,7 +35,7 @@ export const getTermConfig = () => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     return {
       mode: 'MODE_EMBEDDED',
-      wsUrl: `${protocol}//${window.location.host}/ws/sql-gateway`,
+      wsUrl: `${protocol}//${window.location.host}/api/ws/sql-gateway`,
       fontSize: 14,
       backspaceAsCtrlH: true
     };

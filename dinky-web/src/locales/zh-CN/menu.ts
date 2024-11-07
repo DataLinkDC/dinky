@@ -109,6 +109,7 @@ export default {
   'menu.datastudio.table-data': '表数据',
   'menu.datastudio.service': '服务',
   'menu.datastudio.quickStart': '快速开始',
+  'menu.datastudio.flinkSqlClient': 'Flink SQL 客户端',
 
   'menu.datastudio.tool.text-comparison': '文本比对',
   'menu.datastudio.tool.jsonToSql': 'JSON转Flink-SQL',
