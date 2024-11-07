@@ -17,106 +17,106 @@
  *
  */
 
-import {l} from '@/utils/intl';
-import {useModel} from '@@/exports';
-import {Button, GlobalToken, Space} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {SseData, Topic} from '@/models/UseWebSocketModel';
+import { l } from '@/utils/intl';
+import { useModel } from '@@/exports';
+import { Button, GlobalToken, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { SseData, Topic } from '@/models/UseWebSocketModel';
 
 type ButtonRoute = {
-    text: React.ReactNode;
-    title: string;
-    onClick?: () => void;
+  text: React.ReactNode;
+  title: string;
+  onClick?: () => void;
 };
 
 export default (props: { token: GlobalToken }) => {
-    const {token} = props
-    const [memDetailInfo, setMemDetailInfo] = useState('0/0M');
-    const {subscribeTopic} = useModel('UseWebSocketModel', (model: any) => ({
-        subscribeTopic: model.subscribeTopic
-    }));
+  const { token } = props;
+  const [memDetailInfo, setMemDetailInfo] = useState('0/0M');
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
 
-    useEffect(() => {
-        return subscribeTopic(Topic.JVM_INFO, null, (data: SseData) => {
-            const respData = data.data['none-params'];
-            setMemDetailInfo(
-                Number(respData['heapUsed'] / 1024 / 1024).toFixed(0) +
-                '/' +
-                Number(respData['max'] / 1024 / 1024).toFixed(0) +
-                'M'
-            );
-        });
-    }, []);
+  useEffect(() => {
+    return subscribeTopic(Topic.JVM_INFO, null, (data: SseData) => {
+      const respData = data.data['none-params'];
+      setMemDetailInfo(
+        Number(respData['heapUsed'] / 1024 / 1024).toFixed(0) +
+          '/' +
+          Number(respData['max'] / 1024 / 1024).toFixed(0) +
+          'M'
+      );
+    });
+  }, []);
 
-    const route: ButtonRoute[] = [
-        {
-            text: (
-                <span style={{backgroundColor: token.colorBgContainer}}>
+  const route: ButtonRoute[] = [
+    {
+      text: (
+        <span style={{ backgroundColor: token.colorBgContainer }}>
           <div
-              style={{
-                  width:
-                      (1 -
-                          parseInt(memDetailInfo.split('/')[0]) / parseInt(memDetailInfo.split('/')[1])) *
-                      100 +
-                      '%',
-                  backgroundColor: token.colorFill
-              }}
+            style={{
+              width:
+                (1 -
+                  parseInt(memDetailInfo.split('/')[0]) / parseInt(memDetailInfo.split('/')[1])) *
+                  100 +
+                '%',
+              backgroundColor: token.colorFill
+            }}
           >
             {memDetailInfo}
           </div>
         </span>
-            ),
-            title: l('pages.datastudio.footer.memDetails', '', {
-                max: memDetailInfo.split('/')[1],
-                used: memDetailInfo.split('/')[0]
-            })
-        }
-    ];
+      ),
+      title: l('pages.datastudio.footer.memDetails', '', {
+        max: memDetailInfo.split('/')[1],
+        used: memDetailInfo.split('/')[0]
+      })
+    }
+  ];
 
-    /**
-     * render footer right info
-     */
-    const renderFooterRightInfo = (routes: ButtonRoute[]) => {
-        return routes.map((item, index) => (
-            <Button
-                size={'small'}
-                type={'text'}
-                block
-                style={{paddingInline: 4}}
-                key={index}
-                onClick={item.onClick}
-                title={item.title}
-            >
-                {item.text}
-            </Button>
-        ));
-    };
+  /**
+   * render footer right info
+   */
+  const renderFooterRightInfo = (routes: ButtonRoute[]) => {
+    return routes.map((item, index) => (
+      <Button
+        size={'small'}
+        type={'text'}
+        block
+        style={{ paddingInline: 4 }}
+        key={index}
+        onClick={item.onClick}
+        title={item.title}
+      >
+        {item.text}
+      </Button>
+    ));
+  };
 
-    return (
-        <>
-            <div
-                style={{
-                    backgroundColor: 'var(--footer-bg-color)',
-                    height: 25,
-                    width: '100%',
-                    display: 'flex',
-                    paddingInline: 10,
-                    position: 'fixed',
-                    bottom: 0,
-                    right: 0,
-                    left: 0,
-                    justifyContent: 'space-between'
-                }}
-            >
-                <Space style={{direction: 'ltr', width: '30%%'}}>
-                    <Button size={'small'} type={'text'} block style={{paddingInline: 4}}>
-                        Welcome to Dinky !
-                    </Button>
-                </Space>
-                <Space style={{direction: 'rtl', width: '70%'}} size={4} direction={'horizontal'}>
-                    {renderFooterRightInfo(route)}
-                </Space>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <div
+        style={{
+          backgroundColor: 'var(--footer-bg-color)',
+          height: 25,
+          width: '100%',
+          display: 'flex',
+          paddingInline: 10,
+          position: 'fixed',
+          bottom: 0,
+          right: 0,
+          left: 0,
+          justifyContent: 'space-between'
+        }}
+      >
+        <Space style={{ direction: 'ltr', width: '30%%' }}>
+          <Button size={'small'} type={'text'} block style={{ paddingInline: 4 }}>
+            Welcome to Dinky !
+          </Button>
+        </Space>
+        <Space style={{ direction: 'rtl', width: '70%' }} size={4} direction={'horizontal'}>
+          {renderFooterRightInfo(route)}
+        </Space>
+      </div>
+    </>
+  );
 };

@@ -50,7 +50,7 @@ import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
 import './css/index.less';
 import { getTenantByLocalStorage } from '@/utils/function';
 import FooterContainer from '@/pages/DataStudioNew/FooterContainer';
-import {useToken} from "antd/es/theme/internal";
+import { useToken } from 'antd/es/theme/internal';
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(
   () => import('@/pages/DataStudioNew/CenterTabContent/DataSourceDetail')
