@@ -186,14 +186,14 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
             'zoom-canvas',
             {
               type: 'hover-activate',
-              enable: (event) => event.targetType === 'node',
+              enable: (event:any) => event.targetType === 'node',
               degree: 1, // 👈🏻 Activate relations.
               state: 'highlight',
               inactiveState: 'dim',
-              onHover: (event) => {
+              onHover: (event:any) => {
                 event.view.setCursor('pointer');
               },
-              onHoverEnd: (event) => {
+              onHoverEnd: (event:any) => {
                 event.view.setCursor('default');
               },
             }
