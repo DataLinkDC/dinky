@@ -299,11 +299,11 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }
 
   const getActiveTab = () => {
-    return tabs.find((item:CenterTab)=>{
-      if(item.id===activeTab){
+    return tabs.find((item: CenterTab) => {
+      if (item.id === activeTab) {
         return item;
       }
-    })
+    });
   };
 
   rightToolbarItem.push({
