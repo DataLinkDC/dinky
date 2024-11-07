@@ -118,6 +118,7 @@ export default (props: {
       label: l('menu.datastudio.task.previewConfig'),
       children: (
         <ProForm
+          className={'datastudio-theme'}
           initialValues={{
             ...props.data
           }}

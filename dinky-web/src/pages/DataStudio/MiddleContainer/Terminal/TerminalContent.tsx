@@ -180,7 +180,7 @@ const TerminalContent: React.FC<TermProps> = (props) => {
     };
   }, []);
 
-  return <div id='terminal-container' style={{ height: '80vh' }}></div>;
+  return <div id='terminal-container' style={{ height: '100vh' }}></div>;
 };
 
 export default TerminalContent;
