@@ -20,7 +20,7 @@
 import { Options } from '@antv/x6/lib/graph/options';
 import Connecting = Options.Connecting;
 import Manual = Options.Manual;
-import {DagreLayoutOptions} from "@antv/layout";
+import { DagreLayoutOptions } from '@antv/layout';
 
 export const edgeConfig = {
   markup: [
@@ -172,7 +172,7 @@ export const graphConfig: Partial<Manual> = {
   autoResize: true
 };
 
-export const layoutConfig: DagreLayoutOptions & {type:string} = {
+export const layoutConfig: DagreLayoutOptions & { type: string } = {
   type: 'dagre',
   rankdir: 'LR',
   ranksep: 120,
