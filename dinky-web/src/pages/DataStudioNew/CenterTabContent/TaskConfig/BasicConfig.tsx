@@ -41,6 +41,7 @@ export const BasicConfig = (props: {
   tempData: TempData;
   data: TaskState;
   onValuesChange?: (changedValues: any, values: TaskState) => void;
+  isLockTask:boolean;
 }) => {
   const { alertGroup, flinkConfigOptions, flinkUdfOptions } = props.tempData;
   const formRef = useRef<ProFormInstance>();
@@ -69,7 +70,7 @@ export const BasicConfig = (props: {
       <ProForm
         initialValues={{ ...props.data }}
         submitter={false}
-        disabled={props.data?.step === JOB_LIFE_CYCLE.PUBLISH}
+        disabled={props.data?.step === JOB_LIFE_CYCLE.PUBLISH || props.isLockTask}
         onValuesChange={props.onValuesChange}
         formRef={formRef}
         layout={'vertical'}

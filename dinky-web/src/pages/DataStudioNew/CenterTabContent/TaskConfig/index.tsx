@@ -35,11 +35,13 @@ import { assert } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudioNew/utils';
 import { DataSources } from '@/types/RegCenter/data';
 import { TagAlignLeft } from '@/components/StyledComponents';
+import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 
 export default (props: {
   tempData: TempData;
   data: TaskState;
   onValuesChange?: (changedValues: any, values: TaskState) => void;
+  isLockTask:boolean;
 }) => {
   const { data, tempData } = props;
   const items: TabsProps['items'] = [];
@@ -52,6 +54,7 @@ export default (props: {
           tempData={props.tempData}
           data={props.data}
           onValuesChange={props.onValuesChange}
+          isLockTask={props.isLockTask}
         />
       )
     });
@@ -121,6 +124,7 @@ export default (props: {
           initialValues={{
             ...props.data
           }}
+          disabled={props.data?.step === JOB_LIFE_CYCLE.PUBLISH || props.isLockTask}
           style={{ padding: '10px' }}
           submitter={false}
           layout='vertical'

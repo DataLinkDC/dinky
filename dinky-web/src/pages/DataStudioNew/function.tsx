@@ -56,6 +56,7 @@ import {
 } from '@/components/Icons/DBIcons';
 import { CodeTwoTone } from '@ant-design/icons';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
 
 // 遍历layout，获取所有激活和打开的tab
 export const getAllPanel = (newLayout: LayoutBase) => {
@@ -263,4 +264,26 @@ export const showSecondLevelOwners = (ids: number[], users: UserBaseInfo.User[] 
       return getUserName(id, users);
     })
     ?.join();
+};
+
+export const lockTask = (
+  firstLevelOwner: number,
+  secondLevelOwners: number[] = [],
+  currentUser: UserBaseInfo.User,
+  taskOwnerLockingStrategy: TaskOwnerLockingStrategy
+) => {
+  if (currentUser?.superAdminFlag) {
+    return false;
+  }
+  const isOwner = currentUser?.id == firstLevelOwner;
+  switch (taskOwnerLockingStrategy) {
+    case TaskOwnerLockingStrategy.OWNER:
+      return !isOwner;
+    case TaskOwnerLockingStrategy.OWNER_AND_MAINTAINER:
+      return !isOwner && !secondLevelOwners?.includes(currentUser?.id);
+    case TaskOwnerLockingStrategy.ALL:
+      return false;
+    default:
+      return false;
+  }
 };

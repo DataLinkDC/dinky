@@ -42,7 +42,7 @@ import {
   SaveOutlined
 } from '@ant-design/icons';
 import RunToolBarButton from '@/pages/DataStudioNew/components/RunToolBarButton';
-import { connect } from '@umijs/max';
+import { connect, useModel } from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudioNew/components/CusPanelResizeHandle';
 import { ProForm, ProFormInstance } from '@ant-design/pro-components';
 import { useAsyncEffect, useFullscreen } from 'ahooks';
@@ -79,6 +79,7 @@ import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
 import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
+import {lockTask} from '@/pages/DataStudioNew/function'
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -144,6 +145,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
   const formRef = useRef<ProFormInstance>();
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
+
+  const { initialState, setInitialState } = useModel('@@initialState');
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId);
@@ -267,6 +270,21 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   };
   const hotKeyConfig = { enable: activeTab === id };
 
+  const getActiveTab = () => {
+    return tabs.find((item:CenterTab)=>{
+      if(item.id===activeTab){
+        return item;
+      }
+    })
+  };
+
+  const isLockTask = lockTask(
+    getActiveTab()?.params?.firstLevelOwner,
+    getActiveTab()?.params?.secondLevelOwners,
+    initialState?.currentUser?.user,
+    taskOwnerLockingStrategy
+  );
+
   const rightToolbarItem: TabsProps['items'] = [];
   if (
     isSql(currentState.dialect) ||
@@ -280,6 +298,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           tempData={tempData}
           data={currentState}
           onValuesChange={debounce(onValuesChange, 500)}
+          isLockTask={isLockTask}
         />
       )
     });
@@ -297,14 +316,6 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       )
     });
   }
-
-  const getActiveTab = () => {
-    return tabs.find((item:CenterTab)=>{
-      if(item.id===activeTab){
-        return item;
-      }
-    })
-  };
 
   rightToolbarItem.push({
     label: l('global.info'),
@@ -477,6 +488,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     }
     setCurrentState((prevState) => ({ ...prevState, step: currentState.step }));
   }, [handleSave, currentState.step, currentState.taskId]);
+
   return (
     <Skeleton
       loading={loading}
@@ -505,8 +517,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           submitter={false}
           layout='horizontal'
           variant={'filled'}
-          // disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
-          disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
+          disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
           onValuesChange={debounce(onValuesChange, 500)}
           syncToInitialValues
         >
@@ -517,7 +528,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               desc={l('button.save')}
               icon={<SaveOutlined />}
               onClick={handleSave}
-              disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH}
+              disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask}
               hotKey={{
                 ...hotKeyConfig,
                 hotKeyDesc: 'Ctrl/Command +S',
@@ -548,6 +559,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               desc={l('pages.datastudio.editor.check')}
               icon={<AuditOutlined />}
               onClick={handleCheck}
+              disabled={isLockTask}
               isShow={
                 assert(
                   currentState.dialect,
@@ -566,6 +578,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('button.graph')}
+              disabled={isLockTask}
               isShow={assert(
                 currentState.dialect,
                 [DIALECT.FLINK_SQL, DIALECT.FLINKJAR],
@@ -577,6 +590,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             />
             <RunToolBarButton
               showDesc={showDesc}
+              disabled={isLockTask}
               desc={l('menu.datastudio.lineage')}
               icon={<PartitionOutlined />}
               onClick={handleLineage}
@@ -613,6 +627,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 )
               }
               showDesc={showDesc}
+              disabled={isLockTask}
               color={'green'}
               desc={l('pages.datastudio.editor.exec')}
               icon={<CaretRightOutlined />}
@@ -629,6 +644,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 assert(currentState.dialect, [DIALECT.FLINK_SQL], true, 'includes')
               }
               showDesc={showDesc}
+              disabled={isLockTask}
               color={'red'}
               desc={l('pages.datastudio.editor.debug')}
               icon={<BugOutlined />}
@@ -642,6 +658,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
             <RunToolBarButton
               isShow={!isStatusDone(currentState.status)}
+              disabled={isLockTask}
               showDesc={showDesc}
               color={'red'}
               desc={l('pages.datastudio.editor.stop')}
@@ -664,6 +681,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                   'includes'
                 )
               }
+              disabled={isLockTask}
               showDesc={showDesc}
               desc={l('pages.datastudio.to.jobDetail')}
               icon={<RotateRightOutlined />}
@@ -673,12 +691,14 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{ height: dividerHeight }} />
             <RunToolBarButton
               showDesc={showDesc}
+              disabled={isLockTask}
               desc={l('shortcut.key.format')}
               icon={<ClearOutlined />}
               onClick={handleFormat}
             />
             <RunToolBarButton
               showDesc={showDesc}
+              disabled={isLockTask}
               desc={l('button.position')}
               icon={<EnvironmentOutlined />}
               onClick={handleLocation}
@@ -689,6 +709,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <RunToolBarButton
               isShow={JOB_LIFE_CYCLE.PUBLISH !== currentState.step}
               showDesc={showDesc}
+              disabled={isLockTask}
               desc={l('button.publish')}
               icon={<FundOutlined />}
               onClick={handleChangeJobLife}
@@ -696,12 +717,14 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <RunToolBarButton
               isShow={JOB_LIFE_CYCLE.PUBLISH === currentState.step}
               showDesc={showDesc}
+              disabled={isLockTask}
               desc={l('button.offline')}
               icon={<MergeCellsOutlined />}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton
               showDesc={showDesc}
+              disabled={isLockTask}
               desc={l('button.push')}
               icon={<PushpinIcon className={'blue-icon'} />}
               isShow={
@@ -735,12 +758,12 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                     onChange={debounce(onEditorChange, 500)}
                     enableSuggestions={true}
                     options={{
-                      // readOnlyMessage: {
-                      //   value: isLockTask
-                      //     ? l('pages.datastudio.editor.onlyread.lock')
-                      //     : l('pages.datastudio.editor.onlyread')
-                      // },
-                      readOnly: currentState?.step == JOB_LIFE_CYCLE.PUBLISH,
+                      readOnlyMessage: {
+                        value: isLockTask
+                          ? l('pages.datastudio.editor.onlyread.lock')
+                          : l('pages.datastudio.editor.onlyread')
+                      },
+                      readOnly: currentState?.step == JOB_LIFE_CYCLE.PUBLISH || isLockTask,
                       scrollBeyondLastLine: false,
                       wordWrap: 'on'
                     }}
