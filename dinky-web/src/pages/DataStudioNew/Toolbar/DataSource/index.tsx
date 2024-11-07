@@ -19,21 +19,21 @@
 
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import DataSourceModal from '@/pages/RegCenter/DataSource/components/DataSourceModal';
-import {handleTest, saveOrUpdateHandle} from '@/pages/RegCenter/DataSource/service';
-import {DataSources} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
-import {DatabaseOutlined, TableOutlined} from '@ant-design/icons';
-import {Key, ProForm} from '@ant-design/pro-components';
-import {CascaderProps, Spin, Tag} from 'antd';
-import {memo, useEffect, useRef, useState} from 'react';
-import {getDataSourceList, showDataSourceTable} from './service';
-import {useAsyncEffect} from 'ahooks';
-import {ProFormCascader} from '@ant-design/pro-form/lib';
-import {CenterTab, DataStudioState} from '@/pages/DataStudioNew/model';
-import {mapDispatchToProps} from '@/pages/DataStudioNew/DvaFunction';
-import {connect} from '@umijs/max';
-import {DataStudioActionType} from "@/pages/DataStudioNew/data.d";
-import {clearDataSourceTable} from "@/pages/DataStudio/LeftContainer/DataSource/service";
+import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
+import { DataSources } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { DatabaseOutlined, TableOutlined } from '@ant-design/icons';
+import { Key, ProForm } from '@ant-design/pro-components';
+import { CascaderProps, Spin, Tag } from 'antd';
+import { memo, useEffect, useRef, useState } from 'react';
+import { getDataSourceList, showDataSourceTable } from './service';
+import { useAsyncEffect } from 'ahooks';
+import { ProFormCascader } from '@ant-design/pro-form/lib';
+import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { connect } from '@umijs/max';
+import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
+import { clearDataSourceTable } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 
 interface Option {
   value: number | string;
@@ -42,7 +42,11 @@ interface Option {
 }
 
 const DataSource = memo((props: any) => {
-  const {addCenterTab, dataSourceDataList, action: {actionType, params},} = props;
+  const {
+    addCenterTab,
+    dataSourceDataList,
+    action: { actionType, params }
+  } = props;
   const [dbData, setDbData] = useState<Option[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
   const [expandKeys, setExpandKeys] = useState<Key[]>([]);
@@ -59,13 +63,13 @@ const DataSource = memo((props: any) => {
     switch (actionType) {
       case DataStudioActionType.DATASOURCE_CREATE:
         setShowCreate(true);
-        break
+        break;
       case DataStudioActionType.DATASOURCE_REFRESH:
         if (!selectDatabaseId) return;
         setIsLoadingDatabase(true);
-        await clearDataSourceTable(selectDatabaseId)
-        await onChangeDataBase(selectDatabaseId)
-        break
+        await clearDataSourceTable(selectDatabaseId);
+        await onChangeDataBase(selectDatabaseId);
+        break;
     }
   }, [actionType, params]);
 
@@ -86,12 +90,12 @@ const DataSource = memo((props: any) => {
     for (let table of tables) {
       table.title = table.name;
       table.key = table.name;
-      table.icon = <DatabaseOutlined/>;
+      table.icon = <DatabaseOutlined />;
       table.children = table.tables;
       for (let child of table.children) {
         child.title = child.name;
         child.key = table.name + '.' + child.name;
-        child.icon = <TableOutlined/>;
+        child.icon = <TableOutlined />;
         child.isLeaf = true;
         child.schema = table.name;
         child.table = child.name;
@@ -151,7 +155,7 @@ const DataSource = memo((props: any) => {
     setSelectedKeys(keys);
 
     const {
-      node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}
+      node: { isLeaf, parentId: schemaName, name: tableName, fullInfo }
     } = info;
 
     if (!isLeaf) {
@@ -205,7 +209,7 @@ const DataSource = memo((props: any) => {
       );
     });
   return (
-    <div style={{paddingInline: 6, height: 'inherit'}} ref={ref}>
+    <div style={{ paddingInline: 6, height: 'inherit' }} ref={ref}>
       <Spin spinning={isLoadingDatabase} delay={500}>
         <DataSourceModal
           values={{}}
@@ -218,8 +222,8 @@ const DataSource = memo((props: any) => {
           }}
         />
         <ProForm
-          style={{height: 40, marginTop: 10}}
-          initialValues={{selectDb: selectDatabaseId}}
+          style={{ height: 40, marginTop: 10 }}
+          initialValues={{ selectDb: selectDatabaseId }}
           submitter={false}
         >
           <ProFormCascader
@@ -251,9 +255,9 @@ const DataSource = memo((props: any) => {
 });
 
 export default connect(
-  ({DataStudio}: { DataStudio: DataStudioState }) => ({
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
     dataSourceDataList: DataStudio.tempData.dataSourceDataList,
-    action: DataStudio.action,
+    action: DataStudio.action
   }),
   mapDispatchToProps
 )(DataSource);

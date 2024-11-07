@@ -79,7 +79,7 @@ export default (props: RunToolBarButtonProps) => {
         document.removeEventListener('keydown', hotKeyFuncHandle);
       }
     };
-  }, [hotKey?.enable,onClickHandle]);
+  }, [hotKey?.enable, onClickHandle]);
 
   const tooltipDesc = hotKey?.enable ? `${desc} : (${hotKey.hotKeyDesc})` : desc;
   return (

@@ -31,7 +31,8 @@ import {
   ReloadOutlined,
   SelectOutlined,
   ShrinkOutlined,
-  SwitcherOutlined, SyncOutlined
+  SwitcherOutlined,
+  SyncOutlined
 } from '@ant-design/icons';
 import { leftDefaultShowTab } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import { l } from '@/utils/intl';
@@ -212,7 +213,7 @@ const toolbarPanelExtraButtons = (
         }}
       />
     );
-  }else if (panelData.activeId === 'datasource'){
+  } else if (panelData.activeId === 'datasource') {
     buttons.push(
       <SyncOutlined
         className='my-panel-extra-btn'
