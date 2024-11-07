@@ -50,8 +50,7 @@ import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
 import './css/index.less';
 import { getTenantByLocalStorage } from '@/utils/function';
 import FooterContainer from '@/pages/DataStudioNew/FooterContainer';
-
-const { useToken } = theme;
+import {useToken} from "antd/es/theme/internal";
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(
   () => import('@/pages/DataStudioNew/CenterTabContent/DataSourceDetail')
@@ -77,14 +76,18 @@ const DataStudioNew: React.FC = (props: any) => {
     querySuggestions,
     queryUserData
   } = props;
+  const [_, token] = useToken();
+
   const dockLayoutRef = useRef<DockLayout>(null);
   const { drop } = useAliveController();
   const menuItem = useRightMenuItem({ dataStudioState });
+
   // 右键弹出框状态
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,
     position: InitContextMenuPosition
   });
+
   const [loading, setLoading] = useState<boolean>(true);
   const theme = useTheme() as 'realDark' | 'light';
   const themeAlgorithm = useMemo(() => {
@@ -563,7 +566,7 @@ const DataStudioNew: React.FC = (props: any) => {
               </Col>
             </Row>
 
-            <FooterContainer />
+            <FooterContainer token={token} />
 
             {/*右键菜单*/}
             <RightContextMenu
