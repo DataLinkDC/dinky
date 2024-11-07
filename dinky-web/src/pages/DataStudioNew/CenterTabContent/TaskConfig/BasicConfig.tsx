@@ -36,6 +36,7 @@ import { ProFormFlinkUdfConfig } from '@/pages/DataStudioNew/CenterTabContent/Ta
 import React, { useEffect, useRef, useState } from 'react';
 import { TaskState, TempData } from '@/pages/DataStudioNew/type';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import {Alert} from "antd";
 
 export const BasicConfig = (props: {
   tempData: TempData;
@@ -65,8 +66,23 @@ export const BasicConfig = (props: {
       observer.unobserve(element);
     };
   }, []);
+
+
   return (
     <div ref={divRef} className={'datastudio-theme'}>
+      {(props.data.step === JOB_LIFE_CYCLE.PUBLISH || props.isLockTask) && (
+        <>
+          <Alert
+            message={
+              props.isLockTask
+                ? l('pages.datastudio.label.jobConfig.lock')
+                : l('pages.datastudio.label.jobConfig.watermark')
+            }
+            type='info'
+            showIcon
+          />
+        </>
+      )}
       <ProForm
         initialValues={{ ...props.data }}
         submitter={false}
