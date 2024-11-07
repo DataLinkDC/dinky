@@ -580,12 +580,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               desc={l('menu.datastudio.lineage')}
               icon={<PartitionOutlined />}
               onClick={handleLineage}
-              isShow={assert(
-                currentState.dialect,
-                [DIALECT.FLINK_SQL],
-                true,
-                'includes'
-              )}
+              isShow={assert(currentState.dialect, [DIALECT.FLINK_SQL], true, 'includes')}
             />
 
             {assert(
