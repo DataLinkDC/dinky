@@ -61,7 +61,7 @@ export default (props: RunToolBarButtonProps) => {
         await onClick();
       } catch (e) {}
     }
-    await sleep(sleepTime ?? 500);
+    await sleep(sleepTime ?? 100);
     setLoading(false);
   }, [onClick, sleepTime]);
   useEffect(() => {
@@ -79,7 +79,7 @@ export default (props: RunToolBarButtonProps) => {
         document.removeEventListener('keydown', hotKeyFuncHandle);
       }
     };
-  }, [hotKey?.enable]);
+  }, [hotKey?.enable,onClickHandle]);
 
   const tooltipDesc = hotKey?.enable ? `${desc} : (${hotKey.hotKeyDesc})` : desc;
   return (

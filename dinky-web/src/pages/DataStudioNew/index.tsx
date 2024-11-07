@@ -421,7 +421,7 @@ const DataStudioNew: React.FC = (props: any) => {
       <ConfigProvider
         theme={{
           token: {
-            colorBgContainer: 'var(--primary-color)'
+            colorBgContainer: 'var(--primary-color)',
           },
           components: {
             Table: {

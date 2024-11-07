@@ -31,7 +31,7 @@ import {
   ReloadOutlined,
   SelectOutlined,
   ShrinkOutlined,
-  SwitcherOutlined
+  SwitcherOutlined, SyncOutlined
 } from '@ant-design/icons';
 import { leftDefaultShowTab } from '@/pages/DataStudioNew/Toolbar/ToolbarRoute';
 import { l } from '@/utils/intl';
@@ -162,6 +162,16 @@ const toolbarPanelExtraButtons = (
   const buttons = [];
   if (panelData.activeId === 'project') {
     buttons.push(
+      <SyncOutlined
+        className='my-panel-extra-btn'
+        key='button.refresh'
+        title={l('button.refresh')}
+        onClick={() => {
+          updateAction({ actionType: DataStudioActionType.PROJECT_REFRESH, params: {} });
+        }}
+      />
+    );
+    buttons.push(
       <PlusCircleOutlined
         className='my-panel-extra-btn'
         key='right.menu.createRoot'
@@ -195,10 +205,31 @@ const toolbarPanelExtraButtons = (
     buttons.push(
       <ReloadOutlined
         className='my-panel-extra-btn'
-        key='button.collapse-all'
-        title={l('button.collapse-all')}
+        key='button.refresh'
+        title={l('button.refresh')}
         onClick={() => {
           updateAction({ actionType: DataStudioActionType.CATALOG_REFRESH, params: {} });
+        }}
+      />
+    );
+  }else if (panelData.activeId === 'datasource'){
+    buttons.push(
+      <SyncOutlined
+        className='my-panel-extra-btn'
+        key='button.refresh'
+        title={l('button.refresh')}
+        onClick={() => {
+          updateAction({ actionType: DataStudioActionType.DATASOURCE_REFRESH, params: {} });
+        }}
+      />
+    );
+    buttons.push(
+      <PlusCircleOutlined
+        className='my-panel-extra-btn'
+        key='button.create'
+        title={l('button.create')}
+        onClick={() => {
+          updateAction({ actionType: DataStudioActionType.DATASOURCE_CREATE, params: {} });
         }}
       />
     );
