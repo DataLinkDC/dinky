@@ -129,7 +129,6 @@ export default {
   'global.blankOpen': '在新窗口打开',
   'global.float': '浮动',
 
-
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',
   'global.table.lastUpdateTime': '最近更新时间',
