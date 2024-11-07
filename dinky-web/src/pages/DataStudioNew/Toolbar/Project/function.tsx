@@ -281,6 +281,7 @@ export const buildProjectTree = (
                 title={
                   <p style={{ margin: 0 }}>
                     {l('global.operation.unable')}
+                    <Divider style={{ margin: 0 }} type={'horizontal'} />
                     {toolTipTitle}
                   </p>
                 }
