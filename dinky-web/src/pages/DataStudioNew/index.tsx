@@ -49,7 +49,7 @@ import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudioNew/DataStudioContext';
 import './css/index.less';
 import { getTenantByLocalStorage } from '@/utils/function';
-import FooterContainer from "@/pages/DataStudioNew/FooterContainer";
+import FooterContainer from '@/pages/DataStudioNew/FooterContainer';
 
 const { useToken } = theme;
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));

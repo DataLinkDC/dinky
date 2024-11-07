@@ -129,7 +129,7 @@ const TerminalTab = () => {
       {openTerm ? (
         <TerminalContent {...connectCfg} />
       ) : (
-        <div style={{ padding: '10px',height:'100%' }}>
+        <div style={{ padding: '10px', height: '100%' }}>
           <Form
             {...formItemLayout}
             onFinish={onFinish}

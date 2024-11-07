@@ -104,9 +104,11 @@ export default React.memo((props: ToolbarProp) => {
                     style: { fontSize: height === 60 ? 25 : 20 }
                   })}
                 </span>
-                {showDesc &&<Typography.Paragraph className={'toolbar-desc'}>
-                  {item.title()}
-                </Typography.Paragraph> }
+                {showDesc && (
+                  <Typography.Paragraph className={'toolbar-desc'}>
+                    {item.title()}
+                  </Typography.Paragraph>
+                )}
               </Row>
             </Tooltip>
           );

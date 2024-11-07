@@ -19,12 +19,11 @@
 
 import useThemeValue from '@/hooks/useThemeValue';
 import { l } from '@/utils/intl';
-import {  useModel } from '@@/exports';
+import { useModel } from '@@/exports';
 import { Button, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
-import {useToken} from "antd/es/theme/internal";
-
+import { useToken } from 'antd/es/theme/internal';
 
 type ButtonRoute = {
   text: React.ReactNode;
@@ -33,7 +32,7 @@ type ButtonRoute = {
 };
 
 export default () => {
-  const [_,token] = useToken();
+  const [_, token] = useToken();
 
   const themeValue = useThemeValue();
   const [memDetailInfo, setMemDetailInfo] = useState('0/0M');
@@ -74,28 +73,27 @@ export default () => {
       title: l('pages.datastudio.footer.memDetails', '', {
         max: memDetailInfo.split('/')[1],
         used: memDetailInfo.split('/')[0]
-      }),
-    },
+      })
+    }
   ];
 
   /**
    * render footer right info
    */
   const renderFooterRightInfo = (routes: ButtonRoute[]) => {
-    return routes
-      .map((item, index) => (
-        <Button
-          size={'small'}
-          type={'text'}
-          block
-          style={{ paddingInline: 4 }}
-          key={index}
-          onClick={item.onClick}
-          title={item.title}
-        >
-          {item.text}
-        </Button>
-      ));
+    return routes.map((item, index) => (
+      <Button
+        size={'small'}
+        type={'text'}
+        block
+        style={{ paddingInline: 4 }}
+        key={index}
+        onClick={item.onClick}
+        title={item.title}
+      >
+        {item.text}
+      </Button>
+    ));
   };
 
   return (
@@ -111,7 +109,7 @@ export default () => {
           bottom: 0,
           right: 0,
           left: 0,
-          justifyContent:'space-between'
+          justifyContent: 'space-between'
         }}
       >
         <Space style={{ direction: 'ltr', width: '30%%' }}>
