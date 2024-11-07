@@ -13,7 +13,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/tmp/git/java-udf/master" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/tmp/git/python-udf/master" vcs="Git" />
   </component>
 </project>

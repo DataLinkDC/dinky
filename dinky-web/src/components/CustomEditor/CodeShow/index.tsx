@@ -31,6 +31,7 @@ import { handleInitEditorAndLanguageOnBeforeMount } from '@/components/CustomEdi
 import { Editor, loader, Monaco } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { CSSProperties, useRef, useState } from 'react';
+import LineNumbersType = editor.LineNumbersType;
 
 loader.config({ monaco });
 
@@ -38,11 +39,11 @@ export type CodeShowFormProps = {
   height?: string | number;
   width?: string;
   language?: EditorLanguage | string;
-  options?: any;
+  options?: editor.IStandaloneEditorConstructionOptions;
   code: string;
-  lineNumbers?: string;
+  lineNumbers?: LineNumbersType;
   enableMiniMap?: boolean;
-  autoWrap?: string;
+  autoWrap?: 'on' | 'off' | 'wordWrapColumn' | 'bounded' | undefined;
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
   fullScreenBtn?: boolean;
@@ -219,7 +220,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   return (
     <>
-      <Row wrap={false}>
+      <Row wrap={false} style={{ height: '100%' }}>
         <Col flex='auto'>
           {/* fullScreen button */}
           {fullScreenBtn && (

@@ -107,7 +107,12 @@ export default {
   'menu.datastudio.process': '进程',
   'menu.datastudio.history': '执行历史',
   'menu.datastudio.table-data': '表数据',
+  'menu.datastudio.service': '服务',
+  'menu.datastudio.quickStart': '快速开始',
+  'menu.datastudio.flinkSqlClient': 'Flink SQL 客户端',
 
   'menu.datastudio.tool.text-comparison': '文本比对',
-  'menu.datastudio.tool.jsonToSql': 'JSON转Flink-SQL'
+  'menu.datastudio.tool.jsonToSql': 'JSON转Flink-SQL',
+  'menu.datastudio.task.baseConfig': '基础配置',
+  'menu.datastudio.task.previewConfig': '预览配置'
 };

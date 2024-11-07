@@ -86,6 +86,7 @@ export default {
   'button.stopRefresh': '停止自动刷新',
   'button.startRefresh': '开始自动刷新(5s/次)',
   'button.autoWrap': '自动换行/不换行',
+  'button.output': '输出',
 
   'menu.menu': '菜单',
   'right.menu.open': '打开',
@@ -125,6 +126,8 @@ export default {
   'global.stay.tuned': '敬请期待',
   'global.mini': '最小化',
   'global.max': '最大化',
+  'global.blankOpen': '在新窗口打开',
+  'global.float': '浮动',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',

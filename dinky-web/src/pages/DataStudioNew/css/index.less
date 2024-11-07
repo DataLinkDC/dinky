@@ -1,0 +1,994 @@
+/*******************配置组件自定义颜色(入口css)******************/
+.light-theme {
+  --primary-color: #ffffff;
+  --second-color: #eceff1;
+  --main-background-color: #ffffff;
+  --footer-bg-color: #f4f4f4;
+  --btn-color: #000000e0;
+  --btn-active-color: #1890ff;
+  --btn-background-color: #e6f7ff;
+  --border-color: #dfe1e4;
+  --text-color: #424242;
+  --panel-extra-btn-color: red;
+  --scroll-bg-color: #daecff;
+}
+
+.dark-theme {
+  // 暗色主题颜色全局变量
+  --primary-color: #24292e;
+  --second-color: #263238;
+  --main-background-color: #24292e;
+  --footer-bg-color: rgba(255, 255, 255, 0.18);
+  --btn-color: #ced0d6;
+  --btn-active-color: #ced0d6;
+  --btn-background-color: #5e423f;
+  --border-color: #1b1f23;
+  --text-color: #fafafa;
+  --panel-extra-btn-color: #fafafa;
+  --scroll-bg-color: #c46c5d;
+}
+
+.page-container {
+  background-color: var(--primary-color);
+}
+
+.content-container {
+  background-color: var(--main-background-color);
+}
+
+.datastudio-theme {
+  background-color: var(--main-background-color);
+}
+
+.datastudio-theme .ant-pro-card {
+  background-color: var(--main-background-color);
+}
+
+.datastudio-theme .ant-pro-form-group-container {
+  justify-content: center;
+}
+
+// scrollbar style --- start ----
+::-webkit-scrollbar {
+  width: 0.3vw;
+  height: 0.5vh;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-bg-color);
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #999;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #f5f5f5;
+}
+
+body > .dragging-layer {
+  position: absolute !important;
+  z-index: 9999;
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+  border: none;
+  pointer-events: none;
+  opacity: 0.6;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: nowrap;
+  --default-background-color: var(--primary-color);
+}
+
+.ant-tree-list-scrollbar-thumb {
+  background-color: var(--scroll-bg-color) !important;
+}
+
+body > .dragging-layer > *:first-child {
+  pointer-events: none !important;
+  overflow: hidden !important;
+  transform: translate(-50%, -50%) !important;
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.1),
+    inset 0 0 8px rgba(255, 255, 255, 0.1);
+}
+
+body > .dragging-layer > .dragging {
+  /* prevent double translucent layers */
+  opacity: 1 !important;
+}
+
+body > .dragging-layer > div:last-child {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+}
+
+.drag-initiator {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.drag-accept-reject::after {
+  content: '🚫';
+}
+
+.dock {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  display: flex;
+}
+
+.dock-bar {
+  font-size: 14px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
+  outline: none;
+  zoom: 1;
+}
+
+.dock-ink-bar {
+  position: absolute;
+  box-sizing: border-box;
+  margin-top: -3px;
+  background-color: #108ee9;
+  transform-origin: 0 0;
+  width: 0;
+  height: 0;
+}
+
+.dock-tab-btn-disabled {
+  cursor: default;
+  color: #ccc;
+}
+
+.dock-nav-animated {
+  transition: transform 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+}
+
+.dock-tab {
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  min-width: 30px;
+  height: 30px;
+  text-align: center;
+  transition: color 0.25s cubic-bezier(0.35, 0, 0.25, 1);
+  padding: 0;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  float: left;
+  margin-right: 10px;
+  background: var(--primary-color);
+  outline: none;
+}
+
+.dock-tab.dragging {
+  opacity: 0.3;
+}
+
+.dock-tab > div {
+  padding: 4px 14px;
+  outline-color: #108ee9;
+}
+
+.dock-tab:hover {
+  color: #40a5ed;
+}
+
+.dock-tab-active,
+.dock-tab-active:hover {
+  color: #108ee9;
+  cursor: default;
+  transform: translateZ(0);
+}
+
+.dock-tab-disabled {
+  cursor: default;
+  color: #ccc;
+}
+
+.dock-tab-disabled:hover {
+  color: #ccc;
+}
+
+.dock-content-animated {
+  transition: margin 0.3s;
+}
+
+.dock-bottom > .dock-nav .dock-ink-bar-animated,
+.dock-top > .dock-nav .dock-ink-bar-animated,
+.dock-bottom > div > .dock-nav .dock-ink-bar-animated,
+.dock-top > div > .dock-nav .dock-ink-bar-animated {
+  transition:
+    width 0.3s,
+    left 0.3s,
+    right 0.3s;
+}
+
+.dock-content-animated .dock-tabpane {
+  flex-shrink: 0;
+}
+
+.no-flexbox .dock-content {
+  transform: none !important;
+  overflow: auto;
+}
+
+.dock-tabpane:not(.dock-tabpane-active) {
+  animation-name: dock-fadeOut;
+  animation-duration: 0.5s;
+}
+
+@keyframes dock-fadeOut {
+  from {
+    height: 100%;
+    visibility: visible;
+  }
+  to {
+    height: 100%;
+    visibility: visible;
+  }
+}
+
+.dock-top {
+  flex-direction: column;
+}
+
+.dock-top .dock-bar {
+  flex: 0 0 auto;
+  background: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-left: 8px;
+}
+
+.dock-top .dock-content-animated {
+  flex-direction: row;
+}
+
+.dock-top .dock-tab-next {
+  right: 2px;
+}
+
+.dock-top .dock-ink-bar {
+  height: 2px;
+  bottom: 0;
+  left: 0;
+}
+
+.dock-tab-close-btn {
+  position: absolute;
+  cursor: pointer;
+  font-family: 'Fredoka One', sans-serif;
+  color: var(--text-color);
+  right: -3px;
+  font-size: 12px;
+  width: 16px;
+  text-align: center;
+  top: 6px;
+  outline: none;
+  transition: all 0.25s ease-in-out;
+}
+
+.dock-tab-close-btn:before {
+  content: 'X';
+  font-family: emoji;
+}
+
+.dock-tab-close-btn:hover,
+.dock-tab-close-btn:focus {
+  color: #fff;
+  transform: scale(1.1, 1.1);
+}
+
+.dock-tab:hover .dock-tab-close-btn,
+.dock-tab-close-btn:focus {
+  opacity: 1;
+  color: #a2a2a2;
+}
+
+.dock-tab-hit-area {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  right: -5px;
+}
+
+.dock-pane-cache {
+  width: 100%;
+  height: 100%;
+}
+
+.dock-content {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.dock-content-holder {
+  flex: auto;
+}
+
+.dock-top > .dock-content-holder {
+  /* work around for the height issue in content holder*/
+  height: 0;
+}
+
+.dock-content .dock-tabpane {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  flex: none;
+}
+
+.dock-nav {
+  display: flex;
+  flex: none;
+  position: relative;
+}
+
+.dock-nav-operations {
+  display: flex;
+}
+
+.dock-nav-more {
+  height: 30px;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  align-self: flex-end;
+}
+
+.dock-nav-more::after {
+  position: absolute;
+  z-index: 1;
+  content: '';
+  pointer-events: none;
+  width: 30px;
+  height: 30px;
+  left: -30px;
+  top: 0;
+  box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.08);
+}
+
+.dock-nav-wrap {
+  position: relative;
+  display: flex;
+  flex: auto;
+  align-self: stretch;
+  overflow: hidden;
+  white-space: nowrap;
+  transform: translate(0);
+}
+
+.dock-nav-list {
+  display: flex;
+  position: relative;
+  transition: transform 0.3s;
+}
+
+.dock-extra-content {
+  display: flex;
+  height: 30px;
+}
+
+.dock-extra-content .dock-tab-close-btn {
+  position: relative;
+  right: 4px;
+}
+
+.dock-dropdown {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  list-style: none;
+  font-feature-settings: 'tnum';
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: 1050;
+  display: block;
+}
+
+.dock-dropdown-hidden {
+  display: none;
+}
+
+.dock-dropdown-menu {
+  max-height: 200px;
+  margin: 0;
+  padding: 4px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: left;
+  list-style-type: none;
+  background-color: var(--primary-color);
+  background-clip: padding-box;
+  border-radius: 2px;
+  outline: none;
+  box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+.dock-dropdown-menu-item {
+  min-width: 120px;
+  margin: 0;
+  padding: 5px 12px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.dock-dropdown-menu-item .dock-tab-hit-area {
+  left: 0;
+  right: 0;
+}
+
+.dock-dropdown-menu-item .dock-tab-close-btn {
+  right: 2px;
+}
+
+.dock-dropdown-menu-item:hover {
+  background: #2b2b2b;
+}
+
+.dock-dropdown-menu-item-disabled,
+.dock-dropdown-menu-item-disabled:hover {
+  color: #ccc;
+  background: 0 0;
+  cursor: not-allowed;
+}
+
+body.dock-dragging .dock-tab-hit-area {
+  pointer-events: inherit;
+}
+
+body.dock-dragging {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body.dock-dragging iframe {
+  pointer-events: none;
+}
+
+.dock-panel {
+  box-sizing: border-box;
+  position: relative;
+  color: var(--text-color);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+}
+
+.dock-panel.dragging {
+  opacity: 0.3;
+}
+
+.dock-panel-drag-size {
+  position: absolute;
+  z-index: 300;
+}
+
+.dock-panel-drag-size-t {
+  top: -4px;
+  left: 4px;
+  right: 4px;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.dock-panel-drag-size-b {
+  bottom: -4px;
+  left: 4px;
+  right: 4px;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.dock-panel-drag-size-l {
+  left: -4px;
+  top: 4px;
+  bottom: 4px;
+  width: 8px;
+  cursor: ew-resize;
+}
+
+.dock-panel-drag-size-r {
+  right: -4px;
+  top: 4px;
+  bottom: 4px;
+  width: 8px;
+  cursor: ew-resize;
+}
+
+.dock-panel-drag-size-t-l {
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  cursor: nwse-resize;
+}
+
+.dock-panel-drag-size-t-r {
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  cursor: nesw-resize;
+}
+
+.dock-panel-drag-size-b-l {
+  bottom: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  cursor: nesw-resize;
+}
+
+.dock-panel-drag-size-b-r {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 17 17'%3E%3Cpath fill='rgba(255, 255, 255, 0.15)' d='M2 12 L12 2 L12 12z'/%3E%3C/svg%3E");
+  bottom: -4px;
+  right: -4px;
+  width: 17px;
+  height: 17px;
+  cursor: nwse-resize;
+}
+
+.dock-box {
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+}
+
+.divider-box {
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+}
+
+.divider-box > *:nth-child(odd) {
+  flex: 1 1 auto;
+}
+
+.dock-divider {
+  box-sizing: border-box;
+  flex: 0 0 4px;
+  background: rgba(0, 0, 0, 0);
+  z-index: 1;
+}
+
+.dock-hbox > .dock-divider {
+  transform: scaleX(3);
+  cursor: ew-resize;
+}
+
+.dock-vbox {
+  flex-direction: column;
+}
+
+.dock-vbox > .dock-divider {
+  transform: scaleY(3);
+  cursor: ns-resize;
+}
+
+.dock-fbox {
+  pointer-events: none;
+  z-index: 200;
+}
+
+.dock-fbox > .dock-panel {
+  position: absolute;
+  pointer-events: visible;
+  box-shadow: 0 0 4px #444;
+}
+
+.dock-fbox > .dock-panel.dragging {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.dock-mbox {
+  z-index: 250;
+  width: 100%;
+  height: 100%;
+}
+
+.dock-mbox > .dock-panel {
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 4px #444;
+}
+
+.dock-mbox.dock-mbox-show {
+  visibility: visible;
+  animation: dock-mbox-show 0.2s ease;
+}
+
+.dock-mbox.dock-mbox-hide {
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  animation: dock-mbox-hide 0.2s ease;
+}
+
+@keyframes dock-mbox-show {
+  from {
+    transform: scale(0.9, 0.9);
+    visibility: visible;
+  }
+  to {
+    transform: scale(1, 1);
+    visibility: visible;
+  }
+}
+
+@keyframes dock-mbox-hide {
+  from {
+    transform: scale(1, 1);
+    visibility: visible;
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.9, 0.9);
+    visibility: visible;
+    opacity: 0;
+  }
+}
+
+.dock-wbox {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.dock-wbox > .dock-panel {
+  border: none;
+  width: 100%;
+  height: 100%;
+}
+
+.dock-layout {
+  overflow: hidden;
+  position: relative;
+}
+
+.dock-layout > .dock-box {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.dock-layout > .dock-drop-indicator {
+  position: absolute;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 400;
+  border: solid 1px #fff;
+  background: #125d94;
+  opacity: 0.5;
+  box-shadow: 0 0 4px var(--border-color);
+  display: none;
+  transition: all 0.1s ease-out;
+}
+
+.dock-drop-edge {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: white;
+  border: none;
+  opacity: 0.01;
+}
+
+.dock-drop-layer {
+  position: absolute;
+  pointer-events: none;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.dock-drop-layer .dock-drop-square {
+  position: absolute;
+  box-sizing: border-box;
+  pointer-events: visible;
+  z-index: 300;
+  width: 32px;
+  height: 32px;
+  font-family: 'Fredoka One', sans-serif;
+  color: #444;
+  background: var(--primary-color);
+  border: 1px solid transparent;
+  left: calc(50% - 16px);
+  top: calc(50% - 16px);
+}
+
+.dock-drop-layer .dock-drop-square .dock-drop-square-box {
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  width: 100%;
+  height: 100%;
+}
+
+.dock-drop-layer .dock-drop-square::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  line-height: 30px;
+  text-align: center;
+}
+
+.dock-drop-layer .dock-drop-float {
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: 0.01;
+}
+
+.dock-drop-layer .dock-drop-left {
+  left: calc(50% - 48px);
+}
+
+.dock-drop-layer .dock-drop-left.dock-drop-deep {
+  left: calc(50% - 64px);
+  width: 16px;
+}
+
+.dock-drop-layer .dock-drop-left::before {
+  content: '>';
+  transform: rotate(180deg);
+}
+
+.dock-drop-layer .dock-drop-right {
+  left: calc(50% + 16px);
+}
+
+.dock-drop-layer .dock-drop-right.dock-drop-deep {
+  left: calc(50% + 48px);
+  width: 16px;
+}
+
+.dock-drop-layer .dock-drop-right::before {
+  content: '>';
+}
+
+.dock-drop-layer .dock-drop-top {
+  top: calc(50% - 48px);
+}
+
+.dock-drop-layer .dock-drop-top.dock-drop-deep {
+  top: calc(50% - 64px);
+  height: 16px;
+}
+
+.dock-drop-layer .dock-drop-top.dock-drop-deep::before {
+  line-height: 14px;
+}
+
+.dock-drop-layer .dock-drop-top::before {
+  content: '>';
+  transform: rotate(270deg);
+}
+
+.dock-drop-layer .dock-drop-bottom {
+  top: calc(50% + 16px);
+}
+
+.dock-drop-layer .dock-drop-bottom.dock-drop-deep {
+  top: calc(50% + 48px);
+  height: 16px;
+}
+
+.dock-drop-layer .dock-drop-bottom.dock-drop-deep::before {
+  line-height: 14px;
+}
+
+.dock-drop-layer .dock-drop-bottom::before {
+  content: '>';
+  transform: rotate(90deg);
+}
+
+.dock-drop-layer .dock-drop-square-dropping {
+  background: #125d94;
+  color: white;
+}
+
+.dock-panel.dock-panel-dropping .dock-tab-close-btn {
+  pointer-events: none;
+}
+
+.dock-panel-max-btn,
+.dock-panel-min-btn {
+  height: 25px;
+  width: 21px;
+  font-family: 'Fredoka One', sans-serif;
+  margin: 2px 2px 2px 0;
+  padding: 6px 4px 4px 2px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  outline: none;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.dock-panel-max-btn:before,
+.dock-panel-min-btn:before {
+  position: absolute;
+  content: ' ';
+  border: 2px solid #444;
+  border-radius: 1px;
+  width: 13px;
+  height: 13px;
+  box-sizing: border-box;
+}
+
+.dock-panel-max-btn:hover,
+.dock-panel-min-btn:hover,
+.dock-panel-max-btn:focus,
+.dock-panel-min-btn:focus {
+  color: #a2a2a2;
+}
+
+.dock-panel-max-btn:hover:before,
+.dock-panel-min-btn:hover:before,
+.dock-panel-max-btn:focus:before,
+.dock-panel-min-btn:focus:before {
+  border-color: #a2a2a2;
+}
+
+.dock-panel-max-btn:hover,
+.dock-panel-min-btn:hover {
+  transform: scale(1.1);
+}
+
+.dock-panel-min-btn:before {
+  position: absolute;
+  border-radius: 1px;
+  width: 9px;
+  height: 9px;
+  border: none;
+  content: '-';
+  color: #666;
+  font-size: 20px;
+  line-height: 4px;
+}
+
+.dock-panel-min-btn:hover:before,
+.dock-panel-min-btn:focus:before {
+  color: #999;
+}
+
+.dock-panel.dock-style-place-holder {
+  border: none;
+}
+
+.dock-panel.dock-style-place-holder .dock-bar {
+  display: none;
+}
+
+.dock-layout > :not(.dock-fbox) .dock-panel.dock-style-headless {
+  border: none;
+}
+
+.dock-layout > :not(.dock-fbox) .dock-panel.dock-style-headless .dock-bar {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  height: 20px;
+  width: 100%;
+  transition: all 0.15s ease-in-out;
+}
+
+.dock-layout > :not(.dock-fbox) .dock-panel.dock-style-headless .dock-bar:hover,
+.dock-layout > :not(.dock-fbox) .dock-panel.dock-style-headless .dock-bar:focus-within,
+.dock-layout > :not(.dock-fbox) .dock-panel.dock-style-headless.dock-panel-dropping .dock-bar {
+  opacity: 1;
+  height: 31px;
+}
+
+.dock-layout > :not(.dock-fbox) .dock-panel.dock-style-headless .dock-content {
+  height: 100%;
+}
+
+.dock-panel.dock-style-main {
+  border: none;
+}
+
+.dock-panel.dock-style-main .dock-bar {
+  background: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dock-panel.dock-style-main .dock-tab {
+  background: var(--primary-color);
+}
+
+.dock-panel.dock-style-card .dock-tab {
+  margin-right: 2px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px 5px 0 0;
+}
+
+.dock-panel.dock-style-card .dock-tab.dock-tab-active {
+  border-bottom: 1px solid var(--primary-color);
+  background: var(--primary-color);
+}
+
+.dock-panel.dock-style-card .dock-bar {
+  border-bottom: 1px solid var(--border-color);
+  overflow: visible;
+}
+
+.dock-panel.dock-style-card .dock-nav-wrap {
+  padding-top: 5px;
+  transform: translate(0, 1px);
+}
+
+.dock-panel.dock-style-card .dock-ink-bar {
+  /* hide animated ink bar */
+  background: var(--primary-color);
+  opacity: 0;
+}
+
+.dock-panel.dock-style-card .dock-tab-hit-area {
+  /* cover the border area */
+  left: -2px;
+  right: -2px;
+}
+
+.dock-panel.dock-style-card .dock-panel-max-btn,
+.dock-panel.dock-style-card .dock-panel-min-btn {
+  margin-top: 4px;
+}
+
+.dock-panel.dock-style-card .dock-tab-close-btn {
+  right: 0;
+  font-size: 10px;
+  top: 8px;
+}
+
+.dock-panel.dock-style-card .dock-extra-content {
+  height: 35px;
+}

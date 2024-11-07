@@ -449,8 +449,8 @@ export default {
   'pages.datastudio.editor.debug.success': 'Search succeeded',
   'pages.datastudio.editor.execute.warn':
     'The execution mode of this task is [{type}], which does not support SQL query, please save it manually and use the button on the right - job submission',
-  'pages.datastudio.editor.explan': 'Get the current FlinkSql execution graph',
-  'pages.datastudio.editor.explan.tip': 'JobPlan for FlinkSQL',
+  'pages.datastudio.editor.explain': 'Get the current FlinkSql execution graph',
+  'pages.datastudio.editor.explain.tip': 'JobPlan for FlinkSQL',
   'pages.datastudio.editor.stop': 'Stop',
   'pages.datastudio.editor.stop.job': 'Stop job',
   'pages.datastudio.editor.stop.jobConfirm': 'Are you sure to stop the job [{jobName}]? ',
@@ -568,8 +568,10 @@ export default {
     'The data is too long to be displayed in full',
   'pages.datastudio.label.version': 'Version History',
   'pages.datastudio.label.version.diff': 'Version Diff',
-  'pages.datastudio.label.version.leftTitle': 'Version number',
-  'pages.datastudio.label.version.rightTitle': 'Version number',
+  'pages.datastudio.label.version.leftTitle':
+    'Version number: {versionId} Creation time: {createTime}',
+  'pages.datastudio.label.version.rightTitle':
+    'Version: [Current Edited Version] Update Time: [{updateTime}]',
   'pages.datastudio.label.version.rollback': 'Rollback',
   'pages.datastudio.label.version.rollback.flinksql': 'Rollback Flink SQL Version',
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
@@ -1370,5 +1372,10 @@ export default {
   'dashboard.theme.shine': 'Purple',
   'dashboard.theme.vintage': 'Vintage',
   'dashboard.theme.westeros': 'Westeros',
-  'dashboard.theme.wonderland': 'Wonderland'
+  'dashboard.theme.wonderland': 'Wonderland',
+
+  'datastudio.toolbar.rightClick.hideToolbarDesc': 'hides the toolbar window name',
+  'datastudio.toolbar.rightClick.showToolbarDesc': 'displays the toolbar window name',
+  'datastudio.toolbar.rightClick.closeCompact': 'turn off compact mode',
+  'datastudio.toolbar.rightClick.openCompact': 'turn on compact mode'
 };

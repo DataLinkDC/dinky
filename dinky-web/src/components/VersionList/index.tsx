@@ -18,12 +18,22 @@
  */
 
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { DeliveredProcedureOutlined } from '@ant-design/icons';
 import { List, Skeleton, Space, Tag, Tooltip } from 'antd';
 import { ListItemTypeProps } from 'antd/es/list/Item';
 
+export type TaskVersionListItem = {
+  id: number;
+  taskId?: number;
+  name?: string;
+  dialect?: string;
+  type?: string;
+  statement: string;
+  versionId?: string;
+  createTime?: string;
+  isLatest?: boolean;
+};
 export interface VersionListProps {
   data: TaskVersionListItem[];
   onSelectListen?: (value: TaskVersionListItem) => void;

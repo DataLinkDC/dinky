@@ -1,0 +1,45 @@
+.my-panel-extra-btn {
+  cursor: pointer;
+  font-family: 微软雅黑, serif;
+  color: var(--panel-extra-btn-color);
+  display: inline-block;
+  width: 18px;
+  height: 24px;
+  text-align: center;
+  opacity: 0.3;
+  transition: all 0.25s ease-in-out;
+  line-height: 30px;
+}
+
+.my-panel-extra-btn:hover {
+  opacity: 1;
+}
+
+.btn {
+  margin: 1px 5px;
+  padding: 1px 5px;
+}
+
+.dock-style-show {
+  display: block;
+}
+
+.dock-style-hide {
+  display: none;
+}
+
+// 设置分隔面板线的宽度和长度
+.dock-hbox > .dock-divider {
+  flex: 0 0 2px;
+}
+.dock-vbox > .dock-divider {
+  flex: 0 0 2px;
+}
+
+// keep-alive div设置成满屏
+.ka-wrapper {
+  height: 100%;
+}
+.ka-content {
+  height: 100%;
+}

@@ -400,8 +400,8 @@ export default {
   'pages.datastudio.editor.exec.success': '提交成功',
   'pages.datastudio.editor.execute.warn':
     '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
-  'pages.datastudio.editor.explan': '获取当前的 FlinkSql 的执行图',
-  'pages.datastudio.editor.explan.tip': 'FlinkSQL 的 JobPlan',
+  'pages.datastudio.editor.explain': '获取当前的 FlinkSql 的执行图',
+  'pages.datastudio.editor.explain.tip': 'FlinkSQL 的 JobPlan',
   'pages.datastudio.editor.stop': '停止',
   'pages.datastudio.editor.stop.job': '停止作业',
   'pages.datastudio.editor.stop.jobConfirm': '确定停止作业【{jobName}】吗？',
@@ -506,8 +506,9 @@ export default {
   'pages.datastudio.label.result.query.latest.data.truncate': '数据过长无法全部显示',
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.diff': '版本对比',
-  'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间',
-  'pages.datastudio.label.version.rightTitle': '版本号：【当前编辑版本】 创建时间',
+  'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间：【{createTime}】',
+  'pages.datastudio.label.version.rightTitle':
+    '版本号：【当前编辑版本】 更新时间：【{updateTime}】',
   'pages.datastudio.label.version.rollback': '回滚',
   'pages.datastudio.label.version.rollback.flinksql': '回滚Flink SQL版本',
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
@@ -1285,5 +1286,10 @@ export default {
   'dashboard.theme.shine': '明亮',
   'dashboard.theme.vintage': '复古',
   'dashboard.theme.westeros': '西部',
-  'dashboard.theme.wonderland': '奇幻'
+  'dashboard.theme.wonderland': '奇幻',
+
+  'datastudio.toolbar.rightClick.hideToolbarDesc': '隐藏工具栏窗口名称',
+  'datastudio.toolbar.rightClick.showToolbarDesc': '显示工具栏窗口名称',
+  'datastudio.toolbar.rightClick.closeCompact': '关闭紧凑模式',
+  'datastudio.toolbar.rightClick.openCompact': '打开紧凑模式'
 };

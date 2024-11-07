@@ -1,0 +1,43 @@
+@toolbar-icon-container-background-color: var(--btn-background-color);
+@toolbar-icon-container-color: var(--btn-color);
+
+/*工具栏样式*/
+.toolbar-side {
+  height: 100%;
+}
+
+/* 工具栏详情样式*/
+.toolbar-desc {
+  text-align: center;
+  font-size: 12px;
+  line-height: 15px;
+  user-select: none;
+}
+
+/* 工具栏 图标样式*/
+.toolbar-icon {
+  font-size: 20px;
+}
+
+/* 工具栏 图标容器样式*/
+.toolbar-icon-container {
+  width: 100%;
+  cursor: pointer;
+  color: @toolbar-icon-container-color !important;
+}
+
+.toolbar-icon-container:hover {
+  color: #1f1f1f;
+  border-radius: 50%;
+  background-color: @toolbar-icon-container-background-color;
+}
+
+.toolbar-icon-container-select {
+  border-radius: 0 !important;
+  color: var(--btn-active-color) !important;
+  background-color: @toolbar-icon-container-background-color !important;
+}
+
+.toolbar-icon-container-open {
+  background-color: #a3dbff;
+}

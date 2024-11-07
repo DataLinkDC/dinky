@@ -344,10 +344,10 @@ const HeaderContainer = (props: connect) => {
   };
 
   const showDagGraph = async () => {
-    const result = await getJobPlan(l('pages.datastudio.editor.explan.tip'), currentData);
+    const result = await getJobPlan(l('pages.datastudio.editor.explain.tip'), currentData);
     if (result) {
       modal.confirm({
-        title: l('pages.datastudio.editor.explan.tip'),
+        title: l('pages.datastudio.editor.explain.tip'),
         width: '100%',
         icon: null,
         content: <FlinkGraph data={result.data} />,

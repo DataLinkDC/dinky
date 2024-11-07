@@ -61,7 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@ServerEndpoint("/ws/sql-gateway/")
+@ServerEndpoint("/api/ws/sql-gateway/")
 public class SqlGateway {
 
     private Session session;
