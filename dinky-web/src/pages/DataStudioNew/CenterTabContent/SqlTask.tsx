@@ -79,7 +79,7 @@ import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import DiffModal from '@/pages/DataStudio/MiddleContainer/StudioEditor/DiffModal';
 import { matchLanguage } from '@/pages/DataStudio/MiddleContainer/function';
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import {lockTask} from '@/pages/DataStudioNew/function'
+import { lockTask } from '@/pages/DataStudioNew/function';
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -271,11 +271,11 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const hotKeyConfig = { enable: activeTab === id };
 
   const getActiveTab = () => {
-    return tabs.find((item:CenterTab)=>{
-      if(item.id===activeTab){
+    return tabs.find((item: CenterTab) => {
+      if (item.id === activeTab) {
         return item;
       }
-    })
+    });
   };
 
   const isLockTask = lockTask(

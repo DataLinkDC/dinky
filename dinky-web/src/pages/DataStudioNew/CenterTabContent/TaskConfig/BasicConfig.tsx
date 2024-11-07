@@ -41,7 +41,7 @@ export const BasicConfig = (props: {
   tempData: TempData;
   data: TaskState;
   onValuesChange?: (changedValues: any, values: TaskState) => void;
-  isLockTask:boolean;
+  isLockTask: boolean;
 }) => {
   const { alertGroup, flinkConfigOptions, flinkUdfOptions } = props.tempData;
   const formRef = useRef<ProFormInstance>();

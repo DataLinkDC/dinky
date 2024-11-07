@@ -41,7 +41,7 @@ export default (props: {
   tempData: TempData;
   data: TaskState;
   onValuesChange?: (changedValues: any, values: TaskState) => void;
-  isLockTask:boolean;
+  isLockTask: boolean;
 }) => {
   const { data, tempData } = props;
   const items: TabsProps['items'] = [];
