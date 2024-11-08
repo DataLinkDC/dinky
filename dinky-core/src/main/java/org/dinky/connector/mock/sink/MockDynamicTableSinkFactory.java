@@ -19,8 +19,6 @@
 
 package org.dinky.connector.mock.sink;
 
-import static org.apache.flink.configuration.ConfigOptions.key;
-
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.factories.DynamicTableSinkFactory;
@@ -31,10 +29,6 @@ import java.util.Set;
 
 public class MockDynamicTableSinkFactory implements DynamicTableSinkFactory {
     public static final String IDENTIFIER = "dinky-mock";
-    public static final ConfigOption<String> MOCK_IDENTIFIER = key("mock-identifier")
-            .stringType()
-            .noDefaultValue()
-            .withDescription("Message that identify print and is prefixed to the output of the");
 
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
