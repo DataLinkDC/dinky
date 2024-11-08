@@ -196,7 +196,7 @@ function getMaxWidthAndDepth(edges: CusEdge[]): { maxWidth: number; maxDepth: nu
 }
 
 const FlinkDag = (props: DagProps) => {
-  const container = useRef(null);
+  const container = useRef<HTMLDivElement>(null);
 
   const { job, onlyPlan = false, checkPoints = {} } = props;
 
@@ -280,8 +280,8 @@ const FlinkDag = (props: DagProps) => {
     );
 
     // Adaptive layout
-    const model = new DagreLayout(layoutConfig).layout(flinkData);
-    graph.fromJSON(model);
+    // const model = new DagreLayout(layoutConfig).assign(flinkData);
+    graph.fromJSON(flinkData);
 
     // Automatically zoom to fit
     graph.zoomToFit(zoomOptions);
@@ -378,7 +378,7 @@ const FlinkDag = (props: DagProps) => {
   }, [zoom]);
 
   return (
-    <span>
+    <>
       <div
         style={{
           height: 200,
@@ -436,7 +436,7 @@ const FlinkDag = (props: DagProps) => {
           />
         )}
       </Drawer>
-    </span>
+    </>
   );
 };
 

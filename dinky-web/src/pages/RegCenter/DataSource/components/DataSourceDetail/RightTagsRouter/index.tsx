@@ -39,7 +39,6 @@ import React, { useEffect, useState } from 'react';
  * props
  */
 type RightTagsRouterProps = {
-  tableInfo: Partial<DataSources.Table>;
   rightButtons?: React.ReactNode;
   queryParams: QueryParams;
   tagDisabled?: boolean;
