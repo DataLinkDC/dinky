@@ -26,8 +26,13 @@ import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
 import org.dinky.utils.JsonUtils;
 
+import org.apache.calcite.config.Lex;
+import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlInsert;
+import org.apache.calcite.sql.SqlNodeList;
+import org.apache.calcite.sql.dialect.AnsiSqlDialect;
 import org.apache.calcite.sql.parser.SqlParser;
+import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.flink.table.api.Schema;
 import org.apache.flink.table.catalog.CatalogTable;
 import org.apache.flink.table.operations.Operation;
@@ -49,7 +54,9 @@ public class MockStatementExplainer {
     // Because calcite cannot parse flink sql ddl, a table environment is designed here for flink sql ddl pars
     private final CustomTableEnvironment tableEnv;
     private boolean isMockSink = false;
-    public static final String MOCK_SQL_TEMPLATE = "CREATE TABLE {0} ({1}) WITH ({2})";
+    private final SqlParser.Config calciteConfig;
+    private final String MOCK_TABLE_PREFIX = "mock_sink_";
+    public static final String MOCK_SQL_TEMPLATE = "CREATE TABLE IF NOT EXISTS {0} ({1}) WITH ({2})";
 
     public static MockStatementExplainer build(CustomTableEnvironment tableEnv) {
         return new MockStatementExplainer(tableEnv);
@@ -57,6 +64,7 @@ public class MockStatementExplainer {
 
     public MockStatementExplainer(CustomTableEnvironment tableEnv) {
         this.tableEnv = tableEnv;
+        this.calciteConfig = SqlParser.config().withLex(Lex.JAVA);
     }
 
     public MockStatementExplainer isMockSink(boolean isMockSink) {
@@ -76,8 +84,8 @@ public class MockStatementExplainer {
      * @param jobParam job param
      */
     private void mockSink(JobParam jobParam) {
-        // Based on insert statements, get table names need to be mocked
-        Set<String> tablesNeedMock = getSinkTableNamesNeedMock(jobParam.getTrans());
+        // Based on insert statements, get table names need to be mocked, and modify insert statements' target table
+        Set<String> tablesNeedMock = getTableNamesNeedMockAndModifyTrans(jobParam);
         // mock insert table ddl
         List<StatementParam> mockedDdl = new ArrayList<>();
 
@@ -90,7 +98,7 @@ public class MockStatementExplainer {
                     CatalogTable catalogTable = createOperation.getCatalogTable();
                     // get table name and check if it should be mocked
                     String tableName = createOperation.getTableIdentifier().getObjectName();
-                    if (tablesNeedMock.contains(tableName.toUpperCase())) {
+                    if (tablesNeedMock.contains(tableName)) {
                         // generate mock statement
                         mockedDdl.add(
                                 new StatementParam(getSinkMockDdlStatement(tableName, catalogTable), SqlType.CREATE));
@@ -107,22 +115,39 @@ public class MockStatementExplainer {
     /**
      * get tables names of insert statements, these tables will be mocked
      *
-     * @param transStatements trans statement that contains all insert statements
+     * @param jobParam jobParam
      * @return a hash set, which contains all insert table names
      */
-    private static Set<String> getSinkTableNamesNeedMock(List<StatementParam> transStatements) {
+    private Set<String> getTableNamesNeedMockAndModifyTrans(JobParam jobParam) {
+        List<StatementParam> transStatements = jobParam.getTrans();
+        List<StatementParam> mockedTransStatements = new ArrayList<>();
         Set<String> insertTables = new HashSet<>();
         for (StatementParam statement : transStatements) {
             if (statement.getType().equals(SqlType.INSERT)) {
                 try {
-                    SqlInsert sqlInsert =
-                            (SqlInsert) SqlParser.create(statement.getValue()).parseQuery();
+                    SqlInsert sqlInsert = (SqlInsert) SqlParser.create(statement.getValue(), calciteConfig)
+                            .parseQuery();
                     insertTables.add(sqlInsert.getTargetTable().toString());
+                    SqlInsert mockedInsertTrans = new SqlInsert(
+                            sqlInsert.getParserPosition(),
+                            SqlNodeList.EMPTY,
+                            new SqlIdentifier(
+                                    MOCK_TABLE_PREFIX
+                                            + sqlInsert.getTargetTable().toString(),
+                                    SqlParserPos.ZERO),
+                            sqlInsert.getSource(),
+                            sqlInsert.getTargetColumnList());
+                    mockedTransStatements.add(new StatementParam(
+                            mockedInsertTrans
+                                    .toSqlString(AnsiSqlDialect.DEFAULT)
+                                    .toString(),
+                            SqlType.INSERT));
                 } catch (Exception e) {
                     log.error("Statement parse error, statement: {}", statement.getValue());
                 }
             }
         }
+        jobParam.setTrans(mockedTransStatements);
         return insertTables;
     }
 
@@ -133,7 +158,7 @@ public class MockStatementExplainer {
      * @param catalogTable catalog table
      * @return ddl that connector is changed as well as other options not changed
      */
-    private static String getSinkMockDdlStatement(String tableName, CatalogTable catalogTable) {
+    private String getSinkMockDdlStatement(String tableName, CatalogTable catalogTable) {
         // options
         Map<String, String> optionsMap = catalogTable.getOptions();
         optionsMap.put("connector", MockDynamicTableSinkFactory.IDENTIFIER);
@@ -150,6 +175,6 @@ public class MockStatementExplainer {
                     return physicalColumn.getName() + " " + physicalColumn.getDataType();
                 })
                 .collect(Collectors.joining(", "));
-        return MessageFormat.format(MOCK_SQL_TEMPLATE, tableName, columns, mockedWithOption);
+        return MessageFormat.format(MOCK_SQL_TEMPLATE, MOCK_TABLE_PREFIX + tableName, columns, mockedWithOption);
     }
 }
