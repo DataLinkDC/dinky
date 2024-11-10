@@ -104,9 +104,8 @@ public class MockStatementExplainer {
                                 MessageFormat.format(DROP_TABLE_SQL_TEMPLATE, generateMockedTableName(tableName)),
                                 SqlType.DROP));
                         // generate mock statement
-                        mockedDdl.add(new StatementParam(
-                                getSinkMockDdlStatement(tableName, catalogTable),
-                                SqlType.CREATE));
+                        mockedDdl.add(
+                                new StatementParam(getSinkMockDdlStatement(tableName, catalogTable), SqlType.CREATE));
                     } else {
                         mockedDdl.add(ddl);
                     }
