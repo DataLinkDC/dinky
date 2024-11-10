@@ -55,8 +55,8 @@ public class MockStatementExplainer {
     private final CustomTableEnvironment tableEnv;
     private boolean isMockSink = false;
     private final SqlParser.Config calciteConfig;
-    private final String MOCK_TABLE_PREFIX = "mock_sink_";
-    public static final String MOCK_SQL_TEMPLATE = "CREATE TABLE IF NOT EXISTS {0} ({1}) WITH ({2})";
+    private final String DROP_TABLE_SQL_TEMPLATE = "DROP TABLE IF EXISTS {0}";
+    private final String MOCK_SQL_TEMPLATE = "CREATE TABLE {0} ({1}) WITH ({2})";
 
     public static MockStatementExplainer build(CustomTableEnvironment tableEnv) {
         return new MockStatementExplainer(tableEnv);
@@ -99,9 +99,14 @@ public class MockStatementExplainer {
                     // get table name and check if it should be mocked
                     String tableName = createOperation.getTableIdentifier().getObjectName();
                     if (tablesNeedMock.contains(tableName)) {
+                        // drop table first
+                        mockedDdl.add(new StatementParam(
+                                MessageFormat.format(DROP_TABLE_SQL_TEMPLATE, generateMockedTableName(tableName)),
+                                SqlType.DROP));
                         // generate mock statement
-                        mockedDdl.add(
-                                new StatementParam(getSinkMockDdlStatement(tableName, catalogTable), SqlType.CREATE));
+                        mockedDdl.add(new StatementParam(
+                                getSinkMockDdlStatement(tableName, catalogTable),
+                                SqlType.CREATE));
                     } else {
                         mockedDdl.add(ddl);
                     }
@@ -132,8 +137,8 @@ public class MockStatementExplainer {
                             sqlInsert.getParserPosition(),
                             SqlNodeList.EMPTY,
                             new SqlIdentifier(
-                                    MOCK_TABLE_PREFIX
-                                            + sqlInsert.getTargetTable().toString(),
+                                    generateMockedTableName(
+                                            sqlInsert.getTargetTable().toString()),
                                     SqlParserPos.ZERO),
                             sqlInsert.getSource(),
                             sqlInsert.getTargetColumnList());
@@ -175,6 +180,15 @@ public class MockStatementExplainer {
                     return physicalColumn.getName() + " " + physicalColumn.getDataType();
                 })
                 .collect(Collectors.joining(", "));
-        return MessageFormat.format(MOCK_SQL_TEMPLATE, MOCK_TABLE_PREFIX + tableName, columns, mockedWithOption);
+        return MessageFormat.format(MOCK_SQL_TEMPLATE, generateMockedTableName(tableName), columns, mockedWithOption);
+    }
+
+    /**
+     * generate table name with mocked prefix
+     * @param tableName table name
+     * @return table name with mocked prefix
+     */
+    private String generateMockedTableName(String tableName) {
+        return "mock_sink_" + tableName;
     }
 }
