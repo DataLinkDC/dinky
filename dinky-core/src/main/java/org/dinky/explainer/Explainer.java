@@ -160,9 +160,6 @@ public class Explainer {
             } else if (transSqlTypeSet.contains(operationType)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
-                if (!useStatementSet) {
-                    break;
-                }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else if (operationType.equals(SqlType.PRINT)) {

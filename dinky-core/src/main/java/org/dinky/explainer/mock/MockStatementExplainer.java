@@ -33,6 +33,7 @@ import org.apache.calcite.sql.SqlNodeList;
 import org.apache.calcite.sql.dialect.AnsiSqlDialect;
 import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.parser.SqlParserPos;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.api.Schema;
 import org.apache.flink.table.catalog.CatalogTable;
 import org.apache.flink.table.operations.Operation;
@@ -42,7 +43,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -84,14 +84,12 @@ public class MockStatementExplainer {
      * @param jobParam job param
      */
     private void mockSink(JobParam jobParam) {
-        // Based on insert statements, get table names need to be mocked, and modify insert statements' target table
+        // Get table names that need to be mocked, and modify insert statement.
         Set<String> tablesNeedMock = getTableNamesNeedMockAndModifyTrans(jobParam);
         // mock insert table ddl
         List<StatementParam> mockedDdl = new ArrayList<>();
-
         for (StatementParam ddl : jobParam.getDdl()) {
             List<Operation> parseOperationList = tableEnv.getParser().parse(ddl.getValue());
-
             for (Operation operation : parseOperationList) {
                 if (operation instanceof CreateTableOperation) {
                     CreateTableOperation createOperation = (CreateTableOperation) operation;
@@ -99,10 +97,6 @@ public class MockStatementExplainer {
                     // get table name and check if it should be mocked
                     String tableName = createOperation.getTableIdentifier().getObjectName();
                     if (tablesNeedMock.contains(tableName)) {
-                        // drop table first
-                        mockedDdl.add(new StatementParam(
-                                MessageFormat.format(DROP_TABLE_SQL_TEMPLATE, generateMockedTableName(tableName)),
-                                SqlType.DROP));
                         // generate mock statement
                         mockedDdl.add(
                                 new StatementParam(getSinkMockDdlStatement(tableName, catalogTable), SqlType.CREATE));
@@ -113,7 +107,7 @@ public class MockStatementExplainer {
             }
         }
         jobParam.setDdl(mockedDdl);
-        log.info("Mock sink succeed: {}", JsonUtils.toJsonString(jobParam));
+        log.debug("Mock sink succeed: {}", JsonUtils.toJsonString(jobParam));
     }
 
     /**
@@ -136,7 +130,7 @@ public class MockStatementExplainer {
                             sqlInsert.getParserPosition(),
                             SqlNodeList.EMPTY,
                             new SqlIdentifier(
-                                    generateMockedTableName(
+                                    generateMockedTableIdentifier(
                                             sqlInsert.getTargetTable().toString()),
                                     SqlParserPos.ZERO),
                             sqlInsert.getSource(),
@@ -149,6 +143,8 @@ public class MockStatementExplainer {
                 } catch (Exception e) {
                     log.error("Statement parse error, statement: {}", statement.getValue());
                 }
+            } else {
+                mockedTransStatements.add(statement);
             }
         }
         jobParam.setTrans(mockedTransStatements);
@@ -163,14 +159,7 @@ public class MockStatementExplainer {
      * @return ddl that connector is changed as well as other options not changed
      */
     private String getSinkMockDdlStatement(String tableName, CatalogTable catalogTable) {
-        // options
-        Map<String, String> optionsMap = catalogTable.getOptions();
-        optionsMap.put("connector", MockDynamicTableSinkFactory.IDENTIFIER);
-        List<String> withOptionList = new ArrayList<>(optionsMap.size());
-        for (Map.Entry<String, String> entry : optionsMap.entrySet()) {
-            withOptionList.add("'" + entry.getKey() + "' = '" + entry.getValue() + "'");
-        }
-        String mockedWithOption = String.join(", ", withOptionList);
+        String mockedOption = "'connector'='" + MockDynamicTableSinkFactory.IDENTIFIER + "'";
         // columns
         Schema unresolvedSchema = catalogTable.getUnresolvedSchema();
         String columns = unresolvedSchema.getColumns().stream()
@@ -179,15 +168,23 @@ public class MockStatementExplainer {
                     return physicalColumn.getName() + " " + physicalColumn.getDataType();
                 })
                 .collect(Collectors.joining(", "));
-        return MessageFormat.format(MOCK_SQL_TEMPLATE, generateMockedTableName(tableName), columns, mockedWithOption);
+        return MessageFormat.format(
+                MOCK_SQL_TEMPLATE,
+                StringUtils.join(generateMockedTableIdentifier(tableName), "."),
+                columns,
+                mockedOption);
     }
 
     /**
-     * generate table name with mocked prefix
+     * generate table identifier with mocked prefix info
      * @param tableName table name
-     * @return table name with mocked prefix
+     * @return table identifier with mocked prefix info
      */
-    private String generateMockedTableName(String tableName) {
-        return "mock_sink_" + tableName;
+    private List<String> generateMockedTableIdentifier(String tableName) {
+        List<String> names = new ArrayList<>();
+        names.add("default_catalog");
+        names.add("default_database");
+        names.add("mock_sink_" + tableName);
+        return names;
     }
 }
