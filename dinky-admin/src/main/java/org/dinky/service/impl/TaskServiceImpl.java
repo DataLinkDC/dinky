@@ -356,7 +356,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // Debug mode need return result
         task.setUseResult(true);
         // Debug mode need execute
-        task.setStatementSet(false);
+        task.setStatementSet(task.isMockSinkFunction());
         // mode check
         if (GatewayType.get(task.getType()).isDeployCluster()) {
             throw new BusException(Status.MODE_IS_NOT_ALLOW_SELECT.getMessage());

@@ -40,6 +40,8 @@ public enum SqlType {
 
     INSERT("INSERT", "^INSERT.*", SqlCategory.DML),
 
+    MOCKED_INSERT("MOCKED_INSERT", "^MOCKED_INSERT.*", SqlCategory.DML),
+
     DESC("DESC", "^DESC.*", SqlCategory.DDL),
 
     DESCRIBE("DESCRIBE", "^DESCRIBE.*", SqlCategory.DDL),

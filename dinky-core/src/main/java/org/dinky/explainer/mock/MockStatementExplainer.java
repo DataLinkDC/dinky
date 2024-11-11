@@ -1,0 +1,193 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+package org.dinky.explainer.mock;
+
+import org.dinky.connector.mock.sink.MockDynamicTableSinkFactory;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.job.JobParam;
+import org.dinky.job.StatementParam;
+import org.dinky.parser.SqlType;
+import org.dinky.utils.JsonUtils;
+
+import org.apache.calcite.config.Lex;
+import org.apache.calcite.sql.SqlIdentifier;
+import org.apache.calcite.sql.SqlInsert;
+import org.apache.calcite.sql.SqlNodeList;
+import org.apache.calcite.sql.dialect.AnsiSqlDialect;
+import org.apache.calcite.sql.parser.SqlParser;
+import org.apache.calcite.sql.parser.SqlParserPos;
+import org.apache.flink.table.api.Schema;
+import org.apache.flink.table.catalog.CatalogTable;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.ddl.CreateTableOperation;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class MockStatementExplainer {
+
+    // Because calcite cannot parse flink sql ddl, a table environment is designed here for flink sql ddl pars
+    private final CustomTableEnvironment tableEnv;
+    private boolean isMockSink = false;
+    private final SqlParser.Config calciteConfig;
+    private final String DROP_TABLE_SQL_TEMPLATE = "DROP TABLE IF EXISTS {0}";
+    private final String MOCK_SQL_TEMPLATE = "CREATE TABLE {0} ({1}) WITH ({2})";
+
+    public static MockStatementExplainer build(CustomTableEnvironment tableEnv) {
+        return new MockStatementExplainer(tableEnv);
+    }
+
+    public MockStatementExplainer(CustomTableEnvironment tableEnv) {
+        this.tableEnv = tableEnv;
+        this.calciteConfig = SqlParser.config().withLex(Lex.JAVA);
+    }
+
+    public MockStatementExplainer isMockSink(boolean isMockSink) {
+        this.isMockSink = isMockSink;
+        return this;
+    }
+
+    public void jobParamMock(JobParam jobParam) {
+        if (isMockSink) {
+            mockSink(jobParam);
+        }
+    }
+
+    /**
+     * The connector of insert tables will be changed to {@link MockDynamicTableSinkFactory}
+     *
+     * @param jobParam job param
+     */
+    private void mockSink(JobParam jobParam) {
+        // Based on insert statements, get table names need to be mocked, and modify insert statements' target table
+        Set<String> tablesNeedMock = getTableNamesNeedMockAndModifyTrans(jobParam);
+        // mock insert table ddl
+        List<StatementParam> mockedDdl = new ArrayList<>();
+
+        for (StatementParam ddl : jobParam.getDdl()) {
+            List<Operation> parseOperationList = tableEnv.getParser().parse(ddl.getValue());
+
+            for (Operation operation : parseOperationList) {
+                if (operation instanceof CreateTableOperation) {
+                    CreateTableOperation createOperation = (CreateTableOperation) operation;
+                    CatalogTable catalogTable = createOperation.getCatalogTable();
+                    // get table name and check if it should be mocked
+                    String tableName = createOperation.getTableIdentifier().getObjectName();
+                    if (tablesNeedMock.contains(tableName)) {
+                        // drop table first
+                        mockedDdl.add(new StatementParam(
+                                MessageFormat.format(DROP_TABLE_SQL_TEMPLATE, generateMockedTableName(tableName)),
+                                SqlType.DROP));
+                        // generate mock statement
+                        mockedDdl.add(
+                                new StatementParam(getSinkMockDdlStatement(tableName, catalogTable), SqlType.CREATE));
+                    } else {
+                        mockedDdl.add(ddl);
+                    }
+                }
+            }
+        }
+        jobParam.setDdl(mockedDdl);
+        log.info("Mock sink succeed: {}", JsonUtils.toJsonString(jobParam));
+    }
+
+    /**
+     * get tables names of insert statements, these tables will be mocked
+     *
+     * @param jobParam jobParam
+     * @return a hash set, which contains all insert table names
+     */
+    private Set<String> getTableNamesNeedMockAndModifyTrans(JobParam jobParam) {
+        List<StatementParam> transStatements = jobParam.getTrans();
+        List<StatementParam> mockedTransStatements = new ArrayList<>();
+        Set<String> insertTables = new HashSet<>();
+        for (StatementParam statement : transStatements) {
+            if (statement.getType().equals(SqlType.INSERT)) {
+                try {
+                    SqlInsert sqlInsert = (SqlInsert) SqlParser.create(statement.getValue(), calciteConfig)
+                            .parseQuery();
+                    insertTables.add(sqlInsert.getTargetTable().toString());
+                    SqlInsert mockedInsertTrans = new SqlInsert(
+                            sqlInsert.getParserPosition(),
+                            SqlNodeList.EMPTY,
+                            new SqlIdentifier(
+                                    generateMockedTableName(
+                                            sqlInsert.getTargetTable().toString()),
+                                    SqlParserPos.ZERO),
+                            sqlInsert.getSource(),
+                            sqlInsert.getTargetColumnList());
+                    mockedTransStatements.add(new StatementParam(
+                            mockedInsertTrans
+                                    .toSqlString(AnsiSqlDialect.DEFAULT)
+                                    .toString(),
+                            SqlType.INSERT));
+                } catch (Exception e) {
+                    log.error("Statement parse error, statement: {}", statement.getValue());
+                }
+            }
+        }
+        jobParam.setTrans(mockedTransStatements);
+        return insertTables;
+    }
+
+    /**
+     * get mocked ddl statement
+     *
+     * @param tableName    table name
+     * @param catalogTable catalog table
+     * @return ddl that connector is changed as well as other options not changed
+     */
+    private String getSinkMockDdlStatement(String tableName, CatalogTable catalogTable) {
+        // options
+        Map<String, String> optionsMap = catalogTable.getOptions();
+        optionsMap.put("connector", MockDynamicTableSinkFactory.IDENTIFIER);
+        List<String> withOptionList = new ArrayList<>(optionsMap.size());
+        for (Map.Entry<String, String> entry : optionsMap.entrySet()) {
+            withOptionList.add("'" + entry.getKey() + "' = '" + entry.getValue() + "'");
+        }
+        String mockedWithOption = String.join(", ", withOptionList);
+        // columns
+        Schema unresolvedSchema = catalogTable.getUnresolvedSchema();
+        String columns = unresolvedSchema.getColumns().stream()
+                .map(column -> {
+                    Schema.UnresolvedPhysicalColumn physicalColumn = (Schema.UnresolvedPhysicalColumn) column;
+                    return physicalColumn.getName() + " " + physicalColumn.getDataType();
+                })
+                .collect(Collectors.joining(", "));
+        return MessageFormat.format(MOCK_SQL_TEMPLATE, generateMockedTableName(tableName), columns, mockedWithOption);
+    }
+
+    /**
+     * generate table name with mocked prefix
+     * @param tableName table name
+     * @return table name with mocked prefix
+     */
+    private String generateMockedTableName(String tableName) {
+        return "mock_sink_" + tableName;
+    }
+}

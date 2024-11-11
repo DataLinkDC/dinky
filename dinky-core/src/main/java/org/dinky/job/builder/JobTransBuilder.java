@@ -49,7 +49,6 @@ import java.util.UUID;
 
 /**
  * JobTransBuilder
- *
  */
 public class JobTransBuilder extends JobBuilder {
 
@@ -115,7 +114,11 @@ public class JobTransBuilder extends JobBuilder {
         if (!inserts.isEmpty()) {
             jobManager.setCurrentSql(String.join(FlinkSQLConstant.SEPARATOR, inserts));
             TableResult tableResult = executor.executeStatementSet(inserts);
-            updateJobWithTableResult(tableResult);
+            if (jobManager.getConfig().isMockSinkFunction()) {
+                updateJobWithTableResult(tableResult, SqlType.MOCKED_INSERT);
+            } else {
+                updateJobWithTableResult(tableResult);
+            }
         }
     }
 
