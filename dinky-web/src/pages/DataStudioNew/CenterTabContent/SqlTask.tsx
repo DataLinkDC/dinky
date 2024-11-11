@@ -435,7 +435,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }, [currentState, updateAction]);
 
   const handleStop = useCallback(async () => {
-    const result = await cancelTask('', currentState.taskId, false);
+    const result = await cancelTask(l('pages.datastudio.editor.stop.job'), currentState.taskId, false);
     if (result.success) {
       setCurrentState((prevState) => {
         return {

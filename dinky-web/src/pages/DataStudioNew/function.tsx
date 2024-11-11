@@ -88,6 +88,7 @@ export const handleRightClick = (
   e: any,
   stateAction: Dispatch<SetStateAction<RightContextMenuState>>
 ) => {
+  e.preventDefault(); // 阻止浏览器默认的右键行为
   let x = e.clientX;
   let y = e.clientY;
   // 判断右键的位置是否超出屏幕 , 如果超出屏幕则设置为屏幕的最大值
