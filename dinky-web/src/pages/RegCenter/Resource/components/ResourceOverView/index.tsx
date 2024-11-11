@@ -80,10 +80,10 @@ const ResourceOverView: React.FC<connect> = (props) => {
     });
   }, []);
 
-  useEffect( () => {
+  useEffect(() => {
     // if enableResource is true, then refresh the tree, otherwise do nothing
     if (enableResource) {
-       refreshTree();
+      refreshTree();
     }
   }, [enableResource]);
 
