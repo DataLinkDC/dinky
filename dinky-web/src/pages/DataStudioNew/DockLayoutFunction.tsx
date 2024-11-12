@@ -67,7 +67,7 @@ export const createNewPanel = (
       {
         id: route.key,
         content: <></>,
-        title: route.title,
+        title: route.title(),
         group: route.position
       }
     ]

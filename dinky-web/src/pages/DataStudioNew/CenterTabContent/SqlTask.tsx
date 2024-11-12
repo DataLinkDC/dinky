@@ -158,7 +158,6 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       updateCenterTab({ ...props.tabData, params: newParams });
 
       setOriginStatementValue(statement);
-
       if (params?.statement && params?.statement !== taskDetail.statement) {
         setDiff([{ key: 'statement', server: taskDetail.statement, cache: params.statement }]);
         setOpenDiffModal(true);
@@ -199,11 +198,6 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     // @ts-ignore
     editor['id'] = currentState.taskId;
     editor.onDidChangeCursorPosition((e) => {
-      // props.footContainerCacher.cache.codePosition = [e.position.lineNumber, e.position.column];
-      // dispatch({
-      //   type: STUDIO_MODEL.saveFooterValue,
-      //   payload: { ...props.footContainerCacher.cache }
-      // });
     });
     registerEditorKeyBindingAndAction(editor);
   };
@@ -422,15 +416,13 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       updateAction({
         actionType: DataStudioActionType.TASK_RUN_DEBUG,
         params: {
-          taskId: params.taskId,
-          columns: res.data?.result?.columns ?? [],
-          rowData: res.data?.result?.rowData ?? [],
+          taskId: params.taskId
         }
       });
       setCurrentState((prevState) => {
         return {
           ...prevState,
-          status: res.data.status === 'SUCCESS' ? (res.data.pipeline?'RUNNING':'SUCCESS') : res.data.status
+          status: res.data.status === 'SUCCESS' ? 'RUNNING' : res.data.status
         };
       });
     }
@@ -438,12 +430,14 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
   const handleStop = useCallback(async () => {
     const result = await cancelTask('', currentState.taskId, false);
-    setCurrentState((prevState) => {
-      return {
-        ...prevState,
-        status: 'CANCEL'
-      };
-    });
+    if (result.success) {
+      setCurrentState((prevState) => {
+        return {
+          ...prevState,
+          status: 'CANCEL'
+        };
+      });
+    }
   }, [currentState.taskId]);
 
   const handleGotoDevOps = useCallback(async () => {
@@ -753,10 +747,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 <Panel>
                   <CodeEdit
                     monacoRef={editorInstance}
-                    code={currentState.statement}
+                    code={originStatementValue}
                     language={matchLanguage(currentState.dialect)}
                     editorDidMount={editorDidMount}
-                    onChange={debounce(onEditorChange, 500)}
+                    onChange={debounce(onEditorChange, 50)}
                     enableSuggestions={true}
                     options={{
                       readOnlyMessage: {

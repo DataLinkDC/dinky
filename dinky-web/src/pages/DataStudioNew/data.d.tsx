@@ -52,6 +52,8 @@ export enum DataStudioActionType {
   CATALOG_REFRESH = 'catalog-refresh',
   TASK_RUN_CHECK = 'task-run-check',
   TASK_DELETE = 'task-delete',
+  TASK_CLOSE_ALL = 'task-close-all',
+  TASK_CLOSE_OTHER = 'task-close-other',
   TASK_RUN_DAG = 'task-run-dag',
   TASK_RUN_LINEAGE = 'task-run-lineage',
   TASK_RUN_SUBMIT = 'task-run-submit',
