@@ -197,8 +197,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     editorInstance.current = editor;
     // @ts-ignore
     editor['id'] = currentState.taskId;
-    editor.onDidChangeCursorPosition((e) => {
-    });
+    editor.onDidChangeCursorPosition((e) => {});
     registerEditorKeyBindingAndAction(editor);
   };
 

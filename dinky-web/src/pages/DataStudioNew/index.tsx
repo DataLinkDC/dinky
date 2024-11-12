@@ -53,7 +53,7 @@ import FooterContainer from '@/pages/DataStudioNew/FooterContainer';
 import { useToken } from 'antd/es/theme/internal';
 import { TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudioNew/constants';
 import { ContextMenuSpace } from '@/pages/DataStudioNew/ContextMenuSpace';
-import {sleep} from "@antfu/utils";
+import { sleep } from '@antfu/utils';
 
 const SqlTask = lazy(() => import('@/pages/DataStudioNew/CenterTabContent/SqlTask'));
 const DataSourceDetail = lazy(
@@ -93,10 +93,12 @@ const DataStudioNew: React.FC = (props: any) => {
   });
 
   // 标签右键弹出框状态
-  const [tagRightMenuState, setTagRightMenuState] = useState<RightContextMenuState&{id?:string}>({
+  const [tagRightMenuState, setTagRightMenuState] = useState<
+    RightContextMenuState & { id?: string }
+  >({
     show: false,
     position: InitContextMenuPosition,
-    id:undefined
+    id: undefined
   });
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -290,33 +292,31 @@ const DataStudioNew: React.FC = (props: any) => {
     const current = dockLayoutRef.current;
     const handleCloseOther = () => {
       if (current) {
-        dataStudioState.centerContent.tabs.forEach((tab:CenterTab) => {
-          if (tab.id===tagRightMenuState.id) return;
+        dataStudioState.centerContent.tabs.forEach((tab: CenterTab) => {
+          if (tab.id === tagRightMenuState.id) return;
           const currentLayoutData = current.getLayout();
           const source = Algorithm.find(currentLayoutData, tab.id) as TabData;
           const layoutData = Algorithm.removeFromLayout(currentLayoutData, source);
           current.changeLayout(layoutData, tab.id, 'remove', false);
-        })
+        });
       }
-    }
+    };
     switch (key) {
       case 'closeAll':
         if (current) {
           // 先关闭其他，再睡眠50ms 关闭当前页，否则会导致布局混乱
-          handleCloseOther()
-          sleep(50).then(()=>{
+          handleCloseOther();
+          sleep(50).then(() => {
             const currentLayoutData = current.getLayout();
 
             const source = Algorithm.find(currentLayoutData, tagRightMenuState.id!!) as TabData;
             const layoutData = Algorithm.removeFromLayout(currentLayoutData, source);
             current.changeLayout(layoutData, tagRightMenuState.id!!, 'remove', false);
-          })
-
-
+          });
         }
         break;
       case 'closeOther':
-        handleCloseOther()
+        handleCloseOther();
         break;
       default:
         break;
@@ -362,10 +362,10 @@ const DataStudioNew: React.FC = (props: any) => {
       }
 
       const getTitle = () => {
-        const rightMenuHandle = (e: React.MouseEvent<HTMLElement>)=>{
-          setTagRightMenuState((prevState) => ({ ...prevState, id: id }))
-          tagRightMenuHandle(e)
-        }
+        const rightMenuHandle = (e: React.MouseEvent<HTMLElement>) => {
+          setTagRightMenuState((prevState) => ({ ...prevState, id: id }));
+          tagRightMenuHandle(e);
+        };
         switch (tabData.tabType) {
           case 'task':
             const titleContent = (
@@ -395,9 +395,7 @@ const DataStudioNew: React.FC = (props: any) => {
             );
           default:
             return (
-              <ContextMenuSpace onContextMenu={rightMenuHandle}>
-                {tabData.title}
-              </ContextMenuSpace>
+              <ContextMenuSpace onContextMenu={rightMenuHandle}>{tabData.title}</ContextMenuSpace>
             );
         }
       };

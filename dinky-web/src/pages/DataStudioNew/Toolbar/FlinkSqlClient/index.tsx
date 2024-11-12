@@ -20,7 +20,7 @@
 import React, { useRef, useState } from 'react';
 import { Tabs } from 'antd';
 import './index.less';
-import TerminalTab from "@/pages/DataStudioNew/Toolbar/FlinkSqlClient/Terminal";
+import TerminalTab from '@/pages/DataStudioNew/Toolbar/FlinkSqlClient/Terminal';
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 type TabItem = {
   label: string;
