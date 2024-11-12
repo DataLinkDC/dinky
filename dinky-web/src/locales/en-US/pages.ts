@@ -509,7 +509,8 @@ export default {
   'pages.datastudio.label.execConfig.maxrow': 'Maximum number of rows',
   'pages.datastudio.label.execConfig.maxrow.tip': 'The maximum number of rows of preview data',
   'pages.datastudio.label.execConfig.mocksink': 'SinkMock',
-  'pages.datastudio.label.execConfig.mocksink.tip': 'Mock the SinkFunction, result will not be written to the production environment during debugging, but can preview through dinky',
+  'pages.datastudio.label.execConfig.mocksink.tip':
+    'Mock the SinkFunction, result will not be written to the production environment during debugging, but can preview through dinky',
   'pages.datastudio.label.jobConfig': 'Job Config',
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',

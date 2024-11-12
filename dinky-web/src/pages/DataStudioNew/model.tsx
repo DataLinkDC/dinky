@@ -266,7 +266,7 @@ const StudioModel: StudioModelType = {
       }
     },
     theme: {
-      compact: true
+      compact: false
     },
     centerContent: {
       tabs: [],
