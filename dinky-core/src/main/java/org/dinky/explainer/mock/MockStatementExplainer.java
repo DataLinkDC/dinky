@@ -19,8 +19,11 @@
 
 package org.dinky.explainer.mock;
 
+import org.apache.flink.table.delegation.Parser;
 import org.dinky.connector.mock.sink.MockDynamicTableSinkFactory;
+import org.dinky.executor.CustomParser;
 import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.executor.ExtendedParser;
 import org.dinky.executor.ParserWrapper;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
@@ -87,8 +90,14 @@ public class MockStatementExplainer {
         // mock insert table ddl
         List<StatementParam> mockedDdl = new ArrayList<>();
         for (StatementParam ddl : jobParam.getDdl()) {
-            ParserWrapper parser = (ParserWrapper) tableEnv.getParser();
-            SqlNode sqlNode = parser.parseSql(ddl.getValue());
+            Parser parser = tableEnv.getParser();
+            CustomParser customParser;
+            if (parser instanceof ExtendedParser) {
+                customParser = ((ExtendedParser) parser).getCustomParser();
+            } else {
+                throw new RuntimeException("CustomParser is not set");
+            }
+            SqlNode sqlNode = customParser.parseSql(ddl.getValue());
             boolean isDdlMocked = false;
             if (sqlNode instanceof SqlCreateTable) {
                 SqlCreateTable sqlCreateTable = (SqlCreateTable) sqlNode;
