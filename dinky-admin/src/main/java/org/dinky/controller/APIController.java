@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.DinkyVersion;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.APISavePointTaskDTO;
+import org.dinky.data.dto.CreatingCatalogueTaskDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.BusinessType;
@@ -33,11 +34,13 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
+import org.dinky.service.APIService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +68,11 @@ import lombok.extern.slf4j.Slf4j;
 public class APIController {
 
     private final TaskService taskService;
+
     private final JobInstanceService jobInstanceService;
+
+    @Autowired
+    private final APIService apiService;
 
     @GetMapping("/version")
     @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
@@ -201,5 +208,20 @@ public class APIController {
     public Result getTaskLineage(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.getTaskLineage(id), Status.QUERY_SUCCESS);
+    }
+
+    @PostMapping("/createTaskAndSend2Ds")
+    @ApiOperation("Create Catalogues & Task and Send to DolphinScheduler")
+    @Log(title = "Create Catalogues & Task and Send to DolphinScheduler", businessType = BusinessType.OTHER)
+    public Result createTaskAndSend2Ds(@RequestBody CreatingCatalogueTaskDTO dto) {
+        return Result.succeed(apiService.createTaskAndSend2Ds(dto));
+    }
+
+    @PostMapping("/saveTask")
+    @ApiOperation("Save a task")
+    @Log(title = "Save a task", businessType = BusinessType.OTHER)
+    public Result saveTask(@RequestBody TaskDTO dto) {
+        apiService.saveTask(dto);
+        return Result.succeed();
     }
 }
