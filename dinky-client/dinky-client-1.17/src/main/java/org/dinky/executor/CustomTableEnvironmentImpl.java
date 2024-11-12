@@ -21,6 +21,7 @@ package org.dinky.executor;
 
 import org.dinky.parser.CustomParserImpl;
 
+import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -143,5 +144,10 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         });
 
         return transOperatoinsToStreamGraph(modifyOperations);
+    }
+
+    @Override
+    public SqlNode parseSql(String sql) {
+        return ((ExtendedParser) getParser()).parseSql(sql);
     }
 }

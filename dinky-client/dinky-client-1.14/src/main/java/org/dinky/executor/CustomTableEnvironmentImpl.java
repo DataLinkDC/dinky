@@ -25,6 +25,7 @@ import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LineageContext;
 
+import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.ConfigOption;
@@ -182,6 +183,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public SqlNode parseSql(String sql) {
+        return getParser().parseSql(sql);
     }
 
     private static Executor lookupExecutor(
