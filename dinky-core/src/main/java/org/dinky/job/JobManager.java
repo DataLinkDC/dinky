@@ -54,7 +54,6 @@ import org.dinky.job.builder.JobDDLBuilder;
 import org.dinky.job.builder.JobExecuteBuilder;
 import org.dinky.job.builder.JobJarStreamGraphBuilder;
 import org.dinky.job.builder.JobTransBuilder;
-import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
@@ -293,13 +292,11 @@ public class JobManager {
         jobParam =
                 Explainer.build(executor, useStatementSet, this).pretreatStatements(SqlUtil.getStatements(statement));
         try {
-            // step 1: init udf
-            JobUDFBuilder.build(this).run();
-            // step 2: execute ddl
+            // step 1: execute ddl
             JobDDLBuilder.build(this).run();
-            // step 3: execute insert/select/show/desc/CTAS...
+            // step 2: execute insert/select/show/desc/CTAS...
             JobTransBuilder.build(this).run();
-            // step 4: execute custom data stream task
+            // step 3: execute custom data stream task
             JobExecuteBuilder.build(this).run();
             // finished
             job.setEndTime(LocalDateTime.now());
@@ -370,9 +367,7 @@ public class JobManager {
     }
 
     public ExplainResult explainSql(String statement) {
-        return Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement)
-                .explainSql(statement);
+        return Explainer.build(executor, useStatementSet, this).explainSql(statement);
     }
 
     public ObjectNode getStreamGraph(String statement) {

@@ -141,7 +141,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         return statement;
     }
 
-    public Pipeline explain(CustomTableEnvironment tEnv) {
+    public Pipeline explainJar(CustomTableEnvironment tEnv) {
         return getStreamGraph(tEnv);
     }
 

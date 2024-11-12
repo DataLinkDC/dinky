@@ -35,7 +35,10 @@ import java.util.Optional;
 
 /** */
 public interface ExtendOperation extends Operation {
+
     Optional<? extends TableResult> execute(CustomTableEnvironment tEnv);
+
+    String explain(CustomTableEnvironment tEnv);
 
     TableResult TABLE_RESULT_OK = TableResultImpl.builder()
             .resultKind(ResultKind.SUCCESS)

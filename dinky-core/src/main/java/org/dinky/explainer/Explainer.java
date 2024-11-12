@@ -25,7 +25,6 @@ import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.mock.MockStatementExplainer;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
@@ -36,29 +35,18 @@ import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
+import org.dinky.job.builder.JobDDLBuilder;
+import org.dinky.job.builder.JobExecuteBuilder;
+import org.dinky.job.builder.JobTransBuilder;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.parser.SqlType;
 import org.dinky.trans.Operations;
-import org.dinky.trans.ddl.CustomSetOperation;
-import org.dinky.trans.dml.ExecuteJarOperation;
-import org.dinky.trans.parse.AddFileSqlParseStrategy;
-import org.dinky.trans.parse.AddJarSqlParseStrategy;
-import org.dinky.trans.parse.ExecuteJarParseStrategy;
-import org.dinky.trans.parse.SetSqlParseStrategy;
 import org.dinky.utils.DinkyClassLoaderUtil;
-import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.IpUtil;
-import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
-import org.dinky.utils.URLUtils;
 
-import org.apache.flink.api.dag.Pipeline;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
-import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +61,6 @@ import com.google.common.collect.Sets;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.StrBuilder;
-import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -137,27 +124,7 @@ public class Explainer {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.SET) && SetSqlParseStrategy.INSTANCE.match(statement)) {
-                CustomSetOperation customSetOperation = new CustomSetOperation(statement);
-                customSetOperation.execute(this.executor.getCustomTableEnvironment());
-            } else if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParseStrategy.getAllFilePath(statement)
-                        .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
-                (executor.getDinkyClassLoader())
-                        .addURLs(URLUtils.getURLs(
-                                jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
-            } else if (operationType.equals(SqlType.ADD_FILE)) {
-                AddFileSqlParseStrategy.getAllFilePath(statement)
-                        .forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
-                (executor.getDinkyClassLoader())
-                        .addURLs(URLUtils.getURLs(
-                                jobManager.getUdfPathContextHolder().getFiles()));
-            } else if (operationType.equals(SqlType.ADD_JAR)) {
-                Configuration combinationConfig = getCombinationConfig();
-                FileSystem.initialize(combinationConfig, null);
-                ddl.add(new StatementParam(statement, operationType));
-                statementList.add(statement);
-            } else if (transSqlTypeSet.contains(operationType)) {
+            if (transSqlTypeSet.contains(operationType)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             } else if (operationType.equals(SqlType.EXECUTE)) {
@@ -172,10 +139,6 @@ public class Explainer {
                             PrintStatementExplainer.getCreateStatement(tableName, host, port), SqlType.CTAS));
                 }
             } else {
-                UDF udf = UDFUtil.toUDF(statement, jobManager.getDinkyClassLoader());
-                if (Asserts.isNotNull(udf)) {
-                    udfList.add(udf);
-                }
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             }
@@ -188,16 +151,6 @@ public class Explainer {
                 .jobParamMock(jobParam);
 
         return jobParam;
-    }
-
-    private Configuration getCombinationConfig() {
-        CustomTableEnvironment cte = executor.getCustomTableEnvironment();
-        Configuration rootConfig = cte.getRootConfiguration();
-        Configuration config = cte.getConfig().getConfiguration();
-        Configuration combinationConfig = new Configuration();
-        combinationConfig.addAll(rootConfig);
-        combinationConfig.addAll(config);
-        return combinationConfig;
     }
 
     public List<UDF> parseUDFFromStatements(String[] statements) {
@@ -218,178 +171,81 @@ public class Explainer {
         log.info("Start explain FlinkSQL...");
         JobParam jobParam;
         List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
-        int index = 1;
         boolean correct = true;
         try {
             jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+            jobManager.setJobParam(jobParam);
         } catch (Exception e) {
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
             resultBuilder.error(e.getMessage()).parseTrue(false);
             sqlExplainRecords.add(resultBuilder.build());
-            log.error("failed pretreatStatements:", e);
+            log.error("Failed to pretreat statements:", e);
             return new ExplainResult(false, sqlExplainRecords.size(), sqlExplainRecords);
         }
-        for (StatementParam item : jobParam.getDdl()) {
-            SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-            try {
-                SqlExplainResult recordResult = executor.explainSqlRecord(item.getValue());
-                if (Asserts.isNull(recordResult)) {
-                    continue;
-                }
-                resultBuilder = SqlExplainResult.newBuilder(recordResult);
-                executor.executeSql(item.getValue());
-            } catch (Exception e) {
-                String error = StrFormatter.format(
-                        "Exception in executing FlinkSQL:\n{}\n{}",
-                        SqlUtil.addLineNumber(item.getValue()),
-                        LogUtil.getError(e));
-                resultBuilder
-                        .error(error)
-                        .explainTrue(false)
-                        .explainTime(LocalDateTime.now())
-                        .sql(item.getValue())
-                        .index(index);
-                sqlExplainRecords.add(resultBuilder.build());
+        // step 1: explain and execute ddl
+        List<SqlExplainResult> ddlSqlExplainResults =
+                JobDDLBuilder.build(jobManager).explain();
+        sqlExplainRecords.addAll(ddlSqlExplainResults);
+        for (SqlExplainResult item : ddlSqlExplainResults) {
+            if (!item.isParseTrue() || !item.isExplainTrue()) {
                 correct = false;
-                log.error(error);
-                break;
             }
-            resultBuilder
-                    .explainTrue(true)
-                    .explainTime(LocalDateTime.now())
-                    .sql(item.getValue())
-                    .index(index++);
-            sqlExplainRecords.add(resultBuilder.build());
         }
         if (correct && !jobParam.getTrans().isEmpty()) {
-            if (useStatementSet) {
-                List<String> inserts = new ArrayList<>();
-                for (StatementParam item : jobParam.getTrans()) {
-                    if (item.getType().equals(SqlType.INSERT) || item.getType().equals(SqlType.CTAS)) {
-                        inserts.add(item.getValue());
-                    }
-                }
-                if (!inserts.isEmpty()) {
-                    SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-                    String sqlSet = String.join(";\r\n ", inserts);
-                    try {
-                        resultBuilder
-                                .explain(executor.explainStatementSet(inserts))
-                                .parseTrue(true)
-                                .explainTrue(true);
-                    } catch (Exception e) {
-                        String error = LogUtil.getError(e);
-                        resultBuilder.error(error).parseTrue(false).explainTrue(false);
-                        correct = false;
-                        log.error(error);
-                    } finally {
-                        resultBuilder
-                                .type("Modify DML")
-                                .explainTime(LocalDateTime.now())
-                                .sql(sqlSet)
-                                .index(index);
-                        sqlExplainRecords.add(resultBuilder.build());
-                    }
-                }
-            } else {
-                for (StatementParam item : jobParam.getTrans()) {
-                    SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-
-                    try {
-                        resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(item.getValue()));
-                        resultBuilder.parseTrue(true).explainTrue(true);
-                    } catch (Exception e) {
-                        String error = StrFormatter.format(
-                                "Exception in executing FlinkSQL:\n{}\n{}",
-                                SqlUtil.addLineNumber(item.getValue()),
-                                e.getMessage());
-                        resultBuilder.error(error).parseTrue(false).explainTrue(false);
-                        correct = false;
-                        log.error(error);
-                    } finally {
-                        resultBuilder
-                                .type("Modify DML")
-                                .explainTime(LocalDateTime.now())
-                                .sql(item.getValue())
-                                .index(index++);
-                        sqlExplainRecords.add(resultBuilder.build());
-                    }
-                }
-            }
+            // step 2: explain modifyOptions
+            sqlExplainRecords.addAll(JobTransBuilder.build(jobManager).explain());
+            // step 3: explain pipeline
+            sqlExplainRecords.addAll(JobExecuteBuilder.build(jobManager).explain());
         }
-        for (StatementParam item : jobParam.getExecute()) {
-            SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-
-            try {
-                SqlExplainResult sqlExplainResult = executor.explainSqlRecord(item.getValue());
-                if (Asserts.isNull(sqlExplainResult)) {
-                    sqlExplainResult = new SqlExplainResult();
-                } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
-
-                    List<URL> allFileByAdd = jobManager.getAllFileSet();
-                    Pipeline pipeline = new ExecuteJarOperation(item.getValue())
-                            .explain(executor.getCustomTableEnvironment(), allFileByAdd);
-                    sqlExplainResult.setExplain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(pipeline));
-                } else {
-                    executor.executeSql(item.getValue());
-                }
-                resultBuilder = SqlExplainResult.newBuilder(sqlExplainResult);
-                resultBuilder.type("DATASTREAM").parseTrue(true);
-            } catch (Exception e) {
-                String error = StrFormatter.format(
-                        "Exception in executing FlinkSQL:\n{}\n{}",
-                        SqlUtil.addLineNumber(item.getValue()),
-                        e.getMessage());
-                resultBuilder
-                        .error(error)
-                        .explainTrue(false)
-                        .explainTime(LocalDateTime.now())
-                        .sql(item.getValue())
-                        .index(index);
-                sqlExplainRecords.add(resultBuilder.build());
+        int index = 1;
+        for (SqlExplainResult item : sqlExplainRecords) {
+            item.setIndex(index++);
+            if (!item.isParseTrue() || !item.isExplainTrue()) {
                 correct = false;
-                log.error(error);
-                break;
             }
-            resultBuilder
-                    .explainTrue(true)
-                    .explainTime(LocalDateTime.now())
-                    .sql(item.getValue())
-                    .index(index++);
-            sqlExplainRecords.add(resultBuilder.build());
         }
         log.info(StrUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
         return new ExplainResult(correct, sqlExplainRecords.size(), sqlExplainRecords);
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
-        jobParam.getDdl().forEach(statementParam -> executor.executeSql(statementParam.getValue()));
-
-        if (!jobParam.getTrans().isEmpty()) {
-            return executor.getStreamGraph(jobParam.getTransStatement());
-        }
-
-        if (!jobParam.getExecute().isEmpty()) {
-            List<String> dataStreamPlans =
-                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
-            return executor.getStreamGraphFromDataStream(dataStreamPlans);
+        try {
+            JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+            jobManager.setJobParam(jobParam);
+            // step 1: execute ddl
+            JobDDLBuilder.build(jobManager).run();
+            // step 2: get the stream graph of trans
+            if (!jobParam.getTrans().isEmpty()) {
+                return executor.getStreamGraphJsonNode(
+                        JobTransBuilder.build(jobManager).getStreamGraph());
+            }
+            // step 3: get the stream graph of pipeline
+            if (!jobParam.getExecute().isEmpty()) {
+                return executor.getStreamGraphJsonNode(
+                        JobExecuteBuilder.build(jobManager).getStreamGraph());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return mapper.createObjectNode();
     }
 
     public JobPlanInfo getJobPlanInfo(String statement) {
-        JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
-        jobParam.getDdl().forEach(statementParam -> executor.executeSql(statementParam.getValue()));
-
-        if (!jobParam.getTrans().isEmpty()) {
-            return executor.getJobPlanInfo(jobParam.getTransStatement());
-        }
-
-        if (!jobParam.getExecute().isEmpty()) {
-            List<String> dataStreamPlans =
-                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
-            return executor.getJobPlanInfoFromDataStream(dataStreamPlans);
+        try {
+            JobParam jobParam = pretreatStatements(SqlUtil.getStatements(statement));
+            jobManager.setJobParam(jobParam);
+            // step 1: execute ddl
+            JobDDLBuilder.build(jobManager).run();
+            // step 2: get the job plan info of trans
+            if (!jobParam.getTrans().isEmpty()) {
+                return JobTransBuilder.build(jobManager).getJobPlanInfo();
+            }
+            // step 3: get the job plan info of pipeline
+            if (!jobParam.getExecute().isEmpty()) {
+                return JobExecuteBuilder.build(jobManager).getJobPlanInfo();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         throw new RuntimeException("Creating job plan fails because this job doesn't contain an insert statement.");
     }

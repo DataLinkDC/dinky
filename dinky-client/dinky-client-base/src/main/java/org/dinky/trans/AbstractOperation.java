@@ -19,6 +19,10 @@
 
 package org.dinky.trans;
 
+import org.dinky.executor.CustomTableEnvironment;
+
+import org.apache.flink.table.operations.Operation;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @since 2021/6/14 18:18
  */
-public class AbstractOperation {
+public class AbstractOperation implements Operation {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractOperation.class);
 
@@ -49,5 +53,14 @@ public class AbstractOperation {
 
     public boolean noExecute() {
         return true;
+    }
+
+    public String explain(CustomTableEnvironment tEnv) {
+        return asSummaryString();
+    }
+
+    @Override
+    public String asSummaryString() {
+        return "";
     }
 }

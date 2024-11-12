@@ -100,6 +100,10 @@ public class JobParam {
         return trans.stream().map(StatementParam::getValue).collect(Collectors.toList());
     }
 
+    public List<String> getExecuteStatement() {
+        return execute.stream().map(StatementParam::getValue).collect(Collectors.toList());
+    }
+
     public void setTrans(List<StatementParam> trans) {
         this.trans = trans;
     }

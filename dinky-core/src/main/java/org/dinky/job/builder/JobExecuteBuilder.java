@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.Job;
@@ -30,19 +31,32 @@ import org.dinky.job.JobBuilder;
 import org.dinky.job.JobManager;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
+import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
+import org.dinky.utils.FlinkStreamEnvironmentUtil;
+import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
+import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+
+import cn.hutool.core.text.StrFormatter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobExecuteBuilder
  *
  */
+@Slf4j
 public class JobExecuteBuilder extends JobBuilder {
 
     public JobExecuteBuilder(JobManager jobManager) {
@@ -123,5 +137,62 @@ public class JobExecuteBuilder extends JobBuilder {
                 }
             }
         }
+    }
+
+    @Override
+    public List<SqlExplainResult> explain() {
+        List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
+        if (Asserts.isNullCollection(jobParam.getExecute())) {
+            return sqlExplainResults;
+        }
+        for (StatementParam item : jobParam.getExecute()) {
+            SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
+            try {
+                SqlExplainResult sqlExplainResult = executor.explainSqlRecord(item.getValue());
+                if (Asserts.isNull(sqlExplainResult)) {
+                    sqlExplainResult = new SqlExplainResult();
+                } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
+                    List<URL> allFileByAdd = jobManager.getAllFileSet();
+                    Pipeline pipeline = new ExecuteJarOperation(item.getValue())
+                            .explain(executor.getCustomTableEnvironment(), allFileByAdd);
+                    sqlExplainResult.setExplain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(pipeline));
+                } else {
+                    executor.executeSql(item.getValue());
+                }
+                resultBuilder = SqlExplainResult.newBuilder(sqlExplainResult);
+                resultBuilder.type(item.getType().getType()).parseTrue(true);
+            } catch (Exception e) {
+                String error = StrFormatter.format(
+                        "Exception in executing FlinkSQL:\n{}\n{}",
+                        SqlUtil.addLineNumber(item.getValue()),
+                        e.getMessage());
+                resultBuilder
+                        .type(item.getType().getType())
+                        .error(error)
+                        .explainTrue(false)
+                        .explainTime(LocalDateTime.now())
+                        .sql(item.getValue());
+                sqlExplainResults.add(resultBuilder.build());
+                log.error(error);
+                break;
+            }
+            resultBuilder
+                    .type(item.getType().getType())
+                    .explainTrue(true)
+                    .explainTime(LocalDateTime.now())
+                    .sql(item.getValue());
+            sqlExplainResults.add(resultBuilder.build());
+        }
+        return sqlExplainResults;
+    }
+
+    @Override
+    public StreamGraph getStreamGraph() {
+        return executor.getStreamGraphFromCustomStatements(jobParam.getExecuteStatement());
+    }
+
+    @Override
+    public JobPlanInfo getJobPlanInfo() {
+        return executor.getJobPlanInfo(jobParam.getExecuteStatement());
     }
 }
