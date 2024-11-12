@@ -83,13 +83,13 @@ const ExecuteConfigFlinkSql = (props: any) => {
           />
           <ProFormSwitch
             label={l('pages.datastudio.label.execConfig.mocksink')}
-            name= 'mockSinkFunction'
+            name='mockSinkFunction'
             tooltip={{
               title: l('pages.datastudio.label.execConfig.mocksink.tip'),
               icon: <InfoCircleOutlined />
             }}
             {...SWITCH_OPTIONS()}
-            />
+          />
         </ProFormGroup>
         <ProFormGroup>
           <ProFormDigit

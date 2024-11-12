@@ -1,4 +1,5 @@
 @toolbar-icon-container-background-color: var(--btn-background-color);
+@toolbar-icon-container-hover-color: var(--second-color);
 @toolbar-icon-container-color: var(--btn-color);
 
 /*工具栏样式*/
@@ -16,7 +17,8 @@
 
 /* 工具栏 图标样式*/
 .toolbar-icon {
-  font-size: 20px;
+  //这里定义font-size没有用，根据高度固定的
+  //font-size: 1px;
 }
 
 /* 工具栏 图标容器样式*/
@@ -28,12 +30,12 @@
 
 .toolbar-icon-container:hover {
   color: #1f1f1f;
-  border-radius: 50%;
-  background-color: @toolbar-icon-container-background-color;
+  border-radius: 15%;
+  background-color: @toolbar-icon-container-hover-color;
 }
 
 .toolbar-icon-container-select {
-  border-radius: 0 !important;
+  border-radius: 15%;
   color: var(--btn-active-color) !important;
   background-color: @toolbar-icon-container-background-color !important;
 }

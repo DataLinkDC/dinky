@@ -454,7 +454,8 @@ export default {
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
   'pages.datastudio.label.execConfig.mocksink': '开启SinkMock',
-  'pages.datastudio.label.execConfig.mocksink.tip': '将SinkFunction进行Mock，调试过程中不会向线上环境执行写入，但可以通过dinky预览Sink结果',
+  'pages.datastudio.label.execConfig.mocksink.tip':
+    '将SinkFunction进行Mock，调试过程中不会向线上环境执行写入，但可以通过dinky预览Sink结果',
   'pages.datastudio.label.jobConfig': '作业配置',
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',

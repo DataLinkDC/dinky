@@ -18,7 +18,8 @@
  */
 
 import {
-  assert, convertMockResultToList,
+  assert,
+  convertMockResultToList,
   getCurrentData,
   getCurrentTab,
   isDataStudioTabsItemType,

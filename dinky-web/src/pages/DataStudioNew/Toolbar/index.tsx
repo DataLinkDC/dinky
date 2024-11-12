@@ -81,36 +81,38 @@ export default React.memo((props: ToolbarProp) => {
             className += ' toolbar-icon-container-open';
           }
           return (
-            <Tooltip title={item.title()} placement={'right'} arrow={false} key={item.key}>
-              <Row
-                id={item.key}
-                className={className}
-                style={{ height }}
-                align={'middle'}
-                justify={'center'}
-                key={item.key}
-                onClick={() => {
-                  onClick(item);
-                }}
-              >
-                <span
-                  style={{
-                    width: '100%',
-                    textAlign: 'center'
+            <div style={{ padding: '5px 5px 0' }}>
+              <Tooltip title={item.title()} placement={'right'} arrow={false} key={item.key}>
+                <Row
+                  id={item.key}
+                  className={className}
+                  style={{ height }}
+                  align={'middle'}
+                  justify={'center'}
+                  key={item.key}
+                  onClick={() => {
+                    onClick(item);
                   }}
                 >
-                  {React.cloneElement(item.icon, {
-                    className: 'toolbar-icon',
-                    style: { fontSize: height === 60 ? 25 : 20 }
-                  })}
-                </span>
-                {showDesc && (
-                  <Typography.Paragraph className={'toolbar-desc'}>
-                    {item.title()}
-                  </Typography.Paragraph>
-                )}
-              </Row>
-            </Tooltip>
+                  <span
+                    style={{
+                      width: '100%',
+                      textAlign: 'center'
+                    }}
+                  >
+                    {React.cloneElement(item.icon, {
+                      className: 'toolbar-icon',
+                      style: { fontSize: height === 60 ? 23 : 18 }
+                    })}
+                  </span>
+                  {showDesc && (
+                    <Typography.Paragraph className={'toolbar-desc'}>
+                      {item.title()}
+                    </Typography.Paragraph>
+                  )}
+                </Row>
+              </Tooltip>
+            </div>
           );
         })}
       </ReactSortable>
