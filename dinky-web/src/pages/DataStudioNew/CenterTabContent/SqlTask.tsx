@@ -422,32 +422,28 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       updateAction({
         actionType: DataStudioActionType.TASK_RUN_DEBUG,
         params: {
-          taskId: params.taskId
+          taskId: params.taskId,
+          columns: res.data?.result?.columns ?? [],
+          rowData: res.data?.result?.rowData ?? [],
         }
       });
       setCurrentState((prevState) => {
         return {
           ...prevState,
-          status: res.data.status === 'SUCCESS' ? 'RUNNING' : res.data.status
+          status: res.data.status === 'SUCCESS' ? (res.data.pipeline?'RUNNING':'SUCCESS') : res.data.status
         };
       });
     }
   }, [currentState, updateAction]);
 
   const handleStop = useCallback(async () => {
-    const result = await cancelTask(
-      l('pages.datastudio.editor.stop.job'),
-      currentState.taskId,
-      false
-    );
-    if (result.success) {
-      setCurrentState((prevState) => {
-        return {
-          ...prevState,
-          status: 'CANCEL'
-        };
-      });
-    }
+    const result = await cancelTask('', currentState.taskId, false);
+    setCurrentState((prevState) => {
+      return {
+        ...prevState,
+        status: 'CANCEL'
+      };
+    });
   }, [currentState.taskId]);
 
   const handleGotoDevOps = useCallback(async () => {

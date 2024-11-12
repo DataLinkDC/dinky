@@ -27,6 +27,7 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
+import org.dinky.explainer.mock.MockStatementExplainer;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
@@ -159,9 +160,6 @@ public class Explainer {
             } else if (transSqlTypeSet.contains(operationType)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
-                if (!useStatementSet) {
-                    break;
-                }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else if (operationType.equals(SqlType.PRINT)) {
@@ -182,7 +180,14 @@ public class Explainer {
                 statementList.add(statement);
             }
         }
-        return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList), parsedSql.toString());
+        JobParam jobParam =
+                new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList), parsedSql.toString());
+
+        MockStatementExplainer.build(executor.getCustomTableEnvironment())
+                .isMockSink(jobManager.getConfig().isMockSinkFunction())
+                .jobParamMock(jobParam);
+
+        return jobParam;
     }
 
     private Configuration getCombinationConfig() {

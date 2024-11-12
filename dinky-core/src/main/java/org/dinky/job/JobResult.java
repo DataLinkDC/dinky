@@ -114,6 +114,13 @@ public class JobResult {
             notes = "End time of job execution")
     private LocalDateTime endTime;
 
+    @ApiModelProperty(
+            value = "Flag indicating whether the job was pipeline",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether the job was pipeline")
+    private boolean isPipeline;
+
     public JobResult() {}
 
     public JobResult(
@@ -127,7 +134,8 @@ public class JobResult {
             String error,
             IResult result,
             LocalDateTime startTime,
-            LocalDateTime endTime) {
+            LocalDateTime endTime,
+            boolean isPipeline) {
         this.id = id;
         this.jobInstanceId = jobInstanceId;
         this.jobConfig = jobConfig;
@@ -140,6 +148,7 @@ public class JobResult {
         this.result = result;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.isPipeline = isPipeline;
     }
 
     public void setStartTimeNow() {

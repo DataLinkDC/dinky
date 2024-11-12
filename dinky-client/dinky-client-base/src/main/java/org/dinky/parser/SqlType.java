@@ -79,6 +79,8 @@ public enum SqlType {
     private static final List<SqlType> TRANS_SQL_TYPES =
             Lists.newArrayList(INSERT, SELECT, WITH, SHOW, DESCRIBE, DESC, CTAS);
 
+    private static final List<SqlType> PIPELINE_SQL_TYPES = Lists.newArrayList(INSERT, SELECT, WITH, CTAS);
+
     SqlType(String type, String regrex, SqlCategory category) {
         this.type = type;
         this.pattern = Pattern.compile(regrex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
@@ -103,5 +105,9 @@ public enum SqlType {
 
     public static List<SqlType> getTransSqlTypes() {
         return TRANS_SQL_TYPES;
+    }
+
+    public boolean isPipeline() {
+        return PIPELINE_SQL_TYPES.contains(this);
     }
 }

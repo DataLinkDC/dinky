@@ -42,14 +42,13 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.table.api.TableResult;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * JobTransBuilder
- *
  */
 public class JobTransBuilder extends JobBuilder {
 
@@ -67,17 +66,27 @@ public class JobTransBuilder extends JobBuilder {
             return;
         }
 
-        if (useStatementSet) {
+        if (inferStatementSet()) {
             handleStatementSet();
-            return;
+        } else {
+            handleNonStatementSet();
         }
+    }
 
-        handleNonStatementSet();
+    private boolean inferStatementSet() {
+        boolean hasInsert = false;
+        for (StatementParam item : jobParam.getTrans()) {
+            if (item.getType().equals(SqlType.INSERT)) {
+                hasInsert = true;
+                break;
+            }
+        }
+        return hasInsert;
     }
 
     private void handleStatementSet() throws Exception {
-        List<String> inserts = collectInserts();
-
+        List<String> inserts =
+                jobParam.getTrans().stream().map(StatementParam::getValue).collect(Collectors.toList());
         if (useGateway) {
             processWithGateway(inserts);
             return;
@@ -91,18 +100,6 @@ public class JobTransBuilder extends JobBuilder {
             return;
         }
         processFirstStatement();
-    }
-
-    private List<String> collectInserts() {
-        List<String> inserts = new ArrayList<>();
-        List<StatementParam> statementParams = useStatementSet
-                ? jobParam.getTrans()
-                : Collections.singletonList(jobParam.getTrans().get(0));
-        for (StatementParam item : statementParams) {
-
-            inserts.add(item.getValue());
-        }
-        return inserts;
     }
 
     private void processWithGateway(List<String> inserts) throws Exception {
@@ -120,7 +117,9 @@ public class JobTransBuilder extends JobBuilder {
     }
 
     private void processSingleInsertWithGateway() throws Exception {
-        List<String> singleInsert = collectInserts();
+        List<String> singleInsert =
+                Collections.singletonList(jobParam.getTrans().get(0).getValue());
+        job.setPipeline(jobParam.getTrans().get(0).getType().isPipeline());
         processWithGateway(singleInsert);
     }
 
@@ -130,6 +129,7 @@ public class JobTransBuilder extends JobBuilder {
         }
         // Only process the first statement when not using statement set
         StatementParam item = jobParam.getTrans().get(0);
+        job.setPipeline(item.getType().isPipeline());
         jobManager.setCurrentSql(item.getValue());
         processSingleStatement(item);
     }
@@ -175,7 +175,8 @@ public class JobTransBuilder extends JobBuilder {
                             config.getMaxRowNum(),
                             config.isUseChangeLog(),
                             config.isUseAutoCancel(),
-                            executor.getTimeZone())
+                            executor.getTimeZone(),
+                            jobManager.getConfig().isMockSinkFunction())
                     .getResultWithPersistence(tableResult, jobManager.getHandler());
             job.setResult(result);
         }
