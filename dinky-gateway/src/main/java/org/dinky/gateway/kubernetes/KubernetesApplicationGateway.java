@@ -19,6 +19,9 @@
 
 package org.dinky.gateway.kubernetes;
 
+import static org.dinky.gateway.kubernetes.utils.DinkyKubernetsConstants.DINKY_K8S_INGRESS_DOMAIN_KEY;
+import static org.dinky.gateway.kubernetes.utils.DinkyKubernetsConstants.DINKY_K8S_INGRESS_ENABLED_KEY;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
@@ -26,10 +29,17 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.ClusterDescriptorAdapterImpl;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.kubernetes.ingress.DinkyKubernetesIngress;
 import org.dinky.gateway.kubernetes.utils.IgnoreNullRepresenter;
+import org.dinky.gateway.kubernetes.utils.K8sClientHelper;
+import org.dinky.gateway.model.ingress.JobDetails;
+import org.dinky.gateway.model.ingress.JobOverviewInfo;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.JobStatus;
 import org.apache.flink.client.deployment.ClusterDeploymentException;
 import org.apache.flink.client.deployment.ClusterSpecification;
@@ -45,15 +55,24 @@ import org.apache.flink.runtime.client.JobStatusMessage;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.yaml.snakeyaml.Yaml;
 
+import com.alibaba.fastjson2.JSONObject;
+
+import cn.hutool.core.date.SystemClock;
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpStatus;
+import cn.hutool.http.HttpUtil;
 import io.fabric8.kubernetes.api.model.ContainerStatus;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -87,7 +106,23 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
 
             Deployment deployment = getK8sClientHelper().createDinkyResource();
 
-            KubernetesResult kubernetesResult = waitForJmAndJobStart(kubernetesClient, deployment, clusterClient);
+            KubernetesResult kubernetesResult;
+
+            String ingressDomain = checkUseIngress();
+            // if ingress is enabled and ingress domain is not empty, create an ingress service
+            if (StringUtils.isNotEmpty(ingressDomain)) {
+                K8sClientHelper k8sClientHelper = getK8sClientHelper();
+                long ingressStart = SystemClock.now();
+                DinkyKubernetesIngress ingress = new DinkyKubernetesIngress(k8sClientHelper);
+                ingress.configureIngress(
+                        k8sClientHelper.getConfiguration().getString(KubernetesConfigOptions.CLUSTER_ID),
+                        ingressDomain,
+                        k8sClientHelper.getConfiguration().getString(KubernetesConfigOptions.NAMESPACE));
+                log.info("Create dinky ingress service success, cost time:{} ms", SystemClock.now() - ingressStart);
+                kubernetesResult = waitForJmAndJobStartByIngress(kubernetesClient, deployment, clusterClient);
+            } else {
+                kubernetesResult = waitForJmAndJobStart(kubernetesClient, deployment, clusterClient);
+            }
             kubernetesResult.success();
             return kubernetesResult;
         } catch (Exception ex) {
@@ -213,5 +248,130 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         }
         throw new GatewayException(
                 "The number of retries exceeds the limit, check the K8S cluster for more information");
+    }
+
+    /**
+     * Waits for the JobManager and the Job to start in Kubernetes by ingress.
+     *
+     * @param deployment    The deployment in Kubernetes.
+     * @param clusterClient The ClusterClientProvider<String> object for accessing the Kubernetes cluster.
+     * @return A KubernetesResult object containing the Kubernetes gateway's Web URL, the Job ID, and the cluster ID.
+     * @throws InterruptedException if waiting is interrupted.
+     */
+    public KubernetesResult waitForJmAndJobStartByIngress(
+            KubernetesClient kubernetesClient, Deployment deployment, ClusterClientProvider<String> clusterClient)
+            throws InterruptedException {
+        KubernetesResult result = KubernetesResult.build(getType());
+        long waitSends = SystemConfiguration.getInstances().getJobIdWait() * 1000L;
+        long startTime = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - startTime < waitSends) {
+            List<Pod> pods = kubernetesClient
+                    .pods()
+                    .inNamespace(deployment.getMetadata().getNamespace())
+                    .withLabelSelector(deployment.getSpec().getSelector())
+                    .list()
+                    .getItems();
+            for (Pod pod : pods) {
+                if (!checkPodStatus(pod)) {
+                    logger.info("Kubernetes Pod have not ready, reTry at 5 sec later");
+                    continue;
+                }
+                try {
+                    logger.info("Start get job list ....");
+                    JobDetails jobDetails = fetchApplicationJob(kubernetesClient, deployment);
+                    if (Objects.isNull(jobDetails) || CollectionUtils.isEmpty(jobDetails.getJobs())) {
+                        logger.error("Get job is empty, will be reconnect alter 5 sec later....");
+                        Thread.sleep(5000);
+                        continue;
+                    }
+                    JobOverviewInfo jobOverviewInfo =
+                            jobDetails.getJobs().stream().findFirst().get();
+                    // To create a cluster ID, you need to combine the cluster ID with the jobID to ensure uniqueness
+                    String cid = configuration.getString(KubernetesConfigOptions.CLUSTER_ID) + jobOverviewInfo.getJid();
+                    logger.info("Success get job status: {}", jobOverviewInfo.getState());
+
+                    return result.setJids(Collections.singletonList(jobOverviewInfo.getJid()))
+                            .setWebURL(jobDetails.getWebUrl())
+                            .setId(cid);
+                } catch (GatewayException e) {
+                    throw e;
+                } catch (Exception ex) {
+                    logger.error("Get job status failed,{}", ex.getMessage());
+                }
+            }
+            Thread.sleep(5000);
+        }
+        throw new GatewayException(
+                "The number of retries exceeds the limit, check the K8S cluster for more information");
+    }
+
+    private JobDetails fetchApplicationJob(KubernetesClient kubernetesClient, Deployment deployment) {
+        // 判断是不是存在ingress, 如果存在ingress的话返回ingress地址
+        Ingress ingress = kubernetesClient
+                .network()
+                .v1()
+                .ingresses()
+                .inNamespace(deployment.getMetadata().getNamespace())
+                .withName(deployment.getMetadata().getName())
+                .get();
+        String ingressUrl = getIngressUrl(
+                ingress,
+                deployment.getMetadata().getNamespace(),
+                deployment.getMetadata().getName());
+        logger.info("Get dinky ingress url:{}", ingressUrl);
+        return invokeJobsOverviewApi(ingressUrl);
+    }
+
+    private JobDetails invokeJobsOverviewApi(String restUrl) {
+        try {
+            String body;
+            try (HttpResponse execute = HttpUtil.createGet(restUrl + "/jobs/overview")
+                    .timeout(10000)
+                    .execute()) {
+                // 判断状态码，如果是504的话可能是因为task manage节点还未启动
+                if (Objects.equals(execute.getStatus(), HttpStatus.HTTP_GATEWAY_TIMEOUT)) {
+                    return null;
+                }
+                body = execute.body();
+            }
+            if (StringUtils.isNotEmpty(body)) {
+                JobDetails jobDetails = JSONObject.parseObject(body, JobDetails.class);
+                jobDetails.setWebUrl(restUrl);
+                return jobDetails;
+            }
+        } catch (Exception e) {
+            logger.warn("Get job overview warning, task manage is enabled and can be ignored");
+        }
+        return null;
+    }
+
+    private String getIngressUrl(Ingress ingress, String namespace, String clusterId) {
+        if (Objects.nonNull(ingress)
+                && Objects.nonNull(ingress.getSpec())
+                && Objects.nonNull(ingress.getSpec().getRules())
+                && !ingress.getSpec().getRules().isEmpty()) {
+            String host = ingress.getSpec().getRules().get(0).getHost();
+            return StrFormatter.format("http://{}/{}/{}", host, namespace, clusterId);
+        }
+        throw new GatewayException(
+                StrFormatter.format("Dinky clusterId {} ingress not found in namespace {}", clusterId, namespace));
+    }
+
+    /**
+     * Determine whether to use the ingress agent service
+     * @return ingress domain
+     */
+    private String checkUseIngress() {
+        Map<String, String> ingressConfig = k8sConfig.getIngressConfig();
+        if (MapUtils.isNotEmpty(ingressConfig)) {
+            boolean ingressEnable =
+                    Boolean.parseBoolean(ingressConfig.getOrDefault(DINKY_K8S_INGRESS_ENABLED_KEY, "false"));
+            String ingressDomain = ingressConfig.getOrDefault(DINKY_K8S_INGRESS_DOMAIN_KEY, StringUtils.EMPTY);
+            if (ingressEnable && StringUtils.isNotEmpty(ingressDomain)) {
+                return ingressDomain;
+            }
+        }
+        return StringUtils.EMPTY;
     }
 }

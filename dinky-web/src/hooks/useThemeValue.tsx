@@ -42,3 +42,13 @@ export default function useThemeValue() {
 
   return getThemeValue(theme === THEME.dark);
 }
+
+export function useTheme() {
+  const [theme, setTheme] = useState(localStorage.getItem(THEME.NAV_THEME));
+
+  useEffect(() => {
+    setTheme(localStorage.getItem(THEME.NAV_THEME));
+  }, [localStorage.getItem(THEME.NAV_THEME)]);
+
+  return theme;
+}

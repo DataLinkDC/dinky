@@ -180,17 +180,21 @@ public class Job2MysqlHandler extends AbsJobHandler {
         history.setClusterId(clusterId);
         historyService.updateById(history);
 
-        if (Asserts.isNullCollection(job.getJids()) || Asserts.isNullString(job.getJobManagerAddress())) {
-            throw new BusException("The JobID or JobManagerAddress is null. ");
+        if (!job.isPipeline()) {
+            return true;
         }
 
-        String jid = job.getJids().get(0);
+        if (Asserts.isNullCollection(job.getJids())) {
+            throw new BusException("Job ID retrieval failed, possibly due to timeout of job deployment. "
+                    + "Please modify the system configuration to increase the waiting time for job submission.");
+        }
+
         JobInstance jobInstance = history.buildJobInstance();
         jobInstance.setHistoryId(job.getId());
         jobInstance.setClusterId(clusterId);
         jobInstance.setTaskId(taskId);
         jobInstance.setName(job.getJobConfig().getJobName());
-        jobInstance.setJid(jid);
+        jobInstance.setJid(job.getJids().get(0));
         jobInstance.setStep(job.getJobConfig().getStep());
         jobInstance.setStatus(JobStatus.INITIALIZING.getValue());
         jobInstanceService.save(jobInstance);

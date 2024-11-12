@@ -22,6 +22,8 @@ package org.dinky.gateway.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -67,4 +69,11 @@ public class K8sConfig {
 
     @ApiModelProperty(value = "KubeConfig", dataType = "String", example = "kubeconfig.yaml", notes = "KubeConfig file")
     private String kubeConfig;
+
+    @ApiModelProperty(
+            value = "Ingress configuration",
+            dataType = "Map<String, String>",
+            example = "{\"key1\": \"value1\", \"key2\": \"value2\"}",
+            notes = "Ingress configuration properties")
+    private Map<String, String> ingressConfig = Maps.newHashMap();
 }

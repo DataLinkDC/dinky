@@ -392,3 +392,46 @@ export const isNotEmpty = (value: any): boolean => {
 export const isEmpty = (value: any): boolean => {
   return !isNotEmpty(value);
 };
+
+/**
+ * 转换多表的SelectResult
+ * @param data
+ */
+export const convertMockResultToList = (data: any): any[] => {
+  const rowDataResults: any[] = [];
+  // 对于每个MockResult的Column，一个元素代表一个表信息
+  data.columns.forEach((columnString: string) => {
+    // 当前表的column信息
+    let columnArr: string[] = [];
+    // 当前表的row data信息
+    const rowDataArr: string[] = [];
+    // 表名
+    let tableName: string = '';
+    //解析当前表单信息
+    const columnJsonInfo = JSON.parse(columnString);
+    // 提取column信息
+    if (columnJsonInfo['dinkySinkResultColumnIdentifier']) {
+      columnArr = columnJsonInfo['dinkySinkResultColumnIdentifier'];
+    }
+    // 提取表名
+    if (columnJsonInfo['dinkySinkResultTableIdentifier']) {
+      tableName = columnJsonInfo['dinkySinkResultTableIdentifier'];
+    }
+    // 遍历column信息
+    data.rowData.forEach((rowDataElement: any) => {
+      if (rowDataElement.dinkySinkResultTableIdentifier == tableName) {
+        rowDataArr.push(rowDataElement);
+      }
+    });
+    // 构建constant对象
+    const rowDataResult = {
+      tableName: tableName,
+      columns: columnArr,
+      rowData: rowDataArr
+    };
+    rowDataResults.push(rowDataResult);
+  });
+
+  console.log(rowDataResults);
+  return rowDataResults;
+};

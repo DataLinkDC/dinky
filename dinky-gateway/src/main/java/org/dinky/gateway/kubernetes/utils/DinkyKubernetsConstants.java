@@ -23,4 +23,7 @@ package org.dinky.gateway.kubernetes.utils;
 public class DinkyKubernetsConstants {
     public static final String DINKY_CONF_VOLUME = "dinky-config-volume";
     public static final String DINKY_CONF_VOLUME_PERFIX = "dinky-config-";
+
+    public static final String DINKY_K8S_INGRESS_ENABLED_KEY = "kubernetes.ingress.enabled";
+    public static final String DINKY_K8S_INGRESS_DOMAIN_KEY = "kubernetes.ingress.domain";
 }

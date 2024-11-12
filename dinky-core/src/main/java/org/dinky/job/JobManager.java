@@ -108,6 +108,7 @@ public class JobManager {
     private boolean useGateway = false;
     private boolean isPlanMode = false;
     private boolean useStatementSet = false;
+    private boolean useMockSinkFunction = false;
     private boolean useRestAPI = false;
     private GatewayType runMode = GatewayType.LOCAL;
     private JobParam jobParam = null;
@@ -214,6 +215,7 @@ public class JobManager {
             handler = JobHandler.build();
         }
         useStatementSet = config.isStatementSet();
+        useMockSinkFunction = config.isMockSinkFunction();
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         executorConfig = config.getExecutorSetting();
         executorConfig.setPlan(isPlanMode);

@@ -96,7 +96,7 @@ body,
 
 // scrollbar style --- start ----
 ::-webkit-scrollbar {
-  width: 0.2vw;
+  width: 0.3vw;
   height: 0.5vh;
 }
 
@@ -253,14 +253,22 @@ ol {
   display: flex;
 }
 
+.ant-spin-nested-loading {
+  height: inherit;
+}
+
+.ant-spin-container {
+  height: inherit;
+}
+
 .gitCodeTree {
   min-height: 73vh;
   max-height: 73vh;
 }
 
 .schemaTree {
-  min-height: 92vh;
-  max-height: 92vh;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .code-content-empty {

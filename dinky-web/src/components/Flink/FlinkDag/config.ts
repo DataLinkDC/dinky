@@ -17,10 +17,10 @@
  *
  */
 
-import { DagreLayoutOptions } from '@antv/layout/lib/layout/types';
 import { Options } from '@antv/x6/lib/graph/options';
 import Connecting = Options.Connecting;
 import Manual = Options.Manual;
+import { DagreLayoutOptions } from '@antv/layout';
 
 export const edgeConfig = {
   markup: [
@@ -168,10 +168,11 @@ export const graphConfig: Partial<Manual> = {
     maxScale: 1.5,
     minScale: 0.1
   },
-  connecting: graphConnectConfig
+  connecting: graphConnectConfig,
+  autoResize: true
 };
 
-export const layoutConfig: DagreLayoutOptions = {
+export const layoutConfig: DagreLayoutOptions & { type: string } = {
   type: 'dagre',
   rankdir: 'LR',
   ranksep: 120,

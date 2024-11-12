@@ -229,7 +229,7 @@ const MiddleContainer = (props: any) => {
           return <TerminalTab />;
         case TabsPageType.metadata: {
           const params = (item as MetadataTabsItemType).params;
-          return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
+          return <RightTagsRouter queryParams={params.queryParams} />;
         }
         case TabsPageType.project:
           if (parseInt(activeKey) < 0) {

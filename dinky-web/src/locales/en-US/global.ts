@@ -86,6 +86,7 @@ export default {
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
   'button.autoWrap': 'Auto Wrap/Unwrap',
+  'button.output': 'Output',
 
   'menu.menu': 'Menu',
   'right.menu.open': 'Open',
@@ -125,6 +126,8 @@ export default {
   'global.stay.tuned': 'Stay tuned',
   'global.mini': 'Mini Size',
   'global.max': 'Max Size',
+  'global.blankOpen': 'Opens in a new window',
+  'global.float': 'Float',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -236,5 +239,8 @@ export default {
   'global.job.status.failed-tip': 'Failed to submit to the cluster, unable to get the task name',
 
   'global.operation.unable': 'Unable to operate',
-  'global.operation.able': 'Can operate'
+  'global.operation.able': 'Can operate',
+
+  //WS
+  'global.ws.failed': 'Failed to connect to WebSocket'
 };

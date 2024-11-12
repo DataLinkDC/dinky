@@ -58,7 +58,7 @@ const TerminalTab = () => {
   const GATEWAY_FILTER = [ClusterType.SQL_GATEWAY];
 
   const [disableUrlEditable, setUrlEditable] = useState(true);
-  const [opentTerm, setOpentTerm] = useState(false);
+  const [openTerm, setOpenTerm] = useState(false);
   const [connectCfg, setConnectCfg] = useState(getTermConfig());
 
   const [currentMode, setCurrentMode] = useState(connectCfg.mode);
@@ -110,7 +110,7 @@ const TerminalTab = () => {
   const onFinish = (values: TermProps) => {
     setTermConfig(values);
     setConnectCfg(values);
-    setOpentTerm(true);
+    setOpenTerm(true);
   };
 
   const formItemLayout = {
@@ -126,15 +126,14 @@ const TerminalTab = () => {
 
   return (
     <>
-      {opentTerm ? (
+      {openTerm ? (
         <TerminalContent {...connectCfg} />
       ) : (
-        <div style={{ padding: '40px' }}>
+        <div style={{ padding: '10px', height: '100%' }}>
           <Form
             {...formItemLayout}
             onFinish={onFinish}
             initialValues={connectCfg}
-            style={{ maxWidth: 800 }}
             requiredMark={'optional'}
           >
             <Form.Item label={l('datastudio.middle.terminal.mode')} name='mode' required>

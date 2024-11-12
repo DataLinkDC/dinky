@@ -29,11 +29,12 @@ import { SplitPane } from '@andrewray/react-multi-split-pane';
 import { Pane } from '@andrewray/react-multi-split-pane/dist/lib/Pane';
 import { CheckOutlined, CloseCircleFilled, LoadingOutlined, XFilled } from '@ant-design/icons';
 import { connect, useModel, useRequest } from '@umijs/max';
-import { Empty, Space, Typography } from 'antd';
+import { Button, Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { Key, useEffect, useRef, useState } from 'react';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
+import WsErrorShow from '@/components/Modal/WsErrorShow/WsErrorShow';
 
 const { Text } = Typography;
 
@@ -72,9 +73,15 @@ const ConsoleContent = (props: ConsoleProps) => {
   const [processNode, setProcessNode] = useState<ProcessStep>();
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
 
+  const [showCacheData, setShowCacheData] = useState<boolean>(false);
+
   const process = `FlinkSubmit/${tab.params.taskId}`;
   const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model?.subscribeTopic
+  }));
+
+  const { wsState } = useModel('UseWebSocketModel', (model: any) => ({
+    wsState: model?.wsState
   }));
 
   const onUpdate = (data: ProcessStep) => {
@@ -146,6 +153,19 @@ const ConsoleContent = (props: ConsoleProps) => {
   const handleExpand = (expandedKeys: Key[]) => {
     setExpandedKeys(expandedKeys);
   };
+
+  if (!wsState?.wsOnReady && !showCacheData) {
+    return (
+      <WsErrorShow
+        state={wsState}
+        extra={
+          <Button onClick={() => setShowCacheData(true)}>
+            {l('devops.jobinfo.recently.job.status')}
+          </Button>
+        }
+      />
+    );
+  }
 
   return (
     <div style={{ height: props.height - VIEW.leftMargin }}>

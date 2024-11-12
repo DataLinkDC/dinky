@@ -54,7 +54,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Resources extends Model<Resources> {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "ID", dataType = "Integer", example = "1", notes = "Unique identifier for the resource")
     private Integer id;
 
