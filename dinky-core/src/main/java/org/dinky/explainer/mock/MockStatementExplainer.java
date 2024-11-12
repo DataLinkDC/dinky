@@ -19,12 +19,10 @@
 
 package org.dinky.explainer.mock;
 
-import org.apache.flink.table.delegation.Parser;
 import org.dinky.connector.mock.sink.MockDynamicTableSinkFactory;
 import org.dinky.executor.CustomParser;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.ExtendedParser;
-import org.dinky.executor.ParserWrapper;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
@@ -40,6 +38,7 @@ import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.sql.parser.ddl.SqlCreateTable;
+import org.apache.flink.table.delegation.Parser;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
