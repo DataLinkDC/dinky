@@ -63,8 +63,10 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+
   useEffect(() => {
-    if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
+    if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT
+      || actionType === DataStudioActionType.TASK_RUN_DEBUG) {
       if (data.mockSinkResult == true) {
         setDataList(convertMockResultToList({ columns: params.columns, rowData: params.rowData }))
       } else {
@@ -77,6 +79,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
     clearFilters();
     setSearchText('');
   };
+
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
@@ -91,6 +94,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       setSearchedColumn('');
     }
   };
+
   const convertMockResultToList = (data: any): any [] => {
     const rowDataResults: any[] = [];
     // 对于每个MockResult的Column，一个元素代表一个表信息
@@ -123,9 +127,9 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       };
       rowDataResults.push(rowDataResult);
     });
-
     return rowDataResults;
   };
+
   const getColumnSearchProps = (dataIndex: string): ColumnType<Data> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -237,7 +241,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   const renderFlinkSQLContent = () => {
     return (
       <>
-        {!isSql(dialect) && !data.destroyed ? (
+        {!isSql(dialect) ? (
           <Button loading={loading} type='primary' onClick={showDetail} icon={<SyncOutlined />}>
             {l('pages.datastudio.label.result.query.latest.data')}
           </Button>
@@ -245,6 +249,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       </>
     );
   };
+
   const renderDownloadButton = () => {
     if (data.columns) {
       const _utf = '\uFEFF';
@@ -256,6 +261,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
     }
     return undefined;
   };
+
   const renderAVA = () => {
     return (
       <Button
@@ -287,7 +293,9 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       </>
     );
   };
+
   const handleCloseAva = useCallback(() => setOpenAVA(false), []);
+
   return (
     <div style={{ width: '100%', paddingInline: 10 }}>
       <Flex justify={'right'}>

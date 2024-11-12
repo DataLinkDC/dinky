@@ -38,6 +38,17 @@ public interface ResultBuilder {
             boolean isChangeLog,
             boolean isAutoCancel,
             String timeZone) {
+        return build(operationType, id, maxRowNum, isChangeLog, isAutoCancel, timeZone, false);
+    }
+
+    static ResultBuilder build(
+            SqlType operationType,
+            String id,
+            Integer maxRowNum,
+            boolean isChangeLog,
+            boolean isAutoCancel,
+            String timeZone,
+            boolean isMockSinkFunction) {
         switch (operationType) {
             case SELECT:
             case WITH:
@@ -47,9 +58,9 @@ public interface ResultBuilder {
             case DESCRIBE:
                 return new ShowResultBuilder(id);
             case INSERT:
-                return new InsertResultBuilder();
-            case MOCKED_INSERT:
-                return new MockResultBuilder(id, maxRowNum, isAutoCancel);
+                return isMockSinkFunction
+                        ? new MockResultBuilder(id, maxRowNum, isAutoCancel)
+                        : new InsertResultBuilder();
             default:
                 return new DDLResultBuilder();
         }
