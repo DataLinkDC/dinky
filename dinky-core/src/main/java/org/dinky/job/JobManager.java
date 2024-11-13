@@ -171,7 +171,7 @@ public class JobManager {
 
     // return dinkyclassloader
     public DinkyClassLoader getDinkyClassLoader() {
-        return dinkyClassLoader.get();
+        return Asserts.isNotNull(dinkyClassLoader.get()) ? dinkyClassLoader.get() : DinkyClassLoader.build();
     }
 
     // return udfPathContextHolder
@@ -219,6 +219,7 @@ public class JobManager {
         executorConfig = config.getExecutorSetting();
         executorConfig.setPlan(isPlanMode);
         executor = ExecutorFactory.buildExecutor(executorConfig, getDinkyClassLoader());
+        DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
     }
 
     private boolean ready() {
@@ -288,7 +289,6 @@ public class JobManager {
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
 
-        DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
         jobParam =
                 Explainer.build(executor, useStatementSet, this).pretreatStatements(SqlUtil.getStatements(statement));
         try {
@@ -371,14 +371,11 @@ public class JobManager {
     }
 
     public ObjectNode getStreamGraph(String statement) {
-        return Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement)
-                .getStreamGraph(statement);
+        return Explainer.build(executor, useStatementSet, this).getStreamGraph(statement);
     }
 
     public String getJobPlanJson(String statement) {
         return Explainer.build(executor, useStatementSet, this)
-                .initialize(config, statement)
                 .getJobPlanInfo(statement)
                 .getJsonPlan();
     }

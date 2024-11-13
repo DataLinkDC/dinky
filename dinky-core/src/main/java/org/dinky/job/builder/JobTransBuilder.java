@@ -91,21 +91,47 @@ public class JobTransBuilder extends JobBuilder {
         if (Asserts.isNullCollection(jobParam.getTrans())) {
             return sqlExplainResults;
         }
-        if (useStatementSet) {
+        if (inferStatementSet()) {
             List<String> inserts = new ArrayList<>();
+            List<StatementParam> shows = new ArrayList<>();
             for (StatementParam item : jobParam.getTrans()) {
-                if (item.getType().equals(SqlType.INSERT) || item.getType().equals(SqlType.CTAS)) {
+                if (item.getType().isPipeline()) {
                     inserts.add(item.getValue());
+                } else {
+                    shows.add(item);
+                }
+            }
+            if (!shows.isEmpty()) {
+                for (StatementParam item : shows) {
+                    SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
+                    try {
+                        resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(item.getValue()));
+                        resultBuilder.parseTrue(true).explainTrue(true);
+                    } catch (Exception e) {
+                        String error = StrFormatter.format(
+                                "Exception in explaining FlinkSQL:\n{}\n{}",
+                                SqlUtil.addLineNumber(item.getValue()),
+                                e.getMessage());
+                        resultBuilder
+                                .type(item.getType().getType())
+                                .error(error)
+                                .parseTrue(false)
+                                .explainTrue(false);
+                        log.error(error);
+                    } finally {
+                        resultBuilder
+                                .type(item.getType().getType())
+                                .explainTime(LocalDateTime.now())
+                                .sql(item.getValue());
+                        sqlExplainResults.add(resultBuilder.build());
+                    }
                 }
             }
             if (!inserts.isEmpty()) {
                 SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-                String sqlSet = StringUtils.join(inserts, ";\r");
+                String sqlSet = StringUtils.join(inserts, ";\n");
                 try {
-                    resultBuilder
-                            .explain(executor.explainStatementSet(inserts))
-                            .parseTrue(true)
-                            .explainTrue(true);
+                    resultBuilder = SqlExplainResult.newBuilder(executor.explainStatementSet(inserts));
                 } catch (Exception e) {
                     String error = LogUtil.getError(e);
                     resultBuilder

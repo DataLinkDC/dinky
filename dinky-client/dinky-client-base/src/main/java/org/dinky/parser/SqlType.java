@@ -30,15 +30,21 @@ import com.google.common.collect.Lists;
  * @since 2021/7/3 11:11
  */
 public enum SqlType {
-    SELECT("SELECT", "^SELECT.*", SqlCategory.DQL),
+    SELECT("SELECT", "^\\(*\\s*SELECT.*", SqlCategory.DQL),
 
     CREATE("CREATE", "^CREATE(?!\\s+TABLE.*AS SELECT).*$", SqlCategory.DDL),
 
     DROP("DROP", "^DROP.*", SqlCategory.DDL),
 
+    TRUNCATE("TRUNCATE ", "^TRUNCATE .*", SqlCategory.DDL),
+
     ALTER("ALTER", "^ALTER.*", SqlCategory.DDL),
 
     INSERT("INSERT", "^INSERT.*", SqlCategory.DML),
+
+    UPDATE("UPDATE", "^UPDATE.*", SqlCategory.DML),
+
+    DELETE("DELETE", "^DELETE.*", SqlCategory.DML),
 
     DESC("DESC", "^DESC.*", SqlCategory.DDL),
 
@@ -50,6 +56,8 @@ public enum SqlType {
 
     SHOW("SHOW", "^SHOW.*", SqlCategory.DDL),
 
+    ANALYZE("ANALYZE ", "^ANALYZE.*", SqlCategory.DDL),
+
     LOAD("LOAD", "^LOAD.*", SqlCategory.DDL),
 
     UNLOAD("UNLOAD", "^UNLOAD.*", SqlCategory.DDL),
@@ -58,15 +66,23 @@ public enum SqlType {
 
     RESET("RESET", "^RESET.*", SqlCategory.DDL),
 
-    EXECUTE("EXECUTE", "^EXECUTE.*", SqlCategory.DQL),
+    EXECUTE("EXECUTE", "^EXECUTE.*", SqlCategory.DML),
 
     ADD_JAR("ADD_JAR", "^ADD\\s+JAR\\s+\\S+", SqlCategory.DDL),
+
     ADD("ADD", "^ADD\\s+CUSTOMJAR\\s+\\S+", SqlCategory.DDL),
+
     ADD_FILE("ADD_FILE", "^ADD\\s+FILE\\s+\\S+", SqlCategory.DDL),
 
     PRINT("PRINT", "^PRINT.*", SqlCategory.DQL),
 
+    REMOVE("REMOVE", "^REMOVE.*", SqlCategory.DDL),
+
+    STOP("STOP", "^STOP.*", SqlCategory.DDL),
+
     CTAS("CTAS", "^CREATE\\s.*AS\\sSELECT.*$", SqlCategory.DDL),
+
+    RTAS("RTAS", "^REPLACE\\s.*AS\\sSELECT.*$", SqlCategory.DML),
 
     WITH("WITH", "^WITH.*", SqlCategory.DQL),
 
@@ -77,9 +93,11 @@ public enum SqlType {
     private SqlCategory category;
 
     private static final List<SqlType> TRANS_SQL_TYPES =
-            Lists.newArrayList(INSERT, SELECT, WITH, SHOW, DESCRIBE, DESC, CTAS);
+            Lists.newArrayList(INSERT, SELECT, WITH, SHOW, DESCRIBE, DESC, CTAS, RTAS, UPDATE, DELETE);
 
-    private static final List<SqlType> PIPELINE_SQL_TYPES = Lists.newArrayList(INSERT, SELECT, WITH, CTAS);
+    private static final List<SqlType> CTAS_TYPES = Lists.newArrayList(CTAS, RTAS);
+
+    private static final List<SqlType> PIPELINE_SQL_TYPES = Lists.newArrayList(INSERT, SELECT, WITH, CTAS, RTAS);
 
     SqlType(String type, String regrex, SqlCategory category) {
         this.type = type;
@@ -109,5 +127,9 @@ public enum SqlType {
 
     public boolean isPipeline() {
         return PIPELINE_SQL_TYPES.contains(this);
+    }
+
+    public boolean isCTAS() {
+        return CTAS_TYPES.contains(this);
     }
 }

@@ -64,7 +64,8 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   useEffect(() => {
-    if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
+    if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT
+      || actionType === DataStudioActionType.TASK_RUN_DEBUG) {
       if (data.mockSinkResult == true) {
         setDataList(convertMockResultToList({ columns: params.columns, rowData: params.rowData }));
       } else {

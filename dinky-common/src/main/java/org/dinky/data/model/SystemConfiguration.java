@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.context.EngineContextHolder;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.constant.DirConstant;
@@ -387,7 +388,7 @@ public class SystemConfiguration {
     }
 
     public boolean isUseRestAPI() {
-        return useRestAPI.getValue();
+        return Asserts.isNull(useRestAPI.getValue()) ? useRestAPI.getDefaultValue() : useRestAPI.getValue();
     }
 
     public int getJobIdWait() {

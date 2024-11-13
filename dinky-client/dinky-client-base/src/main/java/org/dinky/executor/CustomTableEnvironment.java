@@ -63,6 +63,8 @@ public interface CustomTableEnvironment
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
+    SqlExplainResult explainStatementSet(List<String> statements, ExplainDetail... extraDetails);
+
     StreamExecutionEnvironment getStreamExecutionEnvironment();
 
     Planner getPlanner();

@@ -149,7 +149,7 @@ public class JobExecuteBuilder extends JobBuilder {
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
             try {
                 SqlExplainResult sqlExplainResult = executor.explainSqlRecord(item.getValue());
-                if (Asserts.isNull(sqlExplainResult)) {
+                if (!sqlExplainResult.isInvalid()) {
                     sqlExplainResult = new SqlExplainResult();
                 } else if (ExecuteJarParseStrategy.INSTANCE.match(item.getValue())) {
                     List<URL> allFileByAdd = jobManager.getAllFileSet();

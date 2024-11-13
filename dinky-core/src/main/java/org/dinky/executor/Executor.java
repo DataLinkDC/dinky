@@ -302,10 +302,8 @@ public abstract class Executor {
         return statementSet.execute();
     }
 
-    public String explainStatementSet(List<String> statements) {
-        StatementSet statementSet = tableEnvironment.createStatementSet();
-        statements.forEach(statementSet::addInsertSql);
-        return statementSet.explain();
+    public SqlExplainResult explainStatementSet(List<String> statements) {
+        return tableEnvironment.explainStatementSet(statements);
     }
 
     public List<LineageRel> getLineage(String statement) {
