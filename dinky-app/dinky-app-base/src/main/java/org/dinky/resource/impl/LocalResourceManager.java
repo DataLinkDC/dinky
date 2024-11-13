@@ -30,11 +30,13 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,6 +100,8 @@ public class LocalResourceManager implements BaseResourceManager {
     @Override
     public List<ResourcesVO> getFullDirectoryStructure(int rootId) {
         String basePath = getBasePath();
+        String systemSeparator = Pattern.quote(FileSystems.getDefault().getSeparator());
+
         try (Stream<Path> paths = Files.walk(Paths.get(basePath))) {
             return paths.map(path -> {
                         if (path.compareTo(Paths.get(basePath)) == 0) {
@@ -115,7 +119,7 @@ public class LocalResourceManager implements BaseResourceManager {
                         return ResourcesVO.builder()
                                 .id(self.hashCode())
                                 .pid(pid)
-                                .fullName(self)
+                                .fullName(self.replaceAll(systemSeparator, "/"))
                                 .fileName(file.getName())
                                 .isDirectory(file.isDirectory())
                                 .type(0)
