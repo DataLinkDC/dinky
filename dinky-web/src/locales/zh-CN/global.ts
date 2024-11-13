@@ -20,7 +20,7 @@
 export default {
   'button.add': '添加',
   'button.check': '检查',
-  'button.graph': 'DAG',
+  'button.graph': '拓扑图',
   'button.create': '新建',
   'button.recovery': '恢复',
   'button.close': '关闭',

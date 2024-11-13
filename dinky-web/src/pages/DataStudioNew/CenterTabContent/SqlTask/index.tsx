@@ -37,8 +37,9 @@ import {
   FundOutlined,
   MergeCellsOutlined,
   PartitionOutlined,
-  PauseOutlined,
+  PauseOutlined, RocketOutlined,
   RotateRightOutlined,
+  SafetyCertificateOutlined,
   SaveOutlined
 } from '@ant-design/icons';
 import RunToolBarButton from '@/pages/DataStudioNew/components/RunToolBarButton';
@@ -549,7 +550,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('pages.datastudio.editor.check')}
-              icon={<AuditOutlined />}
+              icon={<SafetyCertificateOutlined />}
               onClick={handleCheck}
               disabled={isLockTask}
               isShow={
@@ -710,7 +711,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               disabled={isLockTask}
               desc={l('button.publish')}
-              icon={<FundOutlined />}
+              icon={<RocketOutlined />}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton

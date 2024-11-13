@@ -20,7 +20,7 @@
 export default {
   'button.add': 'Add',
   'button.check': 'Check',
-  'button.graph': 'DAG',
+  'button.graph': 'Topology',
   'button.create': 'Create',
   'button.close': 'Close',
   'button.daemon': 'Daemon Mode',

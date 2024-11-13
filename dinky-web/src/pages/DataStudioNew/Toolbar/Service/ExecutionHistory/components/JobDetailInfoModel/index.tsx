@@ -55,7 +55,8 @@ export const JobDetailInfoModel: React.FC<JobDetailInfoModelProps> = (props) => 
       >
         {type == 1 && <JobConfigInfo row={row} />}
         {type == 2 && <StatementInfo row={row} />}
-        {type == 3 && <PreViewData row={row} />}
+        {/*todo 预览数据*/}
+        {/*{type == 3 && <PreViewData row={row} />}*/}
         {type == 4 && <ErrorMsgInfo row={row} />}
       </Modal>
     </>
