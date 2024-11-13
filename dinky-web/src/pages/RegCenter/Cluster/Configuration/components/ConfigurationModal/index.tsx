@@ -33,7 +33,7 @@ type ConfigurationModalProps = {
   onSubmit: (values: Partial<Cluster.Config>) => void;
   onHeartBeat: (values: Partial<Cluster.Config>) => void;
 };
-export  default   (props:ConfigurationModalProps) => {
+export default (props: ConfigurationModalProps) => {
   const { visible, onClose, onSubmit, value, onHeartBeat } = props;
 
   /**

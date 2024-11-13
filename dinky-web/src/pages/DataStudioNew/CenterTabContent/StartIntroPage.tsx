@@ -19,8 +19,8 @@
 
 import { Divider } from 'antd';
 import React, { memo } from 'react';
-import KeyBoard from "@/pages/DataStudioNew/CenterTabContent/KeyBoard";
-import QuickGuide from "@/pages/DataStudioNew/CenterTabContent/QuickGuide";
+import KeyBoard from '@/pages/DataStudioNew/CenterTabContent/KeyBoard';
+import QuickGuide from '@/pages/DataStudioNew/CenterTabContent/QuickGuide';
 
 export default memo(() => {
   return (

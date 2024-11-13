@@ -26,7 +26,10 @@ import { Col, Modal, Row, Space, Table, Tabs, Typography } from 'antd';
 import * as monaco from 'monaco-editor';
 import React, { memo } from 'react';
 import styles from '../index.less';
-import {DIFF_EDITOR_PARAMS, PARAM_DIFF_TABLE_COL} from "@/pages/DataStudioNew/CenterTabContent/SqlTask/constants";
+import {
+  DIFF_EDITOR_PARAMS,
+  PARAM_DIFF_TABLE_COL
+} from '@/pages/DataStudioNew/CenterTabContent/SqlTask/constants';
 
 loader.config({ monaco });
 

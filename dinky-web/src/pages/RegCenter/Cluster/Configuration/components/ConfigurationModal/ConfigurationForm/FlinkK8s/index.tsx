@@ -42,7 +42,7 @@ import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { RcFile } from 'antd/es/upload/interface';
 import { Values } from 'async-validator';
 import { editor } from 'monaco-editor';
-import {DefaultOptionType} from "antd/es/select";
+import { DefaultOptionType } from 'antd/es/select';
 
 const { Text } = Typography;
 
@@ -53,8 +53,13 @@ const CodeEditProps = {
   language: 'yaml'
 };
 
-export default (props: { type: string; value: any; form: FormInstance<Values>,flinkConfigOptions: DefaultOptionType[] } ) => {
-  const { type, value, form,flinkConfigOptions } = props;
+export default (props: {
+  type: string;
+  value: any;
+  form: FormInstance<Values>;
+  flinkConfigOptions: DefaultOptionType[];
+}) => {
+  const { type, value, form, flinkConfigOptions } = props;
   const k8sConfig = value.config?.kubernetesConfig;
 
   const renderK8sConfig = () => {
@@ -248,4 +253,3 @@ export default (props: { type: string; value: any; form: FormInstance<Values>,fl
     </>
   );
 };
-

@@ -26,7 +26,7 @@ import { DatabaseOutlined, TableOutlined } from '@ant-design/icons';
 import { Key, ProForm } from '@ant-design/pro-components';
 import { CascaderProps, Spin, Tag } from 'antd';
 import { memo, useEffect, useRef, useState } from 'react';
-import {clearDataSourceTable, getDataSourceList, showDataSourceTable} from './service';
+import { clearDataSourceTable, getDataSourceList, showDataSourceTable } from './service';
 import { useAsyncEffect } from 'ahooks';
 import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';

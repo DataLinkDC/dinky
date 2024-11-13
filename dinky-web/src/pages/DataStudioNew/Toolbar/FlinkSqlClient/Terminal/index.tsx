@@ -40,12 +40,12 @@ import { getData } from '@/services/api';
 import { Cluster } from '@/types/RegCenter/data';
 import { CLUSTER_TYPE_OPTIONS, ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
-import TerminalContent from "@/pages/DataStudioNew/Toolbar/FlinkSqlClient/Terminal/TerminalContent";
+import TerminalContent from '@/pages/DataStudioNew/Toolbar/FlinkSqlClient/Terminal/TerminalContent';
 import {
   getTermConfig,
   setTermConfig,
   TermProps
-} from "@/pages/DataStudioNew/Toolbar/FlinkSqlClient/Terminal/TerminalConfig";
+} from '@/pages/DataStudioNew/Toolbar/FlinkSqlClient/Terminal/TerminalConfig';
 
 const TerminalTab = () => {
   // const [form] = Form.useForm();

@@ -31,7 +31,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import { DIALECT, SWITCH_OPTIONS } from '@/services/constants';
 import { TaskState, TempData } from '@/pages/DataStudioNew/type';
 import { BasicConfig } from '@/pages/DataStudioNew/CenterTabContent/SqlTask/TaskConfig/BasicConfig';
-import { isSql ,assert} from '@/pages/DataStudioNew/utils';
+import { isSql, assert } from '@/pages/DataStudioNew/utils';
 import { DataSources } from '@/types/RegCenter/data';
 import { TagAlignLeft } from '@/components/StyledComponents';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';

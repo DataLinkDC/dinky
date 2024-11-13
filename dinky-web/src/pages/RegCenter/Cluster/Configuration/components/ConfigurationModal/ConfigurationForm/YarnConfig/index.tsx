@@ -127,4 +127,3 @@ export const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) =
     </>
   );
 };
-

@@ -22,7 +22,7 @@ import { Catalogue } from '@/types/Studio/data';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
-import FolderForm from "@/pages/DataStudioNew/Toolbar/Project/FolderModal/FolderForm";
+import FolderForm from '@/pages/DataStudioNew/Toolbar/Project/FolderModal/FolderForm';
 
 type JobModalProps = {
   onCancel: () => void;

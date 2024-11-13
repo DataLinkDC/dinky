@@ -21,18 +21,10 @@ import { JobExecutionHistory } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { Modal } from 'antd';
 import React from 'react';
-import {
-  JobConfigInfo
-} from "@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/JobConfigInfo";
-import {
-  StatementInfo
-} from "@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/StatementInfo";
-import {
-  PreViewData
-} from "@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/PreViewData";
-import {
-  ErrorMsgInfo
-} from "@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/ErrorMsgInfo";
+import { JobConfigInfo } from '@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/JobConfigInfo';
+import { StatementInfo } from '@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/StatementInfo';
+import { PreViewData } from '@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/PreViewData';
+import { ErrorMsgInfo } from '@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel/ErrorMsgInfo';
 
 type JobDetailInfoModelProps = {
   modalVisit: boolean;

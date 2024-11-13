@@ -21,7 +21,7 @@ import { l } from '@/utils/intl';
 import { Link } from '@umijs/max';
 import { Divider, Typography } from 'antd';
 import { Fragment } from 'react';
-import {QUICK_GUIDE} from "@/pages/DataStudioNew/CenterTabContent/QuickGuide/constant";
+import { QUICK_GUIDE } from '@/pages/DataStudioNew/CenterTabContent/QuickGuide/constant';
 
 const { Title, Paragraph } = Typography;
 

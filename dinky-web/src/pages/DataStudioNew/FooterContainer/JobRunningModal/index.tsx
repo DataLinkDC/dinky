@@ -20,7 +20,7 @@
 import { StopTwoTone } from '@ant-design/icons';
 import { Col, Modal, Progress, Row, Space } from 'antd';
 import React from 'react';
-import {JobRunningMsgType} from "@/pages/DataStudioNew/type";
+import { JobRunningMsgType } from '@/pages/DataStudioNew/type';
 
 type JobRunningModalProps = {
   visible: boolean;

@@ -28,7 +28,7 @@ import { ActionType, ProList } from '@ant-design/pro-components';
 import { ProListMetas } from '@ant-design/pro-list';
 import { Badge, Divider, Space, Tag, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
-import {JobDetailInfoModel} from "@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel";
+import { JobDetailInfoModel } from '@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel';
 
 const { Link, Paragraph, Text } = Typography;
 

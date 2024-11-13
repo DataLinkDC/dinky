@@ -37,9 +37,9 @@ import { useModel } from '@umijs/max';
 import { Form } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import React, { useEffect } from 'react';
-import {JOB_TYPE} from "@/pages/DataStudioNew/constants";
-import TemplateSelect from "@/pages/DataStudioNew/Toolbar/Project/JobModal/components/TemplateSelect";
-import {isFlinkJob, isUDF} from "@/pages/DataStudioNew/Toolbar/Project/function";
+import { JOB_TYPE } from '@/pages/DataStudioNew/constants';
+import TemplateSelect from '@/pages/DataStudioNew/Toolbar/Project/JobModal/components/TemplateSelect';
+import { isFlinkJob, isUDF } from '@/pages/DataStudioNew/Toolbar/Project/function';
 
 type JobModalProps = {
   onCancel: () => void;

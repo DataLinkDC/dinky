@@ -25,7 +25,7 @@ const defaultSvgSize = '100%';
 const style = { overflow: 'hidden' };
 
 export const MysqlIcons = (props: any) => {
-  const {size = 16} = props;
+  const { size = 16 } = props;
   return (
     <>
       <Icon
@@ -59,7 +59,7 @@ export const MysqlIcons = (props: any) => {
 };
 
 export const SQLIcons = (props: any) => {
-  const {size = 16} = props;
+  const { size = 16 } = props;
 
   return (
     <>

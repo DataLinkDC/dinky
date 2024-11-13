@@ -57,8 +57,8 @@ import {
 import { CodeTwoTone } from '@ant-design/icons';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
-import {Col, Row} from "antd";
-import {l} from "@/utils/intl";
+import { Col, Row } from 'antd';
+import { l } from '@/utils/intl';
 
 // 遍历layout，获取所有激活和打开的tab
 export const getAllPanel = (newLayout: LayoutBase) => {
@@ -185,13 +185,13 @@ export const getTabIcon = (type: string, size?: number) => {
     case DIALECT.JAVA:
       return <JavaSvg size={size} />;
     case DIALECT.SCALA:
-      return <ScalaSvg size={size}/>;
+      return <ScalaSvg size={size} />;
     case DIALECT.PYTHON:
     case DIALECT.PYTHON_LONG:
-      return <PythonSvg  size={size}/>;
+      return <PythonSvg size={size} />;
     case DIALECT.MD:
     case DIALECT.MDX:
-      return <MarkDownSvg  size={size}/>;
+      return <MarkDownSvg size={size} />;
     case DIALECT.XML:
       return <XMLSvg size={size} />;
     case DIALECT.YAML:
@@ -317,7 +317,6 @@ export const lockTask = (
       return false;
   }
 };
-
 
 export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
   switch (language.toLowerCase()) {

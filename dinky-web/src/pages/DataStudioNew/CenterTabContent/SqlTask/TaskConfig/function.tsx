@@ -18,16 +18,15 @@
  */
 
 import { Alert, ALERT_TYPE, Cluster } from '@/types/RegCenter/data.d';
-import {DefaultOptionType} from "antd/es/select";
-import {TagAlignLeft} from "@/components/StyledComponents";
-import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
-import {l} from "@/utils/intl";
+import { DefaultOptionType } from 'antd/es/select';
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { l } from '@/utils/intl';
 
 export const calculatorWidth = (width: number) => {
   const resultWidth = width - 50; // 50 为右侧 proform list 组件的 删除按钮宽度
   return resultWidth > 0 ? resultWidth / 2 : 300;
 };
-
 
 /**
  * build job alert groups
@@ -38,26 +37,26 @@ export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[] = []) => 
       label: (
         <TagAlignLeft>
           {getAlertIcon(ALERT_TYPE.GROUP, 20)}
-    {l('button.disable')}
-  </TagAlignLeft>
-),
-  title: l('button.disable'),
-    value: -1,
-    key: -1
-}
-];
+          {l('button.disable')}
+        </TagAlignLeft>
+      ),
+      title: l('button.disable'),
+      value: -1,
+      key: -1
+    }
+  ];
   alertGroups.forEach((item) => {
     alertGroupOptions.push({
       label: (
         <TagAlignLeft>
           {getAlertIcon(ALERT_TYPE.GROUP, 20)}
-    {item.name}
-    </TagAlignLeft>
-  ),
-    value: item.id,
+          {item.name}
+        </TagAlignLeft>
+      ),
+      value: item.id,
       title: item.name,
       key: item.id
-  });
+    });
   });
   return alertGroupOptions;
 };

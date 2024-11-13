@@ -52,26 +52,27 @@ import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useState } from 'react';
 import DataSourceModal from '../DataSourceModal';
-import {useAsyncEffect} from "ahooks";
+import { useAsyncEffect } from 'ahooks';
 
-export default  () => {
-
+export default () => {
   /**
    * state
    */
   const [datasourceState, setDatasourceState] = useState<DataSourceState>(InitDataSourceState);
   const actionRef = React.useRef<ActionType>();
-  const [data, setData] = useState<DataSources.DataSource[]>([])
+  const [data, setData] = useState<DataSources.DataSource[]>([]);
 
   const queryDataSourceList = async (keyword = '') => {
-    const queryData = (await queryDataByParams<DataSources.DataSource[]>(API_CONSTANTS.DATASOURCE, { keyword }))!!;
-    setData(queryData)
+    const queryData = (await queryDataByParams<DataSources.DataSource[]>(API_CONSTANTS.DATASOURCE, {
+      keyword
+    }))!!;
+    setData(queryData);
   };
 
   /**
    * query  list
    */
-  useAsyncEffect(async() => {
+  useAsyncEffect(async () => {
     await queryDataSourceList();
   }, []);
 
@@ -313,4 +314,3 @@ export default  () => {
     </>
   );
 };
-

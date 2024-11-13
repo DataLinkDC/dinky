@@ -22,7 +22,7 @@ import useThemeValue from '@/hooks/useThemeValue';
 import { Button, Flex, Space } from 'antd';
 import React, { useState } from 'react';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import {jsonToSql} from "@/pages/DataStudioNew/Toolbar/Tool/JsonToSql/service";
+import { jsonToSql } from '@/pages/DataStudioNew/Toolbar/Tool/JsonToSql/service';
 
 const padding = 10;
 

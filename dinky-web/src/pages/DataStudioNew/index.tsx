@@ -510,7 +510,7 @@ const DataStudioNew: React.FC = (props: any) => {
               headerSortActiveBg: 'var(--primary-color)',
               headerSortHoverBg: 'var(--primary-color)',
               fixedHeaderSortActiveBg: 'var(--primary-color)',
-              bodySortBg: 'var(--second-color)',
+              bodySortBg: 'var(--second-color)'
             }
           },
           algorithm: themeAlgorithm

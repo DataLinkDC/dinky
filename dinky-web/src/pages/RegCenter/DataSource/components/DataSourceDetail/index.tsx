@@ -17,22 +17,25 @@
  *
  */
 
-import {DataSourceDetailBackButton} from '@/components/StyledComponents';
-import {Authorized, HasAuthority} from '@/hooks/useAccess';
+import { DataSourceDetailBackButton } from '@/components/StyledComponents';
+import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
-import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
-import {PermissionConstants} from '@/types/Public/constants';
-import {l} from '@/utils/intl';
-import {BackwardOutlined, ReloadOutlined} from '@ant-design/icons';
-import {Key, ProCard} from '@ant-design/pro-components';
-import {history} from '@umijs/max';
-import {Button, Space} from 'antd';
-import {useCallback, useState} from 'react';
-import {useLocation} from 'umi';
-import {getUrlParam} from '@/utils/function';
-import {useAsyncEffect} from "ahooks";
-import {clearDataSourceTable, showDataSourceTable} from "@/pages/DataStudioNew/Toolbar/DataSource/service";
+import { PermissionConstants } from '@/types/Public/constants';
+import { l } from '@/utils/intl';
+import { BackwardOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Key, ProCard } from '@ant-design/pro-components';
+import { history } from '@umijs/max';
+import { Button, Space } from 'antd';
+import { useCallback, useState } from 'react';
+import { useLocation } from 'umi';
+import { getUrlParam } from '@/utils/function';
+import { useAsyncEffect } from 'ahooks';
+import {
+  clearDataSourceTable,
+  showDataSourceTable
+} from '@/pages/DataStudioNew/Toolbar/DataSource/service';
 
 export default () => {
   const location = useLocation();
@@ -40,15 +43,14 @@ export default () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
-  const [selectKeys, setSelectKeys] = useState<Key[]>([])
-  const [expandKeys, setExpandKeys] = useState<Key[]>([])
+  const [selectKeys, setSelectKeys] = useState<Key[]>([]);
+  const [expandKeys, setExpandKeys] = useState<Key[]>([]);
 
   const [params, setParams] = useState<QueryParams>({
     id: Number.parseInt(getUrlParam(location.search, 'id')),
     schemaName: '',
     tableName: ''
   });
-
 
   const handleBackClick = () => {
     // go back
@@ -57,7 +59,7 @@ export default () => {
 
   const clearState = () => {
     setDisabled(true);
-    setParams(prevState => ({
+    setParams((prevState) => ({
       ...prevState,
       schemaName: '',
       tableName: ''
@@ -80,16 +82,16 @@ export default () => {
    */
   const onSchemaTreeNodeClick = useCallback(async (keys: Key[], info: any) => {
     const {
-      node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}
+      node: { isLeaf, parentId: schemaName, name: tableName, fullInfo }
     } = info;
-    setSelectKeys(keys)
+    setSelectKeys(keys);
 
     if (!isLeaf) {
       clearState();
       return;
     }
 
-    setParams(prevState => ({
+    setParams((prevState) => ({
       ...prevState,
       schemaName,
       tableName
@@ -97,7 +99,6 @@ export default () => {
 
     setDisabled(false);
   }, []);
-
 
   /**
    * render back button and refresh button
@@ -108,7 +109,7 @@ export default () => {
       <Space size={'middle'}>
         <Button
           size={'middle'}
-          icon={<ReloadOutlined spin={loading}/>}
+          icon={<ReloadOutlined spin={loading} />}
           type='primary'
           hidden={!HasAuthority(PermissionConstants.REGISTRATION_DATA_SOURCE_DETAIL_REFRESH)}
           onClick={() => clearDataSourceTable(params.id).then(() => querySchemaTree())}
@@ -117,7 +118,7 @@ export default () => {
         </Button>
         <Button
           size={'middle'}
-          icon={<BackwardOutlined/>}
+          icon={<BackwardOutlined />}
           type='primary'
           onClick={handleBackClick}
         >

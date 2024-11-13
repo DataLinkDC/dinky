@@ -39,9 +39,7 @@ export const PreViewData: React.FC<PreViewDataProps> = (props) => {
             <FireOutlined /> {row?.jobId ?? l('global.job.status.failed-tip')}
           </Tag>
         </ProDescriptions.Item>
-        <ProDescriptions.Item span={2}>
-          // todo 预览数据
-        </ProDescriptions.Item>
+        <ProDescriptions.Item span={2}>// todo 预览数据</ProDescriptions.Item>
       </ProDescriptions>
     </>
   );

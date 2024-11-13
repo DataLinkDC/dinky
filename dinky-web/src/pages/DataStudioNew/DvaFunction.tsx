@@ -27,7 +27,7 @@ import {
   SetLayoutDTO,
   UpdateActionDTO
 } from '@/pages/DataStudioNew/type';
-import {CONFIG_MODEL_ASYNC} from "@/pages/SettingCenter/GlobalSetting/model";
+import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
   return {

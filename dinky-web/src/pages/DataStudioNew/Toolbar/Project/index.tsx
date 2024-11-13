@@ -41,9 +41,9 @@ import { Catalogue } from '@/types/Studio/data';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { handleRightClick } from '@/pages/DataStudioNew/function';
 import { useRightContext } from '@/pages/DataStudioNew/Toolbar/Project/RightContext';
-import {TreeVo} from "@/pages/DataStudioNew/type";
-import FolderModal from "@/pages/DataStudioNew/Toolbar/Project/FolderModal";
-import {getTaskSortTypeData} from "@/pages/DataStudioNew/service";
+import { TreeVo } from '@/pages/DataStudioNew/type';
+import FolderModal from '@/pages/DataStudioNew/Toolbar/Project/FolderModal';
+import { getTaskSortTypeData } from '@/pages/DataStudioNew/service';
 
 export const Project = (props: any) => {
   const {

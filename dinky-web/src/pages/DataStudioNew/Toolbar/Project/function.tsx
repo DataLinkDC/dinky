@@ -26,8 +26,8 @@ import { l } from '@/utils/intl';
 import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Divider, Space, Tooltip } from 'antd';
 import { Key } from 'react';
-import {getTabIcon, lockTask, showAllOwners} from '@/pages/DataStudioNew/function';
-import {assert} from "@/pages/DataStudioNew/utils";
+import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudioNew/function';
+import { assert } from '@/pages/DataStudioNew/utils';
 
 /**
  * generate list of tree node from data
@@ -342,7 +342,6 @@ export const buildProjectTree = (
         };
       })
     : [];
-
 
 export const isUDF = (jobType: string): boolean => {
   return assert(jobType, [DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.JAVA], true, 'includes');

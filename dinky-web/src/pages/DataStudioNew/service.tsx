@@ -17,10 +17,15 @@
  *
  */
 
-import {getDataByParams, handleGetOption, handleOption, queryDataByParams} from '@/services/BusinessCrud';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {TaskState} from "@/pages/DataStudioNew/type";
-import {postAll} from "@/services/api";
+import {
+  getDataByParams,
+  handleGetOption,
+  handleOption,
+  queryDataByParams
+} from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { TaskState } from '@/pages/DataStudioNew/type';
+import { postAll } from '@/services/api';
 
 export async function explainSql(title: string, params: any) {
   return handleOption(API_CONSTANTS.EXPLAIN_SQL, title, params);
@@ -44,28 +49,27 @@ export function cancelTask(
   withSavePoint: boolean = true,
   forceCancel: boolean = true
 ) {
-  return handleGetOption(API_CONSTANTS.CANCEL_JOB, title, {id, withSavePoint, forceCancel});
+  return handleGetOption(API_CONSTANTS.CANCEL_JOB, title, { id, withSavePoint, forceCancel });
 }
 
 export async function executeSql(title: string, id: number) {
   return handleGetOption(API_CONSTANTS.SUBMIT_TASK, title, { id });
 }
 export function restartTask(id: number, savePointPath: string, title: string) {
-  return handleGetOption(API_CONSTANTS.RESTART_TASK, title, {id, savePointPath});
+  return handleGetOption(API_CONSTANTS.RESTART_TASK, title, { id, savePointPath });
 }
 
 export function savePointTask(title: string, taskId: number, savePointType: string) {
-  return handleGetOption(API_CONSTANTS.SAVEPOINT, title, {taskId, savePointType});
+  return handleGetOption(API_CONSTANTS.SAVEPOINT, title, { taskId, savePointType });
 }
 
 export function changeTaskLife(title = '', id: number, life: number) {
-  return handleGetOption(API_CONSTANTS.CHANGE_TASK_LIFE, title, {taskId: id, lifeCycle: life});
+  return handleGetOption(API_CONSTANTS.CHANGE_TASK_LIFE, title, { taskId: id, lifeCycle: life });
 }
 
 export function getTaskDetails(id: number): Promise<TaskState | undefined> {
-  return queryDataByParams(API_CONSTANTS.TASK, {id: id});
+  return queryDataByParams(API_CONSTANTS.TASK, { id: id });
 }
-
 
 export function getSessionData() {
   return queryDataByParams(API_CONSTANTS.CLUSTER_INSTANCE_SESSION);

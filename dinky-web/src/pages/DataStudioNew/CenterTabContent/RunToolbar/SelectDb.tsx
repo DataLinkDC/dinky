@@ -17,20 +17,17 @@
  *
  */
 
-import React from "react";
-import {DataSources} from "@/types/RegCenter/data";
-import {TagAlignLeft} from "@/components/StyledComponents";
-import {Tag} from "antd";
-import {ProFormSelect} from "@ant-design/pro-components";
-import {l} from "@/utils/intl";
-import {TaskState, TempData} from "@/pages/DataStudioNew/type";
+import React from 'react';
+import { DataSources } from '@/types/RegCenter/data';
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { Tag } from 'antd';
+import { ProFormSelect } from '@ant-design/pro-components';
+import { l } from '@/utils/intl';
+import { TaskState, TempData } from '@/pages/DataStudioNew/type';
 
-
-
-export default (props: { databaseDataList: TempData['dataSourceDataList'] ,data: TaskState;}) => {
-
+export default (props: { databaseDataList: TempData['dataSourceDataList']; data: TaskState }) => {
   const dataSourceData: Record<string, React.ReactNode> = {};
-  const {databaseDataList,data} = props;
+  const { databaseDataList, data } = props;
   databaseDataList
     .filter((x) => x.type.toLowerCase() === data?.dialect.toLowerCase())
     .forEach((item: DataSources.DataSource) => {
@@ -44,11 +41,11 @@ export default (props: { databaseDataList: TempData['dataSourceDataList'] ,data:
       convertValue={(value) => String(value)}
       valueEnum={dataSourceData}
       placeholder='Please select a dataSource'
-      rules={[{required: true, message: 'Please select your dataSource!'}]}
+      rules={[{ required: true, message: 'Please select your dataSource!' }]}
       allowClear={false}
       fieldProps={{
-        popupMatchSelectWidth:false
+        popupMatchSelectWidth: false
       }}
     />
   );
-}
+};

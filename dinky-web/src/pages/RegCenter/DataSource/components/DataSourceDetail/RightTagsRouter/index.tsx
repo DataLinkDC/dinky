@@ -34,7 +34,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import { SearchOutline } from 'antd-mobile-icons';
 import React, { useEffect, useState } from 'react';
-import {useAsyncEffect} from "ahooks";
+import { useAsyncEffect } from 'ahooks';
 
 /**
  * props
@@ -127,9 +127,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   /**
    * render
    */
-  return (
-      <ProCard className={'schemaTree'} size='small' bordered tabs={{ ...restTabProps }} />
-  );
+  return <ProCard className={'schemaTree'} size='small' bordered tabs={{ ...restTabProps }} />;
 };
 
 export default RightTagsRouter;

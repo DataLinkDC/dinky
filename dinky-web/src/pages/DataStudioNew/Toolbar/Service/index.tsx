@@ -53,7 +53,7 @@ import { LineageNew } from '@/pages/DataStudioNew/Toolbar/Service/LineageNew';
 import { useAsyncEffect } from 'ahooks';
 import { sleep } from '@antfu/utils';
 import { l } from '@/utils/intl';
-import {assert} from "@/pages/DataStudioNew/utils";
+import { assert } from '@/pages/DataStudioNew/utils';
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {

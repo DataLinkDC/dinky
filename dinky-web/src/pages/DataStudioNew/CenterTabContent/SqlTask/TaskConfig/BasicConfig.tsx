@@ -35,8 +35,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TaskState, TempData } from '@/pages/DataStudioNew/type';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { Alert } from 'antd';
-import {SAVE_POINT_TYPE} from "@/pages/DataStudioNew/constants";
-import {buildAlertGroupOptions} from "@/pages/DataStudioNew/CenterTabContent/SqlTask/TaskConfig/function";
+import { SAVE_POINT_TYPE } from '@/pages/DataStudioNew/constants';
+import { buildAlertGroupOptions } from '@/pages/DataStudioNew/CenterTabContent/SqlTask/TaskConfig/function';
 
 export const BasicConfig = (props: {
   tempData: TempData;

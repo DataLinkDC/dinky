@@ -38,11 +38,11 @@ import {
 import { DIALECT } from '@/services/constants';
 import { DataStudioState } from '@/pages/DataStudioNew/model';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
-import FolderModal from "@/pages/DataStudioNew/Toolbar/Project/FolderModal";
-import JobModal from "@/pages/DataStudioNew/Toolbar/Project/JobModal";
-import {assert} from '@/pages/DataStudioNew/utils'
-import {FOLDER_RIGHT_MENU, JOB_RIGHT_MENU} from "@/pages/DataStudioNew/Toolbar/Project/constants";
-import JobImportModal from "@/pages/DataStudioNew/Toolbar/Project/JobImportModal";
+import FolderModal from '@/pages/DataStudioNew/Toolbar/Project/FolderModal';
+import JobModal from '@/pages/DataStudioNew/Toolbar/Project/JobModal';
+import { assert } from '@/pages/DataStudioNew/utils';
+import { FOLDER_RIGHT_MENU, JOB_RIGHT_MENU } from '@/pages/DataStudioNew/Toolbar/Project/constants';
+import JobImportModal from '@/pages/DataStudioNew/Toolbar/Project/JobImportModal';
 const { Text } = Typography;
 export type RightContextProps = {
   selectKeys: Key[];

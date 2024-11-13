@@ -18,7 +18,14 @@
  */
 
 import React, { useEffect } from 'react';
-import {AsciiCode, HEART_TIMEOUT, HEART_TNERVAL, KeyCode, TerminalEvent, TermProps} from './TerminalConfig';
+import {
+  AsciiCode,
+  HEART_TIMEOUT,
+  HEART_TNERVAL,
+  KeyCode,
+  TerminalEvent,
+  TermProps
+} from './TerminalConfig';
 import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import './xterm.css';
