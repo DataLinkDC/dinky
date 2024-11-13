@@ -37,7 +37,8 @@ import {
   FundOutlined,
   MergeCellsOutlined,
   PartitionOutlined,
-  PauseOutlined, RocketOutlined,
+  PauseOutlined,
+  RocketOutlined,
   RotateRightOutlined,
   SafetyCertificateOutlined,
   SaveOutlined
