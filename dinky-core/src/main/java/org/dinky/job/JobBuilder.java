@@ -20,7 +20,13 @@
 package org.dinky.job;
 
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.Executor;
+
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+
+import java.util.List;
 
 public abstract class JobBuilder {
 
@@ -45,4 +51,14 @@ public abstract class JobBuilder {
     }
 
     public abstract void run() throws Exception;
+
+    public abstract List<SqlExplainResult> explain();
+
+    public StreamGraph getStreamGraph() {
+        return executor.getStreamGraph();
+    }
+
+    public JobPlanInfo getJobPlanInfo() {
+        return null;
+    }
 }

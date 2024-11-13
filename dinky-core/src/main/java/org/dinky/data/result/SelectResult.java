@@ -53,6 +53,7 @@ public class SelectResult extends AbstractResult implements IResult {
     private LinkedHashSet<String> columns;
     private boolean isDestroyed;
     private boolean truncationFlag = false;
+    private boolean isMockSinkResult = false;
 
     public SelectResult(
             List<Map<String, Object>> rowData,

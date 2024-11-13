@@ -100,6 +100,8 @@ export default {
   'menu.datastudio.savePoint': 'Save Point',
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',
+  'menu.datastudio.quickStart': 'Quick Start',
+  'menu.datastudio.flinkSqlClient': 'Flink SQL Client',
 
   'menu.datastudio.tool': 'Tool',
   'menu.datastudio.result': 'Result',
@@ -108,7 +110,10 @@ export default {
   'menu.datastudio.process': 'Process',
   'menu.datastudio.history': 'Execution History',
   'menu.datastudio.table-data': 'Table Data',
+  'menu.datastudio.service': 'Service',
 
   'menu.datastudio.tool.text-comparison': 'Text Comparison',
-  'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL'
+  'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL',
+  'menu.datastudio.task.baseConfig': 'Basic Configuration',
+  'menu.datastudio.task.previewConfig': 'Preview Configuration'
 };

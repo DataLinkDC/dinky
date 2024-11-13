@@ -37,6 +37,10 @@ public class SqlExplainResult {
     private boolean parseTrue;
     private boolean explainTrue;
     private LocalDateTime explainTime;
+    private boolean isInvalid;
+
+    public static final SqlExplainResult INVALID_EXPLAIN_RESULT =
+            new Builder().invalid().build();
 
     public SqlExplainResult() {}
 
@@ -71,6 +75,7 @@ public class SqlExplainResult {
         setParseTrue(builder.parseTrue);
         setExplainTrue(builder.explainTrue);
         setExplainTime(builder.explainTime);
+        setInvalid(builder.isInvalid);
     }
 
     public static SqlExplainResult success(String type, String sql, String explain) {
@@ -167,6 +172,14 @@ public class SqlExplainResult {
         this.explainTime = explainTime;
     }
 
+    public boolean isInvalid() {
+        return isInvalid;
+    }
+
+    public void setInvalid(boolean invalid) {
+        isInvalid = invalid;
+    }
+
     @Override
     public String toString() {
         return String.format(
@@ -185,6 +198,7 @@ public class SqlExplainResult {
         private boolean parseTrue;
         private boolean explainTrue;
         private LocalDateTime explainTime;
+        private boolean isInvalid = false;
 
         private Builder() {}
 
@@ -234,6 +248,11 @@ public class SqlExplainResult {
 
         public Builder explainTime(LocalDateTime val) {
             explainTime = val;
+            return this;
+        }
+
+        public Builder invalid() {
+            isInvalid = true;
             return this;
         }
 

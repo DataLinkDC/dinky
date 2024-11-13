@@ -23,7 +23,7 @@ import proxy from './proxy';
 import routes from './routes';
 
 const { REACT_APP_ENV = 'dev' } = process.env;
-
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 // @ts-ignore
 export default defineConfig({
   /**
@@ -196,5 +196,14 @@ export default defineConfig({
     strategy: 'eager'
   },
   // requestRecord: {},
-  dva: {}
+  dva: {},
+
+  chainWebpack: (memo) => {
+    memo.plugin('monaco-editor-webpack-plugin').use(MonacoWebpackPlugin, [
+      // 按需配置
+      { languages: ['shell', 'json', 'java', 'sql', 'python', 'scala', 'yaml'] }
+    ]);
+
+    return memo;
+  }
 });

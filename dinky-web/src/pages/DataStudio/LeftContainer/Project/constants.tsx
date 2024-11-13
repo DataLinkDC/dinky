@@ -28,8 +28,8 @@ import {
   PlusCircleTwoTone,
   UpCircleTwoTone
 } from '@ant-design/icons';
-import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { DefaultOptionType } from 'antd/es/select';
+import { MenuItemType } from 'antd/es/menu/interface';
 
 /**
  * 目录级别:

@@ -243,7 +243,11 @@ public abstract class Executor {
         if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
             return tableEnvironment.explainSqlRecord(statement, extraDetails);
         }
-        return null;
+        return SqlExplainResult.INVALID_EXPLAIN_RESULT;
+    }
+
+    public StreamGraph getStreamGraphFromStatement(List<String> statements) {
+        return tableEnvironment.getStreamGraphFromInserts(statements);
     }
 
     public ObjectNode getStreamGraph(List<String> statements) {
@@ -251,7 +255,7 @@ public abstract class Executor {
         return getStreamGraphJsonNode(streamGraph);
     }
 
-    private ObjectNode getStreamGraphJsonNode(StreamGraph streamGraph) {
+    public ObjectNode getStreamGraphJsonNode(StreamGraph streamGraph) {
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
         String json = jsonGenerator.getJSON();
         ObjectMapper mapper = new ObjectMapper();
@@ -261,12 +265,16 @@ public abstract class Executor {
         } catch (JsonProcessingException e) {
             logger.error("Get stream graph json node error.", e);
         }
-
         return objectNode;
     }
 
     public StreamGraph getStreamGraph() {
         return environment.getStreamGraph();
+    }
+
+    public StreamGraph getStreamGraphFromCustomStatements(List<String> statements) {
+        statements.forEach(this::executeSql);
+        return getStreamGraph();
     }
 
     public ObjectNode getStreamGraphFromDataStream(List<String> statements) {

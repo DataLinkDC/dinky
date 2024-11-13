@@ -304,6 +304,10 @@ public class UDFUtil {
         return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(pattern, statement, 0));
     }
 
+    public static boolean isUdfStatement(String statement) {
+        return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(PATTERN, statement, 0));
+    }
+
     public static UDF toUDF(String statement, DinkyClassLoader classLoader) {
         if (isUdfStatement(PATTERN, statement)) {
             List<String> groups = CollUtil.removeEmpty(ReUtil.getAllGroups(PATTERN, statement));

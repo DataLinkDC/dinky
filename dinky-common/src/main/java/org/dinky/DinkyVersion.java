@@ -36,4 +36,21 @@ public final class DinkyVersion {
             return "${revision}";
         }
     }
+
+    /**
+     * Return the short version string of the present Dinky codebase.
+     * @return the short version of Dinky
+     */
+    public static String getShortVersion() {
+        try {
+            String version = getVersion();
+            int idx = version.indexOf('-');
+            if (idx > 0) {
+                return version.substring(0, idx);
+            }
+            return version;
+        } catch (Exception e) {
+            return "${revision}";
+        }
+    }
 }

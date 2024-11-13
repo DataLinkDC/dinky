@@ -98,6 +98,11 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
         return Optional.of(TABLE_RESULT_OK);
     }
 
+    @Override
+    public String explain(CustomTableEnvironment tEnv) {
+        return asSummaryString();
+    }
+
     private void callSet(SetOperation setOperation, CustomTableEnvironment environment) {
         if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
             return;
@@ -121,6 +126,11 @@ public class CustomSetOperation extends AbstractOperation implements ExtendOpera
 
     @Override
     public String asSummaryString() {
-        return null;
+        return toString();
+    }
+
+    @Override
+    public String toString() {
+        return "CustomSetOperation{" + "key='" + key + '\'' + ", value='" + value + '\'' + '}';
     }
 }

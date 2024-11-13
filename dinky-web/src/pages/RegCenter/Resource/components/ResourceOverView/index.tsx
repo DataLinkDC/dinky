@@ -73,17 +73,17 @@ const ResourceOverView: React.FC<connect> = (props) => {
     );
   };
 
-  useAsyncEffect(() => {
+  useEffect(() => {
     dispatch({
       type: CONFIG_MODEL_ASYNC.queryResourceConfig,
       payload: SettingConfigKeyEnum.RESOURCE.toLowerCase()
     });
   }, []);
 
-  useAsyncEffect(async () => {
+  useEffect(() => {
     // if enableResource is true, then refresh the tree, otherwise do nothing
     if (enableResource) {
-      await refreshTree();
+      refreshTree();
     }
   }, [enableResource]);
 

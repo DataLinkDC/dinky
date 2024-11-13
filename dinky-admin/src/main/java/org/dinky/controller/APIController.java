@@ -28,8 +28,10 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.model.job.JobInstance;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
@@ -45,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.swagger.annotations.Api;
@@ -201,5 +204,17 @@ public class APIController {
     public Result getTaskLineage(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.getTaskLineage(id), Status.QUERY_SUCCESS);
+    }
+
+    @PostMapping("/getJobInstanceList")
+    @ApiImplicitParam(
+            name = "para",
+            value = "Query parameters",
+            dataType = "JsonNode",
+            paramType = "body",
+            required = true,
+            dataTypeClass = JsonNode.class)
+    public ProTableResult<JobInstanceVo> listJobInstances(@RequestBody JsonNode para) {
+        return jobInstanceService.listJobInstances(para);
     }
 }

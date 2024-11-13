@@ -25,6 +25,7 @@ import static org.dinky.function.util.UDFUtil.YARN;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.job.JobBuilder;
@@ -34,6 +35,7 @@ import org.dinky.utils.URLUtils;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -124,5 +126,10 @@ public class JobUDFBuilder extends JobBuilder {
 
         log.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size() + pyUdfFile.size()));
         log.info("Initializing Flink UDF...Finish");
+    }
+
+    @Override
+    public List<SqlExplainResult> explain() {
+        return Collections.emptyList();
     }
 }

@@ -183,6 +183,13 @@ public class JobConfig {
             notes = "Maximum number of rows")
     private Integer maxRowNum;
 
+    @ApiModelProperty(
+            value = "Flag indicating whether to mock sink function",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to mock sink function")
+    private boolean mockSinkFunction;
+
     @ApiModelProperty(value = "Gateway configuration", dataType = "GatewayConfig", notes = "Gateway configuration")
     private GatewayConfig gatewayConfig;
 

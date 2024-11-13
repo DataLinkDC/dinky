@@ -25,6 +25,7 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
@@ -36,21 +37,31 @@ import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.StatementParam;
 import org.dinky.parser.SqlType;
+import org.dinky.utils.LogUtil;
+import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import cn.hutool.core.text.StrFormatter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobTransBuilder
- *
  */
+@Slf4j
 public class JobTransBuilder extends JobBuilder {
 
     public JobTransBuilder(JobManager jobManager) {
@@ -67,17 +78,103 @@ public class JobTransBuilder extends JobBuilder {
             return;
         }
 
-        if (useStatementSet) {
+        if (inferStatementSet()) {
             handleStatementSet();
-            return;
+        } else {
+            handleNonStatementSet();
         }
+    }
 
-        handleNonStatementSet();
+    @Override
+    public List<SqlExplainResult> explain() {
+        List<SqlExplainResult> sqlExplainResults = new ArrayList<>();
+        if (Asserts.isNullCollection(jobParam.getTrans())) {
+            return sqlExplainResults;
+        }
+        if (useStatementSet) {
+            List<String> inserts = new ArrayList<>();
+            for (StatementParam item : jobParam.getTrans()) {
+                if (item.getType().equals(SqlType.INSERT) || item.getType().equals(SqlType.CTAS)) {
+                    inserts.add(item.getValue());
+                }
+            }
+            if (!inserts.isEmpty()) {
+                SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
+                String sqlSet = StringUtils.join(inserts, ";\r");
+                try {
+                    resultBuilder
+                            .explain(executor.explainStatementSet(inserts))
+                            .parseTrue(true)
+                            .explainTrue(true);
+                } catch (Exception e) {
+                    String error = LogUtil.getError(e);
+                    resultBuilder
+                            .type(SqlType.INSERT.getType())
+                            .error(error)
+                            .parseTrue(false)
+                            .explainTrue(false);
+                    log.error(error);
+                } finally {
+                    resultBuilder
+                            .type(SqlType.INSERT.getType())
+                            .explainTime(LocalDateTime.now())
+                            .sql(sqlSet);
+                    sqlExplainResults.add(resultBuilder.build());
+                }
+            }
+        } else {
+            for (StatementParam item : jobParam.getTrans()) {
+                SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
+                try {
+                    resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(item.getValue()));
+                    resultBuilder.parseTrue(true).explainTrue(true);
+                } catch (Exception e) {
+                    String error = StrFormatter.format(
+                            "Exception in explaining FlinkSQL:\n{}\n{}",
+                            SqlUtil.addLineNumber(item.getValue()),
+                            e.getMessage());
+                    resultBuilder
+                            .type(item.getType().getType())
+                            .error(error)
+                            .parseTrue(false)
+                            .explainTrue(false);
+                    log.error(error);
+                } finally {
+                    resultBuilder
+                            .type(item.getType().getType())
+                            .explainTime(LocalDateTime.now())
+                            .sql(item.getValue());
+                    sqlExplainResults.add(resultBuilder.build());
+                }
+            }
+        }
+        return sqlExplainResults;
+    }
+
+    @Override
+    public StreamGraph getStreamGraph() {
+        return executor.getStreamGraphFromStatement(jobParam.getTransStatement());
+    }
+
+    @Override
+    public JobPlanInfo getJobPlanInfo() {
+        return executor.getJobPlanInfo(jobParam.getTransStatement());
+    }
+
+    private boolean inferStatementSet() {
+        boolean hasInsert = false;
+        for (StatementParam item : jobParam.getTrans()) {
+            if (item.getType().equals(SqlType.INSERT)) {
+                hasInsert = true;
+                break;
+            }
+        }
+        return hasInsert;
     }
 
     private void handleStatementSet() throws Exception {
-        List<String> inserts = collectInserts();
-
+        List<String> inserts =
+                jobParam.getTrans().stream().map(StatementParam::getValue).collect(Collectors.toList());
         if (useGateway) {
             processWithGateway(inserts);
             return;
@@ -91,18 +188,6 @@ public class JobTransBuilder extends JobBuilder {
             return;
         }
         processFirstStatement();
-    }
-
-    private List<String> collectInserts() {
-        List<String> inserts = new ArrayList<>();
-        List<StatementParam> statementParams = useStatementSet
-                ? jobParam.getTrans()
-                : Collections.singletonList(jobParam.getTrans().get(0));
-        for (StatementParam item : statementParams) {
-
-            inserts.add(item.getValue());
-        }
-        return inserts;
     }
 
     private void processWithGateway(List<String> inserts) throws Exception {
@@ -120,7 +205,9 @@ public class JobTransBuilder extends JobBuilder {
     }
 
     private void processSingleInsertWithGateway() throws Exception {
-        List<String> singleInsert = collectInserts();
+        List<String> singleInsert =
+                Collections.singletonList(jobParam.getTrans().get(0).getValue());
+        job.setPipeline(jobParam.getTrans().get(0).getType().isPipeline());
         processWithGateway(singleInsert);
     }
 
@@ -130,6 +217,7 @@ public class JobTransBuilder extends JobBuilder {
         }
         // Only process the first statement when not using statement set
         StatementParam item = jobParam.getTrans().get(0);
+        job.setPipeline(item.getType().isPipeline());
         jobManager.setCurrentSql(item.getValue());
         processSingleStatement(item);
     }
@@ -175,7 +263,8 @@ public class JobTransBuilder extends JobBuilder {
                             config.getMaxRowNum(),
                             config.isUseChangeLog(),
                             config.isUseAutoCancel(),
-                            executor.getTimeZone())
+                            executor.getTimeZone(),
+                            jobManager.getConfig().isMockSinkFunction())
                     .getResultWithPersistence(tableResult, jobManager.getHandler());
             job.setResult(result);
         }

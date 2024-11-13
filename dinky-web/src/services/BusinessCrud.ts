@@ -289,8 +289,8 @@ export const handlePutData = async (url: string, fields: any) => {
 };
 
 export const handlePutDataJson = async (url: string, fields: any) => {
-  const tipsTitle = fields?.id ? l('app.request.update') : l('app.request.add');
-  await LoadingMessageAsync(l('app.request.running') + tipsTitle);
+  // const tipsTitle = fields?.id ? l('app.request.update') : l('app.request.add');
+  // await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
     const { code, msg } = await putDataJson(url, { ...fields });
     if (code === RESPONSE_CODE.SUCCESS) {

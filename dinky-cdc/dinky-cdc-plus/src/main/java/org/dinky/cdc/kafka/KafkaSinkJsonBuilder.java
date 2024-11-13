@@ -113,6 +113,14 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                     String topic = getSinkTableName(table);
                     if (Asserts.isNotNullString(config.getSink().get("topic"))) {
                         topic = config.getSink().get("topic");
+                    } else {
+                        Map<String, String> tableTopicMap = this.getTableTopicMap();
+                        if (tableTopicMap != null) {
+                            String newTopic = tableTopicMap.get(tableName);
+                            if (Asserts.isNotNullString(newTopic)) {
+                                topic = newTopic;
+                            }
+                        }
                     }
                     List<String> columnNameList = new LinkedList<>();
                     List<LogicalType> columnTypeList = new LinkedList<>();
@@ -193,8 +201,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                                     }
                                 }
                             });
-                    stringOperator.addSink(new FlinkKafkaProducer<String>(
-                            config.getSink().get("brokers"), topic, new SimpleStringSchema()));
+                    stringOperator.addSink(new FlinkKafkaProducer<String>(topic, new SimpleStringSchema(), getProperties()));
                 }
             }
         } catch (Exception ex) {

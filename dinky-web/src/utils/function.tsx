@@ -192,7 +192,7 @@ function registerEditorAction(editorInstance?: editor.IStandaloneCodeEditor) {
   editorInstance?.addAction({
     id: 'format',
     label: l('shortcut.key.format'),
-    keybindings: [KeyMod.CtrlCmd | KeyCode.Digit3],
+    keybindings: [KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KeyL],
     contextMenuGroupId: 'custom',
     contextMenuOrder: 1.5,
     run: () => {
@@ -718,3 +718,15 @@ export function isContainsChinese(str: string = '') {
     return false;
   }
 }
+
+// 定义一个防抖函数
+export const debounce = (func: any, delay: number) => {
+  let timeout: number | undefined = undefined;
+  return (...args: any) => {
+    if (timeout) clearTimeout(timeout);
+    // @ts-ignore
+    timeout = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};

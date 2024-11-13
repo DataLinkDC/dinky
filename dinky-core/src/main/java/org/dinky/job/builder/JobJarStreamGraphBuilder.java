@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.result.InsertResult;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.result.GatewayResult;
@@ -55,6 +56,7 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -115,6 +117,11 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
                 log.error(gatewayResult.getError());
             }
         }
+    }
+
+    @Override
+    public List<SqlExplainResult> explain() {
+        return Collections.emptyList();
     }
 
     private GatewayResult submitGateway() throws Exception {
