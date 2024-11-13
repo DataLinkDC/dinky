@@ -25,8 +25,7 @@ import { CenterTab } from '@/pages/DataStudioNew/model';
 import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
 import { Alert, DataSources } from '@/types/RegCenter/data';
 import { DefaultOptionType } from 'antd/es/select';
-import { TaskExtConfig, TaskInfo } from '@/types/Studio/data';
-import { TaskDataBaseType } from '@/pages/DataStudio/model';
+import { TaskExtConfig } from '@/types/Studio/data';
 import { SuggestionInfo } from '@/types/Public/data';
 
 /**
@@ -287,5 +286,18 @@ export interface StudioLineageParams {
   variables: any;
   taskId: number;
 }
+export type TreeVo = {
+  name: string;
+  value: string;
+  children?: TreeVo[];
+};
 
-export type TaskDataType = TaskDataBaseType & TaskInfo & Record<string, any>;
+/**
+ * job running type msg
+ */
+export type JobRunningMsgType = {
+  taskId: number | null;
+  jobName: string;
+  jobState: string;
+  runningLog: string;
+};

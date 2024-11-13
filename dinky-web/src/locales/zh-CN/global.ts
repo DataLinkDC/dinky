@@ -87,6 +87,7 @@ export default {
   'button.startRefresh': '开始自动刷新(5s/次)',
   'button.autoWrap': '自动换行/不换行',
   'button.output': '输出',
+  'button.ava': '自动洞察',
 
   'menu.menu': '菜单',
   'right.menu.open': '打开',

@@ -62,13 +62,6 @@ export default [
     name: 'datastudio',
     icon: 'CodeOutlined',
     footerRender: false,
-    component: './DataStudio'
-  },
-  {
-    path: '/datastudio-new',
-    name: 'datastudio',
-    icon: 'CodeOutlined',
-    footerRender: false,
     component: './DataStudioNew'
   },
   {

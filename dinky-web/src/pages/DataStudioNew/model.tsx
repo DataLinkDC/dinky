@@ -39,7 +39,7 @@ import { LayoutBase } from 'rc-dock/src/DockData';
 import { getAllPanel } from '@/pages/DataStudioNew/function';
 import { ToolbarPosition } from '@/pages/DataStudioNew/Toolbar/data.d';
 import { findToolbarPositionByTabId } from '@/pages/DataStudioNew/DockLayoutFunction';
-import { EnvType } from '@/pages/DataStudio/model';
+import { EnvType } from '@/pages/DataStudioNew/type';
 import {
   getClusterConfigurationData,
   getEnvData,
@@ -47,7 +47,7 @@ import {
   getFlinkUdfOptions,
   getSessionData,
   querySuggestionData
-} from '@/pages/DataStudio/RightContainer/JobConfig/service';
+} from '@/pages/DataStudioNew/service';
 import { Alert } from '@/types/RegCenter/data';
 import { showAlertGroup } from '@/pages/RegCenter/Alert/AlertGroup/service';
 import { DefaultOptionType } from 'antd/es/select';

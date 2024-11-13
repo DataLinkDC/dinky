@@ -17,7 +17,7 @@
  *
  */
 
-import { cancelTask, savePointTask } from '@/pages/DataStudio/HeaderContainer/service';
+import { cancelTask, savePointTask } from '@/pages/DataStudioNew/service';
 import { isStatusDone } from '@/pages/DevOps/function';
 import EditJobInstanceForm from '@/pages/DevOps/JobDetail/JobOperator/components/EditJobInstanceForm';
 import RestartForm from '@/pages/DevOps/JobDetail/JobOperator/components/RestartForm';
@@ -53,15 +53,15 @@ const JobOperator = (props: OperatorType) => {
       cancelText: l('button.cancel'),
       onOk: async () => {
         if (key == operatorType.CANCEL_JOB) {
-          cancelTask('', jobDetail?.instance?.taskId, false);
+          await cancelTask('', jobDetail?.instance?.taskId, false);
         } else if (key == operatorType.SAVEPOINT_CANCEL) {
-          savePointTask('', jobDetail?.instance?.taskId, 'cancel');
+          await savePointTask('', jobDetail?.instance?.taskId, 'cancel');
         } else if (key == operatorType.SAVEPOINT_STOP) {
-          savePointTask('', jobDetail?.instance?.taskId, 'stop');
+          await savePointTask('', jobDetail?.instance?.taskId, 'stop');
         } else if (key == operatorType.SAVEPOINT_TRIGGER) {
-          savePointTask('', jobDetail?.instance?.taskId, 'trigger');
+          await savePointTask('', jobDetail?.instance?.taskId, 'trigger');
         } else if (key == operatorType.AUTO_STOP) {
-          cancelTask('', jobDetail?.instance?.taskId);
+          await cancelTask('', jobDetail?.instance?.taskId);
         }
         message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
       }

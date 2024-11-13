@@ -17,21 +17,32 @@
  *
  */
 
-import { Space } from 'antd';
+import { JobExecutionHistory } from '@/types/Studio/data';
+import { l } from '@/utils/intl';
+import { FireOutlined } from '@ant-design/icons';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import { Tag } from 'antd';
 import React from 'react';
 
-interface ContextMenuSpaceProps {
-  onContextMenu: (e: React.MouseEvent<HTMLElement>) => void;
-  children: React.ReactNode | JSX.Element | string;
-}
+type PreViewDataProps = {
+  row: JobExecutionHistory | undefined;
+};
 
-export const ContextMenuSpace = (props: ContextMenuSpaceProps) => {
-  const { onContextMenu, children } = props;
+export const PreViewData: React.FC<PreViewDataProps> = (props) => {
+  const { row } = props;
+
   return (
     <>
-      <Space onContextMenu={onContextMenu} size={2}>
-        {children}
-      </Space>
+      <ProDescriptions column={2} title={l('pages.datastudio.label.history.result')}>
+        <ProDescriptions.Item span={2} label='JobId'>
+          <Tag color={row?.jobId ? 'blue' : 'red'} key={row?.jobId}>
+            <FireOutlined /> {row?.jobId ?? l('global.job.status.failed-tip')}
+          </Tag>
+        </ProDescriptions.Item>
+        <ProDescriptions.Item span={2}>
+          // todo 预览数据
+        </ProDescriptions.Item>
+      </ProDescriptions>
     </>
   );
 };

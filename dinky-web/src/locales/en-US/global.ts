@@ -87,6 +87,7 @@ export default {
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
   'button.autoWrap': 'Auto Wrap/Unwrap',
   'button.output': 'Output',
+  'button.ava': 'Automated insights',
 
   'menu.menu': 'Menu',
   'right.menu.open': 'Open',
