@@ -74,6 +74,7 @@ Sql开发过程中，我们经常需要查看作业所产出的数据，Dinky提
 即可。
 
 同时你也可以对预览功能进行配置，如下图
+[//]: # (TODO: update pic)
 ![preview_config](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/preview_config.png)
 
 参数设置如下
@@ -95,10 +96,12 @@ Sql开发过程中，我们经常需要查看作业所产出的数据，Dinky提
 1. 执行模式必须是 Local、Standalone、Yarn Session、Kubernetes Session 其中的一种；
 
 2. 未开启MockSink时，除 SET 和 DDL 外，必须只提交一个 SELECT 或 SHOW 或 DESC 语句；
-3. 开启MockSink，并提交了至少一个Insert语句；
-3. 作业必须是提交成功并且返回 JID，同时在远程集群可以看到作业处于 RUNNING 或 FINISHED 状态；
 
-4. Dinky 重启后，之前的预览结果将失效
+3. 开启MockSink，并提交了至少一个Insert语句；
+
+4. 作业必须是提交成功并且返回 JID，同时在远程集群可以看到作业处于 RUNNING 或 FINISHED 状态；
+
+5. Dinky 重启后，之前的预览结果将失效
 
 :::
 
