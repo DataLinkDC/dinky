@@ -19,7 +19,7 @@
 
 package org.dinky.parse;
 
-import org.dinky.parser.SqlType;
+import org.dinky.data.job.SqlType;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

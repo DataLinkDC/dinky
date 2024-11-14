@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.parser;
+package org.dinky.data.job;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -80,7 +80,7 @@ public enum SqlType {
 
     STOP("STOP", "^STOP.*", SqlCategory.DDL),
 
-    CTAS("CTAS", "^CREATE\\s.*AS\\sSELECT.*$", SqlCategory.DDL),
+    CTAS("CTAS", "^CREATE\\s+TABLE.*AS\\sSELECT.*$", SqlCategory.DDL),
 
     RTAS("RTAS", "^REPLACE\\s.*AS\\sSELECT.*$", SqlCategory.DML),
 
@@ -95,9 +95,11 @@ public enum SqlType {
     private static final List<SqlType> TRANS_SQL_TYPES =
             Lists.newArrayList(INSERT, SELECT, WITH, SHOW, DESCRIBE, DESC, CTAS, RTAS, UPDATE, DELETE);
 
-    private static final List<SqlType> CTAS_TYPES = Lists.newArrayList(CTAS, RTAS);
+    private static final List<SqlType> CTAS_TYPES = Lists.newArrayList(CTAS, RTAS, PRINT);
 
-    private static final List<SqlType> PIPELINE_SQL_TYPES = Lists.newArrayList(INSERT, SELECT, WITH, CTAS, RTAS);
+    private static final List<SqlType> PIPELINE_SQL_TYPES = Lists.newArrayList(INSERT, SELECT, WITH, CTAS, RTAS, PRINT);
+
+    private static final List<SqlType> SINK_MODIFY_SQL_TYPES = Lists.newArrayList(INSERT, CTAS, RTAS, PRINT);
 
     SqlType(String type, String regrex, SqlCategory category) {
         this.type = type;
@@ -127,6 +129,10 @@ public enum SqlType {
 
     public boolean isPipeline() {
         return PIPELINE_SQL_TYPES.contains(this);
+    }
+
+    public boolean isSinkyModify() {
+        return SINK_MODIFY_SQL_TYPES.contains(this);
     }
 
     public boolean isCTAS() {

@@ -17,27 +17,11 @@
  *
  */
 
-package org.dinky.parser;
+package org.dinky.data.job;
 
-/**
- * SqlCategory
- *
- * @since 2024/8/14 10:55
- */
-public enum SqlCategory {
-    UNKNOWN(Boolean.FALSE),
-    DDL(Boolean.FALSE),
-    DCL(Boolean.FALSE),
-    DQL(Boolean.TRUE),
-    DML(Boolean.TRUE);
-
-    private Boolean hasJobClient;
-
-    SqlCategory(Boolean hasJobClient) {
-        this.hasJobClient = hasJobClient;
-    }
-
-    public Boolean getHasJobClient() {
-        return hasJobClient;
-    }
+public enum JobStatementType {
+    SET,
+    DDL,
+    SQL,
+    PIPELINE,
 }

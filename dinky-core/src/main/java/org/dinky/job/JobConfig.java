@@ -225,7 +225,7 @@ public class JobConfig {
         Map<String, String> config = new HashMap<>(32);
         if (GatewayType.isDeployCluster(type) && gatewayConfig != null && gatewayConfig.getFlinkConfig() != null) {
             config.putAll(gatewayConfig.getFlinkConfig().getConfiguration());
-        } else if (Asserts.isNotNullMap(configJson)) {
+        } else if (Asserts.isNotNull(configJson)) {
             config.putAll(configJson);
         }
         return ExecutorConfig.build(

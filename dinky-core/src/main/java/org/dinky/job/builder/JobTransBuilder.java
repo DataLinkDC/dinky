@@ -22,6 +22,7 @@ package org.dinky.job.builder;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.job.SqlType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
@@ -36,7 +37,6 @@ import org.dinky.job.JobBuilder;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.StatementParam;
-import org.dinky.parser.SqlType;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
@@ -93,45 +93,16 @@ public class JobTransBuilder extends JobBuilder {
         }
         if (inferStatementSet()) {
             List<String> inserts = new ArrayList<>();
-            List<StatementParam> shows = new ArrayList<>();
             for (StatementParam item : jobParam.getTrans()) {
-                if (item.getType().isPipeline()) {
+                if (item.getType().equals(SqlType.INSERT) || item.getType().equals(SqlType.CTAS)) {
                     inserts.add(item.getValue());
-                } else {
-                    shows.add(item);
-                }
-            }
-            if (!shows.isEmpty()) {
-                for (StatementParam item : shows) {
-                    SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-                    try {
-                        resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(item.getValue()));
-                        resultBuilder.parseTrue(true).explainTrue(true);
-                    } catch (Exception e) {
-                        String error = StrFormatter.format(
-                                "Exception in explaining FlinkSQL:\n{}\n{}",
-                                SqlUtil.addLineNumber(item.getValue()),
-                                e.getMessage());
-                        resultBuilder
-                                .type(item.getType().getType())
-                                .error(error)
-                                .parseTrue(false)
-                                .explainTrue(false);
-                        log.error(error);
-                    } finally {
-                        resultBuilder
-                                .type(item.getType().getType())
-                                .explainTime(LocalDateTime.now())
-                                .sql(item.getValue());
-                        sqlExplainResults.add(resultBuilder.build());
-                    }
                 }
             }
             if (!inserts.isEmpty()) {
                 SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-                String sqlSet = StringUtils.join(inserts, ";\n");
+                String sqlSet = StringUtils.join(inserts, ";\r");
                 try {
-                    resultBuilder = SqlExplainResult.newBuilder(executor.explainStatementSet(inserts));
+                    resultBuilder.explain(null).parseTrue(true).explainTrue(true);
                 } catch (Exception e) {
                     String error = LogUtil.getError(e);
                     resultBuilder
@@ -179,12 +150,12 @@ public class JobTransBuilder extends JobBuilder {
 
     @Override
     public StreamGraph getStreamGraph() {
-        return executor.getStreamGraphFromStatement(jobParam.getTransStatement());
+        return executor.getStreamGraphFromStatement(null);
     }
 
     @Override
     public JobPlanInfo getJobPlanInfo() {
-        return executor.getJobPlanInfo(jobParam.getTransStatement());
+        return executor.getJobPlanInfo(null);
     }
 
     private boolean inferStatementSet() {
@@ -311,7 +282,7 @@ public class JobTransBuilder extends JobBuilder {
             gatewayResult = Gateway.build(config.getGatewayConfig())
                     .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
         } else {
-            JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
+            JobGraph jobGraph = executor.getJobGraphFromInserts(null);
             // Perjob mode need to set savepoint restore path, when recovery from savepoint.
             if (Asserts.isNotNullString(config.getSavePointPath())) {
                 jobGraph.setSavepointRestoreSettings(SavepointRestoreSettings.forPath(config.getSavePointPath(), true));

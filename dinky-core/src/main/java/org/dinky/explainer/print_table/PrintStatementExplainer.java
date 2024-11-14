@@ -19,9 +19,12 @@
 
 package org.dinky.explainer.print_table;
 
+import org.dinky.utils.IpUtil;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,6 +64,12 @@ public class PrintStatementExplainer {
                 : localIp;
         int port = localPort == null ? DEFAULT_PORT : localPort;
         return MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, port);
+    }
+
+    public static String getCreateStatement(String tableName, Map<String, String> config) {
+        String host = config.getOrDefault("dinky.dinkyHost", IpUtil.getHostIp());
+        int port = Integer.parseInt(config.getOrDefault("dinky.dinkyPrintPort", "7125"));
+        return getCreateStatement(tableName, host, port);
     }
 
     private static Optional<InetAddress> getSystemLocalIp() {

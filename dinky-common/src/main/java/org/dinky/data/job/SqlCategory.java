@@ -17,23 +17,27 @@
  *
  */
 
-package org.dinky.app.model;
-
-import org.dinky.data.job.SqlType;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package org.dinky.data.job;
 
 /**
- * StatementParam
+ * SqlCategory
  *
- * @since 2021/11/16
+ * @since 2024/8/14 10:55
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class StatementParam {
-    private String value;
-    private SqlType type;
+public enum SqlCategory {
+    UNKNOWN(Boolean.FALSE),
+    DDL(Boolean.FALSE),
+    DCL(Boolean.FALSE),
+    DQL(Boolean.TRUE),
+    DML(Boolean.TRUE);
+
+    private Boolean hasJobClient;
+
+    SqlCategory(Boolean hasJobClient) {
+        this.hasJobClient = hasJobClient;
+    }
+
+    public Boolean getHasJobClient() {
+        return hasJobClient;
+    }
 }

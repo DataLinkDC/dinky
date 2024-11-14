@@ -20,10 +20,11 @@
 package org.dinky.explainer.mock;
 
 import org.dinky.connector.mock.sink.MockDynamicTableSinkFactory;
+import org.dinky.data.job.JobStatement;
+import org.dinky.data.job.JobStatementType;
+import org.dinky.data.job.SqlType;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.job.JobParam;
-import org.dinky.job.StatementParam;
-import org.dinky.parser.SqlType;
+import org.dinky.job.JobStatementPlan;
 import org.dinky.utils.JsonUtils;
 
 import org.apache.calcite.config.Lex;
@@ -50,7 +51,6 @@ public class MockStatementExplainer {
 
     // Because calcite cannot parse flink sql ddl, a table environment is designed here for flink sql ddl pars
     private final CustomTableEnvironment tableEnv;
-    private boolean isMockSink = false;
     private final SqlParser.Config calciteConfig;
     private final String DROP_TABLE_SQL_TEMPLATE = "DROP TABLE IF EXISTS {0}";
     private final String MOCK_SQL_TEMPLATE = "CREATE TABLE {0} ({1}) WITH ({2})";
@@ -64,65 +64,57 @@ public class MockStatementExplainer {
         this.calciteConfig = SqlParser.config().withLex(Lex.JAVA);
     }
 
-    public MockStatementExplainer isMockSink(boolean isMockSink) {
-        this.isMockSink = isMockSink;
-        return this;
-    }
-
-    public void jobParamMock(JobParam jobParam) {
-        if (isMockSink) {
-            mockSink(jobParam);
-        }
+    public void jobStatementPlanMock(JobStatementPlan jobStatementPlan) {
+        mockSink(jobStatementPlan);
     }
 
     /**
      * The connector of insert tables will be changed to {@link MockDynamicTableSinkFactory}
      *
-     * @param jobParam job param
+     * @param jobStatementPlan JobStatementPlan
      */
-    private void mockSink(JobParam jobParam) {
+    private void mockSink(JobStatementPlan jobStatementPlan) {
         // Get table names that need to be mocked, and modify insert statement.
-        Set<String> tablesNeedMock = getTableNamesNeedMockAndModifyTrans(jobParam);
+        Set<String> tablesNeedMock = getTableNamesNeedMockAndModifyTrans(jobStatementPlan);
         // mock insert table ddl
-        List<StatementParam> mockedDdl = new ArrayList<>();
-        for (StatementParam ddl : jobParam.getDdl()) {
-            SqlNode sqlNode = tableEnv.parseSql(ddl.getValue());
-            boolean isDdlMocked = false;
+        List<JobStatement> jobStatementList = jobStatementPlan.getJobStatementList();
+        for (int i = 0; i < jobStatementList.size(); i++) {
+            SqlNode sqlNode = tableEnv.parseSql(jobStatementList.get(i).getStatement());
             if (sqlNode instanceof SqlCreateTable) {
                 SqlCreateTable sqlCreateTable = (SqlCreateTable) sqlNode;
                 String tableName = sqlCreateTable.getTableName().toString();
                 if (tablesNeedMock.contains(tableName)) {
                     // generate mock statement
-                    mockedDdl.add(new StatementParam(
-                            getSinkMockDdlStatement(
-                                    tableName, sqlCreateTable.getColumnList().toString()),
-                            SqlType.CREATE));
-                    isDdlMocked = true;
+                    jobStatementList.set(
+                            i,
+                            JobStatement.generateJobStatement(
+                                    jobStatementList.get(i).getIndex(),
+                                    getSinkMockDdlStatement(
+                                            tableName,
+                                            sqlCreateTable.getColumnList().toString()),
+                                    JobStatementType.DDL,
+                                    jobStatementList.get(i).getSqlType()));
                 }
             }
-            if (!isDdlMocked) {
-                mockedDdl.add(ddl);
-            }
         }
-        jobParam.setDdl(mockedDdl);
-        log.debug("Mock sink succeed: {}", JsonUtils.toJsonString(jobParam));
+        log.debug("Mock sink succeed: {}", JsonUtils.toJsonString(jobStatementPlan));
     }
 
     /**
      * get tables names of insert statements, these tables will be mocked
      *
-     * @param jobParam jobParam
+     * @param jobStatementPlan JobStatementPlan
      * @return a hash set, which contains all insert table names
      */
-    private Set<String> getTableNamesNeedMockAndModifyTrans(JobParam jobParam) {
-        List<StatementParam> transStatements = jobParam.getTrans();
-        List<StatementParam> mockedTransStatements = new ArrayList<>();
+    private Set<String> getTableNamesNeedMockAndModifyTrans(JobStatementPlan jobStatementPlan) {
         Set<String> insertTables = new HashSet<>();
-        for (StatementParam statement : transStatements) {
-            if (statement.getType().equals(SqlType.INSERT)) {
+        List<JobStatement> jobStatementList = jobStatementPlan.getJobStatementList();
+        for (int i = 0; i < jobStatementList.size(); i++) {
+            if (jobStatementList.get(i).getSqlType().equals(SqlType.INSERT)) {
                 try {
-                    SqlInsert sqlInsert = (SqlInsert) SqlParser.create(statement.getValue(), calciteConfig)
-                            .parseQuery();
+                    SqlInsert sqlInsert =
+                            (SqlInsert) SqlParser.create(jobStatementList.get(i).getStatement(), calciteConfig)
+                                    .parseQuery();
                     insertTables.add(sqlInsert.getTargetTable().toString());
                     SqlInsert mockedInsertTrans = new SqlInsert(
                             sqlInsert.getParserPosition(),
@@ -133,19 +125,22 @@ public class MockStatementExplainer {
                                     SqlParserPos.ZERO),
                             sqlInsert.getSource(),
                             sqlInsert.getTargetColumnList());
-                    mockedTransStatements.add(new StatementParam(
-                            mockedInsertTrans
-                                    .toSqlString(AnsiSqlDialect.DEFAULT)
-                                    .toString(),
-                            SqlType.INSERT));
+                    jobStatementList.set(
+                            i,
+                            JobStatement.generateJobStatement(
+                                    jobStatementList.get(i).getIndex(),
+                                    mockedInsertTrans
+                                            .toSqlString(AnsiSqlDialect.DEFAULT)
+                                            .toString(),
+                                    JobStatementType.SQL,
+                                    jobStatementList.get(i).getSqlType()));
                 } catch (Exception e) {
-                    log.error("Statement parse error, statement: {}", statement.getValue());
+                    log.error(
+                            "Statement parse error, statement: {}",
+                            jobStatementList.get(i).getStatement());
                 }
-            } else {
-                mockedTransStatements.add(statement);
             }
         }
-        jobParam.setTrans(mockedTransStatements);
         return insertTables;
     }
 

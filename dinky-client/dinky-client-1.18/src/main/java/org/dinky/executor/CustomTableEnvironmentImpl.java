@@ -20,9 +20,10 @@
 package org.dinky.executor;
 
 import org.dinky.data.exception.DinkyException;
+import org.dinky.data.job.JobStatement;
+import org.dinky.data.job.SqlType;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.operations.CustomNewParserImpl;
-import org.dinky.parser.SqlType;
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -40,6 +41,7 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.config.TableConfigOptions;
 import org.apache.flink.table.catalog.Catalog;
@@ -154,34 +156,38 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public JobPlanInfo getJobPlanInfo(List<String> statements) {
+    public JobPlanInfo getJobPlanInfo(List<JobStatement> statements) {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(getJobGraphFromInserts(statements)));
     }
 
     @Override
-    public StreamGraph getStreamGraphFromInserts(List<String> statements) {
+    public StreamGraph getStreamGraphFromInserts(List<JobStatement> statements) {
         List<ModifyOperation> modifyOperations = new ArrayList<>();
-        statements.stream().map(statement -> getParser().parse(statement)).forEach(operations -> {
-            if (operations.size() != 1) {
-                throw new TableException("Only single statement is supported.");
-            }
-            Operation operation = operations.get(0);
-            if (operation instanceof ModifyOperation) {
-                if (operation instanceof CreateTableASOperation) {
-                    modifyOperations.add(getModifyOperation((CreateTableASOperation) operation));
-                } else if (operation instanceof ReplaceTableAsOperation) {
-                    modifyOperations.add(getModifyOperation((ReplaceTableAsOperation) operation));
-                } else {
-                    modifyOperations.add((ModifyOperation) operation);
-                }
-            } else if (operation instanceof QueryOperation) {
-                modifyOperations.add(new CollectModifyOperation((QueryOperation) operation));
-            } else {
-                log.info("Only insert statement or select is supported now. The statement is skipped: "
-                        + operation.asSummaryString());
-            }
-        });
-
+        statements.stream()
+                .map(statement -> getParser().parse(statement.getStatement()))
+                .forEach(operations -> {
+                    if (operations.size() != 1) {
+                        throw new TableException("Only single statement is supported.");
+                    }
+                    Operation operation = operations.get(0);
+                    if (operation instanceof ModifyOperation) {
+                        if (operation instanceof CreateTableASOperation) {
+                            modifyOperations.add(getModifyOperation((CreateTableASOperation) operation));
+                        } else if (operation instanceof ReplaceTableAsOperation) {
+                            modifyOperations.add(getModifyOperation((ReplaceTableAsOperation) operation));
+                        } else {
+                            modifyOperations.add((ModifyOperation) operation);
+                        }
+                    } else if (operation instanceof QueryOperation) {
+                        modifyOperations.add(new CollectModifyOperation((QueryOperation) operation));
+                    } else {
+                        log.info("Only insert statement or select is supported now. The statement is skipped: "
+                                + operation.asSummaryString());
+                    }
+                });
+        if (modifyOperations.isEmpty()) {
+            throw new TableException("Only insert statement is supported now. None operation to execute.");
+        }
         return transOperatoinsToStreamGraph(modifyOperations);
     }
 
@@ -226,11 +232,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     @Override
-    public SqlExplainResult explainStatementSet(List<String> statements, ExplainDetail... extraDetails) {
+    public SqlExplainResult explainStatementSet(List<JobStatement> statements, ExplainDetail... extraDetails) {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
         List<Operation> operations = new ArrayList<>();
-        for (String statement : statements) {
-            List<Operation> itemOperations = getParser().parse(statement);
+        for (JobStatement statement : statements) {
+            List<Operation> itemOperations = getParser().parse(statement.getStatement());
             if (!itemOperations.isEmpty()) {
                 for (Operation operation : itemOperations) {
                     if (operation instanceof CreateTableASOperation) {
@@ -244,7 +250,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             }
         }
         if (operations.isEmpty()) {
-            throw new DinkyException("None job in the statement set.");
+            throw new DinkyException("None of the job in the statement set.");
         }
         resultBuilder.parseTrue(true);
         resultBuilder.explain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
@@ -253,6 +259,42 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 .explainTime(LocalDateTime.now())
                 .type(SqlType.INSERT.getType())
                 .build();
+    }
+
+    @Override
+    public TableResult executeStatementSet(List<JobStatement> statements) {
+        statements.removeIf(statement -> statement.getSqlType().equals(SqlType.RTAS));
+        statements.removeIf(statement -> !statement.getSqlType().isSinkyModify());
+        List<ModifyOperation> modifyOperations = statements.stream()
+                .map(statement -> getModifyOperationFromInsert(statement.getStatement()))
+                .collect(Collectors.toList());
+        return executeInternal(modifyOperations);
+    }
+
+    public ModifyOperation getModifyOperationFromInsert(String statement) {
+        List<Operation> operations = getParser().parse(statement);
+        if (operations.isEmpty()) {
+            throw new TableException("None of the statement is parsed.");
+        }
+        if (operations.size() > 1) {
+            throw new TableException("Only single statement is supported.");
+        }
+        Operation operation = operations.get(0);
+        if (operation instanceof ModifyOperation) {
+            if (operation instanceof CreateTableASOperation) {
+                return getModifyOperation((CreateTableASOperation) operation);
+            } else if (operation instanceof ReplaceTableAsOperation) {
+                return getModifyOperation((ReplaceTableAsOperation) operation);
+            } else {
+                return (ModifyOperation) operation;
+            }
+        } else if (operation instanceof QueryOperation) {
+            return new CollectModifyOperation((QueryOperation) operation);
+        } else {
+            log.info("Only insert statement or select is supported now. The statement is skipped: "
+                    + operation.asSummaryString());
+            return null;
+        }
     }
 
     private ModifyOperation getModifyOperation(CreateTableASOperation ctasOperation) {

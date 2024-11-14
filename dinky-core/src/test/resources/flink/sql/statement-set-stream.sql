@@ -5,7 +5,8 @@ CREATE TABLE datagen_source
     sex  INT,
     age  INT
 ) WITH (
-      'connector' = 'datagen'
+      'connector' = 'datagen',
+      'number-of-rows' = '10'
       );
 
 CREATE TABLE print_sink
@@ -82,7 +83,7 @@ ALTER TABLE print_sink3 RENAME TO print_sink5;
 
 DESCRIBE print_sink5;
 
-EXPLAIN PLAN_ADVICE SELECT id, name, sex, age FROM datagen_source;
+EXPLAIN SELECT id, name, sex, age FROM datagen_source;
 
 USE MODULES core;
 

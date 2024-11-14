@@ -19,8 +19,8 @@
 
 package org.dinky.data.result;
 
+import org.dinky.data.job.SqlType;
 import org.dinky.job.JobHandler;
-import org.dinky.parser.SqlType;
 
 import org.apache.flink.table.api.TableResult;
 

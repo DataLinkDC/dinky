@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
+import org.dinky.data.job.JobStatement;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
@@ -246,11 +247,11 @@ public abstract class Executor {
         return SqlExplainResult.INVALID_EXPLAIN_RESULT;
     }
 
-    public StreamGraph getStreamGraphFromStatement(List<String> statements) {
+    public StreamGraph getStreamGraphFromStatement(List<JobStatement> statements) {
         return tableEnvironment.getStreamGraphFromInserts(statements);
     }
 
-    public ObjectNode getStreamGraph(List<String> statements) {
+    public ObjectNode getStreamGraph(List<JobStatement> statements) {
         StreamGraph streamGraph = tableEnvironment.getStreamGraphFromInserts(statements);
         return getStreamGraphJsonNode(streamGraph);
     }
@@ -282,7 +283,7 @@ public abstract class Executor {
         return getStreamGraphJsonNode(getStreamGraph());
     }
 
-    public JobPlanInfo getJobPlanInfo(List<String> statements) {
+    public JobPlanInfo getJobPlanInfo(List<JobStatement> statements) {
         return tableEnvironment.getJobPlanInfo(statements);
     }
 
@@ -292,7 +293,7 @@ public abstract class Executor {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
-    public JobGraph getJobGraphFromInserts(List<String> statements) {
+    public JobGraph getJobGraphFromInserts(List<JobStatement> statements) {
         return tableEnvironment.getJobGraphFromInserts(statements);
     }
 
@@ -302,7 +303,11 @@ public abstract class Executor {
         return statementSet.execute();
     }
 
-    public SqlExplainResult explainStatementSet(List<String> statements) {
+    public TableResult executeStatements(List<JobStatement> statements) {
+        return tableEnvironment.executeStatementSet(statements);
+    }
+
+    public SqlExplainResult explainStatementSet(List<JobStatement> statements) {
         return tableEnvironment.explainStatementSet(statements);
     }
 

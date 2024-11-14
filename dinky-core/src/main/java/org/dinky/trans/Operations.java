@@ -19,8 +19,8 @@
 
 package org.dinky.trans;
 
+import org.dinky.data.job.SqlType;
 import org.dinky.function.data.model.UDF;
-import org.dinky.parser.SqlType;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.catalog.FunctionLanguage;

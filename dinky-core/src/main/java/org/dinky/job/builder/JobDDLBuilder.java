@@ -22,6 +22,7 @@ package org.dinky.job.builder;
 import static org.dinky.function.util.UDFUtil.*;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.job.SqlType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
@@ -30,7 +31,6 @@ import org.dinky.function.util.UDFUtil;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobManager;
 import org.dinky.job.StatementParam;
-import org.dinky.parser.SqlType;
 import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;

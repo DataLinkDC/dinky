@@ -20,6 +20,7 @@
 package org.dinky.job.builder;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.job.SqlType;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
@@ -30,7 +31,6 @@ import org.dinky.job.Job;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobManager;
 import org.dinky.job.StatementParam;
-import org.dinky.parser.SqlType;
 import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
@@ -193,6 +193,6 @@ public class JobExecuteBuilder extends JobBuilder {
 
     @Override
     public JobPlanInfo getJobPlanInfo() {
-        return executor.getJobPlanInfo(jobParam.getExecuteStatement());
+        return executor.getJobPlanInfo(null);
     }
 }

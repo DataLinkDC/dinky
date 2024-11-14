@@ -213,7 +213,7 @@ public class TaskDTO extends AbstractStatementDTO {
             dataType = "boolean",
             example = "true",
             notes = "Flag indicating whether to mock sink function")
-    private boolean mockSinkFunction = true;
+    private boolean mockSinkFunction = false;
 
     @ApiModelProperty(value = "Session", dataType = "String", example = "session_id", notes = "The session identifier")
     private String session;
