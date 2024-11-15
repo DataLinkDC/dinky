@@ -51,11 +51,8 @@ import org.apache.flink.table.catalog.CatalogDescriptor;
 import org.apache.flink.table.catalog.ContextResolvedTable;
 import org.apache.flink.table.catalog.ObjectIdentifier;
 import org.apache.flink.table.catalog.ResolvedCatalogTable;
-import org.apache.flink.table.catalog.StagedTable;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
-import org.apache.flink.table.connector.sink.SinkStagingContext;
 import org.apache.flink.table.connector.sink.abilities.SupportsStaging;
-import org.apache.flink.table.execution.StagingSinkJobStatusHook;
 import org.apache.flink.table.factories.TableFactoryUtil;
 import org.apache.flink.table.module.Module;
 import org.apache.flink.table.module.ModuleManager;
@@ -315,12 +312,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         if (stagingDynamicTableSink.isPresent()) {
             // use atomic ctas
             DynamicTableSink dynamicTableSink = stagingDynamicTableSink.get();
-            SupportsStaging.StagingPurpose stagingPurpose = createTableOperation.isIgnoreIfExists()
-                    ? SupportsStaging.StagingPurpose.CREATE_TABLE_AS_IF_NOT_EXISTS
-                    : SupportsStaging.StagingPurpose.CREATE_TABLE_AS;
-            StagedTable stagedTable =
-                    ((SupportsStaging) dynamicTableSink).applyStaging(new SinkStagingContext(stagingPurpose));
-            StagingSinkJobStatusHook stagingSinkJobStatusHook = new StagingSinkJobStatusHook(stagedTable);
             return ctasOperation.toStagedSinkModifyOperation(tableIdentifier, catalogTable, catalog, dynamicTableSink);
         }
         // use non-atomic ctas, create table first
@@ -351,10 +342,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             SupportsStaging.StagingPurpose stagingPurpose = rtasOperation.isCreateOrReplace()
                     ? SupportsStaging.StagingPurpose.CREATE_OR_REPLACE_TABLE_AS
                     : SupportsStaging.StagingPurpose.REPLACE_TABLE_AS;
-
-            StagedTable stagedTable =
-                    ((SupportsStaging) dynamicTableSink).applyStaging(new SinkStagingContext(stagingPurpose));
-            StagingSinkJobStatusHook stagingSinkJobStatusHook = new StagingSinkJobStatusHook(stagedTable);
             return rtasOperation.toStagedSinkModifyOperation(tableIdentifier, catalogTable, catalog, dynamicTableSink);
         }
         // non-atomic rtas drop table first if exists, then create

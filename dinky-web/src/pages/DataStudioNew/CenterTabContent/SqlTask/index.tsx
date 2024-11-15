@@ -291,6 +291,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           tempData={tempData}
           data={currentState}
           onValuesChange={debounce(onValuesChange, 500)}
+          setCurrentState={debounce(setCurrentState, 500)}
           isLockTask={isLockTask}
         />
       )

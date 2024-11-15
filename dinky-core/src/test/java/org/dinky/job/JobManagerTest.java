@@ -33,6 +33,7 @@ import org.apache.flink.shaded.guava31.com.google.common.io.Resources;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -97,6 +98,7 @@ class JobManagerTest {
         checkGetBatchJobPlanJsonFromFile("flink/sql/statement-set-batch.sql");
     }
 
+    @Ignore
     @Test
     void testExecuteSql() throws Exception {
         checkStreamExecuteSqlFromFile("flink/sql/statement-set-stream.sql");

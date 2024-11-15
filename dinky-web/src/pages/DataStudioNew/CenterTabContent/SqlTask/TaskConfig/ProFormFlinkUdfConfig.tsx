@@ -30,14 +30,17 @@ import React, { useState } from 'react';
 import { DefaultOptionType } from 'antd/es/select';
 import { TaskUdfRefer } from '@/types/Studio/data';
 import { calculatorWidth } from '@/pages/DataStudioNew/CenterTabContent/SqlTask/TaskConfig/function';
+import {TaskState} from "@/pages/DataStudioNew/type";
 
 export const ProFormFlinkUdfConfig = (props: {
   containerWidth: number;
+  data: TaskState;
   flinkUdfOptions: DefaultOptionType[];
   proFormInstance: () => ProFormInstance;
+  setCurrentState?: (values: TaskState) => void;
   defaultValue: { className: string; name: string }[];
 }) => {
-  const { flinkUdfOptions, containerWidth, proFormInstance } = props;
+  const { data, flinkUdfOptions, containerWidth, proFormInstance, setCurrentState } = props;
 
   const [currentSelectUdfIndexMap, setCurrentSelectUdfIndexMap] = useState<
     Map<number, TaskUdfRefer>
@@ -86,14 +89,14 @@ export const ProFormFlinkUdfConfig = (props: {
                   };
                 })}
                 onChange={(value: string) => {
-                  setCurrentSelectUdfIndexMap((prevState) => {
-                    const newState = new Map(prevState);
-                    newState.set(index, { name: '', className: value });
-                    return newState;
-                  });
                   const simpleClassName = value?.split('.')?.pop() ?? '';
                   const lowerName =
                     simpleClassName.charAt(0).toLowerCase() + simpleClassName.slice(1);
+                  setCurrentSelectUdfIndexMap((prevState) => {
+                    const newState = new Map(prevState);
+                    newState.set(index, { name: lowerName, className: value });
+                    return newState;
+                  });
                   proFormInstance().setFieldsValue({
                     configJson: {
                       udfRefer: {
@@ -104,6 +107,10 @@ export const ProFormFlinkUdfConfig = (props: {
                       }
                     }
                   });
+                  let newCurrentState = data;
+                  newCurrentState.configJson.udfRefer[index].className = value;
+                  newCurrentState.configJson.udfRefer[index].name = lowerName;
+                  setCurrentState?.(newCurrentState);
                 }}
               />
               <ProFormText

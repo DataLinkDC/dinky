@@ -22,9 +22,33 @@
     </properties>
 
     <dependencies>
+        <!-- Flink core -->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-python</artifactId>
+            <artifactId>flink-clients</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- Table ecosystem -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-java-bridge</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <!-- The following two dependencies are not required to define a SQL job pipeline,
+		but only to execute it.
+
+		In particular, here we're forced to use flink-table-planner_${scala.binary.version} instead of
+		flink-table-planner-loader, because otherwise we hit this bug https://youtrack.jetbrains.com/issue/IDEA-93855
+		when trying to run the examples from within IntelliJ IDEA. This is only relevant to this specific
+		examples project, as it's in the same build tree of flink-parent.
+
+		In a real environment, you need flink-table-runtime and flink-table-planner-loader either
+		at test scope, for executing tests, or at provided scope, to run the main directly.
+		 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-runtime</artifactId>
             <version>${flink.version}</version>
         </dependency>
         <dependency>
@@ -37,6 +61,11 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-python</artifactId>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>

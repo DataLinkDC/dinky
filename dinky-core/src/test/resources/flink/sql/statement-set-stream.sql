@@ -67,7 +67,7 @@ CREATE TABLE print_sink4
         )
 AS SELECT id, name, sex, age FROM datagen_source WHERE mod(id, 10) = 4;
 
-REPLACE TABLE print_sink4
+REPLACE TABLE print_sink3
 WITH (
     'connector' = 'print'
 )

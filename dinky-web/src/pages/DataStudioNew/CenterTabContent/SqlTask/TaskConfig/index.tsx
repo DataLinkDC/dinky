@@ -40,6 +40,7 @@ export default (props: {
   tempData: TempData;
   data: TaskState;
   onValuesChange?: (changedValues: any, values: TaskState) => void;
+  setCurrentState?: (values: TaskState) => void;
   isLockTask: boolean;
 }) => {
   const { data, tempData } = props;
@@ -53,6 +54,7 @@ export default (props: {
           tempData={props.tempData}
           data={props.data}
           onValuesChange={props.onValuesChange}
+          setCurrentState={props.setCurrentState}
           isLockTask={props.isLockTask}
         />
       )

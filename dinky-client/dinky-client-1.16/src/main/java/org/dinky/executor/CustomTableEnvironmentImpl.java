@@ -19,15 +19,13 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.text.StrFormatter;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.operations.*;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.job.JobStatement;
+import org.dinky.data.job.SqlType;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.parser.CustomParserImpl;
-import org.dinky.data.job.SqlType;
 import org.dinky.utils.JsonUtils;
+import org.dinky.utils.SqlUtil;
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.api.dag.Transformation;
@@ -41,7 +39,13 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.operations.CollectModifyOperation;
+import org.apache.flink.table.operations.CreateTableASOperation;
+import org.apache.flink.table.operations.ModifyOperation;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.operations.QueryOperation;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,11 +53,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.dinky.utils.SqlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.text.StrFormatter;
 
 /**
  * CustomTableEnvironmentImpl
@@ -71,24 +76,24 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     }
 
     public static CustomTableEnvironmentImpl create(
-        StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(
-            executionEnvironment,
-            EnvironmentSettings.newInstance().withClassLoader(classLoader).build());
+                executionEnvironment,
+                EnvironmentSettings.newInstance().withClassLoader(classLoader).build());
     }
 
     public static CustomTableEnvironmentImpl createBatch(
-        StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
+            StreamExecutionEnvironment executionEnvironment, ClassLoader classLoader) {
         return create(
-            executionEnvironment,
-            EnvironmentSettings.newInstance()
-                .withClassLoader(classLoader)
-                .inBatchMode()
-                .build());
+                executionEnvironment,
+                EnvironmentSettings.newInstance()
+                        .withClassLoader(classLoader)
+                        .inBatchMode()
+                        .build());
     }
 
     public static CustomTableEnvironmentImpl create(
-        StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
+            StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
         StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(executionEnvironment, settings);
 
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
@@ -101,9 +106,9 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
 
         List<ModifyOperation> modifyOperations = operations.stream()
-            .filter(ModifyOperation.class::isInstance)
-            .map(ModifyOperation.class::cast)
-            .collect(Collectors.toList());
+                .filter(ModifyOperation.class::isInstance)
+                .map(ModifyOperation.class::cast)
+                .collect(Collectors.toList());
 
         StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
@@ -132,26 +137,28 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     public StreamGraph getStreamGraphFromInserts(List<JobStatement> statements) {
         statements.removeIf(statement -> statement.getSqlType().equals(SqlType.RTAS));
         List<ModifyOperation> modifyOperations = new ArrayList<>();
-        statements.stream().map(statement -> getParser().parse(statement.getStatement())).forEach(operations -> {
-            if (operations.size() != 1) {
-                throw new TableException("Only single statement is supported.");
-            }
-            Operation operation = operations.get(0);
-            if (operation instanceof ModifyOperation) {
-                if (operation instanceof CreateTableASOperation) {
-                    CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
-                    executeInternal(createTableASOperation.getCreateTableOperation());
-                    modifyOperations.add(createTableASOperation.toSinkModifyOperation(getCatalogManager()));
-                } else {
-                    modifyOperations.add((ModifyOperation) operation);
-                }
-            } else if (operation instanceof QueryOperation) {
-                modifyOperations.add(new CollectModifyOperation((QueryOperation) operation));
-            } else {
-                log.info("Only insert statement or select is supported now. The statement is skipped: "
-                    + operation.asSummaryString());
-            }
-        });
+        statements.stream()
+                .map(statement -> getParser().parse(statement.getStatement()))
+                .forEach(operations -> {
+                    if (operations.size() != 1) {
+                        throw new TableException("Only single statement is supported.");
+                    }
+                    Operation operation = operations.get(0);
+                    if (operation instanceof ModifyOperation) {
+                        if (operation instanceof CreateTableASOperation) {
+                            CreateTableASOperation createTableASOperation = (CreateTableASOperation) operation;
+                            executeInternal(createTableASOperation.getCreateTableOperation());
+                            modifyOperations.add(createTableASOperation.toSinkModifyOperation(getCatalogManager()));
+                        } else {
+                            modifyOperations.add((ModifyOperation) operation);
+                        }
+                    } else if (operation instanceof QueryOperation) {
+                        modifyOperations.add(new CollectModifyOperation((QueryOperation) operation));
+                    } else {
+                        log.info("Only insert statement or select is supported now. The statement is skipped: "
+                                + operation.asSummaryString());
+                    }
+                });
         if (modifyOperations.isEmpty()) {
             throw new TableException("Only insert statement is supported now. None operation to execute.");
         }
@@ -198,14 +205,14 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
         List<Operation> operations = new ArrayList<>();
         for (JobStatement statement : statements) {
-            if(statement.getSqlType().equals(SqlType.RTAS)){
+            if (statement.getSqlType().equals(SqlType.RTAS)) {
                 resultBuilder
-                    .sql(statement.getStatement())
-                    .type(statement.getSqlType().getType())
-                    .error("RTAS is not supported in Apache Flink 1.16.")
-                    .parseTrue(false)
-                    .explainTrue(false)
-                    .explainTime(LocalDateTime.now());
+                        .sql(statement.getStatement())
+                        .type(statement.getSqlType().getType())
+                        .error("RTAS is not supported in Apache Flink 1.16.")
+                        .parseTrue(false)
+                        .explainTrue(false)
+                        .explainTime(LocalDateTime.now());
                 return resultBuilder.build();
             }
             try {
@@ -223,16 +230,16 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 }
             } catch (Exception e) {
                 String error = StrFormatter.format(
-                    "Exception in explaining FlinkSQL:\n{}\n{}",
-                    SqlUtil.addLineNumber(statement.getStatement()),
-                    e.getMessage());
+                        "Exception in explaining FlinkSQL:\n{}\n{}",
+                        SqlUtil.addLineNumber(statement.getStatement()),
+                        e.getMessage());
                 resultBuilder
-                    .sql(statement.getStatement())
-                    .type(SqlType.INSERT.getType())
-                    .error(error)
-                    .parseTrue(false)
-                    .explainTrue(false)
-                    .explainTime(LocalDateTime.now());
+                        .sql(statement.getStatement())
+                        .type(SqlType.INSERT.getType())
+                        .error(error)
+                        .parseTrue(false)
+                        .explainTrue(false)
+                        .explainTime(LocalDateTime.now());
                 log.error(error);
                 return resultBuilder.build();
             }
@@ -243,17 +250,19 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         resultBuilder.parseTrue(true);
         resultBuilder.explain(getPlanner().explain(operations, extraDetails));
         return resultBuilder
-            .explainTrue(true)
-            .explainTime(LocalDateTime.now())
-            .type(SqlType.INSERT.getType())
-            .build();
+                .explainTrue(true)
+                .explainTime(LocalDateTime.now())
+                .type(SqlType.INSERT.getType())
+                .build();
     }
 
     @Override
-    public TableResult executeStatementSet(List<JobStatement> statements){
+    public TableResult executeStatementSet(List<JobStatement> statements) {
         statements.removeIf(statement -> statement.getSqlType().equals(SqlType.RTAS));
         statements.removeIf(statement -> !statement.getSqlType().isSinkyModify());
-        List<ModifyOperation> modifyOperations = statements.stream().map(statement -> getModifyOperationFromInsert(statement.getStatement())).collect(Collectors.toList());
+        List<ModifyOperation> modifyOperations = statements.stream()
+                .map(statement -> getModifyOperationFromInsert(statement.getStatement()))
+                .collect(Collectors.toList());
         return executeInternal(modifyOperations);
     }
 
@@ -278,7 +287,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             return new CollectModifyOperation((QueryOperation) operation);
         } else {
             log.info("Only insert statement or select is supported now. The statement is skipped: "
-                + operation.asSummaryString());
+                    + operation.asSummaryString());
             return null;
         }
     }

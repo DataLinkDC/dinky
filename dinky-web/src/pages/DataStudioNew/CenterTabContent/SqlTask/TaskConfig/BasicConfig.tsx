@@ -42,6 +42,7 @@ export const BasicConfig = (props: {
   tempData: TempData;
   data: TaskState;
   onValuesChange?: (changedValues: any, values: TaskState) => void;
+  setCurrentState?: (values: TaskState) => void;
   isLockTask: boolean;
 }) => {
   const { alertGroup, flinkConfigOptions, flinkUdfOptions } = props.tempData;
@@ -171,8 +172,10 @@ export const BasicConfig = (props: {
         />
         <ProFormFlinkUdfConfig
           containerWidth={containerWidth}
+          data={props.data}
           flinkUdfOptions={flinkUdfOptions}
           proFormInstance={() => formRef.current!!}
+          setCurrentState={props.setCurrentState}
           defaultValue={[]}
         />
       </ProForm>
