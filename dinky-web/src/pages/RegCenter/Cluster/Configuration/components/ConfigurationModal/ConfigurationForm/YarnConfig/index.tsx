@@ -18,14 +18,12 @@
  */
 
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
-import { StateType } from '@/pages/DataStudio/model';
 import { l } from '@/utils/intl';
-import { connect } from '@@/exports';
 import { ProCard, ProFormGroup, ProFormList, ProFormText } from '@ant-design/pro-components';
 import { Col, Divider, Row, Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
-const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
+export const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
   const { flinkConfigOptions } = props;
   return (
     <>
@@ -129,7 +127,3 @@ const YarnConfig = (props: { flinkConfigOptions: DefaultOptionType[] }) => {
     </>
   );
 };
-
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  flinkConfigOptions: Studio.flinkConfigOptions
-}))(YarnConfig);

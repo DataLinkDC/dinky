@@ -18,9 +18,6 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
-import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
-import { isFlinkJob, isUDF } from '@/pages/DataStudio/LeftContainer/Project/function';
-import TemplateSelect from '@/pages/DataStudio/LeftContainer/Project/JobModal/components/TemplateSelect';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { DIALECT, RUN_MODE } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -40,6 +37,9 @@ import { useModel } from '@umijs/max';
 import { Form } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import React, { useEffect } from 'react';
+import { JOB_TYPE } from '@/pages/DataStudioNew/constants';
+import TemplateSelect from '@/pages/DataStudioNew/Toolbar/Project/JobModal/components/TemplateSelect';
+import { isFlinkJob, isUDF } from '@/pages/DataStudioNew/Toolbar/Project/function';
 
 type JobModalProps = {
   onCancel: () => void;

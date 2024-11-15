@@ -17,9 +17,9 @@
  *
  */
 
-import { StudioMetaStoreParam } from '@/pages/DataStudio/LeftContainer/Catalog/data';
 import { postAll } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { StudioMetaStoreParam } from '@/pages/DataStudioNew/Toolbar/Catalog/data';
 
 export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
   return (await postAll(API_CONSTANTS.STUDIO_GET_MSSCHEMA_INFO, params)).data;

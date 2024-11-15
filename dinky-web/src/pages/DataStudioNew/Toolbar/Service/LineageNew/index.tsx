@@ -215,7 +215,8 @@ export const LineageNew = memo((props: { data: LineageDetailInfo }) => {
               type: 'grid-line',
               follow: false,
               size: 40,
-              stroke: 'var(--border-color)'
+              stroke: 'var(--border-color)',
+              borderStroke: 'var(--border-color)'
             },
             {
               type: 'toolbar',

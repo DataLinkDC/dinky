@@ -19,12 +19,10 @@
 
 import { LoadingBtn } from '@/components/CallBackButton/LoadingBtn';
 import { FormContextValue } from '@/components/Context/FormContext';
-import { STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import ConfigurationForm from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
-import { connect } from '@umijs/max';
 import { Button, Form } from 'antd';
 import React, { useEffect } from 'react';
 
@@ -35,8 +33,8 @@ type ConfigurationModalProps = {
   onSubmit: (values: Partial<Cluster.Config>) => void;
   onHeartBeat: (values: Partial<Cluster.Config>) => void;
 };
-const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) => {
-  const { visible, onClose, onSubmit, value, onHeartBeat, dispatch } = props;
+export default (props: ConfigurationModalProps) => {
+  const { visible, onClose, onSubmit, value, onHeartBeat } = props;
 
   /**
    * init form
@@ -58,11 +56,6 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
-    if (visible) {
-      dispatch({
-        type: STUDIO_MODEL_ASYNC.queryFlinkConfigOptions
-      });
-    }
     form.setFieldsValue(value);
   }, [visible, value, form]);
 
@@ -80,7 +73,7 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit(fieldsValue);
+    onSubmit(fieldsValue);
     handleCancel();
   };
 
@@ -89,12 +82,11 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
    * */
   const handleTestConnect = async () => {
     const fieldsValue = await form.validateFields();
-    await onHeartBeat(fieldsValue);
+    onHeartBeat(fieldsValue);
   };
 
   /**
    * render footer
-   * @returns {[JSX.Element, JSX.Element]}
    */
   const renderFooter = () => {
     return [
@@ -149,5 +141,3 @@ const ConfigurationModal: React.FC<ConfigurationModalProps & connect> = (props) 
     </>
   );
 };
-
-export default connect()(ConfigurationModal);

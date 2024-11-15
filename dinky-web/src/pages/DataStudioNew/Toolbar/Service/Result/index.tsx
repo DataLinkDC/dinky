@@ -262,7 +262,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
     return (
       <Button
         type='link'
-        title={'自动洞察'}
+        title={l('button.ava')}
         onClick={() => {
           setOpenAVA(true);
           startTransition(() => {

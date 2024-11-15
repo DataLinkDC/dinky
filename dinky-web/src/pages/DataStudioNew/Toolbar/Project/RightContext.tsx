@@ -21,17 +21,11 @@ import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { InitProjectState } from '@/types/Studio/init.d';
 import { ProjectState } from '@/types/Studio/state';
-import {
-  FOLDER_RIGHT_MENU,
-  JOB_RIGHT_MENU
-} from '@/pages/DataStudio/LeftContainer/Project/constants';
 import { Modal, Typography } from 'antd';
 import { DataStudioActionType, RightContextMenuState } from '@/pages/DataStudioNew/data.d';
 import { InitContextMenuPosition } from '@/pages/DataStudioNew/function';
 import RightContextMenu from '@/pages/DataStudioNew/RightContextMenu';
-import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { l } from '@/utils/intl';
-import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import { Catalogue } from '@/types/Studio/data';
 import { API_CONSTANTS } from '@/services/endpoints';
 import {
@@ -41,13 +35,14 @@ import {
   handlePutDataByParams,
   handleRemoveById
 } from '@/services/BusinessCrud';
-import { assert } from '@/pages/DataStudio/function';
 import { DIALECT } from '@/services/constants';
 import { DataStudioState } from '@/pages/DataStudioNew/model';
-import { STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
-import JobImportModal from '@/pages/DataStudioNew/Toolbar/Project/JobTree/components/JobImportModal';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
-
+import FolderModal from '@/pages/DataStudioNew/Toolbar/Project/FolderModal';
+import JobModal from '@/pages/DataStudioNew/Toolbar/Project/JobModal';
+import { assert } from '@/pages/DataStudioNew/utils';
+import { FOLDER_RIGHT_MENU, JOB_RIGHT_MENU } from '@/pages/DataStudioNew/Toolbar/Project/constants';
+import JobImportModal from '@/pages/DataStudioNew/Toolbar/Project/JobImportModal';
 const { Text } = Typography;
 export type RightContextProps = {
   selectKeys: Key[];

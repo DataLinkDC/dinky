@@ -17,9 +17,6 @@
  *
  */
 
-import { LeftBottomKey, RightMenuKey } from '@/pages/DataStudio/data.d';
-import { assert, lockTask, showAllOwners } from '@/pages/DataStudio/function';
-import { isSql } from '@/pages/DataStudio/HeaderContainer/function';
 import { DIALECT } from '@/services/constants';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
@@ -29,7 +26,8 @@ import { l } from '@/utils/intl';
 import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Divider, Space, Tooltip } from 'antd';
 import { Key } from 'react';
-import { getTabIcon } from '@/pages/DataStudioNew/function';
+import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudioNew/function';
+import { assert } from '@/pages/DataStudioNew/utils';
 
 /**
  * generate list of tree node from data
@@ -352,19 +350,3 @@ export const isUDF = (jobType: string): boolean => {
 export const isFlinkJob = (jobType: string): boolean => {
   return assert(jobType, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes');
 };
-
-export function getRightSelectKeyFromNodeClickJobType(jobType: string): string {
-  return isFlinkJob(jobType)
-    ? RightMenuKey.JOB_CONFIG_KEY
-    : isSql(jobType)
-      ? RightMenuKey.PREVIEW_CONFIG_KEY
-      : RightMenuKey.JOB_INFO_KEY;
-}
-
-export function getBottomSelectKeyFromNodeClickJobType(jobType: string): string {
-  if (isFlinkJob(jobType) || isSql(jobType)) {
-    return LeftBottomKey.CONSOLE_KEY;
-  } else {
-    return LeftBottomKey.TOOLS_KEY;
-  }
-}

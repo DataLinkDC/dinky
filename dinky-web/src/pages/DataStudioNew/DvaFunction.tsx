@@ -27,6 +27,7 @@ import {
   SetLayoutDTO,
   UpdateActionDTO
 } from '@/pages/DataStudioNew/type';
+import { CONFIG_MODEL_ASYNC } from '@/pages/SettingCenter/GlobalSetting/model';
 
 export const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
@@ -112,6 +113,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
     queryUserData: (params: {}) =>
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryUserData,
+        payload: params
+      }),
+    queryTaskOwnerLockingStrategy: (params: string) =>
+      dispatch({
+        type: CONFIG_MODEL_ASYNC.queryTaskOwnerLockingStrategy,
         payload: params
       })
   };

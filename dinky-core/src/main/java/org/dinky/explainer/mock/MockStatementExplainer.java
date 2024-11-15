@@ -29,22 +29,19 @@ import org.dinky.utils.JsonUtils;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlIdentifier;
 import org.apache.calcite.sql.SqlInsert;
+import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.SqlNodeList;
 import org.apache.calcite.sql.dialect.AnsiSqlDialect;
 import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.table.api.Schema;
-import org.apache.flink.table.catalog.CatalogTable;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.operations.ddl.CreateTableOperation;
+import org.apache.flink.sql.parser.ddl.SqlCreateTable;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,21 +86,22 @@ public class MockStatementExplainer {
         // mock insert table ddl
         List<StatementParam> mockedDdl = new ArrayList<>();
         for (StatementParam ddl : jobParam.getDdl()) {
-            List<Operation> parseOperationList = tableEnv.getParser().parse(ddl.getValue());
-            for (Operation operation : parseOperationList) {
-                if (operation instanceof CreateTableOperation) {
-                    CreateTableOperation createOperation = (CreateTableOperation) operation;
-                    CatalogTable catalogTable = createOperation.getCatalogTable();
-                    // get table name and check if it should be mocked
-                    String tableName = createOperation.getTableIdentifier().getObjectName();
-                    if (tablesNeedMock.contains(tableName)) {
-                        // generate mock statement
-                        mockedDdl.add(
-                                new StatementParam(getSinkMockDdlStatement(tableName, catalogTable), SqlType.CREATE));
-                    } else {
-                        mockedDdl.add(ddl);
-                    }
+            SqlNode sqlNode = tableEnv.parseSql(ddl.getValue());
+            boolean isDdlMocked = false;
+            if (sqlNode instanceof SqlCreateTable) {
+                SqlCreateTable sqlCreateTable = (SqlCreateTable) sqlNode;
+                String tableName = sqlCreateTable.getTableName().toString();
+                if (tablesNeedMock.contains(tableName)) {
+                    // generate mock statement
+                    mockedDdl.add(new StatementParam(
+                            getSinkMockDdlStatement(
+                                    tableName, sqlCreateTable.getColumnList().toString()),
+                            SqlType.CREATE));
+                    isDdlMocked = true;
                 }
+            }
+            if (!isDdlMocked) {
+                mockedDdl.add(ddl);
             }
         }
         jobParam.setDdl(mockedDdl);
@@ -155,19 +153,11 @@ public class MockStatementExplainer {
      * get mocked ddl statement
      *
      * @param tableName    table name
-     * @param catalogTable catalog table
+     * @param columns columns
      * @return ddl that connector is changed as well as other options not changed
      */
-    private String getSinkMockDdlStatement(String tableName, CatalogTable catalogTable) {
+    private String getSinkMockDdlStatement(String tableName, String columns) {
         String mockedOption = "'connector'='" + MockDynamicTableSinkFactory.IDENTIFIER + "'";
-        // columns
-        Schema unresolvedSchema = catalogTable.getUnresolvedSchema();
-        String columns = unresolvedSchema.getColumns().stream()
-                .map(column -> {
-                    Schema.UnresolvedPhysicalColumn physicalColumn = (Schema.UnresolvedPhysicalColumn) column;
-                    return physicalColumn.getName() + " " + physicalColumn.getDataType();
-                })
-                .collect(Collectors.joining(", "));
         return MessageFormat.format(
                 MOCK_SQL_TEMPLATE,
                 StringUtils.join(generateMockedTableIdentifier(tableName), "."),

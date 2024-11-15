@@ -370,7 +370,7 @@ const DataStudioNew: React.FC = (props: any) => {
           case 'task':
             const titleContent = (
               <ContextMenuSpace onContextMenu={rightMenuHandle}>
-                {getTabIcon(tabData.params.dialect, 19)} {tabData.title}
+                {getTabIcon(tabData.params.dialect, 22)} {tabData.title}
               </ContextMenuSpace>
             );
             if (tabData.isUpdate) {
@@ -390,7 +390,7 @@ const DataStudioNew: React.FC = (props: any) => {
             const dialect = tabData.params.type;
             return (
               <ContextMenuSpace onContextMenu={rightMenuHandle}>
-                {getTabIcon(dialect, 19)} {tabData.title}
+                {getTabIcon(dialect, 22)} {tabData.title}
               </ContextMenuSpace>
             );
           default:
@@ -508,7 +508,9 @@ const DataStudioNew: React.FC = (props: any) => {
               rowSelectedHoverBg: 'var(--second-color)',
               headerFilterHoverBg: 'var(--primary-color)',
               headerSortActiveBg: 'var(--primary-color)',
-              headerSortHoverBg: 'var(--primary-color)'
+              headerSortHoverBg: 'var(--primary-color)',
+              fixedHeaderSortActiveBg: 'var(--primary-color)',
+              bodySortBg: 'var(--second-color)'
             }
           },
           algorithm: themeAlgorithm

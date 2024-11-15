@@ -43,3 +43,108 @@ export const TAG_RIGHT_CONTEXT_MENU: MenuItemType[] = [
     )
   }
 ];
+
+/**
+ * 作业 方言类型
+ * @type {({options: ({label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string})[], label: string} | {options: ({label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string})[], label: string} | {options: ({label: string, value: string} | {label: string, value: string} | {label: string, value: string})[], label: string})[]}
+ */
+export const JOB_TYPE: DefaultOptionType[] = [
+  {
+    label: 'Flink Job Type',
+    options: [
+      {
+        value: 'FlinkSql',
+        label: 'FlinkSql'
+      },
+      {
+        value: 'FlinkJar',
+        label: 'FlinkJar'
+      },
+      {
+        value: 'FlinkSqlEnv',
+        label: 'FlinkSqlEnv'
+      }
+    ]
+  },
+  {
+    label: 'Jdbc Query Type',
+    options: [
+      {
+        value: 'Mysql',
+        label: 'Mysql'
+      },
+      {
+        value: 'Oracle',
+        label: 'Oracle'
+      },
+      {
+        value: 'SqlServer',
+        label: 'SqlServer'
+      },
+      {
+        value: 'PostgreSql',
+        label: 'PostgreSql'
+      },
+      {
+        value: 'ClickHouse',
+        label: 'ClickHouse'
+      },
+      {
+        value: 'Doris',
+        label: 'Doris'
+      },
+      {
+        value: 'Hive',
+        label: 'Hive'
+      },
+      {
+        value: 'Phoenix',
+        label: 'Phoenix'
+      },
+      {
+        value: 'StarRocks',
+        label: 'StarRocks'
+      },
+      {
+        value: 'Presto',
+        label: 'Presto'
+      }
+    ]
+  },
+  {
+    label: 'Other Type',
+    options: [
+      {
+        value: 'Java',
+        label: 'Java'
+      },
+      {
+        value: 'Scala',
+        label: 'Scala'
+      },
+      {
+        value: 'Python',
+        label: 'Python'
+      }
+    ]
+  }
+];
+
+export const SAVE_POINT_TYPE: DefaultOptionType[] = [
+  {
+    label: l('global.savepoint.strategy.disabled'),
+    value: 0
+  },
+  {
+    label: l('global.savepoint.strategy.latest'),
+    value: 1
+  },
+  {
+    label: l('global.savepoint.strategy.earliest'),
+    value: 2
+  },
+  {
+    label: l('global.savepoint.strategy.custom'),
+    value: 3
+  }
+];

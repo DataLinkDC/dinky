@@ -17,10 +17,10 @@
  *
  */
 
-import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import { Divider } from 'antd';
-import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
 import React, { memo } from 'react';
+import KeyBoard from '@/pages/DataStudioNew/CenterTabContent/KeyBoard';
+import QuickGuide from '@/pages/DataStudioNew/CenterTabContent/QuickGuide';
 
 export default memo(() => {
   return (

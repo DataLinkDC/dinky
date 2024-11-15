@@ -26,14 +26,13 @@ import { DatabaseOutlined, TableOutlined } from '@ant-design/icons';
 import { Key, ProForm } from '@ant-design/pro-components';
 import { CascaderProps, Spin, Tag } from 'antd';
 import { memo, useEffect, useRef, useState } from 'react';
-import { getDataSourceList, showDataSourceTable } from './service';
+import { clearDataSourceTable, getDataSourceList, showDataSourceTable } from './service';
 import { useAsyncEffect } from 'ahooks';
 import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { CenterTab, DataStudioState } from '@/pages/DataStudioNew/model';
 import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
 import { connect } from '@umijs/max';
 import { DataStudioActionType } from '@/pages/DataStudioNew/data.d';
-import { clearDataSourceTable } from '@/pages/DataStudio/LeftContainer/DataSource/service';
 
 interface Option {
   value: number | string;

@@ -22,7 +22,6 @@ import useHookRequest from '@/hooks/useHookRequest';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { TaskInfo } from '@/types/Studio/data';
-import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import { ProCard } from '@ant-design/pro-components';
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
@@ -31,6 +30,7 @@ import { l } from '@/utils/intl';
 import { history } from 'umi';
 import { formatDateToYYYYMMDDHHMMSS } from '@/utils/function';
 import { ErrorMessageAsync } from '@/utils/messages';
+import { getTabIcon } from '@/pages/DataStudioNew/function';
 
 const MyWorker = () => {
   const { loading, data } = useHookRequest<any, any>(getData, {

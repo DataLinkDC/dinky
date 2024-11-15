@@ -18,11 +18,11 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
-import FolderForm from '@/pages/DataStudio/LeftContainer/Project/FolderModal/FolderForm';
 import { Catalogue } from '@/types/Studio/data';
 import { ModalForm } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
+import FolderForm from '@/pages/DataStudioNew/Toolbar/Project/FolderModal/FolderForm';
 
 type JobModalProps = {
   onCancel: () => void;

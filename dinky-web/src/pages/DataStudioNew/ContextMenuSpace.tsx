@@ -29,7 +29,7 @@ export const ContextMenuSpace = (props: ContextMenuSpaceProps) => {
   const { onContextMenu, children } = props;
   return (
     <>
-      <Space onContextMenu={onContextMenu} size={0}>
+      <Space onContextMenu={onContextMenu} size={2}>
         {children}
       </Space>
     </>

@@ -48,6 +48,10 @@
   justify-content: center;
 }
 
+.ant-pro-list-row-subTitle {
+  color: var(--text-color);
+}
+
 // scrollbar style --- start ----
 ::-webkit-scrollbar {
   width: 0.3vw;
@@ -163,9 +167,10 @@ body > .dragging-layer > div:last-child {
 .dock-tab {
   box-sizing: border-box;
   position: relative;
-  display: block;
+  display: flex;
+  align-items: center;
   min-width: 30px;
-  height: 30px;
+  height: 40px;
   text-align: center;
   transition: color 0.25s cubic-bezier(0.35, 0, 0.25, 1);
   padding: 0;
@@ -183,7 +188,7 @@ body > .dragging-layer > div:last-child {
 }
 
 .dock-tab > div {
-  padding: 4px 14px;
+  padding: 0 10px;
   outline-color: #108ee9;
 }
 
@@ -276,11 +281,11 @@ body > .dragging-layer > div:last-child {
   cursor: pointer;
   font-family: 'Fredoka One', sans-serif;
   color: var(--text-color);
-  right: -3px;
+  right: -5px;
   font-size: 12px;
   width: 16px;
   text-align: center;
-  top: 6px;
+  top: 12px;
   outline: none;
   transition: all 0.25s ease-in-out;
 }
@@ -344,6 +349,7 @@ body > .dragging-layer > div:last-child {
   display: flex;
   flex: none;
   position: relative;
+  font-size: 14px;
 }
 
 .dock-nav-operations {
@@ -351,13 +357,14 @@ body > .dragging-layer > div:last-child {
 }
 
 .dock-nav-more {
-  height: 30px;
+  height: 40px;
   border: none;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--btn-color);
   background: transparent;
   cursor: pointer;
   position: relative;
   align-self: flex-end;
+  width: 40px;
 }
 
 .dock-nav-more::after {
@@ -366,8 +373,8 @@ body > .dragging-layer > div:last-child {
   content: '';
   pointer-events: none;
   width: 30px;
-  height: 30px;
-  left: -30px;
+  height: 40px;
+  left: -40px;
   top: 0;
   box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.08);
 }
@@ -390,7 +397,8 @@ body > .dragging-layer > div:last-child {
 
 .dock-extra-content {
   display: flex;
-  height: 30px;
+  height: 40px;
+  align-items: center;
 }
 
 .dock-extra-content .dock-tab-close-btn {
@@ -427,7 +435,7 @@ body > .dragging-layer > div:last-child {
   overflow-y: auto;
   text-align: left;
   list-style-type: none;
-  background-color: var(--primary-color);
+  background-color: #222222;
   background-clip: padding-box;
   border-radius: 2px;
   outline: none;
@@ -707,7 +715,7 @@ body.dock-dragging iframe {
 
 .dock-drop-edge {
   position: absolute;
-  top: 30px;
+  top: 40px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -720,7 +728,7 @@ body.dock-dragging iframe {
 .dock-drop-layer {
   position: absolute;
   pointer-events: none;
-  top: 30px;
+  top: 40px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -753,7 +761,7 @@ body.dock-dragging iframe {
   width: 100%;
   height: 100%;
   display: block;
-  line-height: 30px;
+  line-height: 40px;
   text-align: center;
 }
 

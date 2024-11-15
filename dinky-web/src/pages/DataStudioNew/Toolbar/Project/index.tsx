@@ -23,10 +23,8 @@ import { l } from '@/utils/intl';
 import { DownOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import React, { Key, useEffect, useRef, useState } from 'react';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
-import { TreeVo } from '@/pages/DataStudio/model';
 import { ItemType } from 'antd/es/menu/interface';
 import { useAsyncEffect } from 'ahooks';
-import { getTaskSortTypeData } from '@/pages/DataStudio/LeftContainer/Project/service';
 import type { ButtonType } from 'antd/es/button/buttonHelpers';
 import { connect, useRequest } from '@@/exports';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -39,11 +37,13 @@ import type RcTree from 'rc-tree';
 import { generateList, searchInTree } from '@/utils/treeUtils';
 import { buildProjectTree } from '@/pages/DataStudioNew/Toolbar/Project/function';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
-import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { Catalogue } from '@/types/Studio/data';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { handleRightClick } from '@/pages/DataStudioNew/function';
 import { useRightContext } from '@/pages/DataStudioNew/Toolbar/Project/RightContext';
+import { TreeVo } from '@/pages/DataStudioNew/type';
+import FolderModal from '@/pages/DataStudioNew/Toolbar/Project/FolderModal';
+import { getTaskSortTypeData } from '@/pages/DataStudioNew/service';
 
 export const Project = (props: any) => {
   const {

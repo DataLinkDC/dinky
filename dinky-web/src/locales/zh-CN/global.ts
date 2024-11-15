@@ -20,7 +20,7 @@
 export default {
   'button.add': '添加',
   'button.check': '检查',
-  'button.graph': 'DAG',
+  'button.graph': '拓扑图',
   'button.create': '新建',
   'button.recovery': '恢复',
   'button.close': '关闭',
@@ -87,6 +87,7 @@ export default {
   'button.startRefresh': '开始自动刷新(5s/次)',
   'button.autoWrap': '自动换行/不换行',
   'button.output': '输出',
+  'button.ava': '自动洞察',
 
   'menu.menu': '菜单',
   'right.menu.open': '打开',

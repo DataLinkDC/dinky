@@ -57,6 +57,8 @@ import {
 import { CodeTwoTone } from '@ant-design/icons';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
 import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
+import { Col, Row } from 'antd';
+import { l } from '@/utils/intl';
 
 // 遍历layout，获取所有激活和打开的tab
 export const getAllPanel = (newLayout: LayoutBase) => {
@@ -181,32 +183,32 @@ export const getTabIcon = (type: string, size?: number) => {
 
   switch (type.toLowerCase()) {
     case DIALECT.JAVA:
-      return <JavaSvg />;
+      return <JavaSvg size={size} />;
     case DIALECT.SCALA:
-      return <ScalaSvg />;
+      return <ScalaSvg size={size} />;
     case DIALECT.PYTHON:
     case DIALECT.PYTHON_LONG:
-      return <PythonSvg />;
+      return <PythonSvg size={size} />;
     case DIALECT.MD:
     case DIALECT.MDX:
-      return <MarkDownSvg />;
+      return <MarkDownSvg size={size} />;
     case DIALECT.XML:
-      return <XMLSvg />;
+      return <XMLSvg size={size} />;
     case DIALECT.YAML:
     case DIALECT.YML:
-      return <YAMLSvg />;
+      return <YAMLSvg size={size} />;
     case DIALECT.SH:
     case DIALECT.BASH:
     case DIALECT.CMD:
-      return <ShellSvg />;
+      return <ShellSvg size={size} />;
     case DIALECT.LOG:
-      return <LogSvg />;
+      return <LogSvg size={size} />;
     case DIALECT.FLINKJAR:
-      return <FlinkJarSvg />;
+      return <FlinkJarSvg size={size} />;
     case DIALECT.FLINK_SQL:
-      return <FlinkSQLSvg />;
+      return <FlinkSQLSvg size={size} />;
     case DIALECT.FLINKSQLENV:
-      return <FlinkSQLEnvSvg />;
+      return <FlinkSQLEnvSvg size={size} />;
     case DIALECT.SQL:
       return <SQLIcons size={size} />;
     case DIALECT.MYSQL:
@@ -267,6 +269,33 @@ export const showSecondLevelOwners = (ids: number[], users: UserBaseInfo.User[] 
     ?.join();
 };
 
+/**
+ * 构建所有责任人 用于悬浮提示
+ * @param id
+ * @param ids
+ * @param users
+ */
+export const showAllOwners = (id: number, ids: number[], users: UserBaseInfo.User[] = []) => {
+  const firstLevelOwnerLabel = l('pages.datastudio.label.jobInfo.firstLevelOwner');
+  const secondLevelOwnersLabel = l('pages.datastudio.label.jobInfo.secondLevelOwners');
+  const firstLevelOwner = showFirstLevelOwner(id, users);
+  const secondLevelOwners = showSecondLevelOwners(ids, users);
+  return (
+    <Row>
+      {/*理论上责任人必填, 无需判断*/}
+      <Col span={24}>
+        {firstLevelOwnerLabel}：{firstLevelOwner}
+      </Col>
+      {
+        <Col span={24}>
+          {secondLevelOwnersLabel}：
+          {secondLevelOwners && secondLevelOwners.length > 0 ? secondLevelOwners : '-'}
+        </Col>
+      }
+    </Row>
+  );
+};
+
 export const lockTask = (
   firstLevelOwner: number,
   secondLevelOwners: number[] = [],
@@ -286,5 +315,35 @@ export const lockTask = (
       return false;
     default:
       return false;
+  }
+};
+
+export const matchLanguage = (language = DIALECT.FLINK_SQL) => {
+  switch (language.toLowerCase()) {
+    case DIALECT.FLINK_SQL:
+    case DIALECT.FLINKSQLENV:
+    case DIALECT.FLINKJAR:
+      return DIALECT.FLINK_SQL;
+    case DIALECT.SQL:
+    case DIALECT.SQLSERVER:
+    case DIALECT.POSTGRESQL:
+    case DIALECT.HIVE:
+    case DIALECT.CLICKHOUSE:
+    case DIALECT.ORACLE:
+    case DIALECT.DORIS:
+    case DIALECT.PHOENIX:
+    case DIALECT.PRESTO:
+    case DIALECT.MYSQL:
+    case DIALECT.STARROCKS:
+      return DIALECT.SQL;
+    case DIALECT.PYTHON:
+    case DIALECT.PYTHON_LONG:
+      return DIALECT.PYTHON_LONG;
+    case DIALECT.SCALA:
+      return DIALECT.SCALA;
+    case DIALECT.JAVA:
+      return DIALECT.JAVA;
+    default:
+      return DIALECT.SQL;
   }
 };

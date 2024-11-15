@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 
+import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -69,6 +70,8 @@ public interface CustomTableEnvironment
     ClassLoader getUserClassLoader();
 
     Configuration getRootConfiguration();
+
+    SqlNode parseSql(String sql);
 
     default JobGraph getJobGraphFromInserts(List<String> statements) {
         return getStreamGraphFromInserts(statements).getJobGraph();

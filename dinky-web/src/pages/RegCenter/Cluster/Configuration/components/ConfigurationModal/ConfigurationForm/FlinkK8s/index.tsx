@@ -20,7 +20,6 @@
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import FlinkOptionsSelect from '@/components/Flink/OptionsSelect';
 import { TagAlignCenter } from '@/components/StyledComponents';
-import { StateType } from '@/pages/DataStudio/model';
 import {
   ExposedTypeOptions,
   versionOptions
@@ -28,7 +27,6 @@ import {
 import { KUBERNETES_CONFIG_LIST } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
 import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { l } from '@/utils/intl';
-import { connect } from '@@/exports';
 import { UploadOutlined } from '@ant-design/icons';
 import {
   ProCard,
@@ -44,6 +42,7 @@ import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { RcFile } from 'antd/es/upload/interface';
 import { Values } from 'async-validator';
 import { editor } from 'monaco-editor';
+import { DefaultOptionType } from 'antd/es/select';
 
 const { Text } = Typography;
 
@@ -54,7 +53,12 @@ const CodeEditProps = {
   language: 'yaml'
 };
 
-const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> } & connect) => {
+export default (props: {
+  type: string;
+  value: any;
+  form: FormInstance<Values>;
+  flinkConfigOptions: DefaultOptionType[];
+}) => {
   const { type, value, form, flinkConfigOptions } = props;
   const k8sConfig = value.config?.kubernetesConfig;
 
@@ -249,7 +253,3 @@ const FlinkK8s = (props: { type: string; value: any; form: FormInstance<Values> 
     </>
   );
 };
-
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  flinkConfigOptions: Studio.flinkConfigOptions
-}))(FlinkK8s);

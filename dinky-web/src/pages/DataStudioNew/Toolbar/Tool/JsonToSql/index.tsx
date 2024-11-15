@@ -19,11 +19,10 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import useThemeValue from '@/hooks/useThemeValue';
-import { jsonToSql } from '@/pages/DataStudio/BottomContainer/Tools/JsonToSql/service';
 import { Button, Flex, Space } from 'antd';
 import React, { useState } from 'react';
-import { debounce } from 'lodash';
 import CodeShow from '@/components/CustomEditor/CodeShow';
+import { jsonToSql } from '@/pages/DataStudioNew/Toolbar/Tool/JsonToSql/service';
 
 const padding = 10;
 

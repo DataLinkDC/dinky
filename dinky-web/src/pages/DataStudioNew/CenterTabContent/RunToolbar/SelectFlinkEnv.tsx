@@ -17,12 +17,12 @@
  *
  */
 
-import { EnvType } from '@/pages/DataStudio/model';
 import React, { memo } from 'react';
 import { l } from '@/utils/intl';
 import { ProFormSelect } from '@ant-design/pro-components';
 
 import '../index.less';
+import { EnvType } from '@/pages/DataStudioNew/type';
 
 export const SelectFlinkEnv = memo((params: { flinkEnv: EnvType[] }) => {
   const { flinkEnv } = params;
@@ -41,6 +41,9 @@ export const SelectFlinkEnv = memo((params: { flinkEnv: EnvType[] }) => {
       rules={[{ required: true }]}
       showSearch
       allowClear={false}
+      fieldProps={{
+        popupMatchSelectWidth: false
+      }}
     />
   );
 });

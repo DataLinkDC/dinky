@@ -23,7 +23,6 @@ import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { NormalDeleteBtn } from '@/components/CallBackButton/NormalDeleteBtn';
 import { DataAction } from '@/components/StyledComponents';
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
-import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import { renderDBIcon } from '@/pages/RegCenter/DataSource/components/function';
 import { handleTest, saveOrUpdateHandle } from '@/pages/RegCenter/DataSource/service';
 import {
@@ -51,33 +50,30 @@ import { ActionType, ProList } from '@ant-design/pro-components';
 import { history } from '@umijs/max';
 import { Button, Descriptions, Input, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
-import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import React, { useState } from 'react';
 import DataSourceModal from '../DataSourceModal';
+import { useAsyncEffect } from 'ahooks';
 
-const DataSourceTable: React.FC<connect & StateType> = (props) => {
-  const { dispatch, database } = props;
-
+export default () => {
   /**
    * state
    */
   const [datasourceState, setDatasourceState] = useState<DataSourceState>(InitDataSourceState);
   const actionRef = React.useRef<ActionType>();
+  const [data, setData] = useState<DataSources.DataSource[]>([]);
 
   const queryDataSourceList = async (keyword = '') => {
-    queryDataByParams(API_CONSTANTS.DATASOURCE, { keyword }).then((res) => {
-      dispatch({
-        type: STUDIO_MODEL.saveDataBase,
-        payload: res
-      });
-    });
+    const queryData = (await queryDataByParams<DataSources.DataSource[]>(API_CONSTANTS.DATASOURCE, {
+      keyword
+    }))!!;
+    setData(queryData);
   };
 
   /**
    * query  list
    */
-  useEffect(() => {
-    queryDataSourceList();
+  useAsyncEffect(async () => {
+    await queryDataSourceList();
   }, []);
 
   /**
@@ -170,10 +166,6 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const enterDetailPageClickHandler = async (item: DataSources.DataSource) => {
     // if status is true, enter detail page, else show error message , do nothing
     if (item.status) {
-      dispatch({
-        type: STUDIO_MODEL.updateSelectDatabaseId,
-        payload: item.id
-      });
       setDatasourceState((prevState) => ({ ...prevState, value: item }));
       history.push(`/registration/datasource/detail?id=${item.id}`);
       setDatasourceState((prevState) => ({ ...prevState, isDetailPage: true }));
@@ -246,7 +238,7 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   /**
    * render data source
    */
-  const renderDataSource = database?.dbData?.map((item: DataSources.DataSource) => ({
+  const renderDataSource = data?.map((item: DataSources.DataSource) => ({
     subTitle: renderDataSourceSubTitle(item),
     actions: <DataAction>{renderDataSourceActionButton(item)}</DataAction>,
     avatar: (
@@ -322,7 +314,3 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
     </>
   );
 };
-
-export default connect(({ Studio }: { Studio: StateType }) => ({
-  database: Studio.database
-}))(DataSourceTable);

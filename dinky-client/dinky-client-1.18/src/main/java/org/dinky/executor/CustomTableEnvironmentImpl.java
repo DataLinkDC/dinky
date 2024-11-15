@@ -21,6 +21,7 @@ package org.dinky.executor;
 
 import org.dinky.operations.CustomNewParserImpl;
 
+import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -148,5 +149,10 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public void createCatalog(String catalogName, CatalogDescriptor catalogDescriptor) {
         getCatalogManager().createCatalog(catalogName, catalogDescriptor);
+    }
+
+    @Override
+    public SqlNode parseSql(String sql) {
+        return ((ExtendedParser) getParser()).getCustomParser().parseSql(sql);
     }
 }

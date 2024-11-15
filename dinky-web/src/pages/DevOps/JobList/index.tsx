@@ -20,18 +20,6 @@
 import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
 import JobLifeCycleTag from '@/components/JobTags/JobLifeCycleTag';
 import StatusTag from '@/components/JobTags/StatusTag';
-import {
-  mapDispatchToProps,
-  showFirstLevelOwner,
-  showSecondLevelOwners
-} from '@/pages/DataStudio/function';
-import {
-  buildProjectTree,
-  generateList,
-  getLeafKeyList,
-  searchInTree
-} from '@/pages/DataStudio/LeftContainer/Project/function';
-import { StateType } from '@/pages/DataStudio/model';
 import { DevopsContext } from '@/pages/DevOps';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { getJobDuration } from '@/pages/DevOps/function';
@@ -60,17 +48,17 @@ import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
+import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { useRequest } from '@@/exports';
+import { buildProjectTree } from '@/pages/DataStudioNew/Toolbar/Project/function';
+import { showFirstLevelOwner, showSecondLevelOwners } from '@/pages/DataStudioNew/function';
+import { generateList, getLeafKeyList, searchInTree } from '@/utils/treeUtils';
+import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
 
 const { DirectoryTree } = Tree;
 
 const JobList = (props: connect) => {
-  const {
-    users,
-    queryUserData,
-    taskOwnerLockingStrategy,
-    queryTaskOwnerLockingStrategy,
-    projectData
-  } = props;
+  const { users, queryUserData, taskOwnerLockingStrategy, queryTaskOwnerLockingStrategy } = props;
   const tableRef = useRef<ActionType>();
   const { statusFilter, setStatusFilter } = useContext<any>(DevopsContext);
   const [stepFilter, setStepFilter] = useState<number | undefined>();
@@ -79,23 +67,19 @@ const JobList = (props: connect) => {
   const [searchValue, setSearchValueValue] = useState('');
   const [expandedKeys, setExpandedKeys] = useState<Key[]>([]);
   const [selectedKey, setSelectedKey] = useState<Key[]>([]);
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
 
-  const [data, setData] = useState<any[]>(
-    buildProjectTree(
-      projectData,
-      searchValue,
-      [],
-      initialState?.currentUser?.user,
-      taskOwnerLockingStrategy,
-      users
-    )
-  );
+  const { loading, data, refresh } = useRequest({
+    url: API_CONSTANTS.CATALOGUE_GET_CATALOGUE_TREE_DATA,
+    data: {},
+    method: 'post'
+  });
+  const [projectData, setProjectData] = useState<any[]>([]);
 
   useEffect(() => {
-    setData(
+    setProjectData(
       buildProjectTree(
-        projectData,
+        data,
         searchValue,
         [],
         initialState?.currentUser?.user,
@@ -106,7 +90,7 @@ const JobList = (props: connect) => {
     if (searchValue === '' || searchValue === undefined) {
       setExpandedKeys([]);
     }
-  }, [searchValue, projectData, taskOwnerLockingStrategy]);
+  }, [searchValue, taskOwnerLockingStrategy, data]);
 
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
@@ -208,7 +192,12 @@ const JobList = (props: connect) => {
       return;
     }
     value = String(value).trim();
-    const expandedKeys: string[] = searchInTree(generateList(data, []), data, value, 'contain');
+    const expandedKeys: string[] = searchInTree(
+      generateList(projectData, []),
+      projectData,
+      value,
+      'contain'
+    );
     setExpandedKeys(expandedKeys);
     setSearchValueValue(value);
   };
@@ -269,7 +258,7 @@ const JobList = (props: connect) => {
                 <CircleBtn
                   title={l('button.expand-all')}
                   icon={<ArrowsAltOutlined />}
-                  onClick={() => setExpandedKeys(getLeafKeyList(data))}
+                  onClick={() => setExpandedKeys(getLeafKeyList(projectData))}
                 />
               </Button.Group>
               <Button.Group>
@@ -281,7 +270,7 @@ const JobList = (props: connect) => {
               </Button.Group>
             </Flex>
 
-            {data.length ? (
+            {projectData.length ? (
               <DirectoryTree
                 style={{ padding: '0 10px' }}
                 className={'treeList'}
@@ -289,7 +278,7 @@ const JobList = (props: connect) => {
                 expandedKeys={expandedKeys}
                 selectedKeys={selectedKey}
                 onExpand={(expandedKeys: Key[]) => setExpandedKeys(expandedKeys)}
-                treeData={data}
+                treeData={projectData}
               />
             ) : (
               <Empty className={'code-content-empty'} />
@@ -370,9 +359,8 @@ const JobList = (props: connect) => {
   );
 };
 export default connect(
-  ({ Studio, SysConfig }: { Studio: StateType; SysConfig: SysConfigStateType }) => ({
-    users: Studio.users,
-    projectData: Studio.project.data,
+  ({ DataStudio, SysConfig }: { DataStudio: DataStudioState; SysConfig: SysConfigStateType }) => ({
+    users: DataStudio.users,
     taskOwnerLockingStrategy: SysConfig.taskOwnerLockingStrategy
   }),
   mapDispatchToProps

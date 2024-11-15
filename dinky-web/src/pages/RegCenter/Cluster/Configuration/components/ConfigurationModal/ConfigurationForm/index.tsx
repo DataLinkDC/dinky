@@ -21,12 +21,14 @@ import ApplicationConfig from '@/pages/RegCenter/Cluster/Configuration/component
 import BaseConfig from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/BaseConfig';
 import FlinkK8s from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8s';
 import HighPriorityConfig from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/HighPriorityConfig';
-import YarnConfig from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/YarnConfig';
+import { YarnConfig } from '@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/YarnConfig';
 import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
 import { ProForm } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
+import { useRequest } from '@@/exports';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 type ConfigurationFormProps = {
   form: FormInstance<Values>;
@@ -36,15 +38,20 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
   const { form, value } = props;
 
   const [type, setType] = React.useState<string>(value.type || ClusterType.YARN);
+  const { data } = useRequest({
+    url: API_CONSTANTS.FLINK_CONF_CONFIG_OPTIONS,
+    method: 'get'
+  });
+  console.log(data);
 
   const renderAllForm = () => {
     return (
       <>
         <BaseConfig />
         {type && type === ClusterType.YARN ? (
-          <YarnConfig />
+          <YarnConfig flinkConfigOptions={data} />
         ) : (
-          <FlinkK8s type={type} value={value} form={form} />
+          <FlinkK8s type={type} value={value} form={form} flinkConfigOptions={data} />
         )}
         <HighPriorityConfig />
         <ApplicationConfig />

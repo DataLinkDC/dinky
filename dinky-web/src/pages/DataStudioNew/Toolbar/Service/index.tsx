@@ -46,7 +46,6 @@ import Explain from '@/pages/DataStudioNew/Toolbar/Service/Explain';
 import FlinkGraph from '@/pages/DataStudioNew/Toolbar/Service/FlinkGraph';
 import Result from '@/pages/DataStudioNew/Toolbar/Service/Result';
 import { getTabIcon } from '@/pages/DataStudioNew/function';
-import { assert } from '@/pages/DataStudio/function';
 import { DIALECT } from '@/services/constants';
 import { TableData } from '@/pages/DataStudioNew/Toolbar/Service/TableData';
 import { isSql } from '@/pages/DataStudioNew/utils';
@@ -54,6 +53,7 @@ import { LineageNew } from '@/pages/DataStudioNew/Toolbar/Service/LineageNew';
 import { useAsyncEffect } from 'ahooks';
 import { sleep } from '@antfu/utils';
 import { l } from '@/utils/intl';
+import { assert } from '@/pages/DataStudioNew/utils';
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {
@@ -273,7 +273,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
   };
   return (
     <PanelGroup direction={'horizontal'}>
-      <Panel defaultSize={20} style={{ display: 'flex', flexDirection: 'column' }}>
+      <Panel defaultSize={20} style={{ display: 'flex', flexDirection: 'column', padding: 10 }}>
         <Flex justify={'right'}>
           <RunToolBarButton
             showDesc={showDesc}

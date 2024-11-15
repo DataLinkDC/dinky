@@ -17,7 +17,6 @@
  *
  */
 
-import { JobDetailInfoModel } from '@/pages/DataStudio/BottomContainer/JobExecHistory/components/JobDetailInfoModel';
 import { queryList } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { JobExecutionHistory } from '@/types/Studio/data';
@@ -29,6 +28,7 @@ import { ActionType, ProList } from '@ant-design/pro-components';
 import { ProListMetas } from '@ant-design/pro-list';
 import { Badge, Divider, Space, Tag, Typography } from 'antd';
 import React, { useRef, useState } from 'react';
+import { JobDetailInfoModel } from '@/pages/DataStudioNew/Toolbar/Service/ExecutionHistory/components/JobDetailInfoModel';
 
 const { Link, Paragraph, Text } = Typography;
 

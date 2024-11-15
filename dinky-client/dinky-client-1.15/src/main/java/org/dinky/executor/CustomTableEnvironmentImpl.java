@@ -26,6 +26,7 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.LineageContext;
 
+import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.ConfigOption;
@@ -282,6 +283,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
         record.setExplain(getPlanner().explain(operations, extraDetails));
         return record;
+    }
+
+    @Override
+    public SqlNode parseSql(String sql) {
+        return getParser().parseSql(sql);
     }
 
     @Override

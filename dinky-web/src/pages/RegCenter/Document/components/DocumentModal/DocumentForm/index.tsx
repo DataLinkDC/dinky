@@ -18,7 +18,7 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
+import { JOB_TYPE } from '@/pages/DataStudioNew/Toolbar/Project/constants';
 import {
   DOCUMENT_CATEGORY_ENUMS,
   DOCUMENT_FUNCTION_TYPE_ENUMS,
