@@ -82,18 +82,21 @@ class JobManagerTest {
     @Test
     void testExplainSql() throws Exception {
         checkExplainStreamSqlFromFile("flink/sql/statement-set-stream.sql", 16);
+        checkExplainStreamSqlFromFile("flink/sql/variable.sql", 3);
         checkExplainBatchSqlFromFile("flink/sql/statement-set-batch.sql", 16);
     }
 
     @Test
     void testGetStreamGraph() throws Exception {
         checkGetStreamGraphFromFile("flink/sql/statement-set-stream.sql");
+        checkGetStreamGraphFromFile("flink/sql/variable.sql");
         checkGetBatchStreamGraphFromFile("flink/sql/statement-set-batch.sql");
     }
 
     @Test
     void testGetJobPlanJson() throws Exception {
         checkGetStreamJobPlanJsonFromFile("flink/sql/statement-set-stream.sql");
+        checkGetStreamJobPlanJsonFromFile("flink/sql/variable.sql");
         checkGetBatchJobPlanJsonFromFile("flink/sql/statement-set-batch.sql");
     }
 

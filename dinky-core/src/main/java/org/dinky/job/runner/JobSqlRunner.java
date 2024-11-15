@@ -177,8 +177,8 @@ public class JobSqlRunner extends AbstractJobRunner {
 
     @Override
     public StreamGraph getStreamGraph(JobStatement jobStatement) {
+        statements.add(jobStatement);
         if (!jobStatement.isFinalExecutableStatement()) {
-            statements.add(jobStatement);
             return null;
         }
         if (!statements.isEmpty()) {
@@ -189,8 +189,8 @@ public class JobSqlRunner extends AbstractJobRunner {
 
     @Override
     public JobPlanInfo getJobPlanInfo(JobStatement jobStatement) {
+        statements.add(jobStatement);
         if (!jobStatement.isFinalExecutableStatement()) {
-            statements.add(jobStatement);
             return null;
         }
         if (!statements.isEmpty()) {
