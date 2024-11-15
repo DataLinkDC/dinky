@@ -134,7 +134,10 @@ class JobManagerTest {
         assertNotNull(explainResult);
         explainResult.getSqlExplainResults().forEach(sqlExplainResult -> {
             if (!sqlExplainResult.isParseTrue() || !sqlExplainResult.isExplainTrue()) {
-                if (sqlExplainResult.getError().contains("not support")) {
+                // Flink 1.14,1.15,1.16,1.17 not support RTAS
+                if (sqlExplainResult.getError().contains("not support")
+                        // Flink 1.14 not support show create view
+                        || sqlExplainResult.getError().contains("SQL parse failed. Encountered \"VIEW\"")) {
                     sqlExplainResult.setParseTrue(true);
                     sqlExplainResult.setExplainTrue(true);
                 } else {
