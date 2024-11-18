@@ -31,7 +31,6 @@
             <fileMode>0755</fileMode>
             <includes>
                 <include>auto.sh</include>
-                <include>*.conf</include>
             </includes>
         </fileSet>
         <fileSet>
