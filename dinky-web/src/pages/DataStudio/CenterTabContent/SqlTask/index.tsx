@@ -418,13 +418,18 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         params: {
           taskId: params.taskId,
           columns: res.data?.result?.columns ?? [],
-          rowData: res.data?.result?.rowData ?? [],
+          rowData: res.data?.result?.rowData ?? []
         }
       });
       setCurrentState((prevState) => {
         return {
           ...prevState,
-          status: res.data.status === 'SUCCESS' ? (res.data.pipeline?'RUNNING':'SUCCESS') : res.data.status
+          status:
+            res.data.status === 'SUCCESS'
+              ? res.data.pipeline
+                ? 'RUNNING'
+                : 'SUCCESS'
+              : res.data.status
         };
       });
     }

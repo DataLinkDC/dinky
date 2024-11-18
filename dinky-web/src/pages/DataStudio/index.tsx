@@ -56,9 +56,7 @@ import { ContextMenuSpace } from '@/pages/DataStudio/ContextMenuSpace';
 import { sleep } from '@antfu/utils';
 
 const SqlTask = lazy(() => import('@/pages/DataStudio/CenterTabContent/SqlTask'));
-const DataSourceDetail = lazy(
-  () => import('@/pages/DataStudio/CenterTabContent/DataSourceDetail')
-);
+const DataSourceDetail = lazy(() => import('@/pages/DataStudio/CenterTabContent/DataSourceDetail'));
 
 let didMount = false;
 const DataStudioNew: React.FC = (props: any) => {
