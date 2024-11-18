@@ -49,7 +49,7 @@ import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudio/DataStudioContext';
 import './css/index.less';
 import { getTenantByLocalStorage } from '@/utils/function';
-import FooterContainer from '@/pages/DataStudio/FooterContainer';
+import FooterContainer  from '@/pages/DataStudio/FooterContainer';
 import { useToken } from 'antd/es/theme/internal';
 import { TAG_RIGHT_CONTEXT_MENU } from '@/pages/DataStudio/constants';
 import { ContextMenuSpace } from '@/pages/DataStudio/ContextMenuSpace';

@@ -18,10 +18,13 @@
  */
 
 import { l } from '@/utils/intl';
-import { useModel } from '@@/exports';
+import {connect, useModel} from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
+import {CenterTab, DataStudioState} from "@/pages/DataStudio/model";
+import {mapDispatchToProps} from "@/pages/DataStudio/DvaFunction";
+import {formatDate} from "@/pages/DataStudio/FooterContainer/function";
 
 type ButtonRoute = {
   text: React.ReactNode;
@@ -29,8 +32,8 @@ type ButtonRoute = {
   onClick?: () => void;
 };
 
-export default (props: { token: GlobalToken }) => {
-  const { token } = props;
+ const FooterContainer =  (props: { token: GlobalToken,centerContent?:DataStudioState['centerContent'] }) => {
+  const { token,centerContent } = props;
   const [memDetailInfo, setMemDetailInfo] = useState('0/0M');
   const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
@@ -91,6 +94,12 @@ export default (props: { token: GlobalToken }) => {
       </Button>
     ));
   };
+  const renderFooterLastUpdate=()=>{
+    const currentTab = centerContent?.tabs.find((item, index) => item.id === centerContent?.activeTab);
+    if (currentTab && currentTab.tabType==="task") {
+      return (<div>最近保存: {formatDate(currentTab.params.updateTime)}</div>)
+    }
+  }
 
   return (
     <>
@@ -115,8 +124,16 @@ export default (props: { token: GlobalToken }) => {
         </Space>
         <Space style={{ direction: 'rtl', width: '70%' }} size={4} direction={'horizontal'}>
           {renderFooterRightInfo(route)}
+          {renderFooterLastUpdate()}
         </Space>
       </div>
     </>
   );
 };
+
+export default connect(
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({
+    centerContent: DataStudio.centerContent
+  }),
+  mapDispatchToProps
+)(FooterContainer);
