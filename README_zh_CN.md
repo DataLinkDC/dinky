@@ -12,7 +12,7 @@
 
 ## 简介
 
-Dinky 是一个基于 `Apache Flink` 的实时数据开发平台，实现了敏捷的数据开发、部署和运维。
+以 Apache Flink 为内核构建的开源实时计算平台，具备实时应用的作业开发、数据调试及运行监控能力，助力实时计算高效应用。
 
 ## 功能
 
@@ -80,9 +80,9 @@ Dinky 是一个基于 `Apache Flink` 的实时数据开发平台，实现了敏�
 
 [Apache Flink](https://github.com/apache/flink)
 
-[FlinkCDC](https://github.com/ververica/flink-cdc-connectors)
+[Apache FlinkCDC](https://github.com/apache/flink-cdc)
 
-[Apache Paimon](https://github.com/apache/incubator-paimon)
+[Apache Paimon](https://github.com/apache/paimon)
 
 [Apache Dolphinscheduler](https://github.com/apache/dolphinscheduler)
 
@@ -110,13 +110,9 @@ Dinky 是一个基于 `Apache Flink` 的实时数据开发平台，实现了敏�
 
 2.访问 [官网](http://www.dinky.org.cn/#/) 网址，阅读最新文档手册
 
-3.推荐扫码进入钉钉群
+3.进入微信用户社区群（推荐，添加微信号 `wenmo_ai` 邀请进群）和 QQ 用户社区群（**543709668**）交流，必须申请备注 “Dinky + 企业名 + 职位”，
 
-<img src="https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
-
-4.进入微信用户社区群（推荐，添加微信号 `wenmo_ai` 邀请进群）和 QQ 用户社区群（**543709668**）交流，必须申请备注 “Dinky + 企业名 + 职位”，
-
-5.关注微信公众号获取官方最新文章：[Dinky 开源](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
+4.关注微信公众号获取官方最新文章：[Dinky 开源](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg)
 
 ## 版权
 
