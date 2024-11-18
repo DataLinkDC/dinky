@@ -97,7 +97,7 @@ type ButtonRoute = {
   const renderFooterLastUpdate=()=>{
     const currentTab = centerContent?.tabs.find((item, index) => item.id === centerContent?.activeTab);
     if (currentTab && currentTab.tabType==="task") {
-      return (<div>最近保存: {formatDate(currentTab.params.updateTime)}</div>)
+      return (<div>{l('pages.datastudio.label.lastUpdateDes')}:  {formatDate(currentTab.params.updateTime)}</div>)
     }
   }
 

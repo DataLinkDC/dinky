@@ -618,6 +618,12 @@ export default {
   'pages.datastudio.label.history.clusterInstance': 'Cluster Instance',
   'pages.datastudio.label.history.clusterConfig': 'Cluster Config',
   'pages.datastudio.label.history.local': 'Local (Built-in MiniCluster)',
+
+  'pages.datastudio.label.lastUpdateDes':'Recently saved',
+  'pages.datastudio.label.lastUpdateJust':'Newly',
+  'pages.datastudio.label.lastUpdateMinutesAgo':'Minutes Ago',
+  'pages.datastudio.label.lastUpdateHoursAgo':'Hours Ago',
+
   /**
    *
    * rc
