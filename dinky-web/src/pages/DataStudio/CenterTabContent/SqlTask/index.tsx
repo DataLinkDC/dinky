@@ -45,7 +45,7 @@ import RunToolBarButton from '@/pages/DataStudio/components/RunToolBarButton';
 import { connect, useModel } from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudio/components/CusPanelResizeHandle';
 import { ProForm, ProFormInstance } from '@ant-design/pro-components';
-import {useAsyncEffect, useFullscreen, useRafInterval} from 'ahooks';
+import { useAsyncEffect, useFullscreen, useRafInterval } from 'ahooks';
 import { SelectFlinkEnv } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkEnv';
 import { SelectFlinkRunMode } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkRunMode';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
@@ -135,7 +135,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     createTime: new Date(),
     updateTime: new Date(),
     status: '',
-    mockSinkFunction:true
+    mockSinkFunction: true
   });
   // 代码恢复
   const [openDiffModal, setOpenDiffModal] = useState(false);
@@ -145,17 +145,19 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
 
   const { initialState } = useModel('@@initialState');
-  const [refreshTaskStatusDelay, setRefreshTaskStatusDelay] = useState<number|undefined>(undefined)
+  const [refreshTaskStatusDelay, setRefreshTaskStatusDelay] = useState<number | undefined>(
+    undefined
+  );
   useRafInterval(async () => {
     const taskDetail = (await getTaskDetails(params.taskId))!!;
-    setCurrentState(prevState =>( {...prevState,status:taskDetail.status}))
+    setCurrentState((prevState) => ({ ...prevState, status: taskDetail.status }));
   }, refreshTaskStatusDelay);
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId);
     if (taskDetail) {
       const statement = params.statement ?? taskDetail.statement;
-      const newParams = { ...taskDetail, taskId: params.taskId, statement ,mockSinkFunction:true};
+      const newParams = { ...taskDetail, taskId: params.taskId, statement, mockSinkFunction: true };
       // @ts-ignore
       setCurrentState(newParams);
       updateCenterTab({ ...props.tabData, params: newParams });
@@ -175,14 +177,12 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }, []);
   // 定时刷新作业状态
   useEffect(() => {
-    if (isStatusDone(currentState.status)){
+    if (isStatusDone(currentState.status)) {
       setRefreshTaskStatusDelay(undefined);
-    }else {
-      setRefreshTaskStatusDelay(3000)
+    } else {
+      setRefreshTaskStatusDelay(3000);
     }
   }, [currentState.status]);
-
-
 
   // 数据初始化
   useEffect(() => {
@@ -423,7 +423,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_DEBUG,
       params: {
-        taskId: params.taskId,
+        taskId: params.taskId
       }
     });
     const res = await debugTask(
@@ -437,13 +437,18 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           taskId: params.taskId,
           isMockSinkResult: res.data?.result?.mockSinkResult,
           columns: res.data?.result?.columns ?? [],
-          rowData: res.data?.result?.rowData ?? [],
+          rowData: res.data?.result?.rowData ?? []
         }
       });
       setCurrentState((prevState) => {
         return {
           ...prevState,
-          status: res.data.status === 'SUCCESS' ? (res.data.pipeline?'RUNNING':'SUCCESS') : res.data.status
+          status:
+            res.data.status === 'SUCCESS'
+              ? res.data.pipeline
+                ? 'RUNNING'
+                : 'SUCCESS'
+              : res.data.status
         };
       });
     }

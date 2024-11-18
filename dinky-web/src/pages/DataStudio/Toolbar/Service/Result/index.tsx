@@ -17,25 +17,25 @@
  *
  */
 
-import {handleGetOption, handleGetOptionWithoutMsg} from '@/services/BusinessCrud';
-import {API_CONSTANTS} from '@/services/endpoints';
-import {transformTableDataToCsv} from '@/utils/function';
-import {l} from '@/utils/intl';
-import {DownloadOutlined, SearchOutlined, SyncOutlined} from '@ant-design/icons';
-import {Highlight} from '@ant-design/pro-layout/es/components/Help/Search';
-import {Button, Drawer, Empty, Input, InputRef, Space, Tabs, TabsProps} from 'antd';
-import {ColumnType} from 'antd/es/table';
-import {FilterConfirmProps} from 'antd/es/table/interface';
-import {DataIndex} from 'rc-table/es/interface';
-import React, {useCallback, useEffect, useRef, useState, useTransition} from 'react';
-import {useAsyncEffect} from 'ahooks';
-import {DataStudioActionType} from '@/pages/DataStudio/data.d';
-import {isSql} from '@/pages/DataStudio/utils';
-import {ProTable} from '@ant-design/pro-components';
-import {getInsights} from '@antv/ava';
-import {InsightCard} from '@antv/ava-react';
-import type {Datum, InsightsResult} from '@antv/ava/lib/insight/types';
-import {ProColumns} from "@ant-design/pro-table/es/typing";
+import { handleGetOption, handleGetOptionWithoutMsg } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { transformTableDataToCsv } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { DownloadOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import { Highlight } from '@ant-design/pro-layout/es/components/Help/Search';
+import { Button, Drawer, Empty, Input, InputRef, Space, Tabs, TabsProps } from 'antd';
+import { ColumnType } from 'antd/es/table';
+import { FilterConfirmProps } from 'antd/es/table/interface';
+import { DataIndex } from 'rc-table/es/interface';
+import React, { useCallback, useEffect, useRef, useState, useTransition } from 'react';
+import { useAsyncEffect } from 'ahooks';
+import { DataStudioActionType } from '@/pages/DataStudio/data.d';
+import { isSql } from '@/pages/DataStudio/utils';
+import { ProTable } from '@ant-design/pro-components';
+import { getInsights } from '@antv/ava';
+import { InsightCard } from '@antv/ava-react';
+import type { Datum, InsightsResult } from '@antv/ava/lib/insight/types';
+import { ProColumns } from '@ant-design/pro-table/es/typing';
 
 type Data = {
   [c: string]: any;
@@ -46,7 +46,7 @@ type DataList = Data[];
 export default (props: { taskId: number; action: any; dialect: string }) => {
   const {
     taskId,
-    action: {actionType, params},
+    action: { actionType, params },
     dialect
   } = props;
 
@@ -59,8 +59,13 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   useEffect(() => {
-    if ((actionType === DataStudioActionType.TASK_PREVIEW_RESULT) && taskId=== params.taskId) {
-      setDataList(covertDataList({columns: params.columns, rowData: params.rowData}, params.isMockSinkResult));
+    if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT && taskId === params.taskId) {
+      setDataList(
+        covertDataList(
+          { columns: params.columns, rowData: params.rowData },
+          params.isMockSinkResult
+        )
+      );
     }
   }, [props.action]);
 
@@ -84,10 +89,10 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   };
   const covertDataList = (data: Data, isMockSinkResult: boolean = false) => {
     if (isMockSinkResult) {
-      return convertMockResultToList(data)
+      return convertMockResultToList(data);
     }
-    return [data]
-  }
+    return [data];
+  };
   const convertMockResultToList = (data: Data): Data[] => {
     const rowDataResults: any[] = [];
     // 对于每个MockResult的Column，一个元素代表一个表信息
@@ -126,30 +131,30 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
     return rowDataResults;
   };
   const getColumnSearchProps = (dataIndex: string): ColumnType<Data> => ({
-    filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
-      <div style={{padding: 8}} onKeyDown={(e) => e.stopPropagation()}>
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{marginBottom: 8, display: 'block'}}
+          style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
             type='primary'
             onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-            icon={<SearchOutlined/>}
+            icon={<SearchOutlined />}
             size='small'
-            style={{width: 90}}
+            style={{ width: 90 }}
           >
             {l('button.search')}
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
             size='small'
-            style={{width: 90}}
+            style={{ width: 90 }}
           >
             {l('button.reset')}
           </Button>
@@ -157,7 +162,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{color: filtered ? '#1677ff' : undefined}}/>
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -171,7 +176,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
     },
     render: (text) =>
       searchedColumn === dataIndex ? (
-        <Highlight label={text ? text.toString() : ''} words={[searchText]}/>
+        <Highlight label={text ? text.toString() : ''} words={[searchText]} />
       ) : (
         text
       )
@@ -231,7 +236,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
     return (
       <>
         {!isSql(dialect) ? (
-          <Button loading={loading} type='primary' onClick={showDetail} icon={<SyncOutlined/>}>
+          <Button loading={loading} type='primary' onClick={showDetail} icon={<SyncOutlined />}>
             {l('pages.datastudio.label.result.query.latest.data')}
           </Button>
         ) : undefined}
@@ -245,7 +250,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
         type: 'text/csv'
       });
       const url = URL.createObjectURL(csvDataBlob);
-      return <Button type='link' href={url} icon={<DownloadOutlined/>} title={'Export Csv'}/>;
+      return <Button type='link' href={url} icon={<DownloadOutlined />} title={'Export Csv'} />;
     }
     return undefined;
   };
@@ -257,7 +262,7 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
         onClick={() => {
           setOpenAVA(true);
           startTransition(() => {
-            setAvaResult(getInsights(data.rowData as Datum[],{visualization:true}));
+            setAvaResult(getInsights(data.rowData as Datum[], { visualization: true }));
           });
         }}
       >
@@ -286,32 +291,38 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
       return {
         key: data.tableName ?? index,
         label: data.tableName,
-        children: <ProTable
-          className={'datastudio-theme'}
-          cardBordered
-          columns={getColumns(data.columns)}
-          size='small'
-          scroll={{x: 'max-content'}}
-          dataSource={data.rowData?.map((item: any, index: number) => {
-            return {...item, key: index};
-          })}
-          options={{fullScreen: true, density: false}}
-          search={false}
-          loading={loading}
-          toolBarRender={() => [renderDownloadButton(data), renderAVA(data)]}
-          pagination={{
-            showSizeChanger: true
-          }}
-        />
-      }
-    })
-  }
+        children: (
+          <ProTable
+            className={'datastudio-theme'}
+            cardBordered
+            columns={getColumns(data.columns)}
+            size='small'
+            scroll={{ x: 'max-content' }}
+            dataSource={data.rowData?.map((item: any, index: number) => {
+              return { ...item, key: index };
+            })}
+            options={{ fullScreen: true, density: false }}
+            search={false}
+            loading={loading}
+            toolBarRender={() => [renderDownloadButton(data), renderAVA(data)]}
+            pagination={{
+              showSizeChanger: true
+            }}
+          />
+        )
+      };
+    });
+  };
   return (
-    <div style={{width: '100%', paddingInline: 10}}>
+    <div style={{ width: '100%', paddingInline: 10 }}>
       {dataList.length > 0 ? (
-        <Tabs defaultActiveKey='0' tabBarExtraContent={renderFlinkSQLContent()} items={tabItems()}/>
+        <Tabs
+          defaultActiveKey='0'
+          tabBarExtraContent={renderFlinkSQLContent()}
+          items={tabItems()}
+        />
       ) : (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
       <Drawer
         open={openAVA}
@@ -320,14 +331,14 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
         onClose={handleCloseAva}
         destroyOnClose
       >
-        <div key='plot' style={{flex: 5, height: '100%'}}>
+        <div key='plot' style={{ flex: 5, height: '100%' }}>
           {avaResult?.insights &&
             avaResult.insights.map((insight, index) => {
               return (
                 <InsightCard
                   insightInfo={insight}
                   key={index}
-                  visualizationOptions={{lang: 'zh-CN'}}
+                  visualizationOptions={{ lang: 'zh-CN' }}
                 />
               );
             })}

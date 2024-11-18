@@ -18,12 +18,7 @@
  */
 
 import { Tabs, TabsProps } from 'antd';
-import {
-  ProForm,
-  ProFormDigit,
-  ProFormGroup,
-  ProFormSwitch
-} from '@ant-design/pro-components';
+import { ProForm, ProFormDigit, ProFormGroup, ProFormSwitch } from '@ant-design/pro-components';
 import { l } from '@/utils/intl';
 import React from 'react';
 import { InfoCircleOutlined } from '@ant-design/icons';
