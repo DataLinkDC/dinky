@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.ExplainResult;
-import org.dinky.executor.ExecutorConfig;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 
@@ -111,7 +110,7 @@ class JobManagerTest {
     void testLineageSqlSingle() throws Exception {
         String statement =
                 IOUtils.toString(Resources.getResource("flink/sql/single-insert.sql"), StandardCharsets.UTF_8);
-        LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(statement, ExecutorConfig.DEFAULT);
+        LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(statement);
         assertNotNull(result);
         assertEquals(2, result.getTables().size());
         assertEquals(4, result.getRelations().size());

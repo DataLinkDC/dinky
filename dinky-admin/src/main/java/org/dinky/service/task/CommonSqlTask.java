@@ -19,13 +19,18 @@
 
 package org.dinky.service.task;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.model.DataBase;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.job.JobResult;
 import org.dinky.service.DataBaseService;
+import org.dinky.service.impl.DataBaseServiceImpl;
 
 import java.util.List;
 
@@ -79,5 +84,22 @@ public class CommonSqlTask extends BaseTask {
     @Override
     public boolean stop() {
         return false;
+    }
+
+    public LineageResult getColumnLineage() {
+        if (Asserts.isNull(task.getDatabaseId())) {
+            return null;
+        }
+        DataBaseService dataBaseService = SpringUtil.getBean(DataBaseServiceImpl.class);
+        DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+        if (Asserts.isNull(dataBase)) {
+            return null;
+        }
+        if (task.getDialect().equalsIgnoreCase("doris") || task.getDialect().equalsIgnoreCase("starrocks")) {
+            return SQLLineageBuilder.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
+        } else {
+            return SQLLineageBuilder.getSqlLineage(
+                    task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
+        }
     }
 }

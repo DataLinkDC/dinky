@@ -43,6 +43,8 @@ import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
 import org.dinky.explainer.Explainer;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.FlinkConfig;
@@ -380,6 +382,11 @@ public class JobManager {
 
     public String getJobPlanJson(String statement) {
         return Explainer.build(this).getJobPlanInfo(statement).getJsonPlan();
+    }
+
+    public LineageResult getColumnLineage(String statement) {
+        return LineageBuilder.getColumnLineageByLogicalPlan(
+                Explainer.build(this).getLineage(statement));
     }
 
     public boolean cancelNormal(String jobId) {

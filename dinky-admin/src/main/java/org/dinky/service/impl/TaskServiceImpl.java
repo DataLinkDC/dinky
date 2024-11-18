@@ -59,9 +59,7 @@ import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.udf.UDFTemplate;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
-import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.data.model.UDF;
@@ -980,27 +978,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public LineageResult getTaskLineage(Integer id) {
+    public LineageResult getTaskLineage(Integer id) throws NotSupportExplainExcepition {
         TaskDTO task = getTaskInfoById(id);
-        if (!Dialect.isCommonSql(task.getDialect())) {
-            if (Asserts.isNull(task.getDatabaseId())) {
-                return null;
-            }
-            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
-            if (Asserts.isNull(dataBase)) {
-                return null;
-            }
-            if (task.getDialect().equalsIgnoreCase("doris") || task.getDialect().equalsIgnoreCase("starrocks")) {
-                return SQLLineageBuilder.getSqlLineage(task.getStatement(), "mysql", dataBase.getDriverConfig());
-            } else {
-                return SQLLineageBuilder.getSqlLineage(
-                        task.getStatement(), task.getDialect().toLowerCase(), dataBase.getDriverConfig());
-            }
-        } else {
-            task.setStatement(buildEnvSql(task) + task.getStatement());
-            JobConfig jobConfig = task.getJobConfig();
-            return LineageBuilder.getColumnLineageByLogicalPlan(task.getStatement(), jobConfig);
-        }
+        BaseTask baseTask = BaseTask.getTask(task);
+        return baseTask.getColumnLineage();
     }
 
     private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {

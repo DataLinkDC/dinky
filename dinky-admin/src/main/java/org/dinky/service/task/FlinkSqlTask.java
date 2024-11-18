@@ -25,6 +25,7 @@ import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
 import org.dinky.service.TaskService;
@@ -60,6 +61,10 @@ public class FlinkSqlTask extends BaseTask {
     public ObjectNode getJobPlan() {
         String planJson = jobManager.getJobPlanJson(task.getStatement());
         return JsonUtils.parseObject(planJson);
+    }
+
+    public LineageResult getColumnLineage() {
+        return jobManager.getColumnLineage(task.getStatement());
     }
 
     @Override
