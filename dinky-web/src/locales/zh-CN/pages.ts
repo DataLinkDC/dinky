@@ -517,10 +517,10 @@ export default {
   'pages.datastudio.label.version.rollback.flinksqlConfirm':
     '确定回滚Flink SQL版本至【{versionId}】吗？',
 
-  'pages.datastudio.label.lastUpdateDes':'最近保存',
-  'pages.datastudio.label.lastUpdateJust':'刚刚',
-  'pages.datastudio.label.lastUpdateMinutesAgo':'分钟前',
-  'pages.datastudio.label.lastUpdateHoursAgo':'小时前',
+  'pages.datastudio.label.lastUpdateDes': '最近保存',
+  'pages.datastudio.label.lastUpdateJust': '刚刚',
+  'pages.datastudio.label.lastUpdateMinutesAgo': '分钟前',
+  'pages.datastudio.label.lastUpdateHoursAgo': '小时前',
 
   'pages.datastudio.catalog.catalogSelect': '请选择 catalog & database',
   'pages.datastudio.catalog.tableInfo': '表信息',
