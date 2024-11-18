@@ -447,7 +447,7 @@ public class SystemConfiguration {
                     FileUtil.file(DirConstant.getTempRootDir(), "flink-job-archive")
                             .getAbsolutePath());
             config.put("historyserver.archive.fs.dir", FLINK_JOB_ARCHIVE);
-            config.put("historyserver.archive.clean-expired-jobs","true" );
+            config.put("historyserver.archive.clean-expired-jobs", "true");
         }
         return config;
     }
