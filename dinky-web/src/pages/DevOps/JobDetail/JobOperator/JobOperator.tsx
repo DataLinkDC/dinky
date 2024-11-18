@@ -17,7 +17,7 @@
  *
  */
 
-import { cancelTask, savePointTask } from '@/pages/DataStudioNew/service';
+import { cancelTask, savePointTask } from '@/pages/DataStudio/service';
 import { isStatusDone } from '@/pages/DevOps/function';
 import EditJobInstanceForm from '@/pages/DevOps/JobDetail/JobOperator/components/EditJobInstanceForm';
 import RestartForm from '@/pages/DevOps/JobDetail/JobOperator/components/RestartForm';

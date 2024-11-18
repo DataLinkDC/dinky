@@ -17,26 +17,29 @@
  *
  */
 
-import { l } from '@/utils/intl';
-import { ErrorMessage, SuccessMessage } from '@/utils/messages';
-import { Modal } from 'antd';
-import { restartTask } from '@/pages/DataStudio/service';
+import * as React from 'react';
+import { JSX } from 'react';
+import { ToolbarSelect } from '@/pages/DataStudio/data.d';
+import { TabData } from 'rc-dock';
 
-export const recoveryCheckPoint = (taskId: number, path: string) => {
-  Modal.confirm({
-    title: l('devops.jobinfo.ck.recovery'),
-    content: l('devops.jobinfo.ck.recoveryConfirm', '', {
-      path: path
-    }),
-    okText: l('button.confirm'),
-    cancelText: l('button.cancel'),
-    onOk: async () => {
-      const result = await restartTask(taskId, path, l('devops.jobinfo.ck.recovery'));
-      if (result && result.code == 0) {
-        SuccessMessage(l('devops.jobinfo.ck.recovery.success'));
-      } else {
-        ErrorMessage(l('devops.jobinfo.ck.recovery.failed'));
-      }
-    }
-  });
+export type ToolbarProp = {
+  showDesc: boolean;
+  onClick: (route: ToolbarRoute) => void;
+  toolbarSelect: ToolbarSelect;
+  position: ToolbarPosition;
+  saveToolbarLayout: (position: ToolbarPosition, list: string[]) => void;
+  height: number;
+};
+
+// 位置总共分为 左上 左下 右
+export type ToolbarPosition = 'leftTop' | 'leftBottom' | 'right' | 'centerContent';
+
+export type ToolbarRoute = {
+  key: string;
+  // 标题
+  title: () => string;
+  // 图标
+  icon: JSX.Element;
+  position: ToolbarPosition;
+  content: () => React.ReactElement;
 };

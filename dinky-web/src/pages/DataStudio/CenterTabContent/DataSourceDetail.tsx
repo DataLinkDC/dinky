@@ -17,26 +17,22 @@
  *
  */
 
-import { l } from '@/utils/intl';
-import { ErrorMessage, SuccessMessage } from '@/utils/messages';
-import { Modal } from 'antd';
-import { restartTask } from '@/pages/DataStudio/service';
+import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
+import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
+import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { connect } from '@@/exports';
+import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 
-export const recoveryCheckPoint = (taskId: number, path: string) => {
-  Modal.confirm({
-    title: l('devops.jobinfo.ck.recovery'),
-    content: l('devops.jobinfo.ck.recoveryConfirm', '', {
-      path: path
-    }),
-    okText: l('button.confirm'),
-    cancelText: l('button.cancel'),
-    onOk: async () => {
-      const result = await restartTask(taskId, path, l('devops.jobinfo.ck.recovery'));
-      if (result && result.code == 0) {
-        SuccessMessage(l('devops.jobinfo.ck.recovery.success'));
-      } else {
-        ErrorMessage(l('devops.jobinfo.ck.recovery.failed'));
-      }
-    }
-  });
+const DataSourceDetail = (props: CenterTab) => {
+  const { params } = props;
+  const queryParams: QueryParams = {
+    id: params.selectDatabaseId,
+    schemaName: params.schemaName,
+    tableName: params.tableName
+  };
+  return <RightTagsRouter queryParams={queryParams} />;
 };
+export default connect(
+  ({ DataStudio }: { DataStudio: DataStudioState }) => ({}),
+  mapDispatchToProps
+)(DataSourceDetail);

@@ -17,26 +17,20 @@
  *
  */
 
-import { l } from '@/utils/intl';
-import { ErrorMessage, SuccessMessage } from '@/utils/messages';
-import { Modal } from 'antd';
-import { restartTask } from '@/pages/DataStudio/service';
+import { Divider } from 'antd';
+import React, { memo } from 'react';
+import KeyBoard from '@/pages/DataStudio/CenterTabContent/KeyBoard';
+import QuickGuide from '@/pages/DataStudio/CenterTabContent/QuickGuide';
 
-export const recoveryCheckPoint = (taskId: number, path: string) => {
-  Modal.confirm({
-    title: l('devops.jobinfo.ck.recovery'),
-    content: l('devops.jobinfo.ck.recoveryConfirm', '', {
-      path: path
-    }),
-    okText: l('button.confirm'),
-    cancelText: l('button.cancel'),
-    onOk: async () => {
-      const result = await restartTask(taskId, path, l('devops.jobinfo.ck.recovery'));
-      if (result && result.code == 0) {
-        SuccessMessage(l('devops.jobinfo.ck.recovery.success'));
-      } else {
-        ErrorMessage(l('devops.jobinfo.ck.recovery.failed'));
-      }
-    }
-  });
-};
+export default memo(() => {
+  return (
+    <div style={{ userSelect: 'none' }}>
+      <KeyBoard />
+      <Divider />
+      <br />
+      <br />
+      <br />
+      <QuickGuide />
+    </div>
+  );
+});
