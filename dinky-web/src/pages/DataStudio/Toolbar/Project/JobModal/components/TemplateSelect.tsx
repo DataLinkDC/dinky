@@ -37,7 +37,7 @@ const TemplateSelect: React.FC<{ type: string; onChange: (v: string) => void }> 
 
   const renderItem = (item: Document) => {
     return (
-      <div style={{ padding: 10, background: '#F8F9FA' }}>
+      <div style={{ padding: 10}}>
         <ProCard
           checked={item.id == currentSelect?.id}
           hoverable
@@ -74,9 +74,8 @@ const TemplateSelect: React.FC<{ type: string; onChange: (v: string) => void }> 
 
   return (
     <ProCard
-      bodyStyle={{ padding: 0 }}
+      bodyStyle={{ padding: '0 12px 12px 12px' }}
       collapsible
-      defaultCollapsed={true}
       title={<a>{l('catalog.useTemplate')}</a>}
       collapsibleIconRender={() => <a>{'>'}</a>}
       size={'small'}

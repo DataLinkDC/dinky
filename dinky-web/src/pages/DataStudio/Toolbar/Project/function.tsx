@@ -26,8 +26,8 @@ import { l } from '@/utils/intl';
 import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Divider, Space, Tooltip } from 'antd';
 import { Key } from 'react';
-import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudio/function';
-import { assert } from '@/pages/DataStudio/utils';
+import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudioNew/function';
+import { assert } from '@/pages/DataStudioNew/utils';
 
 /**
  * generate list of tree node from data
@@ -235,18 +235,6 @@ export const buildProjectTree = (
   data
     ? data.map((item: Catalogue) => {
         const currentPath = path ? [...path, item.name] : [item.name];
-        // 构造生命周期的值
-        const stepValue = buildStepValue(item.task?.step);
-        // 渲染生命周期的 标记点
-        const renderPreFixState = item.isLeaf && showBadge(item.type) && (
-          <>
-            <Badge
-              title={stepValue.title}
-              color={stepValue.color}
-              // status={(stepValue.status as PresetStatusColorType) ?? 'default'}
-            />
-          </>
-        );
 
         // 总渲染 title
         const renderTitle = (
@@ -286,21 +274,7 @@ export const buildProjectTree = (
               >
                 <LockTwoTone twoToneColor={'red'} />
               </Tooltip>
-            ) : (
-              <Tooltip
-                mouseEnterDelay={mouseEnterDelay}
-                placement={'right'}
-                title={
-                  <p style={{ margin: 0 }}>
-                    {l('global.operation.able')}
-                    <Divider style={{ margin: 0 }} type={'horizontal'} />
-                    {toolTipTitle}
-                  </p>
-                }
-              >
-                <UnlockTwoTone twoToneColor='gray' />
-              </Tooltip>
-            )}
+            ) : undefined}
           </>
         );
 
@@ -311,7 +285,6 @@ export const buildProjectTree = (
           label: searchTreeNode(item.name, searchValue),
           icon: item.type && item.children.length === 0 && (
             <Space size={'small'}>
-              {renderPreFixState}
               {getTabIcon(item.type, 20)}
             </Space>
           ),

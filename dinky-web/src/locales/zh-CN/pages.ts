@@ -460,12 +460,12 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',
   'pages.datastudio.label.jobConfig.addConfig.value': '值',
-  'pages.datastudio.label.udf': '注入UDF算子',
+  'pages.datastudio.label.udf': '引用 UDF',
   'pages.datastudio.label.udf.tip':
-    '注入UDF算子, 自动在所有语句前注入`create temporary function [functionName] as [className]` 语句',
+    '引用 UDF, 自动在所有语句前执行`create temporary function [functionName] as [className]` 语句',
   'pages.datastudio.label.udf.duplicate.tip':
-    '此次选择的类[className]已经存在,不允许重复注入,请重新选择,或者取消注入(删除改行即可)。',
-  'pages.datastudio.label.udf.injectUdf': '注入UDF',
+    '此次选择的类[className]已经存在,不允许重复注入,请重新选择,或者取消引用(删除改行即可)。',
+  'pages.datastudio.label.udf.injectUdf': '引用 UDF',
   'pages.datastudio.label.udf.name': '函数名称',
   'pages.datastudio.label.udf.className': '类名',
   'pages.datastudio.label.jobConfig.alertGroup': '告警组',

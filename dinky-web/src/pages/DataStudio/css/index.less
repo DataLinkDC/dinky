@@ -15,17 +15,17 @@
 
 .dark-theme {
   // 暗色主题颜色全局变量
-  --primary-color: #24292e;
-  --second-color: #263238;
-  --main-background-color: #24292e;
-  --footer-bg-color: rgba(255, 255, 255, 0.18);
+  --primary-color: #2b2d30;
+  --second-color: #3c3f41;
+  --main-background-color: #2b2d30;
+  --footer-bg-color: #2b2d30;
   --btn-color: #ced0d6;
-  --btn-active-color: #ced0d6;
-  --btn-background-color: #5e423f;
-  --border-color: #1b1f23;
+  --btn-active-color: #fafafa;
+  --btn-background-color: #43454a;
+  --border-color: #1e1f22;
   --text-color: #fafafa;
   --panel-extra-btn-color: #fafafa;
-  --scroll-bg-color: #c46c5d;
+  --scroll-bg-color: #4d4e51;
 }
 
 .page-container {
@@ -198,8 +198,9 @@ body > .dragging-layer > div:last-child {
 
 .dock-tab-active,
 .dock-tab-active:hover {
-  color: #108ee9;
+  color: var(--text-color);
   cursor: default;
+  font-weight: 600;
   transform: translateZ(0);
 }
 

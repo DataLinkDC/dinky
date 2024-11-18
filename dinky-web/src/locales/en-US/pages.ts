@@ -515,12 +515,12 @@ export default {
   'pages.datastudio.label.jobConfig.addConfig': 'Add Config item',
   'pages.datastudio.label.jobConfig.addConfig.params': 'parameters',
   'pages.datastudio.label.jobConfig.addConfig.value': 'value',
-  'pages.datastudio.label.udf': 'Udf Item',
+  'pages.datastudio.label.udf': 'Refer Udf',
   'pages.datastudio.label.udf.tip':
-    'Inject UDF item, Automatically add statement `create temporary function [functionName] as [className]` at the beginning of the SQL statement',
+    'Refer UDF. Automatically add statement `create temporary function [functionName] as [className]` at the beginning of the SQL statement',
   'pages.datastudio.label.udf.duplicate.tip':
-    'The class [className] selected this time already exists and duplicate injection is not allowed. Please reselect or cancel injection (delete and change line).',
-  'pages.datastudio.label.udf.injectUdf': 'Inject UDF item',
+    'The class [className] selected this time already exists and duplicate reference is not allowed. Please reselect or cancel reference (delete and change line).',
+  'pages.datastudio.label.udf.injectUdf': 'Refer UDF',
   'pages.datastudio.label.udf.name': 'function name',
   'pages.datastudio.label.udf.className': 'class name',
   'pages.datastudio.label.jobConfig.alertGroup': 'Alarm Group',
