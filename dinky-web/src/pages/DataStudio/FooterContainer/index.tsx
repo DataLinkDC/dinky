@@ -18,13 +18,13 @@
  */
 
 import { l } from '@/utils/intl';
-import {connect, useModel} from '@@/exports';
+import { connect, useModel } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
-import {CenterTab, DataStudioState} from "@/pages/DataStudio/model";
-import {mapDispatchToProps} from "@/pages/DataStudio/DvaFunction";
-import {formatDate} from "@/pages/DataStudio/FooterContainer/function";
+import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
+import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
+import { formatDate } from '@/pages/DataStudio/FooterContainer/function';
 
 type ButtonRoute = {
   text: React.ReactNode;
@@ -32,8 +32,11 @@ type ButtonRoute = {
   onClick?: () => void;
 };
 
- const FooterContainer =  (props: { token: GlobalToken,centerContent?:DataStudioState['centerContent'] }) => {
-  const { token,centerContent } = props;
+const FooterContainer = (props: {
+  token: GlobalToken;
+  centerContent?: DataStudioState['centerContent'];
+}) => {
+  const { token, centerContent } = props;
   const [memDetailInfo, setMemDetailInfo] = useState('0/0M');
   const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
@@ -94,12 +97,14 @@ type ButtonRoute = {
       </Button>
     ));
   };
-  const renderFooterLastUpdate=()=>{
-    const currentTab = centerContent?.tabs.find((item, index) => item.id === centerContent?.activeTab);
-    if (currentTab && currentTab.tabType==="task") {
-      return (<div>最近保存: {formatDate(currentTab.params.updateTime)}</div>)
+  const renderFooterLastUpdate = () => {
+    const currentTab = centerContent?.tabs.find(
+      (item, index) => item.id === centerContent?.activeTab
+    );
+    if (currentTab && currentTab.tabType === 'task') {
+      return <div>最近保存: {formatDate(currentTab.params.updateTime)}</div>;
     }
-  }
+  };
 
   return (
     <>
