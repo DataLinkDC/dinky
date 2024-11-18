@@ -17,26 +17,16 @@
  *
  */
 
-import { l } from '@/utils/intl';
-import { ErrorMessage, SuccessMessage } from '@/utils/messages';
-import { Modal } from 'antd';
-import { restartTask } from '@/pages/DataStudio/service';
+import { postAll } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { StudioMetaStoreParam } from '@/pages/DataStudio/Toolbar/Catalog/data';
 
-export const recoveryCheckPoint = (taskId: number, path: string) => {
-  Modal.confirm({
-    title: l('devops.jobinfo.ck.recovery'),
-    content: l('devops.jobinfo.ck.recoveryConfirm', '', {
-      path: path
-    }),
-    okText: l('button.confirm'),
-    cancelText: l('button.cancel'),
-    onOk: async () => {
-      const result = await restartTask(taskId, path, l('devops.jobinfo.ck.recovery'));
-      if (result && result.code == 0) {
-        SuccessMessage(l('devops.jobinfo.ck.recovery.success'));
-      } else {
-        ErrorMessage(l('devops.jobinfo.ck.recovery.failed'));
-      }
-    }
-  });
-};
+export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
+  return (await postAll(API_CONSTANTS.STUDIO_GET_MSSCHEMA_INFO, params)).data;
+}
+export async function getMSCatalogs(params: StudioMetaStoreParam) {
+  return (await postAll(API_CONSTANTS.STUDIO_GET_MSCATALOGS, params)).data;
+}
+export async function getMSColumns(params: StudioMetaStoreParam) {
+  return (await postAll(API_CONSTANTS.STUDIO_GET_MSCOLUMNS, params)).data;
+}

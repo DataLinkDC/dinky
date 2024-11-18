@@ -26,11 +26,12 @@
     <fileSets>
         <fileSet>
             <directory>${project.parent.basedir}/script/bin</directory>
-            <outputDirectory>./</outputDirectory>
+            <outputDirectory>./bin</outputDirectory>
             <lineEnding>unix</lineEnding>
             <fileMode>0755</fileMode>
             <includes>
                 <include>auto.sh</include>
+                <include>*.conf</include>
             </includes>
         </fileSet>
         <fileSet>

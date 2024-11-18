@@ -25,7 +25,7 @@ import { parseByteStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ModalForm } from '@ant-design/pro-components';
 import { Alert, Button, Descriptions, DescriptionsProps, Divider, Spin, Typography } from 'antd';
-import { restartTask } from '@/pages/DataStudioNew/service';
+import { restartTask } from '@/pages/DataStudio/service';
 
 const { Paragraph } = Typography;
 

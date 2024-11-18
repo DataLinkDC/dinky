@@ -17,26 +17,27 @@
  *
  */
 
-import { l } from '@/utils/intl';
-import { ErrorMessage, SuccessMessage } from '@/utils/messages';
-import { Modal } from 'antd';
-import { restartTask } from '@/pages/DataStudio/service';
+import { Tabs } from 'antd';
+import TextComparison from '@/pages/DataStudio/Toolbar/Tool/TextComparison';
+import { JsonToSql } from '@/pages/DataStudio/Toolbar/Tool/JsonToSql';
+import './index.less';
 
-export const recoveryCheckPoint = (taskId: number, path: string) => {
-  Modal.confirm({
-    title: l('devops.jobinfo.ck.recovery'),
-    content: l('devops.jobinfo.ck.recoveryConfirm', '', {
-      path: path
-    }),
-    okText: l('button.confirm'),
-    cancelText: l('button.cancel'),
-    onOk: async () => {
-      const result = await restartTask(taskId, path, l('devops.jobinfo.ck.recovery'));
-      if (result && result.code == 0) {
-        SuccessMessage(l('devops.jobinfo.ck.recovery.success'));
-      } else {
-        ErrorMessage(l('devops.jobinfo.ck.recovery.failed'));
-      }
+export default () => {
+  const items = [
+    {
+      key: 'jsonToSql',
+      label: 'JSON转Flink-SQL',
+      children: <JsonToSql />
+    },
+    {
+      key: 'textComparison',
+      label: '文本对比',
+      children: <TextComparison />
     }
-  });
+  ];
+  return (
+    <div style={{ padding: 10, height: '100%' }}>
+      <Tabs items={items} size={'small'} style={{ height: '100%' }} />
+    </div>
+  );
 };

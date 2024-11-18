@@ -35,7 +35,7 @@ import { useAsyncEffect } from 'ahooks';
 import {
   clearDataSourceTable,
   showDataSourceTable
-} from '@/pages/DataStudioNew/Toolbar/DataSource/service';
+} from '@/pages/DataStudio/Toolbar/DataSource/service';
 
 export default () => {
   const location = useLocation();

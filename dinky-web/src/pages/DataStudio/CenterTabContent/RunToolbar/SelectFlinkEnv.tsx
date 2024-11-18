@@ -17,26 +17,33 @@
  *
  */
 
+import React, { memo } from 'react';
 import { l } from '@/utils/intl';
-import { ErrorMessage, SuccessMessage } from '@/utils/messages';
-import { Modal } from 'antd';
-import { restartTask } from '@/pages/DataStudio/service';
+import { ProFormSelect } from '@ant-design/pro-components';
 
-export const recoveryCheckPoint = (taskId: number, path: string) => {
-  Modal.confirm({
-    title: l('devops.jobinfo.ck.recovery'),
-    content: l('devops.jobinfo.ck.recoveryConfirm', '', {
-      path: path
-    }),
-    okText: l('button.confirm'),
-    cancelText: l('button.cancel'),
-    onOk: async () => {
-      const result = await restartTask(taskId, path, l('devops.jobinfo.ck.recovery'));
-      if (result && result.code == 0) {
-        SuccessMessage(l('devops.jobinfo.ck.recovery.success'));
-      } else {
-        ErrorMessage(l('devops.jobinfo.ck.recovery.failed'));
-      }
-    }
-  });
-};
+import '../index.less';
+import { EnvType } from '@/pages/DataStudio/type';
+
+export const SelectFlinkEnv = memo((params: { flinkEnv: EnvType[] }) => {
+  const { flinkEnv } = params;
+  const options = [
+    { label: l('button.disable'), value: -1 },
+    ...flinkEnv.map((env) => ({
+      label: env.name,
+      value: env.id
+    }))
+  ];
+  return (
+    <ProFormSelect
+      name='envId'
+      tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
+      options={options}
+      rules={[{ required: true }]}
+      showSearch
+      allowClear={false}
+      fieldProps={{
+        popupMatchSelectWidth: false
+      }}
+    />
+  );
+});
