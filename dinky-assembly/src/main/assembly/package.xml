@@ -26,7 +26,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.parent.basedir}/script/bin</directory>
-            <outputDirectory>./bin</outputDirectory>
+            <outputDirectory>./</outputDirectory>
             <lineEnding>unix</lineEnding>
             <fileMode>0755</fileMode>
             <includes>
