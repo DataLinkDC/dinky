@@ -30,7 +30,7 @@ import React, { useState } from 'react';
 import { DefaultOptionType } from 'antd/es/select';
 import { TaskUdfRefer } from '@/types/Studio/data';
 import { calculatorWidth } from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig/function';
-import { TaskState } from '@/pages/DataStudioNew/type';
+import { TaskState } from '@/pages/DataStudio/type';
 
 export const ProFormFlinkUdfConfig = (props: {
   containerWidth: number;

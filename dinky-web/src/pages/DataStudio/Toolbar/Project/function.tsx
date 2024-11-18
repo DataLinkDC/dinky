@@ -26,8 +26,8 @@ import { l } from '@/utils/intl';
 import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Divider, Space, Tooltip } from 'antd';
 import { Key } from 'react';
-import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudioNew/function';
-import { assert } from '@/pages/DataStudioNew/utils';
+import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudio/function';
+import { assert } from '@/pages/DataStudio/utils';
 
 /**
  * generate list of tree node from data

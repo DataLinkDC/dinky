@@ -59,7 +59,7 @@ const SqlTask = lazy(() => import('@/pages/DataStudio/CenterTabContent/SqlTask')
 const DataSourceDetail = lazy(() => import('@/pages/DataStudio/CenterTabContent/DataSourceDetail'));
 
 let didMount = false;
-const DataStudioNew: React.FC = (props: any) => {
+const DataStudio: React.FC = (props: any) => {
   const {
     dataStudioState,
     handleToolbarShowDesc,
@@ -675,4 +675,4 @@ export default connect(
     dataStudioState: DataStudio
   }),
   mapDispatchToProps
-)(DataStudioNew);
+)(DataStudio);
