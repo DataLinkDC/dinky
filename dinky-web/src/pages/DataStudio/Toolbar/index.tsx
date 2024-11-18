@@ -17,15 +17,15 @@
  *
  */
 
-import { Flex, Row, Tooltip, Typography } from 'antd';
-import React, { useMemo } from 'react';
+import {Flex, Row, Tooltip, Typography} from 'antd';
+import React from 'react';
 import './index.less';
-import { ToolbarPosition, ToolbarProp } from '@/pages/DataStudio/Toolbar/data.d';
-import { ToolbarRoutes } from '@/pages/DataStudio/Toolbar/ToolbarRoute';
-import { ReactSortable } from 'react-sortablejs';
+import {ToolbarPosition, ToolbarProp} from '@/pages/DataStudio/Toolbar/data.d';
+import {ToolbarRoutes} from '@/pages/DataStudio/Toolbar/ToolbarRoute';
+import {ReactSortable} from 'react-sortablejs';
 
 export default React.memo((props: ToolbarProp) => {
-  const { showDesc, onClick, toolbarSelect, position, saveToolbarLayout, height } = props;
+  const {showDesc, onClick, toolbarSelect, position, saveToolbarLayout, height} = props;
   const routes = toolbarSelect.allTabs;
   const currentRoutes = routes
     .map((value) => ToolbarRoutes.find((item) => item.key === value)!!)
@@ -33,7 +33,7 @@ export default React.memo((props: ToolbarProp) => {
       ...item,
       position
     }));
-  const list = currentRoutes.map((item) => ({ id: item.key, name: item.title() }));
+  const list = currentRoutes.map((item) => ({id: item.key, name: item.title()}));
   const justifyContent = position === 'leftBottom' ? 'flex-end' : 'flex-start';
   return (
     <Flex wrap gap={1} justify={'center'} className={'toolbar-side'} id={position}>
@@ -81,12 +81,12 @@ export default React.memo((props: ToolbarProp) => {
             className += ' toolbar-icon-container-open';
           }
           return (
-            <div style={{ padding: '5px 5px 0' }}>
-              <Tooltip title={item.title()} placement={'right'} arrow={false} key={item.key}>
+            <Tooltip title={item.title()} placement={'right'} arrow={false} key={item.key}>
+              <div style={{padding: '5px 5px 0'}}>
                 <Row
                   id={item.key}
                   className={className}
-                  style={{ height }}
+                  style={{height}}
                   align={'middle'}
                   justify={'center'}
                   key={item.key}
@@ -102,7 +102,7 @@ export default React.memo((props: ToolbarProp) => {
                   >
                     {React.cloneElement(item.icon, {
                       className: 'toolbar-icon',
-                      style: { fontSize: height === 60 ? 23 : 18 }
+                      style: {fontSize: height === 60 ? 23 : 18}
                     })}
                   </span>
                   {showDesc && (
@@ -111,8 +111,8 @@ export default React.memo((props: ToolbarProp) => {
                     </Typography.Paragraph>
                   )}
                 </Row>
-              </Tooltip>
-            </div>
+              </div>
+            </Tooltip>
           );
         })}
       </ReactSortable>

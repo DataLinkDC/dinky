@@ -26,7 +26,6 @@ import { Monaco } from '@monaco-editor/react';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import {
   ApartmentOutlined,
-  AuditOutlined,
   BugOutlined,
   CaretRightOutlined,
   ClearOutlined,
@@ -34,7 +33,6 @@ import {
   EnvironmentOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
-  FundOutlined,
   MergeCellsOutlined,
   PartitionOutlined,
   PauseOutlined,
@@ -47,7 +45,7 @@ import RunToolBarButton from '@/pages/DataStudio/components/RunToolBarButton';
 import { connect, useModel } from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudio/components/CusPanelResizeHandle';
 import { ProForm, ProFormInstance } from '@ant-design/pro-components';
-import { useAsyncEffect, useFullscreen } from 'ahooks';
+import {useAsyncEffect, useFullscreen, useRafInterval} from 'ahooks';
 import { SelectFlinkEnv } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkEnv';
 import { SelectFlinkRunMode } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkRunMode';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
@@ -94,7 +92,6 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     showDesc,
     tempData,
     updateAction,
-    updateProject,
     updateCenterTab,
     activeTab,
     enabledDs,
@@ -137,7 +134,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     versionId: 0,
     createTime: new Date(),
     updateTime: new Date(),
-    status: ''
+    status: '',
+    mockSinkFunction:true
   });
   // 代码恢复
   const [openDiffModal, setOpenDiffModal] = useState(false);
@@ -146,13 +144,18 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const formRef = useRef<ProFormInstance>();
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
 
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
+  const [refreshTaskStatusDelay, setRefreshTaskStatusDelay] = useState<number|undefined>(undefined)
+  useRafInterval(async () => {
+    const taskDetail = (await getTaskDetails(params.taskId))!!;
+    setCurrentState(prevState =>( {...prevState,status:taskDetail.status}))
+  }, refreshTaskStatusDelay);
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId);
     if (taskDetail) {
       const statement = params.statement ?? taskDetail.statement;
-      const newParams = { ...taskDetail, taskId: params.taskId, statement };
+      const newParams = { ...taskDetail, taskId: params.taskId, statement ,mockSinkFunction:true};
       // @ts-ignore
       setCurrentState(newParams);
       updateCenterTab({ ...props.tabData, params: newParams });
@@ -170,6 +173,16 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     }
     setLoading(false);
   }, []);
+  // 定时刷新作业状态
+  useEffect(() => {
+    if (isStatusDone(currentState.status)){
+      setRefreshTaskStatusDelay(undefined);
+    }else {
+      setRefreshTaskStatusDelay(3000)
+    }
+  }, [currentState.status]);
+
+
 
   // 数据初始化
   useEffect(() => {
@@ -197,7 +210,6 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     editorInstance.current = editor;
     // @ts-ignore
     editor['id'] = currentState.taskId;
-    editor.onDidChangeCursorPosition((e) => {});
     registerEditorKeyBindingAndAction(editor);
   };
 
@@ -408,35 +420,37 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }, [updateAction, currentState.envId, handleSave, currentState.taskId, currentState.dialect]);
 
   const handleDebug = useCallback(async () => {
+    updateAction({
+      actionType: DataStudioActionType.TASK_RUN_DEBUG,
+      params: {
+        taskId: params.taskId,
+      }
+    });
     const res = await debugTask(
       l('pages.datastudio.editor.debugging', '', { jobName: currentState.name }),
       { ...currentState }
     );
     if (res?.success && res?.data?.result?.success) {
       updateAction({
-        actionType: DataStudioActionType.TASK_RUN_DEBUG,
+        actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
         params: {
           taskId: params.taskId,
+          isMockSinkResult: res.data?.result?.mockSinkResult,
           columns: res.data?.result?.columns ?? [],
-          rowData: res.data?.result?.rowData ?? []
+          rowData: res.data?.result?.rowData ?? [],
         }
       });
       setCurrentState((prevState) => {
         return {
           ...prevState,
-          status:
-            res.data.status === 'SUCCESS'
-              ? res.data.pipeline
-                ? 'RUNNING'
-                : 'SUCCESS'
-              : res.data.status
+          status: res.data.status === 'SUCCESS' ? (res.data.pipeline?'RUNNING':'SUCCESS') : res.data.status
         };
       });
     }
   }, [currentState, updateAction]);
 
   const handleStop = useCallback(async () => {
-    const result = await cancelTask('', currentState.taskId, false);
+    await cancelTask('', currentState.taskId, false);
     setCurrentState((prevState) => {
       return {
         ...prevState,

@@ -148,12 +148,12 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
       ) {
         setTabActiveKey((prevState) => ({
           ...prevState,
-          [params.taskId]: actionType
+          [params.taskId]: DataStudioActionType.TASK_RUN_SUBMIT
         }));
       } else if (actionType === DataStudioActionType.TASK_PREVIEW_RESULT) {
         setTabActiveKey((prevState) => ({
           ...prevState,
-          [params.taskId]: DataStudioActionType.TASK_RUN_DEBUG
+          [params.taskId]: DataStudioActionType.TASK_PREVIEW_RESULT
         }));
       }
     }
@@ -231,7 +231,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
           children: <Output taskId={taskId} />
         },
         {
-          key: DataStudioActionType.TASK_RUN_DEBUG,
+          key: DataStudioActionType.TASK_PREVIEW_RESULT,
           label: l('menu.datastudio.result'),
           icon: <MonitorOutlined />,
           children: <Result taskId={taskId} action={props.action} dialect={taskParams?.dialect} />

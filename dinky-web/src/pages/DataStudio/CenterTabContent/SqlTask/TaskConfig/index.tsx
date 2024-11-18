@@ -17,12 +17,11 @@
  *
  */
 
-import { Tabs, TabsProps, Tag } from 'antd';
+import { Tabs, TabsProps } from 'antd';
 import {
   ProForm,
   ProFormDigit,
   ProFormGroup,
-  ProFormSelect,
   ProFormSwitch
 } from '@ant-design/pro-components';
 import { l } from '@/utils/intl';
@@ -32,8 +31,6 @@ import { DIALECT, SWITCH_OPTIONS } from '@/services/constants';
 import { TaskState, TempData } from '@/pages/DataStudio/type';
 import { BasicConfig } from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig/BasicConfig';
 import { isSql, assert } from '@/pages/DataStudio/utils';
-import { DataSources } from '@/types/RegCenter/data';
-import { TagAlignLeft } from '@/components/StyledComponents';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 
 export default (props: {
@@ -51,7 +48,7 @@ export default (props: {
       label: l('menu.datastudio.task.baseConfig'),
       children: (
         <BasicConfig
-          tempData={props.tempData}
+          tempData={tempData}
           data={props.data}
           onValuesChange={props.onValuesChange}
           setCurrentState={props.setCurrentState}
@@ -65,34 +62,7 @@ export default (props: {
     assert(data.dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes')
   ) {
     const renderOtherConfig = () => {
-      if (isSql(data.dialect)) {
-        // const dataSourceData: Record<string, React.ReactNode> = {};
-        // const databaseDataList = tempData.dataSourceDataList;
-        // databaseDataList
-        //   .filter((x) => x.type.toLowerCase() === data?.dialect.toLowerCase())
-        //   .forEach((item: DataSources.DataSource) => {
-        //     dataSourceData[item.id] = (
-        //       <TagAlignLeft>
-        //         <Tag key={item.id} color={item.enabled ? 'processing' : 'error'}>
-        //           {item.type}
-        //         </Tag>
-        //         {item.name}
-        //       </TagAlignLeft>
-        //     );
-        //   });
-        // return (
-        //   <ProFormSelect
-        //     width={'sm'}
-        //     name={'databaseId'}
-        //     label={l('pages.datastudio.label.execConfig.selectDatabase')}
-        //     convertValue={(value) => String(value)}
-        //     valueEnum={dataSourceData}
-        //     placeholder='Please select a dataSource'
-        //     rules={[{ required: true, message: 'Please select your dataSource!' }]}
-        //     allowClear={false}
-        //   />
-        // );
-      } else {
+      if (!isSql(data.dialect)) {
         return (
           <>
             <ProFormSwitch

@@ -269,6 +269,7 @@ export type TaskState = {
   createTime: Date;
   updateTime: Date;
   status: string;
+  mockSinkFunction:boolean;
 };
 /**
  * @description:
