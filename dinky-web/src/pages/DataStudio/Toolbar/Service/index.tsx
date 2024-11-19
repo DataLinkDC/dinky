@@ -17,7 +17,6 @@
  *
  */
 
-import { connect } from '@@/exports';
 import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 import { Flex, Tabs, TabsProps, TreeDataNode } from 'antd';
@@ -49,11 +48,12 @@ import { getTabIcon } from '@/pages/DataStudio/function';
 import { DIALECT } from '@/services/constants';
 import { TableData } from '@/pages/DataStudio/Toolbar/Service/TableData';
 import { isSql } from '@/pages/DataStudio/utils';
-import { LineageNew } from '@/pages/DataStudio/Toolbar/Service/LineageNew';
 import { useAsyncEffect } from 'ahooks';
 import { sleep } from '@antfu/utils';
 import { l } from '@/utils/intl';
 import { assert } from '@/pages/DataStudio/utils';
+import {connect} from "@umijs/max";
+import {Lineage} from "@/pages/DataStudio/Toolbar/Service/Lineage";
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {
@@ -97,7 +97,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         key: actionType,
         label: l('menu.datastudio.lineage'),
         icon: <PartitionOutlined />,
-        children: <LineageNew data={params.data} />
+        children: <Lineage data={params.data} />
       }
     };
   }, [actionType, params?.data]);

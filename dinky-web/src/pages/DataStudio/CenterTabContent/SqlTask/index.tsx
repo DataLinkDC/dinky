@@ -140,6 +140,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   // 代码恢复
   const [openDiffModal, setOpenDiffModal] = useState(false);
   const [diff, setDiff] = useState<any>([]);
+  // 是否正在提交
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const formRef = useRef<ProFormInstance>();
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
@@ -386,36 +388,41 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }, [currentState, updateAction]);
 
   const handleSubmit = useCallback(async () => {
-    await handleSave();
-    updateAction({
-      actionType: DataStudioActionType.TASK_RUN_SUBMIT,
-      params: {
-        taskId: currentState.taskId,
-        envId: currentState.envId
-      }
-    });
-    const result = await executeSql(
-      l('pages.datastudio.editor.submitting', '', { jobName: title }),
-      currentState.taskId
-    );
-    if (result.success) {
-      setCurrentState((prevState) => {
-        return {
-          ...prevState,
-          status: result.data.status === 'SUCCESS' ? 'RUNNING' : result.data.status
-        };
+    setIsSubmitting(true)
+    try {
+      await handleSave();
+      updateAction({
+        actionType: DataStudioActionType.TASK_RUN_SUBMIT,
+        params: {
+          taskId: currentState.taskId,
+          envId: currentState.envId
+        }
       });
-      if (isSql(currentState.dialect) && result?.data?.result?.success) {
-        updateAction({
-          actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
-          params: {
-            taskId: currentState.taskId,
-            dialect: currentState.dialect,
-            columns: result.data.result.columns,
-            rowData: result.data.result.rowData
-          }
+      const result = await executeSql(
+        l('pages.datastudio.editor.submitting', '', { jobName: title }),
+        currentState.taskId
+      );
+      if (result.success) {
+        setCurrentState((prevState) => {
+          return {
+            ...prevState,
+            status: result.data.status === 'SUCCESS' ? 'RUNNING' : result.data.status
+          };
         });
+        if (isSql(currentState.dialect) && result?.data?.result?.success) {
+          updateAction({
+            actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
+            params: {
+              taskId: currentState.taskId,
+              dialect: currentState.dialect,
+              columns: result.data.result.columns,
+              rowData: result.data.result.rowData
+            }
+          });
+        }
       }
+    }finally {
+      setIsSubmitting(false)
     }
   }, [updateAction, currentState.envId, handleSave, currentState.taskId, currentState.dialect]);
 
@@ -426,31 +433,36 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         taskId: params.taskId
       }
     });
-    const res = await debugTask(
-      l('pages.datastudio.editor.debugging', '', { jobName: currentState.name }),
-      { ...currentState }
-    );
-    if (res?.success && res?.data?.result?.success) {
-      updateAction({
-        actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
-        params: {
-          taskId: params.taskId,
-          isMockSinkResult: res.data?.result?.mockSinkResult,
-          columns: res.data?.result?.columns ?? [],
-          rowData: res.data?.result?.rowData ?? []
-        }
-      });
-      setCurrentState((prevState) => {
-        return {
-          ...prevState,
-          status:
-            res.data.status === 'SUCCESS'
-              ? res.data.pipeline
-                ? 'RUNNING'
-                : 'SUCCESS'
-              : res.data.status
-        };
-      });
+    setIsSubmitting(true);
+    try {
+      const res = await debugTask(
+        l('pages.datastudio.editor.debugging', '', { jobName: currentState.name }),
+        { ...currentState }
+      );
+      if (res?.success && res?.data?.result?.success) {
+        updateAction({
+          actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
+          params: {
+            taskId: params.taskId,
+            isMockSinkResult: res.data?.result?.mockSinkResult,
+            columns: res.data?.result?.columns ?? [],
+            rowData: res.data?.result?.rowData ?? []
+          }
+        });
+        setCurrentState((prevState) => {
+          return {
+            ...prevState,
+            status:
+              res.data.status === 'SUCCESS'
+                ? res.data.pipeline
+                  ? 'RUNNING'
+                  : 'SUCCESS'
+                : res.data.status
+          };
+        });
+      }
+    }finally {
+      setIsSubmitting(false);
     }
   }, [currentState, updateAction]);
 
@@ -653,7 +665,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 )
               }
               showDesc={showDesc}
-              disabled={isLockTask}
+              disabled={isLockTask || isSubmitting}
               color={'green'}
               desc={l('pages.datastudio.editor.exec')}
               icon={<CaretRightOutlined />}
@@ -670,7 +682,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 assert(currentState.dialect, [DIALECT.FLINK_SQL], true, 'includes')
               }
               showDesc={showDesc}
-              disabled={isLockTask}
+              disabled={isLockTask || isSubmitting}
               color={'red'}
               desc={l('pages.datastudio.editor.debug')}
               icon={<BugOutlined />}
