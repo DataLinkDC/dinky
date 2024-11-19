@@ -20,7 +20,7 @@
 import { DockLayout, TabData } from 'rc-dock';
 import React, { lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Col, ConfigProvider, Row, Space, Spin, theme as antdTheme } from 'antd';
+import { Col, ConfigProvider, Row, Spin, theme as antdTheme } from 'antd';
 import Toolbar from '@/pages/DataStudio/Toolbar';
 import { DataStudioActionType, RightContextMenuState } from '@/pages/DataStudio/data.d';
 import {
@@ -30,8 +30,6 @@ import {
   handleRightClick,
   InitContextMenuPosition
 } from '@/pages/DataStudio/function';
-// import 'rc-dock/dist/rc-dock.css';
-// import 'rc-dock/dist/rc-dock-dark.css';
 import RightContextMenu, { useRightMenuItem } from '@/pages/DataStudio/RightContextMenu';
 import { MenuInfo } from 'rc-menu/es/interface';
 import { lazyComponent, ToolbarRoutes } from '@/pages/DataStudio/Toolbar/ToolbarRoute';
@@ -326,7 +324,7 @@ const DataStudio: React.FC = (props: any) => {
     return { id, group, title };
   };
   const loadTab = (tab: TabData) => {
-    const { id, title, group } = tab;
+    const { id, group } = tab;
     if (group !== 'centerContent') {
       const route = ToolbarRoutes.find((x) => x.key === id) as ToolbarRoute;
       const content = ToolbarRoutes.find((item) => item.key === route.key)!!.content();
@@ -641,7 +639,7 @@ const DataStudio: React.FC = (props: any) => {
               </Col>
             </Row>
 
-            <FooterContainer token={token} />
+            <FooterContainer token={token}  centerContent={dataStudioState.centerContent} />
 
             {/* 边缘区域布局右键菜单*/}
             <RightContextMenu

@@ -99,9 +99,8 @@ body > .dragging-layer > *:first-child {
   pointer-events: none !important;
   overflow: hidden !important;
   transform: translate(-50%, -50%) !important;
-  box-shadow:
-    0 0 8px rgba(255, 255, 255, 0.1),
-    inset 0 0 8px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1),
+  inset 0 0 8px rgba(255, 255, 255, 0.1);
 }
 
 body > .dragging-layer > .dragging {
@@ -221,10 +220,9 @@ body > .dragging-layer > div:last-child {
 .dock-top > .dock-nav .dock-ink-bar-animated,
 .dock-bottom > div > .dock-nav .dock-ink-bar-animated,
 .dock-top > div > .dock-nav .dock-ink-bar-animated {
-  transition:
-    width 0.3s,
-    left 0.3s,
-    right 0.3s;
+  transition: width 0.3s,
+  left 0.3s,
+  right 0.3s;
 }
 
 .dock-content-animated .dock-tabpane {
@@ -280,20 +278,29 @@ body > .dragging-layer > div:last-child {
 .dock-tab-close-btn {
   position: absolute;
   cursor: pointer;
-  font-family: 'Fredoka One', sans-serif;
   color: var(--text-color);
-  right: -5px;
+  right: -7px;
   font-size: 12px;
-  width: 16px;
+
   text-align: center;
   top: 12px;
   outline: none;
   transition: all 0.25s ease-in-out;
+  content: '';
+  width: 14px;
+  height: 14px;
+  background-image: url("./imgs/close.svg");
+  background-position: center;
 }
-
 .dock-tab-close-btn:before {
-  content: 'X';
-  font-family: emoji;
+  content: '';
+}
+.dock-tab-close-btn:hover {
+  background-size: 14px;
+  border: 1px solid #0b7ec4;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
 }
 
 .dock-tab-close-btn:hover,
@@ -440,10 +447,9 @@ body > .dragging-layer > div:last-child {
   background-clip: padding-box;
   border-radius: 2px;
   outline: none;
-  box-shadow:
-    0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 6px 16px 0 rgba(0, 0, 0, 0.08),
-    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+  0 6px 16px 0 rgba(0, 0, 0, 0.08),
+  0 9px 28px 8px rgba(0, 0, 0, 0.05);
 }
 
 .dock-dropdown-menu-item {
