@@ -37,7 +37,7 @@ const TemplateSelect: React.FC<{ type: string; onChange: (v: string) => void }> 
 
   const renderItem = (item: Document) => {
     return (
-      <div style={{ padding: 10}}>
+      <div style={{ padding: 10 }}>
         <ProCard
           checked={item.id == currentSelect?.id}
           hoverable

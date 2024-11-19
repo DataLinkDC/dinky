@@ -20,7 +20,7 @@
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
 import { DataStudioState } from '@/pages/DataStudio/model';
 import { formatDate } from '@/pages/DataStudio/FooterContainer/function';
@@ -31,10 +31,7 @@ type ButtonRoute = {
   onClick?: () => void;
 };
 
-export default (props: {
-  token: GlobalToken;
-  centerContent: DataStudioState['centerContent'];
-}) => {
+export default (props: { token: GlobalToken; centerContent: DataStudioState['centerContent'] }) => {
   const { token, centerContent } = props;
   const [memDetailInfo, setMemDetailInfo] = useState('0/0M');
   const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
@@ -96,9 +93,7 @@ export default (props: {
     ));
   };
   const renderFooterLastUpdate = () => {
-    const currentTab = centerContent?.tabs.find(
-      (item) => item.id === centerContent?.activeTab
-    );
+    const currentTab = centerContent?.tabs.find((item) => item.id === centerContent?.activeTab);
     if (currentTab && currentTab.tabType === 'task') {
       return (
         <div>
@@ -137,4 +132,3 @@ export default (props: {
     </>
   );
 };
-

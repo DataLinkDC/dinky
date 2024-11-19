@@ -284,9 +284,7 @@ export const buildProjectTree = (
           parentId: item.parentId,
           label: searchTreeNode(item.name, searchValue),
           icon: item.type && item.children.length === 0 && (
-            <Space size={'small'}>
-              {getTabIcon(item.type, 20)}
-            </Space>
+            <Space size={'small'}>{getTabIcon(item.type, 20)}</Space>
           ),
           value: item.id,
           path: currentPath,

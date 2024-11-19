@@ -639,7 +639,7 @@ const DataStudio: React.FC = (props: any) => {
               </Col>
             </Row>
 
-            <FooterContainer token={token}  centerContent={dataStudioState.centerContent} />
+            <FooterContainer token={token} centerContent={dataStudioState.centerContent} />
 
             {/* 边缘区域布局右键菜单*/}
             <RightContextMenu
