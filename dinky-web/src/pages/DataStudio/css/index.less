@@ -11,6 +11,7 @@
   --text-color: #424242;
   --panel-extra-btn-color: #000000;
   --scroll-bg-color: #daecff;
+  --close-btn-img: url('./imgs/close-light.svg');
 }
 
 .dark-theme {
@@ -26,6 +27,8 @@
   --text-color: #fafafa;
   --panel-extra-btn-color: #fafafa;
   --scroll-bg-color: #4d4e51;
+  --close-btn-img: url('./imgs/close-dark.svg');
+
 }
 
 .page-container {
@@ -289,7 +292,7 @@ body > .dragging-layer > div:last-child {
   content: '';
   width: 14px;
   height: 14px;
-  background-image: url("./imgs/close.svg");
+  background-image: var(--close-btn-img);
   background-position: center;
 }
 .dock-tab-close-btn:before {
