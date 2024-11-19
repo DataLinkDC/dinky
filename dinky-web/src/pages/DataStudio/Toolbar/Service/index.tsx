@@ -52,8 +52,8 @@ import { useAsyncEffect } from 'ahooks';
 import { sleep } from '@antfu/utils';
 import { l } from '@/utils/intl';
 import { assert } from '@/pages/DataStudio/utils';
-import {connect} from "@umijs/max";
-import {Lineage} from "@/pages/DataStudio/Toolbar/Service/Lineage";
+import { connect } from '@umijs/max';
+import { Lineage } from '@/pages/DataStudio/Toolbar/Service/Lineage';
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {

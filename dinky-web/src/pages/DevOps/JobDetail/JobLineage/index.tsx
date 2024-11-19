@@ -23,9 +23,9 @@ import { LineageDetailInfo } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import { Card, Result } from 'antd';
 import React, { useEffect } from 'react';
-import {Lineage} from "@/pages/DataStudio/Toolbar/Service/Lineage";
+import { Lineage } from '@/pages/DataStudio/Toolbar/Service/Lineage';
 
-const JobLineage = (props:{jobDetail:{id:number}}) => {
+const JobLineage = (props: { jobDetail: { id: number } }) => {
   const {
     jobDetail: { id: jobInstanceId }
   } = props;
@@ -46,7 +46,11 @@ const JobLineage = (props:{jobDetail:{id:number}}) => {
 
   return (
     <>
-      <Card hoverable styles={{body:{height:'100%'}} } style={{ height: parent.innerHeight - 180 }}>
+      <Card
+        hoverable
+        styles={{ body: { height: '100%' } }}
+        style={{ height: parent.innerHeight - 180 }}
+      >
         {lineageData && (lineageData.tables.length !== 0 || lineageData.relations.length !== 0) ? (
           <Lineage data={lineageData} />
         ) : (

@@ -141,7 +141,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const [openDiffModal, setOpenDiffModal] = useState(false);
   const [diff, setDiff] = useState<any>([]);
   // 是否正在提交
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formRef = useRef<ProFormInstance>();
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
@@ -388,7 +388,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }, [currentState, updateAction]);
 
   const handleSubmit = useCallback(async () => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       await handleSave();
       updateAction({
@@ -421,8 +421,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           });
         }
       }
-    }finally {
-      setIsSubmitting(false)
+    } finally {
+      setIsSubmitting(false);
     }
   }, [updateAction, currentState.envId, handleSave, currentState.taskId, currentState.dialect]);
 
@@ -461,7 +461,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           };
         });
       }
-    }finally {
+    } finally {
       setIsSubmitting(false);
     }
   }, [currentState, updateAction]);
