@@ -54,10 +54,12 @@ public class FlinkSqlTask extends BaseTask {
 
     @Override
     public List<SqlExplainResult> explain() {
+        jobManager.setPlanMode(true);
         return jobManager.explainSql(task.getStatement()).getSqlExplainResults();
     }
 
     public ObjectNode getJobPlan() {
+        jobManager.setPlanMode(true);
         String planJson = jobManager.getJobPlanJson(task.getStatement());
         return JsonUtils.parseObject(planJson);
     }

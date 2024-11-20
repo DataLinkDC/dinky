@@ -155,7 +155,7 @@ public class JobTransBuilder extends JobBuilder {
 
     @Override
     public JobPlanInfo getJobPlanInfo() {
-        return executor.getJobPlanInfo(null);
+        return executor.getJobPlanInfo();
     }
 
     private boolean inferStatementSet() {

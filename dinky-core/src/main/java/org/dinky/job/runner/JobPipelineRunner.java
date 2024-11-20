@@ -27,6 +27,7 @@ import org.dinky.data.result.IResult;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.ResultBuilder;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.executor.CustomTableResultImpl;
 import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.result.GatewayResult;
@@ -43,6 +44,8 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.types.Row;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JobPipelineRunner extends AbstractJobRunner {
 
     private List<JobStatement> statements;
+    private TableResult tableResult;
 
     public JobPipelineRunner(JobManager jobManager) {
         this.jobManager = jobManager;
@@ -64,7 +68,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
     @Override
     public void run(JobStatement jobStatement) throws Exception {
         statements.add(jobStatement);
-        jobManager.getExecutor().executeSql(jobStatement.getStatement());
+        tableResult = jobManager.getExecutor().executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
             if (jobManager.isUseGateway()) {
                 processWithGateway();
@@ -130,7 +134,9 @@ public class JobPipelineRunner extends AbstractJobRunner {
 
     @Override
     public StreamGraph getStreamGraph(JobStatement jobStatement) {
-        explain(jobStatement);
+        statements.add(jobStatement);
+        // pipeline job execute to generate stream graph.
+        jobManager.getExecutor().executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
             return jobManager.getExecutor().getStreamGraph();
         } else {
@@ -141,9 +147,11 @@ public class JobPipelineRunner extends AbstractJobRunner {
 
     @Override
     public JobPlanInfo getJobPlanInfo(JobStatement jobStatement) {
-        explain(jobStatement);
+        statements.add(jobStatement);
+        // pipeline job execute to generate stream graph.
+        jobManager.getExecutor().executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
-            return jobManager.getExecutor().getJobPlanInfo(statements);
+            return jobManager.getExecutor().getJobPlanInfo();
         } else {
             throw new DinkyException(
                     "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement());
@@ -194,6 +202,14 @@ public class JobPipelineRunner extends AbstractJobRunner {
                     add(job.getJobId());
                 }
             });
+            final List<Row> rowList = new ArrayList<>();
+            tableResult.getResolvedSchema().getColumns().forEach(column -> rowList.add(Row.of(-1)));
+            tableResult = CustomTableResultImpl.builder()
+                    .resultKind(tableResult.getResultKind())
+                    .schema(tableResult.getResolvedSchema())
+                    .data(rowList)
+                    .jobClient(jobClient)
+                    .build();
         }
         if (config.isUseResult()) {
             IResult result = ResultBuilder.build(
@@ -202,8 +218,9 @@ public class JobPipelineRunner extends AbstractJobRunner {
                             config.getMaxRowNum(),
                             config.isUseChangeLog(),
                             config.isUseAutoCancel(),
-                            executor.getTimeZone())
-                    .getResult(null);
+                            executor.getTimeZone(),
+                            jobManager.getConfig().isMockSinkFunction())
+                    .getResultWithPersistence(tableResult, jobManager.getHandler());
             job.setResult(result);
         }
     }

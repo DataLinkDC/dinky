@@ -193,6 +193,6 @@ public class JobExecuteBuilder extends JobBuilder {
 
     @Override
     public JobPlanInfo getJobPlanInfo() {
-        return executor.getJobPlanInfo(null);
+        return executor.getJobPlanInfo();
     }
 }

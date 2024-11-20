@@ -194,7 +194,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             return null;
         }
         if (!statements.isEmpty()) {
-            return jobManager.getExecutor().getJobPlanInfo(statements);
+            return jobManager.getExecutor().getJobPlanInfoFromStatements(statements);
         }
         throw new DinkyException("None jobs in statement.");
     }

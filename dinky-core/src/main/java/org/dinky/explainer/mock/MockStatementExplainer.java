@@ -79,6 +79,9 @@ public class MockStatementExplainer {
         // mock insert table ddl
         List<JobStatement> jobStatementList = jobStatementPlan.getJobStatementList();
         for (int i = 0; i < jobStatementList.size(); i++) {
+            if (!jobStatementList.get(i).getSqlType().equals(SqlType.CREATE)) {
+                continue;
+            }
             SqlNode sqlNode = tableEnv.parseSql(jobStatementList.get(i).getStatement());
             if (sqlNode instanceof SqlCreateTable) {
                 SqlCreateTable sqlCreateTable = (SqlCreateTable) sqlNode;

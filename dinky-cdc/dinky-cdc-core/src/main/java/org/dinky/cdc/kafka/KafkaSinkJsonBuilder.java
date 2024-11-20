@@ -21,16 +21,13 @@ package org.dinky.cdc.kafka;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractSinkBuilder;
-import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.SinkBuilder;
+import org.dinky.cdc.convert.DataTypeConverter;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.ObjectConvertUtil;
 
-import org.apache.flink.api.common.functions.FilterFunction;
-import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -43,12 +40,10 @@ import org.apache.flink.util.Collector;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -78,55 +73,38 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
 
     @SuppressWarnings("rawtypes")
     @Override
-    public DataStreamSource<String> build(
-            CDCBuilder cdcBuilder,
+    public void build(
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
             DataStreamSource<String> dataStreamSource) {
         try {
-            SingleOutputStreamOperator<Map> mapOperator =
-                    dataStreamSource.map((MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class));
-            final List<Schema> schemaList = config.getSchemaList();
-            final String schemaFieldName = config.getSchemaFieldName();
-            if (!Asserts.isNotNullCollection(schemaList)) {
-                return dataStreamSource;
-            }
+            init(env, customTableEnvironment);
 
-            for (Schema schema : schemaList) {
-                if (Asserts.isNullCollection(schema.getTables())) {
-                    // if schema tables is empty, throw exception
-                    throw new IllegalArgumentException(
-                            "Schema tables is empty, please check your configuration or check your database permission and try again.");
+            SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
+            logger.info("Build deserialize successful...");
+            List<Schema> sortedSchemaList = getSortedSchemaList();
+            final Map<String, Table> tableMap = new LinkedHashMap<>();
+            for (Schema schema : sortedSchemaList) {
+                for (Table table : schema.getTables()) {
+                    tableMap.put(table.getSchemaTableName(), table);
                 }
-                // if schema tables is not empty, sort by table name
-                List<Table> tableList = schema.getTables().stream()
-                        .sorted(Comparator.comparing(Table::getName))
-                        .collect(Collectors.toList());
-                for (Table table : tableList) {
+            }
+            partitionByTableAndPrimarykey(mapOperator, tableMap);
+            logger.info("Build partitionBy successful...");
+            for (Schema schema : sortedSchemaList) {
+                for (Table table : schema.getTables()) {
                     final String tableName = table.getName();
                     final String schemaName = table.getSchema();
-                    SingleOutputStreamOperator<Map> filterOperator = mapOperator.filter((FilterFunction<Map>) value -> {
-                        LinkedHashMap source = (LinkedHashMap) value.get("source");
-                        return tableName.equals(source.get("table").toString())
-                                && schemaName.equals(source.get(schemaFieldName).toString());
-                    });
-                    String topic = getSinkTableName(table);
-                    if (Asserts.isNotNullString(config.getSink().get("topic"))) {
-                        topic = config.getSink().get("topic");
-                    } else {
-                        Map<String, String> tableTopicMap = this.getTableTopicMap();
-                        if (tableTopicMap != null) {
-                            String newTopic = tableTopicMap.get(tableName);
-                            if (Asserts.isNotNullString(newTopic)) {
-                                topic = newTopic;
-                            }
-                        }
-                    }
+                    SingleOutputStreamOperator<Map> singleOutputStreamOperator =
+                            shunt(mapOperator, schemaName, tableName);
+                    logger.info("Build shunt successful...");
+
                     List<String> columnNameList = new LinkedList<>();
                     List<LogicalType> columnTypeList = new LinkedList<>();
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
-                    SingleOutputStreamOperator<String> stringOperator =
-                            filterOperator.process(new ProcessFunction<Map, String>() {
+
+                    SingleOutputStreamOperator<String> stringOperator = singleOutputStreamOperator
+                            .process(new ProcessFunction<Map, String>() {
 
                                 @Override
                                 public void processElement(Map value, Context context, Collector<String> collector)
@@ -200,14 +178,29 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                                         collector.collect(objectMapper.writeValueAsString(after));
                                     }
                                 }
-                            });
-                    stringOperator.addSink(new FlinkKafkaProducer<String>(topic, new SimpleStringSchema(), getProperties()));
+                            })
+                            .name("SerializerWithMetadata");
+
+                    String topic = getSinkTableName(table);
+                    if (Asserts.isNotNullString(config.getSink().get("topic"))) {
+                        topic = config.getSink().get("topic");
+                    } else {
+                        Map<String, String> tableTopicMap = this.getTableTopicMap();
+                        if (tableTopicMap != null) {
+                            String newTopic = tableTopicMap.get(tableName);
+                            if (Asserts.isNotNullString(newTopic)) {
+                                topic = newTopic;
+                            }
+                        }
+                    }
+
+                    stringOperator.addSink(
+                            new FlinkKafkaProducer<String>(topic, new SimpleStringSchema(), getProperties()));
                 }
             }
         } catch (Exception ex) {
             logger.error("kafka sink error:", ex);
         }
-        return dataStreamSource;
     }
 
     private void initializeObjectMapper() {
@@ -217,11 +210,6 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
                 LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
         objectMapper.registerModule(javaTimeModule);
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-    }
-
-    @Override
-    protected Object convertValue(Object value, LogicalType logicalType) {
-        return ObjectConvertUtil.convertValue(value, logicalType);
     }
 
     @SuppressWarnings("rawtypes")
@@ -237,7 +225,8 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements Seriali
         for (int i = 0; i < columnNameList.size(); i++) {
             String columnName = columnNameList.get(i);
             Object columnNameValue = value.remove(columnName);
-            Object columnNameNewVal = convertValue(columnNameValue, columnTypeList.get(i));
+            Object columnNameNewVal =
+                    DataTypeConverter.convertToRowData(columnNameValue, columnTypeList.get(i), getSinkTimeZone());
             value.put(columnName, columnNameNewVal);
         }
         value.put("__op", op);

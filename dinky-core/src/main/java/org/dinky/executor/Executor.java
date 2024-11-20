@@ -270,7 +270,7 @@ public abstract class Executor {
     }
 
     public StreamGraph getStreamGraph() {
-        return environment.getStreamGraph();
+        return environment.getStreamGraph(false);
     }
 
     public StreamGraph getStreamGraphFromCustomStatements(List<String> statements) {
@@ -278,17 +278,11 @@ public abstract class Executor {
         return getStreamGraph();
     }
 
-    public ObjectNode getStreamGraphFromDataStream(List<String> statements) {
-        statements.forEach(this::executeSql);
-        return getStreamGraphJsonNode(getStreamGraph());
-    }
-
-    public JobPlanInfo getJobPlanInfo(List<JobStatement> statements) {
+    public JobPlanInfo getJobPlanInfoFromStatements(List<JobStatement> statements) {
         return tableEnvironment.getJobPlanInfo(statements);
     }
 
-    public JobPlanInfo getJobPlanInfoFromDataStream(List<String> statements) {
-        statements.forEach(this::executeSql);
+    public JobPlanInfo getJobPlanInfo() {
         StreamGraph streamGraph = getStreamGraph();
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
