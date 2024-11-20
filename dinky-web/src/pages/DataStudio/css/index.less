@@ -1,7 +1,8 @@
 /*******************配置组件自定义颜色(入口css)******************/
 .light-theme {
   --primary-color: #ffffff;
-  --second-color: #eceff1;
+  --second-color: #f9f9f9;
+  --tree-color: #fafafa;
   --main-background-color: #ffffff;
   --footer-bg-color: #f4f4f4;
   --btn-color: #000000e0;
@@ -12,12 +13,15 @@
   --panel-extra-btn-color: #000000;
   --scroll-bg-color: #daecff;
   --close-btn-img: url('./imgs/close-light.svg');
+  --center-content-bg-color: #f2f2f2;
+  --center-content-active-bg-color: var(--primary-color);
 }
 
 .dark-theme {
   // 暗色主题颜色全局变量
   --primary-color: #2b2d30;
   --second-color: #3c3f41;
+  --tree-color: #2f3133;
   --main-background-color: #2b2d30;
   --footer-bg-color: #2b2d30;
   --btn-color: #ced0d6;
@@ -28,6 +32,8 @@
   --panel-extra-btn-color: #fafafa;
   --scroll-bg-color: #4d4e51;
   --close-btn-img: url('./imgs/close-dark.svg');
+  --centerContent-bg-color: #2b2d30;
+  --center-content-active-bg-color: #434343;
 }
 
 .page-container {
@@ -78,6 +84,47 @@
   background-color: #f5f5f5;
 }
 
+//     =======  dock center Content =======
+
+.dock-panel.dock-style-centerContent {
+  border: none;
+}
+
+.dock-panel.dock-style-centerContent .dock-tab {
+  margin-right: 0;
+  background-color: var(--center-content-bg-color);
+}
+
+.dock-panel.dock-style-centerContent .dock-tab.dock-tab-active {
+  border-radius: 10px 10px 0 0;
+  background-color: var(--center-content-active-bg-color);
+}
+
+.dock-panel.dock-style-centerContent .dock-bar {
+  padding-block-start: 6px;
+}
+
+.dock-panel.dock-style-centerContent .dock-tab-hit-area {
+  /* cover the border area */
+  left: -1px;
+  right: -1px;
+}
+
+.dock-panel.dock-style-centerContent .dock-panel-max-btn, .dock-panel.dock-style-centerContent .dock-panel-min-btn {
+  opacity: 1;
+}
+
+.dock-panel.dock-style-centerContent .dock-panel-max-btn:before, .dock-panel.dock-style-centerContent .dock-panel-min-btn:before {
+  border-color: #fff;
+  color: #fff;
+}
+
+.dock-style-centerContent >.dock > .dock-bar{
+  background-color: var(--center-content-bg-color);
+}
+
+
+
 body > .dragging-layer {
   position: absolute !important;
   z-index: 9999;
@@ -92,6 +139,8 @@ body > .dragging-layer {
   white-space: nowrap;
   --default-background-color: var(--primary-color);
 }
+
+
 
 .ant-tree-list-scrollbar-thumb {
   background-color: var(--scroll-bg-color) !important;
@@ -117,6 +166,9 @@ body > .dragging-layer > div:last-child {
   top: 12px;
 }
 
+.dock-tab-btn .drag-initiator{
+  display: flex;
+}
 .drag-initiator {
   user-select: none;
   -webkit-user-select: none;
@@ -280,14 +332,12 @@ body > .dragging-layer > div:last-child {
 }
 
 .dock-tab-close-btn {
-  position: absolute;
+  position: relative;
   cursor: pointer;
   color: var(--text-color);
-  right: -7px;
   font-size: 12px;
 
   text-align: center;
-  top: 12px;
   outline: none;
   transition: all 0.25s ease-in-out;
   content: '';
@@ -303,8 +353,6 @@ body > .dragging-layer > div:last-child {
   background-size: 14px;
   border: 1px solid #0b7ec4;
   border-radius: 50%;
-  width: 16px;
-  height: 16px;
 }
 
 .dock-tab-close-btn:hover,
