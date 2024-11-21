@@ -94,15 +94,15 @@ const centerPanelExtraButtons = (panelData: PanelData, context: DockContext) => 
   const buttons = [];
 
   if (panelData.parent?.mode !== 'window' && panelData.parent?.mode !== 'float') {
-    buttons.push(
-      <SelectOutlined
-        rotate={90}
-        className='my-panel-extra-btn'
-        key='float'
-        title={l('global.float')}
-        onClick={() => context.dockMove(panelData, null, 'float')}
-      />
-    );
+    // buttons.push(
+    //   <SelectOutlined
+    //     rotate={90}
+    //     className='my-panel-extra-btn'
+    //     key='float'
+    //     title={l('global.float')}
+    //     onClick={() => context.dockMove(panelData, null, 'float')}
+    //   />
+    // );
     const MaximizeIcon = panelData.parent?.mode === 'maximize' ? SwitcherOutlined : BorderOutlined;
     buttons.push(
       <MaximizeIcon
