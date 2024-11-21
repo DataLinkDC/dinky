@@ -109,8 +109,6 @@ public class DataTypeConverter {
                 }
             case BYTES:
                 return new VarBinaryType(Integer.MAX_VALUE);
-                //                return new BinaryType(Asserts.isNull(column.getLength())? Integer.MAX_VALUE:
-                // column.getLength());
             case STRING:
             default:
                 return new VarCharType(Asserts.isNull(column.getLength()) ? Integer.MAX_VALUE : column.getLength());
