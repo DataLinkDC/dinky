@@ -100,6 +100,9 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
             Collector<Row> out,
             RowKind rowKind,
             Map value) {
+        if (Asserts.isNull(value)) {
+            return;
+        }
         Row row = Row.withPositions(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
             row.setField(

@@ -223,6 +223,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             Collector<RowData> out,
             RowKind rowKind,
             Map value) {
+        if (Asserts.isNull(value)) {
+            return;
+        }
         GenericRowData genericRowData = new GenericRowData(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
             genericRowData.setField(
