@@ -28,7 +28,7 @@ public interface FlinkConstant {
     /** 本地模式host */
     String LOCAL_HOST = "localhost";
     /** changlog op */
-    String OP = "op";
+    String OP = "__op__";
 
     /** flink 默认端口 **/
     Integer FLINK_REST_DEFAULT_PORT = 8081;

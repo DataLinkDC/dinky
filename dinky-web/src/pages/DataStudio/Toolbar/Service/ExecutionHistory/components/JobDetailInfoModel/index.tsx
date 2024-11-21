@@ -31,10 +31,11 @@ type JobDetailInfoModelProps = {
   handleCancel: () => void;
   row: JobExecutionHistory | undefined;
   type: number;
+  dialect: string;
 };
 
 export const JobDetailInfoModel: React.FC<JobDetailInfoModelProps> = (props) => {
-  const { modalVisit, handleCancel, row, type } = props;
+  const { modalVisit, handleCancel, row, type, dialect } = props;
 
   return (
     <>
@@ -56,7 +57,7 @@ export const JobDetailInfoModel: React.FC<JobDetailInfoModelProps> = (props) => 
         {type == 1 && <JobConfigInfo row={row} />}
         {type == 2 && <StatementInfo row={row} />}
         {/*todo 预览数据*/}
-        {/*{type == 3 && <PreViewData row={row} />}*/}
+        {type == 3 && <PreViewData row={row} dialect={dialect}/>}
         {type == 4 && <ErrorMsgInfo row={row} />}
       </Modal>
     </>

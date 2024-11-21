@@ -92,6 +92,9 @@ public abstract class Executor {
     // Dinky variable manager
     protected VariableManager variableManager = new VariableManager();
 
+    // mock test
+    protected boolean isMockTest = false;
+
     // return dinkyClassLoader
     public DinkyClassLoader getDinkyClassLoader() {
         return dinkyClassLoader;
@@ -137,6 +140,14 @@ public abstract class Executor {
         return getTableConfig().getLocalTimeZone().getId();
     }
 
+    public boolean isMockTest() {
+        return isMockTest;
+    }
+
+    public void setMockTest(boolean mockTest) {
+        isMockTest = mockTest;
+    }
+
     private void initClassloader(DinkyClassLoader classLoader) {
         if (classLoader != null) {
             try {
@@ -175,6 +186,8 @@ public abstract class Executor {
         if (executorConfig.isValidVariables()) {
             variableManager.registerVariable(executorConfig.getVariables());
         }
+
+        isMockTest = false;
     }
 
     abstract CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader);

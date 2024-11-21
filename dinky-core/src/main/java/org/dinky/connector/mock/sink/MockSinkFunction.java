@@ -19,6 +19,8 @@
 
 package org.dinky.connector.mock.sink;
 
+import org.dinky.constant.FlinkConstant;
+
 import org.apache.flink.api.common.accumulators.SerializedListAccumulator;
 import org.apache.flink.api.common.typeutils.base.MapSerializer;
 import org.apache.flink.api.common.typeutils.base.StringSerializer;
@@ -27,6 +29,7 @@ import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +57,19 @@ public class MockSinkFunction extends RichSinkFunction<RowData> {
     public void invoke(RowData rowData, Context context) throws Exception {
         List<String> fieldNames = rowType.getFieldNames();
         Map<String, String> rowDataMap = new HashMap<>();
+        rowDataMap.put(FlinkConstant.OP, rowData.getRowKind().shortString());
         for (int i = 0; i < fieldNames.size(); i++) {
             RowData.FieldGetter fieldGetter = RowData.createFieldGetter(rowType.getTypeAt(i), i);
-            rowDataMap.put(fieldNames.get(i), String.valueOf(fieldGetter.getFieldOrNull(rowData)));
+            switch (rowType.getTypeAt(i).getTypeRoot()) {
+                case BINARY:
+                case VARBINARY:
+                    rowDataMap.put(
+                            fieldNames.get(i),
+                            new String((byte[]) fieldGetter.getFieldOrNull(rowData), StandardCharsets.UTF_8));
+                    break;
+                default:
+                    rowDataMap.put(fieldNames.get(i), String.valueOf(fieldGetter.getFieldOrNull(rowData)));
+            }
         }
         rowDataList.add(rowDataMap, new MapSerializer<>(new StringSerializer(), new StringSerializer()));
     }

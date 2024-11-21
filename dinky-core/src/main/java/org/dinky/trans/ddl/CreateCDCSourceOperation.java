@@ -86,6 +86,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = cdcSource.buildFlinkCDCConfig();
+        config.setMockTest(executor.isMockTest());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -205,7 +206,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             final List<Row> rowList = new ArrayList<>();
             for (Schema schema : config.getSchemaList()) {
                 for (Table table : schema.getTables()) {
-                    columns.add((Column) Column.physical(
+                    columns.add(Column.physical(
                             "default_catalog.default_database." + sinkBuilder.getSinkTableName(table),
                             new AtomicDataType(new BigIntType())));
                     rowList.add(Row.of(-1));

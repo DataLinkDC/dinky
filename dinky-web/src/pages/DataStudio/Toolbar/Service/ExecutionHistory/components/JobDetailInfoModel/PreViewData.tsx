@@ -23,13 +23,17 @@ import { FireOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { Tag } from 'antd';
 import React from 'react';
+import Result from "@/pages/DataStudio/Toolbar/Service/Result";
+import {DataStudioActionType} from "@/pages/DataStudio/data.d";
+import {DIALECT} from "@/services/constants";
 
 type PreViewDataProps = {
   row: JobExecutionHistory | undefined;
+  dialect: string;
 };
 
 export const PreViewData: React.FC<PreViewDataProps> = (props) => {
-  const { row } = props;
+  const { row, dialect } = props;
 
   return (
     <>
@@ -39,7 +43,7 @@ export const PreViewData: React.FC<PreViewDataProps> = (props) => {
             <FireOutlined /> {row?.jobId ?? l('global.job.status.failed-tip')}
           </Tag>
         </ProDescriptions.Item>
-        <ProDescriptions.Item span={2}>// todo 预览数据</ProDescriptions.Item>
+        <ProDescriptions.Item span={2}><Result taskId={row?.taskId} action={DataStudioActionType.TASK_PREVIEW_RESULT} dialect={dialect} historyId={row.id}/></ProDescriptions.Item>
       </ProDescriptions>
     </>
   );

@@ -133,6 +133,7 @@ public class Explainer {
             }
         }
         if (!jobManager.isPlanMode() && jobManager.getConfig().isMockSinkFunction()) {
+            executor.setMockTest(true);
             MockStatementExplainer.build(executor.getCustomTableEnvironment()).jobStatementPlanMock(jobStatementPlan);
         }
         return jobStatementPlan;

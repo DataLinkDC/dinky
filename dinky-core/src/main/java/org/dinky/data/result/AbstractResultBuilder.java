@@ -19,6 +19,12 @@
 
 package org.dinky.data.result;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 public abstract class AbstractResultBuilder {
     protected String id;
+    protected final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(
+            5, 20, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>(100), new ThreadPoolExecutor.DiscardOldestPolicy());
 }

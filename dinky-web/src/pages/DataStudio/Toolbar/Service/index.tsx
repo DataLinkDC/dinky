@@ -242,7 +242,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
           key: 'history',
           label: l('menu.datastudio.history'),
           icon: <HistoryOutlined />,
-          children: <ExecutionHistory taskId={taskId} />
+          children: <ExecutionHistory taskId={taskId} dialect={taskParams?.dialect}/>
         });
       }
       if (assert(taskParams?.dialect, [DIALECT.FLINK_SQL], true, 'includes')) {

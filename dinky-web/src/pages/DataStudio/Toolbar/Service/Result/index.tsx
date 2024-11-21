@@ -43,9 +43,10 @@ type Data = {
   rowData: object[];
 };
 type DataList = Data[];
-export default (props: { taskId: number; action: any; dialect: string }) => {
+export default (props: { taskId: number; historyId: number|undefined; action: any; dialect: string }) => {
   const {
     taskId,
+    historyId,
     action: { actionType, params },
     dialect
   } = props;
@@ -183,16 +184,19 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   });
 
   const loadData = async () => {
-    const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
-      id: taskId
-    });
-    const historyData = res.data;
-    if (historyData) {
+    let historyIdParam = historyId;
+    if(!historyIdParam){
+      const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
+        id: taskId
+      });
+      historyIdParam = res.data.id;
+    }
+    if (historyIdParam) {
       const tableData = await handleGetOption(
         API_CONSTANTS.GET_JOB_DATA,
         l('global.getdata.tips'),
         {
-          jobId: historyData.id
+          jobId: historyIdParam
         }
       );
       const data = tableData.data;
@@ -315,13 +319,12 @@ export default (props: { taskId: number; action: any; dialect: string }) => {
   };
   return (
     <div style={{ width: '100%', paddingInline: 10 }}>
-      {dataList.length > 0 ? (
-        <Tabs
-          defaultActiveKey='0'
-          tabBarExtraContent={renderFlinkSQLContent()}
-          items={tabItems()}
-        />
-      ) : (
+      <Tabs
+        defaultActiveKey='0'
+        tabBarExtraContent={renderFlinkSQLContent()}
+        items={tabItems()}
+      />
+      {dataList.length == 0 ?? (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
       )}
       <Drawer

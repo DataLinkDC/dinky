@@ -52,7 +52,7 @@ export const ErrorMsgInfo: React.FC<ErrorMsgInfoProps> = (props) => {
         autoWrap={'on'}
         height={'60vh'}
         language={CustomEditorLanguage.JavaLog}
-        code={row?.error ?? '暂无日志'}
+        code={row?.error ?? 'No logs'}
       />
     </>
   );

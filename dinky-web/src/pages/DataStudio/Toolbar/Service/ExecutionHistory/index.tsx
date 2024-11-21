@@ -32,8 +32,8 @@ import { JobDetailInfoModel } from '@/pages/DataStudio/Toolbar/Service/Execution
 
 const { Link, Paragraph, Text } = Typography;
 
-export default (props: { taskId: number }) => {
-  const { taskId } = props;
+export default (props: { taskId: number, dialect: string }) => {
+  const { taskId, dialect } = props;
   const refAction = useRef<ActionType>();
 
   const [modalVisit, setModalVisit] = useState(false);
@@ -195,25 +195,25 @@ export default (props: { taskId: number }) => {
         title: l('global.table.status'),
         valueType: 'select',
         valueEnum: {
-          '': { text: '全部', status: 'ALL' },
+          '': { text: 'ALL', status: 'ALL' },
           0: {
-            text: '初始化中',
+            text: 'INITIALIZE',
             status: 'INITIALIZE'
           },
           1: {
-            text: '运行中',
+            text: 'RUNNING',
             status: 'RUNNING'
           },
           2: {
-            text: '成功',
+            text: 'SUCCESS',
             status: 'SUCCESS'
           },
           3: {
-            text: '失败',
+            text: 'FAILED',
             status: 'FAILED'
           },
           4: {
-            text: '取消',
+            text: 'CANCEL',
             status: 'CANCEL'
           }
         }
@@ -268,6 +268,7 @@ export default (props: { taskId: number }) => {
         handleCancel={handleCancel}
         row={historyData}
         type={type}
+        dialect={dialect}
       />
     </>
   );
