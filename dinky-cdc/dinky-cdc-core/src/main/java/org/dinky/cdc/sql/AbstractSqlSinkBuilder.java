@@ -19,6 +19,7 @@
 
 package org.dinky.cdc.sql;
 
+import cn.hutool.core.map.MapUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractSinkBuilder;
 import org.dinky.cdc.CDCBuilder;
@@ -105,6 +106,9 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
             Collector<Row> out,
             RowKind rowKind,
             Map value) {
+        if (MapUtil.isEmpty(value)) {
+            return;
+        }
         Row row = Row.withPositions(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
             row.setField(i, convertValue(value.get(columnNameList.get(i)), columnTypeList.get(i)));
