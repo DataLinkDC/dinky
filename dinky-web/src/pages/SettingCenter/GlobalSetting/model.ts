@@ -69,7 +69,7 @@ const ConfigModel: ConfigModelType = {
   },
 
   effects: {
-    *queryTaskOwnerLockingStrategy({  }, { call, put }) {
+    *queryTaskOwnerLockingStrategy({}, { call, put }) {
       const response: BaseConfigProperties[] = yield call(queryTaskOwnerLockingStrategy);
       if (response && response.length > 0) {
         const taskOwnerLockingStrategy = response.find(
@@ -84,7 +84,7 @@ const ConfigModel: ConfigModelType = {
         });
       }
     },
-    *queryDsConfig({  }, { call, put }) {
+    *queryDsConfig({}, { call, put }) {
       const response: BaseConfigProperties[] = yield call(queryDsConfig);
       yield put({
         type: 'saveDsConfig',
