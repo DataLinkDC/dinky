@@ -25,6 +25,7 @@ import { TOKEN_KEY } from '@/services/constants';
 export type SseData = {
   topic: string;
   data: Record<string, any>;
+  type: string;
 };
 
 export enum Topic {
@@ -48,6 +49,7 @@ export type WsState = {
 
 export default () => {
   const subscriberRef = useRef<SubscriberData[]>([]);
+  const lastPongTimeRef = useRef<number>(new Date().getTime());
 
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
   const wsUrl = `${protocol}://${window.location.hostname}:${window.location.port}/api/ws/global`;
@@ -61,6 +63,7 @@ export default () => {
     }
     ws.current = new WebSocket(wsUrl);
     ws.current.onopen = () => {
+      lastPongTimeRef.current = new Date().getTime();
       setWsState({ wsOnReady: true, wsUrl });
       receiveMessage();
       subscribe();
@@ -85,7 +88,7 @@ export default () => {
       reconnect();
     } else if (ws.current.readyState === WebSocket.OPEN) {
       const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
-      ws.current.send(JSON.stringify({ token, topics }));
+      ws.current.send(JSON.stringify({ token, topics, type: 'SUBSCRIBE' }));
     } else {
       //TODO do someting
     }
@@ -96,6 +99,7 @@ export default () => {
       ws.current.onmessage = (e) => {
         try {
           const data: SseData = JSON.parse(e.data);
+          lastPongTimeRef.current = new Date().getTime();
           subscriberRef.current
             .filter((sub) => sub.topic === data.topic)
             .filter((sub) => !sub.params || sub.params.find((x) => data.data[x]))
@@ -112,6 +116,14 @@ export default () => {
     setInterval(() => {
       if (!ws.current || ws.current.readyState != WebSocket.OPEN) {
         reconnect();
+      } else {
+        const currentTime = new Date().getTime();
+        if (currentTime - lastPongTimeRef.current > 15000) {
+          reconnect();
+        } else if (currentTime - lastPongTimeRef.current > 5000) {
+          const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
+          ws.current.send(JSON.stringify({ token, type: 'PING' }));
+        }
       }
     }, 2000);
   }, []);

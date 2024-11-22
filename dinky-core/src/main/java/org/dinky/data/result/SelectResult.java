@@ -22,6 +22,7 @@ package org.dinky.data.result;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -144,5 +145,11 @@ public class SelectResult extends AbstractResult implements IResult {
 
     public static SelectResult buildFailed() {
         return new SelectResult(null, false, false);
+    }
+
+    public static SelectResult buildMockedResult(String jobID) {
+        SelectResult selectResult = new SelectResult(jobID, new ArrayList<>(), new LinkedHashSet<>());
+        selectResult.setMockSinkResult(true);
+        return selectResult;
     }
 }

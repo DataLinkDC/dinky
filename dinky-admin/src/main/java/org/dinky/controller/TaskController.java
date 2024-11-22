@@ -178,8 +178,7 @@ public class TaskController {
     @ExecuteProcess(type = ProcessType.FLINK_JOB_PLAN)
     @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<ObjectNode> getJobPlan(@RequestBody TaskDTO taskDTO) {
-        ObjectNode jobPlan = null;
-        jobPlan = taskService.getJobPlan(taskDTO);
+        ObjectNode jobPlan = taskService.getJobPlan(taskDTO);
         return Result.succeed(jobPlan, Status.EXECUTE_SUCCESS);
     }
 

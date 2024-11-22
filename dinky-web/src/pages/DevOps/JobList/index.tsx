@@ -48,12 +48,12 @@ import Search from 'antd/es/input/Search';
 import { Key, useContext, useEffect, useRef, useState } from 'react';
 import { history } from 'umi';
 import EllipsisMiddle from '@/components/Typography/EllipsisMiddle';
-import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { DataStudioState } from '@/pages/DataStudio/model';
 import { useRequest } from '@@/exports';
-import { buildProjectTree } from '@/pages/DataStudioNew/Toolbar/Project/function';
-import { showFirstLevelOwner, showSecondLevelOwners } from '@/pages/DataStudioNew/function';
+import { buildProjectTree } from '@/pages/DataStudio/Toolbar/Project/function';
+import { showFirstLevelOwner, showSecondLevelOwners } from '@/pages/DataStudio/function';
 import { generateList, getLeafKeyList, searchInTree } from '@/utils/treeUtils';
-import { mapDispatchToProps } from '@/pages/DataStudioNew/DvaFunction';
+import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 
 const { DirectoryTree } = Tree;
 

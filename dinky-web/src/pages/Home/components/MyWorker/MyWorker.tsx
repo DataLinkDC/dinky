@@ -30,7 +30,7 @@ import { l } from '@/utils/intl';
 import { history } from 'umi';
 import { formatDateToYYYYMMDDHHMMSS } from '@/utils/function';
 import { ErrorMessageAsync } from '@/utils/messages';
-import { getTabIcon } from '@/pages/DataStudioNew/function';
+import { getTabIcon } from '@/pages/DataStudio/function';
 
 const MyWorker = () => {
   const { loading, data } = useHookRequest<any, any>(getData, {

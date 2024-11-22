@@ -70,32 +70,38 @@ Dinky 提供 FlinkSQL 在通过 **智能停止** 作业时，自动触发**savep
 ### 作业预览
 
 在Flink
-Sql开发过程中，我们经常需要select查看数据，Dinky提供了预览功能，可以在开发过程中实时查看数据，对于select语句，点击右上角`预览`
+Sql开发过程中，我们经常需要查看作业所产出的数据，Dinky提供了预览功能，可以在开发过程中实时查看数据，对于select语句或开启的SinkMock的insert语句，点击右上角`预览`
 即可。
 
 同时你也可以对预览功能进行配置，如下图
+[//]: # (TODO: update pic)
 ![preview_config](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/preview_config.png)
 
 参数设置如下
 
-| 是否必填 | 配置项  |                             备注                              |
-|:----:|:----:|:-----------------------------------------------------------:|
-|  否   | 打印流  | 默认禁用，开启打印流将同步运行并返回含有**op**字段信息的 ChangeLog<br/> 默认不开启则返回最终结果 |
-|  否   | 最大行数 |                       预览数据的最大行数，默认100                       |
-|  否   | 自动停止 |                 默认禁用，开启自动停止将在捕获最大行记录数后自动停止                  |
+| 是否必填 | 配置项  |                               备注                                |
+|:----:|:----:|:---------------------------------------------------------------:|
+|  否   | 打印流  |   默认禁用，开启打印流将同步运行并返回含有**op**字段信息的 ChangeLog<br/> 默认不开启则返回最终结果   |
+|  否   | 最大行数 |                         预览数据的最大行数，默认100                         |
+|  否   | 自动停止 |                   默认禁用，开启自动停止将在捕获最大行记录数后自动停止                    |
+|  否   | 开启SinkMock | 默认启用，将Insert语句所写入的表进行Mock，使得调试过程中不会向线上环境执行写入，但可以通过dinky预览Sink结果 |
 
-提交成功后会切换到`结果选项卡`，点击 `获取最新数据` ，即可查看 Select 语句的执行结果。
+提交成功后会切换到`结果选项卡`，点击 `获取最新数据` ，即可查看 Select/Insert 语句的执行结果。
+
+[//]: # (TODO: update pic)
 ![preview_result](http://pic.dinky.org.cn/dinky/docs/zh-CN/user_guide/studio/flink_sql_task_devlop/preview_result.png)
 
 :::tip FlinkSQL 预览结果的必要条件
 
 1. 执行模式必须是 Local、Standalone、Yarn Session、Kubernetes Session 其中的一种；
 
-2. 除 SET 和 DDL 外，必须只提交一个 SELECT 或 SHOW 或 DESC 语句；
+2. 未开启MockSink时，除 SET 和 DDL 外，必须只提交一个 SELECT 或 SHOW 或 DESC 语句；
 
-3. 作业必须是提交成功并且返回 JID，同时在远程集群可以看到作业处于 RUNNING 或 FINISHED 状态；
+3. 开启MockSink，并提交了至少一个Insert语句；
 
-4. Dinky 重启后，之前的预览结果将失效
+4. 作业必须是提交成功并且返回 JID，同时在远程集群可以看到作业处于 RUNNING 或 FINISHED 状态；
+
+5. Dinky 重启后，之前的预览结果将失效
 
 :::
 

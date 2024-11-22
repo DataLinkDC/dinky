@@ -19,6 +19,7 @@
 
 package org.dinky.data.model;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.context.EngineContextHolder;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.constant.DirConstant;
@@ -387,7 +388,7 @@ public class SystemConfiguration {
     }
 
     public boolean isUseRestAPI() {
-        return useRestAPI.getValue();
+        return Asserts.isNull(useRestAPI.getValue()) ? useRestAPI.getDefaultValue() : useRestAPI.getValue();
     }
 
     public int getJobIdWait() {
@@ -446,6 +447,7 @@ public class SystemConfiguration {
                     FileUtil.file(DirConstant.getTempRootDir(), "flink-job-archive")
                             .getAbsolutePath());
             config.put("historyserver.archive.fs.dir", FLINK_JOB_ARCHIVE);
+            config.put("historyserver.archive.clean-expired-jobs", "true");
         }
         return config;
     }

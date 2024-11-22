@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import org.dinky.data.job.JobStatement;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 
@@ -31,6 +32,7 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ExplainDetail;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
@@ -57,11 +59,15 @@ public interface CustomTableEnvironment
 
     ObjectNode getStreamGraph(String statement);
 
-    JobPlanInfo getJobPlanInfo(List<String> statements);
+    JobPlanInfo getJobPlanInfo(List<JobStatement> statements);
 
-    StreamGraph getStreamGraphFromInserts(List<String> statements);
+    StreamGraph getStreamGraphFromInserts(List<JobStatement> statements);
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
+
+    SqlExplainResult explainStatementSet(List<JobStatement> statements, ExplainDetail... extraDetails);
+
+    TableResult executeStatementSet(List<JobStatement> statements);
 
     StreamExecutionEnvironment getStreamExecutionEnvironment();
 
@@ -73,7 +79,7 @@ public interface CustomTableEnvironment
 
     SqlNode parseSql(String sql);
 
-    default JobGraph getJobGraphFromInserts(List<String> statements) {
+    default JobGraph getJobGraphFromInserts(List<JobStatement> statements) {
         return getStreamGraphFromInserts(statements).getJobGraph();
     }
 

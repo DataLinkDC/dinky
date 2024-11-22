@@ -65,6 +65,7 @@ public class FlinkCDCConfig {
     private List<Map<String, String>> sinks;
     private List<Schema> schemaList;
     private String schemaFieldName;
+    private boolean isMockTest;
 
     public FlinkCDCConfig(
             String type,
@@ -139,6 +140,7 @@ public class FlinkCDCConfig {
         this.sink = sink;
         this.sinks = sinks;
         this.jdbc = jdbc;
+        this.isMockTest = false;
     }
 
     private boolean isSkip(String key) {
@@ -165,6 +167,9 @@ public class FlinkCDCConfig {
     }
 
     public String getSinkConfigurationString() {
+        if (isMockTest) {
+            return "'connector' = 'dinky-mock'";
+        }
         return sink.entrySet().stream()
                 .filter(t -> !isSkip(t.getKey()))
                 .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
@@ -325,5 +330,13 @@ public class FlinkCDCConfig {
 
     public void setSplit(Map<String, String> split) {
         this.split = split;
+    }
+
+    public boolean isMockTest() {
+        return isMockTest;
+    }
+
+    public void setMockTest(boolean mockTest) {
+        isMockTest = mockTest;
     }
 }

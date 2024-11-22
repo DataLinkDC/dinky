@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
+import org.dinky.data.job.JobStatement;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
@@ -91,6 +92,9 @@ public abstract class Executor {
     // Dinky variable manager
     protected VariableManager variableManager = new VariableManager();
 
+    // mock test
+    protected boolean isMockTest = false;
+
     // return dinkyClassLoader
     public DinkyClassLoader getDinkyClassLoader() {
         return dinkyClassLoader;
@@ -136,6 +140,14 @@ public abstract class Executor {
         return getTableConfig().getLocalTimeZone().getId();
     }
 
+    public boolean isMockTest() {
+        return isMockTest;
+    }
+
+    public void setMockTest(boolean mockTest) {
+        isMockTest = mockTest;
+    }
+
     private void initClassloader(DinkyClassLoader classLoader) {
         if (classLoader != null) {
             try {
@@ -174,6 +186,8 @@ public abstract class Executor {
         if (executorConfig.isValidVariables()) {
             variableManager.registerVariable(executorConfig.getVariables());
         }
+
+        isMockTest = false;
     }
 
     abstract CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader);
@@ -246,11 +260,11 @@ public abstract class Executor {
         return SqlExplainResult.INVALID_EXPLAIN_RESULT;
     }
 
-    public StreamGraph getStreamGraphFromStatement(List<String> statements) {
+    public StreamGraph getStreamGraphFromStatement(List<JobStatement> statements) {
         return tableEnvironment.getStreamGraphFromInserts(statements);
     }
 
-    public ObjectNode getStreamGraph(List<String> statements) {
+    public ObjectNode getStreamGraph(List<JobStatement> statements) {
         StreamGraph streamGraph = tableEnvironment.getStreamGraphFromInserts(statements);
         return getStreamGraphJsonNode(streamGraph);
     }
@@ -269,7 +283,7 @@ public abstract class Executor {
     }
 
     public StreamGraph getStreamGraph() {
-        return environment.getStreamGraph();
+        return environment.getStreamGraph(false);
     }
 
     public StreamGraph getStreamGraphFromCustomStatements(List<String> statements) {
@@ -277,22 +291,16 @@ public abstract class Executor {
         return getStreamGraph();
     }
 
-    public ObjectNode getStreamGraphFromDataStream(List<String> statements) {
-        statements.forEach(this::executeSql);
-        return getStreamGraphJsonNode(getStreamGraph());
-    }
-
-    public JobPlanInfo getJobPlanInfo(List<String> statements) {
+    public JobPlanInfo getJobPlanInfoFromStatements(List<JobStatement> statements) {
         return tableEnvironment.getJobPlanInfo(statements);
     }
 
-    public JobPlanInfo getJobPlanInfoFromDataStream(List<String> statements) {
-        statements.forEach(this::executeSql);
+    public JobPlanInfo getJobPlanInfo() {
         StreamGraph streamGraph = getStreamGraph();
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
-    public JobGraph getJobGraphFromInserts(List<String> statements) {
+    public JobGraph getJobGraphFromInserts(List<JobStatement> statements) {
         return tableEnvironment.getJobGraphFromInserts(statements);
     }
 
@@ -302,10 +310,12 @@ public abstract class Executor {
         return statementSet.execute();
     }
 
-    public String explainStatementSet(List<String> statements) {
-        StatementSet statementSet = tableEnvironment.createStatementSet();
-        statements.forEach(statementSet::addInsertSql);
-        return statementSet.explain();
+    public TableResult executeStatements(List<JobStatement> statements) {
+        return tableEnvironment.executeStatementSet(statements);
+    }
+
+    public SqlExplainResult explainStatementSet(List<JobStatement> statements) {
+        return tableEnvironment.explainStatementSet(statements);
     }
 
     public List<LineageRel> getLineage(String statement) {

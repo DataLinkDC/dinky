@@ -28,7 +28,7 @@ import { Editor, loader, Monaco, OnChange } from '@monaco-editor/react';
 import { connect } from '@umijs/max';
 import useMemoCallback from 'rc-menu/es/hooks/useMemoCallback';
 import { memo, useCallback, useContext, useRef } from 'react';
-import { DataStudioState } from '@/pages/DataStudioNew/model';
+import { DataStudioState } from '@/pages/DataStudio/model';
 import ITextModel = editor.ITextModel;
 import CompletionItem = languages.CompletionItem;
 import CompletionContext = languages.CompletionContext;
@@ -36,7 +36,7 @@ import CompletionList = languages.CompletionList;
 import ProviderResult = languages.ProviderResult;
 import LanguageSelector = languages.LanguageSelector;
 import { DevopsContext } from '@/pages/DevOps';
-import { DataStudioContext, DataStudioContextType } from '@/pages/DataStudioNew/DataStudioContext';
+import { DataStudioContext, DataStudioContextType } from '@/pages/DataStudio/DataStudioContext';
 
 loader.config({ monaco });
 

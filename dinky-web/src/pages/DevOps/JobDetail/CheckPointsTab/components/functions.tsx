@@ -20,7 +20,7 @@
 import { l } from '@/utils/intl';
 import { ErrorMessage, SuccessMessage } from '@/utils/messages';
 import { Modal } from 'antd';
-import { restartTask } from '@/pages/DataStudioNew/service';
+import { restartTask } from '@/pages/DataStudio/service';
 
 export const recoveryCheckPoint = (taskId: number, path: string) => {
   Modal.confirm({

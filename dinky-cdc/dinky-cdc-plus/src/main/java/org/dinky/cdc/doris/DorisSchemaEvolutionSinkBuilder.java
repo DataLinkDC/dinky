@@ -21,7 +21,6 @@ package org.dinky.cdc.doris;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractSinkBuilder;
-import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
@@ -41,12 +40,10 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
@@ -70,11 +67,12 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
 
     @SuppressWarnings("rawtypes")
     @Override
-    public DataStreamSource<String> build(
-            CDCBuilder cdcBuilder,
+    public void build(
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
             DataStreamSource<String> dataStreamSource) {
+
+        init(env, customTableEnvironment);
 
         Map<String, String> sink = config.getSink();
 
@@ -83,51 +81,46 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
         properties.setProperty("format", "json");
         properties.setProperty("read_json_by_line", "true");
 
-        final List<Schema> schemaList = config.getSchemaList();
-        if (!Asserts.isNotNullCollection(schemaList)) {
-            return dataStreamSource;
-        }
+        SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
+        logger.info("Build deserialize successful...");
 
-        SingleOutputStreamOperator<Map> mapOperator =
-                dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
-        final String schemaFieldName = config.getSchemaFieldName();
-
-        Map<Table, OutputTag<String>> tagMap = new LinkedHashMap<>();
-        Map<String, Table> tableMap = new LinkedHashMap<>();
-        for (Schema schema : schemaList) {
-            if (Asserts.isNullCollection(schema.getTables())) {
-                // if schema tables is empty, throw exception
-                throw new IllegalArgumentException(
-                        "Schema tables is empty, please check your configuration or check your database permission and try again.");
-            }
-            // if schema tables is not empty, sort by table name
-            List<Table> tableList = schema.getTables().stream()
-                    .sorted(Comparator.comparing(Table::getName))
-                    .collect(Collectors.toList());
-
+        List<Schema> sortedSchemaList = getSortedSchemaList();
+        final Map<String, Table> tableMap = new LinkedHashMap<>();
+        for (Schema schema : sortedSchemaList) {
             for (Table table : schema.getTables()) {
-                OutputTag<String> outputTag = new OutputTag<String>(getSinkTableName(table)) {};
-                tagMap.put(table, outputTag);
                 tableMap.put(table.getSchemaTableName(), table);
             }
         }
-
-        SingleOutputStreamOperator<String> process = mapOperator.process(new ProcessFunction<Map, String>() {
-
-            @Override
-            public void processElement(Map map, Context ctx, Collector<String> out) throws Exception {
-                LinkedHashMap source = (LinkedHashMap) map.get("source");
-                String result = objectMapper.writeValueAsString(map);
-                try {
-                    Table table = tableMap.get(source.get(schemaFieldName).toString()
-                            + "."
-                            + source.get("table").toString());
-                    ctx.output(tagMap.get(table), result);
-                } catch (Exception e) {
-                    out.collect(result);
-                }
+        partitionByTableAndPrimarykey(mapOperator, tableMap);
+        logger.info("Build partitionBy successful...");
+        Map<Table, OutputTag<String>> tagMap = new LinkedHashMap<>();
+        for (Schema schema : getSortedSchemaList()) {
+            for (Table table : schema.getTables()) {
+                OutputTag<String> outputTag = new OutputTag<String>(getSinkTableName(table)) {};
+                tagMap.put(table, outputTag);
             }
-        });
+        }
+        final String schemaFieldName = config.getSchemaFieldName();
+        SingleOutputStreamOperator<String> process = mapOperator
+                .process(new ProcessFunction<Map, String>() {
+
+                    @Override
+                    public void processElement(Map map, Context ctx, Collector<String> out) throws Exception {
+                        LinkedHashMap source = (LinkedHashMap) map.get("source");
+                        String result = objectMapper.writeValueAsString(map);
+                        try {
+                            Table table =
+                                    tableMap.get(source.get(schemaFieldName).toString()
+                                            + "."
+                                            + source.get("table").toString());
+                            ctx.output(tagMap.get(table), result);
+                        } catch (Exception e) {
+                            out.collect(result);
+                        }
+                    }
+                })
+                .name("Shunt");
+        logger.info("Build shunt successful...");
 
         tagMap.forEach((table, v) -> {
             DorisOptions dorisOptions = DorisOptions.builder()
@@ -195,7 +188,6 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
                             "Doris Schema Evolution Sink(table=[%s.%s])",
                             getSinkSchemaName(table), getSinkTableName(table)));
         });
-        return dataStreamSource;
     }
 
     @Override

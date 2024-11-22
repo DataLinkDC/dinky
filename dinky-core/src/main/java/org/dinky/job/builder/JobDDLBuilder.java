@@ -22,6 +22,7 @@ package org.dinky.job.builder;
 import static org.dinky.function.util.UDFUtil.*;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.job.SqlType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
@@ -30,7 +31,6 @@ import org.dinky.function.util.UDFUtil;
 import org.dinky.job.JobBuilder;
 import org.dinky.job.JobManager;
 import org.dinky.job.StatementParam;
-import org.dinky.parser.SqlType;
 import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
@@ -75,6 +75,7 @@ public class JobDDLBuilder extends JobBuilder {
     @Override
     public void run() throws Exception {
         List<UDF> udfList = new ArrayList<>();
+        List<String> udfStatements = new ArrayList<>();
         for (StatementParam item : jobParam.getDdl()) {
             jobManager.setCurrentSql(item.getValue());
             switch (item.getType()) {
@@ -92,7 +93,11 @@ public class JobDDLBuilder extends JobBuilder {
                     break;
                 case CREATE:
                     if (UDFUtil.isUdfStatement(item.getValue())) {
-                        udfList.add(UDFUtil.toUDF(item.getValue(), executor.getDinkyClassLoader()));
+                        UDF udf = toUDF(item.getValue(), executor.getDinkyClassLoader());
+                        if (Asserts.isNotNull(udf)) {
+                            udfList.add(UDFUtil.toUDF(item.getValue(), executor.getDinkyClassLoader()));
+                        }
+                        udfStatements.add(item.getValue());
                     } else {
                         executor.executeSql(item.getValue());
                     }
@@ -102,7 +107,10 @@ public class JobDDLBuilder extends JobBuilder {
             }
         }
         if (!udfList.isEmpty()) {
-            executeCreateFunction(udfList);
+            compileUDF(udfList);
+        }
+        if (!udfStatements.isEmpty()) {
+            executeCreateFunction(udfStatements);
         }
     }
 
@@ -173,7 +181,9 @@ public class JobDDLBuilder extends JobBuilder {
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
             String udfStatement = StringUtils.join(udfStatements, ";\n");
             try {
-                explainCreateFunction(udfList);
+                SqlExplainResult recordResult = null;
+                recordResult = explainCreateFunction(udfList, udfStatements);
+                resultBuilder = SqlExplainResult.newBuilder(recordResult);
             } catch (Exception e) {
                 String error = StrFormatter.format(
                         "Exception in executing CreateFunction:\n{}\n{}",
@@ -223,7 +233,13 @@ public class JobDDLBuilder extends JobBuilder {
         executor.executeSql(statement);
     }
 
-    private void executeCreateFunction(List<UDF> udfList) {
+    private void executeCreateFunction(List<String> udfStatements) {
+        for (String statement : udfStatements) {
+            executor.executeSql(statement);
+        }
+    }
+
+    private void compileUDF(List<UDF> udfList) {
         Integer taskId = config.getTaskId();
         if (taskId == null) {
             taskId = -RandomUtil.randomInt(0, 1000);
@@ -328,11 +344,17 @@ public class JobDDLBuilder extends JobBuilder {
         return sqlExplainResult;
     }
 
-    private SqlExplainResult explainCreateFunction(List<UDF> udfList) {
+    private SqlExplainResult explainCreateFunction(List<UDF> udfList, List<String> udfStatements) {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-        executeCreateFunction(udfList);
+        compileUDF(udfList);
+        executeCreateFunction(udfStatements);
         String explain = udfList.toString();
-        return resultBuilder.parseTrue(true).explainTrue(true).explain(explain).build();
+        return resultBuilder
+                .type(SqlType.CREATE.getType())
+                .parseTrue(true)
+                .explainTrue(true)
+                .explain(explain)
+                .build();
     }
 
     private SqlExplainResult explainOtherDDL(String statement) {

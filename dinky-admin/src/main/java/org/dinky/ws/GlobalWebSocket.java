@@ -78,6 +78,13 @@ public class GlobalWebSocket {
     public static class RequestDTO {
         private Map<GlobalWebSocketTopic, Set<String>> topics;
         private String token;
+        private EventType type;
+
+        public enum EventType {
+            SUBSCRIBE,
+            PING,
+            PONG
+        }
     }
 
     private static final Map<Session, RequestDTO> TOPICS = new ConcurrentHashMap<>();
@@ -99,6 +106,13 @@ public class GlobalWebSocket {
                 TOPICS.remove(session);
                 return;
             }
+
+            if (requestDTO.getType() == RequestDTO.EventType.PING) {
+                SseDataVo data = new SseDataVo(session.getId(), RequestDTO.EventType.PONG);
+                session.getBasicRemote().sendText(JsonUtils.toJsonString(data));
+                return;
+            }
+
             Map<GlobalWebSocketTopic, Set<String>> topics = requestDTO.getTopics();
             if (MapUtil.isNotEmpty(topics)) {
                 TOPICS.put(session, requestDTO);

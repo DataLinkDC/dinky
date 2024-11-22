@@ -24,20 +24,11 @@ import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
 
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.types.Row;
 
 import java.io.Serializable;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
 
 public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -50,18 +41,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
     }
 
     @Override
-    protected void initTypeConverterList() {
-        typeConverterList = Arrays.asList(
-                this::convertDateType,
-                this::convertTimestampType,
-                this::convertDecimalType,
-                this::convertBigIntType,
-                this::convertVarBinaryType);
-    }
-
-    @Override
-    public void addTableSink(
-            CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
+    public void addTableSink(DataStream<Row> rowDataDataStream, Table table) {
 
         String catalogName = config.getSink().get("catalog.name");
         String sinkSchemaName = getSinkSchemaName(table);
@@ -74,7 +54,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                 viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
 
-        createInsertOperations(customTableEnvironment, table, viewName, sinkTableName);
+        createInsertOperations(table, viewName, sinkTableName);
     }
 
     @Override
@@ -87,48 +67,8 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         return new SQLCatalogSinkBuilder(config);
     }
 
-    protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {
-        logger.info("Build catalog successful...");
+    protected void executeCatalogStatement() {
         customTableEnvironment.executeSql(FlinkStatementUtil.getCreateCatalogStatement(config));
-    }
-
-    @Override
-    protected String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
-        return source.get(schemaFieldName).toString() + "."
-                + source.get("table").toString();
-    }
-
-    @Override
-    protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
-        if (logicalType instanceof DateType) {
-            if (value instanceof Integer) {
-                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDate());
-            }
-            return Optional.of(
-                    Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
-        if (logicalType instanceof TimestampType) {
-            if (value instanceof Integer) {
-                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime());
-            }
-
-            if (value instanceof String) {
-                return Optional.of(
-                        Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
-            }
-
-            return Optional.of(
-                    Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime());
-        }
-        return Optional.empty();
+        logger.info("Build catalog successful...");
     }
 }

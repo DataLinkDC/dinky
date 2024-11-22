@@ -19,7 +19,7 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import VersionList from '@/components/VersionList';
-import { matchLanguage } from '@/pages/DataStudioNew/function';
+import { matchLanguage } from '@/pages/DataStudio/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';

@@ -10,8 +10,7 @@
 
 ## Introduction
 
-Dinky is a real-time data development platform based on Apache Flink, enabling agile data development, deployment and operation.
-
+An open-source real-time computing platform built with Apache Flink as its core, capable of real-time application job development, data debugging, and runtime monitoring, helping to facilitate efficient real-time computing applications.
 ## Feature
 
 Its main features are as follows:
@@ -77,9 +76,9 @@ Below is a partial list of acknowledgements:
 
 [Apache Flink](https://github.com/apache/flink)
 
-[FlinkCDC](https://github.com/ververica/flink-cdc-connectors)
+[Apache FlinkCDC](https://github.com/apache/flink-cdc)
 
-[Apache Paimon](https://github.com/apache/incubator-paimon)
+[Apache Paimon](https://github.com/apache/paimon)
 
 [Apache Dolphinscheduler](https://github.com/apache/dolphinscheduler)
 
@@ -107,13 +106,9 @@ Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for providing a fre
 
 2.Visit the [official website](http://www.dinky.org.cn/#/) website to read the latest documentation manual.
 
-3.It is recommended to scan the code to enter the DingTalk group.
+3.Enter the WeChat user community group (recommended, add WeChat `wenmo_ai` to invite into the group) and QQ user community group (**543709668**) to communicate, and apply for the remarks "Dinky + company name + position".
 
-<img src="https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
-
-4.Enter the WeChat user community group (recommended, add WeChat `wenmo_ai` to invite into the group) and QQ user community group (**543709668**) to communicate, and apply for the remarks "Dinky + company name + position".
-
-5.Follow the WeChat public account to get the latest official articles: [Dinky Open Source](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg).
+4.Follow the WeChat public account to get the latest official articles: [Dinky Open Source](https://mmbiz.qpic.cn/mmbiz_jpg/dyicwnSlTFTp6w4PuJruFaLV6uShCJDkzqwtnbQJrQ90yKDuuIC8tyMU5DK69XZibibx7EPPBRQ3ic81se5UQYs21g/0?wx_fmt=jpeg).
 
 ## Copyright
 

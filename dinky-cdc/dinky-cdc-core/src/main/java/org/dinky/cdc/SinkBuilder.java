@@ -32,8 +32,7 @@ public interface SinkBuilder {
 
     SinkBuilder create(FlinkCDCConfig config);
 
-    DataStreamSource<String> build(
-            CDCBuilder cdcBuilder,
+    void build(
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
             DataStreamSource<String> dataStreamSource);

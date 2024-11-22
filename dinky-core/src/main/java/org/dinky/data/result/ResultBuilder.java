@@ -19,8 +19,8 @@
 
 package org.dinky.data.result;
 
+import org.dinky.data.job.SqlType;
 import org.dinky.job.JobHandler;
-import org.dinky.parser.SqlType;
 
 import org.apache.flink.table.api.TableResult;
 
@@ -58,8 +58,9 @@ public interface ResultBuilder {
             case DESCRIBE:
                 return new ShowResultBuilder(id);
             case INSERT:
+            case EXECUTE:
                 return isMockSinkFunction
-                        ? new MockResultBuilder(id, maxRowNum, isAutoCancel)
+                        ? new MockResultBuilder(id, maxRowNum, isChangeLog, isAutoCancel)
                         : new InsertResultBuilder();
             default:
                 return new DDLResultBuilder();

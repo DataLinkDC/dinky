@@ -55,8 +55,7 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
             ResultRunnable runnable =
                     new ResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
-            Thread thread = new Thread(runnable, jobId);
-            thread.start();
+            threadPoolExecutor.execute(runnable);
             return SelectResult.buildSuccess(jobId);
         } else {
             return SelectResult.buildFailed();
@@ -82,8 +81,7 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
             runnable.registerCallback((s, selectResult) -> {
                 jobHandler.persistResultData(Lists.newArrayList(s));
             });
-            Thread thread = new Thread(runnable, jobId);
-            thread.start();
+            threadPoolExecutor.execute(runnable);
             return SelectResult.buildSuccess(jobId);
         } else {
             return SelectResult.buildFailed();

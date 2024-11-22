@@ -999,7 +999,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         } else {
             task.setStatement(buildEnvSql(task) + task.getStatement());
             JobConfig jobConfig = task.getJobConfig();
-            return LineageBuilder.getColumnLineageByLogicalPlan(task.getStatement(), jobConfig.getExecutorSetting());
+            return LineageBuilder.getColumnLineageByLogicalPlan(task.getStatement(), jobConfig);
         }
     }
 

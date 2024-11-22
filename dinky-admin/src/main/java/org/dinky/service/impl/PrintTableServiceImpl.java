@@ -19,9 +19,9 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.job.SqlType;
 import org.dinky.data.vo.PrintTableVo;
 import org.dinky.explainer.print_table.PrintStatementExplainer;
-import org.dinky.parser.SqlType;
 import org.dinky.service.PrintTableService;
 import org.dinky.trans.Operations;
 import org.dinky.utils.SqlUtil;

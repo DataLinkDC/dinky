@@ -20,48 +20,31 @@
 package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.cdc.convert.DataTypeConverter;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.utils.JsonUtils;
+import org.dinky.utils.SplitUtil;
 
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.functions.Partitioner;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.table.data.DecimalData;
 import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.BooleanType;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.DoubleType;
-import org.apache.flink.table.types.logical.FloatType;
-import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.SmallIntType;
-import org.apache.flink.table.types.logical.TimeType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.TinyIntType;
-import org.apache.flink.table.types.logical.VarBinaryType;
-import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
-import org.apache.flink.util.OutputTag;
 
-import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,57 +53,48 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
 public abstract class AbstractSinkBuilder implements SinkBuilder {
-    protected ObjectMapper objectMapper = new ObjectMapper();
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
 
+    protected ObjectMapper objectMapper = new ObjectMapper();
     protected FlinkCDCConfig config;
+    protected StreamExecutionEnvironment env;
+    protected CustomTableEnvironment customTableEnvironment;
     protected List<ModifyOperation> modifyOperations = new ArrayList<>();
-    private ZoneId sinkTimeZone = ZoneId.of("UTC");
+    protected ZoneId sinkTimeZone = ZoneId.systemDefault();
 
-    protected List<ConvertType> typeConverterList = null;
-
-    protected AbstractSinkBuilder() {
-        initTypeConverterList();
-    }
+    protected AbstractSinkBuilder() {}
 
     protected AbstractSinkBuilder(FlinkCDCConfig config) {
         this.config = config;
-        initTypeConverterList();
     }
 
-    protected void initTypeConverterList() {
-        typeConverterList = Lists.newArrayList(
-                this::convertVarCharType,
-                this::convertDateType,
-                this::convertTimeType,
-                this::convertVarBinaryType,
-                this::convertBigIntType,
-                this::convertFloatType,
-                this::convertDecimalType,
-                this::convertTimestampType);
+    protected ZoneId getSinkTimeZone() {
+        return this.sinkTimeZone;
     }
 
-    public FlinkCDCConfig getConfig() {
-        return config;
+    protected void init(StreamExecutionEnvironment env, CustomTableEnvironment customTableEnvironment) {
+        this.env = env;
+        this.customTableEnvironment = customTableEnvironment;
+        initSinkTimeZone();
     }
 
-    public void setConfig(FlinkCDCConfig config) {
-        this.config = config;
+    private void initSinkTimeZone() {
+        final String timeZone = config.getSink().get("timezone");
+        config.getSink().remove("timezone");
+        if (Asserts.isNotNullString(timeZone)) {
+            sinkTimeZone = ZoneId.of(timeZone);
+            logger.info("Sink timezone is {}", sinkTimeZone);
+        }
     }
 
     protected Properties getProperties() {
@@ -139,41 +113,81 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return properties;
     }
 
-    protected SingleOutputStreamOperator<Map> deserialize(DataStreamSource<String> dataStreamSource) {
+    @SuppressWarnings("rawtypes")
+    protected SingleOutputStreamOperator<Map> deserialize(SingleOutputStreamOperator<String> dataStreamSource) {
         return dataStreamSource
                 .map((MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class))
-                .returns(Map.class);
-    }
-
-    protected SingleOutputStreamOperator<Map> shunt(
-            SingleOutputStreamOperator<Map> mapOperator, Table table, String schemaFieldName) {
-        final String tableName = table.getName();
-        final String schemaName = table.getSchema();
-        return mapOperator.filter((FilterFunction<Map>) value -> {
-            LinkedHashMap source = (LinkedHashMap) value.get("source");
-            return tableName.equals(source.get("table").toString())
-                    && schemaName.equals(source.get(schemaFieldName).toString());
-        });
-    }
-
-    protected DataStream<Map> shunt(SingleOutputStreamOperator<Map> processOperator, Table table, OutputTag<Map> tag) {
-        processOperator.forward();
-        return processOperator.getSideOutput(tag).forward();
+                .returns(Map.class)
+                .name("Deserializer");
     }
 
     @SuppressWarnings("rawtypes")
-    protected DataStream<RowData> buildRowData(
+    protected SingleOutputStreamOperator<Map> partitionByTableAndPrimarykey(
+            SingleOutputStreamOperator<Map> mapOperator, Map<String, Table> tableMap) {
+        final String schemaFieldName = config.getSchemaFieldName();
+        final Map<String, String> configSplit = config.getSplit();
+        mapOperator.partitionCustom(
+                new Partitioner<String>() {
+                    @Override
+                    public int partition(String key, int numPartitions) {
+                        return Math.abs(key.hashCode()) % numPartitions;
+                    }
+                },
+                map -> {
+                    LinkedHashMap source = (LinkedHashMap) map.get("source");
+                    String tableName = getMergedTableName(source, schemaFieldName, configSplit);
+                    Table table = tableMap.get(tableName);
+                    List<String> primaryKeys = table.getColumns().stream()
+                            .map(column -> {
+                                if (column.isKeyFlag()) {
+                                    return column.getName();
+                                }
+                                return "";
+                            })
+                            .collect(Collectors.toList());
+
+                    return tableName + String.join("_", primaryKeys);
+                });
+        return mapOperator.name("PartitionByPrimaryKey");
+    }
+
+    protected String getMergedTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
+        if (Asserts.isNullMap(split)) {
+            return source.get(schemaFieldName).toString() + "."
+                    + source.get("table").toString();
+        }
+        return SplitUtil.getReValue(source.get(schemaFieldName).toString(), split)
+                + "."
+                + SplitUtil.getReValue(source.get("table").toString(), split);
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected SingleOutputStreamOperator<Map> shunt(
+            SingleOutputStreamOperator<Map> mapOperator, String schemaName, String tableName) {
+        final String schemaFieldName = config.getSchemaFieldName();
+        return mapOperator
+                .filter((FilterFunction<Map>) value -> {
+                    LinkedHashMap source = (LinkedHashMap) value.get("source");
+                    return tableName.equals(source.get("table").toString())
+                            && schemaName.equals(source.get(schemaFieldName).toString());
+                })
+                .name("Shunt");
+    }
+
+    @SuppressWarnings("rawtypes")
+    private DataStream<RowData> buildRowData(
             SingleOutputStreamOperator<Map> filterOperator,
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
         return filterOperator
                 .flatMap(sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName))
-                .returns(RowData.class);
+                .returns(RowData.class)
+                .name("FlatMapRowData");
     }
 
     @SuppressWarnings("rawtypes")
-    protected FlatMapFunction<Map, RowData> sinkRowDataFunction(
+    private FlatMapFunction<Map, RowData> sinkRowDataFunction(
             List<String> columnNameList, List<LogicalType> columnTypeList, String schemaTableName) {
         return (value, out) -> {
             try {
@@ -203,12 +217,15 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     @SuppressWarnings("rawtypes")
-    protected void rowDataCollect(
+    private void rowDataCollect(
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             Collector<RowData> out,
             RowKind rowKind,
             Map value) {
+        if (Asserts.isNull(value)) {
+            return;
+        }
         GenericRowData genericRowData = new GenericRowData(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
             genericRowData.setField(
@@ -218,13 +235,16 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     @SuppressWarnings("rawtypes")
-    protected Object buildRowDataValues(Map value, RowKind rowKind, String columnName, LogicalType columnType) {
-        Map data = getOriginRowData(rowKind, value);
-        return convertValue(data.get(columnName), columnType);
+    private Object buildRowDataValues(Map value, RowKind rowKind, String columnName, LogicalType columnType) {
+        Map data = getOriginData(rowKind, value);
+        return DataTypeConverter.convertToRowData(data.get(columnName), columnType, sinkTimeZone);
     }
 
     @SuppressWarnings("rawtypes")
-    protected Map getOriginRowData(RowKind rowKind, Map value) {
+    private Map getOriginData(RowKind rowKind, Map value) {
+        if (Asserts.isNullMap(value)) {
+            return Collections.emptyMap();
+        }
         switch (rowKind) {
             case INSERT:
             case UPDATE_AFTER:
@@ -238,266 +258,74 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return Collections.emptyMap();
     }
 
-    public void addSink(
-            StreamExecutionEnvironment env,
+    protected void addSink(
             DataStream<RowData> rowDataDataStream,
             Table table,
             List<String> columnNameList,
             List<LogicalType> columnTypeList) {}
 
-    protected List<Operation> createInsertOperations(
-            CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
-        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName, config);
-        logger.info(cdcSqlInsert);
-
-        List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
-        logger.info("Create {} FlinkSQL insert into successful...", tableName);
-        if (operations.isEmpty()) {
-            return operations;
+    protected List<Schema> getSortedSchemaList() {
+        final List<Schema> schemaList = config.getSchemaList();
+        if (Asserts.isNullCollection(schemaList)) {
+            throw new IllegalArgumentException("Schema list is empty, please check your configuration and try again.");
         }
-
-        try {
-            Operation operation = operations.get(0);
-            if (operation instanceof ModifyOperation) {
-                modifyOperations.add((ModifyOperation) operation);
+        for (Schema schema : schemaList) {
+            if (Asserts.isNullCollection(schema.getTables())) {
+                // if schema tables is empty, throw exception
+                throw new IllegalArgumentException(
+                        "Schema tables is empty, please check your configuration or check your database permission and try again.");
             }
-
-        } catch (Exception e) {
-            logger.error("Translate to plan occur exception: {}", e.toString());
-            throw e;
+            // if schema tables is not empty, sort by table name to keep node sort
+            schema.setTables(schema.getTables().stream()
+                    .sorted(Comparator.comparing(Table::getName))
+                    .collect(Collectors.toList()));
         }
-        return operations;
+        return schemaList;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public DataStreamSource<String> build(
-            CDCBuilder cdcBuilder,
+    public void build(
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
             DataStreamSource<String> dataStreamSource) {
+        init(env, customTableEnvironment);
+        buildPipeline(dataStreamSource, getSortedSchemaList());
+    }
 
-        final String timeZone = config.getSink().get("timezone");
-        config.getSink().remove("timezone");
-        if (Asserts.isNotNullString(timeZone)) {
-            sinkTimeZone = ZoneId.of(timeZone);
-            logger.info("Sink timezone is {}", sinkTimeZone);
-        }
-
-        final List<Schema> schemaList = config.getSchemaList();
-        if (Asserts.isNullCollection(schemaList)) {
-            logger.warn("Schema list is empty, please check your configuration and try again.");
-            return dataStreamSource;
-        }
-
-        final String schemaFieldName = config.getSchemaFieldName();
-
-        if (Asserts.isNotNullCollection(schemaList)) {
-            SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
-            for (Schema schema : schemaList) {
-                if (Asserts.isNullCollection(schema.getTables())) {
-                    // if schema tables is empty, throw exception
-                    throw new IllegalArgumentException(
-                            "Schema tables is empty, please check your configuration or check your database permission and try again.");
-                }
-                // if schema tables is not empty, sort by table name
-                List<Table> tableList = schema.getTables().stream()
-                        .sorted(Comparator.comparing(Table::getName))
-                        .collect(Collectors.toList());
-                for (Table table : tableList) {
-                    SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
-
-                    List<String> columnNameList = new ArrayList<>();
-                    List<LogicalType> columnTypeList = new ArrayList<>();
-
-                    buildColumn(columnNameList, columnTypeList, table.getColumns());
-
-                    DataStream<RowData> rowDataDataStream =
-                            buildRowData(filterOperator, columnNameList, columnTypeList, table.getSchemaTableName());
-
-                    addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
-                }
+    protected void buildPipeline(DataStreamSource<String> dataStreamSource, List<Schema> schemaList) {
+        SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
+        logger.info("Build deserialize successful...");
+        final Map<String, Table> tableMap = new LinkedHashMap<>();
+        for (Schema schema : schemaList) {
+            for (Table table : schema.getTables()) {
+                tableMap.put(table.getSchemaTableName(), table);
             }
         }
-        return dataStreamSource;
+        partitionByTableAndPrimarykey(mapOperator, tableMap);
+        logger.info("Build partitionBy successful...");
+        for (Schema schema : schemaList) {
+            for (Table table : schema.getTables()) {
+                SingleOutputStreamOperator<Map> singleOutputStreamOperator =
+                        shunt(mapOperator, table.getSchema(), table.getName());
+                logger.info("Build shunt successful...");
+                final List<String> columnNameList = new ArrayList<>();
+                final List<LogicalType> columnTypeList = new ArrayList<>();
+                buildColumn(columnNameList, columnTypeList, table.getColumns());
+
+                DataStream<RowData> rowDataDataStream = buildRowData(
+                        singleOutputStreamOperator, columnNameList, columnTypeList, table.getSchemaTableName());
+                logger.info("Build flatRowData successful...");
+                addSink(rowDataDataStream, table, columnNameList, columnTypeList);
+            }
+        }
     }
 
     protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
         for (Column column : columns) {
             columnNameList.add(column.getName());
-            columnTypeList.add(getLogicalType(column));
+            columnTypeList.add(DataTypeConverter.getLogicalType(column));
         }
-    }
-
-    public LogicalType getLogicalType(Column column) {
-        switch (column.getJavaType()) {
-            case BOOLEAN:
-            case JAVA_LANG_BOOLEAN:
-                return new BooleanType();
-            case BYTE:
-            case JAVA_LANG_BYTE:
-                return new TinyIntType();
-            case SHORT:
-            case JAVA_LANG_SHORT:
-                return new SmallIntType();
-            case LONG:
-            case JAVA_LANG_LONG:
-                return new BigIntType();
-            case FLOAT:
-            case JAVA_LANG_FLOAT:
-                return new FloatType();
-            case DOUBLE:
-            case JAVA_LANG_DOUBLE:
-                return new DoubleType();
-            case DECIMAL:
-                if (column.getPrecision() == null || column.getPrecision() == 0) {
-                    return new DecimalType(38, column.getScale());
-                } else {
-                    return new DecimalType(column.getPrecision(), column.getScale());
-                }
-            case INT:
-            case INTEGER:
-                return new IntType();
-            case TIME:
-            case LOCALTIME:
-                return new TimeType(column.isNullable(), column.getPrecision() == null ? 0 : column.getPrecision());
-            case DATE:
-            case LOCAL_DATE:
-                return new DateType();
-            case LOCAL_DATETIME:
-            case TIMESTAMP:
-                if (column.getLength() != null) {
-                    return new TimestampType(column.getLength());
-                } else {
-                    return new TimestampType(3);
-                }
-            case BYTES:
-                return new VarBinaryType(Integer.MAX_VALUE);
-            case STRING:
-            default:
-                return new VarCharType();
-        }
-    }
-
-    protected Object convertValue(Object value, LogicalType logicalType) {
-        if (value == null) {
-            return null;
-        }
-
-        for (ConvertType convertType : typeConverterList) {
-            Optional<Object> result = convertType.convert(value, logicalType);
-            if (result.isPresent()) {
-                return result.get();
-            }
-        }
-        return value;
-    }
-
-    protected Optional<Object> convertVarBinaryType(Object value, LogicalType logicalType) {
-        if (logicalType instanceof VarBinaryType) {
-            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
-            if (value instanceof String) {
-                return Optional.of(DatatypeConverter.parseBase64Binary(value.toString()));
-            }
-
-            return Optional.of(value);
-        }
-        return Optional.empty();
-    }
-
-    protected Optional<Object> convertBigIntType(Object value, LogicalType logicalType) {
-        if (logicalType instanceof BigIntType) {
-            if (value instanceof Integer) {
-                return Optional.of(((Integer) value).longValue());
-            }
-
-            return Optional.of(value);
-        }
-        return Optional.empty();
-    }
-
-    protected Optional<Object> convertFloatType(Object value, LogicalType logicalType) {
-        if (logicalType instanceof FloatType) {
-            if (value instanceof Float) {
-                return Optional.of(value);
-            }
-
-            if (value instanceof Double) {
-                return Optional.of(((Double) value).floatValue());
-            }
-
-            return Optional.of(Float.parseFloat(value.toString()));
-        }
-        return Optional.empty();
-    }
-
-    protected Optional<Object> convertDecimalType(Object value, LogicalType logicalType) {
-        if (logicalType instanceof DecimalType) {
-            final DecimalType decimalType = (DecimalType) logicalType;
-            return Optional.ofNullable(DecimalData.fromBigDecimal(
-                    new BigDecimal((String) value), decimalType.getPrecision(), decimalType.getScale()));
-        }
-        return Optional.empty();
-    }
-
-    protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
-        if (logicalType instanceof TimestampType) {
-            if (value instanceof Integer) {
-                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime());
-            } else if (value instanceof String) {
-                return Optional.of(
-                        Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
-            } else {
-                TimestampType logicalType1 = (TimestampType) logicalType;
-                if (logicalType1.getPrecision() == 3) {
-                    return Optional.of(Instant.ofEpochMilli((long) value)
-                            .atZone(sinkTimeZone)
-                            .toLocalDateTime());
-                } else if (logicalType1.getPrecision() > 3) {
-                    return Optional.of(
-                            Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, logicalType1.getPrecision() - 3))
-                                    .atZone(sinkTimeZone)
-                                    .toLocalDateTime());
-                }
-                return Optional.of(Instant.ofEpochSecond(((long) value))
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime());
-            }
-        }
-        return Optional.empty();
-    }
-
-    protected Optional<Object> convertDateType(Object target, LogicalType logicalType) {
-        if (logicalType instanceof DateType) {
-            return Optional.of(StringData.fromString(Instant.ofEpochMilli((long) target)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate()
-                    .toString()));
-        }
-        return Optional.empty();
-    }
-
-    protected Optional<Object> convertTimeType(Object target, LogicalType logicalType) {
-        if (logicalType instanceof TimeType) {
-            return Optional.of(StringData.fromString(Instant.ofEpochMilli((long) target)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalTime()
-                    .toString()));
-        }
-        return Optional.empty();
-    }
-
-    protected Optional<Object> convertVarCharType(Object target, LogicalType logicalType) {
-        if (logicalType instanceof VarCharType) {
-            return Optional.of(StringData.fromString((String) target));
-        }
-        return Optional.empty();
-    }
-
-    @FunctionalInterface
-    public interface ConvertType {
-        Optional<Object> convert(Object target, LogicalType logicalType);
     }
 
     @Override
@@ -574,21 +402,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             }
         }
         return mappingRules;
-    }
-
-    protected List<String> getPKList(Table table) {
-        if (Asserts.isNullCollection(table.getColumns())) {
-            return new ArrayList<>();
-        }
-
-        return table.getColumns().stream()
-                .filter(Column::isKeyFlag)
-                .map(Column::getName)
-                .collect(Collectors.toList());
-    }
-
-    protected ZoneId getSinkTimeZone() {
-        return this.sinkTimeZone;
     }
 
     protected Map<String, String> getTableTopicMap() {

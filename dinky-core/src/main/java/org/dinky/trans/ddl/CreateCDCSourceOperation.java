@@ -27,6 +27,7 @@ import org.dinky.cdc.SinkBuilderFactory;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableResultImpl;
 import org.dinky.executor.Executor;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.trans.AbstractOperation;
@@ -37,8 +38,15 @@ import org.dinky.utils.SqlUtil;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.ResultKind;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.catalog.Column;
+import org.apache.flink.table.catalog.ResolvedSchema;
+import org.apache.flink.table.types.AtomicDataType;
+import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.types.Row;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -74,9 +82,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
 
     @Override
     public TableResult execute(Executor executor) {
+        final CustomTableResultImpl.Builder tableResultBuilder = CustomTableResultImpl.builder();
         logger.info("Start build CDCSOURCE Task...");
         CDCSource cdcSource = CDCSource.build(statement);
         FlinkCDCConfig config = cdcSource.buildFlinkCDCConfig();
+        config.setMockTest(executor.isMockTest());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -190,16 +200,26 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             }
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
             logger.info("Build {} successful...", config.getType());
-            sinkBuilder.build(
-                    cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
+            sinkBuilder.build(streamExecutionEnvironment, executor.getCustomTableEnvironment(), streamSource);
             logger.info("Build CDCSOURCE Task successful!");
+            final List<Column> columns = new ArrayList<>();
+            final List<Row> rowList = new ArrayList<>();
+            for (Schema schema : config.getSchemaList()) {
+                for (Table table : schema.getTables()) {
+                    columns.add(Column.physical(
+                            "default_catalog.default_database." + sinkBuilder.getSinkTableName(table),
+                            new AtomicDataType(new BigIntType())));
+                    rowList.add(Row.of(-1));
+                }
+            }
+            tableResultBuilder.schema(ResolvedSchema.of(columns)).data(rowList).resultKind(ResultKind.SUCCESS);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return null;
+        return tableResultBuilder.build();
     }
 
-    Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
+    private Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
         Map<String, String> sink = config.getSink();
         String autoCreate = sink.get(FlinkCDCConfig.AUTO_CREATE);
         if (!Asserts.isEqualsIgnoreCase(autoCreate, "true") || Asserts.isNullString(schemaName)) {

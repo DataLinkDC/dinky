@@ -1,0 +1,3 @@
+org.dinky.cdc.print.PrintSinkBuilder
+org.dinky.cdc.kafka.KafkaSinkBuilder
+org.dinky.cdc.kafka.KafkaSinkJsonBuilder
