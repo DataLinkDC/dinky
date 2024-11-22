@@ -231,6 +231,10 @@ export enum API_CONSTANTS {
   LDAP_LIST_USER = '/api/ldap/listUser',
   LDAP_IMPORT_USERS = '/api/ldap/importUsers',
 
+  // ----------------------------------------- sso ------------------------------------
+  GET_SSO_ENABLE = '/api/sso/ssoEnableStatus',
+  SSO_TOKEN = '/api/sso/token',
+  SSO_LOGIN = '/api/sso/login',
   // ------------------------------------ home ------------------------------------
   GET_RESOURCE_OVERVIEW = '/api/home/getResourceOverview',
   GET_JOB_STATUS_OVERVIEW = '/api/home/getJobStatusOverview',

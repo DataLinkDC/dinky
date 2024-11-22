@@ -365,6 +365,7 @@ export default {
   'login.chooseTenantFailed': 'Tenant selection failed, please check. . . ',
   'login.chooseTenantSuccess': '{msg}, Use [ {tenantCode} ] to enter the system, loading. . .',
   'login.ldapLogin': 'LDAP Login',
+  'login.ssoLogin': 'SSO Login',
   'login.notbindtenant': 'You have not bound a tenant, please contact the administrator',
   'login.password.placeholder': 'Password',
   'login.password.required': 'Please input your password!',

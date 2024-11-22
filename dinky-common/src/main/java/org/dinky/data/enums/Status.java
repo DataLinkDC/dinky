@@ -255,6 +255,12 @@ public enum Status {
     DS_TASK_TYPE_NOT_SUPPORT(17008, "ds.task.type.not.support"),
     DS_WORK_FLOW_DEFINITION_NOT_EXIST(17009, "ds.work.flow.definition.not.exist"),
     DS_PROCESS_DEFINITION_UPDATE(17010, "ds.work.flow.definition.process.update"),
+    /**
+     * SSO About *
+     */
+    USER_TYPE_ERROR(22001, "sso.user.type.error"),
+    NOT_MATCHED_PRINCIPAL_NAME_ATTRIBUTE(22002, "sso.user.type.error"),
+    SINGLE_LOGIN_DISABLED(22003, "sso.not.enabled"),
 
     /**
      * LDAP About *
@@ -466,6 +472,7 @@ public enum Status {
     SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE(
             205, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval.note"),
     ;
+
     private final int code;
     private final String key;
 

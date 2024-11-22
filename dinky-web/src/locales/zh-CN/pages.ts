@@ -318,6 +318,7 @@ export default {
   'login.chooseTenantFailed': '租户选择失败，请检查...',
   'login.chooseTenantSuccess': '{msg}，使用【 {tenantCode} 】进入系统，加载中...',
   'login.ldapLogin': 'LDAP登录',
+  'login.ssoLogin': 'SSO 登录',
   'login.notbindtenant': '您还没有绑定租户，请联系管理员',
   'login.password.placeholder': '密码',
   'login.password.required': '密码是必填项！',
