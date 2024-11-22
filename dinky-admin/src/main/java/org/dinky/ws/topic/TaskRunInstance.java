@@ -19,35 +19,37 @@
 
 package org.dinky.ws.topic;
 
-import org.dinky.context.ConsoleContextHolder;
-import org.dinky.data.model.ProcessEntity;
+import org.dinky.daemon.pool.FlinkJobThreadPool;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
+import cn.hutool.core.collection.CollUtil;
 
-@Slf4j
-public class ProcessConsole extends BaseTopic {
-    public static final ProcessConsole INSTANCE = new ProcessConsole();
+public class TaskRunInstance extends BaseTopic {
+    public static final TaskRunInstance INSTANCE = new TaskRunInstance();
+    private Set<Integer> runningJobIds = CollUtil.newHashSet();
 
-    private ProcessConsole() {}
+    private TaskRunInstance() {}
 
     @Override
     public Map<String, Object> autoDataSend(Set<String> allParams) {
+        Set<Integer> currentMonitorTaskIds = FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds();
+        if (!runningJobIds.equals(currentMonitorTaskIds)) {
+            runningJobIds = currentMonitorTaskIds;
+            System.out.println("New IDS:" + runningJobIds.toString());
+            Map<String, Object> result = new HashMap<>();
+            result.put("RunningTaskId", FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds());
+            return result;
+        }
         return new HashMap<>();
     }
 
     @Override
     public Map<String, Object> firstDataSend(Set<String> allParams) {
         Map<String, Object> result = new HashMap<>();
-        allParams.forEach(processName -> {
-            ProcessEntity process = ConsoleContextHolder.getInstances().getProcess(processName);
-            if (process != null) {
-                result.put(processName, process);
-            }
-        });
+        result.put("RunningTaskId", FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds());
         return result;
     }
 }

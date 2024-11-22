@@ -54,6 +54,7 @@ import { buildProjectTree } from '@/pages/DataStudio/Toolbar/Project/function';
 import { showFirstLevelOwner, showSecondLevelOwners } from '@/pages/DataStudio/function';
 import { generateList, getLeafKeyList, searchInTree } from '@/utils/treeUtils';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
+import {SseData, Topic} from "@/models/UseWebSocketModel";
 
 const { DirectoryTree } = Tree;
 
@@ -75,6 +76,18 @@ const JobList = (props: connect) => {
     method: 'post'
   });
   const [projectData, setProjectData] = useState<any[]>([]);
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
+  const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState([]);
+
+  useEffect(() => {
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+      if (data?.data?.RunningTaskId) {
+        setCurrentRunningTaskIds(data?.data?.RunningTaskId);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     setProjectData(
@@ -84,13 +97,14 @@ const JobList = (props: connect) => {
         [],
         initialState?.currentUser?.user,
         taskOwnerLockingStrategy,
-        users
+        users,
+        currentRunningTaskIds
       )
     );
     if (searchValue === '' || searchValue === undefined) {
-      setExpandedKeys([]);
+      expandedKeys.length == 0 && setExpandedKeys([]);
     }
-  }, [searchValue, taskOwnerLockingStrategy, data]);
+  }, [searchValue, taskOwnerLockingStrategy, data, currentRunningTaskIds]);
 
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {

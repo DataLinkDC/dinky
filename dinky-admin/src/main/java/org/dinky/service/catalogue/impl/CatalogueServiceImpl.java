@@ -519,7 +519,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     if (currentJobInstance != null) {
                         // 获取前 先强制刷新一下, 避免获取任务信息状态不准确
                         JobInfoDetail jobInfoDetail =
-                                jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), true);
+                                jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), task.getId(), true);
                         if (jobInfoDetail.getInstance().getStatus().equals(JobStatus.RUNNING.getValue())) {
                             throw new BusException(Status.TASK_IS_RUNNING_CANNOT_DELETE);
                         }

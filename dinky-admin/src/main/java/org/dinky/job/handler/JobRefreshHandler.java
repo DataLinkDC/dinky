@@ -25,6 +25,7 @@ import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.context.SpringContextUtils;
+import org.dinky.context.TenantContextHolder;
 import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.ClusterConfigurationDTO;
 import org.dinky.data.dto.JobDataDto;
@@ -101,6 +102,10 @@ public class JobRefreshHandler {
      * @return True if the job is done, false otherwise.
      */
     public static boolean refreshJob(JobInfoDetail jobInfoDetail, boolean needSave) {
+        if (Asserts.isNull(TenantContextHolder.get())) {
+            jobInstanceService.initTenantByJobInstanceId(
+                    jobInfoDetail.getInstance().getId());
+        }
         log.debug(
                 "Start to refresh job: {}->{}",
                 jobInfoDetail.getInstance().getId(),

@@ -32,7 +32,8 @@ export enum Topic {
   JVM_INFO = 'JVM_INFO',
   PROCESS_CONSOLE = 'PROCESS_CONSOLE',
   PRINT_TABLE = 'PRINT_TABLE',
-  METRICS = 'METRICS'
+  METRICS = 'METRICS',
+  TASK_RUN_INSTANCE = 'TASK_RUN_INSTANCE',
 }
 
 export type SubscriberData = {

@@ -151,6 +151,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail getJobInfoDetail(Integer id) {
+        if (Asserts.isNull(TenantContextHolder.get())) {
+            initTenantByJobInstanceId(id);
+        }
         return getJobInfoDetailInfo(getById(id));
     }
 
@@ -199,8 +202,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     }
 
     @Override
-    public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId, boolean isForce) {
-        DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId);
+    public JobInfoDetail refreshJobInfoDetail(Integer jobInstanceId, Integer taskId, boolean isForce) {
+        DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstanceId, taskId);
         DaemonTask daemonTask = FlinkJobThreadPool.getInstance().getByTaskConfig(daemonTaskConfig);
 
         if (daemonTask != null && !isForce) {
@@ -234,7 +237,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             return true;
         }
 
-        DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
+        DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId(), instance.getTaskId());
         DaemonTask daemonTask = FlinkJobThreadPool.getInstance().removeByTaskConfig(config);
         daemonTask = Optional.ofNullable(daemonTask).orElse(DaemonTask.build(config));
 
@@ -263,7 +266,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             return true;
         }
 
-        DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
+        DaemonTaskConfig config = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId(), instance.getTaskId());
         DaemonTask daemonTask = FlinkJobThreadPool.getInstance().removeByTaskConfig(config);
         daemonTask = Optional.ofNullable(daemonTask).orElse(DaemonTask.build(config));
 
@@ -279,10 +282,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     public void refreshJobByTaskIds(Integer... taskIds) {
         for (Integer taskId : taskIds) {
             JobInstance instance = getJobInstanceByTaskId(taskId);
-            DaemonTaskConfig daemonTaskConfig = DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId());
+            DaemonTaskConfig daemonTaskConfig =
+                    DaemonTaskConfig.build(FlinkJobTask.TYPE, instance.getId(), instance.getTaskId());
             FlinkJobThreadPool.getInstance().removeByTaskConfig(daemonTaskConfig);
             FlinkJobThreadPool.getInstance().execute(DaemonTask.build(daemonTaskConfig));
-            refreshJobInfoDetail(instance.getId(), false);
+            refreshJobInfoDetail(instance.getId(), instance.getTaskId(), false);
         }
     }
 

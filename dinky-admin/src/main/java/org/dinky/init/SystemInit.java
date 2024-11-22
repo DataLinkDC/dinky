@@ -152,11 +152,11 @@ public class SystemInit implements ApplicationRunner {
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
         FlinkJobThreadPool flinkJobThreadPool = FlinkJobThreadPool.getInstance();
         for (JobInstance jobInstance : jobInstances) {
-            DaemonTaskConfig config = new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId());
+            DaemonTaskConfig config =
+                    DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId(), jobInstance.getTaskId());
             DaemonTask daemonTask = DaemonTask.build(config);
             flinkJobThreadPool.execute(daemonTask);
         }
-        //        SseSessionContextHolder.init(schedule);
     }
 
     /**

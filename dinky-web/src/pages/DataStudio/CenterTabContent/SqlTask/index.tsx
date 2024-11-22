@@ -30,10 +30,10 @@ import {
   CaretRightOutlined,
   ClearOutlined,
   CloseOutlined,
-  CloudDownloadOutlined,
   EnvironmentOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
+  MergeCellsOutlined,
   PartitionOutlined,
   PauseOutlined,
   RocketOutlined,
@@ -78,6 +78,7 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
 import TaskConfig from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig';
 import SelectDb from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectDb';
+import {SseData, Topic} from "@/models/UseWebSocketModel";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -147,13 +148,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
 
   const { initialState } = useModel('@@initialState');
-  const [refreshTaskStatusDelay, setRefreshTaskStatusDelay] = useState<number | undefined>(
-    undefined
-  );
-  useRafInterval(async () => {
-    const taskDetail = (await getTaskDetails(params.taskId))!!;
-    setCurrentState((prevState) => ({ ...prevState, status: taskDetail.status }));
-  }, refreshTaskStatusDelay);
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId);
@@ -177,14 +175,14 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     }
     setLoading(false);
   }, []);
-  // 定时刷新作业状态
+
   useEffect(() => {
-    if (isStatusDone(currentState.status)) {
-      setRefreshTaskStatusDelay(undefined);
-    } else {
-      setRefreshTaskStatusDelay(3000);
-    }
-  }, [currentState.status]);
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+      if (data?.data?.RunningTaskId) {
+        setIsRunning(data?.data?.RunningTaskId.includes(params.taskId));
+      }
+    });
+  }, []);
 
   // 数据初始化
   useEffect(() => {
@@ -548,12 +546,11 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           submitter={false}
           layout='horizontal'
           variant={'filled'}
-          disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
+          disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask} // when this job is publishing, the form is disabled , and it is not allowed to modify
           onValuesChange={debounce(onValuesChange, 500)}
           syncToInitialValues
         >
           <Flex className={'run-toolbar'} wrap gap={2}>
-            {/* 运行工具栏*/}
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('button.save')}
@@ -656,7 +653,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
             <RunToolBarButton
               isShow={
-                isStatusDone(currentState.status) &&
+                !isRunning &&
                 assert(
                   currentState.dialect,
                   [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV],
@@ -678,7 +675,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             />
             <RunToolBarButton
               isShow={
-                isStatusDone(currentState.status) &&
+                !isRunning &&
                 assert(currentState.dialect, [DIALECT.FLINK_SQL], true, 'includes')
               }
               showDesc={showDesc}
@@ -695,7 +692,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             />
 
             <RunToolBarButton
-              isShow={!isStatusDone(currentState.status)}
+              isShow={isRunning}
               disabled={isLockTask}
               showDesc={showDesc}
               color={'red'}
@@ -711,7 +708,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
             <RunToolBarButton
               isShow={
-                !isStatusDone(currentState.status) &&
+                isRunning &&
                 assert(
                   currentState.dialect,
                   [DIALECT.FLINK_SQL, DIALECT.FLINKJAR],
@@ -729,7 +726,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{ height: dividerHeight }} />
             <RunToolBarButton
               showDesc={showDesc}
-              disabled={isLockTask || JOB_LIFE_CYCLE.PUBLISH == currentState.step}
+              disabled={isLockTask}
               desc={l('shortcut.key.format')}
               icon={<ClearOutlined />}
               onClick={handleFormat}
@@ -757,7 +754,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               disabled={isLockTask}
               desc={l('button.offline')}
-              icon={<CloudDownloadOutlined style={{ color: 'red' }} />}
+              icon={<MergeCellsOutlined />}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton

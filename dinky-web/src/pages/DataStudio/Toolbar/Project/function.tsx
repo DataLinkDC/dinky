@@ -23,7 +23,7 @@ import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
 import { Catalogue } from '@/types/Studio/data.d';
 import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
+import { FireOutlined, LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Divider, Space, Tooltip } from 'antd';
 import { Key } from 'react';
 import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudio/function';
@@ -221,6 +221,7 @@ export const showBadge = (type: string) => {
  * @param currentUser
  * @param taskOwnerLockingStrategy
  * @param users
+ * @param currentRunningTaskIds
  * @returns {any}
  */
 
@@ -230,13 +231,13 @@ export const buildProjectTree = (
   path: string[] = [],
   currentUser: UserBaseInfo.User,
   taskOwnerLockingStrategy: TaskOwnerLockingStrategy,
-  users: UserBaseInfo.User[] = []
+  users: UserBaseInfo.User[] = [],
+  currentRunningTaskIds: number[] = [],
 ): any =>
   data
     ? data.map((item: Catalogue) => {
         const currentPath = path ? [...path, item.name] : [item.name];
 
-        // 总渲染 title
         const renderTitle = (
           <Space align={'baseline'} size={2}>
             {searchTreeNode(item.name, searchValue)}
@@ -255,6 +256,7 @@ export const buildProjectTree = (
         // 渲染后缀图标
         const renderSuffixIcon = (
           <>
+            {currentRunningTaskIds.includes(item.taskId)?<FireOutlined />:undefined}
             {lockTask(
               item?.task?.firstLevelOwner,
               item?.task?.secondLevelOwners,
@@ -308,7 +310,8 @@ export const buildProjectTree = (
             currentPath,
             currentUser,
             taskOwnerLockingStrategy,
-            users
+            users,
+            currentRunningTaskIds
           )
         };
       })

@@ -44,6 +44,7 @@ import { useRightContext } from '@/pages/DataStudio/Toolbar/Project/RightContext
 import { TreeVo } from '@/pages/DataStudio/type';
 import FolderModal from '@/pages/DataStudio/Toolbar/Project/FolderModal';
 import { getTaskSortTypeData } from '@/pages/DataStudio/service';
+import {SseData, Topic} from "@/models/UseWebSocketModel";
 
 export const Project = (props: any) => {
   const {
@@ -91,6 +92,20 @@ export const Project = (props: any) => {
     data: { ...selectCatalogueSortTypeData },
     method: 'post'
   });
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
+  const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState([]);
+
+  useEffect(() => {
+    subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+      console.log(data?.data?.RunningTaskId);
+      if (data?.data?.RunningTaskId) {
+        setCurrentRunningTaskIds(data?.data?.RunningTaskId);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (initDid) {
       setInitDid(loading);
@@ -148,7 +163,6 @@ export const Project = (props: any) => {
     }
   }, [actionType, params]);
 
-  // tree数据初始化
   useAsyncEffect(async () => {
     if (data) {
       setTreeData(
@@ -158,27 +172,28 @@ export const Project = (props: any) => {
           [],
           initialState?.currentUser?.user,
           taskOwnerLockingStrategy,
-          users
+          users,
+          currentRunningTaskIds
         )
       );
-      // 这里需要再次设置expandKeys，因为网络延迟问题，导致第一次设置expandKeys无效
+      // We need to set expandKeys again here because of network latency issues, which caused the first time setting expandKeys to be invalid.
       updateProject({ expandKeys: [...expandKeys] });
     }
-  }, [data, searchValue]);
+  }, [data, searchValue, currentRunningTaskIds]);
+
   useEffect(() => {
     if (data) {
       refresh();
     }
   }, [selectCatalogueSortTypeData]);
 
-  // 数据初始化
   useEffect(() => {
     getTaskSortTypeData().then(setSortData);
-    // 监控布局宽度高度变化，重新计算树的高度
+    // Monitor layout width and height changes, recalculate tree height.
     const element = ref.current!!;
     const observer = new ResizeObserver((entries) => {
       if (entries?.length === 1) {
-        // 这里节点理应为一个，减去的高度是为搜索栏的高度
+        // The node here should be one, and the height subtracted is the height of the search bar.
         setTreeHeight(entries[0].contentRect.height - 52);
       }
     });

@@ -19,7 +19,7 @@
 
 import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
-import { Flex, Tabs, TabsProps, TreeDataNode } from 'antd';
+import { Flex, Space, Tabs, TabsProps, TreeDataNode } from 'antd';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import './index.less';
@@ -29,6 +29,7 @@ import {
   ArrowsAltOutlined,
   AuditOutlined,
   CodeOutlined,
+  FireOutlined,
   HistoryOutlined,
   MonitorOutlined,
   PartitionOutlined,
@@ -54,6 +55,8 @@ import { l } from '@/utils/intl';
 import { assert } from '@/pages/DataStudio/utils';
 import { connect } from '@umijs/max';
 import { Lineage } from '@/pages/DataStudio/Toolbar/Service/Lineage';
+import { useModel } from '@umijs/max';
+import {SseData, Topic} from "@/models/UseWebSocketModel";
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {
@@ -66,6 +69,18 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
   const [tabActiveKey, setTabActiveKey] = useState<Record<string, string>>({});
   const [treeData, setTreeData] = useState<TreeDataNode[]>([]);
   const [expandKeys, setExpandKeys] = useState<Key[]>([]);
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
+  const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+      if (data?.data?.RunningTaskId) {
+        setCurrentRunningTaskIds(data?.data?.RunningTaskId);
+      }
+    });
+  }, []);
 
   const getAllNodeKeys = (data: TreeDataNode[], keys: Key[] = []) => {
     data.forEach((item) => {
@@ -159,8 +174,8 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
     }
   }, [props.action]);
 
-  useEffect(() => {
-    const treeData: TreeDataNode[] = [
+  useAsyncEffect(async () => {
+    const newTreeData: TreeDataNode[] = [
       {
         title: 'Task',
         key: 'Task',
@@ -174,7 +189,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         // 2. 查找到对应的FlinkSql
         // 3. 查找到对应的task
 
-        treeData.forEach((node) => {
+        newTreeData.forEach((node) => {
           const dialect = tab.params.dialect;
           if (
             assert(dialect, [DIALECT.FLINK_SQL, DIALECT.FLINKJAR], true, 'includes') ||
@@ -192,7 +207,10 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
                 ) as TreeDataNode;
               }
               currentDialectTree.children!!.push({
-                title: tab.title,
+                title: (<Space align={'baseline'} size={'small'}>
+                  {tab.title}
+                  {currentRunningTaskIds.includes(tab.params.taskId)?<FireOutlined />:undefined}
+                </Space>),
                 key: tab.params.taskId,
                 icon: icon,
                 isLeaf: true
@@ -202,11 +220,11 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         });
       }
     });
-    setTreeData(treeData);
-    setExpandKeys(getAllNodeKeys(treeData));
-  }, [tabs]);
+    setTreeData(newTreeData);
+    expandKeys.length == 0 && setExpandKeys(getAllNodeKeys(newTreeData));
+  }, [tabs, currentRunningTaskIds]);
 
-  const renderContent = () => {
+  const renderContent =  useMemo(() => {
     if (selectedKey.length === 1) {
       const taskId = selectedKey[0] as number;
       const taskParams = tabs.find((tab) => tab.params.taskId === taskId)?.params;
@@ -242,7 +260,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
           key: 'history',
           label: l('menu.datastudio.history'),
           icon: <HistoryOutlined />,
-          children: <ExecutionHistory taskId={taskId} dialect={taskParams?.dialect} />
+          children: <ExecutionHistory taskId={taskId} dialect={taskParams?.dialect}/>
         });
       }
       if (assert(taskParams?.dialect, [DIALECT.FLINK_SQL], true, 'includes')) {
@@ -270,7 +288,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
         />
       );
     }
-  };
+  },[tabs, selectedKey, props.action, tabActiveKey]);
   return (
     <PanelGroup direction={'horizontal'}>
       <Panel defaultSize={20} style={{ display: 'flex', flexDirection: 'column', padding: 10 }}>
@@ -311,7 +329,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
           <CusPanelResizeHandle />
           <Panel style={{ paddingInline: 10 }}>
             <KeepAlive cacheKey={'service:' + selectedKey[0]} autoFreeze={true}>
-              {renderContent()}
+              {renderContent}
             </KeepAlive>
           </Panel>
         </>
