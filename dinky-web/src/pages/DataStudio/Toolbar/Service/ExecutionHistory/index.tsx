@@ -32,7 +32,7 @@ import { JobDetailInfoModel } from '@/pages/DataStudio/Toolbar/Service/Execution
 
 const { Link, Paragraph, Text } = Typography;
 
-export default (props: { taskId: number, dialect: string }) => {
+export default (props: { taskId: number; dialect: string }) => {
   const { taskId, dialect } = props;
   const refAction = useRef<ActionType>();
 

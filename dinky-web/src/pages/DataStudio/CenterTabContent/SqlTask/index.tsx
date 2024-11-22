@@ -29,7 +29,8 @@ import {
   BugOutlined,
   CaretRightOutlined,
   ClearOutlined,
-  CloseOutlined, CloudDownloadOutlined,
+  CloseOutlined,
+  CloudDownloadOutlined,
   EnvironmentOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
@@ -756,7 +757,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               disabled={isLockTask}
               desc={l('button.offline')}
-              icon={<CloudDownloadOutlined style={{color: 'red'}} />}
+              icon={<CloudDownloadOutlined style={{ color: 'red' }} />}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton
