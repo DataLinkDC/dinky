@@ -30,10 +30,10 @@ import {
   CaretRightOutlined,
   ClearOutlined,
   CloseOutlined,
+  CloudDownloadOutlined,
   EnvironmentOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
-  MergeCellsOutlined,
   PartitionOutlined,
   PauseOutlined,
   RocketOutlined,
@@ -726,7 +726,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{ height: dividerHeight }} />
             <RunToolBarButton
               showDesc={showDesc}
-              disabled={isLockTask}
+              disabled={isLockTask || JOB_LIFE_CYCLE.PUBLISH == currentState.step}
               desc={l('shortcut.key.format')}
               icon={<ClearOutlined />}
               onClick={handleFormat}
@@ -754,7 +754,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               disabled={isLockTask}
               desc={l('button.offline')}
-              icon={<MergeCellsOutlined />}
+              icon={<CloudDownloadOutlined style={{ color: 'red' }} />}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton
