@@ -38,7 +38,6 @@ public class TaskRunInstance extends BaseTopic {
         Set<Integer> currentMonitorTaskIds = FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds();
         if (!runningJobIds.equals(currentMonitorTaskIds)) {
             runningJobIds = currentMonitorTaskIds;
-            System.out.println("New IDS:" + runningJobIds.toString());
             Map<String, Object> result = new HashMap<>();
             result.put("RunningTaskId", FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds());
             return result;

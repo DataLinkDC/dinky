@@ -99,7 +99,6 @@ export const Project = (props: any) => {
 
   useEffect(() => {
     subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
-      console.log(data?.data?.RunningTaskId);
       if (data?.data?.RunningTaskId) {
         setCurrentRunningTaskIds(data?.data?.RunningTaskId);
       }
