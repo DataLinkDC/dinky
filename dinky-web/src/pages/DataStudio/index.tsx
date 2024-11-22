@@ -74,7 +74,9 @@ const DataStudio: React.FC = (props: any) => {
     queryFlinkUdfOptions,
     queryDataSourceDataList,
     querySuggestions,
-    queryUserData
+    queryUserData,
+    queryDsConfig,
+    queryTaskOwnerLockingStrategy
   } = props;
   const [_, token] = useToken();
 
@@ -133,6 +135,8 @@ const DataStudio: React.FC = (props: any) => {
     await queryDataSourceDataList();
     await querySuggestions();
     await queryUserData({ id: getTenantByLocalStorage() });
+    await queryDsConfig();
+    await queryTaskOwnerLockingStrategy();
   }, []);
   useEffect(() => {
     const { actionType, params } = dataStudioState.action;

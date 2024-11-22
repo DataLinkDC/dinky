@@ -182,7 +182,7 @@ const JobList = (props: connect) => {
   useEffect(() => {
     setInterval(() => tableRef.current?.reload(false), 5 * 1000);
     queryUserData({ id: getTenantByLocalStorage() });
-    queryTaskOwnerLockingStrategy(SettingConfigKeyEnum.ENV.toLowerCase());
+    queryTaskOwnerLockingStrategy();
   }, []);
 
   const onChangeSearch = (e: any) => {
