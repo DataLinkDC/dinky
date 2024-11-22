@@ -35,11 +35,11 @@ import {
   FullscreenExitOutlined,
   FullscreenOutlined,
   PartitionOutlined,
-  PauseOutlined,
   RocketOutlined,
   RotateRightOutlined,
   SafetyCertificateOutlined,
-  SaveOutlined
+  SaveOutlined,
+  XFilled
 } from '@ant-design/icons';
 import RunToolBarButton from '@/pages/DataStudio/components/RunToolBarButton';
 import { connect, useModel } from '@umijs/max';
@@ -388,7 +388,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     try {
-      await handleSave();
+      if(currentState.step !== JOB_LIFE_CYCLE.PUBLISH){
+        await handleSave();
+      }
       updateAction({
         actionType: DataStudioActionType.TASK_RUN_SUBMIT,
         params: {
@@ -697,7 +699,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               color={'red'}
               desc={l('pages.datastudio.editor.stop')}
-              icon={<PauseOutlined />}
+              icon={<XFilled style={{color:'#b10404'}}/>}
               onClick={handleStop}
               hotKey={{
                 ...hotKeyConfig,

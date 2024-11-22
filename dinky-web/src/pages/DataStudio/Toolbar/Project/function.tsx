@@ -23,7 +23,7 @@ import { TaskOwnerLockingStrategy } from '@/types/SettingCenter/data.d';
 import { Catalogue } from '@/types/Studio/data.d';
 import { searchTreeNode } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { FireOutlined, LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
+import { FireTwoTone, LockTwoTone, UnlockTwoTone } from '@ant-design/icons';
 import { Badge, Divider, Space, Tooltip } from 'antd';
 import { Key } from 'react';
 import { getTabIcon, lockTask, showAllOwners } from '@/pages/DataStudio/function';
@@ -256,7 +256,7 @@ export const buildProjectTree = (
         // 渲染后缀图标
         const renderSuffixIcon = (
           <>
-            {currentRunningTaskIds.includes(item.taskId)?<FireOutlined />:undefined}
+            {currentRunningTaskIds.includes(item.taskId)?<FireTwoTone twoToneColor="#ff0000"/>:undefined}
             {lockTask(
               item?.task?.firstLevelOwner,
               item?.task?.secondLevelOwners,

@@ -263,6 +263,7 @@ public class JobManager {
                 .collect(Collectors.toList());
         statement = String.join(";\n", statements);
         jobStatementPlan = Explainer.build(this).parseStatements(SqlUtil.getStatements(statement));
+        jobStatementPlan.buildFinalStatement();
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
         try {

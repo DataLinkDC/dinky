@@ -29,7 +29,7 @@ import {
   ArrowsAltOutlined,
   AuditOutlined,
   CodeOutlined,
-  FireOutlined,
+  FireTwoTone,
   HistoryOutlined,
   MonitorOutlined,
   PartitionOutlined,
@@ -209,7 +209,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
               currentDialectTree.children!!.push({
                 title: (<Space align={'baseline'} size={'small'}>
                   {tab.title}
-                  {currentRunningTaskIds.includes(tab.params.taskId)?<FireOutlined />:undefined}
+                  {currentRunningTaskIds.includes(tab.params.taskId)?<FireTwoTone twoToneColor="#ff0000"/>:undefined}
                 </Space>),
                 key: tab.params.taskId,
                 icon: icon,
