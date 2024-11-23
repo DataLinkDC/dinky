@@ -323,8 +323,13 @@ export default (props: {
     });
   };
   return (
-    <div style={{ width: '100%', paddingInline: 10 }}>
-      <Tabs defaultActiveKey='0' tabBarExtraContent={renderFlinkSQLContent()} items={tabItems()} />
+    <div style={{ width: '100%'}}>
+      <Tabs
+        defaultActiveKey='0'
+        tabBarExtraContent={renderFlinkSQLContent()}
+        items={tabItems()}
+        tabBarStyle={{marginBottom: '5px'}}
+      />
       {dataList.length == 0 ?? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       <Drawer
         open={openAVA}

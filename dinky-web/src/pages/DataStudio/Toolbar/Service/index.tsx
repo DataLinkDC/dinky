@@ -285,6 +285,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
             }));
           }}
           style={{ height: '100%' }}
+          tabBarStyle={{marginBottom: '5px'}}
         />
       );
     }

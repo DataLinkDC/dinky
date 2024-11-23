@@ -24,12 +24,14 @@ import org.dinky.daemon.pool.FlinkJobThreadPool;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-import cn.hutool.core.collection.CollUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TaskRunInstance extends BaseTopic {
     public static final TaskRunInstance INSTANCE = new TaskRunInstance();
-    private Set<Integer> runningJobIds = CollUtil.newHashSet();
+    private Set<Integer> runningJobIds = new ConcurrentSkipListSet<>();
 
     private TaskRunInstance() {}
 
@@ -37,9 +39,11 @@ public class TaskRunInstance extends BaseTopic {
     public Map<String, Object> autoDataSend(Set<String> allParams) {
         Set<Integer> currentMonitorTaskIds = FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds();
         if (!runningJobIds.equals(currentMonitorTaskIds)) {
-            runningJobIds = currentMonitorTaskIds;
+            log.info("New Status:" + currentMonitorTaskIds.toString());
+            runningJobIds.clear();
+            runningJobIds.addAll(currentMonitorTaskIds);
             Map<String, Object> result = new HashMap<>();
-            result.put("RunningTaskId", FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds());
+            result.put("RunningTaskId", currentMonitorTaskIds);
             return result;
         }
         return new HashMap<>();

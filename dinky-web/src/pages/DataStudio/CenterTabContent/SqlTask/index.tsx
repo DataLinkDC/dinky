@@ -17,13 +17,13 @@
  *
  */
 
-import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
-import { Button, Col, Divider, Flex, Row, Skeleton, TabsProps } from 'antd';
+import {CenterTab, DataStudioState} from '@/pages/DataStudio/model';
+import {Button, Col, Divider, Flex, Row, Skeleton, TabsProps} from 'antd';
 import '../index.less';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { registerEditorKeyBindingAndAction } from '@/utils/function';
-import { Monaco } from '@monaco-editor/react';
-import { Panel, PanelGroup } from 'react-resizable-panels';
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
+import {registerEditorKeyBindingAndAction} from '@/utils/function';
+import {Monaco} from '@monaco-editor/react';
+import {Panel, PanelGroup} from 'react-resizable-panels';
 import {
   ApartmentOutlined,
   BugOutlined,
@@ -42,18 +42,18 @@ import {
   XFilled
 } from '@ant-design/icons';
 import RunToolBarButton from '@/pages/DataStudio/components/RunToolBarButton';
-import { connect, useModel } from '@umijs/max';
+import {connect, useModel} from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudio/components/CusPanelResizeHandle';
-import { ProForm, ProFormInstance } from '@ant-design/pro-components';
-import { useAsyncEffect, useFullscreen, useRafInterval } from 'ahooks';
-import { SelectFlinkEnv } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkEnv';
-import { SelectFlinkRunMode } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkRunMode';
-import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
-import { TaskInfo } from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskInfo';
-import { HistoryVersion } from '@/pages/DataStudio/CenterTabContent/SqlTask/HistoryVersion';
-import { FlinkTaskRunType, StudioLineageParams, TaskState } from '@/pages/DataStudio/type';
-import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
-import { debounce } from 'lodash';
+import {ProForm, ProFormInstance} from '@ant-design/pro-components';
+import {useAsyncEffect, useFullscreen} from 'ahooks';
+import {SelectFlinkEnv} from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkEnv';
+import {SelectFlinkRunMode} from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkRunMode';
+import {mapDispatchToProps} from '@/pages/DataStudio/DvaFunction';
+import {TaskInfo} from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskInfo';
+import {HistoryVersion} from '@/pages/DataStudio/CenterTabContent/SqlTask/HistoryVersion';
+import {FlinkTaskRunType, StudioLineageParams, TaskState} from '@/pages/DataStudio/type';
+import {JOB_LIFE_CYCLE} from '@/pages/DevOps/constants';
+import {debounce} from 'lodash';
 import {
   cancelTask,
   changeTaskLife,
@@ -63,17 +63,17 @@ import {
   getJobPlan,
   getTaskDetails
 } from '@/pages/DataStudio/service';
-import { l } from '@/utils/intl';
-import { editor } from 'monaco-editor';
-import { DataStudioActionType } from '@/pages/DataStudio/data.d';
-import { getDataByParams, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { Jobs, LineageDetailInfo } from '@/types/DevOps/data';
-import { isStatusDone, lockTask, matchLanguage } from '@/pages/DataStudio/function';
-import { PushpinIcon } from '@/components/Icons/CustomIcons';
-import { assert, isSql } from '@/pages/DataStudio/utils';
-import { DIALECT } from '@/services/constants';
-import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import {l} from '@/utils/intl';
+import {editor} from 'monaco-editor';
+import {DataStudioActionType} from '@/pages/DataStudio/data.d';
+import {getDataByParams, handlePutDataJson, queryDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {Jobs, LineageDetailInfo} from '@/types/DevOps/data';
+import {lockTask, matchLanguage} from '@/pages/DataStudio/function';
+import {PushpinIcon} from '@/components/Icons/CustomIcons';
+import {assert, isSql} from '@/pages/DataStudio/utils';
+import {DIALECT} from '@/services/constants';
+import {SysConfigStateType} from '@/pages/SettingCenter/GlobalSetting/model';
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
 import TaskConfig from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig';
@@ -409,6 +409,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             status: result.data.status === 'SUCCESS' ? 'RUNNING' : result.data.status
           };
         });
+        if (result.data.status === 'SUCCESS'){
+          setIsRunning(true);
+        }
         if (isSql(currentState.dialect) && result?.data?.result?.success) {
           updateAction({
             actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
@@ -460,6 +463,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 : res.data.status
           };
         });
+        if (res.data.status === 'SUCCESS' && res.data.pipeline){
+          setIsRunning(true);
+        }
       }
     } finally {
       setIsSubmitting(false);
@@ -474,6 +480,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         status: 'CANCEL'
       };
     });
+    setIsRunning(false);
   }, [currentState.taskId]);
 
   const handleGotoDevOps = useCallback(async () => {

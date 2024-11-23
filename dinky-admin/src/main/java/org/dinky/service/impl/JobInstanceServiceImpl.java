@@ -244,7 +244,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         boolean isDone = daemonTask.dealTask();
         // If the task is not completed, it is re-queued
         if (!isDone) {
-            FlinkJobThreadPool.getInstance().execute(daemonTask);
+            daemonTask.dealTask();
+            //            FlinkJobThreadPool.getInstance().execute(daemonTask);
         }
         return isDone;
     }
@@ -273,7 +274,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         boolean isDone = daemonTask.dealTask();
         // If the task is not completed, it is re-queued
         if (!isDone) {
-            FlinkJobThreadPool.getInstance().execute(daemonTask);
+            daemonTask.dealTask();
+            //            FlinkJobThreadPool.getInstance().execute(daemonTask);
         }
         return isDone;
     }
