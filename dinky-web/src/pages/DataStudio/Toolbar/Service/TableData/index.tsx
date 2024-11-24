@@ -20,12 +20,12 @@
 import { postAll } from '@/services/api';
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
-import {Modal, Select, Tabs} from 'antd';
+import { Modal, Select, Tabs } from 'antd';
 import { Tab } from 'rc-tabs/lib/interface.d';
-import React, {memo, useEffect, useState} from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
 import { DefaultOptionType } from 'rc-select/lib/Select';
-import {AutoSizer, List} from "react-virtualized";
+import { AutoSizer, List } from 'react-virtualized';
 
 export async function getPrintTables(statement: string) {
   return postAll('api/printTable/getPrintTables', { statement });
@@ -54,7 +54,15 @@ export const DataPage = (props: any) => {
     }
   }, []);
 
-  const rowRenderer = ({ key, index, style }: { key: string; index: number; style: React.CSSProperties }) => (
+  const rowRenderer = ({
+    key,
+    index,
+    style
+  }: {
+    key: string;
+    index: number;
+    style: React.CSSProperties;
+  }) => (
     <div key={key} style={style}>
       {data[index]}
     </div>

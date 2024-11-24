@@ -21,7 +21,6 @@ package org.dinky.trans.dml;
 
 import static org.dinky.utils.RunTimeUtil.extractArgs;
 
-import cn.hutool.core.codec.Base64;
 import org.dinky.config.Dialect;
 import org.dinky.context.TaskContextHolder;
 import org.dinky.executor.CustomTableEnvironment;
@@ -47,6 +46,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
@@ -90,7 +90,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
                 : SavepointRestoreSettings.forPath(
-                submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
+                        submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
             Configuration configuration = tEnv.getRootConfiguration();
@@ -153,8 +153,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     @Setter
     @Getter
     public static class JarSubmitParam {
-        protected JarSubmitParam() {
-        }
+        protected JarSubmitParam() {}
 
         private String uri;
         private String mainClass;
@@ -168,6 +167,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
             Assert.notBlank(submitParam.getUri());
             return submitParam;
         }
+
         public static JarSubmitParam empty() {
             JarSubmitParam jarSubmitParam = new JarSubmitParam();
             jarSubmitParam.setArgs("");
