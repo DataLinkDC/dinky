@@ -21,6 +21,7 @@ package org.dinky.trans.dml;
 
 import static org.dinky.utils.RunTimeUtil.extractArgs;
 
+import cn.hutool.core.codec.Base64;
 import org.dinky.config.Dialect;
 import org.dinky.context.TaskContextHolder;
 import org.dinky.executor.CustomTableEnvironment;
@@ -89,7 +90,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
         SavepointRestoreSettings savepointRestoreSettings = StrUtil.isBlank(submitParam.getSavepointPath())
                 ? SavepointRestoreSettings.none()
                 : SavepointRestoreSettings.forPath(
-                        submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
+                submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
         try {
             Configuration configuration = tEnv.getRootConfiguration();
@@ -152,7 +153,8 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
     @Setter
     @Getter
     public static class JarSubmitParam {
-        protected JarSubmitParam() {}
+        protected JarSubmitParam() {
+        }
 
         private String uri;
         private String mainClass;
@@ -165,6 +167,20 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
             JarSubmitParam submitParam = ExecuteJarParseStrategy.getInfo(statement);
             Assert.notBlank(submitParam.getUri());
             return submitParam;
+        }
+        public static JarSubmitParam empty() {
+            JarSubmitParam jarSubmitParam = new JarSubmitParam();
+            jarSubmitParam.setArgs("");
+            jarSubmitParam.setMainClass("");
+            jarSubmitParam.setUri("");
+            return jarSubmitParam;
+        }
+
+        public String getArgs() {
+            if (StrUtil.subPre(args, 7).equals("base64@")) {
+                return Base64.decodeStr(StrUtil.removePrefix(args, "base64@"));
+            }
+            return args;
         }
     }
 }

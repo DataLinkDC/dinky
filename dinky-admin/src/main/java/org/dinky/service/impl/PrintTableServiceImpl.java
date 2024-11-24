@@ -77,7 +77,7 @@ public class PrintTableServiceImpl implements PrintTableService {
     public static class PrintTableListener {
 
         private final Consumer<String> consumer;
-        public static final int PORT = 7125;
+        public static final int PORT = 7126;
         private DatagramSocket socket;
         private final byte[] buf = new byte[4096];
 
