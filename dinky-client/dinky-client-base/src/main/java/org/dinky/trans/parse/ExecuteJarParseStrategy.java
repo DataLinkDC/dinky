@@ -44,6 +44,10 @@ public class ExecuteJarParseStrategy extends AbstractRegexParseStrategy {
         super(PATTERN);
     }
 
+    public boolean isMatch(String statement) {
+        return this.pattern.matcher(statement.trim()).matches();
+    }
+
     public static ExecuteJarOperation.JarSubmitParam getInfo(String statement) {
         statement = statement.replace("\r\n", " ").replace("\n", " ") + " ENDOFSQL";
         SqlSegment sqlSegment = new SqlSegment("with", "(with\\s+\\()(.+)(\\))", "',");

@@ -314,7 +314,7 @@ public class TaskController {
         ExecuteJarParseStrategy executeJarParseStrategy = new ExecuteJarParseStrategy();
         Integer lastExecuteJarSqlStatementIndex = null;
         for (int i = 0; i < statements.length; i++) {
-            if (executeJarParseStrategy.match(statements[i])) {
+            if (executeJarParseStrategy.isMatch(statements[i])) {
                 lastExecuteJarSqlStatementIndex = i;
             }
         }
