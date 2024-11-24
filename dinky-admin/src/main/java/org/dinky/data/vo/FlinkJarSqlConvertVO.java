@@ -19,7 +19,7 @@
 
 package org.dinky.data.vo;
 
-import org.dinky.trans.dml.ExecuteJarOperation;
+import org.dinky.data.model.JarSubmitParam;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,5 +28,5 @@ import lombok.Setter;
 @Setter
 public class FlinkJarSqlConvertVO {
     private String initSqlStatement;
-    private ExecuteJarOperation.JarSubmitParam jarSubmitParam;
+    private JarSubmitParam jarSubmitParam;
 }
