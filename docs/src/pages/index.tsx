@@ -28,24 +28,20 @@ import CarouselList from "@site/src/components/CarouselList";
 const info = [
     {
         id: 1,
-        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/datastudio.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/data-studio.png',
     },
     {
         id: 2,
-        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/checksql.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/data-debug.png',
     },
     {
         id: 3,
-        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/versiondiff.png',
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/task-devops.png',
     },
     {
         id: 4,
-        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/lineage.png',
-    },
-    {
-        id: 5,
-        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/monitor.png',
-    },
+        image: 'https://pic.dinky.org.cn/dinky/docs/zh-CN/home/task-monitor.png',
+    }
 ];
 const FeatureList = [
     {
@@ -208,7 +204,7 @@ export default function Home() {
                                 <div className="card mb-0 mr-lg-5">
                                     <div className="card-body p-2">
                                         <img alt="Image placeholder"
-                                             src="https://pic.dinky.org.cn/dinky/docs/zh-CN/home/datastudio.png"
+                                             src="https://pic.dinky.org.cn/dinky/docs/zh-CN/home/data-studio.png"
                                              className="img-fluid shadow rounded"/>
                                     </div>
                                 </div>
@@ -231,7 +227,7 @@ export default function Home() {
                             <div className="col-lg-6">
                                 <div className="card mb-0 ml-lg-5">
                                     <div className="card-body p-2">
-                                        <img alt="Image placeholder" src="https://pic.dinky.org.cn/dinky/docs/zh-CN/home/monitor.png"
+                                        <img alt="Image placeholder" src="https://pic.dinky.org.cn/dinky/docs/zh-CN/home/task-monitor.png"
                                              className="img-fluid shadow rounded"/>
                                     </div>
                                 </div>

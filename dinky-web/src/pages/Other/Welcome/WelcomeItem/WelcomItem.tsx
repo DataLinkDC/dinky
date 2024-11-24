@@ -31,7 +31,7 @@ const WelcomeItem = (prop: WelcomeProps) => {
       <div>
         <Space>
           <Congratulations size={60} />
-          <Title>{l('welcome.welcom')}</Title>
+          <Title>{l('welcome.welcome')}</Title>
         </Space>
         <br />
         <Text type={'secondary'}>{l('welcome.welcome.content')}</Text>
