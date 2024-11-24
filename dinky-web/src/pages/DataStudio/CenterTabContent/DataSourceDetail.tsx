@@ -30,7 +30,7 @@ const DataSourceDetail = (props: CenterTab) => {
     schemaName: params.schemaName,
     tableName: params.tableName
   };
-  return <RightTagsRouter queryParams={queryParams}/>;
+  return <RightTagsRouter queryParams={queryParams} />;
 };
 export default connect(
   ({ DataStudio }: { DataStudio: DataStudioState }) => ({}),
