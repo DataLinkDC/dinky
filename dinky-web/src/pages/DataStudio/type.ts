@@ -27,6 +27,7 @@ import { Alert, DataSources } from '@/types/RegCenter/data';
 import { DefaultOptionType } from 'antd/es/select';
 import { TaskExtConfig } from '@/types/Studio/data';
 import { SuggestionInfo } from '@/types/Public/data';
+import {JarSubmitParam} from "@/pages/DataStudio/CenterTabContent/SqlTask";
 
 /**
  * @description:
@@ -302,3 +303,10 @@ export type JobRunningMsgType = {
   jobState: string;
   runningLog: string;
 };
+
+
+export type  SqlConvertForm = {
+  enable: boolean,
+  initSqlStatement?: string,
+  jarSubmitParam?: JarSubmitParam
+}

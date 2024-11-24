@@ -57,6 +57,7 @@ const GlobalVariable = () => {
 
   return (
     <ProTable<GlobalVar>
+      className={'datastudio-theme'}
       showHeader={false}
       tableStyle={{ margin: 0, paddingInline: 0 }}
       search={false}

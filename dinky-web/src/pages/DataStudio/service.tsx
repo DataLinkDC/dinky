@@ -24,7 +24,7 @@ import {
   queryDataByParams
 } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
-import { TaskState } from '@/pages/DataStudio/type';
+import {SqlConvertForm, TaskState} from '@/pages/DataStudio/type';
 import { postAll } from '@/services/api';
 
 export async function explainSql(title: string, params: any) {
@@ -97,4 +97,10 @@ export function querySuggestionData(params: any) {
 
 export async function getTaskSortTypeData() {
   return (await postAll(API_CONSTANTS.CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA)).data;
+}
+export async function flinkJarSqlConvertForm(statement: string): Promise<SqlConvertForm | undefined> {
+  return (await postAll(API_CONSTANTS.FLINK_JAR_SQL_CONVERT_FORM, { statement: statement })).data;
+}
+export async function flinkJarFormConvertSql(form: SqlConvertForm): Promise<string | undefined> {
+  return (await postAll(API_CONSTANTS.FLINK_JAR_FORM_CONVERT_SQL, form )).data;
 }

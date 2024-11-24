@@ -286,6 +286,8 @@ export enum API_CONSTANTS {
   SAVEPOINT = '/api/task/savepoint',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   LIST_FLINK_SQL_ENV = '/api/task/listFlinkSQLEnv',
+  FLINK_JAR_SQL_CONVERT_FORM = '/api/task/flinkJarSqlConvertForm',
+  FLINK_JAR_FORM_CONVERT_SQL = '/api/task/flinkJarFormConvertSql',
 
   // ------------------------------------ task record ------------------------------------
   HISTORY_LIST = '/api/history/list',
