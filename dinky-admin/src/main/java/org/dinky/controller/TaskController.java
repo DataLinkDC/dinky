@@ -44,6 +44,7 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.annotation.Save;
 import org.dinky.service.TaskService;
+import org.dinky.trans.ExecuteJarParseStrategyUtil;
 import org.dinky.trans.dml.ExecuteJarOperation;
 import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.SqlUtil;
@@ -311,10 +312,9 @@ public class TaskController {
             flinkJarSqlConvertVO.setInitSqlStatement(sqlStatement);
             return Result.succeed(flinkJarSqlConvertVO);
         }
-        ExecuteJarParseStrategy executeJarParseStrategy = new ExecuteJarParseStrategy();
         Integer lastExecuteJarSqlStatementIndex = null;
         for (int i = 0; i < statements.length; i++) {
-            if (executeJarParseStrategy.isMatch(statements[i])) {
+            if (ExecuteJarParseStrategyUtil.match(statements[i])) {
                 lastExecuteJarSqlStatementIndex = i;
             }
         }
