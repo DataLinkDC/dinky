@@ -25,6 +25,7 @@ import org.dinky.config.Dialect;
 import org.dinky.context.TaskContextHolder;
 import org.dinky.data.model.JarSubmitParam;
 import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.security.NoExitSecurityManager;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
@@ -87,7 +88,10 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                 : SavepointRestoreSettings.forPath(
                         submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
+        SecurityManager securityManager = System.getSecurityManager();
         try {
+            System.setSecurityManager(new NoExitSecurityManager());
+
             Configuration configuration = tEnv.getRootConfiguration();
             File file =
                     Opt.ofBlankAble(submitParam.getUri()).map(URLUtils::toFile).orElse(null);
@@ -129,6 +133,8 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
             return pipeline;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }finally {
+            System.setSecurityManager(securityManager);
         }
     }
 
