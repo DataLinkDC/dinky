@@ -399,7 +399,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         : currentState.statement;
     const res = await explainSql(
       l('pages.datastudio.editor.checking', '', { jobName: currentState?.name }),
-      { ...currentState,statement }
+      { ...currentState, statement }
     );
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_CHECK,
@@ -414,7 +414,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       currentState.dialect.toLowerCase() === DIALECT.FLINKJAR
         ? (await flinkJarFormConvertSql(sqlForm))!!
         : currentState.statement;
-    const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), {...currentState,statement});
+    const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), {
+      ...currentState,
+      statement
+    });
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_DAG,
       params: {

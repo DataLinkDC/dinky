@@ -133,7 +133,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
             return pipeline;
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             System.setSecurityManager(securityManager);
         }
     }
