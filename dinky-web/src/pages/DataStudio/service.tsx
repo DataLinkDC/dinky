@@ -26,6 +26,7 @@ import {
 import { API_CONSTANTS } from '@/services/endpoints';
 import { SqlConvertForm, TaskState } from '@/pages/DataStudio/type';
 import { postAll } from '@/services/api';
+import {ResourceInfo} from "@/types/RegCenter/data";
 
 export async function explainSql(title: string, params: any) {
   return handleOption(API_CONSTANTS.EXPLAIN_SQL, title, params);
@@ -37,6 +38,9 @@ export async function debugTask(title: string, params: any) {
 
 export function getUserData(params: any) {
   return queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, params);
+}
+export async function getResourceData() {
+  return await queryDataByParams<ResourceInfo[]>(API_CONSTANTS.RESOURCE_SHOW_TREE)
 }
 
 export async function getJobPlan(title: string, params: any) {

@@ -49,7 +49,7 @@ import {
   ProFormInstance,
   ProFormSwitch,
   ProFormText,
-  ProFormTextArea
+  ProFormTextArea, ProFormTreeSelect
 } from '@ant-design/pro-components';
 import { useAsyncEffect, useFullscreen } from 'ahooks';
 import { SelectFlinkEnv } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkEnv';
@@ -92,6 +92,13 @@ import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
 import TaskConfig from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig';
 import SelectDb from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectDb';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
+import WarpProFormTreeSelect from "@ant-design/pro-form/es/components/TreeSelect";
+import {ResourceInfo} from "@/types/RegCenter/data";
+import {
+  buildResourceTreeData,
+  buildResourceTreeDataAtTreeForm
+} from "@/pages/RegCenter/Resource/components/FileTree/function";
+import Paragraph from "antd/es/typography/Paragraph";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -867,14 +874,17 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                     <Panel
                       className={'right-toolbar-container'}
                       style={{ overflowY: 'auto' }}
-                      defaultSize={30}
+                      defaultSize={40}
                     >
                       <Flex gap={5} vertical>
+                        <Paragraph>
+                          <blockquote>{`左边代码编辑器是 FlinkSql 前置语句，当前表单项是 EXECUTE JAR WITH 语法`}</blockquote>
+                        </Paragraph>
                         <ProForm
                           submitter={false}
                           initialValues={{ ...sqlForm.jarSubmitParam }}
                           onValuesChange={(
-                            changedValues,
+                            _,
                             values: SqlConvertForm['jarSubmitParam']
                           ) => {
                             setSqlForm((prevState) => ({
@@ -883,10 +893,36 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                             }));
                           }}
                         >
-                          <ProFormText
+                          {/*<ProFormText*/}
+                          {/*  name={'uri'}*/}
+                          {/*  label={'程序路径'}*/}
+                          {/*  placeholder={'请输入运行程序路径'}*/}
+                          {/*/>*/}
+                          <ProFormTreeSelect
+                            request={async ()=>{
+                              return buildResourceTreeDataAtTreeForm((tempData.resourceDataList as ResourceInfo[]), false, [])
+                            }}
+                            normalize={(value)=>{
+                              return value.value
+                            }}
                             name={'uri'}
                             label={'程序路径'}
                             placeholder={'请输入运行程序路径'}
+                            fieldProps={{
+                              suffixIcon: null,
+                              filterTreeNode: true,
+                              showSearch: true,
+                              treeIcon: true,
+                              popupMatchSelectWidth: false,
+                              labelInValue: true,
+                              autoClearSearchValue: true,
+                              treeLine: true,
+                              treeDefaultExpandedKeys: ["rs:/"],
+                              treeNodeLabelProp:'value',
+                              fieldNames: {
+                                label: 'title',
+                              },
+                            }}
                           />
                           <ProFormText
                             name={'mainClass'}
