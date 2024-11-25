@@ -889,9 +889,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                       defaultSize={40}
                     >
                       <Flex gap={5} vertical>
-                        <Paragraph>
-                          <blockquote>{l('datastudio.sqlTask.flinkJar.tip')}</blockquote>
-                        </Paragraph>
+                        {/*<Paragraph>*/}
+                        {/*  <blockquote>{l('datastudio.sqlTask.flinkJar.tip')}</blockquote>*/}
+                        {/*</Paragraph>*/}
                         <ProForm
                           submitter={false}
                           initialValues={{ ...sqlForm.jarSubmitParam }}
