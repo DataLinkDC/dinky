@@ -142,7 +142,8 @@ export default {
     '此操作会将该任务的执行历史, 以及任务的所有信息全部删除.\n\t\t\t\t请谨慎操作! 该操作不可逆!!!\n\t\t\t\t\t确认删除吗?',
   'datastudio.project.import.title': '导入 json 文件',
   'datastudio.project.import.tip': '点击或拖拽文件到此区域上传',
-  'datastudio.sqlTask.flinkJar.tip': '左边代码编辑器是 FlinkSql 前置语句，当前表单项是 EXECUTE JAR WITH 语法',
+  'datastudio.sqlTask.flinkJar.tip':
+    '左边代码编辑器是 FlinkSql 前置语句，当前表单项是 EXECUTE JAR WITH 语法',
   'datastudio.sqlTask.flinkJar.uri': '程序路径',
   'datastudio.sqlTask.flinkJar.uri.tip': '请输入运行程序路径（uri）',
   'datastudio.sqlTask.flinkJar.mainClass': '程序运行类（mainClass）',
