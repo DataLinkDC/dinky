@@ -88,10 +88,7 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
                 : SavepointRestoreSettings.forPath(
                         submitParam.getSavepointPath(), submitParam.getAllowNonRestoredState());
         PackagedProgram program;
-        SecurityManager securityManager = System.getSecurityManager();
         try {
-            System.setSecurityManager(new NoExitSecurityManager());
-
             Configuration configuration = tEnv.getRootConfiguration();
             File file =
                     Opt.ofBlankAble(submitParam.getUri()).map(URLUtils::toFile).orElse(null);
@@ -133,8 +130,6 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
             return pipeline;
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            System.setSecurityManager(securityManager);
         }
     }
 
