@@ -114,7 +114,7 @@ export const buildResourceTreeDataAtTreeForm = (
       return {
         title: item.fileName,
         icon: <TagAlignCenter>{renderIcon(item.fileName, '.', item.isDirectory)}</TagAlignCenter>,
-        value: "rs:"+item.fullName,
+        value: 'rs:' + item.fullName,
         selectable: !item.isDirectory,
         children:
           item.children &&

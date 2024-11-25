@@ -44,18 +44,19 @@ import {
   getClusterConfigurationData,
   getEnvData,
   getFlinkConfigs,
-  getFlinkUdfOptions, getResourceData,
+  getFlinkUdfOptions,
+  getResourceData,
   getSessionData,
   querySuggestionData
 } from '@/pages/DataStudio/service';
-import {Alert, ResourceInfo} from '@/types/RegCenter/data';
+import { Alert, ResourceInfo } from '@/types/RegCenter/data';
 import { showAlertGroup } from '@/pages/RegCenter/Alert/AlertGroup/service';
 import { DefaultOptionType } from 'antd/es/select';
 import { getDataSourceList } from '@/pages/DataStudio/Toolbar/DataSource/service';
 import { getUserData } from '@/pages/DataStudio/service';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/endpoints";
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 /**
  * @description:
@@ -287,7 +288,7 @@ const StudioModel: StudioModelType = {
       flinkUdfOptions: [],
       dataSourceDataList: [],
       suggestions: [],
-      resourceDataList:[]
+      resourceDataList: []
     },
     layoutSize: {
       leftTop: 200,
@@ -405,10 +406,9 @@ const StudioModel: StudioModelType = {
         payload: response
       });
     },
-    *queryResource({  }, { call, put, select }) {
+    *queryResource({}, { call, put, select }) {
       const data: [] = yield call(getResourceData);
       const tempData: TempData = yield select((state: any) => state.DataStudio.tempData);
-
 
       // 移除数据，并保留当前类别的属性
       yield put({

@@ -23,7 +23,7 @@ import { AnyAction } from '@@/plugin-dva/types';
 import { DropDirection, LayoutBase } from 'rc-dock/src/DockData';
 import { CenterTab } from '@/pages/DataStudio/model';
 import { DataStudioActionType } from '@/pages/DataStudio/data.d';
-import {Alert, DataSources, ResourceInfo} from '@/types/RegCenter/data';
+import { Alert, DataSources, ResourceInfo } from '@/types/RegCenter/data';
 import { DefaultOptionType } from 'antd/es/select';
 import { TaskExtConfig } from '@/types/Studio/data';
 import { SuggestionInfo } from '@/types/Public/data';
