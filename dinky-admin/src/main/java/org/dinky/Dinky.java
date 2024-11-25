@@ -20,6 +20,7 @@
 package org.dinky;
 
 import org.dinky.security.NoExitSecurityManager;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;

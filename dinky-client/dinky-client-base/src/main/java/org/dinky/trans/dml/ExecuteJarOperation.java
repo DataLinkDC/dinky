@@ -25,7 +25,6 @@ import org.dinky.config.Dialect;
 import org.dinky.context.TaskContextHolder;
 import org.dinky.data.model.JarSubmitParam;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.security.NoExitSecurityManager;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
