@@ -879,7 +879,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                     >
                       <Flex gap={5} vertical>
                         <Paragraph>
-                          <blockquote>{`左边代码编辑器是 FlinkSql 前置语句，当前表单项是 EXECUTE JAR WITH 语法`}</blockquote>
+                          <blockquote>{l('datastudio.sqlTask.flinkJar.tip')}</blockquote>
                         </Paragraph>
                         <ProForm
                           submitter={false}
@@ -908,8 +908,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                               return value.value;
                             }}
                             name={'uri'}
-                            label={'程序路径'}
-                            placeholder={'请输入运行程序路径'}
+                            label={l('datastudio.sqlTask.flinkJar.uri')}
+                            placeholder={l('datastudio.sqlTask.flinkJar.uri.tip')}
                             fieldProps={{
                               suffixIcon: null,
                               filterTreeNode: true,
@@ -928,17 +928,17 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                           />
                           <ProFormText
                             name={'mainClass'}
-                            label={'程序运行类（mainClass）'}
-                            placeholder={'请输入运行程序运行类（mainClass）'}
+                            label={l('datastudio.sqlTask.flinkJar.mainClass')}
+                            placeholder={l('datastudio.sqlTask.flinkJar.mainClass.tip')}
                           />
                           <ProFormTextArea
                             name={'args'}
-                            label={'程序运行参数（args）'}
-                            placeholder={'程序运行参数（args）'}
+                            label={l('datastudio.sqlTask.flinkJar.args')}
+                            placeholder={l('datastudio.sqlTask.flinkJar.args.tip')}
                           />
                           <ProFormSwitch
                             name={'allowNonRestoredState'}
-                            label={'忽略未声明状态(allowNonRestoredState)'}
+                            label={l('datastudio.sqlTask.flinkJar.allowNonRestoredState')}
                           />
                         </ProForm>
                       </Flex>
