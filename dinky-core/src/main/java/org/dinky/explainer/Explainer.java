@@ -19,6 +19,14 @@
 
 package org.dinky.explainer;
 
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.JSONGenerator;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
@@ -41,15 +49,8 @@ import org.dinky.job.JobStatementPlan;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.trans.Operations;
 import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
-
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.streaming.api.graph.JSONGenerator;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -100,10 +101,10 @@ public class Explainer {
         JobStatementPlan jobStatementPlanWithUDFAndMock = new JobStatementPlan();
         List<String> udfStatements = new ArrayList<>();
         Optional.ofNullable(jobManager.getConfig().getUdfRefer())
-                .ifPresent(t -> t.forEach((key, value) -> {
-                    String sql = String.format("create temporary function %s as '%s'", value, key);
-                    udfStatements.add(sql);
-                }));
+            .ifPresent(t -> t.forEach((key, value) -> {
+                String sql = String.format("create temporary function %s as '%s'", value, key);
+                udfStatements.add(sql);
+            }));
         for (String udfStatement : udfStatements) {
             jobStatementPlanWithUDFAndMock.addJobStatement(udfStatement, JobStatementType.DDL, SqlType.CREATE);
         }
@@ -112,7 +113,7 @@ public class Explainer {
         if (!jobManager.isPlanMode() && jobManager.getConfig().isMockSinkFunction()) {
             executor.setMockTest(true);
             MockStatementExplainer.build(executor.getCustomTableEnvironment())
-                    .jobStatementPlanMock(jobStatementPlanWithUDFAndMock);
+                .jobStatementPlanMock(jobStatementPlanWithUDFAndMock);
         }
         return jobStatementPlanWithUDFAndMock;
     }
@@ -141,8 +142,10 @@ public class Explainer {
             jobStatementPlan.buildFinalStatement();
             jobManager.setJobStatementPlan(jobStatementPlan);
         } catch (Exception e) {
+            String error =
+                LogUtil.getError("Exception in parsing FlinkSQL:\n" + SqlUtil.addLineNumber(statement), e);
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-            resultBuilder.error(e.getMessage()).parseTrue(false);
+            resultBuilder.error(error).parseTrue(false);
             sqlExplainRecords.add(resultBuilder.build());
             log.error("Failed parseStatements:", e);
             return new ExplainResult(false, sqlExplainRecords.size(), sqlExplainRecords);
@@ -150,8 +153,8 @@ public class Explainer {
         JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(jobManager);
         for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
             SqlExplainResult sqlExplainResult = jobRunnerFactory
-                    .getJobRunner(jobStatement.getStatementType())
-                    .explain(jobStatement);
+                .getJobRunner(jobStatement.getStatementType())
+                .explain(jobStatement);
             if (!sqlExplainResult.isInvalid()) {
                 sqlExplainRecords.add(sqlExplainResult);
             }
@@ -168,8 +171,8 @@ public class Explainer {
         JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(jobManager);
         for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
             StreamGraph streamGraph = jobRunnerFactory
-                    .getJobRunner(jobStatement.getStatementType())
-                    .getStreamGraph(jobStatement);
+                .getJobRunner(jobStatement.getStatementType())
+                .getStreamGraph(jobStatement);
             if (Asserts.isNotNull(streamGraph)) {
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
                 String json = jsonGenerator.getJSON();
@@ -194,8 +197,8 @@ public class Explainer {
         JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(jobManager);
         for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
             JobPlanInfo jobPlanInfo = jobRunnerFactory
-                    .getJobRunner(jobStatement.getStatementType())
-                    .getJobPlanInfo(jobStatement);
+                .getJobRunner(jobStatement.getStatementType())
+                .getJobPlanInfo(jobStatement);
             if (Asserts.isNotNull(jobPlanInfo)) {
                 return jobPlanInfo;
             }
@@ -205,13 +208,13 @@ public class Explainer {
 
     public List<LineageRel> getLineage(String statement) {
         JobConfig jobConfig = JobConfig.builder()
-                .type(GatewayType.LOCAL.getLongValue())
-                .useRemote(false)
-                .fragment(true)
-                .statementSet(useStatementSet)
-                .parallelism(1)
-                .configJson(executor.getTableConfig().getConfiguration().toMap())
-                .build();
+            .type(GatewayType.LOCAL.getLongValue())
+            .useRemote(false)
+            .fragment(true)
+            .statementSet(useStatementSet)
+            .parallelism(1)
+            .configJson(executor.getTableConfig().getConfiguration().toMap())
+            .build();
         jobManager.setConfig(jobConfig);
         jobManager.setExecutor(executor);
         this.initialize(jobConfig, statement);

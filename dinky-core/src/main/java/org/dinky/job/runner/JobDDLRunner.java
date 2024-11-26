@@ -125,10 +125,7 @@ public class JobDDLRunner extends AbstractJobRunner {
                     .sql(jobStatement.getStatement())
                     .index(jobStatement.getIndex());
         } catch (Exception e) {
-            String error = StrFormatter.format(
-                    "Exception in explaining FlinkSQL:\n{}\n{}",
-                    SqlUtil.addLineNumber(jobStatement.getStatement()),
-                    LogUtil.getError(e));
+            String error = LogUtil.getError("Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
             resultBuilder
                     .error(error)
                     .explainTrue(false)

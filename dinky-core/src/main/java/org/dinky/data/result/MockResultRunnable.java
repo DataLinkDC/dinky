@@ -19,10 +19,6 @@
 
 package org.dinky.data.result;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkConstant;
-import org.dinky.utils.JsonUtils;
-
 import org.apache.flink.api.common.typeutils.base.MapSerializer;
 import org.apache.flink.api.common.typeutils.base.StringSerializer;
 import org.apache.flink.core.execution.JobClient;
@@ -40,6 +36,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
+
+import org.dinky.assertion.Asserts;
+import org.dinky.constant.FlinkConstant;
+import org.dinky.utils.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,10 +61,10 @@ public class MockResultRunnable implements Runnable {
     private final String MOCK_RESULT_TABLE_IDENTIFIER = "dinkySinkResultTableIdentifier";
     private final String MOCK_RESULT_COLUMN_IDENTIFIER = "dinkySinkResultColumnIdentifier";
     private final MapSerializer<String, String> mapSerializer =
-            new MapSerializer<>(new StringSerializer(), new StringSerializer());
+        new MapSerializer<>(new StringSerializer(), new StringSerializer());
 
     public MockResultRunnable(
-            TableResult tableResult, String id, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel) {
+        TableResult tableResult, String id, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel) {
         this.tableResult = tableResult;
         this.id = id;
         this.maxRowNum = maxRowNum;
@@ -122,7 +122,7 @@ public class MockResultRunnable implements Runnable {
                 for (String tableIdentifier : tableIdentifierList) {
                     if (!tableIdentifierIndexMap.containsKey(tableIdentifier)) {
                         tableIdentifierIndexMap.put(tableIdentifier, 0);
-                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
+                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum - 1) {
                         allSinkFinished = true;
                         continue;
                     }
@@ -130,13 +130,13 @@ public class MockResultRunnable implements Runnable {
                     if (accumulatorObject instanceof List) {
                         List<?> serializerRowDataList = (List<?>) accumulatorObject;
                         for (int i = tableIdentifierIndexMap.get(tableIdentifier);
-                                i < serializerRowDataList.size();
-                                i++) {
+                             i < serializerRowDataList.size();
+                             i++) {
                             Map<String, Object> rowDataWithTableIdentifier = new HashMap<>();
                             rowDataWithTableIdentifier.put(MOCK_RESULT_TABLE_IDENTIFIER, tableIdentifier);
                             // deserialize data from accumulator
                             Map<String, String> deserializeRowData =
-                                    deserializeObjFromBytes((byte[]) serializerRowDataList.get(i));
+                                deserializeObjFromBytes((byte[]) serializerRowDataList.get(i));
                             if (tableIdentifierIndexMap.get(tableIdentifier) == 0) {
                                 columns.add(generateResultColumns(tableIdentifier, deserializeRowData));
                             }
@@ -144,21 +144,21 @@ public class MockResultRunnable implements Runnable {
                             // update row data map
                             rows.add(rowDataWithTableIdentifier);
                             tableIdentifierIndexMap.put(
-                                    tableIdentifier, tableIdentifierIndexMap.get(tableIdentifier) + 1);
-                            if (tableIdentifierIndexMap.get(tableIdentifier) > maxRowNum) {
+                                tableIdentifier, tableIdentifierIndexMap.get(tableIdentifier) + 1);
+                            if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
                                 break;
                             }
                         }
                         log.info(
-                                "Catch change log: table-{}: size-{},",
-                                tableIdentifier,
-                                tableIdentifierIndexMap.get(tableIdentifier));
+                            "Catch change log: table-{}: size-{},",
+                            tableIdentifier,
+                            tableIdentifierIndexMap.get(tableIdentifier));
                     }
                 }
                 if (jobClient.getJobStatus().get().isTerminalState()) {
                     log.info(
-                            "JobClient status:{}",
-                            jobClient.getJobStatus().get().toString());
+                        "JobClient status:{}",
+                        jobClient.getJobStatus().get().toString());
                     break;
                 }
                 if (allSinkFinished && isAutoCancel) {
@@ -190,7 +190,7 @@ public class MockResultRunnable implements Runnable {
                 for (String tableIdentifier : tableIdentifierList) {
                     if (!tableIdentifierIndexMap.containsKey(tableIdentifier)) {
                         tableIdentifierIndexMap.put(tableIdentifier, 0);
-                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
+                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum - 1) {
                         allSinkFinished = true;
                         continue;
                     }
@@ -198,13 +198,13 @@ public class MockResultRunnable implements Runnable {
                     if (accumulatorObject instanceof List) {
                         List<?> serializerRowDataList = (List<?>) accumulatorObject;
                         for (int i = tableIdentifierIndexMap.get(tableIdentifier);
-                                i < serializerRowDataList.size();
-                                i++) {
+                             i < serializerRowDataList.size();
+                             i++) {
                             Map<String, Object> rowDataWithTableIdentifier = new HashMap<>();
                             rowDataWithTableIdentifier.put(MOCK_RESULT_TABLE_IDENTIFIER, tableIdentifier);
                             // deserialize data from accumulator
                             Map<String, String> deserializeRowData =
-                                    deserializeObjFromBytes((byte[]) serializerRowDataList.get(i));
+                                deserializeObjFromBytes((byte[]) serializerRowDataList.get(i));
                             String op = deserializeRowData.get(FlinkConstant.OP);
                             deserializeRowData.remove(FlinkConstant.OP);
                             if (tableIdentifierIndexMap.get(tableIdentifier) == 0) {
@@ -212,27 +212,27 @@ public class MockResultRunnable implements Runnable {
                             }
                             rowDataWithTableIdentifier.putAll(deserializeRowData);
                             if (RowKind.UPDATE_BEFORE.shortString().equals(op)
-                                    || RowKind.DELETE.shortString().equals(op)) {
+                                || RowKind.DELETE.shortString().equals(op)) {
                                 rows.remove(rowDataWithTableIdentifier);
                             } else {
                                 rows.add(rowDataWithTableIdentifier);
                             }
                             tableIdentifierIndexMap.put(
-                                    tableIdentifier, tableIdentifierIndexMap.get(tableIdentifier) + 1);
-                            if (tableIdentifierIndexMap.get(tableIdentifier) > maxRowNum) {
+                                tableIdentifier, tableIdentifierIndexMap.get(tableIdentifier) + 1);
+                            if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
                                 break;
                             }
                         }
                         log.info(
-                                "Catch Data: table-{}: size-{},",
-                                tableIdentifier,
-                                tableIdentifierIndexMap.get(tableIdentifier));
+                            "Catch Data: table-{}: size-{},",
+                            tableIdentifier,
+                            tableIdentifierIndexMap.get(tableIdentifier));
                     }
                 }
                 if (jobClient.getJobStatus().get().isTerminalState()) {
                     log.info(
-                            "JobClient status:{}",
-                            jobClient.getJobStatus().get().toString());
+                        "JobClient status:{}",
+                        jobClient.getJobStatus().get().toString());
                     break;
                 }
                 if (allSinkFinished && isAutoCancel) {
@@ -256,7 +256,7 @@ public class MockResultRunnable implements Runnable {
      * @return true if all tables has caught enough rows
      */
     private boolean isAllSinkFinished(
-            int maxRowNum, Map<String, List<Map<String, String>>> rowData, List<String> tableIdentifierList) {
+        int maxRowNum, Map<String, List<Map<String, String>>> rowData, List<String> tableIdentifierList) {
         if (tableIdentifierList.size() > rowData.size()) {
             return false;
         }

@@ -31,6 +31,7 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.rbac.Tenant;
+import org.dinky.function.FlinkUDFDiscover;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
@@ -106,6 +107,7 @@ public class SystemInit implements ApplicationRunner {
             initDaemon();
             initDolphinScheduler();
             registerUDF();
+            discoverUDF();
             updateGitBuildState();
             registerURL();
         } catch (NoClassDefFoundError e) {
@@ -218,6 +220,10 @@ public class SystemInit implements ApplicationRunner {
             UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
+    }
+
+    public void discoverUDF() {
+        FlinkUDFDiscover.getCustomStaticUDFs();
     }
 
     public void updateGitBuildState() {
