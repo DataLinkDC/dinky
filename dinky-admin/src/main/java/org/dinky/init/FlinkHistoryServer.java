@@ -58,8 +58,6 @@ public class FlinkHistoryServer implements ApplicationRunner {
     private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
     private final SysConfigService sysConfigService;
 
-
-
     public FlinkHistoryServer(JobInstanceService jobInstanceService, SysConfigService sysConfigService) {
         this.sysConfigService = sysConfigService;
         this.historyRunnable = () -> {

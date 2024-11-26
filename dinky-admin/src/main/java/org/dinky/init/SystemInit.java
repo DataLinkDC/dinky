@@ -109,10 +109,12 @@ public class SystemInit implements ApplicationRunner {
             updateGitBuildState();
             registerURL();
         } catch (NoClassDefFoundError e) {
-            if (e.getMessage().contains("org/apache/flink")){
-                log.error("No Flink Jar dependency detected, please put the Flink Jar dependency into the DInky program first. (未检测到有 Flink Jar依赖，请先放入 Flink Jar 依赖到 DInky程序里)",e);
-            }else {
-                log.error("",e);
+            if (e.getMessage().contains("org/apache/flink")) {
+                log.error(
+                        "No Flink Jar dependency detected, please put the Flink Jar dependency into the DInky program first. (未检测到有 Flink Jar依赖，请先放入 Flink Jar 依赖到 DInky程序里)",
+                        e);
+            } else {
+                log.error("", e);
             }
         }
     }

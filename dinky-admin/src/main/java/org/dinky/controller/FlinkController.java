@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.hutool.core.lang.Singleton;
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.CascaderVO;
@@ -34,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.hutool.core.lang.Singleton;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

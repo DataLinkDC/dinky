@@ -313,7 +313,7 @@ public class TaskController {
         }
         Integer lastExecuteJarSqlStatementIndex = null;
         for (int i = 0; i < statements.length; i++) {
-                if (ExecuteJarParseStrategyUtil.match(statements[i])) {
+            if (ExecuteJarParseStrategyUtil.match(statements[i])) {
                 lastExecuteJarSqlStatementIndex = i;
             }
         }
