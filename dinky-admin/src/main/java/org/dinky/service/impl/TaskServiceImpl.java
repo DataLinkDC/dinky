@@ -119,7 +119,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import org.springframework.aop.framework.AopContext;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
@@ -667,7 +666,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         }
 
-        return ((TaskServiceImpl) AopContext.currentProxy()).saveOrUpdate(task);
+        return this.saveOrUpdate(task);
     }
 
     @Override

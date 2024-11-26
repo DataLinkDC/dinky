@@ -72,7 +72,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -311,7 +310,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         catalogue.setTaskId(task.getId());
         catalogue.setType(catalogueTaskDTO.getType());
         catalogue.setParentId(catalogueTaskDTO.getParentId());
-        ((CatalogueServiceImpl) AopContext.currentProxy()).saveOrUpdate(catalogue);
+        this.saveOrUpdate(catalogue);
         return catalogue;
     }
 
