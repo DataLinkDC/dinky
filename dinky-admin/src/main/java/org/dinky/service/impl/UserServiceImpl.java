@@ -76,6 +76,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 /**
  * UserServiceImpl
@@ -558,12 +559,15 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 // query role menu
                 List<RoleMenu> roleMenus =
                         roleMenuService.list(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, role.getId()));
-                roleMenus.forEach(roleMenu -> {
-                    Menu menu = menuService.getById(roleMenu.getMenuId());
-                    if (Asserts.isNotNull(menu) && !StrUtil.equals("M", menu.getType())) {
-                        menuList.add(menu);
-                    }
-                });
+                List<Integer> collect = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
+                if(CollectionUtils.isEmpty(collect)){
+                    return;
+                }
+                List<Menu> list = menuService.list(new LambdaQueryWrapper<Menu>()
+                        .in(Menu::getId, roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList()))
+                        .ne(Menu::getType,"M")
+                );
+                menuList.addAll(list);
             }
         });
 
