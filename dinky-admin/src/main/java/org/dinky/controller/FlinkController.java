@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.hutool.core.lang.Singleton;
 import org.dinky.data.model.CheckPointReadTable;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.CascaderVO;
@@ -45,14 +46,13 @@ import lombok.extern.slf4j.Slf4j;
 @SaCheckLogin
 @RequiredArgsConstructor
 public class FlinkController {
-
-    protected static final CheckpointRead INSTANCE = new CheckpointRead();
     private final FlinkService flinkService;
 
     @GetMapping("/readCheckPoint")
     @ApiOperation("Read Checkpoint")
     public Result<Map<String, Map<String, CheckPointReadTable>>> readCheckPoint(String path, String operatorId) {
-        return Result.data(INSTANCE.readCheckpoint(path, operatorId));
+        CheckpointRead checkpointRead = Singleton.get(CheckpointRead.class);
+        return Result.data(checkpointRead.readCheckpoint(path, operatorId));
     }
 
     @GetMapping("/configOptions")
