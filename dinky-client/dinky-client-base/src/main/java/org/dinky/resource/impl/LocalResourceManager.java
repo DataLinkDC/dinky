@@ -54,10 +54,10 @@ public class LocalResourceManager implements BaseResourceManager {
         try {
             boolean isSuccess = FileUtil.del(getFilePath(path));
             if (!isSuccess) {
-                throw new BusException("remove file failed,reason unknown");
+                throw BusException.of(Status.RESOURCE_FILE_DELETE_FAILED, "unknown");
             }
         } catch (IORuntimeException e) {
-            throw new BusException(Status.RESOURCE_FILE_DELETE_FAILED, e);
+            throw BusException.of(e, Status.RESOURCE_FILE_DELETE_FAILED);
         }
     }
 
@@ -67,7 +67,7 @@ public class LocalResourceManager implements BaseResourceManager {
             String newName = FileUtil.getName(newPath);
             FileUtil.rename(new File(getFilePath(path)), newName, true);
         } catch (Exception e) {
-            throw new BusException(Status.RESOURCE_FILE_RENAME_FAILED, e);
+            throw BusException.of(e, Status.RESOURCE_FILE_RENAME_FAILED);
         }
     }
 
@@ -76,7 +76,7 @@ public class LocalResourceManager implements BaseResourceManager {
         try {
             FileUtil.writeFromStream(fileStream, getFilePath(path));
         } catch (Exception e) {
-            throw new BusException(Status.RESOURCE_FILE_UPLOAD_FAILED, e);
+            throw BusException.of(e, Status.RESOURCE_FILE_UPLOAD_FAILED);
         }
     }
 
@@ -125,7 +125,7 @@ public class LocalResourceManager implements BaseResourceManager {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            throw new BusException(Status.RESOURCE_FILE_PATH_VISIT_FAILED, e);
+            throw BusException.of(e, Status.RESOURCE_FILE_PATH_VISIT_FAILED);
         }
     }
 

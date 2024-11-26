@@ -21,6 +21,8 @@ package org.dinky.data.exception;
 
 import org.dinky.data.enums.Status;
 
+import javax.annotation.Nullable;
+
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,69 +41,92 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 public class BusException extends RuntimeException {
 
-    private static final long serialVersionUID = -2955156471454043812L;
+    private static final long serialVersionUID = 1L;
 
-    /** 异常信息的code码 */
+    /** Exception status code */
     private Status code;
 
-    /** 异常信息的参数 */
+    /** Exception parameters */
     private Object[] errorArgs;
 
-    /** 如果有值得话，将不会取i18n里面的错误信息 */
-    private String msg;
-
+    /**
+     * Constructs a BusException with the specified message.
+     *
+     * @param message the detail message
+     */
     public BusException(String message) {
         super(message);
-        setMsg(message);
     }
 
-    public BusException(Status status) {
-        super(status.getMessage());
-        setCode(status);
-        setMsg(status.getMessage());
-    }
-
+    /**
+     * Constructs a BusException with the specified status and error arguments.
+     *
+     * @param status the status code representing the exception
+     * @param errorArgs the arguments used for error message formatting
+     */
     public BusException(Status status, Object... errorArgs) {
-        super(status.getMessage());
-        setCode(status);
-        setMsg(StrUtil.format(status.getMessage(), errorArgs));
+        super(formatMessage(null, status, errorArgs));
+        this.code = status;
+        this.errorArgs = errorArgs;
     }
 
     /**
-     * An exception that gets the error message through i 18n
+     * Constructs a BusException with the specified cause, status, and error arguments.
      *
-     * @param message code
-     * @param e e
-     * @return {@link BusException}
+     * @param cause the cause of the exception
+     * @param status the status code representing the exception
+     * @param errorArgs the arguments used for error message formatting
      */
-    public static BusException valueOf(String message, Throwable e) {
-        log.error(message, e);
-        return new BusException(message + e.getMessage());
-    }
-
-    public static BusException valueOf(Status code, Throwable e) {
-        log.error(code.getMessage(), e);
-        return new BusException(code, e.getMessage());
+    public BusException(Throwable cause, Status status, Object... errorArgs) {
+        super(formatMessage(cause.getMessage(), status, errorArgs), cause);
+        this.code = status;
+        this.errorArgs = errorArgs;
     }
 
     /**
-     * An exception that gets the error message through i 18n
+     * Creates a BusException instance with the specified message.
      *
-     * @param code code
-     * @param errorArgs errorArgs
-     * @return {@link BusException}
+     * @param message the detail message
+     * @return a new BusException instance
      */
-    public static BusException valueOf(Status code, Object... errorArgs) {
-        return new BusException(code, errorArgs);
+    public static BusException of(String message) {
+        return new BusException(message);
     }
 
     /**
-     * Without passing the exception to i 18n, it is directly returned to the msg past
+     * Creates a BusException instance with the specified status, and error arguments.
      *
-     * @param msg msg
-     * @return {@link BusException}
+     * @param status the status code representing the exception
+     * @param errorArgs the arguments used for error message formatting
+     * @return a new BusException instance
      */
-    public static BusException valueOf(String msg) {
-        return new BusException(msg);
+    public static BusException of(Status status, Object... errorArgs) {
+        return new BusException(status, errorArgs);
+    }
+
+    /**
+     * Creates a BusException instance with the specified cause, status, and error arguments.
+     *
+     * @param cause the cause of the exception
+     * @param status the status code representing the exception
+     * @param errorArgs the arguments used for error message formatting
+     * @return a new BusException instance
+     */
+    public static BusException of(Throwable cause, Status status, Object... errorArgs) {
+        return new BusException(cause, status, errorArgs);
+    }
+
+    /** Formats the exception message with optional cause message and error arguments. */
+    private static String formatMessage(@Nullable String causeMessage, Status status, Object... errorArgs) {
+        Object[] args = errorArgs == null ? new Object[0] : errorArgs;
+
+        if (causeMessage != null) {
+            Object[] extendedArgs = new Object[args.length + 1];
+            System.arraycopy(args, 0, extendedArgs, 0, args.length);
+            extendedArgs[args.length] = causeMessage;
+            args = extendedArgs;
+        }
+
+        return StrUtil.format(status.getMessage(), args);
     }
 }
