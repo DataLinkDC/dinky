@@ -22,7 +22,6 @@ public class FlinkUDFDiscover {
         if (CollectionUtils.isNotEmpty(JAVA_STATIC_UDF_LIST)) {
             return JAVA_STATIC_UDF_LIST;
         }
-
         Reflections reflections =
                 new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
         Set<Class<?>> operations =
