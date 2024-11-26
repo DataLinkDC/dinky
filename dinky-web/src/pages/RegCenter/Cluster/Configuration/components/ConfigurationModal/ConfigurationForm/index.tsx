@@ -42,7 +42,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
     url: API_CONSTANTS.FLINK_CONF_CONFIG_OPTIONS,
     method: 'get'
   });
-  console.log(data);
 
   const renderAllForm = () => {
     return (

@@ -129,7 +129,8 @@ export default (props: ConfigurationModalProps) => {
               overflowY: 'auto',
               overflowX: 'hidden'
             }
-          }
+          },
+          maskClosable: false
         }}
         title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
         submitter={{ render: () => [...renderFooter()] }}

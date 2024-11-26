@@ -20,6 +20,7 @@
 package org.dinky.job;
 
 import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.JobStatementType;
 import org.dinky.data.job.SqlType;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 public class JobStatementPlan {
 
     private List<JobStatement> jobStatementList = new ArrayList<>();
+    private boolean isSubmissionMode;
 
     public JobStatementPlan() {}
 
@@ -41,12 +43,16 @@ public class JobStatementPlan {
         return jobStatementList;
     }
 
-    public void addJobStatement(String statement, JobStatementType statementType, SqlType sqlType) {
-        jobStatementList.add(new JobStatement(jobStatementList.size() + 1, statement, statementType, sqlType, false));
+    public boolean isSubmissionMode() {
+        return isSubmissionMode;
     }
 
-    public void addJobStatementGenerated(String statement, JobStatementType statementType, SqlType sqlType) {
-        jobStatementList.add(new JobStatement(jobStatementList.size() + 1, statement, statementType, sqlType, true));
+    public void setSubmissionMode(boolean isSubmissionMode) {
+        this.isSubmissionMode = isSubmissionMode;
+    }
+
+    public void addJobStatement(String statement, JobStatementType statementType, SqlType sqlType) {
+        jobStatementList.add(new JobStatement(jobStatementList.size() + 1, statement, statementType, sqlType));
     }
 
     public String getStatements() {
@@ -56,9 +62,8 @@ public class JobStatementPlan {
     }
 
     public void buildFinalStatement() {
-        if (jobStatementList.size() == 0) {
-            return;
-        }
+        checkStatement();
+
         int executableIndex = -1;
         int createFunctionIndex = -1;
         for (int i = 0; i < jobStatementList.size(); i++) {
@@ -71,6 +76,8 @@ public class JobStatementPlan {
         if (executableIndex >= 0) {
             jobStatementList.get(executableIndex).asFinalExecutableStatement();
         } else {
+            // If there is no INSERT/CTAS/RTAS statement, use the first SELECT/WITH/SHOW/DESC SQL statement as the final
+            // statement.
             for (int i = 0; i < jobStatementList.size(); i++) {
                 if (jobStatementList.get(i).getStatementType().equals(JobStatementType.SQL)) {
                     jobStatementList.get(i).asFinalExecutableStatement();
@@ -78,8 +85,62 @@ public class JobStatementPlan {
                 }
             }
         }
+        // CTF statement needs to be executed together to compile one file.
+        // todo: support sorted CTF statements execute.
         if (createFunctionIndex >= 0) {
             jobStatementList.get(createFunctionIndex).asFinalCreateFunctionStatement();
+        }
+    }
+
+    public void checkStatement() {
+        checkEmptyStatement();
+        checkSubmissionStatement();
+        checkPipelineStatement();
+    }
+
+    private void checkEmptyStatement() {
+        if (jobStatementList.isEmpty()) {
+            throw new DinkyException("None of valid statement is executed. Please check your statements.");
+        }
+        boolean hasSqlStatement = false;
+        for (JobStatement jobStatement : jobStatementList) {
+            if (jobStatement.getStatement().trim().isEmpty()) {
+                throw new DinkyException("The statement cannot be empty. Please check your statements.");
+            }
+            if (jobStatement.getStatementType().equals(JobStatementType.SQL)
+                    || jobStatement.getStatementType().equals(JobStatementType.PIPELINE)) {
+                hasSqlStatement = true;
+            }
+        }
+        if (!hasSqlStatement) {
+            throw new DinkyException(
+                    "The statements must contain at least one INSERT/CTAS/RTAS/SELECT/WITH/SHOW/DESC statement.");
+        }
+    }
+
+    private void checkSubmissionStatement() {
+        if (isSubmissionMode) {
+            for (JobStatement jobStatement : jobStatementList) {
+                if (jobStatement.getStatementType().equals(JobStatementType.SQL)) {
+                    if (!jobStatement.getSqlType().isSinkyModify()) {
+                        throw new DinkyException(
+                                "The submission mode cannot contain one statement which is not a sink operation."
+                                        + "\nThe valid statement is: " + jobStatement.getStatement());
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkPipelineStatement() {
+        int pipelineStatement = 0;
+        for (JobStatement jobStatement : jobStatementList) {
+            if (jobStatement.getStatementType().equals(JobStatementType.PIPELINE)) {
+                pipelineStatement++;
+            }
+        }
+        if (pipelineStatement > 1) {
+            throw new DinkyException("Only one pipeline statement is supported for execution.");
         }
     }
 }

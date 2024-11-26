@@ -380,7 +380,7 @@ public abstract class YarnGateway extends AbstractGateway {
     protected String getWebUrl(ClusterClient<ApplicationId> clusterClient, YarnResult result)
             throws YarnException, IOException, InterruptedException {
         String webUrl;
-        int counts = SystemConfiguration.getInstances().getJobIdWait();
+        int counts = SystemConfiguration.getInstances().GetJobIdWaitValue();
         while (yarnClient.getApplicationReport(clusterClient.getClusterId()).getYarnApplicationState()
                         == YarnApplicationState.ACCEPTED
                 && counts-- > 0) {

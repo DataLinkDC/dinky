@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.hutool.core.lang.Singleton;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +46,13 @@ import lombok.extern.slf4j.Slf4j;
 @SaCheckLogin
 @RequiredArgsConstructor
 public class FlinkController {
-
-    protected static final CheckpointRead INSTANCE = new CheckpointRead();
     private final FlinkService flinkService;
 
     @GetMapping("/readCheckPoint")
     @ApiOperation("Read Checkpoint")
     public Result<Map<String, Map<String, CheckPointReadTable>>> readCheckPoint(String path, String operatorId) {
-        return Result.data(INSTANCE.readCheckpoint(path, operatorId));
+        CheckpointRead checkpointRead = Singleton.get(CheckpointRead.class);
+        return Result.data(checkpointRead.readCheckpoint(path, operatorId));
     }
 
     @GetMapping("/configOptions")

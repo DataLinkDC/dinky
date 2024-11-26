@@ -23,10 +23,11 @@ import { AnyAction } from '@@/plugin-dva/types';
 import { DropDirection, LayoutBase } from 'rc-dock/src/DockData';
 import { CenterTab } from '@/pages/DataStudio/model';
 import { DataStudioActionType } from '@/pages/DataStudio/data.d';
-import { Alert, DataSources } from '@/types/RegCenter/data';
+import { Alert, DataSources, ResourceInfo } from '@/types/RegCenter/data';
 import { DefaultOptionType } from 'antd/es/select';
 import { TaskExtConfig } from '@/types/Studio/data';
 import { SuggestionInfo } from '@/types/Public/data';
+import { JarSubmitParam } from '@/pages/DataStudio/CenterTabContent/SqlTask';
 
 /**
  * @description:
@@ -219,6 +220,7 @@ export type TempData = {
    */
   dataSourceDataList: DataSources.DataSource[];
   suggestions: SuggestionInfo[];
+  resourceDataList: ResourceInfo[];
 };
 
 /**
@@ -301,4 +303,10 @@ export type JobRunningMsgType = {
   jobName: string;
   jobState: string;
   runningLog: string;
+};
+
+export type SqlConvertForm = {
+  enable: boolean;
+  initSqlStatement?: string;
+  jarSubmitParam?: JarSubmitParam;
 };

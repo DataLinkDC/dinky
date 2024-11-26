@@ -23,10 +23,15 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.data.job.JobStatement;
+import org.dinky.data.job.JobStatementType;
+import org.dinky.data.job.SqlType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
+import org.dinky.job.JobStatementPlan;
+import org.dinky.trans.Operations;
 import org.dinky.utils.KerberosUtil;
 
 import org.apache.flink.api.common.ExecutionConfig;
@@ -191,6 +196,35 @@ public abstract class Executor {
     }
 
     abstract CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader);
+
+    public JobStatementPlan parseStatementIntoJobStatementPlan(String[] statements) {
+        JobStatementPlan jobStatementPlan = new JobStatementPlan();
+        for (String item : statements) {
+            String statement = pretreatStatement(item);
+            if (statement.isEmpty()) {
+                continue;
+            }
+            SqlType operationType = Operations.getOperationType(statement);
+            if (operationType.equals(SqlType.SET) || operationType.equals(SqlType.RESET)) {
+                jobStatementPlan.addJobStatement(statement, JobStatementType.SET, operationType);
+            } else if (operationType.equals(SqlType.EXECUTE)) {
+                jobStatementPlan.addJobStatement(statement, JobStatementType.PIPELINE, operationType);
+            } else if (operationType.equals(SqlType.PRINT)) {
+                for (String tableName : PrintStatementExplainer.getTableNames(statement)) {
+                    jobStatementPlan.addJobStatement(
+                            PrintStatementExplainer.getCreateStatement(
+                                    tableName, getExecutorConfig().getConfig()),
+                            JobStatementType.SQL,
+                            SqlType.CTAS);
+                }
+            } else if (SqlType.getTransSqlTypes().contains(operationType)) {
+                jobStatementPlan.addJobStatement(statement, JobStatementType.SQL, operationType);
+            } else {
+                jobStatementPlan.addJobStatement(statement, JobStatementType.DDL, operationType);
+            }
+        }
+        return jobStatementPlan;
+    }
 
     public String pretreatStatement(String statement) {
         return FlinkInterceptor.pretreatStatement(this, statement);

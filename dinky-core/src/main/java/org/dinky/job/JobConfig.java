@@ -190,6 +190,13 @@ public class JobConfig {
             notes = "Flag indicating whether to mock sink function")
     private boolean mockSinkFunction;
 
+    @ApiModelProperty(
+            value = "Flag indicating whether to be submission mode",
+            dataType = "boolean",
+            example = "true",
+            notes = "Flag indicating whether to be submission mode")
+    private boolean isSubmissionMode;
+
     @ApiModelProperty(value = "Gateway configuration", dataType = "GatewayConfig", notes = "Gateway configuration")
     private GatewayConfig gatewayConfig;
 

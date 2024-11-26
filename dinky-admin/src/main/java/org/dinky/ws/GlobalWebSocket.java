@@ -19,6 +19,7 @@
 
 package org.dinky.ws;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.data.vo.SseDataVo;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.ThreadUtil;
@@ -61,7 +62,10 @@ public class GlobalWebSocket {
             executorService.execute(() -> {
                 while (isRunning) {
                     Set<String> params = getRequestParamMap().get(value);
-                    sendTopic(value, params, value.getInstance().autoDataSend(params));
+                    Map<String, Object> topicMap = value.getInstance().autoDataSend(params);
+                    if (Asserts.isNotNullMap(topicMap)) {
+                        sendTopic(value, params, topicMap);
+                    }
                     ThreadUtil.sleep(value.getDelaySend());
                 }
             });

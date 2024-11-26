@@ -70,6 +70,9 @@ public class SystemConfiguration {
             .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
             .collect(Collectors.toList());
 
+    private final Configuration<Boolean> isFirstSystemIn =
+            key(Status.SYS_GLOBAL_IS_FIRST).booleanType().defaultValue(true);
+
     private final Configuration<Boolean> useRestAPI = key(Status.SYS_FLINK_SETTINGS_USERESTAPI)
             .booleanType()
             .defaultValue(true)
@@ -391,7 +394,7 @@ public class SystemConfiguration {
         return Asserts.isNull(useRestAPI.getValue()) ? useRestAPI.getDefaultValue() : useRestAPI.getValue();
     }
 
-    public int getJobIdWait() {
+    public int GetJobIdWaitValue() {
         return jobIdWait.getValue();
     }
 
@@ -428,7 +431,7 @@ public class SystemConfiguration {
                 .build();
     }
 
-    public TaskOwnerLockStrategyEnum getTaskOwnerLockStrategy() {
+    public TaskOwnerLockStrategyEnum GetTaskOwnerLockStrategyValue() {
         return taskOwnerLockStrategy.getValue();
     }
 

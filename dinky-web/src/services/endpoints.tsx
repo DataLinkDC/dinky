@@ -176,6 +176,9 @@ export enum API_CONSTANTS {
 
   /** --------------------------------------------  setting center ------------------------------------------------ */
   // ------------------------------------ system settings ------------------------------------
+  GET_NEEDED_CFG = '/api/sysConfig/getNeededCfg',
+  SET_INIT_CFG = '/api/sysConfig/setInitConfig',
+
   SYSTEM_GET_ALL_CONFIG = '/api/sysConfig/getAll',
   SYSTEM_GET_ONE_TYPE_CONFIG = '/api/sysConfig/getConfigByType',
   SYSTEM_MODIFY_CONFIG = '/api/sysConfig/modifyConfig',
@@ -225,7 +228,6 @@ export enum API_CONSTANTS {
   ALERT_HISTORY_DELETE = '/api/alertHistory/delete',
 
   // ----------------------------------------- ldap ------------------------------------
-  GET_LDAP_ENABLE = '/api/ldap/ldapEnableStatus',
   LDAP_TEST_CONNECT = '/api/ldap/testConnection',
   LDAP_TEST_LOGIN = '/api/ldap/testLogin',
   LDAP_LIST_USER = '/api/ldap/listUser',
@@ -284,6 +286,8 @@ export enum API_CONSTANTS {
   SAVEPOINT = '/api/task/savepoint',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   LIST_FLINK_SQL_ENV = '/api/task/listFlinkSQLEnv',
+  FLINK_JAR_SQL_CONVERT_FORM = '/api/task/flinkJarSqlConvertForm',
+  FLINK_JAR_FORM_CONVERT_SQL = '/api/task/flinkJarFormConvertSql',
 
   // ------------------------------------ task record ------------------------------------
   HISTORY_LIST = '/api/history/list',

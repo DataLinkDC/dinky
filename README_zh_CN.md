@@ -20,7 +20,7 @@
 
 - FlinkSQL 数据开发：提示补全、语句美化、在线调试、逻辑校验、执行计划、Catalog、血缘分析、版本对比等
 - 支持 FlinkSQL 多版本开发及多种执行模式：Local、Standalone、Yarn/Kubernetes Session、Yarn Per-Job、Yarn/Kubernetes Application
-- 支持 Apache Flink 生态：CDC、Connector、FlinkCEP、FlinkCDC、Paimon、PyFlink 等
+- 支持 Apache Flink 生态：FlinkCDC、Connector、FlinkCEP、Paimon、PyFlink 等
 - 支持 FlinkSQL 语法增强：整库同步、执行环境、全局变量、表值聚合、加载依赖、行级权限、执行Jar任务等
 - 支持 FlinkCDC 整库实时入仓入湖与 FlinkCDCPipeline 整库同步
 - 支持实时在线调试预览 Table、ChangeLog 和 UDF
@@ -38,25 +38,21 @@
 
 ## 运行效果
 
-> FlinkSQL Studio
+> 数据开发
 
-![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/datastudio.png)
+![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/datastudio.png)
 
-> 语法检查
+> 数据调试
 
-![checksql](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/checksql.png)
+![datadebug](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/data-debug.png)
 
-> 版本管理
+> 作业监控
 
-![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/versiondiff.png)
+![devops](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/devops.png)
 
-> 血缘分析
+> 作业指标
 
-![lineage](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/lineage.png)
-
-> 任务监控
-
-![monitor](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/monitor.png)
+![metrics](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/metrics.png)
 
 ## 参与贡献
 

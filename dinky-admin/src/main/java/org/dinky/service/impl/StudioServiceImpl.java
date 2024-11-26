@@ -209,7 +209,7 @@ public class StudioServiceImpl implements StudioService {
     private JobManager getJobManager(StudioMetaStoreDTO studioMetaStoreDTO, String envSql) {
         JobManager jobManager = jobManagerCache.get(envSql, () -> {
             JobConfig config = studioMetaStoreDTO.getJobConfig();
-            JobManager jobManagerTmp = JobManager.build(config);
+            JobManager jobManagerTmp = JobManager.buildPlanMode(config);
             jobManagerTmp.executeDDL(envSql);
             return jobManagerTmp;
         });

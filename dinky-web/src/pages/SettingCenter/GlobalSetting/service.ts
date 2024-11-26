@@ -19,15 +19,20 @@
 
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
+import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
 
-export async function queryDsConfig(keyword: string) {
-  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
+export async function queryDsConfig() {
+  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, {
+    type: SettingConfigKeyEnum.DOLPHIN_SCHEDULER.toLowerCase()
+  });
 }
 
 export async function queryResourceConfig(keyword: string) {
   return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
 }
 
-export async function queryTaskOwnerLockingStrategy(keyword: string) {
-  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
+export async function queryTaskOwnerLockingStrategy() {
+  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, {
+    type: SettingConfigKeyEnum.ENV.toLowerCase()
+  });
 }

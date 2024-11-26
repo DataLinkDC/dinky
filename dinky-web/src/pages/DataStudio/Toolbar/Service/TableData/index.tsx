@@ -21,11 +21,11 @@ import { postAll } from '@/services/api';
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
 import { Modal, Select, Tabs } from 'antd';
-import TextArea from 'antd/es/input/TextArea';
 import { Tab } from 'rc-tabs/lib/interface.d';
 import React, { memo, useEffect, useState } from 'react';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
 import { DefaultOptionType } from 'rc-select/lib/Select';
+import { AutoSizer, List } from 'react-virtualized';
 
 export async function getPrintTables(statement: string) {
   return postAll('api/printTable/getPrintTables', { statement });
@@ -39,7 +39,7 @@ export type PrintTable = {
 
 export const DataPage = (props: any) => {
   const { style, title } = props;
-  const [consoleInfo, setConsoleInfo] = useState<string>('');
+  const [data, setData] = useState<string[]>([]);
   const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
     subscribeTopic: model.subscribeTopic
   }));
@@ -48,15 +48,39 @@ export const DataPage = (props: any) => {
     if (title) {
       return subscribeTopic(Topic.PRINT_TABLE, [title.fullTableName], (data: SseData) => {
         if (data?.data[title.fullTableName]) {
-          setConsoleInfo(
-            (preConsoleInfo) => preConsoleInfo + '\n' + data.data[title.fullTableName]
-          );
+          setData((prevData) => [...prevData, data.data[title.fullTableName]]);
         }
       });
     }
   }, []);
 
-  return <TextArea value={consoleInfo} style={{ width: style.width, height: style.height }} />;
+  const rowRenderer = ({
+    key,
+    index,
+    style
+  }: {
+    key: string;
+    index: number;
+    style: React.CSSProperties;
+  }) => (
+    <div key={key} style={style}>
+      {data[index]}
+    </div>
+  );
+
+  return (
+    <AutoSizer>
+      {({ height, width }) => (
+        <List
+          width={width}
+          height={height}
+          rowHeight={40}
+          rowCount={data.length}
+          rowRenderer={rowRenderer}
+        />
+      )}
+    </AutoSizer>
+  );
 };
 
 export const TableData = memo((props: { statement?: string }) => {
@@ -107,5 +131,5 @@ export const TableData = memo((props: { statement?: string }) => {
     }
   };
 
-  return <Tabs style={{ height: '100%' }} type='editable-card' onEdit={onEdit} items={tabItems} />;
+  return <Tabs style={{ height: 1000 }} type='editable-card' onEdit={onEdit} items={tabItems} />;
 });

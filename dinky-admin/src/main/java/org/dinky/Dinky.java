@@ -19,6 +19,8 @@
 
 package org.dinky;
 
+import org.dinky.security.NoExitSecurityManager;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
@@ -45,6 +47,8 @@ public class Dinky {
 
     @SneakyThrows
     public static void main(String[] args) {
+        // Prevent System.exit calls
+        System.setSecurityManager(new NoExitSecurityManager());
         // Initialize the JDBC Driver, because the number of packages is very large, so it needs to be executed
         // asynchronously and loaded in advance
         // chinese: 初始化JDBC Driver，因为包的数量特别庞大，所以这里需要异步执行，并提前加载Driver

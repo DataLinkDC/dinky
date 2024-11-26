@@ -201,7 +201,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             KubernetesClient kubernetesClient, Deployment deployment, ClusterClientProvider<String> clusterClient)
             throws InterruptedException {
         KubernetesResult result = KubernetesResult.build(getType());
-        long waitSends = SystemConfiguration.getInstances().getJobIdWait() * 1000L;
+        long waitSends = SystemConfiguration.getInstances().GetJobIdWaitValue() * 1000L;
         long startTime = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - startTime < waitSends) {
@@ -262,7 +262,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             KubernetesClient kubernetesClient, Deployment deployment, ClusterClientProvider<String> clusterClient)
             throws InterruptedException {
         KubernetesResult result = KubernetesResult.build(getType());
-        long waitSends = SystemConfiguration.getInstances().getJobIdWait() * 1000L;
+        long waitSends = SystemConfiguration.getInstances().GetJobIdWaitValue() * 1000L;
         long startTime = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - startTime < waitSends) {
@@ -363,11 +363,14 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
      * @return ingress domain
      */
     private String checkUseIngress() {
-        Map<String, String> ingressConfig = k8sConfig.getIngressConfig();
+        Map<String, Object> ingressConfig = k8sConfig.getIngressConfig();
         if (MapUtils.isNotEmpty(ingressConfig)) {
-            boolean ingressEnable =
-                    Boolean.parseBoolean(ingressConfig.getOrDefault(DINKY_K8S_INGRESS_ENABLED_KEY, "false"));
-            String ingressDomain = ingressConfig.getOrDefault(DINKY_K8S_INGRESS_DOMAIN_KEY, StringUtils.EMPTY);
+            boolean ingressEnable = Boolean.parseBoolean(ingressConfig
+                    .getOrDefault(DINKY_K8S_INGRESS_ENABLED_KEY, "false")
+                    .toString());
+            String ingressDomain = ingressConfig
+                    .getOrDefault(DINKY_K8S_INGRESS_DOMAIN_KEY, StringUtils.EMPTY)
+                    .toString();
             if (ingressEnable && StringUtils.isNotEmpty(ingressDomain)) {
                 return ingressDomain;
             }

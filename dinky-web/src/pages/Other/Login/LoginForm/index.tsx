@@ -17,17 +17,19 @@
  *
  */
 
-import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { GithubOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { DefaultFooter, ProForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { SubmitterProps } from '@ant-design/pro-form/es/components';
 import { Col, Flex, Row } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import style from '../../../../global.less';
 import Lottie from 'react-lottie';
 import DataPlatform from '../../../../../public/login_animation.json';
+import { useRequest } from '@@/exports';
+import { history } from '@umijs/max';
+import { GLOBAL_SETTING_KEYS } from '@/types/SettingCenter/data.d';
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
@@ -41,15 +43,15 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
   const [submitting, setSubmitting] = useState(false);
   const [ldapEnabled, setLdapEnabled] = useState(false);
 
-  useEffect(() => {
-    getData(API_CONSTANTS.GET_LDAP_ENABLE).then(
-      (res) => {
-        setLdapEnabled(res.data);
-        form.setFieldValue('ldapLogin', res.data);
-      },
-      (err) => console.error(err)
-    );
-  }, []);
+  useRequest(API_CONSTANTS.GET_NEEDED_CFG, {
+    onSuccess: (res) => {
+      if (res[GLOBAL_SETTING_KEYS.SYS_GLOBAL_ISFIRST]) {
+        history.push('/welcome');
+      }
+      setLdapEnabled(res[GLOBAL_SETTING_KEYS.SYS_LDAP_SETTINGS_ENABLE]);
+      form.setFieldValue('ldapLogin', res[GLOBAL_SETTING_KEYS.SYS_LDAP_SETTINGS_ENABLE]);
+    }
+  });
 
   const handleClickLogin = async () => {
     setSubmitting(true);

@@ -17,7 +17,7 @@
  *
  */
 
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { CSSProperties, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Button, Tooltip } from 'antd';
 import { sleep } from '@antfu/utils';
 
@@ -37,6 +37,7 @@ export type RunToolBarButtonProps = {
   hotKey?: HotKeyProps;
   isShow?: boolean;
   disabled?: boolean;
+  style?: CSSProperties;
 };
 
 export default (props: RunToolBarButtonProps) => {
@@ -49,10 +50,10 @@ export default (props: RunToolBarButtonProps) => {
     sleepTime,
     hotKey,
     isShow = true,
-    disabled = false
+    disabled = false,
+    style
   } = props;
   const [loading, setLoading] = useState(false);
-  const style = color ? { color: color } : {};
 
   const onClickHandle = useCallback(async () => {
     setLoading(true);
@@ -92,7 +93,7 @@ export default (props: RunToolBarButtonProps) => {
           type='text'
           icon={icon}
           onClick={onClickHandle}
-          style={{ ...style, padding: '1px 6px' }}
+          style={{ ...style, padding: '1px 6px', color: color }}
         >
           {showDesc ? desc : ''}
         </Button>

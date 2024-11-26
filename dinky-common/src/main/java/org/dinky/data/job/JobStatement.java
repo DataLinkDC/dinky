@@ -25,26 +25,14 @@ public class JobStatement {
     private String statement;
     private JobStatementType statementType;
     private SqlType sqlType;
-    private boolean isGenerated;
     private boolean isFinalExecutableStatement;
     private boolean isFinalCreateFunctionStatement;
 
-    public JobStatement(
-            int index, String statement, JobStatementType statementType, SqlType sqlType, boolean isGenerated) {
+    public JobStatement(int index, String statement, JobStatementType statementType, SqlType sqlType) {
         this.index = index;
         this.statement = statement;
         this.statementType = statementType;
         this.sqlType = sqlType;
-        this.isGenerated = isGenerated;
-        this.isFinalExecutableStatement = false;
-        this.isFinalCreateFunctionStatement = false;
-    }
-
-    public JobStatement(int index, String statement, JobStatementType statementType, boolean isGenerated) {
-        this.index = index;
-        this.statement = statement;
-        this.statementType = statementType;
-        this.isGenerated = isGenerated;
         this.isFinalExecutableStatement = false;
         this.isFinalCreateFunctionStatement = false;
     }
@@ -65,10 +53,6 @@ public class JobStatement {
         return sqlType;
     }
 
-    public boolean isGenerated() {
-        return isGenerated;
-    }
-
     public boolean isFinalExecutableStatement() {
         return isFinalExecutableStatement;
     }
@@ -87,6 +71,6 @@ public class JobStatement {
 
     public static JobStatement generateJobStatement(
             int index, String statement, JobStatementType statementType, SqlType sqlType) {
-        return new JobStatement(index, statement, statementType, sqlType, true);
+        return new JobStatement(index, statement, statementType, sqlType);
     }
 }

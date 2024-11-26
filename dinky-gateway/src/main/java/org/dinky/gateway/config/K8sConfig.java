@@ -75,5 +75,5 @@ public class K8sConfig {
             dataType = "Map<String, String>",
             example = "{\"key1\": \"value1\", \"key2\": \"value2\"}",
             notes = "Ingress configuration properties")
-    private Map<String, String> ingressConfig = Maps.newHashMap();
+    private Map<String, Object> ingressConfig = Maps.newHashMap();
 }
