@@ -23,16 +23,16 @@ public class FlinkUDFDiscover {
             return JAVA_STATIC_UDF_LIST;
         }
         Reflections reflections =
-                new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
+            new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
         Set<Class<?>> operations =
-                reflections.get(Scanners.SubTypes.of(UserDefinedFunction.class).asClass());
+            reflections.get(Scanners.SubTypes.of(UserDefinedFunction.class).asClass());
         return operations.stream()
-                .filter(operation ->
-                        !operation.isInterface() && !operation.getName().startsWith("org.apache"))
-                .map(operation -> UDF.builder()
-                        .className(operation.getName())
-                        .functionLanguage(FunctionLanguage.JAVA)
-                        .build())
-                .collect(Collectors.toList());
+            .filter(operation ->
+                !operation.isInterface() && !operation.getName().startsWith("org.apache"))
+            .map(operation -> UDF.builder()
+                .className(operation.getName())
+                .functionLanguage(FunctionLanguage.JAVA)
+                .build())
+            .collect(Collectors.toList());
     }
 }
