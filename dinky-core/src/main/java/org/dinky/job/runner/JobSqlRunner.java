@@ -19,20 +19,6 @@
 
 package org.dinky.job.runner;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.TableResult;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.enums.GatewayType;
@@ -55,7 +41,20 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
-import cn.hutool.core.text.StrFormatter;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -87,25 +86,26 @@ public class JobSqlRunner extends AbstractJobRunner {
         if (!jobStatement.getSqlType().isPipeline()) {
             try {
                 resultBuilder = SqlExplainResult.newBuilder(
-                    jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
+                        jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
-                String error = LogUtil.getError("Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
+                String error = LogUtil.getError(
+                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
-                    .type(jobStatement.getSqlType().getType())
-                    .index(jobStatement.getIndex())
-                    .error(error)
-                    .parseTrue(false)
-                    .explainTrue(false)
-                    .explainTime(LocalDateTime.now());
+                        .type(jobStatement.getSqlType().getType())
+                        .index(jobStatement.getIndex())
+                        .error(error)
+                        .parseTrue(false)
+                        .explainTrue(false)
+                        .explainTime(LocalDateTime.now());
                 log.error(error);
                 return resultBuilder.build();
             }
             resultBuilder
-                .index(jobStatement.getIndex())
-                .type(jobStatement.getSqlType().getType())
-                .explainTime(LocalDateTime.now())
-                .sql(jobStatement.getStatement());
+                    .index(jobStatement.getIndex())
+                    .type(jobStatement.getSqlType().getType())
+                    .explainTime(LocalDateTime.now())
+                    .sql(jobStatement.getStatement());
             return resultBuilder.build();
         }
         statements.add(jobStatement);
@@ -114,55 +114,58 @@ public class JobSqlRunner extends AbstractJobRunner {
         }
         if (inferStatementSet()) {
             List<String> inserts =
-                statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
+                    statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
             if (!inserts.isEmpty()) {
                 String sqlSet = StringUtils.join(inserts, FlinkSQLConstant.SEPARATOR);
                 try {
                     resultBuilder =
-                        SqlExplainResult.newBuilder(jobManager.getExecutor().explainStatementSet(statements));
+                            SqlExplainResult.newBuilder(jobManager.getExecutor().explainStatementSet(statements));
                 } catch (Exception e) {
-                    String error = LogUtil.getError("Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
+                    String error = LogUtil.getError(
+                            "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()),
+                            e);
                     resultBuilder
-                        .sql(sqlSet)
-                        .index(jobStatement.getIndex())
-                        .type(SqlType.INSERT.getType())
-                        .error(error)
-                        .parseTrue(false)
-                        .explainTrue(false)
-                        .explainTime(LocalDateTime.now());
+                            .sql(sqlSet)
+                            .index(jobStatement.getIndex())
+                            .type(SqlType.INSERT.getType())
+                            .error(error)
+                            .parseTrue(false)
+                            .explainTrue(false)
+                            .explainTime(LocalDateTime.now());
                     log.error(error);
                     return resultBuilder.build();
                 }
                 resultBuilder
-                    .type(SqlType.INSERT.getType())
-                    .index(jobStatement.getIndex())
-                    .explainTime(LocalDateTime.now())
-                    .sql(sqlSet);
+                        .type(SqlType.INSERT.getType())
+                        .index(jobStatement.getIndex())
+                        .explainTime(LocalDateTime.now())
+                        .sql(sqlSet);
                 return resultBuilder.build();
             }
             return resultBuilder.invalid().build();
         } else {
             try {
                 resultBuilder = SqlExplainResult.newBuilder(
-                    jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
+                        jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
-                String error = LogUtil.getError("Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
+                String error = LogUtil.getError(
+                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
-                    .type(jobStatement.getSqlType().getType())
-                    .index(jobStatement.getIndex())
-                    .error(error)
-                    .parseTrue(false)
-                    .explainTrue(false)
-                    .explainTime(LocalDateTime.now());
+                        .type(jobStatement.getSqlType().getType())
+                        .index(jobStatement.getIndex())
+                        .error(error)
+                        .parseTrue(false)
+                        .explainTrue(false)
+                        .explainTime(LocalDateTime.now());
                 log.error(error);
                 return resultBuilder.build();
             }
             resultBuilder
-                .type(jobStatement.getSqlType().getType())
-                .index(jobStatement.getIndex())
-                .explainTime(LocalDateTime.now())
-                .sql(jobStatement.getStatement());
+                    .type(jobStatement.getSqlType().getType())
+                    .index(jobStatement.getIndex())
+                    .explainTime(LocalDateTime.now())
+                    .sql(jobStatement.getStatement());
             return resultBuilder.build();
         }
     }
@@ -220,7 +223,7 @@ public class JobSqlRunner extends AbstractJobRunner {
 
     private void processWithGateway() {
         List<String> inserts =
-            statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
+                statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
         jobManager.setCurrentSql(StringUtils.join(inserts, FlinkSQLConstant.SEPARATOR));
         GatewayResult gatewayResult = submitByGateway(statements);
         setJobResultFromGatewayResult(gatewayResult);
@@ -229,7 +232,7 @@ public class JobSqlRunner extends AbstractJobRunner {
     private void processWithoutGateway() {
         if (!statements.isEmpty()) {
             List<String> inserts =
-                statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
+                    statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
             jobManager.setCurrentSql(StringUtils.join(inserts, FlinkSQLConstant.SEPARATOR));
             TableResult tableResult = jobManager.getExecutor().executeStatements(statements);
             updateJobWithTableResult(tableResult);
@@ -257,7 +260,7 @@ public class JobSqlRunner extends AbstractJobRunner {
 
     private void processSingleStatement(JobStatement item) {
         FlinkInterceptorResult flinkInterceptorResult =
-            FlinkInterceptor.build(jobManager.getExecutor(), item.getStatement());
+                FlinkInterceptor.build(jobManager.getExecutor(), item.getStatement());
         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
             updateJobWithTableResult(flinkInterceptorResult.getTableResult(), item.getSqlType());
         } else if (!flinkInterceptorResult.isNoExecute()) {
@@ -284,28 +287,28 @@ public class JobSqlRunner extends AbstractJobRunner {
     private void updateJobWithTableResult(TableResult tableResult, SqlType sqlType) {
         if (tableResult.getJobClient().isPresent()) {
             jobManager
-                .getJob()
-                .setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                    .getJob()
+                    .setJobId(tableResult.getJobClient().get().getJobID().toHexString());
             jobManager
-                .getJob()
-                .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
+                    .getJob()
+                    .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
         } else if (!sqlType.getCategory().getHasJobClient()) {
             jobManager.getJob().setJobId(UUID.randomUUID().toString().replace("-", ""));
             jobManager
-                .getJob()
-                .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
+                    .getJob()
+                    .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
         }
 
         if (jobManager.getConfig().isUseResult()) {
             IResult result = ResultBuilder.build(
-                    sqlType,
-                    jobManager.getJob().getId().toString(),
-                    jobManager.getConfig().getMaxRowNum(),
-                    jobManager.getConfig().isUseChangeLog(),
-                    jobManager.getConfig().isUseAutoCancel(),
-                    jobManager.getExecutor().getTimeZone(),
-                    jobManager.getConfig().isMockSinkFunction())
-                .getResultWithPersistence(tableResult, jobManager.getHandler());
+                            sqlType,
+                            jobManager.getJob().getId().toString(),
+                            jobManager.getConfig().getMaxRowNum(),
+                            jobManager.getConfig().isUseChangeLog(),
+                            jobManager.getConfig().isUseAutoCancel(),
+                            jobManager.getExecutor().getTimeZone(),
+                            jobManager.getConfig().isMockSinkFunction())
+                    .getResultWithPersistence(tableResult, jobManager.getHandler());
             jobManager.getJob().setResult(result);
         }
     }
@@ -323,7 +326,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             // Application mode need to submit dinky-app.jar that in the hdfs or image.
             config.getGatewayConfig().setSql(jobManager.getJobStatementPlan().getStatements());
             gatewayResult = Gateway.build(config.getGatewayConfig())
-                .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
+                    .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
         } else {
             JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
             // Perjob mode need to set savepoint restore path, when recovery from savepoint.

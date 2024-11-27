@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Set;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -125,7 +124,8 @@ public class JobDDLRunner extends AbstractJobRunner {
                     .sql(jobStatement.getStatement())
                     .index(jobStatement.getIndex());
         } catch (Exception e) {
-            String error = LogUtil.getError("Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
+            String error = LogUtil.getError(
+                    "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
             resultBuilder
                     .error(error)
                     .explainTrue(false)

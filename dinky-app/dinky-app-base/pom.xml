@@ -47,10 +47,6 @@
             <artifactId>dinky-core</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>com.github.xiaoymin</groupId>
-                    <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>com.github.docker-java</groupId>
                     <artifactId>docker-java-core</artifactId>
                 </exclusion>
@@ -81,14 +77,6 @@
                 <exclusion>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-gateway</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-alert-sms</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-alert-dingtalk</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

@@ -21,23 +21,6 @@ package org.dinky.service.catalogue.impl;
 
 import static org.dinky.assertion.Asserts.isNull;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.bo.catalogue.export.ExportTaskBO;
@@ -71,6 +54,24 @@ import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.service.catalogue.factory.CatalogueFactory;
 import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -136,8 +137,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         // sort
         if (CollectionUtil.isNotEmpty(catalogueList)) {
             catalogueList = catalogueList.stream()
-                .sorted(Comparator.comparing(Catalogue::getId))
-                .collect(Collectors.toList());
+                    .sorted(Comparator.comparing(Catalogue::getId))
+                    .collect(Collectors.toList());
         }
         List<Task> taskList = taskService.list();
         List<Catalogue> returnList = new ArrayList<>();
@@ -173,9 +174,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             } else {
                 if (tChild.getIsLeaf() || null != tChild.getTaskId()) {
                     taskList.stream()
-                        .filter(t -> t.getId().equals(tChild.getTaskId()))
-                        .findFirst()
-                        .ifPresent(tChild::setTaskAndNote);
+                            .filter(t -> t.getId().equals(tChild.getTaskId()))
+                            .findFirst()
+                            .ifPresent(tChild::setTaskAndNote);
                 }
             }
         }
@@ -221,19 +222,19 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             String catalogueSortValueEnumName = catalogueSortValueEnum.getName();
             String catalogueSortValueEnumI18nValue = catalogueSortValueEnum.getI18nValue();
             TreeVo treeVo = TreeVo.builder()
-                .name(catalogueSortValueEnumI18nValue)
-                .value(catalogueSortValueEnumName)
-                .build();
+                    .name(catalogueSortValueEnumI18nValue)
+                    .value(catalogueSortValueEnumName)
+                    .build();
             List<TreeVo> subTreeVoList = Arrays.stream(SortTypeEnum.values())
-                .map(sortTypeEnum -> {
-                    String sortTypeEnumName = sortTypeEnum.getName();
-                    String sortTypeEnumI18nValue = sortTypeEnum.getI18nValue();
-                    return TreeVo.builder()
-                        .name(catalogueSortValueEnumI18nValue + " " + sortTypeEnumI18nValue)
-                        .value(catalogueSortValueEnumName + "_" + sortTypeEnumName)
-                        .build();
-                })
-                .collect(Collectors.toList());
+                    .map(sortTypeEnum -> {
+                        String sortTypeEnumName = sortTypeEnum.getName();
+                        String sortTypeEnumI18nValue = sortTypeEnum.getI18nValue();
+                        return TreeVo.builder()
+                                .name(catalogueSortValueEnumI18nValue + " " + sortTypeEnumI18nValue)
+                                .value(catalogueSortValueEnumName + "_" + sortTypeEnumName)
+                                .build();
+                    })
+                    .collect(Collectors.toList());
             treeVo.setChildren(subTreeVoList);
             treeVoList.add(treeVo);
         }
@@ -243,8 +244,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Override
     public Catalogue findByParentIdAndName(Integer parentId, String name) {
         return baseMapper.selectOne(new LambdaQueryWrapper<Catalogue>()
-            .eq(Catalogue::getParentId, parentId)
-            .eq(Catalogue::getName, name));
+                .eq(Catalogue::getParentId, parentId)
+                .eq(Catalogue::getName, name));
     }
 
     /**
@@ -257,9 +258,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     @Override
     public boolean checkCatalogueTaskNameIsExistById(String name, Integer id) {
         return getBaseMapper()
-            .exists(new LambdaQueryWrapper<Catalogue>()
-                .eq(Catalogue::getName, name)
-                .ne(id != null, Catalogue::getId, id));
+                .exists(new LambdaQueryWrapper<Catalogue>()
+                        .eq(Catalogue::getName, name)
+                        .ne(id != null, Catalogue::getId, id));
     }
 
     /**
@@ -348,11 +349,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     private void findAllCatalogueInDir(Integer id, List<Catalogue> all, Set<Catalogue> del) {
         List<Catalogue> relatedList = all.stream()
-            .filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
-            .collect(Collectors.toList());
+                .filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
+                .collect(Collectors.toList());
         List<Catalogue> subDirCatalogue = relatedList.stream()
-            .filter(catalogue -> catalogue.getType() == null)
-            .collect(Collectors.toList());
+                .filter(catalogue -> catalogue.getType() == null)
+                .collect(Collectors.toList());
         subDirCatalogue.forEach(catalogue -> {
             if (!id.equals(catalogue.getId())) {
                 findAllCatalogueInDir(catalogue.getId(), all, del);
@@ -363,14 +364,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     private List<String> analysisActiveCatalogues(Set<Catalogue> del) {
         List<Integer> actives = jobInstanceService.listJobInstanceActive().stream()
-            .map(JobInstance::getTaskId)
-            .collect(Collectors.toList());
+                .map(JobInstance::getTaskId)
+                .collect(Collectors.toList());
         List<Catalogue> activeCatalogue = del.stream()
-            .filter(catalogue -> catalogue.getTaskId() != null && actives.contains(catalogue.getTaskId()))
-            .collect(Collectors.toList());
+                .filter(catalogue -> catalogue.getTaskId() != null && actives.contains(catalogue.getTaskId()))
+                .collect(Collectors.toList());
         return activeCatalogue.stream()
-            .map(catalogue -> taskService.getById(catalogue.getTaskId()).getName())
-            .collect(Collectors.toList());
+                .map(catalogue -> taskService.getById(catalogue.getTaskId()).getName())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -406,7 +407,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         taskService.save(newTask);
 
         Catalogue singleCatalogue =
-            this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
+                this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
         Catalogue newCatalogue = catalogueFactory.getNewCatalogue(catalogue, singleCatalogue, newTask);
         return this.save(newCatalogue);
     }
@@ -417,9 +418,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         for (int i = 0; i < catalogueNames.length - 1; i++) {
             String catalogueName = catalogueNames[i];
             Catalogue catalogue = getOne(new QueryWrapper<Catalogue>()
-                .eq("name", catalogueName)
-                .eq("parent_id", parentId)
-                .last(" limit 1"));
+                    .eq("name", catalogueName)
+                    .eq("parent_id", parentId)
+                    .last(" limit 1"));
             if (Asserts.isNotNull(catalogue)) {
                 parentId = catalogue.getId();
                 continue;
@@ -444,16 +445,16 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         for (File fl : fs) {
             if (fl.isFile()) {
                 CatalogueTaskDTO dto = getCatalogueTaskDTO(
-                    fl.getName(),
-                    findByParentIdAndName(catalog.getParentId(), catalog.getName())
-                        .getId());
+                        fl.getName(),
+                        findByParentIdAndName(catalog.getParentId(), catalog.getName())
+                                .getId());
                 String fileText = getFileText(fl);
                 createCatalogAndFileTask(dto, fileText);
             } else {
                 Catalogue newCata = getCatalogue(
-                    findByParentIdAndName(catalog.getParentId(), catalog.getName())
-                        .getId(),
-                    fl.getName());
+                        findByParentIdAndName(catalog.getParentId(), catalog.getName())
+                                .getId(),
+                        fl.getName());
                 traverseFile(fl.getPath(), newCata);
             }
         }
@@ -462,7 +463,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
         try (InputStreamReader isr = new InputStreamReader(Files.newInputStream(sourceFile.toPath()));
-             BufferedReader br = new BufferedReader(isr)) {
+                BufferedReader br = new BufferedReader(isr)) {
             if (sourceFile.isFile() && sourceFile.exists()) {
 
                 String lineText;
@@ -517,7 +518,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     if (currentJobInstance != null) {
                         // 获取前 先强制刷新一下, 避免获取任务信息状态不准确
                         JobInfoDetail jobInfoDetail =
-                            jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), task.getId(), true);
+                                jobInstanceService.refreshJobInfoDetail(task.getJobInstanceId(), task.getId(), true);
                         if (jobInfoDetail.getInstance().getStatus().equals(JobStatus.RUNNING.getValue())) {
                             throw new BusException(Status.TASK_IS_RUNNING_CANNOT_DELETE);
                         }
@@ -530,10 +531,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
             // 获取 job instance 表中的作业
             List<JobInstance> jobInstanceList = jobInstanceService.list(
-                new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
+                    new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
             //  获取 history 表中的作业
             List<History> historyList = historyService.list(
-                new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
+                    new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
             historyList.forEach(history -> {
                 // 查询 job history 表中的作业 通过 id 关联查询 // TODO npe
                 JobHistory historyServiceById = jobHistoryService.getById(history.getId());
@@ -611,9 +612,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         ExportCatalogueBO exportCatalogueBo = getAllCatalogue(catalogueId);
         String dataJson = JSONUtil.toJsonPrettyStr(exportCatalogueBo);
         return ExportCatalogueVO.builder()
-            .fileName(getExportCatalogueFileName(catalogueId))
-            .dataJson(dataJson)
-            .build();
+                .fileName(getExportCatalogueFileName(catalogueId))
+                .dataJson(dataJson)
+                .build();
     }
 
     /**
@@ -708,7 +709,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     private BiMap<String, String> checkImportCatalogueParam(
-        Catalogue parentCatalogue, ExportCatalogueBO exportCatalogue) {
+            Catalogue parentCatalogue, ExportCatalogueBO exportCatalogue) {
         // verify that the parent directory exists
         if (Objects.isNull(parentCatalogue)) {
             throw new BusException(Status.CATALOGUE_NOT_EXIST);
@@ -749,31 +750,31 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      */
     private void getNotExistsCatalogueName(List<String> catalogueNames, BiMap<String, String> existsNameMap) {
         List<Catalogue> existCatalogues =
-            this.list(new LambdaQueryWrapper<Catalogue>().in(Catalogue::getName, catalogueNames));
+                this.list(new LambdaQueryWrapper<Catalogue>().in(Catalogue::getName, catalogueNames));
         if (CollectionUtil.isEmpty(existCatalogues)) {
             return;
         }
         List<String> existCataloguesList = existCatalogues.stream()
-            .map(Catalogue::getName)
-            .map(name -> {
-                String key = name;
-                if (existsNameMap.containsValue(name)) {
-                    key = existsNameMap.getKey(name);
-                }
-                // Configure the suffix - copy\(\d+\), match \d+1 if it exists, add the suffix - copy(1) if it does
-                // not exist.
-                String regex = ".*-copy\\((\\d+)\\)";
-                if (name.matches(regex)) {
-                    String[] split = name.split("\\(");
-                    String num = split[1].split("\\)")[0];
-                    int i = Integer.parseInt(num) + 1;
-                    existsNameMap.put(key, name.replace(num, String.valueOf(i)));
-                } else {
-                    existsNameMap.put(key, name + "-copy(1)");
-                }
-                return existsNameMap.get(key);
-            })
-            .collect(Collectors.toList());
+                .map(Catalogue::getName)
+                .map(name -> {
+                    String key = name;
+                    if (existsNameMap.containsValue(name)) {
+                        key = existsNameMap.getKey(name);
+                    }
+                    // Configure the suffix - copy\(\d+\), match \d+1 if it exists, add the suffix - copy(1) if it does
+                    // not exist.
+                    String regex = ".*-copy\\((\\d+)\\)";
+                    if (name.matches(regex)) {
+                        String[] split = name.split("\\(");
+                        String num = split[1].split("\\)")[0];
+                        int i = Integer.parseInt(num) + 1;
+                        existsNameMap.put(key, name.replace(num, String.valueOf(i)));
+                    } else {
+                        existsNameMap.put(key, name + "-copy(1)");
+                    }
+                    return existsNameMap.get(key);
+                })
+                .collect(Collectors.toList());
 
         getNotExistsCatalogueName(existCataloguesList, existsNameMap);
     }
@@ -809,12 +810,12 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Task task = isLeaf ? taskService.getById(catalogue.getTaskId()) : null;
         ExportCatalogueBO exportCatalogueBo = catalogueFactory.getExportCatalogueBo(catalogue, task);
         List<Catalogue> subCatalogues =
-            this.list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
+                this.list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
         if (CollectionUtil.isNotEmpty(subCatalogues)) {
             List<ExportCatalogueBO> subExportCatalogueBo = subCatalogues.stream()
-                .map(Catalogue::getId)
-                .map(this::getAllCatalogue)
-                .collect(Collectors.toList());
+                    .map(Catalogue::getId)
+                    .map(this::getAllCatalogue)
+                    .collect(Collectors.toList());
             exportCatalogueBo.setChildren(subExportCatalogueBo);
         }
         return exportCatalogueBo;

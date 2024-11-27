@@ -40,12 +40,14 @@
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-bundle</artifactId>
             <version>0.8.1</version>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.paimon/paimon-s3 -->
         <dependency>
             <groupId>org.apache.paimon</groupId>
             <artifactId>paimon-s3</artifactId>
             <version>0.8.1</version>
+            <scope>${scope.runtime}</scope>
         </dependency>
 
         <!-- test dependencies -->

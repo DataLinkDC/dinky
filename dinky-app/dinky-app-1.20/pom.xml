@@ -60,6 +60,7 @@
                         </manifest>
                     </archive>
                     <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
+
                 </configuration>
                 <executions>
                     <execution>

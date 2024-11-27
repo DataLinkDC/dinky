@@ -19,12 +19,13 @@
 
 package org.dinky.trans;
 
+import org.dinky.data.job.SqlType;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
-import org.dinky.data.job.SqlType;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 
@@ -52,46 +53,46 @@ public class Operations {
     private static Operation[] getAllOperations() {
         Reflections reflections = new Reflections(Operation.class.getPackage().getName());
         Set<Class<?>> operations =
-            reflections.get(Scanners.SubTypes.of(Operation.class).asClass());
+                reflections.get(Scanners.SubTypes.of(Operation.class).asClass());
 
         return operations.stream()
-            .filter(t -> !t.isInterface())
-            .map(t -> {
-                try {
-                    return (Operation) t.getConstructor().newInstance();
-                } catch (InstantiationException
-                         | IllegalAccessException
-                         | InvocationTargetException
-                         | NoSuchMethodException e) {
-                    log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
-                    throw new RuntimeException(e);
-                } catch (NoClassDefFoundError e) {
-                    log.warn(
-                        "getAllOperations error,  If you do not have this class, please add the corresponding dependency. Operation: {}.{}",
-                        t,
-                        e.getMessage());
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .toArray(Operation[]::new);
+                .filter(t -> !t.isInterface())
+                .map(t -> {
+                    try {
+                        return (Operation) t.getConstructor().newInstance();
+                    } catch (InstantiationException
+                            | IllegalAccessException
+                            | InvocationTargetException
+                            | NoSuchMethodException e) {
+                        log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
+                        throw new RuntimeException(e);
+                    } catch (NoClassDefFoundError e) {
+                        log.warn(
+                                "getAllOperations error,  If you do not have this class, please add the corresponding dependency. Operation: {}.{}",
+                                t,
+                                e.getMessage());
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toArray(Operation[]::new);
     }
 
     public static SqlType getOperationType(String sql) {
         String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, " ").trim().toUpperCase();
         return Arrays.stream(SqlType.values())
-            .filter(sqlType -> sqlType.match(sqlTrim))
-            .findFirst()
-            .orElse(SqlType.UNKNOWN);
+                .filter(sqlType -> sqlType.match(sqlTrim))
+                .findFirst()
+                .orElse(SqlType.UNKNOWN);
     }
 
     public static Operation buildOperation(String statement) {
         String sql = statement.replace("\n", " ").replaceAll("\\s+", " ").trim().toUpperCase();
 
         return Arrays.stream(ALL_OPERATIONS)
-            .filter(p -> p.getHandle() != null && sql.startsWith(p.getHandle()))
-            .findFirst()
-            .map(p -> p.create(statement))
-            .orElse(null);
+                .filter(p -> p.getHandle() != null && sql.startsWith(p.getHandle()))
+                .findFirst()
+                .map(p -> p.create(statement))
+                .orElse(null);
     }
 }
