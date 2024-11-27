@@ -252,6 +252,16 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       }
     });
     observer.observe(element);
+
+    const key = Number(id.replace('project_', ''));
+    updateAction({
+      actionType: DataStudioActionType.TASK_TAB_CHANGE,
+      params: {
+        taskId: params.taskId,
+        key: key
+      }
+    });
+
     return () => {
       observer.unobserve(element);
     };

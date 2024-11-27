@@ -61,8 +61,8 @@ public class WebExceptionHandler {
     @ExceptionHandler
     @ResponseBody
     public Result<Void> busException(BusException e) {
-        log.error("BusException:", e);
-        return Result.failed(e.getMsg());
+        log.error(e.getMessage(), e);
+        return Result.failed(e.getMessage());
     }
 
     private static final Map<String, Status> ERR_CODE_MAPPING = MapUtil.<String, Status>builder()

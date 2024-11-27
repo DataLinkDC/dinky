@@ -579,6 +579,21 @@ const DataStudio: React.FC = (props: any) => {
                     dropMode={'edge'}
                     style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
                     onLayoutChange={async (newLayout, currentTabId, direction) => {
+                      if (currentTabId && direction == 'active') {
+                        const tableData = (dataStudioState.centerContent.tabs as CenterTab[]).find(
+                          (x) => x.id === currentTabId
+                        );
+                        if (tableData) {
+                          const key = Number(currentTabId.replace('project_', ''));
+                          updateAction({
+                            actionType: DataStudioActionType.TASK_TAB_CHANGE,
+                            params: {
+                              taskId: tableData.params.taskId,
+                              key: key
+                            }
+                          });
+                        }
+                      }
                       // todo 这里移到方向会导致布局和算法异常，先暂时规避掉
                       if (
                         direction === 'left' ||

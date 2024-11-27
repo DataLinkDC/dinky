@@ -33,7 +33,7 @@ public class RsURLConnection extends URLConnection {
     public void connect() {
         BaseResourceManager instance = BaseResourceManager.getInstance();
         if (instance == null) {
-            throw BusException.valueOf("ResourceManager is disabled");
+            throw BusException.of("ResourceManager is disabled");
         }
         inputStream = instance.readFile(getURL().getPath());
     }
