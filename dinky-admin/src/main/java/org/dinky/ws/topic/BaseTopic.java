@@ -27,11 +27,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public abstract class BaseTopic {
     public static final String NONE_PARAMS = "none-params";
-    /**
-     *
-     * @return  All subscription parameters
-     */
-    //    Set<String> allParams();
 
     /**
      * Data sending ideas, including data acquisition and sending
@@ -44,6 +39,4 @@ public abstract class BaseTopic {
      * @return The data sent will be converted by JSON when it is finally sent
      */
     public abstract Map<String, Object> firstDataSend(Set<String> allParams);
-
-    public void dataSend(Map<String, Object> data) {}
 }

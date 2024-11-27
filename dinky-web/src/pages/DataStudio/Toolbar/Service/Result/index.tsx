@@ -43,7 +43,12 @@ type Data = {
   rowData: object[];
 };
 type DataList = Data[];
-export default (props: { taskId: number; historyId: number|undefined; action: any; dialect: string }) => {
+export default (props: {
+  taskId: number;
+  historyId: number | undefined;
+  action: any;
+  dialect: string;
+}) => {
   const {
     taskId,
     historyId,
@@ -185,7 +190,7 @@ export default (props: { taskId: number; historyId: number|undefined; action: an
 
   const loadData = async () => {
     let historyIdParam = historyId;
-    if(!historyIdParam){
+    if (!historyIdParam) {
       const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
         id: taskId
       });
@@ -318,15 +323,14 @@ export default (props: { taskId: number; historyId: number|undefined; action: an
     });
   };
   return (
-    <div style={{ width: '100%', paddingInline: 10 }}>
+    <div style={{ width: '100%' }}>
       <Tabs
         defaultActiveKey='0'
         tabBarExtraContent={renderFlinkSQLContent()}
         items={tabItems()}
+        tabBarStyle={{ marginBottom: '5px' }}
       />
-      {dataList.length == 0 ?? (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      )}
+      {dataList.length == 0 ?? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       <Drawer
         open={openAVA}
         loading={isPending}

@@ -28,18 +28,20 @@ public class DaemonTaskConfig {
 
     private final String type;
     private Integer id;
+    private Integer taskId;
 
-    public DaemonTaskConfig(String type, Integer id) {
+    private DaemonTaskConfig(String type, Integer id, Integer taskId) {
         this.type = type;
         this.id = id;
+        this.taskId = taskId;
     }
 
     public DaemonTaskConfig(String type) {
         this.type = type;
     }
 
-    public static DaemonTaskConfig build(String type, Integer id) {
-        return new DaemonTaskConfig(type, id);
+    public static DaemonTaskConfig build(String type, Integer id, Integer taskId) {
+        return new DaemonTaskConfig(type, id, taskId);
     }
 
     @Override

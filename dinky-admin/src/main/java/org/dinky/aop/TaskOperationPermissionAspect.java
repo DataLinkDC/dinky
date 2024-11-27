@@ -62,7 +62,7 @@ public class TaskOperationPermissionAspect {
     @Around(value = "@annotation(checkTaskOwner)")
     public Object processAround(ProceedingJoinPoint joinPoint, CheckTaskOwner checkTaskOwner) throws Throwable {
         if (!TaskOwnerLockStrategyEnum.ALL.equals(
-                        SystemConfiguration.getInstances().getTaskOwnerLockStrategy())
+                        SystemConfiguration.getInstances().GetTaskOwnerLockStrategyValue())
                 && BaseConstant.ADMIN_ID != StpUtil.getLoginIdAsInt()) {
             Class checkParam = checkTaskOwner.checkParam();
             Object param = getParam(joinPoint, checkParam);

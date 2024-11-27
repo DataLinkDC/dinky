@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.job.SqlType;
+import org.dinky.data.model.JarSubmitParam;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.gateway.Gateway;
@@ -200,7 +201,7 @@ public class JobJarStreamGraphBuilder extends JobBuilder {
         for (String sql : statements) {
             String sqlStatement = executor.pretreatStatement(sql);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
-                uriList.add(ExecuteJarParseStrategy.getInfo(statement).getUri());
+                uriList.add(JarSubmitParam.getInfo(statement).getUri());
                 break;
             }
         }

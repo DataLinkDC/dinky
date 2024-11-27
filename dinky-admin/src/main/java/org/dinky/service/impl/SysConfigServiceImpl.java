@@ -23,9 +23,13 @@ import org.dinky.context.EngineContextHolder;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SysConfig;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.rbac.User;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.SysConfigMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.SysConfigService;
+import org.dinky.service.UserService;
+import org.dinky.utils.TextUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +41,10 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -48,7 +54,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
+
+    private final UserService userService;
 
     @Override
     public Map<String, List<Configuration<?>>> getAll() {
@@ -120,5 +129,60 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
                     "The expression variable is modified, reinitialize the expression variable to the engine context.");
             initExpressionVariables();
         }
+    }
+
+    @Override
+    public Result<Map<String, Object>> getNeededCfg() {
+        Map<String, Object> result = new HashMap<>();
+
+        SystemConfiguration instances = SystemConfiguration.getInstances();
+
+        Configuration<Boolean> isFirstSystemIn = instances.getIsFirstSystemIn();
+        Configuration<Boolean> ldapEnable = instances.getLdapEnable();
+
+        result.put(isFirstSystemIn.getKey(), isFirstSystemIn.getValue());
+        result.put(ldapEnable.getKey(), ldapEnable.getValue());
+
+        if (isFirstSystemIn.getValue()) {
+            result.put(
+                    instances.getDinkyAddr().getKey(), instances.getDinkyAddr().getValue());
+            result.put(
+                    instances.getTaskOwnerLockStrategy().getKey(),
+                    instances.getTaskOwnerLockStrategy().getValue());
+            result.put(
+                    instances.getJobIdWait().getKey(), instances.getJobIdWait().getValue());
+            result.put(
+                    instances.getUseFlinkHistoryServer().getKey(),
+                    instances.getUseFlinkHistoryServer().getValue());
+            result.put(
+                    instances.getFlinkHistoryServerPort().getKey(),
+                    instances.getFlinkHistoryServerPort().getValue());
+        }
+        return Result.succeed(result);
+    }
+
+    @Override
+    public Result<Void> setInitConfig(Map<String, Object> params) {
+        SystemConfiguration instances = SystemConfiguration.getInstances();
+        Configuration<Boolean> isFirstSystemIn = instances.getIsFirstSystemIn();
+
+        if (!isFirstSystemIn.getValue()) {
+            return Result.failed("not first init");
+        }
+
+        if (params.containsKey("password")) {
+            String password = params.remove("password").toString();
+            if (!TextUtil.isEmpty(password)) {
+                User admin = userService.getUserByUsername("admin");
+                admin.setPassword(SaSecureUtil.md5(password));
+                userService.modifyUser(admin);
+            }
+        }
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            updateSysConfigByKv(entry.getKey(), entry.getValue().toString());
+        }
+        updateSysConfigByKv(instances.getIsFirstSystemIn().getKey(), String.valueOf(false));
+        return Result.succeed();
     }
 }

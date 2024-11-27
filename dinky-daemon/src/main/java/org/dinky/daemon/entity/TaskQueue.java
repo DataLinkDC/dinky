@@ -94,4 +94,8 @@ public class TaskQueue<T extends DaemonTask> {
             return tasks.size();
         }
     }
+
+    public ArrayList<T> getTasks() {
+        return tasks;
+    }
 }

@@ -108,7 +108,6 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
       <ProForm
         {...FORM_LAYOUT_PUBLIC}
         form={form}
-        initialValues={values}
         layout={'horizontal'}
         submitter={{
           render: (submitProps, doms) => {

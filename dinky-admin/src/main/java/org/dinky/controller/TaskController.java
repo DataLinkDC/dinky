@@ -34,17 +34,23 @@ import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
+import org.dinky.data.model.JarSubmitParam;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.data.vo.FlinkJarSqlConvertVO;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
 import org.dinky.mybatis.annotation.Save;
 import org.dinky.service.TaskService;
+import org.dinky.trans.ExecuteJarParseStrategyUtil;
+import org.dinky.utils.SqlUtil;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,7 +67,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -77,6 +90,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TaskController {
 
     private final TaskService taskService;
+    private static final TemplateEngine ENGINE =
+            new FreemarkerEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
 
     @GetMapping("/submitTask")
     @ApiOperation("Submit Task")
@@ -282,5 +297,57 @@ public class TaskController {
     public Result<List<TaskDTO>> getMyTask() {
         int id = StpUtil.getLoginIdAsInt();
         return Result.succeed(taskService.getUserTasks(id));
+    }
+
+    @PostMapping("/flinkJarSqlConvertForm")
+    @ApiOperation("FlinkJar SqlConvertForm")
+    public Result<FlinkJarSqlConvertVO> flinkJarSqlConvertForm(@RequestBody TaskDTO taskDTO) {
+
+        String sqlStatement = taskDTO.getStatement();
+        String[] statements = SqlUtil.getStatements(sqlStatement);
+        FlinkJarSqlConvertVO flinkJarSqlConvertVO = new FlinkJarSqlConvertVO();
+        flinkJarSqlConvertVO.setJarSubmitParam(JarSubmitParam.empty());
+        if (ArrayUtil.isEmpty(statements)) {
+            flinkJarSqlConvertVO.setInitSqlStatement(sqlStatement);
+            return Result.succeed(flinkJarSqlConvertVO);
+        }
+        Integer lastExecuteJarSqlStatementIndex = null;
+        for (int i = 0; i < statements.length; i++) {
+            if (ExecuteJarParseStrategyUtil.match(statements[i])) {
+                lastExecuteJarSqlStatementIndex = i;
+            }
+        }
+        if (lastExecuteJarSqlStatementIndex == null) {
+            return Result.succeed(flinkJarSqlConvertVO);
+        }
+        String lastSqlStatement = statements[lastExecuteJarSqlStatementIndex];
+        JarSubmitParam info = JarSubmitParam.getInfo(lastSqlStatement);
+        flinkJarSqlConvertVO.setJarSubmitParam(info);
+        String sql = Arrays.stream(ArrayUtil.remove(statements, lastExecuteJarSqlStatementIndex))
+                .map(x -> x + ";")
+                .collect(Collectors.joining("\n"));
+        flinkJarSqlConvertVO.setInitSqlStatement(sql);
+        return Result.succeed(flinkJarSqlConvertVO);
+    }
+
+    @PostMapping("/flinkJarFormConvertSql")
+    @ApiOperation("FlinkJar FormConvertSql")
+    public Result<String> flinkJarFormConvertSql(@RequestBody FlinkJarSqlConvertVO dto) {
+        JarSubmitParam jarSubmitParam = dto.getJarSubmitParam();
+        Dict objectMap = Dict.create()
+                .set("uri", Opt.ofNullable(jarSubmitParam.getUri()).orElse(""))
+                .set(
+                        "args",
+                        "base64@"
+                                + Base64.encode(
+                                        Opt.ofNullable(jarSubmitParam.getArgs()).orElse("")))
+                .set("mainClass", Opt.ofNullable(jarSubmitParam.getMainClass()).orElse(""))
+                .set(
+                        "allowNonRestoredState",
+                        Opt.ofNullable(jarSubmitParam.getAllowNonRestoredState())
+                                .orElse(false)
+                                .toString());
+        String executeJarSql = ENGINE.getTemplate("executeJar.sql").render(objectMap);
+        return Result.succeed(dto.getInitSqlStatement() + "\n" + executeJarSql, "");
     }
 }

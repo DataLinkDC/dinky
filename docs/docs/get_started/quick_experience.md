@@ -31,7 +31,7 @@ Docker启动成功后，在浏览器里输入地址http://ip:8888，看到以下
 > 用户名: admin   
 > 密码 :dinky123!@#
 
-![login](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-login.png)
+![login](https://pic.dinky.org.cn/dinky/docs/zh-CN//2024-11-22/fast-guide-login.png)
 
 
 
@@ -59,13 +59,13 @@ CREATE TABLE Orders (
 select order_number,price,first_name,last_name,order_time from Orders 
 ```
 
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview.png)
+![](https://pic.dinky.org.cn/dinky/docs/zh-CN//2024-11-22/fast-guide-preview.png)
 
 ### 预览查询结果
 
 点击右上角 `预览按钮`，会启动local集群并执行任务，下方控制台会实时显示运行日志，提交成功后会切换到`结果选项卡`，点击 `获取最新数据` ，即可查看 Select 语句的执行结果。
 
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-preview-result.png)
+![](https://pic.dinky.org.cn/dinky/docs/zh-CN//2024-11-22/fast-guide-preview-result.png)
 :::tip 说明
 预览功能只支持select语句查询结果(目前不支持Application与Prejob预览功能)，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
 :::
@@ -99,9 +99,9 @@ from datagen_source;
 点击提交按钮，即可提交任务到集群
 ### 作业运维
 任务提交成功后，我们可以进入运维中心页面。
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-devops.png)
+![](https://pic.dinky.org.cn/dinky/docs/zh-CN//2024-11-22/fast-guide-devops.png)
 找到我们的作业，点击**详情按钮**，即可查看作业的运行状态，日志，监控等信息。
-![](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-job-detail.png)
+![](https://pic.dinky.org.cn/dinky/docs/zh-CN//2024-11-22/fast-guide-job-detail.png)
 
 
 ## Nginx 配置

@@ -35,25 +35,21 @@ Its main features are as follows:
 
 ## Run the Screenshot
 
-> FlinkSQL Studio
+> Data Studio
 
-![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/datastudio.png)
+![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/datastudio.png)
 
-> Grammar Check
+> Data Debug
 
-![checksql](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/checksql.png)
+![datadebug](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/data-debug.png)
 
-> Version Management
+> Task Monitor
 
-![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/versiondiff.png)
+![devops](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/devops.png)
 
-> lineage
+> Task Metrics
 
-![lineage](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/lineage.png)
-
-> Task Monitoring
-
-![monitor](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1/monitor.png)
+![metrics](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/metrics.png)
 
 ## Participate in Contributions
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/DataLinkDC/dinky/pulls)

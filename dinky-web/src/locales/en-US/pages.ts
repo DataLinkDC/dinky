@@ -154,6 +154,17 @@ export default {
     'This operation will delete the execution history of the task and all information of the task. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
   'datastudio.project.import.title': 'Import json file',
   'datastudio.project.import.tip': 'Click or drag file to this area to upload',
+  'datastudio.sqlTask.flinkJar.tip':
+    'The code editor on the left is the FlinkSql pre-statement, and the current form item is the EXECUTE JAR WITH syntax',
+  'datastudio.sqlTask.flinkJar.uri': 'Program path',
+  'datastudio.sqlTask.flinkJar.uri.tip': 'Please enter the path to run the program (uri)',
+  'datastudio.sqlTask.flinkJar.mainClass': 'Program running class (mainClass)',
+  'datastudio.sqlTask.flinkJar.mainClass.tip':
+    'Please enter the running program running class (mainClass)',
+  'datastudio.sqlTask.flinkJar.args': 'Program running parameters (args)',
+  'datastudio.sqlTask.flinkJar.args.tip': 'Please enter the program running parameters (args)',
+  'datastudio.sqlTask.flinkJar.allowNonRestoredState':
+    'Ignore undeclared state (allowNonRestoredState)',
   /**
    *
    * devops

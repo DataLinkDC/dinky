@@ -110,7 +110,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <reflections.version>0.10.2</reflections.version>
-        <revision>1.2.0-SNAPSHOT</revision>
+        <revision>1.2.0</revision>
         <sa-token.version>1.37.0</sa-token.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->

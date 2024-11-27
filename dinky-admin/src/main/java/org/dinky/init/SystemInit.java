@@ -93,20 +93,30 @@ public class SystemInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        TenantContextHolder.ignoreTenant();
-        initResources();
-        List<Tenant> tenants = tenantService.list();
-        sysConfigService.initSysConfig();
-        sysConfigService.initExpressionVariables();
+        try {
+            TenantContextHolder.ignoreTenant();
+            initResources();
+            List<Tenant> tenants = tenantService.list();
+            sysConfigService.initSysConfig();
+            sysConfigService.initExpressionVariables();
 
-        for (Tenant tenant : tenants) {
-            taskService.initDefaultFlinkSQLEnv(tenant.getId());
+            for (Tenant tenant : tenants) {
+                taskService.initDefaultFlinkSQLEnv(tenant.getId());
+            }
+            initDaemon();
+            initDolphinScheduler();
+            registerUDF();
+            updateGitBuildState();
+            registerURL();
+        } catch (NoClassDefFoundError e) {
+            if (e.getMessage().contains("org/apache/flink")) {
+                log.error(
+                        "No Flink Jar dependency detected, please put the Flink Jar dependency into the DInky program first. (未检测到有 Flink Jar依赖，请先放入 Flink Jar 依赖到 DInky程序里)",
+                        e);
+            } else {
+                log.error("", e);
+            }
         }
-        initDaemon();
-        initDolphinScheduler();
-        registerUDF();
-        updateGitBuildState();
-        registerURL();
     }
 
     private void registerURL() {
@@ -152,11 +162,11 @@ public class SystemInit implements ApplicationRunner {
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
         FlinkJobThreadPool flinkJobThreadPool = FlinkJobThreadPool.getInstance();
         for (JobInstance jobInstance : jobInstances) {
-            DaemonTaskConfig config = new DaemonTaskConfig(FlinkJobTask.TYPE, jobInstance.getId());
+            DaemonTaskConfig config =
+                    DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId(), jobInstance.getTaskId());
             DaemonTask daemonTask = DaemonTask.build(config);
             flinkJobThreadPool.execute(daemonTask);
         }
-        //        SseSessionContextHolder.init(schedule);
     }
 
     /**

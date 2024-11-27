@@ -69,8 +69,8 @@ const ConfigModel: ConfigModelType = {
   },
 
   effects: {
-    *queryTaskOwnerLockingStrategy({ payload }, { call, put }) {
-      const response: BaseConfigProperties[] = yield call(queryTaskOwnerLockingStrategy, payload);
+    *queryTaskOwnerLockingStrategy({}, { call, put }) {
+      const response: BaseConfigProperties[] = yield call(queryTaskOwnerLockingStrategy);
       if (response && response.length > 0) {
         const taskOwnerLockingStrategy = response.find(
           (item) => item.key === GLOBAL_SETTING_KEYS.SYS_ENV_SETTINGS_TASK_OWNER_LOCK_STRATEGY
@@ -84,8 +84,8 @@ const ConfigModel: ConfigModelType = {
         });
       }
     },
-    *queryDsConfig({ payload }, { call, put }) {
-      const response: BaseConfigProperties[] = yield call(queryDsConfig, payload);
+    *queryDsConfig({}, { call, put }) {
+      const response: BaseConfigProperties[] = yield call(queryDsConfig);
       yield put({
         type: 'saveDsConfig',
         payload: response || []

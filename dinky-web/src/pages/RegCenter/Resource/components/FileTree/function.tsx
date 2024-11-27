@@ -102,3 +102,22 @@ export const buildResourceTreeData = (
           buildResourceTreeData(item.children, isFilterEmptyChildren, filterSuffixList)
       };
     });
+
+export const buildResourceTreeDataAtTreeForm = (
+  data: ResourceInfo[] = [],
+  isFilterEmptyChildren = false,
+  filterSuffixList: string[] = []
+): any =>
+  data
+    .filter((item: ResourceInfo) => filterEmpty(isFilterEmptyChildren, item, filterSuffixList))
+    .map((item: ResourceInfo) => {
+      return {
+        title: item.fileName,
+        icon: <TagAlignCenter>{renderIcon(item.fileName, '.', item.isDirectory)}</TagAlignCenter>,
+        value: 'rs:' + item.fullName,
+        selectable: !item.isDirectory,
+        children:
+          item.children &&
+          buildResourceTreeDataAtTreeForm(item.children, isFilterEmptyChildren, filterSuffixList)
+      };
+    });

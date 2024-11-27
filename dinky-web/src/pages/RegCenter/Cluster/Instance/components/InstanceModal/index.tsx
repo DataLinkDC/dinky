@@ -103,7 +103,7 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
       <ModalForm
         {...MODAL_FORM_OPTIONS}
         open={visible}
-        modalProps={{ onCancel: handleCancel }}
+        modalProps={{ onCancel: handleCancel, maskClosable: false }}
         form={form}
         title={value.id ? l('rc.ci.modify') : l('rc.ci.create')}
         submitter={{ render: () => [...renderFooter()] }}

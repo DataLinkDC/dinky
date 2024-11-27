@@ -30,7 +30,6 @@ import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.mock.MockStatementExplainer;
-import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.interceptor.FlinkInterceptor;
@@ -98,7 +97,7 @@ public class Explainer {
     }
 
     public JobStatementPlan parseStatements(String[] statements) {
-        JobStatementPlan jobStatementPlan = new JobStatementPlan();
+        JobStatementPlan jobStatementPlanWithUDFAndMock = new JobStatementPlan();
         List<String> udfStatements = new ArrayList<>();
         Optional.ofNullable(jobManager.getConfig().getUdfRefer())
                 .ifPresent(t -> t.forEach((key, value) -> {
@@ -106,37 +105,16 @@ public class Explainer {
                     udfStatements.add(sql);
                 }));
         for (String udfStatement : udfStatements) {
-            jobStatementPlan.addJobStatementGenerated(udfStatement, JobStatementType.DDL, SqlType.CREATE);
+            jobStatementPlanWithUDFAndMock.addJobStatement(udfStatement, JobStatementType.DDL, SqlType.CREATE);
         }
-        for (String item : statements) {
-            String statement = executor.pretreatStatement(item);
-            if (statement.isEmpty()) {
-                continue;
-            }
-            SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.SET) || operationType.equals(SqlType.RESET)) {
-                jobStatementPlan.addJobStatement(statement, JobStatementType.SET, operationType);
-            } else if (operationType.equals(SqlType.EXECUTE)) {
-                jobStatementPlan.addJobStatement(statement, JobStatementType.PIPELINE, operationType);
-            } else if (operationType.equals(SqlType.PRINT)) {
-                for (String tableName : PrintStatementExplainer.getTableNames(statement)) {
-                    jobStatementPlan.addJobStatement(
-                            PrintStatementExplainer.getCreateStatement(
-                                    tableName, this.executor.getExecutorConfig().getConfig()),
-                            JobStatementType.SQL,
-                            operationType);
-                }
-            } else if (SqlType.getTransSqlTypes().contains(operationType)) {
-                jobStatementPlan.addJobStatement(statement, JobStatementType.SQL, operationType);
-            } else {
-                jobStatementPlan.addJobStatement(statement, JobStatementType.DDL, operationType);
-            }
-        }
+        JobStatementPlan jobStatementPlan = executor.parseStatementIntoJobStatementPlan(statements);
+        jobStatementPlanWithUDFAndMock.getJobStatementList().addAll(jobStatementPlan.getJobStatementList());
         if (!jobManager.isPlanMode() && jobManager.getConfig().isMockSinkFunction()) {
             executor.setMockTest(true);
-            MockStatementExplainer.build(executor.getCustomTableEnvironment()).jobStatementPlanMock(jobStatementPlan);
+            MockStatementExplainer.build(executor.getCustomTableEnvironment())
+                    .jobStatementPlanMock(jobStatementPlanWithUDFAndMock);
         }
-        return jobStatementPlan;
+        return jobStatementPlanWithUDFAndMock;
     }
 
     public List<UDF> parseUDFFromStatements(String[] statements) {

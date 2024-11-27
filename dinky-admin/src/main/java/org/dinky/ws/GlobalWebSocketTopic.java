@@ -24,6 +24,7 @@ import org.dinky.ws.topic.JvmInfo;
 import org.dinky.ws.topic.Metrics;
 import org.dinky.ws.topic.PrintTable;
 import org.dinky.ws.topic.ProcessConsole;
+import org.dinky.ws.topic.TaskRunInstance;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public enum GlobalWebSocketTopic {
     PROCESS_CONSOLE("PROCESS_CONSOLE", ProcessConsole.INSTANCE, Integer.MAX_VALUE),
     PRINT_TABLE("PRINT_TABLE", PrintTable.INSTANCE, Integer.MAX_VALUE),
     METRICS("METRICS", Metrics.INSTANCE, Integer.MAX_VALUE),
+    TASK_RUN_INSTANCE("TASK_RUN_INSTANCE", TaskRunInstance.INSTANCE, 1000),
     ;
     private final String topic;
     private final BaseTopic instance;

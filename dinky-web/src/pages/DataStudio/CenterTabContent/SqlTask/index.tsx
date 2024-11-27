@@ -30,28 +30,40 @@ import {
   CaretRightOutlined,
   ClearOutlined,
   CloseOutlined,
+  CloudDownloadOutlined,
   EnvironmentOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
-  MergeCellsOutlined,
   PartitionOutlined,
-  PauseOutlined,
   RocketOutlined,
   RotateRightOutlined,
   SafetyCertificateOutlined,
-  SaveOutlined
+  SaveOutlined,
+  XFilled
 } from '@ant-design/icons';
 import RunToolBarButton from '@/pages/DataStudio/components/RunToolBarButton';
 import { connect, useModel } from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudio/components/CusPanelResizeHandle';
-import { ProForm, ProFormInstance } from '@ant-design/pro-components';
-import { useAsyncEffect, useFullscreen, useRafInterval } from 'ahooks';
+import {
+  ProForm,
+  ProFormInstance,
+  ProFormSwitch,
+  ProFormText,
+  ProFormTextArea,
+  ProFormTreeSelect
+} from '@ant-design/pro-components';
+import { useAsyncEffect, useFullscreen } from 'ahooks';
 import { SelectFlinkEnv } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkEnv';
 import { SelectFlinkRunMode } from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectFlinkRunMode';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 import { TaskInfo } from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskInfo';
 import { HistoryVersion } from '@/pages/DataStudio/CenterTabContent/SqlTask/HistoryVersion';
-import { FlinkTaskRunType, StudioLineageParams, TaskState } from '@/pages/DataStudio/type';
+import {
+  FlinkTaskRunType,
+  SqlConvertForm,
+  StudioLineageParams,
+  TaskState
+} from '@/pages/DataStudio/type';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { debounce } from 'lodash';
 import {
@@ -60,6 +72,8 @@ import {
   debugTask,
   executeSql,
   explainSql,
+  flinkJarFormConvertSql,
+  flinkJarSqlConvertForm,
   getJobPlan,
   getTaskDetails
 } from '@/pages/DataStudio/service';
@@ -69,7 +83,7 @@ import { DataStudioActionType } from '@/pages/DataStudio/data.d';
 import { getDataByParams, handlePutDataJson, queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs, LineageDetailInfo } from '@/types/DevOps/data';
-import { isStatusDone, lockTask, matchLanguage } from '@/pages/DataStudio/function';
+import { lockTask, matchLanguage } from '@/pages/DataStudio/function';
 import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { assert, isSql } from '@/pages/DataStudio/utils';
 import { DIALECT } from '@/services/constants';
@@ -78,6 +92,14 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
 import TaskConfig from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig';
 import SelectDb from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectDb';
+import { SseData, Topic } from '@/models/UseWebSocketModel';
+import WarpProFormTreeSelect from '@ant-design/pro-form/es/components/TreeSelect';
+import { ResourceInfo } from '@/types/RegCenter/data';
+import {
+  buildResourceTreeData,
+  buildResourceTreeDataAtTreeForm
+} from '@/pages/RegCenter/Resource/components/FileTree/function';
+import Paragraph from 'antd/es/typography/Paragraph';
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -86,6 +108,14 @@ export type FlinkSqlProps = {
 };
 const toolbarSize = 40;
 const dividerHeight = 24;
+export type JarSubmitParam = {
+  uri: string;
+  mainClass: string;
+  args: string;
+  parallelism: number;
+  savepointPath: string;
+  allowNonRestoredState: boolean;
+};
 
 export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const {
@@ -108,6 +138,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const [selectRightToolbar, setSelectRightToolbar] = useState<string | undefined>(undefined);
 
   const [loading, setLoading] = useState<boolean>(true);
+  // sql转换form
+  const [sqlForm, setSqlForm] = useState<SqlConvertForm>({
+    enable: false
+  });
   const [originStatementValue, setOriginStatementValue] = useState<string>('');
   const [currentState, setCurrentState] = useState<TaskState>({
     alertGroupId: -1,
@@ -147,13 +181,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const [isFullscreen, { enterFullscreen, exitFullscreen }] = useFullscreen(containerRef);
 
   const { initialState } = useModel('@@initialState');
-  const [refreshTaskStatusDelay, setRefreshTaskStatusDelay] = useState<number | undefined>(
-    undefined
-  );
-  useRafInterval(async () => {
-    const taskDetail = (await getTaskDetails(params.taskId))!!;
-    setCurrentState((prevState) => ({ ...prevState, status: taskDetail.status }));
-  }, refreshTaskStatusDelay);
+  const { subscribeTopic } = useModel('UseWebSocketModel', (model: any) => ({
+    subscribeTopic: model.subscribeTopic
+  }));
+  const [isRunning, setIsRunning] = useState<boolean>(false);
 
   useAsyncEffect(async () => {
     const taskDetail = await getTaskDetails(params.taskId);
@@ -164,27 +195,48 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       setCurrentState(newParams);
       updateCenterTab({ ...props.tabData, params: newParams });
 
-      setOriginStatementValue(statement);
-      if (params?.statement && params?.statement !== taskDetail.statement) {
-        setDiff([{ key: 'statement', server: taskDetail.statement, cache: params.statement }]);
-        setOpenDiffModal(true);
-        updateCenterTab({
-          ...props.tabData,
-          isUpdate: true,
-          params: { ...newParams }
-        });
+      if (taskDetail.dialect.toLowerCase() === DIALECT.FLINKJAR) {
+        const sqlConvertForm = await flinkJarSqlConvertForm(taskDetail.statement);
+        setSqlForm({ enable: true, ...sqlConvertForm });
+        setCurrentState((prevState) => ({
+          ...prevState,
+          statement: sqlConvertForm?.initSqlStatement ?? ''
+        }));
+        setOriginStatementValue(sqlConvertForm?.initSqlStatement ?? '');
+        if (params?.statement && params?.statement !== sqlConvertForm?.initSqlStatement) {
+          setDiff([
+            { key: 'statement', server: sqlConvertForm?.initSqlStatement, cache: params.statement }
+          ]);
+          setOpenDiffModal(true);
+          updateCenterTab({
+            ...props.tabData,
+            isUpdate: true,
+            params: { ...newParams }
+          });
+        }
+      } else {
+        setOriginStatementValue(statement);
+        if (params?.statement && params?.statement !== taskDetail.statement) {
+          setDiff([{ key: 'statement', server: taskDetail.statement, cache: params.statement }]);
+          setOpenDiffModal(true);
+          updateCenterTab({
+            ...props.tabData,
+            isUpdate: true,
+            params: { ...newParams }
+          });
+        }
       }
     }
     setLoading(false);
   }, []);
-  // 定时刷新作业状态
+
   useEffect(() => {
-    if (isStatusDone(currentState.status)) {
-      setRefreshTaskStatusDelay(undefined);
-    } else {
-      setRefreshTaskStatusDelay(3000);
-    }
-  }, [currentState.status]);
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+      if (data?.data?.RunningTaskId) {
+        setIsRunning(data?.data?.RunningTaskId.includes(params.taskId));
+      }
+    });
+  }, []);
 
   // 数据初始化
   useEffect(() => {
@@ -200,6 +252,16 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       }
     });
     observer.observe(element);
+
+    const key = Number(id.replace('project_', ''));
+    updateAction({
+      actionType: DataStudioActionType.TASK_TAB_CHANGE,
+      params: {
+        taskId: params.taskId,
+        key: key
+      }
+    });
+
     return () => {
       observer.unobserve(element);
     };
@@ -332,15 +394,22 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   });
 
   const handleSave = useCallback(async () => {
-    // await putTask(currentState)
-    await handlePutDataJson(API_CONSTANTS.TASK, currentState);
+    const statement =
+      currentState.dialect.toLowerCase() === DIALECT.FLINKJAR
+        ? (await flinkJarFormConvertSql(sqlForm))!!
+        : currentState.statement;
+    await handlePutDataJson(API_CONSTANTS.TASK, { ...currentState, statement });
     updateCenterTab({ ...props.tabData, isUpdate: false });
-  }, [currentState, updateCenterTab, props.tabData]);
+  }, [currentState, updateCenterTab, props.tabData, sqlForm]);
 
   const handleCheck = useCallback(async () => {
+    const statement =
+      currentState.dialect.toLowerCase() === DIALECT.FLINKJAR
+        ? (await flinkJarFormConvertSql(sqlForm))!!
+        : currentState.statement;
     const res = await explainSql(
       l('pages.datastudio.editor.checking', '', { jobName: currentState?.name }),
-      { ...currentState }
+      { ...currentState, statement }
     );
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_CHECK,
@@ -351,7 +420,14 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     });
   }, [currentState, updateAction]);
   const handleDAG = useCallback(async () => {
-    const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), currentState);
+    const statement =
+      currentState.dialect.toLowerCase() === DIALECT.FLINKJAR
+        ? (await flinkJarFormConvertSql(sqlForm))!!
+        : currentState.statement;
+    const res = await getJobPlan(l('pages.datastudio.editor.explain.tip'), {
+      ...currentState,
+      statement
+    });
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_DAG,
       params: {
@@ -390,7 +466,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     try {
-      await handleSave();
+      if (currentState.step !== JOB_LIFE_CYCLE.PUBLISH) {
+        await handleSave();
+      }
       updateAction({
         actionType: DataStudioActionType.TASK_RUN_SUBMIT,
         params: {
@@ -409,6 +487,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             status: result.data.status === 'SUCCESS' ? 'RUNNING' : result.data.status
           };
         });
+        if (result.data.status === 'SUCCESS') {
+          setIsRunning(true);
+        }
         if (isSql(currentState.dialect) && result?.data?.result?.success) {
           updateAction({
             actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
@@ -460,6 +541,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 : res.data.status
           };
         });
+        if (res.data.status === 'SUCCESS' && res.data.pipeline) {
+          setIsRunning(true);
+        }
       }
     } finally {
       setIsSubmitting(false);
@@ -474,6 +558,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         status: 'CANCEL'
       };
     });
+    setIsRunning(false);
   }, [currentState.taskId]);
 
   const handleGotoDevOps = useCallback(async () => {
@@ -548,12 +633,11 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           submitter={false}
           layout='horizontal'
           variant={'filled'}
-          disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask} // 当该任务处于发布状态时 表单禁用 不允许修改 | when this job is publishing, the form is disabled , and it is not allowed to modify
+          disabled={currentState?.step === JOB_LIFE_CYCLE.PUBLISH || isLockTask} // when this job is publishing, the form is disabled , and it is not allowed to modify
           onValuesChange={debounce(onValuesChange, 500)}
           syncToInitialValues
         >
           <Flex className={'run-toolbar'} wrap gap={2}>
-            {/* 运行工具栏*/}
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('button.save')}
@@ -656,7 +740,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
             <RunToolBarButton
               isShow={
-                isStatusDone(currentState.status) &&
+                !isRunning &&
                 assert(
                   currentState.dialect,
                   [DIALECT.JAVA, DIALECT.SCALA, DIALECT.PYTHON_LONG, DIALECT.FLINKSQLENV],
@@ -678,8 +762,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             />
             <RunToolBarButton
               isShow={
-                isStatusDone(currentState.status) &&
-                assert(currentState.dialect, [DIALECT.FLINK_SQL], true, 'includes')
+                !isRunning && assert(currentState.dialect, [DIALECT.FLINK_SQL], true, 'includes')
               }
               showDesc={showDesc}
               disabled={isLockTask || isSubmitting}
@@ -695,12 +778,12 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             />
 
             <RunToolBarButton
-              isShow={!isStatusDone(currentState.status)}
+              isShow={isRunning}
               disabled={isLockTask}
               showDesc={showDesc}
               color={'red'}
               desc={l('pages.datastudio.editor.stop')}
-              icon={<PauseOutlined />}
+              icon={<XFilled style={{ color: '#b10404' }} />}
               onClick={handleStop}
               hotKey={{
                 ...hotKeyConfig,
@@ -711,7 +794,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
             <RunToolBarButton
               isShow={
-                !isStatusDone(currentState.status) &&
+                isRunning &&
                 assert(
                   currentState.dialect,
                   [DIALECT.FLINK_SQL, DIALECT.FLINKJAR],
@@ -729,7 +812,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             <Divider type={'vertical'} style={{ height: dividerHeight }} />
             <RunToolBarButton
               showDesc={showDesc}
-              disabled={isLockTask}
+              disabled={isLockTask || JOB_LIFE_CYCLE.PUBLISH == currentState.step}
               desc={l('shortcut.key.format')}
               icon={<ClearOutlined />}
               onClick={handleFormat}
@@ -757,7 +840,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               showDesc={showDesc}
               disabled={isLockTask}
               desc={l('button.offline')}
-              icon={<MergeCellsOutlined />}
+              icon={<CloudDownloadOutlined style={{ color: 'red' }} />}
               onClick={handleChangeJobLife}
             />
             <RunToolBarButton
@@ -807,6 +890,82 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                     }}
                   />
                 </Panel>
+                {sqlForm.enable && (
+                  <>
+                    <CusPanelResizeHandle />
+                    <Panel
+                      className={'right-toolbar-container'}
+                      style={{ overflowY: 'auto' }}
+                      defaultSize={40}
+                    >
+                      <Flex gap={5} vertical>
+                        {/*<Paragraph>*/}
+                        {/*  <blockquote>{l('datastudio.sqlTask.flinkJar.tip')}</blockquote>*/}
+                        {/*</Paragraph>*/}
+                        <ProForm
+                          submitter={false}
+                          initialValues={{ ...sqlForm.jarSubmitParam }}
+                          onValuesChange={(_, values: SqlConvertForm['jarSubmitParam']) => {
+                            setSqlForm((prevState) => ({
+                              ...prevState,
+                              jarSubmitParam: values
+                            }));
+                          }}
+                        >
+                          {/*<ProFormText*/}
+                          {/*  name={'uri'}*/}
+                          {/*  label={'程序路径'}*/}
+                          {/*  placeholder={'请输入运行程序路径'}*/}
+                          {/*/>*/}
+                          <ProFormTreeSelect
+                            request={async () => {
+                              return buildResourceTreeDataAtTreeForm(
+                                tempData.resourceDataList as ResourceInfo[],
+                                false,
+                                []
+                              );
+                            }}
+                            normalize={(value) => {
+                              return value.value;
+                            }}
+                            name={'uri'}
+                            label={l('datastudio.sqlTask.flinkJar.uri')}
+                            placeholder={l('datastudio.sqlTask.flinkJar.uri.tip')}
+                            fieldProps={{
+                              suffixIcon: null,
+                              filterTreeNode: true,
+                              showSearch: true,
+                              treeIcon: true,
+                              popupMatchSelectWidth: false,
+                              labelInValue: true,
+                              autoClearSearchValue: true,
+                              treeLine: true,
+                              treeDefaultExpandedKeys: ['rs:/'],
+                              treeNodeLabelProp: 'value',
+                              fieldNames: {
+                                label: 'title'
+                              }
+                            }}
+                          />
+                          <ProFormText
+                            name={'mainClass'}
+                            label={l('datastudio.sqlTask.flinkJar.mainClass')}
+                            placeholder={l('datastudio.sqlTask.flinkJar.mainClass.tip')}
+                          />
+                          <ProFormTextArea
+                            name={'args'}
+                            label={l('datastudio.sqlTask.flinkJar.args')}
+                            placeholder={l('datastudio.sqlTask.flinkJar.args.tip')}
+                          />
+                          <ProFormSwitch
+                            name={'allowNonRestoredState'}
+                            label={l('datastudio.sqlTask.flinkJar.allowNonRestoredState')}
+                          />
+                        </ProForm>
+                      </Flex>
+                    </Panel>
+                  </>
+                )}
                 {selectRightToolbar && (
                   <>
                     <CusPanelResizeHandle />

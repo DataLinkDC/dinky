@@ -167,7 +167,11 @@ public class JobInstanceController {
             required = true)
     public Result<JobInfoDetail> refreshJobInfoDetail(
             @RequestParam Integer id, @RequestParam(defaultValue = "false") boolean isForce) {
-        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id, isForce));
+        JobInstance jobInstance = jobInstanceService.getById(id);
+        if (jobInstance == null) {
+            return Result.failed(Status.JOB_INSTANCE_NOT_EXIST);
+        }
+        return Result.succeed(jobInstanceService.refreshJobInfoDetail(id, jobInstance.getTaskId(), isForce));
     }
 
     /**

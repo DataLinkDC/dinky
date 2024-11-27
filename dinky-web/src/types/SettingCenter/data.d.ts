@@ -112,6 +112,7 @@ export enum TaskOwnerLockingStrategy {
  * 全局配置所有的 key
  */
 export enum GLOBAL_SETTING_KEYS {
+  SYS_GLOBAL_ISFIRST = 'sys.global.isFirst',
   SYS_FLINK_SETTINGS_USE_REST_API = 'sys.flink.settings.useRestAPI',
   SYS_FLINK_SETTINGS_JOB_ID_WAIT = 'sys.flink.settings.jobIdWait',
   SYS_MAVEN_SETTINGS_SETTINGS_FILE_PATH = 'sys.maven.settings.settingsFilePath',

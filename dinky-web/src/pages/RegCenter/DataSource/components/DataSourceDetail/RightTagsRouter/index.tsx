@@ -43,12 +43,13 @@ type RightTagsRouterProps = {
   rightButtons?: React.ReactNode;
   queryParams: QueryParams;
   tagDisabled?: boolean;
+  className?: string;
 };
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   const access = useAccess();
 
-  const { queryParams, tagDisabled = false, rightButtons } = props;
+  const { queryParams, tagDisabled = false, rightButtons, className } = props;
   const [tableInfo, setTableInfo] = useState<Partial<DataSources.Table>>({});
   useAsyncEffect(async () => {
     const fetchData = async () => {
@@ -127,7 +128,14 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   /**
    * render
    */
-  return <ProCard className={'schemaTree'} size='small' bordered tabs={{ ...restTabProps }} />;
+  return (
+    <ProCard
+      className={'schemaTree ' + (className ?? '')}
+      size='small'
+      bordered
+      tabs={{ ...restTabProps }}
+    />
+  );
 };
 
 export default RightTagsRouter;

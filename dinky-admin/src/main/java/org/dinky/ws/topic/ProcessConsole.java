@@ -25,13 +25,11 @@ import org.dinky.data.model.ProcessEntity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ProcessConsole extends BaseTopic {
-    private final Map<String, ProcessEntity> logPross = new ConcurrentHashMap<>();
     public static final ProcessConsole INSTANCE = new ProcessConsole();
 
     private ProcessConsole() {}

@@ -23,10 +23,10 @@ import static org.dinky.utils.RunTimeUtil.extractArgs;
 
 import org.dinky.config.Dialect;
 import org.dinky.context.TaskContextHolder;
+import org.dinky.data.model.JarSubmitParam;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.ExtendOperation;
-import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.URLUtils;
 
@@ -34,7 +34,6 @@ import org.apache.flink.api.dag.Pipeline;
 import org.apache.flink.client.program.PackagedProgram;
 import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
@@ -47,11 +46,8 @@ import java.util.List;
 import java.util.Optional;
 
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
-import lombok.Getter;
-import lombok.Setter;
 
 public class ExecuteJarOperation extends AbstractOperation implements ExtendOperation {
 
@@ -147,24 +143,5 @@ public class ExecuteJarOperation extends AbstractOperation implements ExtendOper
 
     public Pipeline explain(CustomTableEnvironment tEnv, List<URL> classpaths) {
         return getStreamGraph(tEnv, classpaths);
-    }
-
-    @Setter
-    @Getter
-    public static class JarSubmitParam {
-        protected JarSubmitParam() {}
-
-        private String uri;
-        private String mainClass;
-        private String args;
-        private String parallelism;
-        private String savepointPath;
-        private Boolean allowNonRestoredState = SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE.defaultValue();
-
-        public static JarSubmitParam build(String statement) {
-            JarSubmitParam submitParam = ExecuteJarParseStrategy.getInfo(statement);
-            Assert.notBlank(submitParam.getUri());
-            return submitParam;
-        }
     }
 }

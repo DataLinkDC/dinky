@@ -62,7 +62,7 @@ const BaseConfig: React.FC = () => {
         <ProFormSwitch
           name='enabled'
           label={l('global.table.isEnable')}
-          initialValue={false}
+          initialValue={true}
           checkedChildren={l('button.enable')}
           unCheckedChildren={l('button.disable')}
         />
