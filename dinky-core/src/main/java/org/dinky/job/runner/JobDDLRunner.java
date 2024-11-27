@@ -144,26 +144,24 @@ public class JobDDLRunner extends AbstractJobRunner {
 
     private void executeAdd(String statement) {
         Set<File> allFilePath = AddJarSqlParseStrategy.getAllFilePath(statement);
-        allFilePath
-                .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
+        allFilePath.forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
         (jobManager.getExecutor().getDinkyClassLoader())
                 .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
     }
 
     private void executeAddFile(String statement) {
         Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(statement);
-        allFilePath
-                .forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
+        allFilePath.forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
         (jobManager.getExecutor().getDinkyClassLoader())
                 .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getFiles()));
-        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath,File.class));
+        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
     }
 
     private void executeAddJar(String statement) {
         Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(statement);
         Configuration combinationConfig = getCombinationConfig();
         FileSystem.initialize(combinationConfig, null);
-        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath,File.class));
+        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
         jobManager.getExecutor().executeSql(statement);
     }
 
