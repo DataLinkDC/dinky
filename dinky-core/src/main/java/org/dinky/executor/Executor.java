@@ -275,7 +275,7 @@ public abstract class Executor {
     private void addJar(String... jarPath) {
         Configuration configuration = tableEnvironment.getRootConfiguration();
         List<String> jars = configuration.get(PipelineOptions.JARS);
-        if (jars == null) {
+        if (CollUtil.isEmpty(jars)) {
             tableEnvironment.addConfiguration(PipelineOptions.JARS, CollUtil.newArrayList(jarPath));
         } else {
             CollUtil.addAll(jars, jarPath);
