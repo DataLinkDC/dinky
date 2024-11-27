@@ -171,7 +171,8 @@ public class KubernetesClusterDescriptor implements ClusterDescriptor<String> {
             throws ClusterDeploymentException {
         if (client.getService(ExternalServiceDecorator.getExternalServiceName(clusterId))
                 .isPresent()) {
-            throw new ClusterDeploymentException("The Flink cluster " + clusterId + " already exists.");
+            client.stopAndCleanupCluster(clusterId);
+            LOG.warn("The Flink cluster {} already exists, automatically stopAndCleanupCluster.", clusterId);
         }
 
         checkNotNull(clusterSpecification);
