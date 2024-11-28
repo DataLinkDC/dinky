@@ -19,6 +19,7 @@
 
 package org.dinky.resource;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ResourcesModelEnum;
 import org.dinky.data.model.ResourcesVO;
@@ -79,6 +80,9 @@ public interface BaseResourceManager {
     }
 
     static void initResourceManager() {
+        if (Asserts.isNull(instances.getResourcesModel().getValue())) {
+            return;
+        }
         switch (instances.getResourcesModel().getValue()) {
             case LOCAL:
                 Singleton.get(LocalResourceManager.class);
