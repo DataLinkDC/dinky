@@ -17,7 +17,6 @@
  *
  */
 
-import Footer from '@/components/Footer';
 import ChooseModal from '@/pages/Other/Login/ChooseModal';
 import { gotoRedirectUrl, initSomeThing, redirectToLogin } from '@/pages/Other/Login/function';
 import LangSwitch from '@/pages/Other/Login/LangSwitch';

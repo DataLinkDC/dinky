@@ -34,6 +34,7 @@ import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.Job;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
+import org.dinky.trans.parse.ExecuteJarParseStrategy;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
@@ -66,6 +67,11 @@ public class JobPipelineRunner extends AbstractJobRunner {
 
     @Override
     public void run(JobStatement jobStatement) throws Exception {
+        if (ExecuteJarParseStrategy.INSTANCE.match(jobStatement.getStatement())) {
+            JobJarRunner jobJarRunner = new JobJarRunner(jobManager);
+            jobJarRunner.run(jobStatement);
+            return;
+        }
         statements.add(jobStatement);
         tableResult = jobManager.getExecutor().executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
@@ -83,6 +89,10 @@ public class JobPipelineRunner extends AbstractJobRunner {
 
     @Override
     public SqlExplainResult explain(JobStatement jobStatement) {
+        if (ExecuteJarParseStrategy.INSTANCE.match(jobStatement.getStatement())) {
+            JobJarRunner jobJarRunner = new JobJarRunner(jobManager);
+            return jobJarRunner.explain(jobStatement);
+        }
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
         statements.add(jobStatement);
         // pipeline job execute to generate stream graph.
@@ -131,6 +141,10 @@ public class JobPipelineRunner extends AbstractJobRunner {
 
     @Override
     public StreamGraph getStreamGraph(JobStatement jobStatement) {
+        if (ExecuteJarParseStrategy.INSTANCE.match(jobStatement.getStatement())) {
+            JobJarRunner jobJarRunner = new JobJarRunner(jobManager);
+            return jobJarRunner.getStreamGraph(jobStatement);
+        }
         statements.add(jobStatement);
         // pipeline job execute to generate stream graph.
         jobManager.getExecutor().executeSql(jobStatement.getStatement());
@@ -144,6 +158,10 @@ public class JobPipelineRunner extends AbstractJobRunner {
 
     @Override
     public JobPlanInfo getJobPlanInfo(JobStatement jobStatement) {
+        if (ExecuteJarParseStrategy.INSTANCE.match(jobStatement.getStatement())) {
+            JobJarRunner jobJarRunner = new JobJarRunner(jobManager);
+            return jobJarRunner.getJobPlanInfo(jobStatement);
+        }
         statements.add(jobStatement);
         // pipeline job execute to generate stream graph.
         jobManager.getExecutor().executeSql(jobStatement.getStatement());

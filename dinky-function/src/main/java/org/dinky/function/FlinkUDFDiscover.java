@@ -20,18 +20,21 @@
 package org.dinky.function;
 
 import org.dinky.function.data.model.UDF;
+import org.dinky.function.util.Reflections;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.catalog.FunctionLanguage;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
-import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 public class FlinkUDFDiscover {
@@ -42,9 +45,28 @@ public class FlinkUDFDiscover {
         if (CollectionUtils.isNotEmpty(JAVA_STATIC_UDF_LIST)) {
             return JAVA_STATIC_UDF_LIST;
         }
+        Collection<URL> urls = new ArrayList<>();
+        String javaClassPath = System.getProperty("java.class.path");
+        if (javaClassPath != null) {
+            for (String path : javaClassPath.split(File.pathSeparator)) {
+                if (path.contains("/*")) {
+                    continue;
+                }
+                if (!path.contains("extends") && !path.contains("customJar")) {
+                    continue;
+                }
 
-        Reflections reflections =
-                new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
+                try {
+                    urls.add(new File(path).toURI().toURL());
+                } catch (Exception e) {
+                    if (Reflections.log != null) {
+                        Reflections.log.warn("Could not get URL", e);
+                    }
+                }
+            }
+        }
+
+        Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(urls));
         Set<Class<?>> operations =
                 reflections.get(Scanners.SubTypes.of(UserDefinedFunction.class).asClass());
         return operations.stream()
