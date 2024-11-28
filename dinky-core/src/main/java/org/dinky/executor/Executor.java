@@ -31,6 +31,7 @@ import org.dinky.explainer.print_table.PrintStatementExplainer;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.job.JobStatementPlan;
+import org.dinky.resource.BaseResourceManager;
 import org.dinky.trans.Operations;
 import org.dinky.utils.KerberosUtil;
 
@@ -169,6 +170,7 @@ public abstract class Executor {
 
     protected void init(DinkyClassLoader classLoader) {
         initClassloader(classLoader);
+        initFileSystem();
         this.dinkyClassLoader = classLoader;
         Thread.currentThread().setContextClassLoader(classLoader);
         if (executorConfig.isValidParallelism()) {
@@ -193,6 +195,10 @@ public abstract class Executor {
         }
 
         isMockTest = false;
+    }
+
+    private void initFileSystem() {
+        BaseResourceManager.initResourceManager();
     }
 
     abstract CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader);

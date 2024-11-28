@@ -19,10 +19,8 @@
 
 package org.dinky.init;
 
-import org.dinky.data.model.ResourcesModelEnum;
-import org.dinky.data.model.S3Configuration;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.data.properties.OssProperties;
+import org.dinky.resource.BaseResourceManager;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.SysConfigService;
 
@@ -63,16 +61,7 @@ public class FlinkHistoryServer implements ApplicationRunner {
         this.historyRunnable = () -> {
             Map<String, String> flinkHistoryServerConfiguration =
                     SystemConfiguration.getInstances().getFlinkHistoryServerConfiguration();
-            if (systemConfiguration.getResourcesEnable().getValue()) {
-                if (systemConfiguration.getResourcesModel().getValue().equals(ResourcesModelEnum.OSS)) {
-                    OssProperties ossProperties = systemConfiguration.getOssProperties();
-                    flinkHistoryServerConfiguration.put(S3Configuration.ENDPOINT, ossProperties.getEndpoint());
-                    flinkHistoryServerConfiguration.put(S3Configuration.ACCESS_KEY, ossProperties.getAccessKey());
-                    flinkHistoryServerConfiguration.put(S3Configuration.SECRET_KEY, ossProperties.getSecretKey());
-                    flinkHistoryServerConfiguration.put(
-                            S3Configuration.PATH_STYLE_ACCESS, String.valueOf(ossProperties.getPathStyleAccess()));
-                }
-            }
+            flinkHistoryServerConfiguration.putAll(BaseResourceManager.convertFlinkResourceConfig());
 
             HistoryServerUtil.run(
                     (jobId) -> {

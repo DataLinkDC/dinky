@@ -98,7 +98,20 @@ public class Explainer {
     }
 
     public JobStatementPlan parseStatements(String[] statements) {
-        JobStatementPlan jobStatementPlanWithUDFAndMock = new JobStatementPlan();
+        JobStatementPlan jobStatementPlanWithMock = new JobStatementPlan();
+        generateUDFStatement(jobStatementPlanWithMock);
+
+        JobStatementPlan jobStatementPlan = executor.parseStatementIntoJobStatementPlan(statements);
+        jobStatementPlanWithMock.getJobStatementList().addAll(jobStatementPlan.getJobStatementList());
+        if (!jobManager.isPlanMode() && jobManager.getConfig().isMockSinkFunction()) {
+            executor.setMockTest(true);
+            MockStatementExplainer.build(executor.getCustomTableEnvironment())
+                    .jobStatementPlanMock(jobStatementPlanWithMock);
+        }
+        return jobStatementPlanWithMock;
+    }
+
+    private void generateUDFStatement(JobStatementPlan jobStatementPlan) {
         List<String> udfStatements = new ArrayList<>();
         Optional.ofNullable(jobManager.getConfig().getUdfRefer())
                 .ifPresent(t -> t.forEach((key, value) -> {
@@ -106,16 +119,8 @@ public class Explainer {
                     udfStatements.add(sql);
                 }));
         for (String udfStatement : udfStatements) {
-            jobStatementPlanWithUDFAndMock.addJobStatement(udfStatement, JobStatementType.DDL, SqlType.CREATE);
+            jobStatementPlan.addJobStatement(udfStatement, JobStatementType.DDL, SqlType.CREATE);
         }
-        JobStatementPlan jobStatementPlan = executor.parseStatementIntoJobStatementPlan(statements);
-        jobStatementPlanWithUDFAndMock.getJobStatementList().addAll(jobStatementPlan.getJobStatementList());
-        if (!jobManager.isPlanMode() && jobManager.getConfig().isMockSinkFunction()) {
-            executor.setMockTest(true);
-            MockStatementExplainer.build(executor.getCustomTableEnvironment())
-                    .jobStatementPlanMock(jobStatementPlanWithUDFAndMock);
-        }
-        return jobStatementPlanWithUDFAndMock;
     }
 
     public List<UDF> parseUDFFromStatements(String[] statements) {
