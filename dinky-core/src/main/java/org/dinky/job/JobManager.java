@@ -92,7 +92,6 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.StrFormatter;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -315,16 +314,14 @@ public class JobManager {
             }
         } catch (Exception e) {
             String errorMessage = e.getMessage();
+            job.setEndTime(LocalDateTime.now());
+            job.setStatus(Job.JobStatus.FAILED);
+            job.setError(errorMessage);
+            failed();
             if (errorMessage != null && errorMessage.contains("Only insert statement is supported now")) {
                 throw new BusException(Status.OPERATE_NOT_SUPPORT_QUERY.getMessage());
             }
-            String error = StrFormatter.format(
-                    "Exception in executing FlinkSQL:\n{}\n{}", SqlUtil.addLineNumber(currentSql), errorMessage);
-            job.setEndTime(LocalDateTime.now());
-            job.setStatus(Job.JobStatus.FAILED);
-            job.setError(error);
-            failed();
-            throw new Exception(error, e);
+            throw new Exception(errorMessage, e);
         } finally {
             close();
         }

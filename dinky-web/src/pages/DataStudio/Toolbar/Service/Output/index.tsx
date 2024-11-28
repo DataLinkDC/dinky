@@ -37,6 +37,7 @@ import { SseData, Topic } from '@/models/UseWebSocketModel';
 const { Text } = Typography;
 
 export interface ProcessStep extends DataNode {
+  key: any;
   status: string;
   type: string;
   startTime: string;
@@ -71,7 +72,7 @@ export default (props: { taskId: number }) => {
     subscribeTopic: model?.subscribeTopic
   }));
 
-  const onUpdate = (data: ProcessStep) => {
+  const onUpdate = (data?: ProcessStep) => {
     setProcessNode((prevState: any) => {
       //如果key不一致代表重新提交了任务，清空旧状态
       if ((prevState && prevState?.key != data?.key) || !data) {
@@ -97,6 +98,7 @@ export default (props: { taskId: number }) => {
   );
 
   const refreshProcess = () => {
+    onUpdate(undefined);
     subscribeTopic(Topic.PROCESS_CONSOLE, [process], (data: SseData) =>
       onUpdate(data?.data[process])
     );

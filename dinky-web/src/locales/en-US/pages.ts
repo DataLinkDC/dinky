@@ -157,6 +157,7 @@ export default {
   'datastudio.sqlTask.flinkJar.tip':
     'The code editor on the left is the FlinkSql pre-statement, and the current form item is the EXECUTE JAR WITH syntax',
   'datastudio.sqlTask.flinkJar.uri': 'Program path',
+  'datastudio.sqlTask.flinkJar.manualInput': 'Manual input',
   'datastudio.sqlTask.flinkJar.uri.tip': 'Please enter the path to run the program (uri)',
   'datastudio.sqlTask.flinkJar.mainClass': 'Program running class (mainClass)',
   'datastudio.sqlTask.flinkJar.mainClass.tip':

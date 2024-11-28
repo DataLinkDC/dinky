@@ -124,6 +124,14 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>extends/flink1.20/dinky</outputDirectory>
+            <includes>
+                <include>dinky-catalog-mysql-1.20-${project.version}.jar</include>
+                <include>dinky-client-1.20-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
             <outputDirectory>extends</outputDirectory>
             <includes>
                 <include>dinky-client-base-${project.version}.jar</include>

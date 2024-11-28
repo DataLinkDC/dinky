@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.Set;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -125,10 +124,8 @@ public class JobDDLRunner extends AbstractJobRunner {
                     .sql(jobStatement.getStatement())
                     .index(jobStatement.getIndex());
         } catch (Exception e) {
-            String error = StrFormatter.format(
-                    "Exception in explaining FlinkSQL:\n{}\n{}",
-                    SqlUtil.addLineNumber(jobStatement.getStatement()),
-                    LogUtil.getError(e));
+            String error = LogUtil.getError(
+                    "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
             resultBuilder
                     .error(error)
                     .explainTrue(false)
@@ -143,22 +140,25 @@ public class JobDDLRunner extends AbstractJobRunner {
     }
 
     private void executeAdd(String statement) {
-        AddJarSqlParseStrategy.getAllFilePath(statement)
-                .forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
+        Set<File> allFilePath = AddJarSqlParseStrategy.getAllFilePath(statement);
+        allFilePath.forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
         (jobManager.getExecutor().getDinkyClassLoader())
                 .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
     }
 
     private void executeAddFile(String statement) {
-        AddFileSqlParseStrategy.getAllFilePath(statement)
-                .forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
+        Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(statement);
+        allFilePath.forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
         (jobManager.getExecutor().getDinkyClassLoader())
                 .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getFiles()));
+        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
     }
 
     private void executeAddJar(String statement) {
+        Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(statement);
         Configuration combinationConfig = getCombinationConfig();
         FileSystem.initialize(combinationConfig, null);
+        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
         jobManager.getExecutor().executeSql(statement);
     }
 

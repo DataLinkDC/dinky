@@ -348,6 +348,6 @@ public class TaskController {
                                 .orElse(false)
                                 .toString());
         String executeJarSql = ENGINE.getTemplate("executeJar.sql").render(objectMap);
-        return Result.succeed(dto.getInitSqlStatement() + "\n" + executeJarSql, "");
+        return Result.succeed(Opt.ofNullable(dto.getInitSqlStatement()).orElse("") + "\n" + executeJarSql, "");
     }
 }

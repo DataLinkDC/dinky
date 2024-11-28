@@ -37,6 +37,7 @@ import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.job.Job;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
+import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
@@ -54,7 +55,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -89,10 +89,8 @@ public class JobSqlRunner extends AbstractJobRunner {
                         jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
-                String error = StrFormatter.format(
-                        "Exception in explaining FlinkSQL:\n{}\n{}",
-                        SqlUtil.addLineNumber(jobStatement.getStatement()),
-                        e.getMessage());
+                String error = LogUtil.getError(
+                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
                         .type(jobStatement.getSqlType().getType())
                         .index(jobStatement.getIndex())
@@ -123,10 +121,9 @@ public class JobSqlRunner extends AbstractJobRunner {
                     resultBuilder =
                             SqlExplainResult.newBuilder(jobManager.getExecutor().explainStatementSet(statements));
                 } catch (Exception e) {
-                    String error = StrFormatter.format(
-                            "Exception in explaining FlinkSQL:\n{}\n{}",
-                            SqlUtil.addLineNumber(jobStatement.getStatement()),
-                            e.getMessage());
+                    String error = LogUtil.getError(
+                            "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()),
+                            e);
                     resultBuilder
                             .sql(sqlSet)
                             .index(jobStatement.getIndex())
@@ -152,10 +149,8 @@ public class JobSqlRunner extends AbstractJobRunner {
                         jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
-                String error = StrFormatter.format(
-                        "Exception in explaining FlinkSQL:\n{}\n{}",
-                        SqlUtil.addLineNumber(jobStatement.getStatement()),
-                        e.getMessage());
+                String error = LogUtil.getError(
+                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
                         .type(jobStatement.getSqlType().getType())
                         .index(jobStatement.getIndex())

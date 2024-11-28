@@ -122,7 +122,7 @@ public class MockResultRunnable implements Runnable {
                 for (String tableIdentifier : tableIdentifierList) {
                     if (!tableIdentifierIndexMap.containsKey(tableIdentifier)) {
                         tableIdentifierIndexMap.put(tableIdentifier, 0);
-                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
+                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum - 1) {
                         allSinkFinished = true;
                         continue;
                     }
@@ -145,7 +145,7 @@ public class MockResultRunnable implements Runnable {
                             rows.add(rowDataWithTableIdentifier);
                             tableIdentifierIndexMap.put(
                                     tableIdentifier, tableIdentifierIndexMap.get(tableIdentifier) + 1);
-                            if (tableIdentifierIndexMap.get(tableIdentifier) > maxRowNum) {
+                            if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
                                 break;
                             }
                         }
@@ -190,7 +190,7 @@ public class MockResultRunnable implements Runnable {
                 for (String tableIdentifier : tableIdentifierList) {
                     if (!tableIdentifierIndexMap.containsKey(tableIdentifier)) {
                         tableIdentifierIndexMap.put(tableIdentifier, 0);
-                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
+                    } else if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum - 1) {
                         allSinkFinished = true;
                         continue;
                     }
@@ -219,7 +219,7 @@ public class MockResultRunnable implements Runnable {
                             }
                             tableIdentifierIndexMap.put(
                                     tableIdentifier, tableIdentifierIndexMap.get(tableIdentifier) + 1);
-                            if (tableIdentifierIndexMap.get(tableIdentifier) > maxRowNum) {
+                            if (tableIdentifierIndexMap.get(tableIdentifier) >= maxRowNum) {
                                 break;
                             }
                         }

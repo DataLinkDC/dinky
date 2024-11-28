@@ -24,11 +24,11 @@ import org.dinky.data.model.Resources;
 import org.dinky.data.model.udf.UDFManage;
 import org.dinky.data.vo.CascaderVO;
 import org.dinky.data.vo.UDFManageVO;
+import org.dinky.function.FlinkUDFDiscover;
 import org.dinky.function.data.model.UDF;
 import org.dinky.mapper.UDFManageMapper;
 import org.dinky.service.UDFService;
 import org.dinky.service.resource.ResourcesService;
-import org.dinky.trans.Operations;
 import org.dinky.utils.UDFUtils;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -182,7 +182,7 @@ public class UDFServiceImpl extends ServiceImpl<UDFManageMapper, UDFManage> impl
     @Override
     public List<CascaderVO> getAllUdfsToCascader(List<UDF> userDefinedReleaseUdfs) {
         // Get all UDFs of static UDFs and dynamic UDFs
-        List<UDF> staticUdfs = Operations.getCustomStaticUdfs();
+        List<UDF> staticUdfs = FlinkUDFDiscover.getCustomStaticUDFs();
 
         // get all UDFs of UDFManage table
         List<UDF> udfManageDynamic = getUDFFromUdfManage().stream()

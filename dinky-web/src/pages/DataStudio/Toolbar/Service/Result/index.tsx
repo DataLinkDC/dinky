@@ -194,7 +194,7 @@ export default (props: {
       const res = await handleGetOptionWithoutMsg(API_CONSTANTS.GET_LATEST_HISTORY_BY_ID, {
         id: taskId
       });
-      historyIdParam = res.data.id;
+      historyIdParam = res?.data?.id;
     }
     if (historyIdParam) {
       const tableData = await handleGetOption(

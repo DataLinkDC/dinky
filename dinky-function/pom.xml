@@ -74,7 +74,10 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>org.junit.vintage</groupId>

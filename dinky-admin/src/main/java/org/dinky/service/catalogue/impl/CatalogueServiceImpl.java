@@ -121,7 +121,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      */
     @Override
     public List<Catalogue> getCatalogueTree(CatalogueTreeQueryDTO catalogueTreeQueryDto) {
-        log.info("getCatalogueTree, catalogueTreeQueryDto: {}", catalogueTreeQueryDto);
         List<Catalogue> catalogueTree = buildCatalogueTree(this.list());
         // sort
         CatalogueTreeSortStrategy strategy = catalogueTreeSortFactory.getStrategy(catalogueTreeQueryDto.getSortValue());

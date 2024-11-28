@@ -55,7 +55,6 @@ public class CatalogueTreeSortFactory {
         CatalogueTreeSortStrategy catalogueTreeSortStrategy =
                 Safes.of(catalogueTreeSortStrategyMap).get(strategyName);
         if (Objects.isNull(catalogueTreeSortStrategy)) {
-            log.warn("Strategy {} is not defined. Use DefaultStrategy", strategyName);
             catalogueTreeSortStrategy =
                     Safes.of(catalogueTreeSortStrategyMap).get(CatalogueSortConstant.STRATEGY_DEFAULT);
         }

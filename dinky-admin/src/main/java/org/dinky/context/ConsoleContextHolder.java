@@ -121,7 +121,7 @@ public class ConsoleContextHolder {
         if (FileUtil.exist(filePath)) {
             return FileUtil.del(filePath);
         }
-        return false;
+        return true;
     }
 
     /**

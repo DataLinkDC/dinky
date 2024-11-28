@@ -144,6 +144,7 @@ export default {
   'datastudio.project.import.tip': '点击或拖拽文件到此区域上传',
   'datastudio.sqlTask.flinkJar.tip':
     '左边代码编辑器是 FlinkSql 前置语句，当前表单项是 EXECUTE JAR WITH 语法',
+  'datastudio.sqlTask.flinkJar.manualInput': '手动输入',
   'datastudio.sqlTask.flinkJar.uri': '程序路径',
   'datastudio.sqlTask.flinkJar.uri.tip': '请输入运行程序路径（uri）',
   'datastudio.sqlTask.flinkJar.mainClass': '程序运行类（mainClass）',

@@ -41,6 +41,7 @@ import org.dinky.job.JobStatementPlan;
 import org.dinky.job.builder.JobUDFBuilder;
 import org.dinky.trans.Operations;
 import org.dinky.utils.DinkyClassLoaderUtil;
+import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -141,8 +142,9 @@ public class Explainer {
             jobStatementPlan.buildFinalStatement();
             jobManager.setJobStatementPlan(jobStatementPlan);
         } catch (Exception e) {
+            String error = LogUtil.getError("Exception in parsing FlinkSQL:\n" + SqlUtil.addLineNumber(statement), e);
             SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
-            resultBuilder.error(e.getMessage()).parseTrue(false);
+            resultBuilder.error(error).parseTrue(false);
             sqlExplainRecords.add(resultBuilder.build());
             log.error("Failed parseStatements:", e);
             return new ExplainResult(false, sqlExplainRecords.size(), sqlExplainRecords);

@@ -46,6 +46,7 @@ import { connect, useModel } from '@umijs/max';
 import CusPanelResizeHandle from '@/pages/DataStudio/components/CusPanelResizeHandle';
 import {
   ProForm,
+  ProFormCheckbox,
   ProFormInstance,
   ProFormSwitch,
   ProFormText,
@@ -93,13 +94,9 @@ import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
 import TaskConfig from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig';
 import SelectDb from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectDb';
 import { SseData, Topic } from '@/models/UseWebSocketModel';
-import WarpProFormTreeSelect from '@ant-design/pro-form/es/components/TreeSelect';
 import { ResourceInfo } from '@/types/RegCenter/data';
-import {
-  buildResourceTreeData,
-  buildResourceTreeDataAtTreeForm
-} from '@/pages/RegCenter/Resource/components/FileTree/function';
-import Paragraph from 'antd/es/typography/Paragraph';
+import { buildResourceTreeDataAtTreeForm } from '@/pages/RegCenter/Resource/components/FileTree/function';
+import { ProFormDependency } from '@ant-design/pro-form';
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -912,41 +909,51 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                             }));
                           }}
                         >
-                          {/*<ProFormText*/}
-                          {/*  name={'uri'}*/}
-                          {/*  label={'程序路径'}*/}
-                          {/*  placeholder={'请输入运行程序路径'}*/}
-                          {/*/>*/}
-                          <ProFormTreeSelect
-                            request={async () => {
-                              return buildResourceTreeDataAtTreeForm(
-                                tempData.resourceDataList as ResourceInfo[],
-                                false,
-                                []
+                          <ProFormCheckbox.Group name='manualInput' options={[l('datastudio.sqlTask.flinkJar.manualInput')]} />
+
+                          <ProFormDependency name={['manualInput']}>
+                            {({ manualInput }) => {
+                              return manualInput?.length > 0 ? (
+                                <ProFormText
+                                  name={'uri'}
+                                  label={l('datastudio.sqlTask.flinkJar.uri')}
+                                  placeholder={l('datastudio.sqlTask.flinkJar.uri.tip')}
+                                />
+                              ) : (
+                                <ProFormTreeSelect
+                                  request={async () => {
+                                    return buildResourceTreeDataAtTreeForm(
+                                      tempData.resourceDataList as ResourceInfo[],
+                                      false,
+                                      []
+                                    );
+                                  }}
+                                  normalize={(value) => {
+                                    return value?.value ?? '';
+                                  }}
+                                  name={'uri'}
+                                  label={l('datastudio.sqlTask.flinkJar.uri')}
+                                  placeholder={l('datastudio.sqlTask.flinkJar.uri.tip')}
+                                  fieldProps={{
+                                    suffixIcon: null,
+                                    filterTreeNode: true,
+                                    showSearch: true,
+                                    treeIcon: true,
+                                    popupMatchSelectWidth: false,
+                                    labelInValue: true,
+                                    autoClearSearchValue: true,
+                                    treeLine: true,
+                                    treeDefaultExpandedKeys: ['rs:/'],
+                                    treeNodeLabelProp: 'value',
+                                    fieldNames: {
+                                      label: 'title'
+                                    }
+                                  }}
+                                />
                               );
                             }}
-                            normalize={(value) => {
-                              return value.value;
-                            }}
-                            name={'uri'}
-                            label={l('datastudio.sqlTask.flinkJar.uri')}
-                            placeholder={l('datastudio.sqlTask.flinkJar.uri.tip')}
-                            fieldProps={{
-                              suffixIcon: null,
-                              filterTreeNode: true,
-                              showSearch: true,
-                              treeIcon: true,
-                              popupMatchSelectWidth: false,
-                              labelInValue: true,
-                              autoClearSearchValue: true,
-                              treeLine: true,
-                              treeDefaultExpandedKeys: ['rs:/'],
-                              treeNodeLabelProp: 'value',
-                              fieldNames: {
-                                label: 'title'
-                              }
-                            }}
-                          />
+                          </ProFormDependency>
+
                           <ProFormText
                             name={'mainClass'}
                             label={l('datastudio.sqlTask.flinkJar.mainClass')}
@@ -959,6 +966,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                           />
                           <ProFormSwitch
                             name={'allowNonRestoredState'}
+                            layout='vertical'
                             label={l('datastudio.sqlTask.flinkJar.allowNonRestoredState')}
                           />
                         </ProForm>

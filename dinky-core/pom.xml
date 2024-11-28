@@ -32,11 +32,6 @@
         <hadoop.version>3.1.0</hadoop.version>
     </properties>
     <dependencies>
-        <!--<dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>3.0.9</version>
-        </dependency>-->
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-common</artifactId>
@@ -52,36 +47,6 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-base</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-alert-dingtalk</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-alert-wechat</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-alert-feishu</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-alert-sms</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-alert-email</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-alert-http</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
@@ -202,10 +167,6 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -51,7 +51,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -100,10 +99,8 @@ public class JobPipelineRunner extends AbstractJobRunner {
                         .explainTime(LocalDateTime.now())
                         .index(jobStatement.getIndex());
             } catch (Exception e) {
-                String error = StrFormatter.format(
-                        "Exception in explaining FlinkSQL:\n{}\n{}",
-                        SqlUtil.addLineNumber(jobStatement.getStatement()),
-                        LogUtil.getError(e));
+                String error = LogUtil.getError(
+                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
                         .parseTrue(false)
                         .error(error)

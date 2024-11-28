@@ -361,7 +361,23 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-feishu</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-wechat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
             <artifactId>dinky-alert-sms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-email</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-http</artifactId>
         </dependency>
     </dependencies>
 
