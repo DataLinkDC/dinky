@@ -58,6 +58,8 @@
                             <artifact>org.dinky:*</artifact>
                             <includes>
                                 <include>org/dinky/**</include>
+                                <include>org/apache/flink/**</include>
+                                <include>org/apache/calcite/**</include>
                                 <include>META-INF/**</include>
                             </includes>
                         </filter>
@@ -75,8 +77,11 @@
                                 <exclude>Class50/**</exclude>
                                 <exclude>lombok/**</exclude>
                                 <exclude>freemarker/**</exclude>
-                                <exclude>com.sun/**</exclude>
                                 <exclude>META-INF/resources/**</exclude>
+                                <exclude>META-INF/spring/**</exclude>
+                                <exclude>META-INF/services/javax**</exclude>
+                                <exclude>META-INF/services/lombok**</exclude>
+                                <exclude>META-INF/services/org.apache.logging**</exclude>
                             </excludes>
                         </filter>
                     </filters>
