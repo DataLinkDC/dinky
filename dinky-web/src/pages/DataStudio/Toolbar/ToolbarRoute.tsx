@@ -21,7 +21,8 @@ import { ToolbarRoute } from '@/pages/DataStudio/Toolbar/data.d';
 import {
   CodeOutlined,
   ConsoleSqlOutlined,
-  DatabaseOutlined, FileZipOutlined,
+  DatabaseOutlined,
+  FileZipOutlined,
   FunctionOutlined,
   SettingOutlined,
   TableOutlined,
@@ -105,7 +106,7 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     icon: <FileZipOutlined />,
     position: 'leftTop',
     content: () => lazyComponent(<Resource />)
-  },
+  }
 ];
 
 export const leftDefaultShowTab = ToolbarRoutes[1];

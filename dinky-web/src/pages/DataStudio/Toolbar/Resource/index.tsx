@@ -1,40 +1,47 @@
-import {connect, history} from "@@/exports";
-import {DataStudioState} from "@/pages/DataStudio/model";
-import {mapDispatchToProps} from "@/pages/DataStudio/DvaFunction";
-import React, {useCallback, useEffect, useState} from "react";
-import {ResourceState} from "@/types/RegCenter/state";
-import {InitResourceState} from "@/types/RegCenter/init.d";
-import {API_CONSTANTS} from "@/services/endpoints";
-import {handleGetOption, handleOption, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
-import {ResourceInfo} from "@/types/RegCenter/data";
-import {SysConfigStateType} from "@/pages/SettingCenter/GlobalSetting/model";
-import {handleCopyToClipboard, unSupportView} from "@/utils/function";
+import { connect, history } from '@@/exports';
+import { DataStudioState } from '@/pages/DataStudio/model';
+import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ResourceState } from '@/types/RegCenter/state';
+import { InitResourceState } from '@/types/RegCenter/init.d';
+import { API_CONSTANTS } from '@/services/endpoints';
+import {
+  handleGetOption,
+  handleOption,
+  handleRemoveById,
+  queryDataByParams
+} from '@/services/BusinessCrud';
+import { ResourceInfo } from '@/types/RegCenter/data';
+import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
+import { handleCopyToClipboard, unSupportView } from '@/utils/function';
 import {
   ResourceRightMenuKey,
   RIGHT_CONTEXT_FILE_MENU,
   RIGHT_CONTEXT_FOLDER_MENU
-} from "@/pages/RegCenter/Resource/components/constants";
-import {Button, Modal, Result} from "antd";
-import {l} from "@/utils/intl";
-import {AuthorizedObject, useAccess} from "@/hooks/useAccess";
-import {ProCard} from "@ant-design/pro-components";
-import {WarningOutlined} from "@ant-design/icons";
-import FileTree from "@/pages/RegCenter/Resource/components/FileTree";
-import RightContextMenu from "@/components/RightContextMenu";
-import ResourceModal from "@/pages/RegCenter/Resource/components/ResourceModal";
-import ResourcesUploadModal from "@/pages/RegCenter/Resource/components/ResourcesUploadModal";
+} from '@/pages/RegCenter/Resource/components/constants';
+import { Button, Modal, Result } from 'antd';
+import { l } from '@/utils/intl';
+import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
+import { ProCard } from '@ant-design/pro-components';
+import { WarningOutlined } from '@ant-design/icons';
+import FileTree from '@/pages/RegCenter/Resource/components/FileTree';
+import RightContextMenu from '@/components/RightContextMenu';
+import ResourceModal from '@/pages/RegCenter/Resource/components/ResourceModal';
+import ResourcesUploadModal from '@/pages/RegCenter/Resource/components/ResourcesUploadModal';
 import { MenuInfo } from 'rc-menu/es/interface';
 
 const Resource = (props: {
-  enableResource: boolean,
-  resourcePhysicalDelete: boolean,
-  resourceDataList: ResourceInfo[],
-  queryResource: any
+  enableResource: boolean;
+  resourcePhysicalDelete: boolean;
+  resourceDataList: ResourceInfo[];
+  queryResource: any;
 }) => {
-  const {resourceDataList, enableResource, queryResource,resourcePhysicalDelete} = props;
+  const { resourceDataList, enableResource, queryResource, resourcePhysicalDelete } = props;
 
-
-  const [resourceState, setResourceState] = useState<ResourceState>({...InitResourceState, treeData: resourceDataList});
+  const [resourceState, setResourceState] = useState<ResourceState>({
+    ...InitResourceState,
+    treeData: resourceDataList
+  });
 
   const [editModal, setEditModal] = useState<string>('');
 
@@ -44,13 +51,12 @@ const Resource = (props: {
     description: ''
   });
   useEffect(() => {
-    setResourceState(prevState => ({...prevState, treeData: resourceDataList}))
+    setResourceState((prevState) => ({ ...prevState, treeData: resourceDataList }));
   }, [resourceDataList]);
 
   const refreshTree = async () => {
-    await queryResource()
+    await queryResource();
   };
-
 
   /**
    * query content by id
@@ -59,7 +65,7 @@ const Resource = (props: {
   const queryContent: (id: number) => Promise<void> = useCallback(async (id: number) => {
     await queryDataByParams<string>(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {
       id
-    }).then((res) => setResourceState((prevState) => ({...prevState, content: res ?? ''})));
+    }).then((res) => setResourceState((prevState) => ({ ...prevState, content: res ?? '' })));
   }, []);
 
   /**
@@ -69,14 +75,14 @@ const Resource = (props: {
    */
   const handleNodeClick = async (info: any): Promise<void> => {
     const {
-      node: {id, isLeaf, key, name},
+      node: { id, isLeaf, key, name },
       node
     } = info;
-    setResourceState((prevState) => ({...prevState, selectedKeys: [key], clickedNode: node}));
+    setResourceState((prevState) => ({ ...prevState, selectedKeys: [key], clickedNode: node }));
     if (isLeaf && !unSupportView(name)) {
       await queryContent(id);
     } else {
-      setResourceState((prevState) => ({...prevState, content: ''}));
+      setResourceState((prevState) => ({ ...prevState, content: '' }));
     }
   };
 
@@ -86,11 +92,11 @@ const Resource = (props: {
   const handleCreateFolder = () => {
     if (resourceState.rightClickedNode) {
       setEditModal(ResourceRightMenuKey.CREATE_FOLDER);
-      const {id} = resourceState.rightClickedNode;
+      const { id } = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
         editOpen: true,
-        value: {id, fileName: '', description: ''},
+        value: { id, fileName: '', description: '' },
         contextMenuOpen: false
       }));
     }
@@ -99,7 +105,7 @@ const Resource = (props: {
     if (resourceState.rightClickedNode) {
       uploadValue.pid = resourceState.rightClickedNode.id;
       // todo: upload
-      setResourceState((prevState) => ({...prevState, uploadOpen: true, contextMenuOpen: false}));
+      setResourceState((prevState) => ({ ...prevState, uploadOpen: true, contextMenuOpen: false }));
     }
   };
 
@@ -113,7 +119,7 @@ const Resource = (props: {
    */
   const handleDelete = async () => {
     if (resourceState.rightClickedNode) {
-      setResourceState((prevState) => ({...prevState, contextMenuOpen: false}));
+      setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }));
       if (resourcePhysicalDelete) {
         Modal.confirm({
           title: l('rc.resource.delete'),
@@ -132,18 +138,18 @@ const Resource = (props: {
   const handleRename = () => {
     if (resourceState.rightClickedNode) {
       setEditModal(ResourceRightMenuKey.RENAME);
-      const {id, name, desc} = resourceState.rightClickedNode;
+      const { id, name, desc } = resourceState.rightClickedNode;
       setResourceState((prevState) => ({
         ...prevState,
         editOpen: true,
-        value: {id, fileName: name, description: desc},
+        value: { id, fileName: name, description: desc },
         contextMenuOpen: false
       }));
     }
   };
 
   const handleMenuClick = async (node: MenuInfo) => {
-    const {fullInfo} = resourceState.rightClickedNode;
+    const { fullInfo } = resourceState.rightClickedNode;
     switch (node.key) {
       case ResourceRightMenuKey.CREATE_FOLDER:
         handleCreateFolder();
@@ -192,7 +198,7 @@ const Resource = (props: {
    */
   const handleRightClick = (info: any) => {
     // Obtain the node information for right-click
-    const {node, event} = info;
+    const { node, event } = info;
 
     // Determine if the position of the right button exceeds the screen. If it exceeds the screen, set it to the maximum value of the screen offset upwards by 75 (it needs to be reasonably set according to the specific number of right button menus)
     if (event.clientY + 150 > window.innerHeight) {
@@ -229,7 +235,7 @@ const Resource = (props: {
    * the rename cancel
    */
   const handleModalCancel = async () => {
-    setResourceState((prevState) => ({...prevState, editOpen: false}));
+    setResourceState((prevState) => ({ ...prevState, editOpen: false }));
     await refreshTree();
   };
 
@@ -237,7 +243,7 @@ const Resource = (props: {
    * the rename ok
    */
   const handleModalSubmit = async (value: Partial<ResourceInfo>) => {
-    const {id: pid} = resourceState.rightClickedNode;
+    const { id: pid } = resourceState.rightClickedNode;
     if (editModal === ResourceRightMenuKey.CREATE_FOLDER) {
       await handleOption(
         API_CONSTANTS.RESOURCE_CREATE_FOLDER,
@@ -252,13 +258,13 @@ const Resource = (props: {
       await handleOption(
         API_CONSTANTS.RESOURCE_RENAME,
         l('right.menu.rename'),
-        {...value, pid},
+        { ...value, pid },
         () => handleModalCancel()
       );
     }
   };
   const handleUploadCancel = async () => {
-    setResourceState((prevState) => ({...prevState, uploadOpen: false}));
+    setResourceState((prevState) => ({ ...prevState, uploadOpen: false }));
     await refreshTree();
   };
   const access = useAccess();
@@ -266,11 +272,11 @@ const Resource = (props: {
   const renderRightMenu = () => {
     if (!resourceState.rightClickedNode.isLeaf) {
       return RIGHT_CONTEXT_FOLDER_MENU.filter(
-        (menu) => !menu.path || !!AuthorizedObject({path: menu.path, children: menu, access})
+        (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
       );
     }
     return RIGHT_CONTEXT_FILE_MENU.filter(
-      (menu) => !menu.path || !!AuthorizedObject({path: menu.path, children: menu, access})
+      (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
     );
   };
 
@@ -280,11 +286,15 @@ const Resource = (props: {
   return (
     <>
       {!enableResource ? (
-        <ProCard ghost size={'small'} bodyStyle={{ height: 'calc(100vh - 180px)', overflow: 'auto' }}>
+        <ProCard
+          ghost
+          size={'small'}
+          bodyStyle={{ height: 'calc(100vh - 180px)', overflow: 'auto' }}
+        >
           <Result
             status='warning'
-            style={{alignItems: 'center', justifyContent: 'center'}}
-            icon={<WarningOutlined/>}
+            style={{ alignItems: 'center', justifyContent: 'center' }}
+            icon={<WarningOutlined />}
             title={l('rc.resource.enable')}
             subTitle={l('rc.resource.enable.tips')}
             extra={
@@ -302,8 +312,14 @@ const Resource = (props: {
         </ProCard>
       ) : (
         <>
-
-          <ProCard  style={{height:'100%'}} bodyStyle={{paddingTop:10,paddingInline:5,display:"flex",flexDirection:'column'}}
+          <ProCard
+            style={{ height: '100%' }}
+            bodyStyle={{
+              paddingTop: 10,
+              paddingInline: 5,
+              display: 'flex',
+              flexDirection: 'column'
+            }}
           >
             <FileTree
               selectedKeys={resourceState.selectedKeys}
@@ -316,7 +332,7 @@ const Resource = (props: {
               contextMenuPosition={resourceState.contextMenuPosition}
               open={resourceState.contextMenuOpen}
               openChange={() =>
-                setResourceState((prevState) => ({...prevState, contextMenuOpen: false}))
+                setResourceState((prevState) => ({ ...prevState, contextMenuOpen: false }))
               }
               items={renderRightMenu()}
               onClick={handleMenuClick}
@@ -349,11 +365,10 @@ const Resource = (props: {
       )}
     </>
   );
-
-}
+};
 
 export default connect(
-  ({DataStudio, SysConfig}: { DataStudio: DataStudioState, SysConfig: SysConfigStateType }) => ({
+  ({ DataStudio, SysConfig }: { DataStudio: DataStudioState; SysConfig: SysConfigStateType }) => ({
     resourceDataList: DataStudio.tempData.resourceDataList,
     enableResource: SysConfig.enableResource,
     resourcePhysicalDelete: SysConfig.resourcePhysicalDelete
