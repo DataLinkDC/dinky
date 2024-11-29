@@ -21,7 +21,7 @@ import { ToolbarRoute } from '@/pages/DataStudio/Toolbar/data.d';
 import {
   CodeOutlined,
   ConsoleSqlOutlined,
-  DatabaseOutlined,
+  DatabaseOutlined, FileZipOutlined,
   FunctionOutlined,
   SettingOutlined,
   TableOutlined,
@@ -41,6 +41,7 @@ const Service = lazy(() => import('@/pages/DataStudio/Toolbar/Service'));
 const Tool = lazy(() => import('@/pages/DataStudio/Toolbar/Tool'));
 const Catalog = lazy(() => import('@/pages/DataStudio/Toolbar/Catalog'));
 const FlinkSqlClient = lazy(() => import('@/pages/DataStudio/Toolbar/FlinkSqlClient'));
+const Resource = lazy(() => import('@/pages/DataStudio/Toolbar/Resource'));
 export const ToolbarRoutes: ToolbarRoute[] = [
   {
     key: 'quick-start',
@@ -97,7 +98,14 @@ export const ToolbarRoutes: ToolbarRoute[] = [
     icon: <CodeOutlined />,
     position: 'leftBottom',
     content: () => lazyComponent(<FlinkSqlClient />)
-  }
+  },
+  {
+    key: 'resource',
+    title: () => l('datastudio.middle.qg.resource'),
+    icon: <FileZipOutlined />,
+    position: 'leftTop',
+    content: () => lazyComponent(<Resource />)
+  },
 ];
 
 export const leftDefaultShowTab = ToolbarRoutes[1];
