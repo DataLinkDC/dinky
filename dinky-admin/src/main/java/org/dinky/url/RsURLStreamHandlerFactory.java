@@ -23,13 +23,10 @@ import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
-import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.context.annotation.Profile;
 
 import cn.hutool.core.lang.Singleton;
-import cn.hutool.core.util.StrUtil;
 
 @Profile("!test")
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
@@ -51,7 +48,6 @@ public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
             // For compatibility, all Exceptions are ignored.
             // any number of exceptions can get thrown here
         }
-
 
         try {
             Class.forName("org.apache.hadoop.fs.FsUrlStreamHandlerFactory");
