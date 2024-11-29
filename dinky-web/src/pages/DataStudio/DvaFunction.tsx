@@ -125,6 +125,11 @@ export const mapDispatchToProps = (dispatch: Dispatch) => {
         type: CONFIG_MODEL_ASYNC.queryDsConfig,
         payload: params
       }),
+    queryResourceConfig: (params: string) =>
+      dispatch({
+        type: CONFIG_MODEL_ASYNC.queryResourceConfig,
+        payload: params
+      }),
     queryResource: () =>
       dispatch({
         type: STUDIO_MODEL_ASYNC.queryResource
