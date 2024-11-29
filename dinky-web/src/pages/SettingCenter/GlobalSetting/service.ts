@@ -28,7 +28,9 @@ export async function queryDsConfig() {
 }
 
 export async function queryResourceConfig() {
-  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: SettingConfigKeyEnum.RESOURCE.toLowerCase() });
+  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, {
+    type: SettingConfigKeyEnum.RESOURCE.toLowerCase()
+  });
 }
 
 export async function queryTaskOwnerLockingStrategy() {
