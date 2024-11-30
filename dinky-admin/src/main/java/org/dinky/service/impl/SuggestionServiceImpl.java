@@ -91,7 +91,7 @@ public class SuggestionServiceImpl implements SuggestionService {
                             .key(fragmentVariable.getId() + "_fragmentVariable")
                             .label(suggestionLabelVO)
                             .kind(4)
-                            .insertText(fragmentVariable.getFragmentValue())
+                            .insertText(fragmentVariable.getName())
                             .detail(fragmentVariable.getNote())
                             .build();
                 })

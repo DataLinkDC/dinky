@@ -17,7 +17,7 @@
  *
  */
 
-package serializer;
+package org.dinky.serializer;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

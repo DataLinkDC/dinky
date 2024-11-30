@@ -26,8 +26,7 @@ export const buildDag = (job: Jobs.JobPlan) => {
   const nodes: any = [];
 
   if (!job) return { nodes: nodes, edges: edges };
-
-  job.nodes.forEach((node) => {
+  job.nodes?.forEach((node) => {
     nodes.push({
       id: node.id,
       shape: 'data-processing-dag-node',

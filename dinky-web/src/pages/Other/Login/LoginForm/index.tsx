@@ -17,26 +17,26 @@
  *
  */
 
-import { API_CONSTANTS } from '@/services/endpoints';
-import { l } from '@/utils/intl';
-import { GithubOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
-import { DefaultFooter, ProForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
-import { SubmitterProps } from '@ant-design/pro-form/es/components';
-import { Col, Flex, Row } from 'antd';
-import React, { useState } from 'react';
+import {API_CONSTANTS} from '@/services/endpoints';
+import {l} from '@/utils/intl';
+import {GithubOutlined, LockOutlined, UserOutlined} from '@ant-design/icons';
+import {DefaultFooter, ProForm, ProFormCheckbox, ProFormText} from '@ant-design/pro-components';
+import {SubmitterProps} from '@ant-design/pro-form/es/components';
+import {Col, Flex, Row} from 'antd';
+import React, {useState} from 'react';
 import style from '../../../../global.less';
 import Lottie from 'react-lottie';
 import DataPlatform from '../../../../../public/login_animation.json';
-import { useRequest } from '@@/exports';
-import { history } from '@umijs/max';
-import { GLOBAL_SETTING_KEYS } from '@/types/SettingCenter/data.d';
+import {useRequest} from '@@/exports';
+import {history} from '@umijs/max';
+import {GLOBAL_SETTING_KEYS} from '@/types/SettingCenter/data.d';
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
 };
 
 const LoginForm: React.FC<LoginFormProps> = (props) => {
-  const { onSubmit } = props;
+  const {onSubmit} = props;
 
   const [form] = ProForm.useForm();
 
@@ -55,7 +55,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
   const handleClickLogin = async () => {
     setSubmitting(true);
-    await onSubmit({ ...form.getFieldsValue() });
+    await onSubmit({...form.getFieldsValue()});
     setSubmitting(false);
   };
 
@@ -66,7 +66,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           name='username'
           fieldProps={{
             size: 'large',
-            prefix: <UserOutlined />
+            prefix: <UserOutlined/>
           }}
           required
           placeholder={l('login.username.placeholder')}
@@ -81,7 +81,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           name='password'
           fieldProps={{
             size: 'large',
-            prefix: <LockOutlined />
+            prefix: <LockOutlined/>
           }}
           placeholder={l('login.password.placeholder')}
           rules={[
@@ -95,7 +95,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           <Col span={12}>
             <ProFormCheckbox name='autoLogin'>{l('login.rememberMe')}</ProFormCheckbox>
           </Col>
-          <Col span={12} style={{ textAlign: 'right' }}>
+          <Col span={12} style={{textAlign: 'right'}}>
             <ProFormCheckbox name='ldapLogin' hidden={!ldapEnabled}>
               {l('login.ldapLogin')}
             </ProFormCheckbox>
@@ -106,7 +106,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
   };
 
   const proFormSubmitter: SubmitterProps = {
-    searchConfig: { submitText: l('menu.login') },
+    searchConfig: {submitText: l('menu.login')},
     resetButtonProps: false,
     submitButtonProps: {
       loading: submitting,
@@ -114,7 +114,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       htmlType: 'submit',
       size: 'large',
       shape: 'round',
-      style: { width: '100%' }
+      style: {width: '100%'}
     }
   };
 
@@ -140,34 +140,40 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           }}
         >
           <Col
-            style={{ padding: '5%', backgroundColor: '#fff' }}
+            style={{padding: '5%', backgroundColor: '#fff',display:'flex',flexDirection:'column',justifyContent:"center"}}
             xs={24}
             sm={24}
-            md={10}
-            lg={8}
-            xl={8}
+            md={24}
+            lg={24}
+            xl={14}
             xxl={8}
           >
-            <Row
-              style={{ color: '#00b0ff', marginBottom: 60, justifyContent: 'center' }}
-              align={'middle'}
-            >
-              <img src={'./dinky.svg'} width={150} alt={''} />
-              <h1 style={{ margin: '0' }}>{l('layouts.userLayout.title')}</h1>
-            </Row>
+            <Row>
+              <Col  xl={12} xxl={24}>
+                <Row
+                  style={{color: '#00b0ff', marginBottom: 60, justifyContent: 'center'}}
+                  align={'middle'}
+                >
+                  <img src={'./dinky.svg'} width={150} alt={''}/>
+                  <h1 style={{margin: '0'}}>{l('layouts.userLayout.title')}</h1>
+                </Row>
+              </Col>
 
-            <ProForm
-              className={style.loginform}
-              form={form}
-              onFinish={handleClickLogin}
-              initialValues={{ autoLogin: true }}
-              submitter={{ ...proFormSubmitter }}
-            >
-              {renderLoginForm()}
-            </ProForm>
+              <Col   xl={12} xxl={24}>
+                <ProForm
+                  className={style.loginform}
+                  form={form}
+                  onFinish={handleClickLogin}
+                  initialValues={{autoLogin: true}}
+                  submitter={{...proFormSubmitter}}
+                >
+                  {renderLoginForm()}
+                </ProForm>
+              </Col>
+            </Row>
             <DefaultFooter
               copyright={`${new Date().getFullYear()} ` + l('app.copyright.produced')}
-              style={{ backgroundColor: '#fff' }}
+              style={{backgroundColor: '#fff'}}
               links={[
                 {
                   key: 'Dinky',
@@ -177,7 +183,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
                 },
                 {
                   key: 'github',
-                  title: <GithubOutlined />,
+                  title: <GithubOutlined/>,
                   href: 'https://github.com/DataLinkDC/dinky',
                   blankTarget: true
                 }
@@ -187,9 +193,9 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           <Col
             xs={0}
             sm={0}
-            md={14}
-            lg={16}
-            xl={16}
+            md={0}
+            lg={0}
+            xl={10}
             xxl={16}
             style={{
               backgroundImage: 'linear-gradient(135deg,#1fa2ff,#12d8fa,#a6ffcb)',
@@ -197,7 +203,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
               height: '100%'
             }}
           >
-            <Flex align={'center'} style={{ width: '100%', height: '100%' }}>
+            <Flex align={'center'} style={{width: '100%', height: '100%'}}>
               <Lottie
                 options={{
                   loop: true,
@@ -220,7 +226,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
         src={'./icons/footer-bg.svg'}
         width={'100%'}
         alt={''}
-        style={{ position: 'absolute', bottom: 0 }}
+        style={{position: 'absolute', bottom: 0}}
       />
     </>
   );

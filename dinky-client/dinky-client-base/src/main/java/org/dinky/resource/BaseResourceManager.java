@@ -19,9 +19,13 @@
 
 package org.dinky.resource;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.DinkyException;
+import org.dinky.data.model.ResourcesModelEnum;
 import org.dinky.data.model.ResourcesVO;
+import org.dinky.data.model.S3Configuration;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.properties.OssProperties;
 import org.dinky.oss.OssTemplate;
 import org.dinky.resource.impl.HdfsResourceManager;
 import org.dinky.resource.impl.LocalResourceManager;
@@ -34,7 +38,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -74,6 +80,9 @@ public interface BaseResourceManager {
     }
 
     static void initResourceManager() {
+        if (Asserts.isNull(instances.getResourcesModel().getValue())) {
+            return;
+        }
         switch (instances.getResourcesModel().getValue()) {
             case LOCAL:
                 Singleton.get(LocalResourceManager.class);
@@ -104,6 +113,37 @@ public interface BaseResourceManager {
                     throw new DinkyException(e);
                 }
         }
+    }
+
+    static Map<String, String> convertFlinkResourceConfig() {
+        Map<String, String> flinkConfig = new HashMap<>();
+        if (!instances.getResourcesEnable().getValue()) {
+            return flinkConfig;
+        }
+        if (instances.getResourcesModel().getValue().equals(ResourcesModelEnum.OSS)) {
+            OssProperties ossProperties = instances.getOssProperties();
+            flinkConfig.put(S3Configuration.ENDPOINT, ossProperties.getEndpoint());
+            flinkConfig.put(S3Configuration.ACCESS_KEY, ossProperties.getAccessKey());
+            flinkConfig.put(S3Configuration.SECRET_KEY, ossProperties.getSecretKey());
+            flinkConfig.put(S3Configuration.PATH_STYLE_ACCESS, String.valueOf(ossProperties.getPathStyleAccess()));
+        } else if (instances.getResourcesModel().getValue().equals(ResourcesModelEnum.HDFS)) {
+            final Configuration configuration = new Configuration();
+            Charset charset = Charset.defaultCharset();
+            String coreSite = instances.getResourcesHdfsCoreSite().getValue();
+            Opt.ofBlankAble(coreSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset)));
+            String hdfsSite = instances.getResourcesHdfsHdfsSite().getValue();
+            Opt.ofBlankAble(hdfsSite).ifPresent(x -> configuration.addResource(IoUtil.toStream(x, charset)));
+            configuration.reloadConfiguration();
+            if (StrUtil.isEmpty(coreSite)) {
+                configuration.set(
+                        "fs.defaultFS", instances.getResourcesHdfsDefaultFS().getValue());
+            }
+            Map<String, String> hadoopConfig = configuration.getValByRegex(".*");
+            hadoopConfig.forEach((key, value) -> {
+                flinkConfig.put("flink.hadoop." + key, value);
+            });
+        }
+        return flinkConfig;
     }
 
     default String getFilePath(String path) {

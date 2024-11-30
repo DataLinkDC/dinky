@@ -49,7 +49,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.DatatypeConverter;
@@ -117,7 +116,7 @@ public class DataTypeConverter {
 
     public static Object convertToRow(Object value, LogicalType logicalType, ZoneId timeZone) {
         if (Asserts.isNull(value)) {
-            return Optional.empty();
+            return null;
         }
         switch (logicalType.getTypeRoot()) {
             case BOOLEAN:
@@ -163,7 +162,7 @@ public class DataTypeConverter {
 
     public static Object convertToRowData(Object value, LogicalType logicalType, ZoneId timeZone) {
         if (Asserts.isNull(value)) {
-            return Optional.empty();
+            return null;
         }
         switch (logicalType.getTypeRoot()) {
             case BOOLEAN:

@@ -144,6 +144,7 @@ public class JobDDLRunner extends AbstractJobRunner {
         allFilePath.forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
         (jobManager.getExecutor().getDinkyClassLoader())
                 .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
+        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
     }
 
     private void executeAddFile(String statement) {

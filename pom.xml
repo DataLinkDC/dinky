@@ -91,7 +91,7 @@
         <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
         <maven-help-plugin.version>3.4.0</maven-help-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
+        <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
@@ -110,7 +110,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
         <reflections.version>0.10.2</reflections.version>
-        <revision>1.2.0-rc2</revision>
+        <revision>1.2.0-rc4</revision>
         <sa-token.version>1.37.0</sa-token.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->

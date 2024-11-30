@@ -47,26 +47,51 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven-assembly-plugin.version}</version>
+                <artifactId>maven-shade-plugin</artifactId>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <!-- 可以设置jar包的入口类(可选) -->
-                            <mainClass>org.dinky.app.MainApp</mainClass>
-                        </manifest>
-                    </archive>
+                    <finalName>${project.build.finalName}-jar-with-dependencies</finalName>
                     <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
+                    <minimizeJar>true</minimizeJar>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <filters>
+                        <filter>
+                            <artifact>org.dinky:*</artifact>
+                            <includes>
+                                <include>org/dinky/**</include>
+                                <include>META-INF/**</include>
+                            </includes>
+                        </filter>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>tpch/**</exclude>
+                                <exclude>tpcds/**</exclude>
+                                <exclude>support/**</exclude>
+                                <exclude>springfox/**</exclude>
+                                <exclude>org/slf4j/**</exclude>
+                                <exclude>org/springframework/**</exclude>
+                                <exclude>javax/**</exclude>
+                                <exclude>javassist/**</exclude>
+                                <exclude>Class50/**</exclude>
+                                <exclude>lombok/**</exclude>
+                                <exclude>freemarker/**</exclude>
+                                <exclude>com.sun/**</exclude>
+                                <exclude>META-INF/resources/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
 
+                    <transformers>
+                        <!--设置主函数-->
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>org.dinky.app.MainApp</mainClass>
+                        </transformer>
+                    </transformers>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
                         </goals>
                         <phase>package</phase>
                     </execution>

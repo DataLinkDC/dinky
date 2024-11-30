@@ -649,7 +649,7 @@ export const parseDateStringToDate = (dateString: Date) => {
  */
 export async function handleCopyToClipboard(copyText: string) {
   // Adapting to browsers without the navigator.clipboard.writeText method can be done using the following code
-  if (!navigator) {
+  if (!navigator?.clipboard) {
     const textarea = document.createElement('textarea');
     textarea.value = copyText;
     document.body.appendChild(textarea);

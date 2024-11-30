@@ -30,7 +30,6 @@ dinky.db
 hs_err_pid*
 .idea/*
 !.idea/icon.svg
-!.idea/vcs.xml
 build
 target/*
 *.iml
@@ -64,3 +63,5 @@ extends/*
 /.run/
 
 .idea
+.idea/vcs.xml
+dinky-web/package-lock.json
