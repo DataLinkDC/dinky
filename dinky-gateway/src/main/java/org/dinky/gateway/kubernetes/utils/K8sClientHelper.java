@@ -20,6 +20,7 @@
 package org.dinky.gateway.kubernetes.utils;
 
 import org.dinky.gateway.kubernetes.decorate.DinkySqlConfigMapDecorate;
+import org.dinky.gateway.kubernetes.watcher.DeploymentStatusWatcher;
 import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.Configuration;
@@ -49,6 +50,7 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.RollableScalableResource;
 import io.fabric8.kubernetes.client.utils.Serialization;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +67,11 @@ public class K8sClientHelper {
     private KubernetesClient kubernetesClient;
     protected Configuration configuration;
     private DinkySqlConfigMapDecorate sqlFileDecorate;
+    private DeploymentStatusWatcher deploymentStatusWatch;
 
     public K8sClientHelper(Configuration configuration, String kubeConfig) {
         this.configuration = configuration;
+        deploymentStatusWatch = new DeploymentStatusWatcher();
         initKubeClient(kubeConfig);
     }
 
@@ -113,12 +117,12 @@ public class K8sClientHelper {
      */
     public Deployment createDinkyResource() {
         log.info("createDinkyResource");
-        Deployment deployment = kubernetesClient
+        RollableScalableResource<Deployment> deploymentRollableScalableResource = kubernetesClient
                 .apps()
                 .deployments()
                 .inNamespace(configuration.get(KubernetesConfigOptions.NAMESPACE))
-                .withName(configuration.get(KubernetesConfigOptions.CLUSTER_ID))
-                .get();
+                .withName(configuration.get(KubernetesConfigOptions.CLUSTER_ID));
+        Deployment deployment = deploymentRollableScalableResource.get();
         List<HasMetadata> resources = getSqlFileDecorate().buildResources();
         // set owner reference
         OwnerReference deploymentOwnerReference = new OwnerReferenceBuilder()
@@ -134,6 +138,7 @@ public class K8sClientHelper {
                 resource.getMetadata().setOwnerReferences(Collections.singletonList(deploymentOwnerReference)));
         // create resources
         resources.forEach(resource -> log.info(Serialization.asYaml(resource)));
+        deploymentRollableScalableResource.watch(deploymentStatusWatch);
         kubernetesClient.resourceList(resources).createOrReplace();
         return deployment;
     }
@@ -141,6 +146,7 @@ public class K8sClientHelper {
     /**
      * initPodTemplate
      * Preprocess the pod template
+     *
      * @param sqlStatement
      * @return
      */
@@ -166,8 +172,7 @@ public class K8sClientHelper {
 
     /**
      * dumpPod2Str
-     *
-     * */
+     */
     public String dumpPod2Str(Pod pod) {
         // use snakyaml to serialize the pod
         Representer representer = new IgnoreNullRepresenter();
@@ -179,9 +184,11 @@ public class K8sClientHelper {
         Yaml yaml = new Yaml(representer, options);
         return yaml.dump(pod);
     }
+
     /**
      * close
      * delete the temporary directory and close the client
+     *
      * @return
      */
     public boolean close() {
