@@ -196,6 +196,7 @@ public enum Status {
     CATALOGUE_NOT_EXIST(12017, "catalogue.not.exist"),
     CATALOGUE_IS_EXIST(12018, "catalogue.is.exist"),
     TASK_NAME_NOT_MATCH_CATALOGUE_NAME(12019, "task.name.not.match.catalogue.name"),
+    NAME_IS_EXIST(12021, "A task and a directory cannot have the same name under the same parent directory."),
 
     /**
      * alert instance
