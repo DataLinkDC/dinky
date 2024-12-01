@@ -196,6 +196,10 @@ public enum Status {
     CATALOGUE_NOT_EXIST(12017, "catalogue.not.exist"),
     CATALOGUE_IS_EXIST(12018, "catalogue.is.exist"),
     TASK_NAME_NOT_MATCH_CATALOGUE_NAME(12019, "task.name.not.match.catalogue.name"),
+    TASK_NAME_INVALID(
+            12020,
+            "The task name must consist of lowercase letters, numbers, '-', or '.', "
+                    + "and it must start and end with a letter or number."),
 
     /**
      * alert instance

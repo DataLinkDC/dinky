@@ -175,6 +175,9 @@ public class CatalogueController {
             dataTypeClass = CatalogueTaskDTO.class)
     @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
+        if (!catalogueService.isValidTaskName(catalogueTaskDTO.getName())) {
+            return Result.failed(Status.TASK_NAME_INVALID);
+        }
         if (catalogueService.checkCatalogueTaskNameIsExistById(catalogueTaskDTO.getName(), catalogueTaskDTO.getId())) {
             return Result.failed(Status.TASK_IS_EXIST);
         }

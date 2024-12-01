@@ -70,6 +70,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -261,6 +263,23 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 .exists(new LambdaQueryWrapper<Catalogue>()
                         .eq(Catalogue::getName, name)
                         .ne(id != null, Catalogue::getId, id));
+    }
+
+    /**
+     * check catalogue task name is valid
+     *
+     * @param taskName taskName
+     * @return true if valid , otherwise false
+     */
+    @Override
+    public boolean isValidTaskName(String taskName) {
+        String TASK_NAME_PATTERN = "^[a-z0-9][a-z0-9.-]*[a-z0-9]$";
+        Pattern pattern = Pattern.compile(TASK_NAME_PATTERN);
+        if (StringUtils.isBlank(taskName)) {
+            return false;
+        }
+        Matcher matcher = pattern.matcher(taskName);
+        return matcher.matches();
     }
 
     /**
