@@ -23,27 +23,30 @@ import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
-import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.context.annotation.Profile;
 
 import cn.hutool.core.lang.Singleton;
-import cn.hutool.core.util.StrUtil;
 
 @Profile("!test")
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
-    private final List<String> notContains = Arrays.asList("jar", "file", "http", "https");
+    private static final String PREFIX = "sun.net.www.protocol";
 
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {
-        if ("rs".equals(protocol)) {
+        if ("rs".equalsIgnoreCase(protocol)) {
             return new RsURLStreamHandler();
         }
-        for (String tempProtocol : notContains) {
-            if (tempProtocol.equals(StrUtil.sub(protocol, 0, tempProtocol.length()))) {
-                return null;
-            }
+        String name = PREFIX + "." + protocol + ".Handler";
+        try {
+            @SuppressWarnings("deprecation")
+            Object o = Class.forName(name).newInstance();
+            return (URLStreamHandler) o;
+        } catch (ClassNotFoundException x) {
+            // ignore
+        } catch (Exception e) {
+            // For compatibility, all Exceptions are ignored.
+            // any number of exceptions can get thrown here
         }
 
         try {

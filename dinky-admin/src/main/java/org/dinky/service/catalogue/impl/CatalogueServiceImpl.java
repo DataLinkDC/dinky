@@ -582,6 +582,19 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         return saveOrUpdate(catalogue);
     }
 
+    /**
+     * Check if the catalogue name is exist
+     * @param catalogue catalogue
+     * @return true if the catalogue name is exist
+     */
+    @Override
+    public Boolean checkNameIsExistByParentId(Catalogue catalogue) {
+        return getBaseMapper()
+                .exists(new LambdaQueryWrapper<Catalogue>()
+                        .eq(Catalogue::getName, catalogue.getName())
+                        .ne(catalogue.getParentId() != null, Catalogue::getParentId, catalogue.getParentId()));
+    }
+
     private CatalogueTaskDTO getCatalogueTaskDTO(String name, Integer parentId) {
         CatalogueTaskDTO catalogueTaskDTO = new CatalogueTaskDTO();
         catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + name);

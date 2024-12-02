@@ -21,22 +21,24 @@ package org.dinky.url;
 
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
-import java.util.Arrays;
-import java.util.List;
-
-import cn.hutool.core.util.StrUtil;
 
 public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
     private static final String PREFIX = "sun.net.www.protocol";
-    private final List<String> notContains = Arrays.asList("jar", "file", "http", "https");
 
     @Override
     public URLStreamHandler createURLStreamHandler(String protocol) {
-        for (String tempProtocol : notContains) {
-            if (tempProtocol.equals(StrUtil.sub(protocol, 0, tempProtocol.length()))) {
-                return null;
-            }
+        String name = PREFIX + "." + protocol + ".Handler";
+        try {
+            @SuppressWarnings("deprecation")
+            Object o = Class.forName(name).newInstance();
+            return (URLStreamHandler) o;
+        } catch (ClassNotFoundException x) {
+            // ignore
+        } catch (Exception e) {
+            // For compatibility, all Exceptions are ignored.
+            // any number of exceptions can get thrown here
         }
+
         if (ResourceFileSystem.URI_SCHEMA.getScheme().equals(protocol)) {
             return new RsURLStreamHandler();
         }
@@ -45,7 +47,6 @@ public class RsURLStreamHandlerFactory implements URLStreamHandlerFactory {
         } catch (Throwable e) {
             return null;
         }
-        String name = PREFIX + "." + protocol + ".Handler";
         try {
             @SuppressWarnings("deprecation")
             Object o = Class.forName(name).newInstance();

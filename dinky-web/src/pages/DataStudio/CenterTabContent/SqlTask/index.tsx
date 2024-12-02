@@ -188,10 +188,6 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     if (taskDetail) {
       const statement = params.statement ?? taskDetail.statement;
       const newParams = { ...taskDetail, taskId: params.taskId, statement, mockSinkFunction: true };
-      // @ts-ignore
-      setCurrentState(newParams);
-      updateCenterTab({ ...props.tabData, params: newParams });
-
       if (taskDetail.dialect.toLowerCase() === DIALECT.FLINKJAR) {
         const sqlConvertForm = await flinkJarSqlConvertForm(taskDetail.statement);
         setSqlForm({ enable: true, ...sqlConvertForm });
@@ -213,6 +209,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         }
       } else {
         setOriginStatementValue(statement);
+        // @ts-ignore
+        setCurrentState(newParams);
+        updateCenterTab({ ...props.tabData, params: newParams });
         if (params?.statement && params?.statement !== taskDetail.statement) {
           setDiff([{ key: 'statement', server: taskDetail.statement, cache: params.statement }]);
           setOpenDiffModal(true);
@@ -909,7 +908,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                             }));
                           }}
                         >
-                          <ProFormCheckbox.Group name='manualInput' options={[l('datastudio.sqlTask.flinkJar.manualInput')]} />
+                          <ProFormCheckbox.Group
+                            name='manualInput'
+                            options={[l('datastudio.sqlTask.flinkJar.manualInput')]}
+                          />
 
                           <ProFormDependency name={['manualInput']}>
                             {({ manualInput }) => {

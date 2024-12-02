@@ -101,8 +101,8 @@ const ConfigModel: ConfigModelType = {
         });
       }
     },
-    *queryResourceConfig({ payload }, { call, put }) {
-      const response: BaseConfigProperties[] = yield call(queryResourceConfig, payload);
+    *queryResourceConfig({}, { call, put }) {
+      const response: BaseConfigProperties[] = yield call(queryResourceConfig);
       yield put({
         type: 'saveDsConfig',
         payload: response || []

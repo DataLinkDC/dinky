@@ -79,7 +79,8 @@ const DataStudio: React.FC = (props: any) => {
     queryUserData,
     queryDsConfig,
     queryTaskOwnerLockingStrategy,
-    queryResource
+    queryResource,
+    queryResourceConfig
   } = props;
   const [_, token] = useToken();
 
@@ -140,10 +141,13 @@ const DataStudio: React.FC = (props: any) => {
     await queryUserData({ id: getTenantByLocalStorage() });
     await queryDsConfig();
     await queryTaskOwnerLockingStrategy();
+    await queryResourceConfig();
+  }, []);
+  useAsyncEffect(async () => {
     if (enableResource) {
       await queryResource();
     }
-  }, []);
+  }, [enableResource]);
   useEffect(() => {
     const { actionType, params } = dataStudioState.action;
     if (actionType?.includes('task-run-')) {

@@ -259,7 +259,7 @@ public class Submitter {
                 ReadableConfig configuration =
                         executor.getStreamExecutionEnvironment().getConfiguration();
                 List<String> jars = configuration.get(PipelineOptions.JARS);
-                List<URL> jarsUrl = jars.stream().map(URLUtil::getURL).collect(Collectors.toList());
+                List<URL> jarsUrl = jars.stream().map(URLUtil::url).collect(Collectors.toList());
                 Pipeline pipeline = executeJarOperation.getStreamGraph(executor.getCustomTableEnvironment(), jarsUrl);
                 if (pipeline instanceof StreamGraph) {
                     // stream job

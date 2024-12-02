@@ -27,8 +27,10 @@ export async function queryDsConfig() {
   });
 }
 
-export async function queryResourceConfig(keyword: string) {
-  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, { type: keyword });
+export async function queryResourceConfig() {
+  return await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ONE_TYPE_CONFIG, {
+    type: SettingConfigKeyEnum.RESOURCE.toLowerCase()
+  });
 }
 
 export async function queryTaskOwnerLockingStrategy() {
