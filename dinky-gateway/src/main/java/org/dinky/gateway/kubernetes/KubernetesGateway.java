@@ -46,7 +46,10 @@ import org.apache.flink.python.PythonOptions;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import alluxio.shaded.client.org.apache.commons.lang3.StringUtils;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
@@ -84,10 +87,10 @@ public abstract class KubernetesGateway extends AbstractGateway {
     protected void initConfig() {
         flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
         flinkConfig = config.getFlinkConfig();
-        String jobName = flinkConfig.getJobName();
-        if (null != jobName && jobName.contains("_")) {
-            jobName = jobName.replace("_", "-");
-            flinkConfig.setJobName(jobName);
+        if (!isValidTaskName(flinkConfig.getJobName())) {
+            throw new GatewayException(
+                    "In Kubernetes mode, task names must start and end with a lowercase letter or a digit, "
+                            + "and can contain lowercase letters, digits, dots, and hyphens in between.");
         }
         k8sConfig = config.getKubernetesConfig();
 
@@ -135,6 +138,21 @@ public abstract class KubernetesGateway extends AbstractGateway {
         }
     }
 
+    /**
+     * Check if the jobName is valid
+     * @param jobName jobName
+     * @return true if the jobName is valid
+     */
+    boolean isValidTaskName(String jobName) {
+        String JOB_NAME_PATTERN = "^[a-z0-9][a-z0-9.-]*[a-z0-9]$";
+        Pattern pattern = Pattern.compile(JOB_NAME_PATTERN);
+        if (StringUtils.isBlank(jobName)) {
+            return false;
+        }
+        Matcher matcher = pattern.matcher(jobName);
+        return matcher.matches();
+    }
+
     protected void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
         if (!TextUtil.isEmpty(podTemplate)) {
             String filePath = String.format("%s/%s.yaml", tmpConfDir, option.key());
@@ -155,7 +173,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
             throw new GatewayException(
-                    "No cluster id was specified. Please specify a cluster to which you would like" + " to connect.");
+                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
 
         KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
@@ -167,7 +185,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         initConfig();
         if (Asserts.isNull(config.getFlinkConfig().getJobId())) {
             throw new GatewayException(
-                    "No job id was specified. Please specify a job to which you would like to" + " savepont.");
+                    "No job id was specified. Please specify a job to which you would like to savepont.");
         }
 
         addConfigParas(
@@ -176,7 +194,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
             throw new GatewayException(
-                    "No cluster id was specified. Please specify a cluster to which you would like" + " to connect.");
+                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
         KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
 
@@ -218,7 +236,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
         String clusterId = clusterClientFactory.getClusterId(configuration);
         if (Asserts.isNull(clusterId)) {
             throw new GatewayException(
-                    "No cluster id was specified. Please specify a cluster to which you would like" + " to connect.");
+                    "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
         if (k8sClientHelper.getClusterIsPresent(clusterId)) {
             try (KubernetesClusterDescriptor clusterDescriptor =
