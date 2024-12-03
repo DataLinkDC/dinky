@@ -129,6 +129,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     }
 
     /** 数据库用户名 */
+    @Getter
     private final String user;
     /** 数据库密码
      * -- GETTER --

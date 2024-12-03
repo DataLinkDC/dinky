@@ -29,21 +29,21 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore
-public class DinkyMysqlCatalogTest {
+public class DinkyPostgresSQLCatalogTest {
 
     protected static String url;
-    protected static DinkyMysqlCatalog catalog;
+    protected static DinkyPostgresCatalog catalog;
 
     protected static final String TEST_CATALOG_NAME = "dinky";
     protected static final String TEST_USERNAME = "dinky";
-    protected static final String TEST_PWD = "dinky";
+    protected static final String TEST_PWD = "pgdinky123";
 
     private TableEnvironment tableEnv;
 
     @Before
     public void setup() {
         url = "jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
-        catalog = new DinkyMysqlCatalog(TEST_CATALOG_NAME, url, TEST_USERNAME, TEST_PWD);
+        catalog = new DinkyPostgresCatalog(TEST_CATALOG_NAME, url, TEST_USERNAME, TEST_PWD);
 
         this.tableEnv = TableEnvironment.create(EnvironmentSettings.inStreamingMode());
         tableEnv.getConfig().getConfiguration().setInteger(TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM.key(), 1);

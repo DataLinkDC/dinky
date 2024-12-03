@@ -17,13 +17,13 @@
  *
  */
 
-package org.dinky.flink.catalog.org.dinky.flink.catalog.factory;
+package org.dinky.flink.catalog.factory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.dinky.flink.catalog.DinkyMysqlCatalog;
-import org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions;
+
+import org.dinky.flink.catalog.DinkyPostgresCatalog;
 
 import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.CommonCatalogOptions;
@@ -38,10 +38,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 @Ignore
-public class DinkyMysqlCatalogFactoryTest {
+public class DinkyPostgresSQLCatalogFactoryTest {
 
     protected static String url;
-    protected static DinkyMysqlCatalog catalog;
+    protected static DinkyPostgresCatalog catalog;
 
     protected static final String TEST_CATALOG_NAME = "dinky";
     protected static final String TEST_USERNAME = "dinky";
@@ -49,28 +49,28 @@ public class DinkyMysqlCatalogFactoryTest {
 
     @BeforeClass
     public static void setup() throws SQLException {
-        url = "jdbc:mysql://10.1.51.25:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
+        url = "jdbc:postgresql://localhost:5432/dinky_logic?stringtype=unspecified";
 
-        catalog = new DinkyMysqlCatalog(TEST_CATALOG_NAME, url, TEST_USERNAME, TEST_PWD);
+        catalog = new DinkyPostgresCatalog(TEST_CATALOG_NAME, url, TEST_USERNAME, TEST_PWD);
     }
 
     @Test
     public void test() {
         final Map<String, String> options = new HashMap<>();
-        options.put(CommonCatalogOptions.CATALOG_TYPE.key(), DinkyMysqlCatalogFactoryOptions.IDENTIFIER);
-        options.put(DinkyMysqlCatalogFactoryOptions.USERNAME.key(), TEST_USERNAME);
-        options.put(DinkyMysqlCatalogFactoryOptions.PASSWORD.key(), TEST_PWD);
-        options.put(DinkyMysqlCatalogFactoryOptions.URL.key(), url);
+        options.put(CommonCatalogOptions.CATALOG_TYPE.key(), DinkyPostgresCatalogFactoryOptions.IDENTIFIER);
+        options.put(DinkyPostgresCatalogFactoryOptions.USERNAME.key(), TEST_USERNAME);
+        options.put(DinkyPostgresCatalogFactoryOptions.PASSWORD.key(), TEST_PWD);
+        options.put(DinkyPostgresCatalogFactoryOptions.URL.key(), url);
 
         final Catalog actualCatalog = FactoryUtil.createCatalog(
                 TEST_CATALOG_NAME, options, null, Thread.currentThread().getContextClassLoader());
 
-        checkEquals(catalog, (DinkyMysqlCatalog) actualCatalog);
+        checkEquals(catalog, (DinkyPostgresCatalog) actualCatalog);
 
-        assertTrue(actualCatalog instanceof DinkyMysqlCatalog);
+        assertTrue(actualCatalog instanceof DinkyPostgresCatalog);
     }
 
-    private static void checkEquals(DinkyMysqlCatalog c1, DinkyMysqlCatalog c2) {
+    private static void checkEquals(DinkyPostgresCatalog c1, DinkyPostgresCatalog c2) {
         assertEquals(c1.getName(), c2.getName());
         assertEquals(c1.getDefaultDatabase(), c2.getDefaultDatabase());
         assertEquals(c1.getUser(), c2.getUser());
