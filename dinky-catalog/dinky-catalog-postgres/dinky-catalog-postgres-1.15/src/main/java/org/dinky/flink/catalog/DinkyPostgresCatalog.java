@@ -73,6 +73,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.Getter;
+
 /**
  * 自定义 catalog 检查connection done. 默认db，会被强制指定，不管输入的是什么，都会指定为 default_database
  * 可以读取配置文件信息来获取数据库连接，而不是在sql语句中强制指定。
@@ -89,7 +91,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         try {
             Class.forName(POSTGRES_DRIVER);
         } catch (ClassNotFoundException e) {
-            throw new CatalogException("未加载 mysql 驱动！", e);
+            throw new CatalogException("未加载 pg 驱动！", e);
         }
     }
 
@@ -128,40 +130,25 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     /** 数据库用户名 */
     private final String user;
-    /** 数据库密码 */
+    /** 数据库密码
+     * -- GETTER --
+     *  数据库密码
+     *
+     * @return 数据库密码
+     */
+    @Getter
     private final String pwd;
-    /** 数据库连接 */
+    /** 数据库连接
+     * -- GETTER --
+     *  数据库用户名
+     *
+     * @return 数据库用户名
+     */
+    @Getter
     private final String url;
 
     /** 默认database */
     private static final String defaultDatabase = "default_database";
-
-    /**
-     * 数据库用户名
-     *
-     * @return 数据库用户名
-     */
-    public String getUser() {
-        return user;
-    }
-
-    /**
-     * 数据库密码
-     *
-     * @return 数据库密码
-     */
-    public String getPwd() {
-        return pwd;
-    }
-
-    /**
-     * 数据库用户名
-     *
-     * @return 数据库用户名
-     */
-    public String getUrl() {
-        return url;
-    }
 
     public DinkyPostgresCatalog(String name, String url, String user, String pwd) {
         super(name, defaultDatabase);
@@ -265,7 +252,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
                 Map<String, String> map = new HashMap<>();
 
-                String sql = "select `key`,`value` " + "from metadata_database_property " + "where database_id=? ";
+                String sql = "select key,value " + "from metadata_database_property " + "where database_id=? ";
                 try (PreparedStatement pStat = conn.prepareStatement(sql)) {
                     pStat.setInt(1, id);
                     ResultSet prs = pStat.executeQuery();
@@ -343,7 +330,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                         && db.getProperties().size() > 0) {
                     int id = idRs.getInt(1);
                     String propInsertSql =
-                            "insert into metadata_database_property(database_id, " + "`key`,`value`) values (?,?,?)";
+                            "insert into metadata_database_property(database_id, " + "key, value) values (?,?,?)";
                     PreparedStatement pstat = conn.prepareStatement(propInsertSql);
                     for (Map.Entry<String, String> entry : db.getProperties().entrySet()) {
                         pstat.setInt(1, id);
@@ -381,7 +368,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             conn.setAutoCommit(false);
             // 查询是否有表
             List<String> tables = listTables(name);
-            if (tables.size() > 0) {
+            if (!tables.isEmpty()) {
                 if (!cascade) {
                     // 有表，不做级联删除。
                     throw new DatabaseNotEmptyException(getName(), name);
@@ -438,9 +425,9 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             uState.executeUpdate();
             uState.close();
             if (newDb.getProperties() != null && newDb.getProperties().size() > 0) {
-                String upsertSql = "insert  into metadata_database_property (database_id, `key`,`value`) \n"
+                String upsertSql = "insert  into metadata_database_property (database_id, key, value) \n"
                         + "values (?,?,?)\n"
-                        + "on duplicate key update `value` =?, update_time = sysdate()\n";
+                        + "on duplicate key update value =?, update_time = sysdate()\n";
                 PreparedStatement pstat = conn.prepareStatement(upsertSql);
                 for (Map.Entry<String, String> entry : newDb.getProperties().entrySet()) {
                     pstat.setInt(1, id);
@@ -528,7 +515,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             }
             if (tableType.equals(ObjectType.TABLE)) {
                 // 这个是 table
-                String propSql = "SELECT `key`, `value` from metadata_table_property " + "WHERE table_id=?";
+                String propSql = "SELECT key, value from metadata_table_property " + "WHERE table_id=?";
                 PreparedStatement pState = conn.prepareStatement(propSql);
                 pState.setInt(1, id);
                 ResultSet prs = pState.executeQuery();
@@ -564,7 +551,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 }
                 cStat.close();
                 // 3、取出query
-                String qSql = "SELECT `key`, value FROM metadata_table_property" + " WHERE table_id=? ";
+                String qSql = "SELECT key, value FROM metadata_table_property" + " WHERE table_id=? ";
                 PreparedStatement qStat = conn.prepareStatement(qSql);
                 qStat.setInt(1, id);
                 ResultSet qrs = qStat.executeQuery();
@@ -730,8 +717,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             if (table instanceof ResolvedCatalogTable) {
                 // table 就可以直接拿properties了。
                 Map<String, String> props = ((ResolvedCatalogTable) table).toProperties();
-                String propInsertSql =
-                        "insert into metadata_table_property(table_id," + "`key`,`value`) values (?,?,?)";
+                String propInsertSql = "insert into metadata_table_property(table_id," + "key, value) values (?,?,?)";
                 PreparedStatement pStat = conn.prepareStatement(propInsertSql);
                 for (Map.Entry<String, String> entry : props.entrySet()) {
                     pStat.setInt(1, id);
@@ -750,10 +736,10 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 if (cols.size() > 0) {
                     String colInsertSql = "insert into metadata_column("
                             + " column_name, column_type, data_type"
-                            + " , `expr`"
+                            + " , expr"
                             + " , description"
                             + " , table_id"
-                            + " , `primary`) "
+                            + " , primary) "
                             + " values(?,?,?,?,?,?,?)";
                     PreparedStatement colIStat = conn.prepareStatement(colInsertSql);
                     for (Schema.UnresolvedColumn col : cols) {
@@ -792,7 +778,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                     option.put("OriginalQuery", view.getOriginalQuery());
                     option.put("ExpandedQuery", view.getExpandedQuery());
                     String propInsertSql =
-                            "insert into metadata_table_property(table_id," + "`key`,`value`) values (?,?,?)";
+                            "insert into metadata_table_property(table_id," + "key, value) values (?,?,?)";
                     PreparedStatement pStat = conn.prepareStatement(propInsertSql);
                     for (Map.Entry<String, String> entry : option.entrySet()) {
                         pStat.setInt(1, id);
@@ -824,8 +810,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         Map<String, String> opts = newTable.getOptions();
         if (opts != null && opts.size() > 0) {
             String updateSql = "INSERT INTO metadata_table_property(table_id,"
-                    + "`key`,`value`) values (?,?,?) "
-                    + "on duplicate key update `value` =?, update_time = sysdate()";
+                    + "key, value) values (?,?,?) "
+                    + "on duplicate key update value =?, update_time = sysdate()";
             Connection conn = getConnection();
             try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
                 for (Map.Entry<String, String> entry : opts.entrySet()) {

@@ -91,7 +91,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         try {
             Class.forName(POSTGRES_DRIVER);
         } catch (ClassNotFoundException e) {
-            throw new CatalogException("未加载 mysql 驱动！", e);
+            throw new CatalogException("未加载 pg 驱动！", e);
         }
     }
 
