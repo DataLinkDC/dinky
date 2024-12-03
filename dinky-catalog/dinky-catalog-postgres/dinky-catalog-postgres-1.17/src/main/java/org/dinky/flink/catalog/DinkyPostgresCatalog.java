@@ -76,8 +76,8 @@ import org.slf4j.LoggerFactory;
 import lombok.Getter;
 
 /**
- * 自定义 catalog 检查connection done. 默认db，会被强制指定，不管输入的是什么，都会指定为 default_database
- * 可以读取配置文件信息来获取数据库连接，而不是在sql语句中强制指定。
+ * Custom catalog checks connection done. The default db will be forcibly specified. No matter what is entered, it will be specified as default_database.
+ * The configuration file information can be read to obtain the database connection instead of forcing it to be specified in the sql statement.
  */
 public class DinkyPostgresCatalog extends AbstractCatalog {
 
@@ -91,15 +91,15 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         try {
             Class.forName(POSTGRES_DRIVER);
         } catch (ClassNotFoundException e) {
-            throw new CatalogException("未加载 pg 驱动！", e);
+            throw new CatalogException("PG DRIVER NOT LOADED！", e);
         }
     }
 
     private static final String COMMENT = "comment";
-    /** 判断是否发生过SQL异常，如果发生过，那么conn可能失效。要注意判断 */
+    /** Determine whether a SQL exception has occurred. If so, conn may be invalid. Pay attention to judgment */
     private boolean sqlExceptionHappened = false;
 
-    /** 对象类型，例如 库、表、视图等 */
+    /** Object type, such as library, table, view, etc. */
     protected static class ObjectType {
 
         /** 数据库 */
@@ -129,6 +129,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     }
 
     /** 数据库用户名 */
+    @Getter
     private final String user;
     /** 数据库密码
      * -- GETTER --
@@ -166,14 +167,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     @Override
     public void open() throws CatalogException {
-        // 验证连接是否有效
-        // 获取默认db看看是否存在
+      //Verify whether the connection is valid
+        // Get the default db to see if it exists
         Integer defaultDbId = getDatabaseId(defaultDatabase);
         if (defaultDbId == null) {
             try {
                 createDatabase(defaultDatabase, new CatalogDatabaseImpl(new HashMap<>(), ""), true);
             } catch (DatabaseAlreadyExistException a) {
-                logger.info("重复创建默认库");
+                logger.info("Repeat the creation of the default library");
             }
         }
     }
@@ -195,7 +196,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     protected Connection getConnection() throws CatalogException {
         try {
-            // todo: 包装一个方法用于获取连接，方便后续改造使用其他的连接生成。
+            // todo: Wrap a method to obtain the connection to facilitate subsequent transformation and use other connection generation.
             // Class.forName(MYSQL_DRIVER);
             if (connection == null) {
                 connection = DriverManager.getConnection(url, user, pwd);
@@ -240,7 +241,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     @Override
     public CatalogDatabase getDatabase(String databaseName) throws DatabaseNotExistException, CatalogException {
-        String querySql = "SELECT id, database_name,description " + " FROM metadata_database where database_name=?";
+        String querySql = "SELECT id, database_name,description  FROM metadata_database where database_name=?";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(querySql)) {
             ps.setString(1, databaseName);
@@ -252,7 +253,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
                 Map<String, String> map = new HashMap<>();
 
-                String sql = "select key,value " + "from metadata_database_property " + "where database_id=? ";
+                String sql = "select \"key\", \"value\"  from metadata_database_property where database_id=? ";
                 try (PreparedStatement pStat = conn.prepareStatement(sql)) {
                     pStat.setInt(1, id);
                     ResultSet prs = pStat.executeQuery();
@@ -293,13 +294,13 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                     id = rs.getInt(1);
                     multiDB = true;
                 } else {
-                    throw new CatalogException("存在多个同名database: " + databaseName);
+                    throw new CatalogException("There are multiple databases with the same name: " + databaseName);
                 }
             }
             return id;
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException(String.format("获取 database 信息失败：%s.%s", getName(), databaseName), e);
+            throw new CatalogException(String.format("Failed to obtain database information：%s.%s", getName(), databaseName), e);
         }
     }
 
@@ -314,9 +315,9 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 throw new DatabaseAlreadyExistException(getName(), databaseName);
             }
         } else {
-            // 在这里实现创建库的代码
+            // Implement the code to create the library here
             Connection conn = getConnection();
-            // 启动事务
+            // Start transaction
             String insertSql = "insert into metadata_database(database_name, description) values(?, ?)";
 
             try (PreparedStatement stat = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -330,7 +331,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                         && db.getProperties().size() > 0) {
                     int id = idRs.getInt(1);
                     String propInsertSql =
-                            "insert into metadata_database_property(database_id, " + "key, value) values (?,?,?)";
+                            "insert into metadata_database_property(database_id,key, value) values (?,?,?)";
                     PreparedStatement pstat = conn.prepareStatement(propInsertSql);
                     for (Map.Entry<String, String> entry : db.getProperties().entrySet()) {
                         pstat.setInt(1, id);
@@ -344,7 +345,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 conn.commit();
             } catch (SQLException e) {
                 sqlExceptionHappened = true;
-                logger.error("创建 database 信息失败：", e);
+                logger.error("Failed to create database information：", e);
             }
         }
     }
@@ -353,9 +354,9 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     public void dropDatabase(String name, boolean ignoreIfNotExists, boolean cascade)
             throws DatabaseNotExistException, DatabaseNotEmptyException, CatalogException {
         if (name.equals(defaultDatabase)) {
-            throw new CatalogException("默认 database 不可以删除");
+            throw new CatalogException("The default database cannot be deleted");
         }
-        // 1、取出db id，
+
         Integer id = getDatabaseId(name);
         if (id == null) {
             if (!ignoreIfNotExists) {
@@ -366,14 +367,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         Connection conn = getConnection();
         try {
             conn.setAutoCommit(false);
-            // 查询是否有表
+            // Query whether there is a table
             List<String> tables = listTables(name);
             if (!tables.isEmpty()) {
                 if (!cascade) {
-                    // 有表，不做级联删除。
+                    // There is a table and no cascading delete is performed.
                     throw new DatabaseNotEmptyException(getName(), name);
                 }
-                // 做级联删除
+                // Do cascade delete
                 for (String table : tables) {
                     try {
                         dropTable(new ObjectPath(name, table), true);
@@ -382,7 +383,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                     }
                 }
             }
-            // todo: 现在是真实删除，后续设计是否做记录保留。
+            // todo: Now it is actually deleted, whether records will be retained for subsequent designs.
             String deletePropSql = "delete from metadata_database_property where database_id=?";
             PreparedStatement dStat = conn.prepareStatement(deletePropSql);
             dStat.setInt(1, id);
@@ -396,7 +397,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             conn.commit();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("删除 database 信息失败：", e);
+            throw new CatalogException("Failed to delete database information：", e);
         }
     }
 
@@ -404,7 +405,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     public void alterDatabase(String name, CatalogDatabase newDb, boolean ignoreIfNotExists)
             throws DatabaseNotExistException, CatalogException {
         if (name.equals(defaultDatabase)) {
-            throw new CatalogException("默认 database 不可以修改");
+            throw new CatalogException("The default database cannot be modified");
         }
         // 1、取出db id，
         Integer id = getDatabaseId(name);
@@ -425,15 +426,17 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             uState.executeUpdate();
             uState.close();
             if (newDb.getProperties() != null && newDb.getProperties().size() > 0) {
-                String upsertSql = "insert  into metadata_database_property (database_id, key, value) \n"
-                        + "values (?,?,?)\n"
-                        + "on duplicate key update value =?, update_time = sysdate()\n";
+//                String upsertSql = "insert  into metadata_database_property (database_id, key, value) \n"
+//                        + "values (?,?,?)\n"
+//                        + "on duplicate key update value =?, update_time = sysdate()\n";
+                String upsertSql = "insert  into metadata_database_property (database_id, key, value) "
+                        + "values (?,?,?) "
+                        + "on CONFLICT (database_id, \"key\") do update set value = excluded.value, update_time = now()";
                 PreparedStatement pstat = conn.prepareStatement(upsertSql);
                 for (Map.Entry<String, String> entry : newDb.getProperties().entrySet()) {
                     pstat.setInt(1, id);
                     pstat.setString(2, entry.getKey());
                     pstat.setString(3, entry.getValue());
-                    pstat.setString(4, entry.getValue());
                     pstat.addBatch();
                 }
 
@@ -442,7 +445,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             conn.commit();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("修改 database 信息失败：", e);
+            throw new CatalogException("Failed to modify database information：", e);
         }
     }
 
@@ -486,10 +489,10 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     @Override
     public CatalogBaseTable getTable(ObjectPath tablePath) throws TableNotExistException, CatalogException {
-        // 还是分步骤来
-        // 1、先取出表 这可能是view也可能是table
-        // 2、取出列
-        // 3、取出属性
+        // Still do it in steps
+        // 1. Take out the table first. This may be a view or a table.
+        // 2. Take out the column
+        // 3. Get the attributes
         Integer id = getTableId(tablePath);
 
         if (id == null) {
@@ -499,7 +502,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         Connection conn = getConnection();
         try {
             String queryTable =
-                    "SELECT table_name " + " ,description, table_type " + " FROM metadata_table " + " where  id=?";
+                    "SELECT table_name   ,description, table_type  FROM metadata_table  where  id=?";
             PreparedStatement ps = conn.prepareStatement(queryTable);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -515,7 +518,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             }
             if (tableType.equals(ObjectType.TABLE)) {
                 // 这个是 table
-                String propSql = "SELECT key, value from metadata_table_property " + "WHERE table_id=?";
+                String propSql = "SELECT \"key\", \"value\" from metadata_table_property " + "WHERE table_id=?";
                 PreparedStatement pState = conn.prepareStatement(propSql);
                 pState.setInt(1, id);
                 ResultSet prs = pState.executeQuery();
@@ -531,9 +534,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             } else if (tableType.equals(ObjectType.VIEW)) {
                 // 1、从库中取出table信息。（前面已做）
                 // 2、取出字段。
-                String colSql = "SELECT column_name, column_type, data_type, description "
-                        + " FROM metadata_column WHERE "
-                        + " table_id=?";
+                String colSql = "SELECT column_name, column_type, data_type, description  FROM metadata_column WHERE  table_id=?";
                 PreparedStatement cStat = conn.prepareStatement(colSql);
                 cStat.setInt(1, id);
                 ResultSet crs = cStat.executeQuery();
@@ -545,13 +546,13 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
                     builder.column(colName, dataType);
                     String cDesc = crs.getString("description");
-                    if (null != cDesc && cDesc.length() > 0) {
+                    if (null != cDesc && !cDesc.isEmpty()) {
                         builder.withComment(cDesc);
                     }
                 }
                 cStat.close();
                 // 3、取出query
-                String qSql = "SELECT key, value FROM metadata_table_property" + " WHERE table_id=? ";
+                String qSql = "SELECT \"key\", \"value\" FROM metadata_table_property  WHERE table_id=? ";
                 PreparedStatement qStat = conn.prepareStatement(qSql);
                 qStat.setInt(1, id);
                 ResultSet qrs = qStat.executeQuery();
@@ -572,11 +573,11 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 // 合成view
                 return CatalogView.of(builder.build(), description, originalQuery, expandedQuery, options);
             } else {
-                throw new CatalogException("不支持的数据类型。" + tableType);
+                throw new CatalogException("Unsupported data type。" + tableType);
             }
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("获取 表信息失败。", e);
+            throw new CatalogException("Failed to obtain table information。", e);
         }
     }
 
@@ -592,7 +593,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             return null;
         }
         // 获取id
-        String getIdSql = "select id from metadata_table " + " where table_name=? and database_id=?";
+        String getIdSql = "select id from metadata_table   where table_name=? and database_id=?";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(getIdSql)) {
             gStat.setString(1, tablePath.getObjectName());
@@ -619,19 +620,19 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
         Connection conn = getConnection();
         try {
-            // todo: 现在是真实删除，后续设计是否做记录保留。
+            // todo: Now it is actually deleted, whether records will be retained for subsequent designs.
             conn.setAutoCommit(false);
-            String deletePropSql = "delete from metadata_table_property " + " where table_id=?";
+            String deletePropSql = "delete from metadata_table_property  where table_id=?";
             PreparedStatement dStat = conn.prepareStatement(deletePropSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteColSql = "delete from metadata_column " + " where table_id=?";
+            String deleteColSql = "delete from metadata_column  where table_id=?";
             dStat = conn.prepareStatement(deleteColSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteDbSql = "delete from metadata_table " + " where id=?";
+            String deleteDbSql = "delete from metadata_table   where id=?";
             dStat = conn.prepareStatement(deleteDbSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
@@ -664,7 +665,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             ps.executeUpdate();
         } catch (SQLException ex) {
             sqlExceptionHappened = true;
-            throw new CatalogException("修改表名失败", ex);
+            throw new CatalogException("Failed to modify table name", ex);
         }
     }
 
@@ -686,7 +687,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         // 如果是一个table，我们认为它是一个 resolved table，就可以使用properties方式来进行序列化并保存。
         // 如果是一个view，我们认为它只能有物理字段
         if (!(table instanceof ResolvedCatalogBaseTable)) {
-            throw new UnsupportedOperationException("暂时不支持输入非 ResolvedCatalogBaseTable 类型的表");
+            throw new UnsupportedOperationException("The input of non-ResolvedCatalogBaseTable type tables is temporarily not supported.");
         }
         Connection conn = getConnection();
         try {
@@ -709,7 +710,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             ResultSet idRs = iStat.getGeneratedKeys();
             if (!idRs.next()) {
                 iStat.close();
-                throw new CatalogException("插入元数据表信息失败");
+                throw new CatalogException("Failed to insert metadata table information");
             }
             int id = idRs.getInt(1);
             iStat.close();
@@ -717,7 +718,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             if (table instanceof ResolvedCatalogTable) {
                 // table 就可以直接拿properties了。
                 Map<String, String> props = ((ResolvedCatalogTable) table).toProperties();
-                String propInsertSql = "insert into metadata_table_property(table_id," + "key, value) values (?,?,?)";
+                String propInsertSql = "insert into metadata_table_property(table_id, key, value) values (?,?,?)";
                 PreparedStatement pStat = conn.prepareStatement(propInsertSql);
                 for (Map.Entry<String, String> entry : props.entrySet()) {
                     pStat.setInt(1, id);
@@ -733,7 +734,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 // 插入属性和列
                 ResolvedCatalogView view = (ResolvedCatalogView) table;
                 List<Schema.UnresolvedColumn> cols = view.getUnresolvedSchema().getColumns();
-                if (cols.size() > 0) {
+                if (!cols.isEmpty()) {
                     String colInsertSql = "insert into metadata_column("
                             + " column_name, column_type, data_type"
                             + " , expr"
@@ -747,7 +748,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                             Schema.UnresolvedPhysicalColumn pCol = (Schema.UnresolvedPhysicalColumn) col;
                             if (!(pCol.getDataType() instanceof DataType)) {
                                 throw new UnsupportedOperationException(String.format(
-                                        "类型识别失败，该列不是有效类型：%s.%s.%s : %s",
+                                        "Type recognition failed, the column is not a valid type：%s.%s.%s : %s",
                                         tablePath.getDatabaseName(),
                                         tablePath.getObjectName(),
                                         pCol.getName(),
@@ -764,13 +765,13 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                             colIStat.setObject(7, null); // view没有主键
                             colIStat.addBatch();
                         } else {
-                            throw new UnsupportedOperationException("暂时认为view 不会出现 非物理字段");
+                            throw new UnsupportedOperationException("For the time being, it is believed that non-physical fields will not appear in the view.");
                         }
                     }
                     colIStat.executeBatch();
                     colIStat.close();
 
-                    // 写 query等信息到数据库
+                    // Write query and other information to the database
                     Map<String, String> option = view.getOptions();
                     if (option == null) {
                         option = new HashMap<>();
@@ -793,8 +794,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             conn.commit();
         } catch (SQLException ex) {
             sqlExceptionHappened = true;
-            logger.error("插入数据库失败", ex);
-            throw new CatalogException("插入数据库失败", ex);
+            logger.error("Insertion into database failed", ex);
+            throw new CatalogException("Insertion into database failed", ex);
         }
     }
 
@@ -808,10 +809,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
 
         Map<String, String> opts = newTable.getOptions();
-        if (opts != null && opts.size() > 0) {
+        if (opts != null && !opts.isEmpty()) {
+//            String updateSql = "INSERT INTO metadata_table_property(table_id,"
+//                    + "key, value) values (?,?,?) "
+//                    + "on duplicate key update value =?, update_time = sysdate()";
+//
             String updateSql = "INSERT INTO metadata_table_property(table_id,"
                     + "key, value) values (?,?,?) "
-                    + "on duplicate key update value =?, update_time = sysdate()";
+                    + "on CONFLICT (table_id, \"key\") do update set value = excluded.value, update_time = now()";
             Connection conn = getConnection();
             try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
                 for (Map.Entry<String, String> entry : opts.entrySet()) {
@@ -824,7 +829,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 ps.executeBatch();
             } catch (SQLException ex) {
                 sqlExceptionHappened = true;
-                throw new CatalogException("修改表名失败", ex);
+                throw new CatalogException("Failed to modify table name", ex);
             }
         }
     }
@@ -833,36 +838,36 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     @Override
     public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath)
             throws TableNotExistException, TableNotPartitionedException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException,
                     CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public List<CatalogPartitionSpec> listPartitionsByFilter(ObjectPath tablePath, List<Expression> filters)
             throws TableNotExistException, TableNotPartitionedException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public CatalogPartition getPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public boolean partitionExists(ObjectPath tablePath, CatalogPartitionSpec partitionSpec) throws CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
@@ -873,15 +878,15 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             boolean ignoreIfExists)
             throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException,
                     PartitionAlreadyExistsException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public void dropPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
@@ -891,8 +896,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             CatalogPartition newPartition,
             boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     /** *********************Functions********************* */
@@ -902,7 +907,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         if (null == dbId) {
             throw new DatabaseNotExistException(getName(), dbName);
         }
-        String querySql = "SELECT function_name from metadata_function " + " WHERE database_id=?";
+        String querySql = "SELECT function_name from metadata_function  WHERE database_id=?";
 
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(querySql)) {
@@ -916,7 +921,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             return functions;
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("获取 UDF 列表失败");
+            throw new CatalogException("Failed to get UDF list");
         }
     }
 
@@ -927,7 +932,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             throw new FunctionNotExistException(getName(), functionPath);
         }
 
-        String querySql = "SELECT class_name,function_language from metadata_function " + " WHERE id=?";
+        String querySql = "SELECT class_name,function_language from metadata_function   WHERE id=?";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(querySql)) {
             gStat.setInt(1, id);
@@ -935,15 +940,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             if (rs.next()) {
                 String className = rs.getString("class_name");
                 String language = rs.getString("function_language");
-                CatalogFunctionImpl func = new CatalogFunctionImpl(className, FunctionLanguage.valueOf(language));
-                return func;
+                return new CatalogFunctionImpl(className, FunctionLanguage.valueOf(language));
             } else {
                 throw new FunctionNotExistException(getName(), functionPath);
             }
         } catch (SQLException e) {
             sqlExceptionHappened = true;
             throw new CatalogException(
-                    "获取 UDF 失败：" + functionPath.getDatabaseName() + "." + functionPath.getObjectName());
+                    "Failed to get UDF：" + functionPath.getDatabaseName() + "." + functionPath.getObjectName());
         }
     }
 
@@ -958,8 +962,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         if (dbId == null) {
             return null;
         }
-        // 获取id
-        String getIdSql = "select id from metadata_function " + " where function_name=? and database_id=?";
+        // Get id
+        String getIdSql = "select id from metadata_function  where function_name=? and database_id=?";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(getIdSql)) {
             gStat.setString(1, functionPath.getObjectName());
@@ -991,7 +995,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "Insert into metadata_function "
+        String insertSql = "insert into metadata_function "
                 + "(function_name,class_name,database_id,function_language) "
                 + " values (?,?,?,?)";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
@@ -1002,7 +1006,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             ps.executeUpdate();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("创建 函数 失败", e);
+            throw new CatalogException("Create function failed", e);
         }
     }
 
@@ -1018,7 +1022,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "update metadata_function " + "set (class_name =?, function_language=?) " + " where id=?";
+        String insertSql = "update metadata_function  set class_name =?, function_language=? where id=?";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setString(1, newFunction.getClassName());
             ps.setString(2, newFunction.getFunctionLanguage().toString());
@@ -1026,7 +1030,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             ps.executeUpdate();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("修改 函数 失败", e);
+            throw new CatalogException("Modify function failed", e);
         }
     }
 
@@ -1042,20 +1046,20 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "delete from metadata_function " + " where id=?";
+        String insertSql = "delete from metadata_function where id=?";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("删除 函数 失败", e);
+            throw new CatalogException("Delete function failed", e);
         }
     }
 
     @Override
     public CatalogTableStatistics getTableStatistics(ObjectPath tablePath)
             throws TableNotExistException, CatalogException {
-        // todo: 补充完成该方法。
+        // todo: Supplementary completion of this method。
         checkNotNull(tablePath);
 
         if (!tableExists(tablePath)) {
@@ -1072,7 +1076,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     @Override
     public CatalogColumnStatistics getTableColumnStatistics(ObjectPath tablePath)
             throws TableNotExistException, CatalogException {
-        // todo: 补充完成该方法。
+        // todo: Supplementary completion of this method。
         checkNotNull(tablePath);
 
         if (!tableExists(tablePath)) {
@@ -1087,32 +1091,32 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     @Override
     public CatalogTableStatistics getPartitionStatistics(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public CatalogColumnStatistics getPartitionColumnStatistics(
             ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public void alterTableStatistics(
             ObjectPath tablePath, CatalogTableStatistics tableStatistics, boolean ignoreIfNotExists)
             throws TableNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
     public void alterTableColumnStatistics(
             ObjectPath tablePath, CatalogColumnStatistics columnStatistics, boolean ignoreIfNotExists)
             throws TableNotExistException, CatalogException, TablePartitionedException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
@@ -1122,8 +1126,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             CatalogTableStatistics partitionStatistics,
             boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 
     @Override
@@ -1133,7 +1137,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             CatalogColumnStatistics columnStatistics,
             boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: Supplementary completion of this method。
+        throw new UnsupportedOperationException("This method is not yet complete");
     }
 }

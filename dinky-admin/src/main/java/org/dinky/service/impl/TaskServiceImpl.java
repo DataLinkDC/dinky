@@ -19,8 +19,40 @@
 
 package org.dinky.service.impl;
 
-import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
-
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.text.StrFormatter;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.util.TextUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -97,28 +129,6 @@ import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.RunTimeUtil;
 import org.dinky.utils.UDFUtils;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.util.TextUtils;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
-
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
@@ -126,24 +136,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.text.StrFormatter;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
 
 /**
  * TaskServiceImpl
@@ -710,20 +703,22 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private @NotNull String getStatementByCatalogType(CatalogTypeMappingEnum catalogTypeMappingEnum) {
         String sql = String.format(
-                "create catalog my_catalog with(\n    "
+                "create catalog my_catalog_%s with(\n    "
                         + "'type' = '%s',\n"
                         + "    'username' = "
                         + "'%s',\n    "
                         + "'password' = '%s',\n"
                         + "    'url' = '%s'\n"
-                        + ")%suse catalog my_catalog%s",
+                        + ")%suse catalog my_catalog_%s %s",
+                catalogTypeMappingEnum.getCatalogTypeName(),
                 catalogTypeMappingEnum.getCatalogTypeName(),
                 dsProperties.getUsername(),
                 dsProperties.getPassword(),
                 dsProperties.getUrl(),
                 FlinkSQLConstant.SEPARATOR,
+                catalogTypeMappingEnum.getCatalogTypeName(),
                 FlinkSQLConstant.SEPARATOR);
-        log.info(
+        log.debug(
                 "Init default flink sql env sql:{}, yours dbType is:{}, catalogName is:{}",
                 sql,
                 catalogTypeMappingEnum.getDbType(),
@@ -749,13 +744,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getReleaseUDF() {
         return list(new LambdaQueryWrapper<Task>()
-                        .in(
-                                Task::getDialect,
-                                Dialect.JAVA.getValue(),
-                                Dialect.SCALA.getValue(),
-                                Dialect.PYTHON.getValue())
-                        .eq(Task::getEnabled, 1)
-                        .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
+                .in(
+                        Task::getDialect,
+                        Dialect.JAVA.getValue(),
+                        Dialect.SCALA.getValue(),
+                        Dialect.PYTHON.getValue())
+                .eq(Task::getEnabled, 1)
+                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
                 .stream()
                 .filter(task -> Asserts.isNotNullString(
                         task.getConfigJson().getUdfConfig().getClassName()))
@@ -789,7 +784,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Integer queryAllSizeByName(String name) {
-        return baseMapper.queryAllSizeByName(name);
+        Long value = baseMapper.selectCount(new LambdaQueryWrapper<Task>().likeRight(Task::getName, name + "-" ));
+        return Math.toIntExact(value);
     }
 
     @Override
