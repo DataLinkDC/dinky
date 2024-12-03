@@ -78,6 +78,7 @@
             <outputDirectory>extends/flink1.14/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.14-${project.version}.jar</include>
+                <include>dinky-catalog-postgres-1.14-${project.version}.jar</include>
                 <include>dinky-client-1.14-${project.version}.jar</include>
                 <include>dinky-connector-jdbc-1.14-${project.version}.jar</include>
             </includes>
@@ -87,6 +88,7 @@
             <outputDirectory>extends/flink1.15/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.15-${project.version}.jar</include>
+                <include>dinky-catalog-postgres-1.15-${project.version}.jar</include>
                 <include>dinky-client-1.15-${project.version}.jar</include>
             </includes>
         </fileSet>
@@ -95,6 +97,7 @@
             <outputDirectory>extends/flink1.16/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.16-${project.version}.jar</include>
+                <include>dinky-catalog-postgres-1.16-${project.version}.jar</include>
                 <include>dinky-client-1.16-${project.version}.jar</include>
             </includes>
         </fileSet>
@@ -103,6 +106,7 @@
             <outputDirectory>extends/flink1.17/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.17-${project.version}.jar</include>
+                <include>dinky-catalog-postgres-1.17-${project.version}.jar</include>
                 <include>dinky-client-1.17-${project.version}.jar</include>
             </includes>
         </fileSet>
@@ -111,6 +115,7 @@
             <outputDirectory>extends/flink1.18/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.18-${project.version}.jar</include>
+                <include>dinky-catalog-postgres-1.18-${project.version}.jar</include>
                 <include>dinky-client-1.18-${project.version}.jar</include>
             </includes>
         </fileSet>
@@ -119,6 +124,7 @@
             <outputDirectory>extends/flink1.19/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.19-${project.version}.jar</include>
+                <include>dinky-catalog-postgres-1.19-${project.version}.jar</include>
                 <include>dinky-client-1.19-${project.version}.jar</include>
             </includes>
         </fileSet>
@@ -127,6 +133,7 @@
             <outputDirectory>extends/flink1.20/dinky</outputDirectory>
             <includes>
                 <include>dinky-catalog-mysql-1.20-${project.version}.jar</include>
+                <include>dinky-catalog-postgres-1.20-${project.version}.jar</include>
                 <include>dinky-client-1.20-${project.version}.jar</include>
             </includes>
         </fileSet>
