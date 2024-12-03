@@ -22,7 +22,6 @@ package org.dinky.flink.catalog.factory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
 import org.dinky.flink.catalog.DinkyPostgresCatalog;
 
 import org.apache.flink.table.catalog.Catalog;

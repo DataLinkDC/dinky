@@ -19,40 +19,8 @@
 
 package org.dinky.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
-import cn.hutool.core.text.StrFormatter;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.util.TextUtils;
+import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -129,6 +97,28 @@ import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.RunTimeUtil;
 import org.dinky.utils.UDFUtils;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.util.TextUtils;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
@@ -136,7 +126,24 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.text.StrFormatter;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * TaskServiceImpl
@@ -159,7 +166,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final UserService userService;
     private final ApplicationContext applicationContext;
     private final DinkyCustomConfiguration dinkyCustomConfiguration;
-
 
     @Resource
     @Lazy
@@ -703,7 +709,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private @NotNull String getStatementByCatalogType(CatalogTypeMappingEnum catalogTypeMappingEnum) {
-        String sql =  String.format(
+        String sql = String.format(
                 "create catalog my_catalog with(\n    "
                         + "'type' = '%s',\n"
                         + "    'username' = "
@@ -717,7 +723,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 dsProperties.getUrl(),
                 FlinkSQLConstant.SEPARATOR,
                 FlinkSQLConstant.SEPARATOR);
-        log.info("Init default flink sql env sql:{}, yours dbType is:{}, catalogName is:{}", sql, catalogTypeMappingEnum.getDbType(), catalogTypeMappingEnum.getCatalogTypeName());
+        log.info(
+                "Init default flink sql env sql:{}, yours dbType is:{}, catalogName is:{}",
+                sql,
+                catalogTypeMappingEnum.getDbType(),
+                catalogTypeMappingEnum.getCatalogTypeName());
         return sql;
     }
 
@@ -739,13 +749,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> getReleaseUDF() {
         return list(new LambdaQueryWrapper<Task>()
-                .in(
-                        Task::getDialect,
-                        Dialect.JAVA.getValue(),
-                        Dialect.SCALA.getValue(),
-                        Dialect.PYTHON.getValue())
-                .eq(Task::getEnabled, 1)
-                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
+                        .in(
+                                Task::getDialect,
+                                Dialect.JAVA.getValue(),
+                                Dialect.SCALA.getValue(),
+                                Dialect.PYTHON.getValue())
+                        .eq(Task::getEnabled, 1)
+                        .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
                 .stream()
                 .filter(task -> Asserts.isNotNullString(
                         task.getConfigJson().getUdfConfig().getClassName()))
