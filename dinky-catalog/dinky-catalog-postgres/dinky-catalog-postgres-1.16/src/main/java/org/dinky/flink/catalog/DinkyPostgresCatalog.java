@@ -167,7 +167,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     @Override
     public void open() throws CatalogException {
-      //Verify whether the connection is valid
+        // Verify whether the connection is valid
         // Get the default db to see if it exists
         Integer defaultDbId = getDatabaseId(defaultDatabase);
         if (defaultDbId == null) {
@@ -196,7 +196,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     protected Connection getConnection() throws CatalogException {
         try {
-            // todo: Wrap a method to obtain the connection to facilitate subsequent transformation and use other connection generation.
+            // todo: Wrap a method to obtain the connection to facilitate subsequent transformation and use other
+            // connection generation.
             // Class.forName(MYSQL_DRIVER);
             if (connection == null) {
                 connection = DriverManager.getConnection(url, user, pwd);
@@ -300,7 +301,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             return id;
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException(String.format("Failed to obtain database information：%s.%s", getName(), databaseName), e);
+            throw new CatalogException(
+                    String.format("Failed to obtain database information：%s.%s", getName(), databaseName), e);
         }
     }
 
@@ -426,9 +428,10 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             uState.executeUpdate();
             uState.close();
             if (newDb.getProperties() != null && newDb.getProperties().size() > 0) {
-//                String upsertSql = "insert  into metadata_database_property (database_id, key, value) \n"
-//                        + "values (?,?,?)\n"
-//                        + "on duplicate key update value =?, update_time = sysdate()\n";
+                //                String upsertSql = "insert  into metadata_database_property (database_id, key, value)
+                // \n"
+                //                        + "values (?,?,?)\n"
+                //                        + "on duplicate key update value =?, update_time = sysdate()\n";
                 String upsertSql = "insert  into metadata_database_property (database_id, key, value) "
                         + "values (?,?,?) "
                         + "on CONFLICT (database_id, \"key\") do update set value = excluded.value, update_time = now()";
@@ -501,8 +504,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
         Connection conn = getConnection();
         try {
-            String queryTable =
-                    "SELECT table_name   ,description, table_type  FROM metadata_table  where  id=?";
+            String queryTable = "SELECT table_name   ,description, table_type  FROM metadata_table  where  id=?";
             PreparedStatement ps = conn.prepareStatement(queryTable);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -534,7 +536,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             } else if (tableType.equals(ObjectType.VIEW)) {
                 // 1、从库中取出table信息。（前面已做）
                 // 2、取出字段。
-                String colSql = "SELECT column_name, column_type, data_type, description  FROM metadata_column WHERE  table_id=?";
+                String colSql =
+                        "SELECT column_name, column_type, data_type, description  FROM metadata_column WHERE  table_id=?";
                 PreparedStatement cStat = conn.prepareStatement(colSql);
                 cStat.setInt(1, id);
                 ResultSet crs = cStat.executeQuery();
@@ -687,7 +690,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         // 如果是一个table，我们认为它是一个 resolved table，就可以使用properties方式来进行序列化并保存。
         // 如果是一个view，我们认为它只能有物理字段
         if (!(table instanceof ResolvedCatalogBaseTable)) {
-            throw new UnsupportedOperationException("The input of non-ResolvedCatalogBaseTable type tables is temporarily not supported.");
+            throw new UnsupportedOperationException(
+                    "The input of non-ResolvedCatalogBaseTable type tables is temporarily not supported.");
         }
         Connection conn = getConnection();
         try {
@@ -765,7 +769,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                             colIStat.setObject(7, null); // view没有主键
                             colIStat.addBatch();
                         } else {
-                            throw new UnsupportedOperationException("For the time being, it is believed that non-physical fields will not appear in the view.");
+                            throw new UnsupportedOperationException(
+                                    "For the time being, it is believed that non-physical fields will not appear in the view.");
                         }
                     }
                     colIStat.executeBatch();
@@ -810,10 +815,10 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
         Map<String, String> opts = newTable.getOptions();
         if (opts != null && !opts.isEmpty()) {
-//            String updateSql = "INSERT INTO metadata_table_property(table_id,"
-//                    + "key, value) values (?,?,?) "
-//                    + "on duplicate key update value =?, update_time = sysdate()";
-//
+            //            String updateSql = "INSERT INTO metadata_table_property(table_id,"
+            //                    + "key, value) values (?,?,?) "
+            //                    + "on duplicate key update value =?, update_time = sysdate()";
+            //
             String updateSql = "INSERT INTO metadata_table_property(table_id,"
                     + "key, value) values (?,?,?) "
                     + "on CONFLICT (table_id, \"key\") do update set value = excluded.value, update_time = now()";

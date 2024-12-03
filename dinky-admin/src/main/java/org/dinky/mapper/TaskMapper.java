@@ -39,7 +39,6 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 @Mapper
 public interface TaskMapper extends SuperMapper<Task> {
 
-
     List<Task> queryOnLineTaskByDoneStatus(
             @Param("parentIds") List<Integer> parentIds,
             @Param("stepIds") List<Integer> stepIds,
