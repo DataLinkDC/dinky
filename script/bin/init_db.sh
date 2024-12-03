@@ -2,25 +2,22 @@
 
 DINKY_HOME=$1
 
-echo -e "${GREEN}====================== 数据库配置文件初始化 ======================${RESET}"
-echo -e "${BLUE}参数: Dinky 根目录为：${DINKY_HOME}${RESET}"
+echo -e "${GREEN}====================== The database configuration file is initialized ======================${RESET}"
 
-# 检查参数
 if [ -z "$DINKY_HOME" ]; then
-  echo -e "${RED}参数错误，请检查！${RESET}"
+  echo -e "${RED}The parameter is wrong, please check!${RESET}"
   exit 1
 fi
 
 while true; do
-  read -p "请选择数据库类型(1.MySQL 2.PostgreSQL)：" db_type
-  read -p "请输入数据库地址(主机名或IP, 默认 localhost): " -i "localhost" db_host
-  read -p "请输入数据库端口(默认 3306): " -i 3306 db_port
-  read -p "请输入数据库名称(默认 dinky): " -i "dinky" db_name
-  read -p "请输入数据库用户名(默认 dinky): " -i "dinky" db_username
-  read -s -p "请输入数据库密码(默认 dinky): " -i "dinky" db_password
-  echo # 新行，以便在输入密码后换行
+  read -p "Please select a database type (1.MySQL 2.PostgresSQL)：" db_type
+  read -p "Please enter the database address (hostname or IP, default localhost): " -i "localhost" db_host
+  read -p "Please enter the database port (default 3306): " -i 3306 db_port
+  read -p "Please enter a database name (default dinky): " -i "dinky" db_name
+  read -p "Please enter the database username (default dinky):" -i "dinky" db_username
+  read -s -p "Please enter the database password (default dinky):" -i "dinky" db_password
+  echo
 
-  # 转换为小写并去除空格
   db_type=$(echo "$db_type" |  tr -d '[:space:]')
   db_host=$(echo "$db_host" | tr -d '[:space:]')
   db_port=$(echo "$db_port" | tr -d '[:space:]')
@@ -30,10 +27,9 @@ while true; do
 
   case $db_type in
     1)
-      echo -e "${YELLOW}正在配置 MySQL 数据库相关信息...${RESET}"
+      echo -e "${YELLOW}Configuring MySQL database related information...${RESET}"
       config_file="${DINKY_HOME}/config/application-mysql.yml"
-      # 更新 application-mysql.yml 文件中的配置
-      echo -e "${GREEN} 自动初始化脚本采用 export 环境变量的方式 支持数据源的环境变量加载, 配置文件为：${config_file} ${RESET}"
+      echo -e "${GREEN} The automatic initialization script uses the export environment variable method to support the loading of environment variables of the data source. The configuration file is：${config_file} ${RESET}"
       echo "export DB_ACTIVE=mysql" >> /etc/profile
       echo "export MYSQL_ADDR=${db_host}:${db_port}" >> /etc/profile
       echo "export MYSQL_DATABASE=${db_name}" >> /etc/profile
@@ -41,17 +37,16 @@ while true; do
       echo "export MYSQL_PASSWORD=${db_password}" >> /etc/profile
       source /etc/profile
 
-      echo -e "${GREEN}MySQL 数据库相关信息配置完成。请确认以下配置是否正确：${RESET}"
+      echo -e "${GREEN}MySQLThe configuration of database related information is completed. Please confirm whether the following configuration is correct：${RESET}"
       grep -E '^(export DB_ACTIVE|export MYSQL_ADDR|export MYSQL_DATABASE|export MYSQL_USERNAME|export MYSQL_PASSWORD)' /etc/profile | grep -v "^#" | grep -v "^$"
-      break  # 退出循环
+      break
       ;;
     2)
-      echo -e "${YELLOW}正在配置 PostgreSQL 数据库相关信息...${RESET}"
+      echo -e "${YELLOW}Configuring PostgresSQL database related information...${RESET}"
       config_file="${DINKY_HOME}/config/application-pgsql.yml"
 
-      echo -e "${GREEN}自动初始化脚本采用 export 环境变量的方式 支持数据源配置文件的环境变量加载, 配置文件为：${config_file} ${RESET}"
+      echo -e "${GREEN}The automatic initialization script uses the export environment variable method to support the loading of environment variables from the data source configuration file. The configuration file is：${config_file} ${RESET}"
 
-       # 将以下变量追加方式写入到 /etc/profile 文件中
       echo "export DB_ACTIVE=pgsql" >> /etc/profile
       echo "export POSTGRES_ADDR=${db_host}:${db_port}" >> /etc/profile
       echo "export POSTGRES_DB=${db_name}" >> /etc/profile
@@ -59,12 +54,12 @@ while true; do
       echo "export POSTGRES_PASSWORD=${db_password}" >> /etc/profile
       source /etc/profile
 
-      echo -e "${GREEN}PostgreSQL 数据库相关信息配置完成。请确认以下配置是否正确：${RESET}"
+      echo -e "${GREEN}PostgresSQL The configuration of database related information is completed. Please confirm whether the following configuration is correct：${RESET}"
       grep -E '^(export DB_ACTIVE|export POSTGRES_ADDR|export POSTGRES_DB|export POSTGRES_USER|export POSTGRES_PASSWORD)' /etc/profile | grep -v "^#" | grep -v "^$"
-      break  # 退出循环
+      break
       ;;
     *)
-      echo -e "${RED}输入的数据库类型不正确，请重新选择正确的数据库类型.${RESET}"
+      echo -e "${RED}The entered database type is incorrect, please select the correct database type again.${RESET}"
       ;;
   esac
 done

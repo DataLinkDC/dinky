@@ -1,8 +1,5 @@
 #!/bin/bash
 
-
-
-# 定义颜色变量
 export RED='\033[31m'
 export GREEN='\033[32m'
 export YELLOW='\033[33m'
@@ -11,15 +8,12 @@ export MAGENTA='\033[35m'
 export CYAN='\033[36m'
 export RESET='\033[0m'
 
-# 输出欢迎图案
 echo -e "${GREEN}=====================================================================${RESET}"
 echo -e "${GREEN}=====================================================================${RESET}"
-echo -e "${GREEN}==================== 欢迎使用 Dinky 初始化脚本 =====================${RESET}"
+echo -e "${GREEN}============ Welcome to the Dinky initialization script =============${RESET}"
 echo -e "${GREEN}======================================================================${RESET}"
 echo -e "${GREEN}======================================================================${RESET}"
 
-# 获取安装的目录 APP_HOME 先从环境变量中获取，如果没有则使用脚本所在目录
-# 先拿 DINKY_HOME 环境变量，如果没有则使用脚本所在目录
 APP_HOME=${DINKY_HOME:-$(cd "$(dirname "$0")"; cd ..; pwd)}
 export DINKY_HOME=${APP_HOME}
 
@@ -29,125 +23,117 @@ sudo chmod +x "${APP_HOME}"/bin/init_*.sh
 
 EXTENDS_HOME="${APP_HOME}/extends"
 if [ ! -d "${EXTENDS_HOME}" ]; then
-    echo -e "${RED} ${EXTENDS_HOME} 目录不存在，请检查 ${RESET}"
+    echo -e "${RED} ${EXTENDS_HOME} Directory does not exist, please check${RESET}"
     exit 1
 fi
 
-# 获取Dinky部署的Flink对应的版本号
 FLINK_VERSION_SCAN=$(ls -n "${EXTENDS_HOME}" | grep '^d' | grep flink | awk -F 'flink' '{print $2}')
 if [ -z "${FLINK_VERSION_SCAN}" ]; then
-    echo -e "${RED} Dinky 部署的目录下 ${EXTENDS_HOME} 不存在 Flink 相关版本, 无法进行初始化操作，请检查。 ${RESET}"
+    echo -e "${RED}There is no Flink related version in ${EXTENDS_HOME} in the directory where Dinky is deployed. The initialization operation cannot be performed. Please check. ${RESET}"
     exit 1
 fi
 
-# 临时目录
 DINKY_TMP_DIR="${APP_HOME}/tmp"
 if [ ! -d "${DINKY_TMP_DIR}" ]; then
-    echo -e "${YELLOW}创建临时目录 ${DINKY_TMP_DIR}...${RESET}"
+    echo -e "${YELLOW}Create temporary directory ${DINKY_TMP_DIR}...${RESET}"
     mkdir -p "${DINKY_TMP_DIR}"
-    echo -e "${GREEN}临时目录创建完成${RESET}"
+    echo -e "${GREEN}The temporary directory is created${RESET}"
 fi
 
 # LIB
 DINKY_LIB="${APP_HOME}/lib"
 if [ ! -d "${DINKY_LIB}" ]; then
-    echo -e "${RED}${DINKY_LIB} 目录不存在，请检查。 ${RESET}"
+    echo -e "${RED}${DINKY_LIB} Directory does not exist, please check. ${RESET}"
     exit 1
 fi
 
 # 函数：检查命令是否存在，不存在则尝试安装
 check_command() {
     local cmd="$1"
-    echo -e "${BLUE}检查命令：$cmd 是否存在......${RESET}"
+    echo -e "${BLUE}Check if command: $cmd exists...${RESET}"
     if ! command -v "$cmd" &> /dev/null; then
         if [ "$cmd" == "yum" ]; then
-            echo -e "${YELLOW} 尝试使用yum安装缺失的命令...${RESET}"
+            echo -e "${YELLOW} Try using yum to install the missing command...${RESET}"
             sudo yum install -y "$cmd"
         elif [ "$cmd" == "apt-get" ]; then
-            echo -e "${YELLOW}尝试使用apt-get安装缺失的命令...${RESET}"
+            echo -e "${YELLOW}Try using apt-get to install the missing command...${RESET}"
             sudo apt-get install -y "$cmd"
         else
-            echo -e "${RED} $cmd 命令未找到，请手动安装后再运行此脚本。${RESET}"
+            echo -e "${RED} $cmd The command was not found. Please install it manually and then run this script.。${RESET}"
             exit 1
         fi
     fi
-    echo -e "${GREEN}========== 命令 $cmd 检查完成。 OK, 继续执行脚本。 ==========${RESET}"
+    echo -e "${GREEN}========== Command $cmd check completed. OK, continue executing the script. ==========${RESET}"
 }
 
 sh "${APP_HOME}/bin/init_check_network.sh"
 
-# 检查wget是否存在，不存在则尝试安装
 check_command "wget"
 
-echo -e "${GREEN}前置检查完成，欢迎使用 Dinky 初始化脚本，当前 Dinky 根路径为：${APP_HOME} ${RESET}"
+echo -e "${GREEN}The pre-check is completed. Welcome to use the Dinky initialization script. The current Dinky root path is：${APP_HOME} ${RESET}"
 
 function download_file() {
     source_url=$1
     target_file_dir=$2
-    echo -e "${GREEN}开始下载 $source_url 到 $target_file_dir...${RESET}"
+    echo -e "${GREEN}Start downloading $source_url to $target_file_dir...${RESET}"
     wget -P "${target_file_dir}" "${source_url}"
-    echo -e "${GREEN}下载完成。下载的文件存放地址为： $target_file_dir ${RESET}"
+    echo -e "${GREEN}Download completed. The downloaded file storage address is: $target_file_dir ${RESET}"
 }
 
-# 导出函数
 export -f download_file
 
 echo
 echo
-echo -e "${GREEN} ====================== 数据源驱动初始化脚本 -> 开始 ====================== ${RESET}"
+echo -e "${GREEN} ====================== Data source driver initialization script -> Start ====================== ${RESET}"
 
 while true; do
-    # 步骤1：获取数据库类型，判断是否为mysql，若是则下载驱动包
-    echo -e "${BLUE} ============ 请输入你的数据库类型 ================ ${RESET}"
-    echo -e "${BLUE} ======== (h2 默认自带不需要执行该步骤) ===========  ${RESET}"
-    echo -e "${BLUE} ============== 请选择 1、2、3 ==================  ${RESET}"
-    echo -e "${BLUE} ================ 1. mysql =====================  ${RESET}"
-    echo -e "${BLUE} ================ 2. pgsql =====================  ${RESET}"
-    echo -e "${BLUE} ================ 3. 跳过该步骤 ==================  ${RESET}"
-    echo -e "${BLUE} ================ 输入数字选择 ===================  ${RESET}"
-    read -p "请输入你的数据库类型：" db_type
+    echo -e "${BLUE} ========================= Please enter your database type ================================ ${RESET}"
+    echo -e "${BLUE} ======== (h2 comes with it by default and does not need to perform this step)===========  ${RESET}"
+    echo -e "${BLUE} ============================== Please select 1, 2, 3 ======================================  ${RESET}"
+    echo -e "${BLUE} ==================================== 1. mysql =============================================  ${RESET}"
+    echo -e "${BLUE} ==================================== 2. pgsql =========================================  ${RESET}"
+    echo -e "${BLUE} ================================ 3. Skip this step ==========================================  ${RESET}"
+    echo -e "${BLUE} ================================ Enter number selection ==================================  ${RESET}"
+    read -p "Please enter your database type：" db_type
     case $db_type in
         1)
-            echo -e "${GREEN}开始下载 mysql 驱动包...${RESET}"
-            # 这里替换为真实有效的下载链接
-            # 检查是否已经存在
+            echo -e "${GREEN}Start downloading the mysql driver package...${RESET}"
             if [ -f "${DINKY_LIB}/mysql-connector-j-8.4.0.jar" ]; then
-                echo -e "${GREEN}mysql 驱动包已存在，无需重复下载。跳过该步骤。${RESET}"
+                echo -e "${GREEN}mysql The driver package already exists, no need to download it again. Skip this step。${RESET}"
             else
                 download_file https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar "${DINKY_LIB}"
-                echo -e "${GREEN}下载完成，校验一下。下载的文件存放地址为： ${DINKY_LIB}/mysql-connector-j-8.4.0.jar${RESET}"
+                echo -e "${GREEN}Download is complete, please verify. The downloaded file storage address is： ${DINKY_LIB}/mysql-connector-j-8.4.0.jar${RESET}"
                 if [ -f "${DINKY_LIB}/mysql-connector-j-8.4.0.jar" ]; then
-                    echo -e "${GREEN}mysql 驱动包下载成功。${RESET}"
+                    echo -e "${GREEN}mysql driver package downloaded successfully。${RESET}"
                 else
-                    echo -e "${RED}mysql 驱动包下载失败，请检查网络或手动下载。${RESET}"
+                    echo -e "${RED}Mysql driver package download failed, please check the network or download manually。${RESET}"
                     exit 1
                 fi
-                echo -e "${GREEN}校验完成，可按需进行后续安装配置操作。${RESET}"
+                echo -e "${GREEN}After the verification is completed, subsequent installation and configuration operations can be performed as needed.。${RESET}"
             fi
-            break  # 退出循环
+            break
             ;;
         2)
-            echo -e "${GREEN}貌似已经默认集成了 pgsql，无需执行该步骤。请按需进行后续安装配置操作。${RESET}"
-            break  # 退出循环
+            echo -e "${GREEN}It seems that pgsql has been integrated by default, so there is no need to perform this step. Please perform subsequent installation and configuration operations as needed.${RESET}"
+            break
             ;;
         3)
-            echo -e "${GREEN}跳过该步骤。${RESET}"
-            break  # 退出循环
+            echo -e "${GREEN}Skip this step。${RESET}"
+            break
             ;;
         *)
-            echo -e "${RED}输入的数据库类型不正确，请重新运行脚本选择正确的数据库类型。${RESET}"
+            echo -e "${RED}The entered database type is incorrect, please rerun the script to select the correct database type.${RESET}"
             ;;
     esac
 done
-echo -e "${GREEN} ====================== 数据源驱动初始化脚本 -> 结束 ====================== ${RESET}"
+echo -e "${GREEN} ====================== Data source driver initialization script -> end====================== ${RESET}"
 
 echo
 echo
 
-echo -e "${GREEN} ====================== Flink 依赖初始化脚本 -> 开始 ====================== ${RESET}"
+echo -e "${GREEN} ====================== Flink depends on initialization script -> start ====================== ${RESET}"
 
 declare -A version_map
-# 创建个 map key 是 1.20 value 是 1.20.0
 version_map["1.14"]="1.14.6"
 version_map["1.15"]="1.15.4"
 version_map["1.16"]="1.16.3"
@@ -158,99 +144,95 @@ version_map["1.20"]="1.20.0"
 
 FLINK_VERSION_SCAN=$(ls -n "${EXTENDS_HOME}" | grep '^d' | grep flink | awk -F 'flink' '{print $2}')
 if [ -z "${FLINK_VERSION_SCAN}" ]; then
-    echo -e "${RED}Dinky 部署的目录下 ${EXTENDS_HOME} 不存在 Flink 相关版本, 无法进行初始化操作，请检查。${RESET}"
+    echo -e "${RED}There is no Flink related version in ${EXTENDS_HOME} in the directory where Dinky is deployed. The initialization operation cannot be performed. Please check.${RESET}"
     exit 1
 else
-    echo -e "${GREEN}当前 Dinky 部署的 Flink 版本号：${FLINK_VERSION_SCAN}${RESET}"
+    echo -e "${GREEN}The current Flink version number deployed by Dinky:${FLINK_VERSION_SCAN}${RESET}"
 fi
 
 # 根据 Dinky 部署的Flink对应的版本号，获取对应的 Flink 版本
 CURRENT_FLINK_FULL_VERSION=${version_map[$FLINK_VERSION_SCAN]}
 
-echo -e "${GREEN}根据扫描的当前 Flink 版本号获取 部署的 Flink 对应的版本号(全版本号)为：flink-${CURRENT_FLINK_FULL_VERSION}${RESET}"
+echo -e "${GREEN}Obtain the version number corresponding to the deployed Flink (full version number) based on the scanned current Flink version number: flink-${CURRENT_FLINK_FULL_VERSION}${RESET}"
 
 # 步骤2：获取Dinky部署的Flink对应的版本号，然后下载Flink安装包
 while true; do
-    read -p "检测到 Dinky 部署的Flink版本号为：${FLINK_VERSION_SCAN}, 需要下载的 Flink 安装包版本号为：flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz , 请选择是否初始化 Flink 相关依赖？（yes/no/exit）" is_init_flink
+    read -p "It is detected that the Flink version number deployed by Dinky is: ${FLINK_VERSION_SCAN}, and the Flink installation package version number that needs to be downloaded is: flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz. Please choose whether to initialize Flink related dependencies?（yes/no/exit）" is_init_flink
     is_init_flink=$(echo "$is_init_flink" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
 
     case $is_init_flink in
         yes | y )
             sh "${APP_HOME}"/bin/init_flink_dependences.sh "${CURRENT_FLINK_FULL_VERSION}" "${FLINK_VERSION_SCAN}" "${DINKY_TMP_DIR}" "${EXTENDS_HOME}" "${APP_HOME}"
-            break  # 退出循环
+            break
             ;;
         no | n )
-            echo -e "${GREEN}已跳过Flink安装包下载操作。请手动下载。${RESET}"
-            break  # 退出循环
+            echo -e "${GREEN}The Flink installation package download operation has been skipped. Please download manually${RESET}"
+            break
             ;;
         exit | e )
-            echo -e "${GREEN}你选择了 exit，程序将退出。${RESET}"
-            exit 0  # 退出脚本
+            echo -e "${GREEN}If you choose exit, the program will exit。${RESET}"
+            exit 0
             ;;
         *)
-            echo -e "${RED}输入无效，请重新输入 yes/no/exit。${RESET}"
+            echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
             ;;
     esac
 done
-echo -e "${GREEN} ====================== Flink 依赖初始化脚本 -> 结束 ====================== ${RESET}"
+echo -e "${GREEN} ====================== Flink depends on initialization script -> end ====================== ${RESET}"
 
 echo
 echo
 
-echo -e "${GREEN} ====================== Hadoop 依赖初始化脚本 -> 开始 ====================== ${RESET}"
+echo -e "${GREEN} ====================== Hadoop dependency initialization script -> Start ====================== ${RESET}"
 
-# 步骤：询问是否是Hadoop环境，若是则等待用户选择下载hadoop-uber的版本是2还是3
 while true; do
-    read -p "你的部署环境是否是Hadoop环境？（yes/no/exit）" is_hadoop
-    # 将输入转换为小写，以便进行不区分大小写的比较
+    read -p "Is your deployment environment a Hadoop environment?？（yes/no/exit）" is_hadoop
     is_hadoop=$(echo "$is_hadoop" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
     case $is_hadoop in
         yes | y )
             sh "${APP_HOME}/bin/init_hadoop_dependences.sh" "${EXTENDS_HOME}"
-            break  # 退出循环
+            break
             ;;
         no | n )
-            echo -e "${GREEN}已跳过Hadoop相关操作。${RESET}"
-            break  # 退出循环
+            echo -e "${GREEN}Hadoop related operations skipped ${RESET}"
+            break
             ;;
         exit | e )
-            echo -e "${GREEN}你选择了 exit，程序将退出。${RESET}"
-            exit 0  # 退出脚本
+            echo -e "${GREEN}If you choose exit, the program will exit${RESET}"
+            exit 0
             ;;
         *)
-            echo -e "${RED}输入无效，请重新输入 yes/no/exit。${RESET}"
+            echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
             ;;
     esac
 done
-echo -e "${GREEN} ====================== Hadoop 依赖初始化脚本 -> 结束 ====================== ${RESET}"
+echo -e "${GREEN} ======================Hadoop dependency initialization script -> end ====================== ${RESET}"
 echo
 
-echo -e "${GREEN} === 环境初始化完成，接下来可以进行配置 Dinky 的 conf 目录下的 application 配置文件进行数据库相关配置, 或者执行初始化配置文件。====  ${RESET}"
+echo -e "${GREEN} === After the environment initialization is completed, you can configure the application configuration file in Dinky's config directory to perform database-related configuration, or execute the initialization configuration file.。====  ${RESET}"
 echo
 
-echo -e "${GREEN} ====================== 数据库配置文件初始化脚本 -> 开始 ====================== ${RESET}"
+echo -e "${GREEN} ====================== Database configuration file initialization script -> Start ====================== ${RESET}"
 
-# 初始化配置文件
 while true; do
-    read -p "是否需要初始化数据库配置文件？(yes/no)：" is_init_db
-    # 将输入转换为小写，以便进行不区分大小写的比较
+    read -p "Do you need to initialize the database configuration file?？(yes/no)：" is_init_db
     is_init_db=$(echo "$is_init_db" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
     case $is_init_db in
         yes | y )
             sh "${APP_HOME}/bin/init_db.sh" "${DINKY_HOME}"
-            break  # 退出循环
+            break
             ;;
         no | n )
-            echo -e "${GREEN}已跳过数据库初始化操作, 请手动配置数据库 ${DINKY_HOME}/config/application.yml 文件和 ${DINKY_HOME}/config/application-[mysql/pgsql].yml 文件。${RESET}"
-            break  # 退出循环
+            echo -e "${GREEN}The database initialization operation has been skipped, please manually configure the database ${DINKY_HOME}/config/application.yml file and ${DINKY_HOME}/config/application-[mysql/pgsql].yml file。${RESET}"
+            break
             ;;
         exit | e )
-            echo -e "${GREEN}已退出脚本，请手动配置数据库 ${DINKY_HOME}/config/application.yml 文件和 ${DINKY_HOME}/config/application-[mysql/pgsql].yml 文件。${RESET}"
-            exit 0  # 退出脚本
+            echo -e "${GREEN}The script has exited, please manually configure the database ${DINKY_HOME}/config/application.yml file and ${DINKY_HOME}/config/application-[mysql/pgsql].yml file。${RESET}"
+            exit 0
             ;;
         *)
-            echo -e "${RED}输入无效，请重新输入 yes/no/exit。${RESET}"
+            echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
             ;;
     esac
 done
-echo -e "${GREEN} ====================== 数据库配置文件初始化脚本 -> 结束 ====================== ${RESET}"
+echo -e "${GREEN} ====================== Database configuration file initialization script -> End ====================== ${RESET}"
