@@ -633,7 +633,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           onValuesChange={debounce(onValuesChange, 500)}
           syncToInitialValues
         >
-          <Flex className={'run-toolbar'} wrap gap={2}>
+          <Flex className={'datastudio-theme run-toolbar'} wrap gap={2}>
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('button.save')}
