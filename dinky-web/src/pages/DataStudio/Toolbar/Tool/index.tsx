@@ -35,7 +35,7 @@ export default () => {
     }
   ];
   return (
-    <div style={{ padding: 10, height: '100%' }} className={"datastudio-theme"}>
+    <div style={{ padding: 10, height: '100%' }} className={'datastudio-theme'}>
       <Tabs items={items} size={'small'} style={{ height: '100%' }} />
     </div>
   );

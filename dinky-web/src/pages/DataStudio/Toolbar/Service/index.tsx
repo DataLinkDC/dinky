@@ -294,7 +294,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
     }
   }, [tabs, selectedKey, props.action, tabActiveKey]);
   return (
-    <PanelGroup direction={'horizontal'} className={"datastudio-theme"}>
+    <PanelGroup direction={'horizontal'} className={'datastudio-theme'}>
       <Panel defaultSize={15} style={{ display: 'flex', flexDirection: 'column', padding: 10 }}>
         <Flex justify={'right'}>
           <RunToolBarButton

@@ -80,7 +80,7 @@ export default () => {
   };
   return (
     <Tabs
-      className={"datastudio-theme"}
+      className={'datastudio-theme'}
       type='editable-card'
       onChange={onChange}
       activeKey={activeKey}
