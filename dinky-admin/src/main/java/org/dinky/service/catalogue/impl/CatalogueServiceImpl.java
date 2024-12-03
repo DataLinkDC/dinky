@@ -472,7 +472,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 }
             }
         } catch (Exception e) {
-            log.error("read file error, {} ",e.getMessage(), e);
+            log.error("read file error, {} ", e.getMessage(), e);
         }
         return sb.toString();
     }
