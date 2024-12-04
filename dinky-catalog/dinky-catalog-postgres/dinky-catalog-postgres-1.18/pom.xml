@@ -8,11 +8,9 @@
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>dinky-catalog-Postgres-1.18</artifactId>
-
+    <artifactId>dinky-catalog-postgres-1.18</artifactId>
     <packaging>jar</packaging>
-
-    <name>Dinky : Catalog : postgres 1.18</name>
+    <name>Dinky : Catalog : Postgres 1.18</name>
 
     <dependencies>
         <dependency>

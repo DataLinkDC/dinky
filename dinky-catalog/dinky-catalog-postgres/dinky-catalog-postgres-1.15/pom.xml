@@ -25,9 +25,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dinky-catalog-postgres-1.15</artifactId>
-
     <packaging>jar</packaging>
-
     <name>Dinky : Catalog : Postgres 1.15</name>
 
     <dependencies>

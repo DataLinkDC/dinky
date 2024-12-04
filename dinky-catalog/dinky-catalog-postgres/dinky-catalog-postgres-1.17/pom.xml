@@ -9,9 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>dinky-catalog-postgres-1.17</artifactId>
-
     <packaging>jar</packaging>
-
     <name>Dinky : Catalog : Postgres 1.17</name>
 
     <dependencies>
