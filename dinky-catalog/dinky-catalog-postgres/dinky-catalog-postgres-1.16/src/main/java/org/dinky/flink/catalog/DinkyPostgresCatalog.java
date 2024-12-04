@@ -96,61 +96,80 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     }
 
     private static final String COMMENT = "comment";
-    /** Determine whether a SQL exception has occurred. If so, conn may be invalid. Pay attention to judgment */
+    /**
+     * Determine whether a SQL exception has occurred. If so, conn may be invalid. Pay attention to judgment
+     */
     private boolean sqlExceptionHappened = false;
 
-    /** Object type, such as library, table, view, etc. */
+    /**
+     * Object type, such as library, table, view, etc.
+     */
     protected static class ObjectType {
 
-        /** 数据库 */
+        /**
+         * DATABASE
+         */
         public static final String DATABASE = "database";
 
-        /** 数据表 */
+        /**
+         * TABLE
+         */
         public static final String TABLE = "TABLE";
 
-        /** 视图 */
+        /**
+         * VIEW
+         */
         public static final String VIEW = "VIEW";
     }
 
-    /** 对象类型，例如 库、表、视图等 */
+    /**
+     * Object type, such as library, table, view, etc.
+     */
     protected static class ColumnType {
 
-        /** 物理字段 */
+        /**
+         * PHYSICAL FIELD
+         */
         public static final String PHYSICAL = "physical";
 
-        /** 计算字段 */
+        /**
+         * Calculated field
+         */
         public static final String COMPUTED = "computed";
 
-        /** 元数据字段 */
+        /**
+         * METADATA FIELDS
+         */
         public static final String METADATA = "metadata";
 
-        /** 水印 */
+        /**
+         * watermark
+         */
         public static final String WATERMARK = "watermark";
     }
 
-    /** 数据库用户名 */
     @Getter
     private final String user;
-    /** 数据库密码
-     * -- GETTER --
-     *  数据库密码
-     *
-     * @return 数据库密码
-     */
+
     @Getter
     private final String pwd;
-    /** 数据库连接
-     * -- GETTER --
-     *  数据库用户名
-     *
-     * @return 数据库用户名
-     */
+
     @Getter
     private final String url;
 
-    /** 默认database */
+    /**
+     * 默认database
+     */
     private static final String defaultDatabase = "default_database";
 
+    /**
+     * Constructor method of DinkyPostgresCatalog class
+     *
+     * @param name database name
+     * @param url  database connection URL
+     * @param user database user name
+     * @param pwd  database password
+     */
     public DinkyPostgresCatalog(String name, String url, String user, String pwd) {
         super(name, defaultDatabase);
         this.url = url;
@@ -158,6 +177,11 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         this.pwd = pwd;
     }
 
+    /**
+     * Constructor method of DinkyPostgresCatalog class, initializes the object using default database connection information
+     *
+     * @param name database name
+     */
     public DinkyPostgresCatalog(String name) {
         super(name, defaultDatabase);
         this.url = DinkyPostgresCatalogFactoryOptions.URL.defaultValue();
@@ -165,6 +189,11 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         this.pwd = DinkyPostgresCatalogFactoryOptions.PASSWORD.defaultValue();
     }
 
+    /**
+     * Open Catalog, check and create the default database
+     *
+     * @throws CatalogException This exception is thrown if an error occurs while opening the Catalog
+     */
     @Override
     public void open() throws CatalogException {
         // Verify whether the connection is valid
@@ -179,6 +208,13 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Close the Catalog connection.
+     * <p>
+     * If a connection currently exists, try to close it. If a SQL exception occurs when closing the connection, the exception is logged and a CatalogException is thrown.
+     *
+     * @throws CatalogException This exception is thrown if an error occurs while closing the connection
+     */
     @Override
     public void close() throws CatalogException {
         if (connection != null) {
@@ -194,6 +230,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
     private Connection connection;
 
+    /**
+     * Get the database connection.
+     * <p>
+     * If there is currently no connection, try to obtain a new connection through DriverManager.
+     * If a SQLException has occurred before, first check whether the current connection is valid, and if it is invalid, close and reacquire the connection.
+     * If the connection was closed, reacquire the connection.
+     *
+     * @return Returns the database connection object
+     * @throws CatalogException This exception is thrown if an error occurs while obtaining the connection
+     */
     protected Connection getConnection() throws CatalogException {
         try {
             // todo: Wrap a method to obtain the connection to facilitate subsequent transformation and use other
@@ -221,6 +267,12 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * List all database names in the current Catalog.
+     *
+     * @return a list containing all database names
+     * @throws CatalogException This exception is thrown if an error occurs while listing the database
+     */
     @Override
     public List<String> listDatabases() throws CatalogException {
         List<String> myDatabases = new ArrayList<>();
@@ -240,6 +292,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Get the CatalogDatabase object based on the database name.
+     *
+     * @param databaseName database name
+     * @return CatalogDatabase object, containing the description and properties of the database
+     * @throws DatabaseNotExistException If the database does not exist, this exception is thrown
+     * @throws CatalogException          This exception is thrown if an error occurs while retrieving the database
+     */
     @Override
     public CatalogDatabase getDatabase(String databaseName) throws DatabaseNotExistException, CatalogException {
         String querySql = "SELECT id, database_name,description  FROM metadata_database where database_name=?";
@@ -277,11 +337,25 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Determine whether the database with the specified name exists.
+     *
+     * @param databaseName database name
+     * @return If the database exists, return true; otherwise return false
+     * @throws CatalogException If an error occurs when determining whether the database exists, this exception is thrown
+     */
     @Override
     public boolean databaseExists(String databaseName) throws CatalogException {
         return getDatabaseId(databaseName) != null;
     }
 
+    /**
+     * Get the ID based on the database name.
+     *
+     * @param databaseName database name
+     * @return If the database exists, return its ID; otherwise return null
+     * @throws CatalogException This exception is thrown if an error occurs while getting the database ID
+     */
     private Integer getDatabaseId(String databaseName) throws CatalogException {
         String querySql = "select id from metadata_database where database_name=?";
         Connection conn = getConnection();
@@ -306,6 +380,15 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Create a new database.
+     *
+     * @param databaseName   database name
+     * @param db             database object, including database description and properties
+     * @param ignoreIfExists If the database already exists, whether to ignore the creation operation
+     * @throws DatabaseAlreadyExistException This exception is thrown if the database already exists and ignoreIfExists is false
+     * @throws CatalogException              This exception is thrown if an error occurs while creating the database
+     */
     @Override
     public void createDatabase(String databaseName, CatalogDatabase db, boolean ignoreIfExists)
             throws DatabaseAlreadyExistException, CatalogException {
@@ -352,6 +435,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Delete the database with the specified name.
+     *
+     * @param name              database name
+     * @param ignoreIfNotExists If the database does not exist, whether to ignore the delete operation
+     * @param cascade           Whether to cascade delete all tables in the database
+     * @throws DatabaseNotExistException This exception is thrown if the database does not exist and ignoreIfNotExists is false
+     * @throws DatabaseNotEmptyException This exception is thrown if the database is not empty and cascade delete is not selected
+     * @throws CatalogException          This exception is thrown if an error occurs while deleting the database
+     */
     @Override
     public void dropDatabase(String name, boolean ignoreIfNotExists, boolean cascade)
             throws DatabaseNotExistException, DatabaseNotEmptyException, CatalogException {
@@ -381,7 +474,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                     try {
                         dropTable(new ObjectPath(name, table), true);
                     } catch (TableNotExistException t) {
-                        logger.warn("表{}不存在", name + "." + table);
+                        logger.warn("Table {} does not exist", name + "." + table);
                     }
                 }
             }
@@ -403,13 +496,22 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Modify the database information of the specified name.
+     *
+     * @param name              database name
+     * @param newDb             new database information, including description and properties
+     * @param ignoreIfNotExists If the database does not exist, whether to ignore modification operations
+     * @throws DatabaseNotExistException This exception is thrown if the database does not exist and ignoreIfNotExists is false
+     * @throws CatalogException          This exception is thrown if an error occurs while modifying database information
+     */
     @Override
     public void alterDatabase(String name, CatalogDatabase newDb, boolean ignoreIfNotExists)
             throws DatabaseNotExistException, CatalogException {
         if (name.equals(defaultDatabase)) {
             throw new CatalogException("The default database cannot be modified");
         }
-        // 1、取出db id，
+        // 1、Take out the db id, if it does not exist, throw an exception
         Integer id = getDatabaseId(name);
         if (id == null) {
             if (!ignoreIfNotExists) {
@@ -420,7 +522,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         Connection conn = getConnection();
         try {
             conn.setAutoCommit(false);
-            // 1、名称不能改，类型不能改。只能改备注
+            // 1. The name cannot be changed and the type cannot be changed. Only notes can be changed
             String updateCommentSql = "update metadata_database set description=? where id=?";
             PreparedStatement uState = conn.prepareStatement(updateCommentSql);
             uState.setString(1, newDb.getComment());
@@ -428,10 +530,6 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             uState.executeUpdate();
             uState.close();
             if (newDb.getProperties() != null && newDb.getProperties().size() > 0) {
-                //                String upsertSql = "insert  into metadata_database_property (database_id, key, value)
-                // \n"
-                //                        + "values (?,?,?)\n"
-                //                        + "on duplicate key update value =?, update_time = sysdate()\n";
                 String upsertSql = "insert  into metadata_database_property (database_id, key, value) "
                         + "values (?,?,?) "
                         + "on CONFLICT (database_id, \"key\") do update set value = excluded.value, update_time = now()";
@@ -452,16 +550,40 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * List all table names in the specified database.
+     *
+     * @param databaseName database name
+     * @return a list containing all table names
+     * @throws DatabaseNotExistException If the database does not exist, this exception is thrown
+     * @throws CatalogException          If an error occurs while listing table names, this exception is thrown
+     */
     @Override
     public List<String> listTables(String databaseName) throws DatabaseNotExistException, CatalogException {
         return listTablesViews(databaseName, ObjectType.TABLE);
     }
-
+    /**
+     * List all view names in the specified database.
+     *
+     * @param databaseName database name
+     * @return a list containing all view names
+     * @throws DatabaseNotExistException If the database does not exist, this exception is thrown
+     * @throws CatalogException This exception is thrown if an error occurs while listing the view names
+     */
     @Override
     public List<String> listViews(String databaseName) throws DatabaseNotExistException, CatalogException {
         return listTablesViews(databaseName, ObjectType.VIEW);
     }
 
+    /**
+     * List the table or view names in the specified database.
+     *
+     * @param databaseName database name
+     * @param tableType    The type of table or view (TABLE or VIEW)
+     * @return a list containing all table or view names
+     * @throws DatabaseNotExistException If the database does not exist, this exception is thrown
+     * @throws CatalogException          Thrown if an error occurs while listing table or view names
+     */
     protected List<String> listTablesViews(String databaseName, String tableType)
             throws DatabaseNotExistException, CatalogException {
         Integer databaseId = getDatabaseId(databaseName);
@@ -470,7 +592,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
 
         // get all schemas
-        // 要给出table 或 view
+        // To give table or view
         String querySql = "SELECT table_name FROM metadata_table where table_type=? and database_id = ?";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(querySql)) {
@@ -490,6 +612,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Get table details based on the table path.
+     *
+     * @param tablePath table path
+     * @return CatalogBaseTable object, containing table details
+     * @throws TableNotExistException If the table does not exist, this exception is thrown
+     * @throws CatalogException       This exception is thrown if an error occurs while getting table information
+     */
     @Override
     public CatalogBaseTable getTable(ObjectPath tablePath) throws TableNotExistException, CatalogException {
         // Still do it in steps
@@ -519,7 +649,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 throw new TableNotExistException(getName(), tablePath);
             }
             if (tableType.equals(ObjectType.TABLE)) {
-                // 这个是 table
+                // This is table
                 String propSql = "SELECT \"key\", \"value\" from metadata_table_property " + "WHERE table_id=?";
                 PreparedStatement pState = conn.prepareStatement(propSql);
                 pState.setInt(1, id);
@@ -534,8 +664,8 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 props.put(COMMENT, description);
                 return CatalogTable.fromProperties(props);
             } else if (tableType.equals(ObjectType.VIEW)) {
-                // 1、从库中取出table信息。（前面已做）
-                // 2、取出字段。
+                // 1. Get table information from the library. (Already done before)
+                // 2. Take out the field.
                 String colSql =
                         "SELECT column_name, column_type, data_type, description  FROM metadata_column WHERE  table_id=?";
                 PreparedStatement cStat = conn.prepareStatement(colSql);
@@ -554,7 +684,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                     }
                 }
                 cStat.close();
-                // 3、取出query
+                // 3、Take out the query
                 String qSql = "SELECT \"key\", \"value\" FROM metadata_table_property  WHERE table_id=? ";
                 PreparedStatement qStat = conn.prepareStatement(qSql);
                 qStat.setInt(1, id);
@@ -573,7 +703,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                         options.put(key, value);
                     }
                 }
-                // 合成view
+                // Synthetic view
                 return CatalogView.of(builder.build(), description, originalQuery, expandedQuery, options);
             } else {
                 throw new CatalogException("Unsupported data type。" + tableType);
@@ -584,12 +714,26 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Determine whether the table at the specified path exists.
+     *
+     * @param tablePath table path
+     * @return Returns true if the table exists; otherwise returns false
+     * @throws CatalogException If an error occurs when determining whether the table exists, this exception is thrown
+     */
     @Override
     public boolean tableExists(ObjectPath tablePath) throws CatalogException {
         Integer id = getTableId(tablePath);
         return id != null;
     }
 
+    /**
+     * Get the table ID based on the table path.
+     *
+     * @param tablePath table path object, including database name and table name
+     * @return If the table exists, return its ID; otherwise return null
+     * @throws CatalogException This exception is thrown if an error occurs while getting the table ID
+     */
     private Integer getTableId(ObjectPath tablePath) {
         Integer dbId = getDatabaseId(tablePath.getDatabaseName());
         if (dbId == null) {
@@ -613,6 +757,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         return null;
     }
 
+    /**
+     * Delete the table at the specified path.
+     *
+     * @param tablePath         table path object, including database name and table name
+     * @param ignoreIfNotExists If the table does not exist, whether to ignore the delete operation
+     * @throws TableNotExistException This exception is thrown if the table does not exist and ignoreIfNotExists is false
+     * @throws CatalogException       This exception is thrown if an error occurs while deleting the table
+     */
     @Override
     public void dropTable(ObjectPath tablePath, boolean ignoreIfNotExists)
             throws TableNotExistException, CatalogException {
@@ -648,6 +800,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Rename the table at the specified path.
+     *
+     * @param tablePath         table path object, including database name and original table name
+     * @param newTableName      new table name
+     * @param ignoreIfNotExists If the table does not exist, whether to ignore the rename operation
+     * @throws TableNotExistException     This exception is thrown if the table does not exist and ignoreIfNotExists is false
+     * @throws TableAlreadyExistException If the new table name already exists, this exception is thrown
+     * @throws CatalogException           This exception is thrown if an error occurs while renaming the table
+     */
     @Override
     public void renameTable(ObjectPath tablePath, String newTableName, boolean ignoreIfNotExists)
             throws TableNotExistException, TableAlreadyExistException, CatalogException {
@@ -672,6 +834,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Create a new table.
+     *
+     * @param tablePath      table path object, including database name and table name
+     * @param table          table object, including the structure and attribute information of the table
+     * @param ignoreIfExists If the table already exists, whether to ignore the creation operation
+     * @throws TableAlreadyExistException This exception is thrown if the table already exists and ignoreIfExists is false
+     * @throws DatabaseNotExistException  If the database does not exist, this exception is thrown
+     * @throws CatalogException           This exception is thrown if an error occurs while creating the table
+     */
     @Override
     public void createTable(ObjectPath tablePath, CatalogBaseTable table, boolean ignoreIfExists)
             throws TableAlreadyExistException, DatabaseNotExistException, CatalogException {
@@ -685,10 +857,10 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             }
             return;
         }
-        // 插入表
-        // 插入到table表。这里，它可能是table也可能是view
-        // 如果是一个table，我们认为它是一个 resolved table，就可以使用properties方式来进行序列化并保存。
-        // 如果是一个view，我们认为它只能有物理字段
+        // Insert table
+        // Insert into table table. Here, it may be a table or a view
+        // If it is a table, we think it is a resolved table, so we can use properties to serialize and save it.
+        // If it is a view, we think it can only have physical fields
         if (!(table instanceof ResolvedCatalogBaseTable)) {
             throw new UnsupportedOperationException(
                     "The input of non-ResolvedCatalogBaseTable type tables is temporarily not supported.");
@@ -696,7 +868,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         Connection conn = getConnection();
         try {
             conn.setAutoCommit(false);
-            // 首先插入表信息
+            // First insert table information
             CatalogBaseTable.TableKind kind = table.getTableKind();
 
             String insertSql = "insert into metadata_table(\n"
@@ -718,9 +890,9 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
             }
             int id = idRs.getInt(1);
             iStat.close();
-            // 插入属性和列
+            // Insert attributes and columns
             if (table instanceof ResolvedCatalogTable) {
-                // table 就可以直接拿properties了。
+                // table You can get the properties directly。
                 Map<String, String> props = ((ResolvedCatalogTable) table).toProperties();
                 String propInsertSql = "insert into metadata_table_property(table_id, key, value) values (?,?,?)";
                 PreparedStatement pStat = conn.prepareStatement(propInsertSql);
@@ -733,9 +905,9 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
                 pStat.executeBatch();
                 pStat.close();
             } else {
-                // view，咱先假定它只有物理字段
-                // view 还需要保存：query，expanded query
-                // 插入属性和列
+                // view, let's first assume that it only has physical fields
+                // view also needs to save: query, expanded query
+                // Insert attributes and columns for the view
                 ResolvedCatalogView view = (ResolvedCatalogView) table;
                 List<Schema.UnresolvedColumn> cols = view.getUnresolvedSchema().getColumns();
                 if (!cols.isEmpty()) {
@@ -804,6 +976,15 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Modify the table information of the specified path.
+     *
+     * @param tablePath         table path object, including database name and table name
+     * @param newTable          New table object, including the structure and attribute information of the table
+     * @param ignoreIfNotExists If the table does not exist, whether to ignore modification operations
+     * @throws TableNotExistException This exception is thrown if the table does not exist and ignoreIfNotExists is false
+     * @throws CatalogException       If an error occurs while modifying table information, this exception is thrown
+     */
     @Override
     public void alterTable(ObjectPath tablePath, CatalogBaseTable newTable, boolean ignoreIfNotExists)
             throws TableNotExistException, CatalogException {
@@ -815,10 +996,7 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
 
         Map<String, String> opts = newTable.getOptions();
         if (opts != null && !opts.isEmpty()) {
-            //            String updateSql = "INSERT INTO metadata_table_property(table_id,"
-            //                    + "key, value) values (?,?,?) "
-            //                    + "on duplicate key update value =?, update_time = sysdate()";
-            //
+
             String updateSql = "INSERT INTO metadata_table_property(table_id,"
                     + "key, value) values (?,?,?) "
                     + "on CONFLICT (table_id, \"key\") do update set value = excluded.value, update_time = now()";
@@ -840,21 +1018,47 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     }
 
     /** ********************** partition ************************ */
+    /**
+     * List all partition specifications for the specified table.
+     *
+     * @param tablePath table path object, including database name and table name
+     * @return a list containing all partition specifications
+     * @throws CatalogException              This exception is thrown if an error occurs while listing partitions
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
-    public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath)
-            throws TableNotExistException, TableNotPartitionedException, CatalogException {
+    public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath) throws CatalogException {
         // todo: Supplementary completion of this method。
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * List all partition specifications for the specified table based on the partition specification.
+     *
+     * @param tablePath     table path object, including database name and table name
+     * @param partitionSpec partition specification object, used to filter specific partitions
+     * @return A list containing all partition specifications that match partitionSpec
+     * @throws CatalogException              This exception is thrown if an error occurs while listing partition specifications
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
-            throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException,
-                    CatalogException {
+            throws CatalogException {
         // todo: Supplementary completion of this method。
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * List the partition specification list of the specified table according to the filter conditions.
+     *
+     * @param tablePath table path object, including database name and table name
+     * @param filters   A list of expressions used to filter partitions
+     * @return a list containing partition specifications
+     * @throws TableNotExistException        If the table does not exist, this exception is thrown
+     * @throws TableNotPartitionedException  If the table is not a partitioned table, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while listing partition specifications
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public List<CatalogPartitionSpec> listPartitionsByFilter(ObjectPath tablePath, List<Expression> filters)
             throws TableNotExistException, TableNotPartitionedException, CatalogException {
@@ -862,19 +1066,51 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Obtain the partition information of the specified table according to the partition specification.
+     *
+     * @param tablePath     table path object, including database name and table name
+     * @param partitionSpec partition specification object, including partition information
+     * @return CatalogPartition object, containing partition details
+     * @throws CatalogException              This exception is thrown if an error occurs while obtaining partition information
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public CatalogPartition getPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
-            throws PartitionNotExistException, CatalogException {
+            throws CatalogException {
         // todo: Supplementary completion of this method。
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Determine whether the specified partition exists in the specified table.
+     *
+     * @param tablePath     table path object, including database name and table name
+     * @param partitionSpec partition specification object, including partition information
+     * @return If the partition exists, return true; otherwise return false
+     * @throws CatalogException              If an error occurs when determining whether the partition exists, this exception is thrown
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public boolean partitionExists(ObjectPath tablePath, CatalogPartitionSpec partitionSpec) throws CatalogException {
         // todo: Supplementary completion of this method。
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Create a new partition in the specified table.
+     *
+     * @param tablePath      table path object, including database name and table name
+     * @param partitionSpec  partition specification object, defining the keys and values of the partition
+     * @param partition      New partition object, containing specific information about the partition
+     * @param ignoreIfExists If the partition already exists, whether to ignore the creation operation
+     * @throws TableNotExistException          If the table does not exist, this exception is thrown
+     * @throws TableNotPartitionedException    If the table is not a partitioned table, this exception is thrown
+     * @throws PartitionSpecInvalidException   This exception is thrown if the partition specification is invalid
+     * @throws PartitionAlreadyExistsException If the partition already exists and ignoreIfExists is false, this exception is thrown
+     * @throws CatalogException                This exception is thrown if an error occurs while creating the partition
+     * @throws UnsupportedOperationException   If this method has not been implemented, this exception is thrown
+     */
     @Override
     public void createPartition(
             ObjectPath tablePath,
@@ -887,6 +1123,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Delete the partition of the specified partition table.
+     *
+     * @param tablePath         table path object, including database name and table name
+     * @param partitionSpec     partition specification object, including partition information
+     * @param ignoreIfNotExists If the partition does not exist, whether to ignore the delete operation
+     * @throws PartitionNotExistException    If the specified partition does not exist and ignoreIfNotExists is false, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while deleting a partition
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public void dropPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
@@ -894,6 +1140,17 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Modify the partition information of the specified partition table.
+     *
+     * @param tablePath         table path object, including database name and table name
+     * @param partitionSpec     partition specification object, including partition information
+     * @param newPartition      new partition information
+     * @param ignoreIfNotExists If the partition does not exist, whether to ignore the modification operation
+     * @throws PartitionNotExistException    If the specified partition does not exist and ignoreIfNotExists is false, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while modifying partition information
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public void alterPartition(
             ObjectPath tablePath,
@@ -906,6 +1163,15 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
     }
 
     /** *********************Functions********************* */
+
+    /**
+     * Get a list of all user-defined function (UDF) names in the specified database.
+     *
+     * @param dbName database name
+     * @return a list containing all UDF names
+     * @throws DatabaseNotExistException If the database does not exist, this exception is thrown
+     * @throws CatalogException          This exception is thrown if an error occurs while getting the UDF list
+     */
     @Override
     public List<String> listFunctions(String dbName) throws DatabaseNotExistException, CatalogException {
         Integer dbId = getDatabaseId(dbName);
@@ -930,6 +1196,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Get the CatalogFunction object based on the function path.
+     *
+     * @param functionPath function path object, including database name and function name
+     * @return CatalogFunction object, containing the class name and programming language of the function
+     * @throws FunctionNotExistException If the function does not exist, this exception is thrown
+     * @throws CatalogException          This exception is thrown if an error occurs while obtaining function information
+     */
     @Override
     public CatalogFunction getFunction(ObjectPath functionPath) throws FunctionNotExistException, CatalogException {
         Integer id = getFunctionId(functionPath);
@@ -956,12 +1230,26 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Determine whether the function of the specified path exists.
+     *
+     * @param functionPath function path object, including database name and function name
+     * @return If the function exists, return true; otherwise return false
+     * @throws CatalogException If an error occurs when determining whether the function exists, this exception is thrown
+     */
     @Override
     public boolean functionExists(ObjectPath functionPath) throws CatalogException {
         Integer id = getFunctionId(functionPath);
         return id != null;
     }
 
+    /**
+     * Get the ID of the function based on the function path.
+     *
+     * @param functionPath function path object, including database name and function name
+     * @return If the function exists, return its ID; otherwise return null
+     * @throws CatalogException This exception is thrown if an error occurs while getting the function ID
+     */
     private Integer getFunctionId(ObjectPath functionPath) {
         Integer dbId = getDatabaseId(functionPath.getDatabaseName());
         if (dbId == null) {
@@ -986,6 +1274,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         return null;
     }
 
+    /**
+     * Create a new user-defined function (UDF).
+     *
+     * @param functionPath   function path object, including database name and function name
+     * @param function       CatalogFunction object to be created, including the class name and programming language of the function
+     * @param ignoreIfExists If the function already exists, whether to ignore the creation operation
+     * @throws FunctionAlreadyExistException This exception is thrown if the function already exists and ignoreIfExists is false
+     * @throws DatabaseNotExistException     If the database does not exist, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while creating the function
+     */
     @Override
     public void createFunction(ObjectPath functionPath, CatalogFunction function, boolean ignoreIfExists)
             throws FunctionAlreadyExistException, DatabaseNotExistException, CatalogException {
@@ -1015,6 +1313,15 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Modify the function information of the specified path.
+     *
+     * @param functionPath      function path object, including database name and function name
+     * @param newFunction       New CatalogFunction object, including new class name and programming language
+     * @param ignoreIfNotExists If the function does not exist, whether to ignore the modification operation
+     * @throws FunctionNotExistException This exception is thrown if the function does not exist and ignoreIfNotExists is false
+     * @throws CatalogException          If an error occurs when modifying function information, this exception is thrown
+     */
     @Override
     public void alterFunction(ObjectPath functionPath, CatalogFunction newFunction, boolean ignoreIfNotExists)
             throws FunctionNotExistException, CatalogException {
@@ -1039,6 +1346,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Delete the user-defined function (UDF) of the specified path.
+     *
+     * @param functionPath      function path object, including database name and function name
+     * @param ignoreIfNotExists If the function does not exist, whether to ignore the delete operation
+     * @throws FunctionNotExistException This exception is thrown if the function does not exist and ignoreIfNotExists is false
+     * @throws CatalogException          This exception is thrown if an error occurs while deleting the function
+     */
     @Override
     public void dropFunction(ObjectPath functionPath, boolean ignoreIfNotExists)
             throws FunctionNotExistException, CatalogException {
@@ -1061,6 +1376,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         }
     }
 
+    /**
+     * Get statistical information of the table with the specified path.
+     *
+     * @param tablePath table path object, including database name and table name
+     * @return CatalogTableStatistics object, containing table statistics
+     * @throws TableNotExistException If the table does not exist, this exception is thrown
+     * @throws CatalogException       This exception is thrown if an error occurs while getting table statistics
+     */
     @Override
     public CatalogTableStatistics getTableStatistics(ObjectPath tablePath)
             throws TableNotExistException, CatalogException {
@@ -1078,6 +1401,14 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         return CatalogTableStatistics.UNKNOWN;
     }
 
+    /**
+     * Get the column statistics of the table with the specified path.
+     *
+     * @param tablePath table path object, including database name and table name
+     * @return CatalogColumnStatistics object, containing column statistics of the table
+     * @throws TableNotExistException If the table does not exist, this exception is thrown
+     * @throws CatalogException       This exception is thrown if an error occurs while obtaining table column statistics
+     */
     @Override
     public CatalogColumnStatistics getTableColumnStatistics(ObjectPath tablePath)
             throws TableNotExistException, CatalogException {
@@ -1093,6 +1424,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         return CatalogColumnStatistics.UNKNOWN;
     }
 
+    /**
+     * Get partition statistics of the specified partition table.
+     *
+     * @param tablePath     table path object, including database name and table name
+     * @param partitionSpec partition specification object, including partition information
+     * @return CatalogTableStatistics object, containing partition statistics
+     * @throws PartitionNotExistException    If the specified partition does not exist, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while getting partition statistics
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public CatalogTableStatistics getPartitionStatistics(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws PartitionNotExistException, CatalogException {
@@ -1100,6 +1441,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Get the partition column statistics of the specified partition table.
+     *
+     * @param tablePath     table path object, including database name and table name
+     * @param partitionSpec partition specification object, including partition information
+     * @return CatalogColumnStatistics object, containing partition column statistics
+     * @throws PartitionNotExistException    If the specified partition does not exist, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while getting partition column statistics
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public CatalogColumnStatistics getPartitionColumnStatistics(
             ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
@@ -1108,6 +1459,16 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Modify the statistical information of the table with the specified path.
+     *
+     * @param tablePath         table path object, including database name and table name
+     * @param tableStatistics   new table statistics
+     * @param ignoreIfNotExists If the table does not exist, whether to ignore modification operations
+     * @throws TableNotExistException        This exception is thrown if the table does not exist and ignoreIfNotExists is false
+     * @throws CatalogException              This exception is thrown if an error occurs while modifying table statistics
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public void alterTableStatistics(
             ObjectPath tablePath, CatalogTableStatistics tableStatistics, boolean ignoreIfNotExists)
@@ -1116,6 +1477,17 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Modify the column statistics of the table with the specified path.
+     *
+     * @param tablePath         table path object, including database name and table name
+     * @param columnStatistics  new column statistics
+     * @param ignoreIfNotExists If the table does not exist, whether to ignore modification operations
+     * @throws TableNotExistException        This exception is thrown if the table does not exist and ignoreIfNotExists is false
+     * @throws CatalogException              This exception is thrown if an error occurs while modifying column statistics
+     * @throws TablePartitionedException     If the table is a partitioned table, this exception is thrown
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public void alterTableColumnStatistics(
             ObjectPath tablePath, CatalogColumnStatistics columnStatistics, boolean ignoreIfNotExists)
@@ -1124,6 +1496,17 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Modify the partition statistics of the specified partition table.
+     *
+     * @param tablePath           table path object, including database name and table name
+     * @param partitionSpec       partition specification object, including partition information
+     * @param partitionStatistics new partition statistics
+     * @param ignoreIfNotExists   If the partition does not exist, whether to ignore the modification operation
+     * @throws PartitionNotExistException    If the specified partition does not exist and ignoreIfNotExists is false, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while modifying partition statistics
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public void alterPartitionStatistics(
             ObjectPath tablePath,
@@ -1135,6 +1518,17 @@ public class DinkyPostgresCatalog extends AbstractCatalog {
         throw new UnsupportedOperationException("This method is not yet complete");
     }
 
+    /**
+     * Modify the partition column statistics of the specified partition table.
+     *
+     * @param tablePath         table path object, including database name and table name
+     * @param partitionSpec     partition specification object, including partition information
+     * @param columnStatistics  new partition column statistics
+     * @param ignoreIfNotExists If the partition does not exist, whether to ignore the modification operation
+     * @throws PartitionNotExistException    If the specified partition does not exist and ignoreIfNotExists is false, this exception is thrown
+     * @throws CatalogException              This exception is thrown if an error occurs while modifying partition column statistics
+     * @throws UnsupportedOperationException If this method has not been implemented, this exception is thrown
+     */
     @Override
     public void alterPartitionColumnStatistics(
             ObjectPath tablePath,
