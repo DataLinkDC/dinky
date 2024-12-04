@@ -31,7 +31,7 @@ public enum SqlCategory {
     DQL(Boolean.TRUE),
     DML(Boolean.TRUE);
 
-    private Boolean hasJobClient;
+    private final Boolean hasJobClient;
 
     SqlCategory(Boolean hasJobClient) {
         this.hasJobClient = hasJobClient;

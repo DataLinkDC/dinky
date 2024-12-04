@@ -89,8 +89,8 @@ public enum SqlType {
     UNKNOWN("UNKNOWN", "^UNKNOWN.*", SqlCategory.UNKNOWN);
 
     private String type;
-    private Pattern pattern;
-    private SqlCategory category;
+    private final Pattern pattern;
+    private final SqlCategory category;
 
     private static final List<SqlType> TRANS_SQL_TYPES =
             Lists.newArrayList(INSERT, SELECT, WITH, SHOW, DESCRIBE, DESC, CTAS, RTAS, UPDATE, DELETE);
