@@ -42,7 +42,7 @@ public class DinkyPostgresSQLCatalogTest {
 
     @Before
     public void setup() {
-        url = "jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
+        url = "jdbc:postgresql://localhost:5432/dinky_logic?stringtype=unspecified";
         catalog = new DinkyPostgresCatalog(TEST_CATALOG_NAME, url, TEST_USERNAME, TEST_PWD);
 
         this.tableEnv = TableEnvironment.create(EnvironmentSettings.inStreamingMode());
@@ -52,11 +52,10 @@ public class DinkyPostgresSQLCatalogTest {
     @Test
     public void testSqlCatalog() {
         String createSql = "create catalog myCatalog \n"
-                + " with('type'='dinky_mysql',\n"
+                + " with('type'='dinky_postgres',\n"
                 + " 'username'='dinky',\n"
                 + " 'password'='dinky',\n"
-                + " 'url'='jdbc:mysql://127.0.0.1:3306/"
-                + "dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC')";
+                + " 'url'='jdbc:postgresql://localhost:5432/dinky_logic?stringtype=unspecified')";
         tableEnv.executeSql(createSql);
         tableEnv.executeSql("use catalog myCatalog");
     }
