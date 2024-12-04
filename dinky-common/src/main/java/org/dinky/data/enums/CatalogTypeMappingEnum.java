@@ -27,8 +27,9 @@ import lombok.Getter;
 public enum CatalogTypeMappingEnum {
     DINKY_MYSQL("dinky_mysql", "mysql"),
 
-    DINKY_POSTGRES("dinky_postgres", "pgsql"),
+    DINKY_POSTGRES("dinky_postgresql", "postgresql"),
 
+    // h2 uses mysql syntax and directly uses the catalogType of mysql
     DINKY_H2("dinky_mysql", "h2"),
     ;
 

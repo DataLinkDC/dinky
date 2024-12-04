@@ -21,7 +21,7 @@ spring:
     enabled: true # Is it enabled
     group: true # Enable grouping
     locations:
-      - classpath:db/migration/${dinky.db-type}
+      - classpath:db/migration/${spring.profiles.active}
     table: _dinky_flyway_schema_history
     placeholder-replacement: false # Placeholder Replacement
     baseline-on-migrate: true  # Baseline during migration
