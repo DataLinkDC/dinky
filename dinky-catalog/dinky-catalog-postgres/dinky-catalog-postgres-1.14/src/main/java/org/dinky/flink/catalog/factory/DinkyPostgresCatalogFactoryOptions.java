@@ -25,11 +25,11 @@ import org.apache.flink.annotation.Internal;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 
-/** {@link ConfigOption}s for {@link DinkyPostgresCatalog}. */
+
 @Internal
 public class DinkyPostgresCatalogFactoryOptions {
 
-    public static final String IDENTIFIER = "dinky_postgres";
+    public static final String IDENTIFIER = "dinky_postgresql";
 
     public static final ConfigOption<String> USERNAME =
             ConfigOptions.key("username").stringType().noDefaultValue();
