@@ -19,7 +19,6 @@
 
 package org.dinky.flink.catalog.factory;
 
-import org.dinky.flink.catalog.DinkyPostgresCatalog;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.configuration.ConfigOption;
