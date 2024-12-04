@@ -52,7 +52,7 @@ public class DinkyPostgresSQLCatalogTest {
     @Test
     public void testSqlCatalog() {
         String createSql = "create catalog myCatalog \n"
-                + " with('type'='dinky_postgres',\n"
+                + " with('type'='dinky_postgresql',\n"
                 + " 'username'='dinky',\n"
                 + " 'password'='dinky',\n"
                 + " 'url'='jdbc:postgresql://localhost:5432/dinky_logic?stringtype=unspecified')";
