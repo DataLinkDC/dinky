@@ -191,10 +191,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       if (taskDetail.dialect.toLowerCase() === DIALECT.FLINKJAR) {
         const sqlConvertForm = await flinkJarSqlConvertForm(taskDetail.statement);
         setSqlForm({ enable: true, ...sqlConvertForm });
-        setCurrentState((prevState) => ({
-          ...prevState,
+        setCurrentState({
+          ...newParams,
           statement: sqlConvertForm?.initSqlStatement ?? ''
-        }));
+        });
         setOriginStatementValue(sqlConvertForm?.initSqlStatement ?? '');
         if (params?.statement && params?.statement !== sqlConvertForm?.initSqlStatement) {
           setDiff([
@@ -633,7 +633,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           onValuesChange={debounce(onValuesChange, 500)}
           syncToInitialValues
         >
-          <Flex className={'run-toolbar'} wrap gap={2}>
+          <Flex className={'datastudio-theme run-toolbar'} wrap gap={2}>
             <RunToolBarButton
               showDesc={showDesc}
               desc={l('button.save')}

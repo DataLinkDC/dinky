@@ -45,7 +45,7 @@ type Data = {
 type DataList = Data[];
 export default (props: {
   taskId: number;
-  historyId: number | undefined;
+  historyId?: number | undefined;
   action: any;
   dialect: string;
 }) => {
@@ -330,7 +330,7 @@ export default (props: {
         items={tabItems()}
         tabBarStyle={{ marginBottom: '5px' }}
       />
-      {dataList.length == 0 ?? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+      {dataList.length == 0 ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /> : <></>}
       <Drawer
         open={openAVA}
         loading={isPending}

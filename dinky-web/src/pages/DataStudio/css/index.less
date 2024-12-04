@@ -46,18 +46,33 @@
 
 .datastudio-theme {
   background-color: var(--main-background-color);
-}
 
-.datastudio-theme .ant-pro-card {
-  background-color: var(--main-background-color);
-}
+  .ant-pro-card {
+    background-color: var(--main-background-color);
+  }
 
-.datastudio-theme .ant-pro-form-group-container {
-  justify-content: center;
-}
+  .ant-pro-form-group-container {
+    justify-content: center;
+  }
 
-.ant-pro-list-row-subTitle {
-  color: var(--text-color);
+  .ant-pro-list-row-subTitle {
+    color: var(--text-color);
+  }
+  .ant-form-item {
+    margin-bottom: 0;
+  }
+  .ant-tabs-content {
+    height: 100%;
+    overflow-y: auto;
+  }
+  .ant-tabs-tabpane {
+    height: 100%;
+  }
+
+  .ant-tree {
+    height: 100%;
+    overflow-y: auto;
+  }
 }
 
 // scrollbar style --- start ----
@@ -167,6 +182,7 @@ body > .dragging-layer > div:last-child {
 .dock-tab-btn .drag-initiator {
   display: flex;
 }
+
 .drag-initiator {
   user-select: none;
   -webkit-user-select: none;
@@ -344,9 +360,11 @@ body > .dragging-layer > div:last-child {
   background-image: var(--close-btn-img);
   background-position: center;
 }
+
 .dock-tab-close-btn:before {
   content: '';
 }
+
 .dock-tab-close-btn:hover {
   background-size: 14px;
   border: 1px solid #0b7ec4;

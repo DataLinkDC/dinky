@@ -16,7 +16,7 @@
         <fileSet>
             <directory>${basedir}/src/main/bin</directory>
             <lineEnding>unix</lineEnding>
-            <outputDirectory/>
+            <outputDirectory>bin</outputDirectory>
             <fileMode>755</fileMode>
             <includes>
                 <include>*.sh</include>

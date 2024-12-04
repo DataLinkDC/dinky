@@ -11,12 +11,12 @@ spring:
   application:
     name: Dinky
   profiles:
-    # The h2 database is used by default. If you need to use other databases, please set the configuration active to: mysql, currently supports [mysql, pgsql, h2]
+    # The h2 database is used by default. If you need to use other databases, please set the configuration active to: mysql, currently supports [mysql, postgresql, h2]
     # If you use mysql database, please configure mysql database connection information in application-mysql.yml
-    # If you use pgsql database, please configure pgsql database connection information in application-pgsql.yml
+    # If you use pgsql database, please configure pgsql database connection information in application-postgresql.yml
     # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
     # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
-    active: ${DB_ACTIVE:h2} #[h2,mysql,pgsql]
+    active: ${DB_ACTIVE:h2}  #[h2,mysql,postgresql]
     include:
       - jmx
       - flyway

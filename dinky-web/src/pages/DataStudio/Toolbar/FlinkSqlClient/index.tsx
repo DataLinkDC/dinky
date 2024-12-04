@@ -19,7 +19,6 @@
 
 import React, { useRef, useState } from 'react';
 import { Tabs } from 'antd';
-import './index.less';
 import TerminalTab from '@/pages/DataStudio/Toolbar/FlinkSqlClient/Terminal';
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 type TabItem = {
@@ -81,6 +80,7 @@ export default () => {
   };
   return (
     <Tabs
+      className={'datastudio-theme'}
       type='editable-card'
       onChange={onChange}
       activeKey={activeKey}

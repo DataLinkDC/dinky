@@ -33,6 +33,7 @@ import org.dinky.data.dto.AbstractStatementDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSubmitDto;
+import org.dinky.data.enums.CatalogTypeMappingEnum;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
@@ -87,11 +88,9 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
-import org.dinky.service.UDFService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.service.catalogue.CatalogueService;
-import org.dinky.service.resource.ResourcesService;
 import org.dinky.service.task.BaseTask;
 import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JsonUtils;
@@ -119,6 +118,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
@@ -126,6 +126,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -164,8 +165,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final DataSourceProperties dsProperties;
     private final UserService userService;
     private final ApplicationContext applicationContext;
-    private final UDFService udfService;
-    private final ResourcesService resourcesService;
+    private final DruidDataSource druidProperties;
 
     @Resource
     @Lazy
@@ -685,19 +685,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
 
-        String sql = String.format(
-                "create catalog my_catalog with(\n    "
-                        + "'type' = 'dinky_mysql',\n"
-                        + "    'username' = "
-                        + "'%s',\n    "
-                        + "'password' = '%s',\n"
-                        + "    'url' = '%s'\n"
-                        + ")%suse catalog my_catalog%s",
-                dsProperties.getUsername(),
-                dsProperties.getPassword(),
-                dsProperties.getUrl(),
-                FlinkSQLConstant.SEPARATOR,
-                FlinkSQLConstant.SEPARATOR);
+        String sql = getStatementByCatalogType(CatalogTypeMappingEnum.ofDbType(druidProperties.getDbType()));
 
         if (null != defaultFlinkSQLEnvTask) {
             defaultFlinkSQLEnvTask.setStatement(sql);
@@ -718,6 +706,31 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         saveOrUpdate(defaultFlinkSQLEnvTask);
 
         return defaultFlinkSQLEnvTask;
+    }
+
+    private @NotNull String getStatementByCatalogType(CatalogTypeMappingEnum catalogTypeMappingEnum) {
+        String sql = String.format(
+                "create catalog my_catalog_%s with(\n    "
+                        + "'type' = '%s',\n"
+                        + "    'username' = "
+                        + "'%s',\n    "
+                        + "'password' = '%s',\n"
+                        + "    'url' = '%s'\n"
+                        + ")%suse catalog my_catalog_%s %s",
+                catalogTypeMappingEnum.getCatalogTypeName(),
+                catalogTypeMappingEnum.getCatalogTypeName(),
+                dsProperties.getUsername(),
+                dsProperties.getPassword(),
+                dsProperties.getUrl(),
+                FlinkSQLConstant.SEPARATOR,
+                catalogTypeMappingEnum.getCatalogTypeName(),
+                FlinkSQLConstant.SEPARATOR);
+        log.debug(
+                "Init default flink sql env sql:{}, yours dbType is:{}, catalogName is:{}",
+                sql,
+                catalogTypeMappingEnum.getDbType(),
+                catalogTypeMappingEnum.getCatalogTypeName());
+        return sql;
     }
 
     @Override
@@ -778,7 +791,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Integer queryAllSizeByName(String name) {
-        return baseMapper.queryAllSizeByName(name);
+        Long value = baseMapper.selectCount(new LambdaQueryWrapper<Task>().likeRight(Task::getName, name + "-"));
+        return Math.toIntExact(value);
     }
 
     @Override

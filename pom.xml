@@ -487,6 +487,43 @@
                 <artifactId>dinky-catalog-mysql-1.20</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-postgres-1.14</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-postgres-1.15</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-postgres-1.16</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-postgres-1.17</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-postgres-1.18</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-postgres-1.19</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-postgres-1.20</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-connector-jdbc-1.14</artifactId>

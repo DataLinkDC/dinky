@@ -472,7 +472,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                 }
             }
         } catch (Exception e) {
-            log.error("read file error, {} ", e);
+            log.error("read file error, {} ", e.getMessage(), e);
         }
         return sb.toString();
     }
@@ -555,7 +555,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
             if (CollUtil.isNotEmpty(metricListByTaskId)) {
                 metricListByTaskId.forEach(metrics -> monitorService.removeById(metrics.getId()));
-                // todo: 需要删除 paimon 中的监控数据, 但是 paimon 中没有提供删除接口
             }
         }
 

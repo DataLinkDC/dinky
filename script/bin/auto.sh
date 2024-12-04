@@ -5,7 +5,7 @@
 
 FLINK_VERSION=${2}
 
-DINKY_HOME=${DINKY_HOME:-$(cd `dirname $0`; pwd)}
+DINKY_HOME=${DINKY_HOME:-$(cd "$(dirname "$0")"; cd ..; pwd)}
 JAVA_VERSION=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}' | awk -F'.' '{print $1"."$2}')
 
 APP_HOME="${DINKY_HOME}"
@@ -34,7 +34,7 @@ if [ -z "${FLINK_VERSION}" ]; then
   fi
 fi
 
-echo "DINKY_HOME : ${DINKY_HOME} , JAVA_VERSION : ${JAVA_VERSION} , FLINK_VERSION : ${FLINK_VERSION}"
+echo "DINKY_HOME : ${APP_HOME} , JAVA_VERSION : ${JAVA_VERSION} , FLINK_VERSION : ${FLINK_VERSION}"
 
 # Check whether the flink version is specified
 assertIsInputVersion() {

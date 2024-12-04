@@ -52,4 +52,4 @@ RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && sed -i 's/-Xms512M
 
 EXPOSE 8888
 
-CMD  ./auto.sh startOnPending
+CMD  ./bin/auto.sh startOnPending

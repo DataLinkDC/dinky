@@ -22,7 +22,6 @@ import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 import { Flex, Space, Tabs, TabsProps, TreeDataNode } from 'antd';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
-import './index.less';
 import React, { Key, useEffect, useMemo, useState } from 'react';
 import {
   ApartmentOutlined,
@@ -295,7 +294,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
     }
   }, [tabs, selectedKey, props.action, tabActiveKey]);
   return (
-    <PanelGroup direction={'horizontal'}>
+    <PanelGroup direction={'horizontal'} className={'datastudio-theme'}>
       <Panel defaultSize={15} style={{ display: 'flex', flexDirection: 'column', padding: 10 }}>
         <Flex justify={'right'}>
           <RunToolBarButton

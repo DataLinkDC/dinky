@@ -46,11 +46,7 @@
     </select>
 
 
-    <select id="queryAllSizeByName" resultType="java.lang.Integer">
-        SELECT count(*)
-        from dinky_task
-        where `name` REGEXP concat(#{name}, '-[0-9]$')
-    </select>
+
 
     <select id="getTaskByNameAndTenantId" resultType="org.dinky.data.model.Task">
         select *

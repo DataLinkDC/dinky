@@ -31,5 +31,6 @@
 
     <modules>
         <module>dinky-catalog-mysql</module>
+        <module>dinky-catalog-postgres</module>
     </modules>
 </project>
