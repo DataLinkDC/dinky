@@ -29,8 +29,6 @@ import org.dinky.job.Job;
 import org.dinky.job.JobResult;
 import org.dinky.utils.UDFUtils;
 
-import java.util.Collections;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 

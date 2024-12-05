@@ -19,13 +19,9 @@
 
 package org.dinky.function.compiler;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.configuration.Configuration;
 import org.dinky.data.exception.BusException;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.data.model.UDFPath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +37,7 @@ public interface FunctionPackage {
      * @return 文件绝对路径
      */
     String[] pack(List<UDF> udfList, Integer taskId);
+
     String pack(UDF udf, Integer taskId);
 
     /**
@@ -77,14 +74,14 @@ public interface FunctionPackage {
      * @return 打包结果
      */
     static String bale(UDF udf, Integer taskId) {
-            switch (udf.getFunctionLanguage()) {
-                case JAVA:
-                case SCALA:
-                   return new JVMPackage().pack(udf, taskId);
-                case PYTHON:
-                    return new PythonFunction().pack(udf, taskId);
-                default:
-                    throw new BusException("");
-            }
+        switch (udf.getFunctionLanguage()) {
+            case JAVA:
+            case SCALA:
+                return new JVMPackage().pack(udf, taskId);
+            case PYTHON:
+                return new PythonFunction().pack(udf, taskId);
+            default:
+                throw new BusException("");
+        }
     }
 }

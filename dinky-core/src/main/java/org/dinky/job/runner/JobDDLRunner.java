@@ -21,9 +21,6 @@ package org.dinky.job.runner;
 
 import static org.dinky.function.util.UDFUtil.*;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Opt;
-import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.model.SystemConfiguration;
@@ -42,19 +39,18 @@ import org.dinky.utils.URLUtils;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.table.catalog.FunctionLanguage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.*;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -176,10 +172,10 @@ public class JobDDLRunner extends AbstractJobRunner {
      */
     private void copyUdfFileLinkAndAddToClassloader(UDF udf, String udfName) {
         Integer jobId = Opt.ofNullable(jobManager.getJob()).map(Job::getId).orElse(null);
-        File udfLinkFile ;
-        if (jobId==null){
-            udfLinkFile= new File(udf.getCompilePackagePath());
-        }else {
+        File udfLinkFile;
+        if (jobId == null) {
+            udfLinkFile = new File(udf.getCompilePackagePath());
+        } else {
             String udfFilePath = PathConstant.getTaskUdfPath(jobManager.getJob().getId());
             String udfPath = udf.getCompilePackagePath();
             String udfPathSuffix = FileUtil.getSuffix(udfPath);
@@ -190,23 +186,19 @@ public class JobDDLRunner extends AbstractJobRunner {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            udfLinkFile=linkFilePath.toFile();
+            udfLinkFile = linkFilePath.toFile();
         }
         if (udf.getFunctionLanguage().equals(FunctionLanguage.PYTHON)) {
             jobManager.getUdfPathContextHolder().addPyUdfPath(udfLinkFile);
             jobManager
                     .getExecutor()
-                    .initPyUDF(
-                            SystemConfiguration.getInstances().getPythonHome(),
-                            udfLinkFile.getAbsolutePath());
+                    .initPyUDF(SystemConfiguration.getInstances().getPythonHome(), udfLinkFile.getAbsolutePath());
         } else {
             jobManager.getUdfPathContextHolder().addUdfPath(udfLinkFile);
             jobManager.getDinkyClassLoader().addURLs(CollUtil.newArrayList(udfLinkFile));
             jobManager.getExecutor().addJar(udfLinkFile);
         }
-
     }
-
 
     private SqlExplainResult explainAdd(String statement) {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
@@ -229,7 +221,6 @@ public class JobDDLRunner extends AbstractJobRunner {
         executeAddJar(statement);
         return sqlExplainResult;
     }
-
 
     private SqlExplainResult explainOtherDDL(String statement) {
         SqlExplainResult sqlExplainResult = jobManager.getExecutor().explainSqlRecord(statement);

@@ -129,7 +129,7 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
         try (ZipWriter zipWriter = new ZipWriter(file, Charset.defaultCharset())) {
             zipWriter.add(paths, inputStreams);
         }
-        return new String[]{path};
+        return new String[] {path};
     }
 
     @Override

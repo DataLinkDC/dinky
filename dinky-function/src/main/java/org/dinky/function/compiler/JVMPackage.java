@@ -69,7 +69,7 @@ public class JVMPackage implements FunctionPackage {
         try (ZipWriter zipWriter = new ZipWriter(file, Charset.defaultCharset())) {
             zipWriter.add(clazzs, fileInputStreams);
         }
-        return new String[]{jarPath};
+        return new String[] {jarPath};
     }
 
     @Override

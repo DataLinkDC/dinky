@@ -45,7 +45,7 @@ public class FunctionFactory {
         FunctionCompiler.getCompiler(udf, new Configuration(), taskId);
 
         // 打包
-         FunctionPackage.bale(udf, taskId);
+        FunctionPackage.bale(udf, taskId);
     }
 
     /**

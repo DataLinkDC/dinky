@@ -19,7 +19,6 @@
 
 package org.dinky.function.compiler;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.exception.UDFCompilerException;
 
@@ -29,10 +28,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.hutool.core.lang.Singleton;
-import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.StrUtil;
 
 /** @since 0.6.8 */
 public interface FunctionCompiler {

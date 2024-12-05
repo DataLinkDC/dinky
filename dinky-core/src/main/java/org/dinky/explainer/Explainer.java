@@ -19,9 +19,6 @@
 
 package org.dinky.explainer;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.file.PathUtil;
-import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
@@ -29,12 +26,10 @@ import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.JobStatementType;
 import org.dinky.data.job.SqlType;
 import org.dinky.data.model.LineageRel;
-import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.mock.MockStatementExplainer;
-import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
@@ -54,11 +49,6 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -103,7 +93,7 @@ public class Explainer {
         try {
             JobUDFBuilder.build(jobManager).run();
         } catch (Exception e) {
-            log.error("",e);
+            log.error("", e);
         }
         return this;
     }
@@ -127,15 +117,14 @@ public class Explainer {
         Optional.ofNullable(jobManager.getConfig().getUdfRefer())
                 .ifPresent(t -> t.forEach((key, value) -> {
                     UDF udf = UdfCodePool.getUDF(key);
-                    String sql = String.format("create temporary function %s as '%s' language  %s", value, key,udf.getFunctionLanguage());
+                    String sql = String.format(
+                            "create temporary function %s as '%s' language  %s", value, key, udf.getFunctionLanguage());
                     udfStatements.add(sql);
                 }));
         for (String udfStatement : udfStatements) {
             jobStatementPlan.addJobStatement(udfStatement, JobStatementType.DDL, SqlType.CREATE);
         }
     }
-
-
 
     public List<UDF> parseUDFFromStatements(String[] statements) {
         List<UDF> udfList = new ArrayList<>();
