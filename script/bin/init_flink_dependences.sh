@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 CURRENT_FLINK_FULL_VERSION=$1
 FLINK_VERSION_SCAN=$2

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 EXTENDS_HOME=$1
 
@@ -31,5 +32,3 @@ case $hadoop_uber_version in
         echo -e "${RED}The entered version number is incorrect, please re-run the script to select the correct version.${RESET}"
         ;;
 esac
-
-echo -e "${GREEN}After the download is completed, subsequent installation and configuration operations can be performed as needed.${RESET}"

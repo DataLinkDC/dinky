@@ -1,4 +1,26 @@
 #!/bin/bash
+set -x
+
+ENV_FILE="/etc/profile.d/dinky_env"
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+else
+    echo "" > "${ENV_FILE}"
+    source "${ENV_FILE}"
+fi
+
+DB_ENV_FILE="/etc/profile.d/dinky_db"
+if [ -f "${DB_ENV_FILE}" ]; then
+    source "${DB_ENV_FILE}"
+else
+    echo "" > "${DB_ENV_FILE}"
+    source "${DB_ENV_FILE}"
+fi
+chmod 755 $ENV_FILE
+chmod 755 $DB_ENV_FILE
+
+source /etc/profile
+
 
 export RED='\033[31m'
 export GREEN='\033[32m'
@@ -15,7 +37,6 @@ echo -e "${GREEN}===============================================================
 echo -e "${GREEN}======================================================================${RESET}"
 
 APP_HOME=${DINKY_HOME:-$(cd "$(dirname "$0")"; cd ..; pwd)}
-export DINKY_HOME=${APP_HOME}
 
 sudo chmod +x "${APP_HOME}"/bin/init_*.sh
 
@@ -82,6 +103,56 @@ function download_file() {
 
 export -f download_file
 
+add_to_env() {
+    local var_name=$1
+    local var_value=$2
+    local file=$3
+    echo "Adding $var_name to $file"
+    echo "export $var_name=\"$var_value\"" >> "$file"
+#
+#    if ! grep -q "^export $var_name=" "$file"; then
+#        echo "Adding $var_name to $file"
+#        echo "export $var_name=\"$var_value\"" >> "$file"
+#    else
+#        echo "$var_name already exists in $file, skipping."
+#    fi
+}
+export -f add_to_env
+
+
+
+echo
+echo
+
+echo -e "${GREEN} ====================== Environment variable initialization script -> Start ====================== ${RESET}"
+DINKY_HOME_TMP=$(echo $DINKY_HOME)
+if [ -z "$DINKY_HOME_TMP" ]; then
+  while true; do
+    read -p "Do you need to configure the DINKY_HOME environment variable? (yes/no)：" is_init_dinky_home
+    is_init_dinky_home=$(echo "$is_init_dinky_home" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+    case $is_init_dinky_home in
+      yes | y)
+        sh "${APP_HOME}"/bin/init_env.sh ${APP_HOME} ${ENV_FILE}
+        echo -e "${GREEN}DINKY_HOME environment variable configuration completed. the configuration file is：${ENV_FILE} ${RESET}"
+        break
+        ;;
+      no | n)
+        echo -e "${GREEN}Skip DINKY_HOME environment variable configuration.${RESET}"
+        break
+        ;;
+      *)
+        echo -e "${RED}The entered value is incorrect, please rerun the script to select the correct value.${RESET}"
+        ;;
+    esac
+  done
+else
+  echo -e "${GREEN}DINKY_HOME environment variable has been configured at ${DINKY_HOME_TMP}，Skip configuration.${RESET}"
+fi
+
+
+echo -e "${GREEN} ====================== Environment variable initialization script -> End ====================== ${RESET}"
+
+
 echo
 echo
 echo -e "${GREEN} ====================== Data source driver initialization script -> Start ====================== ${RESET}"
@@ -97,20 +168,7 @@ while true; do
     read -p "Please enter your database type：" db_type
     case $db_type in
         1)
-            echo -e "${GREEN}Start downloading the mysql driver package...${RESET}"
-            if [ -f "${DINKY_LIB}/mysql-connector-j-8.4.0.jar" ]; then
-                echo -e "${GREEN}mysql The driver package already exists, no need to download it again. Skip this step。${RESET}"
-            else
-                download_file https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar "${DINKY_LIB}"
-                echo -e "${GREEN}Download is complete, please verify. The downloaded file storage address is： ${DINKY_LIB}/mysql-connector-j-8.4.0.jar${RESET}"
-                if [ -f "${DINKY_LIB}/mysql-connector-j-8.4.0.jar" ]; then
-                    echo -e "${GREEN}mysql driver package downloaded successfully。${RESET}"
-                else
-                    echo -e "${RED}Mysql driver package download failed, please check the network or download manually。${RESET}"
-                    exit 1
-                fi
-                echo -e "${GREEN}After the verification is completed, subsequent installation and configuration operations can be performed as needed.。${RESET}"
-            fi
+            sh "${APP_HOME}"/bin/init_jdbc_driver.sh "${DINKY_LIB}"
             break
             ;;
         2)
@@ -219,15 +277,16 @@ while true; do
     is_init_db=$(echo "$is_init_db" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
     case $is_init_db in
         yes | y )
-            sh "${APP_HOME}/bin/init_db.sh" "${DINKY_HOME}"
+            sh "${APP_HOME}/bin/init_db.sh" "${DINKY_HOME}" "${DB_ENV_FILE}"
+            echo -e "${GREEN}The database configuration file initialization script has been executed successfully the configuration file is：${DB_ENV_FILE} ${RESET}"
             break
             ;;
         no | n )
-            echo -e "${GREEN}The database initialization operation has been skipped, please manually configure the database ${DINKY_HOME}/config/application.yml file and ${DINKY_HOME}/config/application-[mysql/pgsql].yml file。${RESET}"
+            echo -e "${GREEN}The database initialization operation has been skipped, please manually configure the database ${APP_HOME}/config/application.yml file and ${DINKY_HOME}/config/application-[mysql/postgresql].yml file。${RESET}"
             break
             ;;
         exit | e )
-            echo -e "${GREEN}The script has exited, please manually configure the database ${DINKY_HOME}/config/application.yml file and ${DINKY_HOME}/config/application-[mysql/pgsql].yml file。${RESET}"
+            echo -e "${GREEN}The script has exited, please manually configure the database ${APP_HOME}/config/application.yml file and ${APP_HOME}/config/application-[mysql/postgresql].yml file。${RESET}"
             exit 0
             ;;
         *)
@@ -236,3 +295,9 @@ while true; do
     esac
 done
 echo -e "${GREEN} ====================== Database configuration file initialization script -> End ====================== ${RESET}"
+echo
+echo
+echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+echo
