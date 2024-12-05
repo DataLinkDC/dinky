@@ -46,7 +46,9 @@ public class FlinkUdfPathContextHolder {
     }
 
     public void addPyUdfPath(File file) {
-        getPyUdfFile().add(file);
+        Set<File> pyUdfFile = getPyUdfFile();
+        pyUdfFile.add(file);
+        addUdfPath(file);
     }
 
     public void addOtherPlugins(File file) {

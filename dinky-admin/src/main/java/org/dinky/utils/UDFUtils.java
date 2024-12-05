@@ -19,10 +19,13 @@
 
 package org.dinky.utils;
 
+import org.apache.flink.configuration.Configuration;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.udf.UDFManage;
+import org.dinky.function.compiler.FunctionCompiler;
+import org.dinky.function.compiler.FunctionPackage;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 
@@ -33,11 +36,14 @@ public class UDFUtils extends UDFUtil {
     public static UDF taskToUDF(Task task) {
         if (Asserts.isNotNull(task.getConfigJson())
                 && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
-            return UDF.builder()
+            UDF udf = UDF.builder()
                     .className(task.getConfigJson().getUdfConfig().getClassName())
                     .code(task.getStatement())
                     .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                     .build();
+            FunctionCompiler.getCompiler(udf,new Configuration(),task.getId());
+            FunctionPackage.bale(udf,task.getId());
+            return udf;
         } else {
             throw new BusException("udf `class` config is null,please check your udf task config");
         }

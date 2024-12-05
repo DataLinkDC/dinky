@@ -38,7 +38,7 @@ import cn.hutool.core.util.StrUtil;
 public class JVMPackage implements FunctionPackage {
 
     @Override
-    public String[] pack(List<UDF> udfList, Integer missionId) {
+    public String[] pack(List<UDF> udfList, Integer taskId) {
         if (CollUtil.isEmpty(udfList)) {
             return new String[0];
         }
@@ -62,13 +62,31 @@ public class JVMPackage implements FunctionPackage {
             fileInputStreams[i] = FileUtil.getInputStream(absoluteFilePath);
         }
 
-        String jarPath = PathConstant.getUdfPackagePath(missionId) + PathConstant.UDF_JAR_NAME;
+        String jarPath = PathConstant.getUdfPackagePath(taskId) + PathConstant.UDF_JAR_NAME;
         // 编译好的文件打包jar
         File file = FileUtil.file(jarPath);
         FileUtil.del(file);
         try (ZipWriter zipWriter = new ZipWriter(file, Charset.defaultCharset())) {
             zipWriter.add(clazzs, fileInputStreams);
         }
-        return new String[] {jarPath};
+        return new String[]{jarPath};
+    }
+
+    @Override
+    public String pack(UDF udf, Integer taskId) {
+        String className = udf.getClassName();
+        String classFile = StrUtil.replace(className, ".", "/") + ".class";
+        String absoluteFilePath = PathConstant.getUdfCompilerPath(FunctionLanguage.JAVA, classFile);
+        InputStream inputStream = FileUtil.getInputStream(absoluteFilePath);
+
+        String jarPath = PathConstant.getUdfPackagePath(taskId) + PathConstant.UDF_JAR_NAME;
+        // 编译好的文件打包jar
+        File file = FileUtil.file(jarPath);
+        FileUtil.del(file);
+        try (ZipWriter zipWriter = new ZipWriter(file, Charset.defaultCharset())) {
+            zipWriter.add(classFile, inputStream);
+        }
+        udf.setCompilePackagePath(file.getAbsolutePath());
+        return file.getAbsolutePath();
     }
 }

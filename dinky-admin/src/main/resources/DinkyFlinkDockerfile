@@ -1,8 +1,8 @@
 # 用来构建dinky环境
-ARG FLINK_VERSION=1.14.5
-ARG FLINK_BIG_VERSION=1.14
+ARG FLINK_VERSION=1.20.0
+ARG FLINK_BIG_VERSION=1.20
 
-FROM flink:${FLINK_VERSION}
+FROM flink:${FLINK_VERSION}-scala_2.12-java8
 
 ARG FLINK_VERSION
 ARG FLINK_BIG_VERSION
@@ -10,13 +10,19 @@ ENV PYTHON_HOME /opt/miniconda3
 
 USER root
 RUN wget "https://s3.jcloud.sjtu.edu.cn/899a892efef34b1b944a19981040f55b-oss01/anaconda/miniconda/Miniconda3-py38_4.9.2-Linux-x86_64.sh" -O "miniconda.sh" && chmod +x miniconda.sh
-RUN ./miniconda.sh -b -p $PYTHON_HOME && chown -R flink $PYTHON_HOME && ls $PYTHON_HOME
 
+RUN ./miniconda.sh -b -p $PYTHON_HOME && chown -R flink $PYTHON_HOME && ls $PYTHON_HOME
 USER flink
 
 ENV PATH $PYTHON_HOME/bin:$PATH
-RUN pip install "apache-flink==${FLINK_VERSION}" -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
 
-RUN cp /opt/flink/opt/flink-python_* /opt/flink/lib/
+RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+RUN rm -rf /opt/miniconda3/lib/python3.8/site-packages/ruamel*
+RUN pip install "apache-flink==${FLINK_VERSION}" -i https://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
 
-RUN wget -O dinky-app-${FLINK_BIG_VERSION}.jar - ${DINKY_HTTP}/downloadAppJar/${FLINK_BIG_VERSION} | mv dinky-app-${FLINK_BIG_VERSION}.jar
+RUN cp /opt/flink/opt/flink-python* /opt/flink/lib/
+RUN rm -f  /opt/flink/lib/flink-table-planner-loader*.jar
+
+RUN  cp  /opt/flink/opt/flink-table-planner* /opt/flink/lib/
+
+# RUN wget -O dinky-app-${FLINK_BIG_VERSION}.jar - ${DINKY_HTTP}/downloadAppJar/${FLINK_BIG_VERSION} | mv dinky-app-${FLINK_BIG_VERSION}.jar

@@ -41,4 +41,9 @@ public class UDF {
     FunctionLanguage functionLanguage;
     /** udf源代码 */
     String code;
+    /**
+     * en: Compile the artifact path <br />
+     * zh: 编译产物路径
+     */
+    String compilePackagePath;
 }

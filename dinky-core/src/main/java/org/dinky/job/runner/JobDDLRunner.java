@@ -21,13 +21,18 @@ package org.dinky.job.runner;
 
 import static org.dinky.function.util.UDFUtil.*;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Opt;
+import org.apache.flink.table.catalog.FunctionLanguage;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
+import org.dinky.job.Job;
 import org.dinky.job.JobManager;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
@@ -39,12 +44,12 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -54,8 +59,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JobDDLRunner extends AbstractJobRunner {
-
-    private List<String> udfStatements = new ArrayList<>();
 
     public JobDDLRunner(JobManager jobManager) {
         this.jobManager = jobManager;
@@ -76,14 +79,11 @@ public class JobDDLRunner extends AbstractJobRunner {
                 break;
             case CREATE:
                 if (UDFUtil.isUdfStatement(jobStatement.getStatement())) {
-                    udfStatements.add(jobStatement.getStatement());
+                    executeCreateFunction(jobStatement.getStatement());
                     break;
                 }
             default:
                 jobManager.getExecutor().executeSql(jobStatement.getStatement());
-        }
-        if (jobStatement.isFinalCreateFunctionStatement() && !udfStatements.isEmpty()) {
-            executeCreateFunction(udfStatements);
         }
     }
 
@@ -91,7 +91,7 @@ public class JobDDLRunner extends AbstractJobRunner {
     public SqlExplainResult explain(JobStatement jobStatement) {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
         try {
-            SqlExplainResult recordResult = null;
+            SqlExplainResult recordResult;
             switch (jobStatement.getSqlType()) {
                 case ADD:
                     recordResult = explainAdd(jobStatement.getStatement());
@@ -104,15 +104,12 @@ public class JobDDLRunner extends AbstractJobRunner {
                     break;
                 case CREATE:
                     if (UDFUtil.isUdfStatement(jobStatement.getStatement())) {
-                        udfStatements.add(jobStatement.getStatement());
+                        executeCreateFunction(jobStatement.getStatement());
                         recordResult = jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement());
                         break;
                     }
                 default:
                     recordResult = explainOtherDDL(jobStatement.getStatement());
-            }
-            if (jobStatement.isFinalCreateFunctionStatement() && !udfStatements.isEmpty()) {
-                explainCreateFunction(jobStatement);
             }
             if (Asserts.isNull(recordResult)) {
                 return resultBuilder.invalid().build();
@@ -133,10 +130,9 @@ public class JobDDLRunner extends AbstractJobRunner {
                     .sql(jobStatement.getStatement())
                     .index(jobStatement.getIndex());
             log.error(error);
-        } finally {
-            resultBuilder.explainTime(LocalDateTime.now());
-            return resultBuilder.build();
         }
+        resultBuilder.explainTime(LocalDateTime.now());
+        return resultBuilder.build();
     }
 
     private void executeAdd(String statement) {
@@ -163,21 +159,54 @@ public class JobDDLRunner extends AbstractJobRunner {
         jobManager.getExecutor().executeSql(statement);
     }
 
-    private void executeCreateFunction(List<String> udfStatements) {
-        List<UDF> udfList = new ArrayList<>();
-        for (String statement : udfStatements) {
-            UDF udf = toUDF(statement, jobManager.getExecutor().getDinkyClassLoader());
-            if (Asserts.isNotNull(udf)) {
-                udfList.add(UDFUtil.toUDF(statement, jobManager.getExecutor().getDinkyClassLoader()));
-            }
+    private void executeCreateFunction(String udfStatement) {
+        UDF udf = toUDF(udfStatement, jobManager.getExecutor().getDinkyClassLoader());
+        if (udf != null) {
+            // 创建文件路径快捷链接
+            copyUdfFileLinkAndAddToClassloader(udf, udf.getName());
         }
-        if (!udfList.isEmpty()) {
-            compileUDF(udfList);
-        }
-        for (String statement : udfStatements) {
-            jobManager.getExecutor().executeSql(statement);
-        }
+        jobManager.getExecutor().executeSql(udfStatement);
     }
+
+    /**
+     * zh : 把编译打包好的udf文件，copy link 到当前任务下，并把产物添加到Classloader，最后add jar到各种执行模式
+     *
+     * @param udf     udf
+     * @param udfName udf 名称
+     */
+    private void copyUdfFileLinkAndAddToClassloader(UDF udf, String udfName) {
+        Integer jobId = Opt.ofNullable(jobManager.getJob()).map(Job::getId).orElse(null);
+        File udfLinkFile ;
+        if (jobId==null){
+            udfLinkFile= new File(udf.getCompilePackagePath());
+        }else {
+            String udfFilePath = PathConstant.getTaskUdfPath(jobManager.getJob().getId());
+            String udfPath = udf.getCompilePackagePath();
+            String udfPathSuffix = FileUtil.getSuffix(udfPath);
+            Path linkFilePath = new File(udfFilePath + udfName + "." + udfPathSuffix).toPath();
+            try {
+                FileUtil.mkParentDirs(linkFilePath);
+                Files.createSymbolicLink(linkFilePath, new File(udfPath).toPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            udfLinkFile=linkFilePath.toFile();
+        }
+        if (udf.getFunctionLanguage().equals(FunctionLanguage.PYTHON)) {
+            jobManager.getUdfPathContextHolder().addPyUdfPath(udfLinkFile);
+            jobManager
+                    .getExecutor()
+                    .initPyUDF(
+                            SystemConfiguration.getInstances().getPythonHome(),
+                            udfLinkFile.getAbsolutePath());
+        } else {
+            jobManager.getUdfPathContextHolder().addUdfPath(udfLinkFile);
+            jobManager.getDinkyClassLoader().addURLs(CollUtil.newArrayList(udfLinkFile));
+            jobManager.getExecutor().addJar(udfLinkFile);
+        }
+
+    }
+
 
     private SqlExplainResult explainAdd(String statement) {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
@@ -201,14 +230,6 @@ public class JobDDLRunner extends AbstractJobRunner {
         return sqlExplainResult;
     }
 
-    private SqlExplainResult explainCreateFunction(JobStatement jobStatement) {
-        udfStatements.add(jobStatement.getStatement());
-        SqlExplainResult sqlExplainResult = explainOtherDDL(jobStatement.getStatement());
-        if (jobStatement.isFinalCreateFunctionStatement()) {
-            executeCreateFunction(udfStatements);
-        }
-        return sqlExplainResult;
-    }
 
     private SqlExplainResult explainOtherDDL(String statement) {
         SqlExplainResult sqlExplainResult = jobManager.getExecutor().explainSqlRecord(statement);
@@ -224,75 +245,5 @@ public class JobDDLRunner extends AbstractJobRunner {
         combinationConfig.addAll(rootConfig);
         combinationConfig.addAll(config);
         return combinationConfig;
-    }
-
-    private void compileUDF(List<UDF> udfList) {
-        Integer taskId = jobManager.getConfig().getTaskId();
-        if (taskId == null) {
-            taskId = -RandomUtil.randomInt(0, 1000);
-        }
-        // 1. Obtain the path of the jar package and inject it into the remote environment
-        List<File> jarFiles =
-                new ArrayList<>(jobManager.getUdfPathContextHolder().getAllFileSet());
-
-        String[] userCustomUdfJarPath = UDFUtil.initJavaUDF(udfList, taskId);
-        String[] jarPaths = CollUtil.removeNull(jarFiles).stream()
-                .map(File::getAbsolutePath)
-                .toArray(String[]::new);
-        if (GATEWAY_TYPE_MAP.get(SESSION).contains(jobManager.getRunMode())) {
-            jobManager.getConfig().setJarFiles(jarPaths);
-        }
-
-        // 2.Compile Python
-        String[] pyPaths = UDFUtil.initPythonUDF(
-                udfList,
-                jobManager.getRunMode(),
-                jobManager.getConfig().getTaskId(),
-                jobManager.getExecutor().getTableConfig().getConfiguration());
-
-        jobManager.getExecutor().initUDF(userCustomUdfJarPath);
-        jobManager.getExecutor().initUDF(jarPaths);
-
-        if (ArrayUtil.isNotEmpty(pyPaths)) {
-            for (String pyPath : pyPaths) {
-                if (StrUtil.isNotBlank(pyPath)) {
-                    jarFiles.add(new File(pyPath));
-                    jobManager.getUdfPathContextHolder().addPyUdfPath(new File(pyPath));
-                }
-            }
-        }
-        if (ArrayUtil.isNotEmpty(userCustomUdfJarPath)) {
-            for (String jarPath : userCustomUdfJarPath) {
-                if (StrUtil.isNotBlank(jarPath)) {
-                    jarFiles.add(new File(jarPath));
-                    jobManager.getUdfPathContextHolder().addUdfPath(new File(jarPath));
-                }
-            }
-        }
-
-        Set<File> pyUdfFile = jobManager.getUdfPathContextHolder().getPyUdfFile();
-        jobManager
-                .getExecutor()
-                .initPyUDF(
-                        SystemConfiguration.getInstances().getPythonHome(),
-                        pyUdfFile.stream().map(File::getAbsolutePath).toArray(String[]::new));
-        if (GATEWAY_TYPE_MAP.get(YARN).contains(jobManager.getRunMode())) {
-            jobManager.getConfig().getGatewayConfig().setJarPaths(ArrayUtil.append(jarPaths, pyPaths));
-        }
-
-        try {
-            List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
-            // 3.Write the required files for UDF
-            UDFUtil.writeManifest(taskId, jarList, jobManager.getUdfPathContextHolder());
-            UDFUtil.addConfigurationClsAndJars(
-                    jobManager.getExecutor().getCustomTableEnvironment(),
-                    jarList,
-                    CollUtil.newArrayList(URLUtils.getURLs(jarFiles)));
-        } catch (Exception e) {
-            throw new RuntimeException("add configuration failed: ", e);
-        }
-
-        log.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size() + pyUdfFile.size()));
-        log.info("Initializing Flink UDF...Finish");
     }
 }

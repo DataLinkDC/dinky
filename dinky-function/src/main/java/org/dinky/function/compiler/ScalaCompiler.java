@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ScalaCompiler implements FunctionCompiler {
 
     @Override
-    public boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
+    public boolean compiler(UDF udf, ReadableConfig conf, Integer taskId) {
         // TODO 改为ProcessStep注释
 
         String className = udf.getClassName();

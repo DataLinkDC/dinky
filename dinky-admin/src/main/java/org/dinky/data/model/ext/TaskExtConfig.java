@@ -94,14 +94,13 @@ public class TaskExtConfig implements Serializable {
         return Asserts.isNotNullCollection(udfRefer)
                 ? udfRefer.stream()
                         .filter(item -> item.getClassName() != null)
-                        .map(t -> {
+                        .peek(t -> {
                             if (StringUtils.isEmpty(t.getName())) {
                                 String name = t.getClassName()
                                         .substring(t.getClassName().lastIndexOf(".") + 1);
                                 name = name.substring(0, 1).toLowerCase() + name.substring(1);
                                 t.setName(name);
                             }
-                            return t;
                         })
                         .collect(Collectors.toConcurrentMap(TaskUdfRefer::getClassName, TaskUdfRefer::getName))
                 : new HashMap<>();

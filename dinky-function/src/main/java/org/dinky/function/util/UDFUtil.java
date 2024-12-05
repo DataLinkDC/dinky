@@ -154,21 +154,21 @@ public class UDFUtil {
         }
     }
 
-    public static String[] initJavaUDF(List<UDF> udf, Integer missionId) {
+    public static String[] initJavaUDF(List<UDF> udf, Integer taskId) {
         return FunctionFactory.initUDF(
                         CollUtil.newArrayList(
                                 CollUtil.filterNew(udf, x -> x.getFunctionLanguage() != FunctionLanguage.PYTHON)),
-                        missionId,
+                        taskId,
                         null)
                 .getJarPaths();
     }
 
     public static String[] initPythonUDF(
-            List<UDF> udf, GatewayType gatewayType, Integer missionId, Configuration configuration) {
+            List<UDF> udf, GatewayType gatewayType, Integer taskId, Configuration configuration) {
         return FunctionFactory.initUDF(
                         CollUtil.newArrayList(
                                 CollUtil.filterNew(udf, x -> x.getFunctionLanguage() == FunctionLanguage.PYTHON)),
-                        missionId,
+                        taskId,
                         configuration)
                 .getPyPaths();
     }
@@ -343,6 +343,7 @@ public class UDFUtil {
                         .className(className)
                         .code(udf.getCode())
                         .functionLanguage(udf.getFunctionLanguage())
+                        .compilePackagePath(udf.getCompilePackagePath())
                         .build();
             }
             String gitPackage = UdfCodePool.getGitPackage(className);

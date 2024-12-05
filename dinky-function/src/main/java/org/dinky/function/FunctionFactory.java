@@ -33,26 +33,34 @@ public class FunctionFactory {
     /**
      * UDF compilation & packaging initialization(udf编译 & 打包 初始化)
      * @param udfClassList udf列表
-     * @param missionId 当前任务id
+     * @param taskId 当前任务id
      * @return 打包过后的路径
      */
-    public static UDFPath initUDF(List<UDF> udfClassList, Integer missionId) {
-        return initUDF(udfClassList, missionId, new Configuration());
+    public static UDFPath initUDF(List<UDF> udfClassList, Integer taskId) {
+        return initUDF(udfClassList, taskId, new Configuration());
+    }
+
+    public static void initUDF(UDF udf, Integer taskId) {
+        // 编译
+        FunctionCompiler.getCompiler(udf, new Configuration(), taskId);
+
+        // 打包
+         FunctionPackage.bale(udf, taskId);
     }
 
     /**
      * UDF compilation & packaging initialization(udf编译 & 打包 初始化)
      *
      * @param udfClassList udf列表
-     * @param missionId 当前任务id
+     * @param taskId 当前任务id
      * @return 打包过后的路径
      */
-    public static UDFPath initUDF(List<UDF> udfClassList, Integer missionId, Configuration configuration) {
+    public static UDFPath initUDF(List<UDF> udfClassList, Integer taskId, Configuration configuration) {
 
         // 编译
-        FunctionCompiler.getCompiler(udfClassList, configuration, missionId);
+        FunctionCompiler.getCompiler(udfClassList, configuration, taskId);
 
         // 打包
-        return FunctionPackage.bale(udfClassList, missionId);
+        return FunctionPackage.bale(udfClassList, taskId);
     }
 }

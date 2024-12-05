@@ -47,7 +47,7 @@ public class UdfTask extends BaseTask {
         jobResult.setStatus(Job.JobStatus.SUCCESS);
         try {
             UDF udf = UDFUtils.taskToUDF(BeanUtil.toBean(task, Task.class));
-            FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
+            FunctionFactory.initUDF(udf, task.getId());
         } catch (Exception e) {
             jobResult.setSuccess(false);
             jobResult.setError(ExceptionUtil.getRootCauseMessage(e));

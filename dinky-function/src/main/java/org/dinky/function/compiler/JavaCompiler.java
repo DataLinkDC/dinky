@@ -38,11 +38,11 @@ public class JavaCompiler implements FunctionCompiler {
      *
      * @param udf       udf
      * @param conf      flink-conf
-     * @param missionId 任务id
+     * @param taskId 任务id
      * @return 是否成功
      */
     @Override
-    public synchronized boolean compiler(UDF udf, ReadableConfig conf, Integer missionId) {
+    public synchronized boolean compiler(UDF udf, ReadableConfig conf, Integer taskId) {
 
         // TODO 改为ProcessStep注释
         log.info("Compiling java code, class: {}", udf.getClassName());
