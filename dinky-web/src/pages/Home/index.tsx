@@ -74,7 +74,7 @@ const Workplace: FC = () => {
   };
 
   return (
-    <PageContainer style={{ padding: 10 }}>
+    <PageContainer style={{ padding: 10 }} title={false}>
       <Row gutter={24}>
         <Col xl={16} lg={24} md={24} sm={24} xs={24}>
           <WorkHeader />
@@ -96,8 +96,10 @@ const Workplace: FC = () => {
             // size={"small"}
             title={l('home.fast.link')}
             bordered={false}
-            bodyStyle={{
-              padding: 0
+            styles={{
+              body: {
+                padding: 0
+              }
             }}
           >
             <FastLink />

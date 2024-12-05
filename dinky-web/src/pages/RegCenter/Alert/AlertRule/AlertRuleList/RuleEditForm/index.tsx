@@ -111,7 +111,7 @@ const RuleEditForm = (props: AlertRuleFormProps) => {
     <DrawerForm
       layout={'vertical'}
       form={form}
-      width={'40%'}
+      width={'60%'}
       open={modalVisible}
       submitter={{ render: () => [...renderFooter()] }}
       drawerProps={{

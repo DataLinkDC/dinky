@@ -80,7 +80,7 @@ public class MybatisPlusConfig {
             "dinky_task_version");
 
     @Bean
-    @Profile("pgsql")
+    @Profile("postgresql")
     public PostgreSQLQueryInterceptor postgreSQLQueryInterceptor() {
         return new PostgreSQLQueryInterceptor();
     }
@@ -91,7 +91,7 @@ public class MybatisPlusConfig {
      * @return {@linkplain PostgreSQLPrepareInterceptor}
      */
     @Bean
-    @Profile("pgsql")
+    @Profile("postgresql")
     public PostgreSQLPrepareInterceptor postgreSQLPrepareInterceptor() {
         return new PostgreSQLPrepareInterceptor();
     }
