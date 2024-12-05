@@ -70,7 +70,7 @@ public class ProjectClient {
                 .form(map)
                 .timeout(5000)
                 .execute();
-        if (httpResponse.getStatus() != 200) {
+        if (!httpResponse.isOk()) {
             SystemConfiguration.getInstances().getDolphinschedulerEnable().setValue(false);
             logger.error("DolphInScheduler connection failed, Reason: {}", httpResponse.getStatus());
             return null;
@@ -101,7 +101,7 @@ public class ProjectClient {
                 .timeout(5000)
                 .execute();
 
-        if (httpResponse.getStatus() != 200) {
+        if (!httpResponse.isOk()) {
             SystemConfiguration.getInstances().getDolphinschedulerEnable().setValue(false);
             logger.error("DolphInScheduler connection failed, Reason: {}", httpResponse.getStatus());
             return null;
