@@ -241,7 +241,6 @@ public class JobManager {
         return true;
     }
 
-
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
         List<String> statements = Arrays.stream(SqlUtil.getStatements(statement))
