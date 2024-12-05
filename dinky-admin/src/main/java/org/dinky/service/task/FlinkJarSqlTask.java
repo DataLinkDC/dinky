@@ -24,11 +24,11 @@ import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.JobResult;
+import org.dinky.job.runner.FlinkJarUtil;
 
 import java.util.List;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.dinky.job.runner.FlinkJarUtil;
 
 @SupportDialect(Dialect.FLINK_JAR)
 public class FlinkJarSqlTask extends FlinkSqlTask {
@@ -56,12 +56,9 @@ public class FlinkJarSqlTask extends FlinkSqlTask {
     public ObjectNode getJobPlan() {
         String statement = task.getStatement();
         try {
-            return FlinkJarUtil.getJobPlan(statement,jobManager);
+            return FlinkJarUtil.getJobPlan(statement, jobManager);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-
-
 }

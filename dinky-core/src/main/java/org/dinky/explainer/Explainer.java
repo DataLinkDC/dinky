@@ -33,12 +33,10 @@ import org.dinky.explainer.mock.MockStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobRunnerFactory;
 import org.dinky.job.JobStatementPlan;
-import org.dinky.trans.Operations;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 
@@ -223,7 +221,7 @@ public class Explainer {
             try {
                 if (sqlType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                }else if (!sqlType.equals(SqlType.SELECT) && !sqlType.equals(SqlType.PRINT)) {
+                } else if (!sqlType.equals(SqlType.SELECT) && !sqlType.equals(SqlType.PRINT)) {
                     jobRunnerFactory.getJobRunner(item.getStatementType()).run(item);
                 }
             } catch (Exception e) {
