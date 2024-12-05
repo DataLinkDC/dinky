@@ -19,11 +19,6 @@
 
 package org.dinky.service.task;
 
-import cn.hutool.core.lang.Assert;
-import org.apache.flink.api.dag.Pipeline;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.SupportDialect;
@@ -34,13 +29,6 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.Executor;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobResult;
-
-import java.io.File;
-import java.net.URL;
-import java.util.List;
-import java.util.Set;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.dinky.trans.Operations;
 import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.trans.dml.ExecuteJarOperation;
@@ -52,6 +40,20 @@ import org.dinky.utils.DinkyClassLoaderUtil;
 import org.dinky.utils.FlinkStreamEnvironmentUtil;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.SqlUtil;
+
+import org.apache.flink.api.dag.Pipeline;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
+
+import java.io.File;
+import java.net.URL;
+import java.util.List;
+import java.util.Set;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.lang.Assert;
 
 @SupportDialect(Dialect.FLINK_JAR)
 public class FlinkJarSqlTask extends FlinkSqlTask {
@@ -80,7 +82,8 @@ public class FlinkJarSqlTask extends FlinkSqlTask {
         String statement = task.getStatement();
         try {
             Pipeline pipeline = getJarStreamGraph(statement, jobManager.getDinkyClassLoader());
-            Configuration configuration = Configuration.fromMap(jobManager.getExecutorConfig().getConfig());
+            Configuration configuration =
+                    Configuration.fromMap(jobManager.getExecutorConfig().getConfig());
             JobGraph jobGraph = FlinkStreamEnvironmentUtil.getJobGraph(pipeline, configuration);
             return JsonUtils.parseObject(JsonPlanGenerator.generatePlan(jobGraph));
         } catch (Exception e) {
@@ -119,5 +122,4 @@ public class FlinkJarSqlTask extends FlinkSqlTask {
         List<URL> urLs = jobManager.getAllFileSet();
         return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
     }
-
 }
