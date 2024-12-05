@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -x
 
 DINKY_LIB_DIR=$1
 

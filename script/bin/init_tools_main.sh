@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -x
 
 ENV_FILE="/etc/profile.d/dinky_env"
 if [ -f "${ENV_FILE}" ]; then

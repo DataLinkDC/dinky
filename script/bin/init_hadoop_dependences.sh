@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -x
 
 EXTENDS_HOME=$1
 
