@@ -52,7 +52,7 @@ const MyWorker = () => {
     <Card
       style={{
         marginBottom: 18,
-        height: 'calc(100vh - 32%)',
+        height: 'calc(100vh - 32%)'
       }}
       title={l('home.mywork')}
       bordered={false}
