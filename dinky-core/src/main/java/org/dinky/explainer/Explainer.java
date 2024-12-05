@@ -230,26 +230,7 @@ public class Explainer {
                 log.error("Exception occurred while fetching lineage information", e);
                 throw new DinkyException("Exception occurred while fetching lineage information", e);
             }
-
-
         }
-//        for (String item : statements) {
-//            try {
-//                String sql = FlinkInterceptor.pretreatStatement(executor, item);
-//                if (Asserts.isNullString(sql)) {
-//                    continue;
-//                }
-//                SqlType operationType = Operations.getOperationType(sql);
-//                if (operationType.equals(SqlType.INSERT)) {
-//                    lineageRelList.addAll(executor.getLineage(sql));
-//                } else if (!operationType.equals(SqlType.SELECT) && !operationType.equals(SqlType.PRINT)) {
-//                    executor.executeSql(sql);
-//                }
-//            } catch (Exception e) {
-//                log.error("Exception occurred while fetching lineage information", e);
-//                throw new DinkyException("Exception occurred while fetching lineage information", e);
-//            }
-//        }
         return lineageRelList;
     }
 }
