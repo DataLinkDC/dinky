@@ -41,7 +41,7 @@ public class UDFUtils extends UDFUtil {
                     .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                     .build();
 
-            FunctionCompiler.getCompiler(udf, task.getConfigJson().getCustomConfigMaps(), task.getId());
+            FunctionCompiler.getCompilerByTask(udf, task.getConfigJson().getCustomConfigMaps(), task.getId());
             FunctionPackage.bale(udf, task.getId());
             return udf;
         } else {

@@ -52,7 +52,7 @@ public interface FunctionCompiler {
      */
     boolean compiler(UDF udf, ReadableConfig conf, Integer taskId);
 
-    static boolean getCompiler(UDF udf, Map<String, String> conf, Integer taskId) {
+    static boolean getCompilerByTask(UDF udf, Map<String, String> conf, Integer taskId) {
         return getCompiler(udf, Configuration.fromMap(conf), taskId);
     }
     /**
