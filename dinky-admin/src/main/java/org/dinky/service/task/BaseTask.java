@@ -25,6 +25,7 @@ import org.dinky.data.annotations.SupportDialect;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobResult;
 
 import java.util.List;
@@ -59,6 +60,11 @@ public abstract class BaseTask {
     public ObjectNode getJobPlan() throws NotSupportExplainExcepition {
         throw new NotSupportExplainExcepition(
                 StrFormatter.format("task [{}] dialect [{}] is can not getJobPlan", task.getName(), task.getDialect()));
+    }
+
+    public LineageResult getColumnLineage() throws NotSupportExplainExcepition {
+        throw new NotSupportExplainExcepition(StrFormatter.format(
+                "task [{}] dialect [{}] is can not get column lineage", task.getName(), task.getDialect()));
     }
 
     public static BaseTask getTask(TaskDTO taskDTO) {

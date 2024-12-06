@@ -67,21 +67,15 @@ import lombok.extern.slf4j.Slf4j;
 public class Explainer {
 
     private Executor executor;
-    private boolean useStatementSet;
     private JobManager jobManager;
 
-    public Explainer(Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public Explainer(Executor executor, JobManager jobManager) {
         this.executor = executor;
-        this.useStatementSet = useStatementSet;
         this.jobManager = jobManager;
     }
 
     public static Explainer build(JobManager jobManager) {
-        return new Explainer(jobManager.getExecutor(), true, jobManager);
-    }
-
-    public static Explainer build(Executor executor, boolean useStatementSet, JobManager jobManager) {
-        return new Explainer(executor, useStatementSet, jobManager);
+        return new Explainer(jobManager.getExecutor(), jobManager);
     }
 
     public Explainer initialize(JobConfig config, String statement) {
@@ -215,7 +209,6 @@ public class Explainer {
                 .type(GatewayType.LOCAL.getLongValue())
                 .useRemote(false)
                 .fragment(true)
-                .statementSet(useStatementSet)
                 .parallelism(1)
                 .configJson(executor.getTableConfig().getConfiguration().toMap())
                 .build();

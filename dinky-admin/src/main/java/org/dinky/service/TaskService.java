@@ -280,7 +280,7 @@ public interface TaskService extends ISuperService<Task> {
      * @param id The id of the task to get.
      * @return A {@link LineageResult} object representing the found task lineage.
      */
-    LineageResult getTaskLineage(Integer id);
+    LineageResult getTaskLineage(Integer id) throws NotSupportExplainExcepition;
 
     /**
      * Build the job submit config with the given task

@@ -201,7 +201,7 @@ public class APIController {
             dataType = "Integer",
             paramType = "query",
             dataTypeClass = Integer.class)
-    public Result getTaskLineage(@RequestParam Integer id) {
+    public Result getTaskLineage(@RequestParam Integer id) throws NotSupportExplainExcepition {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.getTaskLineage(id), Status.QUERY_SUCCESS);
     }
