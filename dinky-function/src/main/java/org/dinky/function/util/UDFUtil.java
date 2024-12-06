@@ -448,7 +448,6 @@ public class UDFUtil {
         }
     }
 
-
     public static void writeManifest(
             Integer taskId, List<URL> jarPaths, FlinkUdfPathContextHolder udfPathContextHolder) {
         FlinkUdfManifest flinkUdfManifest = new FlinkUdfManifest();
