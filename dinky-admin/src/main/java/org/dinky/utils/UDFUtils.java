@@ -27,8 +27,6 @@ import org.dinky.function.compiler.FunctionCompiler;
 import org.dinky.function.compiler.FunctionPackage;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
-
-import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.catalog.FunctionLanguage;
 
 public class UDFUtils extends UDFUtil {
@@ -41,7 +39,8 @@ public class UDFUtils extends UDFUtil {
                     .code(task.getStatement())
                     .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                     .build();
-            FunctionCompiler.getCompiler(udf, new Configuration(), task.getId());
+
+            FunctionCompiler.getCompiler(udf, task.getConfigJson().getCustomConfigMaps(), task.getId());
             FunctionPackage.bale(udf, task.getId());
             return udf;
         } else {

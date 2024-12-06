@@ -27,7 +27,6 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
-import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.compiler.CustomStringScalaCompiler;
@@ -41,7 +40,6 @@ import org.dinky.utils.URLUtils;
 
 import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.FunctionLanguage;
@@ -450,14 +448,6 @@ public class UDFUtil {
         }
     }
 
-    public static void addConfigurationClsAndJars(
-            CustomTableEnvironment customTableEnvironment, List<URL> jarList, List<URL> classpaths) {
-        customTableEnvironment.addConfiguration(
-                PipelineOptions.CLASSPATHS,
-                classpaths.stream().map(URL::toString).collect(Collectors.toList()));
-        customTableEnvironment.addConfiguration(
-                PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
-    }
 
     public static void writeManifest(
             Integer taskId, List<URL> jarPaths, FlinkUdfPathContextHolder udfPathContextHolder) {

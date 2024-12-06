@@ -19,6 +19,7 @@
 
 package org.dinky.function.compiler;
 
+import org.apache.flink.configuration.Configuration;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.exception.UDFCompilerException;
 
@@ -26,6 +27,7 @@ import org.apache.flink.configuration.ReadableConfig;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -50,6 +52,9 @@ public interface FunctionCompiler {
      */
     boolean compiler(UDF udf, ReadableConfig conf, Integer taskId);
 
+    static boolean getCompiler(UDF udf, Map<String,String> conf, Integer taskId) {
+        return getCompiler(udf, Configuration.fromMap(conf),taskId);
+    }
     /**
      * 编译
      *
