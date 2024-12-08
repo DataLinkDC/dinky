@@ -13,7 +13,7 @@ USE_DEBUG=$1
 
 if [ -z "${USE_DEBUG}" ]; then
     USE_DEBUG="false"
-    echo "${YELLOW}Debug mode is not enabled, if you need to enable debug mode, please add the first parameter 'true' when executing the script. example: init_tools_main.sh true $RESET"
+    echo -e "${YELLOW}Debug mode is not enabled, if you need to enable debug mode, please add the first parameter 'true' when executing the script. example: init_tools_main.sh true $RESET"
 elif [ "${USE_DEBUG}" = "true" ]; then
     set -x
 fi
