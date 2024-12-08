@@ -8,7 +8,7 @@ export MAGENTA='\033[35m'
 export CYAN='\033[36m'
 export RESET='\033[0m'
 
-# debug mode: true or false 如果为空，则默认为false
+# debug mode: true or false If empty, defaults to false
 USE_DEBUG=$1
 
 if [ -z "${USE_DEBUG}" ]; then
