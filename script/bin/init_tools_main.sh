@@ -325,6 +325,14 @@ while true; do
 done
 echo -e "${GREEN} ====================== Database configuration file initialization script -> End ====================== ${RESET}"
 
+function echo_warning_msg() {
+  echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+  echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+  echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+}
+
+echo -e "${GREEN} ====================== Dinky service startup script -> Start ====================== ${RESET}"
+
 while true; do
     read -p "Do you need to start the Dinky service?（yes/no/exit）" is_start
     is_start=$(echo "$is_start" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
@@ -335,14 +343,13 @@ while true; do
             break
             ;;
         no | n )
-            echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
-            echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
-            echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+            echo_warning_msg
             echo
             echo -e "${GREEN}The Dinky service startup script has been skipped, 请先执行上述命令，然后手动启动服务 -> ${APP_HOME}/bin/auto.sh restart | start。${RESET}"
             break
             ;;
         exit | e )
+          echo_warning_msg
           echo -e "${GREEN}If you choose exit, the program will exit。${RESET}"
           exit 0
           ;;
@@ -351,5 +358,7 @@ while true; do
           ;;
         esac
 done
-
+echo -e "${GREEN} ====================== Dinky service startup script -> End ====================== ${RESET}"
+echo
+echo
 echo -e "${GREEN} ====================== Dinky initialization script execution completed ====================== ${RESET}"
