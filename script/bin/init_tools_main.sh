@@ -339,7 +339,7 @@ while true; do
     case $is_start in
         yes | y )
              # Use source transparent transmission in debug mode
-            source  "${APP_HOME}/bin/auto.sh restart"
+            source "${APP_HOME}"/bin/auto.sh restart
             break
             ;;
         no | n )
