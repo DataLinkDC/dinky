@@ -3,17 +3,17 @@ sidebar_position: 78
 title: 1.2.0 release
 ---
 
-| Dinky 版本 | Flink 版本 | 二进制程序                                                                                                                               | Source                                                                                |
-|----------|----------|-------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| 1.2.0    | 1.14     | [dinky-release-1.14-1.2.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.14-1.2.0-rc4.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
-| 1.2.0    | 1.15     | [dinky-release-1.15-1.2.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.15-1.2.0-rc4.tar.gz)     | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
-| 1.2.0    | 1.16     | [dinky-release-1.16-1.2.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.16-1.2.0-rc4.tar.gz)     | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
-| 1.2.0    | 1.17     | [dinky-release-1.17-1.2.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.17-1.2.0-rc4.tar.gz)     | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
-| 1.2.0    | 1.18     | [dinky-release-1.18-1.2.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.18-1.2.0-rc4.tar.gz)     | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
-| 1.2.0    | 1.19     | [dinky-release-1.19-1.2.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.19-1.2.0-rc4.tar.gz)     | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
-| 1.2.0    | 1.20     | [dinky-release-1.20-1.2.0-rc4.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.19-1.2.0-rc4.tar.gz)     | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
+| Dinky 版本 | Flink 版本 | 二进制程序                                                                                                                                   | Source                                                                                |
+|----------|----------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| 1.2.0    | 1.14     | [dinky-release-1.14-1.2.0-rc5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.14-1.2.0-rc5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
+| 1.2.0    | 1.15     | [dinky-release-1.15-1.2.0-rc5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.15-1.2.0-rc5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
+| 1.2.0    | 1.16     | [dinky-release-1.16-1.2.0-rc5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.16-1.2.0-rc5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
+| 1.2.0    | 1.17     | [dinky-release-1.17-1.2.0-rc5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.17-1.2.0-rc5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
+| 1.2.0    | 1.18     | [dinky-release-1.18-1.2.0-rc5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.18-1.2.0-rc5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
+| 1.2.0    | 1.19     | [dinky-release-1.19-1.2.0-rc5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.19-1.2.0-rc5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
+| 1.2.0    | 1.20     | [dinky-release-1.20-1.2.0-rc5.tar.gz](https://github.com/DataLinkDC/dinky/releases/download/v1.2.0/dinky-release-1.20-1.2.0-rc5.tar.gz) | [Source code (zip)](https://github.com/DataLinkDC/dinky/archive/refs/tags/v1.2.0.zip) |
 
-## Dinky-1.2.0 发行说明
+## Dinky-1.2.0-rc5 发行说明
 
 ### 升级说明
 
