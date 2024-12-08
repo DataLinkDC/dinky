@@ -324,9 +324,32 @@ while true; do
     esac
 done
 echo -e "${GREEN} ====================== Database configuration file initialization script -> End ====================== ${RESET}"
-echo
-echo
-echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
-echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
-echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
-echo
+
+while true; do
+    read -p "Do you need to start the Dinky service?（yes/no/exit）" is_start
+    is_start=$(echo "$is_start" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+    case $is_start in
+        yes | y )
+             # Use source transparent transmission in debug mode
+            source  "${APP_HOME}/bin/auto.sh restart"
+            break
+            ;;
+        no | n )
+            echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+            echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+            echo -e "${RED}Note: To make these changes permanent, you may need to restart your terminal or run 'source $DB_ENV_FILE && source $ENV_FILE' ${RESET}"
+            echo
+            echo -e "${GREEN}The Dinky service startup script has been skipped, 请先执行上述命令，然后手动启动服务 -> ${APP_HOME}/bin/auto.sh restart | start。${RESET}"
+            break
+            ;;
+        exit | e )
+          echo -e "${GREEN}If you choose exit, the program will exit。${RESET}"
+          exit 0
+          ;;
+        *)
+          echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
+          ;;
+        esac
+done
+
+echo -e "${GREEN} ====================== Dinky initialization script execution completed ====================== ${RESET}"

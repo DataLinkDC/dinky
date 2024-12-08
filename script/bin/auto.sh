@@ -11,6 +11,19 @@ export CYAN='\033[36m'
 export RESET='\033[0m'
 
 
+ENV_FILE="/etc/profile.d/dinky_env"
+if [ -f "${ENV_FILE}" ]; then
+    source "${ENV_FILE}"
+fi
+
+DB_ENV_FILE="/etc/profile.d/dinky_db"
+if [ -f "${DB_ENV_FILE}" ]; then
+    source "${DB_ENV_FILE}"
+fi
+
+source /etc/profile
+
+
 
 if [ -z "${DINKY_HOME}" ]; then
     echo -e "${RED}DINKY_HOME environment variable is not set. Attempting to determine the correct path...${RESET}"
