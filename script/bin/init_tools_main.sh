@@ -1,5 +1,22 @@
 #!/bin/bash
-set -x
+
+export RED='\033[31m'
+export GREEN='\033[32m'
+export YELLOW='\033[33m'
+export BLUE='\033[34m'
+export MAGENTA='\033[35m'
+export CYAN='\033[36m'
+export RESET='\033[0m'
+
+# debug mode: true or false 如果为空，则默认为false
+USE_DEBUG=$1
+
+if [ -z "${USE_DEBUG}" ]; then
+    USE_DEBUG="false"
+    echo "${YELLOW}Debug mode is not enabled, if you need to enable debug mode, please add the first parameter 'true' when executing the script. example: init_tools_main.sh true $RESET"
+elif [ "${USE_DEBUG}" = "true" ]; then
+    set -x
+fi
 
 ENV_FILE="/etc/profile.d/dinky_env"
 if [ -f "${ENV_FILE}" ]; then
@@ -22,13 +39,6 @@ chmod 755 $DB_ENV_FILE
 source /etc/profile
 
 
-export RED='\033[31m'
-export GREEN='\033[32m'
-export YELLOW='\033[33m'
-export BLUE='\033[34m'
-export MAGENTA='\033[35m'
-export CYAN='\033[36m'
-export RESET='\033[0m'
 
 echo -e "${GREEN}=====================================================================${RESET}"
 echo -e "${GREEN}=====================================================================${RESET}"
@@ -36,7 +46,20 @@ echo -e "${GREEN}============ Welcome to the Dinky initialization script =======
 echo -e "${GREEN}======================================================================${RESET}"
 echo -e "${GREEN}======================================================================${RESET}"
 
-APP_HOME=${DINKY_HOME:-$(cd "$(dirname "$0")"; cd ..; pwd)}
+if [ -z "${DINKY_HOME}" ]; then
+    SOURCE="${BASH_SOURCE[0]}"
+    while [ -h "$SOURCE" ]; do
+        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+        SOURCE="$(readlink "$SOURCE")"
+        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+    done
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    APP_HOME="$(dirname "$DIR")"
+else
+    APP_HOME="${DINKY_HOME}"
+fi
+
+echo -e "${GREEN}Dinky root path: ${APP_HOME} ${RESET}"
 
 sudo chmod +x "${APP_HOME}"/bin/init_*.sh
 
@@ -87,7 +110,8 @@ check_command() {
     echo -e "${GREEN}========== Command $cmd check completed. OK, continue executing the script. ==========${RESET}"
 }
 
-sh "${APP_HOME}/bin/init_check_network.sh"
+# Use source transparent transmission in debug mode
+source "${APP_HOME}/bin/init_check_network.sh"
 
 check_command "wget"
 
@@ -132,7 +156,8 @@ if [ -z "$DINKY_HOME_TMP" ]; then
     is_init_dinky_home=$(echo "$is_init_dinky_home" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
     case $is_init_dinky_home in
       yes | y)
-        sh "${APP_HOME}"/bin/init_env.sh ${APP_HOME} ${ENV_FILE}
+        # Use source transparent transmission in debug mode
+        source "${APP_HOME}"/bin/init_env.sh ${APP_HOME} ${ENV_FILE}
         echo -e "${GREEN}DINKY_HOME environment variable configuration completed. the configuration file is：${ENV_FILE} ${RESET}"
         break
         ;;
@@ -168,7 +193,8 @@ while true; do
     read -p "Please enter your database type：" db_type
     case $db_type in
         1)
-            sh "${APP_HOME}"/bin/init_jdbc_driver.sh "${DINKY_LIB}"
+             # Use source transparent transmission in debug mode
+            source  "${APP_HOME}"/bin/init_jdbc_driver.sh "${DINKY_LIB}"
             break
             ;;
         2)
@@ -220,7 +246,8 @@ while true; do
 
     case $is_init_flink in
         yes | y )
-            sh "${APP_HOME}"/bin/init_flink_dependences.sh "${CURRENT_FLINK_FULL_VERSION}" "${FLINK_VERSION_SCAN}" "${DINKY_TMP_DIR}" "${EXTENDS_HOME}" "${APP_HOME}"
+             # Use source transparent transmission in debug mode
+            source  "${APP_HOME}"/bin/init_flink_dependences.sh "${CURRENT_FLINK_FULL_VERSION}" "${FLINK_VERSION_SCAN}" "${DINKY_TMP_DIR}" "${EXTENDS_HOME}" "${APP_HOME}"
             break
             ;;
         no | n )
@@ -248,7 +275,8 @@ while true; do
     is_hadoop=$(echo "$is_hadoop" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
     case $is_hadoop in
         yes | y )
-            sh "${APP_HOME}/bin/init_hadoop_dependences.sh" "${EXTENDS_HOME}"
+             # Use source transparent transmission in debug mode
+            source  "${APP_HOME}/bin/init_hadoop_dependences.sh" "${EXTENDS_HOME}"
             break
             ;;
         no | n )
@@ -277,7 +305,8 @@ while true; do
     is_init_db=$(echo "$is_init_db" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
     case $is_init_db in
         yes | y )
-            sh "${APP_HOME}/bin/init_db.sh" "${DINKY_HOME}" "${DB_ENV_FILE}"
+             # Use source transparent transmission in debug mode
+            source  "${APP_HOME}/bin/init_db.sh" "${DINKY_HOME}" "${DB_ENV_FILE}"
             echo -e "${GREEN}The database configuration file initialization script has been executed successfully the configuration file is：${DB_ENV_FILE} ${RESET}"
             break
             ;;

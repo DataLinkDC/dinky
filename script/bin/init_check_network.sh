@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 EXTERNAL_CONNECTIVITY_CHECK_URL="www.baidu.com"
 

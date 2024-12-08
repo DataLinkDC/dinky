@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 DINKY_HOME_PARAMS=$1
 DB_ENV_FILE=$2

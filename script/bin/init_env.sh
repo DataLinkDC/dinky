@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 DINKY_HOME_PARAMS=$1
 ENV_FILE=$2
