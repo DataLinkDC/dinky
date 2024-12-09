@@ -74,9 +74,6 @@ echo -e "${GREEN}Dinky root path: ${APP_HOME} ${RESET}"
 
 sudo chmod +x "${APP_HOME}"/bin/init_*.sh
 
-/init_cleanup.sh
-./init_tools_main.sh
-
 EXTENDS_HOME="${APP_HOME}/extends"
 if [ ! -d "${EXTENDS_HOME}" ]; then
     echo -e "${RED} ${EXTENDS_HOME} Directory does not exist, please check${RESET}"
@@ -103,7 +100,7 @@ if [ ! -d "${DINKY_LIB}" ]; then
     exit 1
 fi
 
-# 函数：检查命令是否存在，不存在则尝试安装
+# Function: Check whether the command exists, if not, try to install it
 check_command() {
     local cmd="$1"
     echo -e "${BLUE}Check if command: $cmd exists...${RESET}"
@@ -257,12 +254,10 @@ else
     echo -e "${GREEN}The current Flink version number deployed by Dinky:${FLINK_VERSION_SCAN}${RESET}"
 fi
 
-# 根据 Dinky 部署的Flink对应的版本号，获取对应的 Flink 版本
 CURRENT_FLINK_FULL_VERSION=${version_map[$FLINK_VERSION_SCAN]}
 
 echo -e "${GREEN}Obtain the version number corresponding to the deployed Flink (full version number) based on the scanned current Flink version number: flink-${CURRENT_FLINK_FULL_VERSION}${RESET}"
 
-# 步骤2：获取Dinky部署的Flink对应的版本号，然后下载Flink安装包
 while true; do
     read -p "It is detected that the Flink version number deployed by Dinky is: ${FLINK_VERSION_SCAN}, and the Flink installation package version number that needs to be downloaded is: flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz. Please choose whether to initialize Flink related dependencies?（yes/no/exit）" is_init_flink
     is_init_flink=$(echo "$is_init_flink" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')

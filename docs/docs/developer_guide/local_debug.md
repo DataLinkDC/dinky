@@ -29,14 +29,14 @@ title: 本地调试
 
 ### 环境要求
 
-|        环境        |            版本            |
+**|        环境        |            版本            |
 |:----------------:|:------------------------:|
 |       npm        |           10+            |
 |     node.js      |           18+            |
 |       jdk        |     Java8 或者 Java11      |
 |      maven       |           3.8+           |
 |      lombok      |         IDEA插件安装         |
-| MySQL/PostgreSQL | MySQL5.7+ / PostgreSQL15 |
+| MySQL/PostgreSQL | MySQL5.7+ / PostgreSQL15 |**
 
 ### 代码克隆
 

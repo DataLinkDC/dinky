@@ -107,7 +107,7 @@ if [ -z "$APP_PORT" ]; then
     APP_PORT=8888
 fi
 
-# 函数：检查健康检查端点的状态
+# Function: Check the status of the health check endpoint
 check_health() {
     curl --silent --max-time 2 --output /dev/null --write-out "%{http_code}" "http://localhost:$APP_PORT/actuator/health"
 }
