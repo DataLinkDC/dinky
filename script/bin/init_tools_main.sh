@@ -74,7 +74,8 @@ echo -e "${GREEN}Dinky root path: ${APP_HOME} ${RESET}"
 
 sudo chmod +x "${APP_HOME}"/bin/init_*.sh
 
-
+/init_cleanup.sh
+./init_tools_main.sh
 
 EXTENDS_HOME="${APP_HOME}/extends"
 if [ ! -d "${EXTENDS_HOME}" ]; then
@@ -209,7 +210,7 @@ while true; do
     echo -e "${BLUE} ======== (h2 comes with it by default and does not need to perform this step)===========  ${RESET}"
     echo -e "${BLUE} ============================== Please select 1, 2, 3 ======================================  ${RESET}"
     echo -e "${BLUE} ==================================== 1. mysql =============================================  ${RESET}"
-    echo -e "${BLUE} ==================================== 2. pgsql =========================================  ${RESET}"
+    echo -e "${BLUE} ==================================== 2. postgresql =========================================  ${RESET}"
     echo -e "${BLUE} ================================ 3. Skip this step ==========================================  ${RESET}"
     echo -e "${BLUE} ================================ Enter number selection ==================================  ${RESET}"
     read -p "Please enter your database type：" db_type
@@ -220,7 +221,7 @@ while true; do
             break
             ;;
         2)
-            echo -e "${GREEN}It seems that pgsql has been integrated by default, so there is no need to perform this step. Please perform subsequent installation and configuration operations as needed.${RESET}"
+            echo -e "${GREEN}It seems that postgresql has been integrated by default, so there is no need to perform this step. Please perform subsequent installation and configuration operations as needed.${RESET}"
             break
             ;;
         3)

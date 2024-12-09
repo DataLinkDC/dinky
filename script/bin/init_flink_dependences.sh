@@ -15,12 +15,16 @@ if [ -z "$CURRENT_FLINK_FULL_VERSION" ] || [ -z "$FLINK_VERSION_SCAN" ] || [ -z 
   exit 1
 fi
 
-if [ -f "$DINKY_TMP_DIR/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz" ]; then
-  echo -e "${YELLOW}$DINKY_TMP_DIR ALREADY EXISTS flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz file，To ensure completeness, delete first ${DINKY_TMP_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz Download the file again${RESET}"
-  rm -rf ${DINKY_TMP_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz
-  if [ -d "$DINKY_TMP_DIR/flink-${CURRENT_FLINK_FULL_VERSION}" ]; then
-    echo -e "${YELLOW}The flink directory already exists, delete it $DINKY_TMP_DIR/flink-${CURRENT_FLINK_FULL_VERSION}"
-    rm -rf $DINKY_TMP_DIR/flink-${CURRENT_FLINK_FULL_VERSION}
+FLINK_STORE_DIR=${DINKY_TMP_DIR}/flink-download
+
+mkdir -p ${FLINK_STORE_DIR}
+
+if [ -f "${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz" ]; then
+  echo -e "${YELLOW}${FLINK_STORE_DIR} ALREADY EXISTS flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz file，To ensure completeness, delete first ${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz Download the file again${RESET}"
+  rm -rf ${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz
+  if [ -d "${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}" ]; then
+    echo -e "${YELLOW}The flink directory already exists, delete it ${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}"
+    rm -rf ${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}
   fi
 fi
 
@@ -28,13 +32,13 @@ try_tsinghua_mirror() {
     local tsinghua_url="https://mirrors.tuna.tsinghua.edu.cn/apache/flink/flink-${CURRENT_FLINK_FULL_VERSION}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz"
     local apache_url="https://archive.apache.org/dist/flink/flink-${CURRENT_FLINK_FULL_VERSION}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz"
 
-    echo -e "${GREEN}Start downloading the Flink-${FLINK_VERSION_SCAN} installation package... Store it in the ${DINKY_TMP_DIR} directory${RESET}"
-    if download_file "$tsinghua_url" "$DINKY_TMP_DIR"; then
+    echo -e "${GREEN}Start downloading the Flink-${FLINK_VERSION_SCAN} installation package... Store it in the ${FLINK_STORE_DIR} directory${RESET}"
+    if download_file "$tsinghua_url" "${FLINK_STORE_DIR}"; then
         echo -e "${BLUE}The address of the currently downloaded Flink installation package is：${tsinghua_url}${RESET}"
         return 0
     else
         echo -e "${YELLOW}File not found in Tsinghua University mirror, try downloading from Apache official source...${RESET}"
-        if download_file "$apache_url" "$DINKY_TMP_DIR"; then
+        if download_file "$apache_url" "${FLINK_STORE_DIR}"; then
             echo -e "${BLUE}The address of the currently downloaded Flink installation package is：${apache_url}${RESET}"
             return 0
         else
@@ -52,7 +56,7 @@ fi
 echo -e "${GREEN}Flink installation package download completed。${RESET}"
 echo -e "\n${GREEN}===============================================================${RESET}\n"
 echo -e "${GREEN}Start decompressing the Flink installation package...${RESET}"
-tar -zxvf ${DINKY_TMP_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz -C ${DINKY_TMP_DIR}/
+tar -zxvf ${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz -C ${FLINK_STORE_DIR}/
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}Flink installation package decompression completed。${RESET}"
 else
@@ -62,8 +66,8 @@ fi
 
 echo -e "\n${GREEN}===============================================================${RESET}\n"
 
-flink_dir_tmp=$(ls -n ${DINKY_TMP_DIR} | grep '^d' | grep flink | awk '{print $9}')
-full_flink_dir_tmp="${DINKY_TMP_DIR}/${flink_dir_tmp}"
+flink_dir_tmp=$(ls -n ${FLINK_STORE_DIR} | grep '^d' | grep flink | awk '{print $9}')
+full_flink_dir_tmp="${FLINK_STORE_DIR}/${flink_dir_tmp}"
 echo -e "${BLUE}Unzipped directory name：${full_flink_dir_tmp}${RESET}"
 
 
@@ -101,6 +105,6 @@ ls -l ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/
 
 echo -e "${YELLOW}Please check the above dependent files。${RESET}"
 
-rm -rf ${DINKY_TMP_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}*
+rm -rf ${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}*
 
 echo -e "${GREEN}The basic dependency processing is completed, please perform subsequent operations according to the actual situation.${RESET}"
