@@ -123,7 +123,7 @@ format_time() {
 }
 
 function wait_start_process() {
-    echo ">>>>>>>>>>>>>>>>>>>>> Starting application... <<<<<<<<<<<<<<<<<<<<<<<"
+    echo -e "${GREEN}>>>>>>>>>>>>>>>>>>>>> Starting application... <<<<<<<<<<<<<<<<<<<<<<<${RESET}"
      local max_attempts=100
      local attempt=0
      local delay=0.25
