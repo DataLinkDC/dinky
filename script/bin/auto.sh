@@ -112,35 +112,49 @@ check_health() {
     curl --silent --max-time 2 --output /dev/null --write-out "%{http_code}" "http://localhost:$APP_PORT/actuator/health"
 }
 
+
+
+format_time() {
+    local seconds=$1
+    local hours=$((seconds / 3600))
+    local minutes=$(( (seconds % 3600) / 60 ))
+    local remaining_seconds=$((seconds % 60))
+    printf "%02d:%02d:%02d" $hours $minutes $remaining_seconds
+}
+
 function wait_start_process() {
     echo ">>>>>>>>>>>>>>>>>>>>> Starting application... <<<<<<<<<<<<<<<<<<<<<<<"
-    local max_attempts=100
-    local attempt=0
-    local delay=0.25
-    local health_status=""
-    local success_status_codes=("200" "201" "202" "203" "204")  # 可以根据实际情况调整认为成功的状态码范围
+     local max_attempts=100
+     local attempt=0
+     local delay=0.25
+     local health_status=""
+     local success_status_codes=("200")
+     local start_time=$(date +%s)
 
-    while [ $attempt -lt $max_attempts ]; do
-        attempt=$((attempt + 1))
-        health_status=$(check_health)
-        for code in "${success_status_codes[@]}"; do
-            if [ "$health_status" == "$code" ]; then
-                echo -ne "\r[==================================================] 100%\n"
-                echo -e "${GREEN}Application started completed.${RESET}"
-                return 0
-            fi
-        done
-        local progress=$((attempt * 100 / max_attempts))
-        local bar_length=50
-        local filled_length=$((progress * bar_length / 100))
-        local empty_length=$((bar_length - filled_length))
-        local bar=$(printf '>%.0s' $(seq 1 $filled_length))$(printf ' %.0s' $(seq 1 $empty_length))
-        echo -ne "\r[${bar}] ${progress}%"
-        sleep $delay
-    done
-    echo -ne "\r[==================================================] 100%\n"
-    echo -e "${RED}Application start failed. Please check the log for details.${RESET}"
-    return 1
+     while [ $attempt -lt $max_attempts ]; do
+         attempt=$((attempt + 1))
+         local current_time=$(date +%s)
+         local elapsed_time=$((current_time - start_time))
+         local formatted_time=$(format_time $elapsed_time)
+         health_status=$(check_health)
+         for code in "${success_status_codes[@]}"; do
+             if [ "$health_status" == "$code" ]; then
+                 echo -ne "\r[==================================================] 100%\n"
+                 echo -e "${GREEN}Application started completed.${RESET}"
+                 return 0
+             fi
+         done
+         local progress=$((attempt * 100 / max_attempts))
+         local bar_length=50
+         local filled_length=$((progress * bar_length / 100))
+         local empty_length=$((bar_length - filled_length))
+         local bar=$(printf '>%.0s' $(seq 1 $filled_length))$(printf ' %.0s' $(seq 1 $empty_length))
+         echo -ne "\r[${bar}] ${progress}% (耗时: ${formatted_time})"
+         sleep $delay
+     done
+     echo -ne "\r[==================================================] 100% (耗时: ${formatted_time})\n"
+     echo -e "${RED}Application start failed. Please check the log for details.${RESET}"
+     return 1
 }
 
 
