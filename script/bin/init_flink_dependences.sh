@@ -101,4 +101,6 @@ ls -l ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/
 
 echo -e "${YELLOW}Please check the above dependent files。${RESET}"
 
+rm -rf ${DINKY_TMP_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}*
+
 echo -e "${GREEN}The basic dependency processing is completed, please perform subsequent operations according to the actual situation.${RESET}"

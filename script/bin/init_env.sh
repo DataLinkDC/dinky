@@ -17,7 +17,7 @@ while true; do
         echo -e "${GREEN}Use the automatically obtained DINKY_HOME environment variable${RESET}"
         echo -e "${GREEN} The currently obtained path is: $DINKY_HOME_PARAMS to perform automatic configuration${RESET}"
         add_to_env "DINKY_HOME" "$DINKY_HOME_PARAMS" "$ENV_FILE"
-        add_to_env "PATH" "\$DINKY_HOME/bin" "$ENV_FILE"
+        add_to_env "PATH" "\$DINKY_HOME/bin:\$PATH" "$ENV_FILE"
         sleep 2
         source $ENV_FILE
         echo -e "${GREEN}DINKY_HOME environment variable configuration completed. Please confirm whether the following configuration is correct：${RESET}"
@@ -33,7 +33,7 @@ while true; do
         else
             echo -e "${GREEN}The path you entered is: $dinky_home_path${RESET}"
             add_to_env "DINKY_HOME" "$dinky_home_path" "$ENV_FILE"
-            add_to_env "PATH" "\$DINKY_HOME/bin" "$ENV_FILE"
+            add_to_env "PATH" "\$DINKY_HOME/bin:\$PATH" "$ENV_FILE"
             sleep 2
             source $ENV_FILE
             echo -e "${GREEN}DINKY_HOME environment variable configuration completed. Please confirm whether the following configuration is correct：${RESET}"

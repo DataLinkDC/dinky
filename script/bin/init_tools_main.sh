@@ -22,22 +22,17 @@ ENV_FILE="/etc/profile.d/dinky_env"
 if [ -f "${ENV_FILE}" ]; then
     source "${ENV_FILE}"
 else
-    echo "" > "${ENV_FILE}"
-    source "${ENV_FILE}"
+    echo "export PATH=/bin:/usr/bin:\$PATH" > "${ENV_FILE}" && source "${ENV_FILE}"
 fi
 
 DB_ENV_FILE="/etc/profile.d/dinky_db"
 if [ -f "${DB_ENV_FILE}" ]; then
     source "${DB_ENV_FILE}"
 else
-    echo "" > "${DB_ENV_FILE}"
-    source "${DB_ENV_FILE}"
+    echo "export PATH=/bin:/usr/bin:\$PATH" > "${DB_ENV_FILE}" && source "${DB_ENV_FILE}"
 fi
 chmod 755 $ENV_FILE
 chmod 755 $DB_ENV_FILE
-
-source /etc/profile
-
 
 
 echo -e "${GREEN}=====================================================================${RESET}"
@@ -46,7 +41,9 @@ echo -e "${GREEN}============ Welcome to the Dinky initialization script =======
 echo -e "${GREEN}======================================================================${RESET}"
 echo -e "${GREEN}======================================================================${RESET}"
 
-if [ -z "${DINKY_HOME}" ]; then
+
+RETURN_HOME_PATH=""
+function get_home_path() {
     SOURCE="${BASH_SOURCE[0]}"
     while [ -h "$SOURCE" ]; do
         DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -54,9 +51,23 @@ if [ -z "${DINKY_HOME}" ]; then
         [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
     done
     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-    APP_HOME="$(dirname "$DIR")"
+    RETURN_HOME_PATH=$(dirname "$DIR")
+}
+
+
+
+if [ -z "${DINKY_HOME}" ]; then
+    echo -e "${RED}DINKY_HOME environment variable is not set. Attempting to determine the correct path...${RESET}"
+    get_home_path
+    APP_HOME="${RETURN_HOME_PATH}"
 else
-    APP_HOME="${DINKY_HOME}"
+    get_home_path
+    if [ "${DINKY_HOME}" != "${RETURN_HOME_PATH}" ]; then
+        echo -e "${YELLOW}DINKY_HOME is not equal to the current path, use new path to init: ${RETURN_HOME_PATH}${RESET}"
+        APP_HOME="${RETURN_HOME_PATH}"
+    else
+        echo -e "${GREEN}DINKY_HOME is already set to: ${DINKY_HOME}${RESET}"
+    fi
 fi
 
 echo -e "${GREEN}Dinky root path: ${APP_HOME} ${RESET}"
@@ -148,30 +159,41 @@ export -f add_to_env
 echo
 echo
 
+function init_env() {
+    while true; do
+        read -p "Do you need to configure the DINKY_HOME environment variable? (yes/no)：" is_init_dinky_home
+        is_init_dinky_home=$(echo "$is_init_dinky_home" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+        case $is_init_dinky_home in
+          yes | y)
+            # Use source transparent transmission in debug mode
+            source "${APP_HOME}"/bin/init_env.sh ${APP_HOME} ${ENV_FILE}
+            echo -e "${GREEN}DINKY_HOME environment variable configuration completed. the configuration file is：${ENV_FILE} ${RESET}"
+            break
+            ;;
+          no | n)
+            echo -e "${GREEN}Skip DINKY_HOME environment variable configuration.${RESET}"
+            break
+            ;;
+          *)
+            echo -e "${RED}The entered value is incorrect, please rerun the script to select the correct value.${RESET}"
+            ;;
+        esac
+      done
+}
+
+
+
 echo -e "${GREEN} ====================== Environment variable initialization script -> Start ====================== ${RESET}"
 DINKY_HOME_TMP=$(echo $DINKY_HOME)
 if [ -z "$DINKY_HOME_TMP" ]; then
-  while true; do
-    read -p "Do you need to configure the DINKY_HOME environment variable? (yes/no)：" is_init_dinky_home
-    is_init_dinky_home=$(echo "$is_init_dinky_home" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
-    case $is_init_dinky_home in
-      yes | y)
-        # Use source transparent transmission in debug mode
-        source "${APP_HOME}"/bin/init_env.sh ${APP_HOME} ${ENV_FILE}
-        echo -e "${GREEN}DINKY_HOME environment variable configuration completed. the configuration file is：${ENV_FILE} ${RESET}"
-        break
-        ;;
-      no | n)
-        echo -e "${GREEN}Skip DINKY_HOME environment variable configuration.${RESET}"
-        break
-        ;;
-      *)
-        echo -e "${RED}The entered value is incorrect, please rerun the script to select the correct value.${RESET}"
-        ;;
-    esac
-  done
+  init_env
 else
-  echo -e "${GREEN}DINKY_HOME environment variable has been configured at ${DINKY_HOME_TMP}，Skip configuration.${RESET}"
+  if [ "$APP_HOME" != "$DINKY_HOME_TMP" ]; then
+    echo -e "${RED}DINKY_HOME is not equal to the current path, The previous one was: ${DINKY_HOME_TMP}. The current one is: ${APP_HOME}, which needs to be reconfigured.${RESET}"
+    init_env
+  else
+      echo -e "${GREEN}DINKY_HOME environment variable has been configured at ${DINKY_HOME_TMP}，Skip configuration.${RESET}"
+  fi
 fi
 
 
@@ -362,3 +384,6 @@ echo -e "${GREEN} ====================== Dinky service startup script -> End ===
 echo
 echo
 echo -e "${GREEN} ====================== Dinky initialization script execution completed ====================== ${RESET}"
+
+
+set +x

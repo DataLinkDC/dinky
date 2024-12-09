@@ -23,11 +23,8 @@ fi
 
 source /etc/profile
 
-
-
-if [ -z "${DINKY_HOME}" ]; then
-    echo -e "${RED}DINKY_HOME environment variable is not set. Attempting to determine the correct path...${RESET}"
-
+RETURN_HOME_PATH=""
+function get_home_path() {
     SOURCE="${BASH_SOURCE[0]}"
     while [ -h "$SOURCE" ]; do
         DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -35,16 +32,28 @@ if [ -z "${DINKY_HOME}" ]; then
         [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
     done
     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-    export DINKY_HOME="$(dirname "$DIR")"
+    RETURN_HOME_PATH=$(dirname "$DIR")
+}
+
+
+if [ -z "${DINKY_HOME}" ]; then
+    echo -e "${RED}DINKY_HOME environment variable is not set. Attempting to determine the correct path...${RESET}"
+    get_home_path
+    export DINKY_HOME=${RETURN_HOME_PATH}
     echo -e "${GREEN}DINKY_HOME is set to: ${DINKY_HOME}${RESET}"
 else
-    echo -e "${GREEN}DINKY_HOME is already set to: ${DINKY_HOME}${RESET}"
+    get_home_path
+    if [ "${DINKY_HOME}" != "${RETURN_HOME_PATH}" ]; then
+        export DINKY_HOME=${RETURN_HOME_PATH}
+        echo -e "${YELLOW}DINKY_HOME is not equal to the current path, reset DINKY_HOME to: ${RETURN_HOME_PATH}${RESET}"
+    else
+        echo -e "${GREEN}DINKY_HOME is already set to: ${DINKY_HOME}${RESET}"
+    fi
 fi
 
 
 FLINK_VERSION=${2}
 
-DINKY_HOME=${DINKY_HOME:-$(cd "$(dirname "$0")"; cd ..; pwd)}
 JAVA_VERSION=$(java -version 2>&1 | sed '1!d' | sed -e 's/"//g' | awk '{print $3}' | awk -F'.' '{print $1"."$2}')
 
 APP_HOME="${DINKY_HOME}"
@@ -83,6 +92,55 @@ assertIsInputVersion() {
     exit 1
   fi
 }
+
+# 从 application.yml 中读取端口号
+read_yaml() {
+   local key=$1
+   local file=$2
+   local value=$(awk -F': ' '/^'"$key"'=: /{print $2}' $file)
+   echo "$value"
+}
+
+# 尝试从 application.yml 中读取端口号
+if [ -f "${APP_HOME}/config/application.yml" ]; then
+    APP_PORT=$(read_yaml "server.port" "${APP_HOME}/config/application.yml")
+fi
+
+# 如果仍然没有找到，则使用默认端口
+if [ -z "$APP_PORT" ]; then
+    echo -e "${RED}Could not find server.port in configuration files, using default port 8888 ${RESET}"
+    APP_PORT=8888
+fi
+
+# 函数：检查健康检查端点的状态
+check_health() {
+    curl --silent --max-time 2 --output /dev/null --write-out "%{http_code}" "http://localhost:$APP_PORT/actuator/health"
+}
+
+
+function wait_start_process() {
+  echo "Starting application..."
+  for i in {1..100}; do
+      # 检查应用是否已经启动完成
+      if [ "$(check_health)" == "200" ]; then
+          echo -ne "\r[==================================================] 100%\n"
+          echo "Application started successfully."
+          break
+      else
+          # 打印进度条
+          echo -ne "\r[=$(printf '=%.0s' $(seq 1 $((i-1))))>$(printf ' %.0s' $(seq 1 $((100-i))))] ${i}%"
+          sleep 0.5 # 调整等待时间
+      fi
+
+      # 防止无限循环，设置最大尝试次数
+      if [ $i -eq 100 ]; then
+          echo -ne "\r[==================================================] 100%\n"
+          echo "Application startup timed out."
+          exit 1
+      fi
+  done
+}
+
 
 # Use FLINK_HOME:
 CLASS_PATH="${APP_HOME}:${APP_HOME}/lib/*:${APP_HOME}/config:${EXTENDS_HOME}/*:${CUSTOMER_JAR_PATH}/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/dinky/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/flink/*:${EXTENDS_HOME}/flink${FLINK_VERSION}/*"
@@ -142,7 +200,9 @@ start() {
   updatePid
   if [ -z "$pid" ]; then
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
-    echo $! >"${PID_PATH}"/${PID_FILE}
+    PID=$!
+    echo "${PID}" >"${PID_PATH}"/${PID_FILE}
+    wait_start_process
     echo -e "${GREEN}........................................Start Dinky Successfully........................................${RESET}"
     echo -e "${GREEN}current log path : ${DINKY_LOG_PATH}/dinky-start.log , you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log${RESET}"
   else
@@ -166,7 +226,8 @@ startWithJmx() {
   updatePid
   if [ -z "$pid" ]; then
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
-#    echo $! >"${PID_PATH}"/${PID_FILE}
+    PID=$!
+    wait_start_process
     updatePid
     echo -e "$GREEN........................................Start Dinky with Jmx Successfully........................................$RESET"
   else
