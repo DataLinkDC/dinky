@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 检查参数个数是否正确
+# Check whether the number of parameters is correct
 if [ $# -ne 2 ]; then
     echo "Please enter the parameters in the correct format, the format is: $0 yaml_file_path key"
     exit 1
@@ -19,7 +19,7 @@ value=""
 temp_file=$(mktemp)
 grep -Ev '^(#|$)' "$yaml_file_path" > "$temp_file"
 
-# 开始按层级查找值
+# Start looking for values by levels
 current_data=$(cat "$temp_file")
 for part in "${key_parts[@]}"; do
     found=false
