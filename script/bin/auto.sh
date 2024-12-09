@@ -2,6 +2,7 @@
 # debug mode
 #set -x
 
+
 export RED='\033[31m'
 export GREEN='\033[32m'
 export YELLOW='\033[33m'
@@ -93,20 +94,14 @@ assertIsInputVersion() {
   fi
 }
 
-# 从 application.yml 中读取端口号
-read_yaml() {
-   local key=$1
-   local file=$2
-   local value=$(awk -F': ' '/^'"$key"'=: /{print $2}' $file)
-   echo "$value"
-}
 
-# 尝试从 application.yml 中读取端口号
 if [ -f "${APP_HOME}/config/application.yml" ]; then
-    APP_PORT=$(read_yaml "server.port" "${APP_HOME}/config/application.yml")
+  result=$("${APP_HOME}"/bin/parse_yml.sh "${APP_HOME}/config/application.yml" "server.port")
+  APP_PORT=$result
 fi
 
-# 如果仍然没有找到，则使用默认端口
+echo -e "${GREEN}From ${APP_HOME}/config/application.yml server.port: ${APP_PORT}${RESET}"
+
 if [ -z "$APP_PORT" ]; then
     echo -e "${RED}Could not find server.port in configuration files, using default port 8888 ${RESET}"
     APP_PORT=8888
@@ -117,28 +112,35 @@ check_health() {
     curl --silent --max-time 2 --output /dev/null --write-out "%{http_code}" "http://localhost:$APP_PORT/actuator/health"
 }
 
-
 function wait_start_process() {
-  echo "Starting application..."
-  for i in {1..100}; do
-      # 检查应用是否已经启动完成
-      if [ "$(check_health)" == "200" ]; then
-          echo -ne "\r[==================================================] 100%\n"
-          echo "Application started successfully."
-          break
-      else
-          # 打印进度条
-          echo -ne "\r[=$(printf '=%.0s' $(seq 1 $((i-1))))>$(printf ' %.0s' $(seq 1 $((100-i))))] ${i}%"
-          sleep 0.5 # 调整等待时间
-      fi
+    echo "Starting application..."
+    local max_attempts=100
+    local attempt=0
+    local delay=0.25
+    local health_status=""
+    local success_status_codes=("200" "201" "202" "203" "204")  # 可以根据实际情况调整认为成功的状态码范围
 
-      # 防止无限循环，设置最大尝试次数
-      if [ $i -eq 100 ]; then
-          echo -ne "\r[==================================================] 100%\n"
-          echo "Application startup timed out."
-          exit 1
-      fi
-  done
+    while [ $attempt -lt $max_attempts ]; do
+        attempt=$((attempt + 1))
+        health_status=$(check_health)
+        for code in "${success_status_codes[@]}"; do
+            if [ "$health_status" == "$code" ]; then
+                echo -ne "\r[==================================================] 100%\n"
+                echo -e "${GREEN}Application started completed.${RESET}"
+                return 0
+            fi
+        done
+        local progress=$((attempt * 100 / max_attempts))
+        local bar_length=50
+        local filled_length=$((progress * bar_length / 100))
+        local empty_length=$((bar_length - filled_length))
+        local bar=$(printf '=%.0s' $(seq 1 $filled_length))$(printf ' %.0s' $(seq 1 $empty_length))
+        echo -ne "\r[${bar}] ${progress}%"
+        sleep $delay
+    done
+    echo -ne "\r[==================================================] 100%\n"
+    echo "Application startup timed out."
+    return 1
 }
 
 
