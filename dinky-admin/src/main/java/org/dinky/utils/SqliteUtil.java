@@ -19,6 +19,9 @@
 
 package org.dinky.utils;
 
+import org.dinky.data.constant.DirConstant;
+import org.dinky.data.constant.MonitorTableConstant;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -29,8 +32,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dinky.data.constant.DirConstant;
-import org.dinky.data.constant.MonitorTableConstant;
 
 @Slf4j
 public enum SqliteUtil {
@@ -41,7 +42,8 @@ public enum SqliteUtil {
 
     static {
         try {
-            SqliteUtil.INSTANCE.connect(DirConstant.getTempRootDir() + DirConstant.FILE_SEPARATOR + MonitorTableConstant.DINKY_DB);
+            SqliteUtil.INSTANCE.connect(
+                    DirConstant.getTempRootDir() + DirConstant.FILE_SEPARATOR + MonitorTableConstant.DINKY_DB);
             SqliteUtil.INSTANCE.recyleData();
         } catch (SQLException e) {
             throw new RuntimeException(e);
