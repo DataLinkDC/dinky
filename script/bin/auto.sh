@@ -149,10 +149,10 @@ function wait_start_process() {
          local filled_length=$((progress * bar_length / 100))
          local empty_length=$((bar_length - filled_length))
          local bar=$(printf '>%.0s' $(seq 1 $filled_length))$(printf ' %.0s' $(seq 1 $empty_length))
-         echo -ne "\r[${bar}] ${progress}% (耗时: ${formatted_time})"
+         echo -ne "\r[${bar}] ${progress}% (time consuming: ${formatted_time})"
          sleep $delay
      done
-     echo -ne "\r[==================================================] 100% (耗时: ${formatted_time})\n"
+     echo -ne "\r[==================================================] 100% (time consuming: ${formatted_time})\n"
      echo -e "${RED}Application start failed. Please check the log for details.${RESET}"
      return 1
 }

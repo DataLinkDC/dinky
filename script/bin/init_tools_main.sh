@@ -363,7 +363,7 @@ while true; do
         no | n )
             echo_warning_msg
             echo
-            echo -e "${GREEN}The Dinky service startup script has been skipped, 请先执行上述命令，然后手动启动服务 -> ${APP_HOME}/bin/auto.sh restart | start。${RESET}"
+            echo -e "${GREEN}The Dinky service startup script has been skipped, Please execute the above command first, and then start the service manually -> ${APP_HOME}/bin/auto.sh restart | start。${RESET}"
             break
             ;;
         exit | e )
