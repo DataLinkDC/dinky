@@ -139,7 +139,7 @@ function wait_start_process() {
         sleep $delay
     done
     echo -ne "\r[==================================================] 100%\n"
-    echo "Application startup timed out."
+    echo -e "${RED}Application start failed. Please check the log for details.${RESET}"
     return 1
 }
 
@@ -204,8 +204,10 @@ start() {
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     PID=$!
     echo "${PID}" >"${PID_PATH}"/${PID_FILE}
-    wait_start_process
-    echo -e "${GREEN}........................................Start Dinky Successfully........................................${RESET}"
+    run_result=$(wait_start_process)
+    if [ "$run_result" -eq 0 ]; then
+        echo -e "${GREEN}........................................Start Dinky Successfully........................................${RESET}"
+    fi
     echo -e "${GREEN}current log path : ${DINKY_LOG_PATH}/dinky-start.log , you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log${RESET}"
   else
     echo -e "$YELLOW Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!$RESET"
@@ -229,9 +231,12 @@ startWithJmx() {
   if [ -z "$pid" ]; then
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     PID=$!
-    wait_start_process
-    updatePid
-    echo -e "$GREEN........................................Start Dinky with Jmx Successfully........................................$RESET"
+    run_result=$(wait_start_process)
+    if [ "$run_result" -eq 0 ]; then
+       echo -e "$GREEN........................................Start Dinky with Jmx Successfully........................................$RESET"
+       updatePid
+    fi
+
   else
     echo -e "$YELLOW Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!$RESET"
   fi
