@@ -2,22 +2,20 @@
 
 # 检查参数个数是否正确
 if [ $# -ne 2 ]; then
-    echo "请按正确格式输入参数，格式为: $0 yaml_file_path key"
+    echo "Please enter the parameters in the correct format, the format is: $0 yaml_file_path key"
     exit 1
 fi
 
-#yaml_file_path="/Users/zhumingye/idea_works/dinky/dinky-admin/src/main/resources/application.yml"
-#key="spring.port"
 
 yaml_file_path="$1"
 key="$2"
-# 将键按照.分割为数组（用于处理层级结构的键）
+# Split keys into arrays according to . (used to handle hierarchical keys)
 IFS='.' read -ra key_parts <<< "$key"
 
-# 用于存储最终找到的值
+# Used to store the finally found value
 value=""
 
-# 先处理文件，去除注释行（假设注释以#开头）和空白行
+# Process the file first and remove comment lines (assuming the comment starts with #) and blank lines
 temp_file=$(mktemp)
 grep -Ev '^(#|$)' "$yaml_file_path" > "$temp_file"
 
@@ -28,13 +26,13 @@ for part in "${key_parts[@]}"; do
     while IFS= read -r line; do
 
         if [[ $line =~ ^$part: ]]; then
-            # 如果是最后一个键，提取值
+            # If it is the last key, extract the value
             if [ "$part" == "${key_parts[${#key_parts[@]}-1]}" ]; then
                 value=$(echo "$line" | sed 's/.*: //')
                 found=true
                 break
             else
-                # 如果不是最后一个键，获取下一层级的数据范围
+                # If it is not the last key, get the data range of the next level
                 start_line_num=$(grep -n "$line" "$temp_file" | cut -d: -f1)
                 end_line_num=$(awk -v start="$start_line_num" '$0 ~ /^[a-zA-Z]/ && NR > start {print NR - 1; exit}' "$temp_file")
                 if [ -z "$end_line_num" ]; then
@@ -54,10 +52,10 @@ for part in "${key_parts[@]}"; do
     fi
 done
 
-# 删除临时文件
+# Delete temporary files
 rm -f "$temp_file"
 
-# 将找到的值输出到标准输出，方便外部获取
+# Output the found value to standard output for easy external acquisition
 if [ -n "$value" ]; then
     echo "$value"
 else

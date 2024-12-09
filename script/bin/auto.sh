@@ -113,7 +113,7 @@ check_health() {
 }
 
 function wait_start_process() {
-    echo "Starting application..."
+    echo ">>>>>>>>>>>>>>>>>>>>> Starting application... <<<<<<<<<<<<<<<<<<<<<<<"
     local max_attempts=100
     local attempt=0
     local delay=0.25
@@ -134,7 +134,7 @@ function wait_start_process() {
         local bar_length=50
         local filled_length=$((progress * bar_length / 100))
         local empty_length=$((bar_length - filled_length))
-        local bar=$(printf '=%.0s' $(seq 1 $filled_length))$(printf ' %.0s' $(seq 1 $empty_length))
+        local bar=$(printf '>%.0s' $(seq 1 $filled_length))$(printf ' %.0s' $(seq 1 $empty_length))
         echo -ne "\r[${bar}] ${progress}%"
         sleep $delay
     done
