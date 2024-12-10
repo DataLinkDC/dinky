@@ -468,6 +468,16 @@ public enum Status {
             204, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval"),
     SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE(
             205, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval.note"),
+
+    /**
+     * approval
+     * */
+    SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW(206, "sys.approval.settings.enableTaskSubmitReview"),
+    SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW_NOTE(207, "sys.approval.settings.enableTaskSubmitReview.note"),
+    SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW(208, "sys.approval.settings.enforceCrossReview"),
+    SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW_NOTE(209, "sys.approval.settings.enforceCrossReview.note"),
+    SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES(210, "sys.approval.settings.taskReviewerRoles"),
+    SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES_NOTE(211, "sys.approval.settings.taskReviewerRoles.note"),
     ;
     private final int code;
     private final String key;
