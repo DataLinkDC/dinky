@@ -7,6 +7,8 @@ import org.dinky.data.enums.ApprovalEvent;
 import org.dinky.data.model.Approval;
 import org.dinky.data.result.ProTableResult;
 
+import java.util.List;
+
 public interface ApprovalService extends IService<Approval> {
 
     /**

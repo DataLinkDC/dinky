@@ -329,7 +329,7 @@ public class SystemConfiguration {
             .note(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE);
     private final Configuration<Boolean> enableTaskSubmitReview = key(Status.SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW)
             .booleanType()
-            .defaultValue(true)
+            .defaultValue(false)
             .note(Status.SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW_NOTE);
     private final Configuration<Boolean> enforceCrossReview = key(Status.SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW)
             .booleanType()
