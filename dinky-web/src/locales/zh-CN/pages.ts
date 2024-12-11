@@ -1160,6 +1160,8 @@ export default {
   'sys.ldap.settings.keyword': '可输入用户名/昵称进行搜索,支持模糊查询,输入关键词后回车即可',
   'sys.ldap.settings.loadable': '是否可以导入',
   'sys.setting.ingress': 'Ingress 配置',
+  'sys.setting.approval': '审批配置',
+  'sys.setting.approval.tooltip': '作业上线的审批配置',
   /**
    *
    * tenant

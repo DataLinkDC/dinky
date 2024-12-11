@@ -25,7 +25,8 @@ import {
   LDAPIcon,
   MavenIcon,
   MetricsIcon,
-  ResourceIcon
+  ResourceIcon,
+  ApprovalIcon
 } from '@/components/Icons/CustomIcons';
 import { TagAlignCenter } from '@/components/StyledComponents';
 import { AuthorizedObject, useAccess } from '@/hooks/useAccess';
@@ -45,6 +46,7 @@ import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { memo, useEffect, useState } from 'react';
+import { ApprovalConfig } from "@/pages/SettingCenter/GlobalSetting/SettingOverView/ApprovalConfig";
 
 const imgSize = 25;
 
@@ -60,7 +62,8 @@ const SettingOverView = () => {
     maven: [],
     ldap: [],
     metrics: [],
-    resource: []
+    resource: [],
+    approval: []
   });
 
   const fetchData = async () => {
@@ -104,7 +107,8 @@ const SettingOverView = () => {
       dolphinscheduler: dsConfig,
       ldap: ldapConfig,
       metrics: metricsConfig,
-      resource: resourceConfig
+      resource: resourceConfig,
+      approval: approvalConfig
     } = data;
 
     return [
@@ -226,6 +230,23 @@ const SettingOverView = () => {
           />
         ),
         path: PermissionConstants.SETTING_GLOBAL_RESOURCE
+      },
+      {
+        key: SettingConfigKeyEnum.APPROVAL,
+        label: (
+          <TagAlignCenter>
+            <ApprovalIcon size={imgSize} />
+            {l('sys.setting.approval')}
+          </TagAlignCenter>
+        ),
+        children: (
+          <ApprovalConfig
+            auth={PermissionConstants.SETTING_GLOBAL_APPROVAL_EDIT}
+            onSave={handleSaveSubmit}
+            data={approvalConfig}
+          />
+        ),
+        path: PermissionConstants.SETTING_GLOBAL_APPROVAL
       }
     ];
   };

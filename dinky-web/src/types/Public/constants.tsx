@@ -243,6 +243,8 @@ export enum PermissionConstants {
   SETTING_GLOBAL_METRICS_EDIT = '/settings/globalsetting/metrics/edit',
   SETTING_GLOBAL_RESOURCE = '/settings/globalsetting/resource',
   SETTING_GLOBAL_RESOURCE_EDIT = '/settings/globalsetting/resource/edit',
+  SETTING_GLOBAL_APPROVAL = '/settings/globalsetting/approval',
+  SETTING_GLOBAL_APPROVAL_EDIT = '/settings/globalsetting/approval/edit',
 
   /**
    * system log

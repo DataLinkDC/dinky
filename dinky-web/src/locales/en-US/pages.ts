@@ -1247,6 +1247,8 @@ export default {
     'You can enter your username/nickname for search, support fuzzy queries, enter keywords and press enter to complete the search',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
   'sys.setting.ingress': 'Ingress configuration',
+  'sys.setting.approval': 'Approval Configuration',
+  'sys.setting.approval.tooltip': 'Approval Configuration for task submit',
   /**
    *
    * tenant
