@@ -291,6 +291,25 @@ export default [
   },
 
   {
+    name: 'approval',
+    icon: 'LockOutlined',
+    path: '/approval',
+    footerRender: false,
+    routes: [
+      {
+        path: '/approval',
+        redirect: '/approval/taskApproval'
+      },
+      {
+        path: '/approval/taskApproval',
+        name: 'taskApproval',
+        icon: 'CarryOutlined',
+        component: './ApprovalCenter/TaskApproval'
+      }
+    ]
+  },
+
+  {
     path: '/dashboard',
     name: 'dashboard',
     icon: 'DashboardOutlined',

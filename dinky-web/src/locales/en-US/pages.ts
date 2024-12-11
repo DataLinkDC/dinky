@@ -1401,5 +1401,27 @@ export default {
   'datastudio.toolbar.rightClick.hideToolbarDesc': 'hides the toolbar window name',
   'datastudio.toolbar.rightClick.showToolbarDesc': 'displays the toolbar window name',
   'datastudio.toolbar.rightClick.closeCompact': 'turn off compact mode',
-  'datastudio.toolbar.rightClick.openCompact': 'turn on compact mode'
+  'datastudio.toolbar.rightClick.openCompact': 'turn on compact mode',
+
+  'approval.dinky.not.open': 'Dinky approval is not enabled, please go to the Setting Center -> Approval Configuration switch to open',
+  'approval.reviewList': 'Review List',
+  'approval.submitList': 'Submit List',
+  'approval.id': 'Approval Id',
+  'approval.taskId': 'Task Id',
+  'approval.previousTaskVersion': 'Previous Task Version Id',
+  'approval.currentTaskVersion': 'Current Task Version Id',
+  'approval.status': 'Approval Status',
+  'approval.submitterName': 'Submitter Name',
+  'approval.submitterComment': 'Submitter Comment',
+  'approval.reviewerName': 'Reviewer Name',
+  'approval.reviewerComment': 'Reviewer Comment',
+  'approval.status.created': 'CREATED',
+  'approval.status.withdrawn': 'WITHDRAWN',
+  'approval.status.submitted': 'SUBMITTED',
+  'approval.status.approved': 'APPROVED',
+  'approval.status.rejected': 'REJECTED',
+  'approval.operation.withdraw': 'Withdraw',
+  'approval.operation.submit': 'Submit',
+  'approval.operation.approve': 'Approve',
+  'approval.operation,reject': 'Reject'
 };
