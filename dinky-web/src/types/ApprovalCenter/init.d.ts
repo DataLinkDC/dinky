@@ -21,9 +21,6 @@ import {ApprovalListState} from "@/types/ApprovalCenter/state";
 
 export const InitApprovalList: ApprovalListState = {
   approvalList: [],
-  modalViable: false,
-  activeId: 1,
-  activeEvent: '',
   loading: false,
   addedOpen: false,
   editOpen: false

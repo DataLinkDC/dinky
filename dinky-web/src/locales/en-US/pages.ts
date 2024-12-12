@@ -1423,5 +1423,8 @@ export default {
   'approval.operation.withdraw': 'Withdraw',
   'approval.operation.submit': 'Submit',
   'approval.operation.approve': 'Approve',
-  'approval.operation,reject': 'Reject'
+  'approval.operation,reject': 'Reject',
+  'approval.reviewer.required': 'Please select a reviewer',
+  'approval.submit.comment': 'Submit Remark',
+  'approval.review.comment': 'Review Comment'
 };

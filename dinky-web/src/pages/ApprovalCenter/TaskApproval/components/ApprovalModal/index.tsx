@@ -1,20 +1,64 @@
-import {ModalForm} from "@ant-design/pro-components";
-import React, {useEffect, useState} from "react";
+import {ModalForm, ProFormSelect, ProFormTextArea} from "@ant-design/pro-components";
+import React from "react";
+import {ApprovalOperationInfo, OperationType} from "@/types/ApprovalCenter/data.d";
+import {l} from "@/utils/intl";
 
 type ApprovalModelProps = {
-   viable: boolean
-}
+  open: boolean,
+  title: string,
+  activeId: number,
+  operationType: OperationType,
+  onOpenChange: (open: boolean) => void;
+  onFinish: (operation: ApprovalOperationInfo, operationType: OperationType) => void;
+};
 
 const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
 
+  const reviewer = {
+    1: 'admin',
+    2: 'reviewer'
+  }
+
+  const approvalRender = () => {
+    if (props.operationType == OperationType.SUBMIT) {
+      return (
+        <>
+          <ProFormSelect
+            name='reviewer'
+            label={l('approval.reviewerName')}
+            valueEnum={reviewer}
+            placeholder={l('approval.reviewer.required')}
+            rules={[{required: true}]}
+          />
+          <ProFormTextArea name='comment' label={l('approval.submit.comment')}/>
+        </>
+      )
+    } else {
+      return (
+        <>
+          <ProFormTextArea name='comment' label={l('approval.review.comment')}/>
+        </>
+      )
+    }
+  };
+
+  const submitForm = async (record: ApprovalOperationInfo) => {
+    props.onFinish(record, props.operationType);
+    props.onOpenChange(false);
+  };
+
   return (
     <ModalForm
-      open={props.viable}
-      // TODO 从父节点传处理方法进来 onOpenChange={setOpenState}
+      open={props.open}
+      onOpenChange={props.onOpenChange}
+      modalProps={{okText: props.title}}
+      onFinish={async (record) => {
+        await submitForm(record);
+      }}
     >
-      <h1>test</h1>
+      {approvalRender()}
     </ModalForm>
   );
-}
+};
 
 export default ApprovalModal;

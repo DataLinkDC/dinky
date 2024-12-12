@@ -1335,5 +1335,8 @@ export default {
   'approval.operation.withdraw': '撤回',
   'approval.operation.submit': '提交',
   'approval.operation.approve': '通过',
-  'approval.operation.reject': '驳回'
+  'approval.operation.reject': '驳回',
+  'approval.reviewer.required': '请选择一位审批人',
+  'approval.submit.comment': '上线说明',
+  'approval.review.comment': '审批意见'
 };

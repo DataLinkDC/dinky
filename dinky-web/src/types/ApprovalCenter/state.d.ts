@@ -24,7 +24,4 @@ import {ApprovalBasicInfo} from "@/types/ApprovalCenter/data";
 
 export interface ApprovalListState extends BaseState {
   approvalList: ApprovalBasicInfo[];
-  modalViable: boolean;
-  activeId: number;
-  activeEvent: string;
 }

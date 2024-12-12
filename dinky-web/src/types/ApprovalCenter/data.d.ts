@@ -22,7 +22,7 @@ export type ApprovalBasicInfo = {
   taskId: number;
   previousTaskVersion: number;
   currentTaskVersion: number;
-  status: 'SUBMITTED' | 'CREATED' | 'WITHDRAWN' | 'REJECTED' | 'APPROVED';
+  status: OperationStatus;
   submitterName: string;
   submitterComment: string;
   reviewerName: string;
@@ -35,6 +35,23 @@ export type ApprovalOperationInfo = {
   id: number;
   reviewer: number;
   comment: string;
+};
+
+export enum OperationType {
+  UNKNOWN = 'UNKNOWN',
+  CREATE = 'CREATE',
+  SUBMIT = 'SUBMIT',
+  WITHDRAW = 'WITHDRAW',
+  APPROVE = 'APPROVE',
+  REJECT = 'REJECTED'
+}
+
+export enum OperationStatus {
+  UNKNOWN = 'UNKNOWN',
+  CREATED = 'CREATED',
+  SUBMITTED = 'SUBMITTED',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
 }
 
 
