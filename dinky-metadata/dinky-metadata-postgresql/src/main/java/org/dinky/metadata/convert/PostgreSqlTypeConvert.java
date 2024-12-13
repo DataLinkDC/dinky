@@ -65,7 +65,9 @@ public class PostgreSqlTypeConvert extends AbstractJdbcTypeConvert {
 
     private static Optional<ColumnType> convertDecimalOrNumeric(
             Column column, DriverConfig<AbstractJdbcConfig> driverConfig) {
-        // 该字段的精度
+        if (column.getPrecision() == null) {
+            return Optional.of(ColumnType.DECIMAL);
+        }
         int intValue = column.getPrecision().intValue();
         if (intValue > 38) {
             return Optional.of(ColumnType.STRING);
