@@ -43,6 +43,7 @@ import org.dinky.service.SchedulerService;
 import org.dinky.service.catalogue.CatalogueService;
 import org.dinky.utils.JsonUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -97,7 +98,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         // Get process from dolphin scheduler
         ProcessDefinition process = processClient.getProcessDefinitionInfo(projectCode, processName);
 
-        String taskName = catalogue.getName() + ":" + catalogue.getId();
+        String taskName = catalogue.getName();
         dinkyTaskRequest.setName(taskName);
 
         TaskRequest taskRequest = new TaskRequest();
@@ -180,7 +181,8 @@ public class SchedulerServiceImpl implements SchedulerService {
         }
         List<ProcessTaskRelation> processTaskRelationList = dagData.getProcessTaskRelationList();
         List<TaskDefinition> taskDefinitionList = dagData.getTaskDefinitionList();
-        List<DagNodeLocation> locations = JsonUtils.toList(process.getLocations(), DagNodeLocation.class);
+        List<DagNodeLocation> locations =
+                new ArrayList<>(JsonUtils.toList(process.getLocations(), DagNodeLocation.class));
 
         if (CollUtil.isNotEmpty(locations)) {
             boolean matched = locations.stream().anyMatch(location -> location.getTaskCode() == taskCode);
@@ -307,8 +309,7 @@ public class SchedulerServiceImpl implements SchedulerService {
         long projectCode = SystemInit.getProject().getCode();
         List<TaskMainInfo> taskMainInfos = taskClient.getTaskMainInfos(projectCode, "", "", "");
         // 去掉本身
-        taskMainInfos.removeIf(taskMainInfo ->
-                (catalogue.getName() + ":" + catalogue.getId()).equalsIgnoreCase(taskMainInfo.getTaskName()));
+        taskMainInfos.removeIf(taskMainInfo -> (catalogue.getName()).equalsIgnoreCase(taskMainInfo.getTaskName()));
         return taskMainInfos;
     }
 
@@ -331,18 +332,16 @@ public class SchedulerServiceImpl implements SchedulerService {
         long projectCode = dinkyProject.getCode();
 
         String processName = getDinkyNames(catalogue, 0);
-        String taskName = catalogue.getName() + ":" + catalogue.getId();
+        String taskName = catalogue.getName();
         TaskMainInfo taskMainInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName, TASK_TYPE);
         TaskDefinition taskDefinition;
         if (taskMainInfo == null) {
-            log.error(Status.DS_WORK_FLOW_DEFINITION_NOT_EXIST.getMessage(), processName, taskName);
-            throw new BusException(Status.DS_WORK_FLOW_DEFINITION_NOT_EXIST, processName, taskName);
+            return null;
         }
 
         taskDefinition = taskClient.getTaskDefinition(projectCode, taskMainInfo.getTaskCode());
         if (taskDefinition == null) {
-            log.error(Status.DS_WORK_FLOW_NOT_SAVE.getMessage());
-            throw new BusException(Status.DS_WORK_FLOW_NOT_SAVE);
+            return null;
         }
 
         taskDefinition.setProcessDefinitionCode(taskMainInfo.getProcessDefinitionCode());
@@ -380,12 +379,12 @@ public class SchedulerServiceImpl implements SchedulerService {
             throw new SchedulerException("Get Node List Error");
         }
 
-        String name = i == 0 ? catalogue.getName() + ":" + catalogue.getId() : catalogue.getName();
+        String name = i == 0 ? catalogue.getName() : catalogue.getName();
         String next = getDinkyNames(catalogue, ++i);
 
         if (Strings.isNullOrEmpty(next)) {
             return name;
         }
-        return name + "_" + next;
+        return name + "/" + next;
     }
 }

@@ -66,9 +66,6 @@ public class SchedulerController {
             example = "1")
     public Result<TaskDefinition> getTaskDefinition(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
         TaskDefinition taskDefinitionInfo = schedulerService.getTaskDefinitionInfo(dinkyTaskId);
-        if (taskDefinitionInfo == null) {
-            return Result.failed(Status.DS_TASK_NOT_EXIST);
-        }
         return Result.succeed(taskDefinitionInfo);
     }
 
