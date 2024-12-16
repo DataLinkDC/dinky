@@ -23,7 +23,6 @@ import org.dinky.data.exception.DinkyException;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.SqlType;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.parser.CustomParserImpl;
 import org.dinky.utils.SqlUtil;
 
 import org.apache.calcite.sql.SqlNode;
@@ -75,8 +74,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
-        injectParser(new CustomParserImpl(getPlanner().getParser()));
-        injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
     }
 
     public static CustomTableEnvironmentImpl create(
@@ -177,7 +174,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public SqlNode parseSql(String sql) {
-        return ((ExtendedParser) getParser()).parseSql(sql);
+        return getParser().parseSql(sql);
     }
 
     @Override

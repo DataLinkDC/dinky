@@ -19,45 +19,26 @@
 
 package org.dinky.utils;
 
-import org.dinky.data.model.FunctionResult;
-import org.dinky.data.model.LineageRel;
-import org.dinky.executor.CustomParser;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.executor.ExtendedParser;
-
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
-import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.ValidationException;
-import org.apache.flink.table.catalog.ContextResolvedFunction;
-import org.apache.flink.table.catalog.FunctionCatalog;
-import org.apache.flink.table.catalog.UnresolvedIdentifier;
-import org.apache.flink.table.delegation.Parser;
-import org.apache.flink.table.functions.FunctionIdentifier;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.SinkModifyOperation;
-import org.apache.flink.table.planner.delegation.PlannerBase;
-import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import org.dinky.data.model.LineageRel;
+import org.dinky.executor.CustomTableEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * LineageContext
- *
- * @since 2022/11/22
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class LineageContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(LineageContext.class);
@@ -79,6 +60,7 @@ public class LineageContext {
     }
 
     private Tuple2<String, RelNode> parseStatement(String sql) {
+//        RelNode relNode2 = tableEnv.getParser().parseSqlToRelNode(sql);
         List<Operation> operations = tableEnv.getParser().parse(sql);
 
         if (operations.size() != 1) {
@@ -88,10 +70,9 @@ public class LineageContext {
         if (operation instanceof SinkModifyOperation) {
             SinkModifyOperation sinkOperation = (SinkModifyOperation) operation;
 
-            PlannerQueryOperation queryOperation = (PlannerQueryOperation) sinkOperation.getChild();
-            RelNode relNode = queryOperation.getCalciteTree();
+            RelNode relNode = tableEnv.getParser().parseSqlToRelNode(sql);
             return new Tuple2<>(
-                    sinkOperation.getContextResolvedTable().getIdentifier().asSummaryString(), relNode);
+                sinkOperation.getContextResolvedTable().getIdentifier().asSummaryString(), relNode);
         } else {
             throw new TableException("Only insert is supported now.");
         }
@@ -102,17 +83,17 @@ public class LineageContext {
         List<String> queryFieldList = relNode.getRowType().getFieldNames();
         if (queryFieldList.size() != sinkFieldList.size()) {
             throw new ValidationException(String.format(
-                    "Column types of query result and sink for %s do not match.\n"
-                            + "Query schema: %s\n"
-                            + "Sink schema:  %s",
-                    sinkTable, queryFieldList, sinkFieldList));
+                "Column types of query result and sink for %s do not match.\n"
+                    + "Query schema: %s\n"
+                    + "Sink schema:  %s",
+                sinkTable, queryFieldList, sinkFieldList));
         }
     }
 
     private List<LineageRel> buildFiledLineageResult(String sinkTable, RelNode optRelNode) {
         // target columns
         List<String> targetColumnList =
-                tableEnv.from(sinkTable).getResolvedSchema().getColumnNames();
+            tableEnv.from(sinkTable).getResolvedSchema().getColumnNames();
 
         // check the size of query and sink fields match
         validateSchema(sinkTable, optRelNode, targetColumnList);
@@ -141,9 +122,9 @@ public class LineageContext {
                     String sourceColumn;
                     if (relColumnOrigin.isComputedColumn()) {
                         List<String> fieldNames = ((TableSourceTable) table)
-                                .contextResolvedTable()
-                                .getResolvedSchema()
-                                .getColumnNames();
+                            .contextResolvedTable()
+                            .getResolvedSchema()
+                            .getColumnNames();
                         sourceColumn = fieldNames.get(ordinal);
                     } else {
                         List<String> fieldNames = table.getRowType().getFieldNames();
@@ -152,63 +133,10 @@ public class LineageContext {
 
                     // add record
                     resultList.add(LineageRel.build(
-                            sourceTable, sourceColumn, sinkTable, targetColumn, relColumnOrigin.getTransform()));
+                        sourceTable, sourceColumn, sinkTable, targetColumn, relColumnOrigin.getTransform()));
                 }
             }
         }
         return resultList;
-    }
-
-    /**
-     *  Analyze custom functions from SQL, does not contain system functions.
-     *
-     * @param singleSql the SQL statement to analyze
-     * @return custom functions set
-     */
-    public Set<FunctionResult> analyzeFunction(CustomTableEnvironment customTableEnvironment, String singleSql) {
-        LOG.info("Analyze function Sql: \n {}", singleSql);
-
-        CustomParser customParser = null;
-        Parser parser = customTableEnvironment.getParser();
-        if (parser instanceof ExtendedParser) {
-            customParser = ((ExtendedParser) parser).getCustomParser();
-        } else {
-            throw new RuntimeException("CustomParser is not set");
-        }
-
-        // parsing sql and return the abstract syntax tree
-        SqlNode sqlNode = customParser.parseSql(singleSql);
-
-        // validate the query
-        SqlNode validated = customParser.validate(sqlNode);
-
-        // look for all functions
-        FunctionVisitor visitor = new FunctionVisitor();
-        validated.accept(visitor);
-        List<UnresolvedIdentifier> fullFunctionList = visitor.getFunctionList();
-
-        // filter custom functions
-        Set<FunctionResult> resultSet = new HashSet<>();
-        for (UnresolvedIdentifier unresolvedIdentifier : fullFunctionList) {
-            getFunctionCatalog()
-                    .lookupFunction(unresolvedIdentifier)
-                    .flatMap(ContextResolvedFunction::getIdentifier)
-                    // the objectIdentifier of the built-in function is null
-                    .flatMap(FunctionIdentifier::getIdentifier)
-                    .ifPresent(identifier -> {
-                        FunctionResult functionResult = new FunctionResult()
-                                .setCatalogName(identifier.getCatalogName())
-                                .setDatabase(identifier.getDatabaseName())
-                                .setFunctionName(identifier.getObjectName());
-                        LOG.debug("analyzed function: {}", functionResult);
-                        resultSet.add(functionResult);
-                    });
-        }
-        return resultSet;
-    }
-
-    private FunctionCatalog getFunctionCatalog() {
-        PlannerBase planner = (PlannerBase) tableEnv.getPlanner();
-        return planner.getFlinkContext().getFunctionCatalog();
     }
 }

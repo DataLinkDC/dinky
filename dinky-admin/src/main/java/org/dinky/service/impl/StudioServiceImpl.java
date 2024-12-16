@@ -122,9 +122,10 @@ public class StudioServiceImpl implements StudioService {
             TaskDTO taskDTO = taskService.getTaskInfoById(studioCADTO.getTaskId());
             taskDTO.setStatement(taskService.buildEnvSql(taskDTO) + studioCADTO.getStatement());
             JobConfig jobConfig = taskDTO.getJobConfig();
-            jobConfig.setUdfRefer(studioCADTO.getConfigJson().getUdfReferMaps());
-            jobConfig.setConfigJson(studioCADTO.getConfigJson().getCustomConfigMaps());
-
+            if (Asserts.isNotNull(studioCADTO.getConfigJson())) {
+                jobConfig.setUdfRefer(studioCADTO.getConfigJson().getUdfReferMaps());
+                jobConfig.setConfigJson(studioCADTO.getConfigJson().getCustomConfigMaps());
+            }
             return LineageBuilder.getColumnLineageByLogicalPlan(taskDTO.getStatement(), jobConfig);
         }
     }

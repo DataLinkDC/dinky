@@ -21,7 +21,6 @@ package org.apache.calcite.sql;
 
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.RowLevelPermissionsContext;
-import org.dinky.executor.ExtendedParser;
 
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.validate.SqlValidator;
@@ -68,18 +67,18 @@ public class SqlSelect extends SqlCall {
     SqlNodeList hints;
 
     public SqlSelect(
-            SqlParserPos pos,
-            SqlNodeList keywordList,
-            SqlNodeList selectList,
-            SqlNode from,
-            SqlNode where,
-            SqlNodeList groupBy,
-            SqlNode having,
-            SqlNodeList windowDecls,
-            SqlNodeList orderBy,
-            SqlNode offset,
-            SqlNode fetch,
-            SqlNodeList hints) {
+        SqlParserPos pos,
+        SqlNodeList keywordList,
+        SqlNodeList selectList,
+        SqlNode from,
+        SqlNode where,
+        SqlNodeList groupBy,
+        SqlNode having,
+        SqlNodeList windowDecls,
+        SqlNodeList orderBy,
+        SqlNode offset,
+        SqlNode fetch,
+        SqlNodeList hints) {
         super(pos);
         this.keywordList = Objects.requireNonNull(keywordList != null ? keywordList : new SqlNodeList(pos));
         this.selectList = selectList;
@@ -135,13 +134,7 @@ public class SqlSelect extends SqlCall {
             String permissionsStatement = permissionsMap.get(tableName);
             if (permissionsStatement != null && !"".equals(permissionsStatement)) {
                 Parser parser = CustomTableEnvironmentContext.get().getParser();
-                if (parser instanceof ExtendedParser) {
-                    ExtendedParser extendedParser = (ExtendedParser) parser;
-                    permissions =
-                            (SqlBasicCall) (extendedParser.getCustomParser()).parseExpression(permissionsStatement);
-                } else {
-                    throw new RuntimeException("CustomParser is not set");
-                }
+                permissions = (SqlBasicCall) parser.parseSql(permissionsStatement);
             }
         }
 
@@ -161,7 +154,7 @@ public class SqlSelect extends SqlCall {
                 return permissions;
             }
             SqlBinaryOperator sqlBinaryOperator =
-                    new SqlBinaryOperator(SqlKind.AND.name(), SqlKind.AND, 0, true, null, null, null);
+                new SqlBinaryOperator(SqlKind.AND.name(), SqlKind.AND, 0, true, null, null, null);
             SqlNode[] operands = new SqlNode[2];
             operands[0] = where;
             operands[1] = permissions;
@@ -184,7 +177,7 @@ public class SqlSelect extends SqlCall {
     @Override
     public List<SqlNode> getOperandList() {
         return ImmutableNullableList.of(
-                keywordList, selectList, from, where, groupBy, having, windowDecls, orderBy, offset, fetch, hints);
+            keywordList, selectList, from, where, groupBy, having, windowDecls, orderBy, offset, fetch, hints);
     }
 
     @Override

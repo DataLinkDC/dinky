@@ -21,7 +21,6 @@ package org.dinky.utils;
 
 import static org.junit.Assert.assertEquals;
 
-import org.dinky.data.model.FunctionResult;
 import org.dinky.data.model.LineageRel;
 import org.dinky.executor.CustomTableEnvironmentImpl;
 
@@ -30,11 +29,9 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -99,30 +96,9 @@ public class LineageContextTest {
         analyzeLineage(sql, expectedArray);
     }
 
-    @Ignore
-    @Test
-    public void testAnalyzeLineageAndFunction() {
-        String sql = "INSERT INTO TT SELECT LOWER(a) , my_suffix_udf(b) FROM ST";
-
-        String[][] expectedArray = {
-            {"ST", "a", "TT", "A", "LOWER(a)"},
-            {"ST", "b", "TT", "B", "my_suffix_udf(b)"}
-        };
-
-        analyzeLineage(sql, expectedArray);
-
-        analyzeFunction(sql, new String[] {"my_suffix_udf"});
-    }
-
     private void analyzeLineage(String sql, String[][] expectedArray) {
         List<LineageRel> actualList = context.analyzeLineage(sql);
         List<LineageRel> expectedList = LineageRel.build(CATALOG_NAME, DEFAULT_DATABASE, expectedArray);
         assertEquals(expectedList, actualList);
-    }
-
-    private void analyzeFunction(String sql, String[] expectedArray) {
-        Set<FunctionResult> actualSet = context.analyzeFunction(sql);
-        Set<FunctionResult> expectedSet = FunctionResult.build(CATALOG_NAME, DEFAULT_DATABASE, expectedArray);
-        assertEquals(expectedSet, actualSet);
     }
 }

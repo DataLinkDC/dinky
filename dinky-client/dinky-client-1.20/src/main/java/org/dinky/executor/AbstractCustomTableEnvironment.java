@@ -65,14 +65,6 @@ public abstract class AbstractCustomTableEnvironment
     }
 
     @Override
-    public void injectParser(CustomParser parser) {
-        ReflectUtil.setFieldValue(getPlanner(), "parser", new ParserWrapper(parser));
-    }
-
-    @Override
-    public void injectExtendedExecutor(CustomExtendedOperationExecutor extendedExecutor) {}
-
-    @Override
     public Configuration getRootConfiguration() {
         return (Configuration) this.getConfig().getRootConfiguration();
     }

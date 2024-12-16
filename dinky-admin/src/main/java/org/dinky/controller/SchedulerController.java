@@ -66,7 +66,7 @@ public class SchedulerController {
             example = "1")
     public Result<TaskDefinition> getTaskDefinition(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
         TaskDefinition taskDefinitionInfo = schedulerService.getTaskDefinitionInfo(dinkyTaskId);
-        return Result.succeed(taskDefinitionInfo);
+        return Result.succeed(taskDefinitionInfo, "Get Task Definition Success");
     }
 
     /**

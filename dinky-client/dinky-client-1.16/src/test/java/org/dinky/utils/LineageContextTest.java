@@ -56,7 +56,7 @@ public class LineageContextTest {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment(new Configuration());
 
         EnvironmentSettings settings =
-                EnvironmentSettings.newInstance().inStreamingMode().build();
+            EnvironmentSettings.newInstance().inStreamingMode().build();
         tableEnv = CustomTableEnvironmentImpl.create(env, settings);
 
         context = new LineageContext(tableEnv);
@@ -67,23 +67,23 @@ public class LineageContextTest {
         // create table ST
         tableEnv.executeSql("DROP TABLE IF EXISTS ST");
         tableEnv.executeSql("CREATE TABLE ST (     " + "    a STRING                               ,"
-                + "    b STRING                               ,"
-                + "    c STRING                                "
-                + ") WITH (                                    "
-                + "    'connector' = 'datagen'                ,"
-                + "    'rows-per-second' = '1'                 "
-                + ")");
+            + "    b STRING                               ,"
+            + "    c STRING                                "
+            + ") WITH (                                    "
+            + "    'connector' = 'datagen'                ,"
+            + "    'rows-per-second' = '1'                 "
+            + ")");
 
         // create table TT
         tableEnv.executeSql("DROP TABLE IF EXISTS TT");
         tableEnv.executeSql("CREATE TABLE TT (     " + "    A STRING                               ,"
-                + "    B STRING                                "
-                + ") WITH (                                    "
-                + "    'connector' = 'print'                   "
-                + ")");
+            + "    B STRING                                "
+            + ") WITH (                                    "
+            + "    'connector' = 'print'                   "
+            + ")");
         // Create custom function my_suffix_udf
-        tableEnv.executeSql("DROP FUNCTION IF EXISTS my_suffix_udf");
-        tableEnv.executeSql("CREATE FUNCTION IF NOT EXISTS my_suffix_udf " + "AS 'org.dinky.utils.MySuffixFunction'");
+//        tableEnv.executeSql("DROP FUNCTION IF EXISTS my_suffix_udf");
+//        tableEnv.executeSql("CREATE FUNCTION IF NOT EXISTS my_suffix_udf " + "AS 'org.dinky.utils.MySuffixFunction'");
     }
 
     @Test
@@ -99,30 +99,9 @@ public class LineageContextTest {
         analyzeLineage(sql, expectedArray);
     }
 
-    @Ignore
-    @Test
-    public void testAnalyzeLineageAndFunction() {
-        String sql = "INSERT INTO TT SELECT LOWER(a) , my_suffix_udf(b) FROM ST";
-
-        String[][] expectedArray = {
-            {"ST", "a", "TT", "A", "LOWER(a)"},
-            {"ST", "b", "TT", "B", "my_suffix_udf(b)"}
-        };
-
-        analyzeLineage(sql, expectedArray);
-
-        analyzeFunction(sql, new String[] {"my_suffix_udf"});
-    }
-
     private void analyzeLineage(String sql, String[][] expectedArray) {
         List<LineageRel> actualList = context.analyzeLineage(sql);
         List<LineageRel> expectedList = LineageRel.build(CATALOG_NAME, DEFAULT_DATABASE, expectedArray);
         assertEquals(expectedList, actualList);
-    }
-
-    private void analyzeFunction(String sql, String[] expectedArray) {
-        Set<FunctionResult> actualSet = context.analyzeFunction(tableEnv, sql);
-        Set<FunctionResult> expectedSet = FunctionResult.build(CATALOG_NAME, DEFAULT_DATABASE, expectedArray);
-        assertEquals(expectedSet, actualSet);
     }
 }

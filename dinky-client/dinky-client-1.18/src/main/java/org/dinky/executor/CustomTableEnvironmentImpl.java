@@ -23,7 +23,6 @@ import org.dinky.data.exception.DinkyException;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.SqlType;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.operations.CustomNewParserImpl;
 
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -93,7 +92,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
-        injectParser(new CustomNewParserImpl(this, getPlanner().getParser()));
     }
 
     public static CustomTableEnvironmentImpl create(
@@ -198,7 +196,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public SqlNode parseSql(String sql) {
-        return ((ExtendedParser) getParser()).getCustomParser().parseSql(sql);
+        return getParser().parseSql(sql);
     }
 
     @Override

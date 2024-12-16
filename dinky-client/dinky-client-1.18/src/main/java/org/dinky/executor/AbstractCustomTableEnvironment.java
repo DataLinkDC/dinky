@@ -31,8 +31,6 @@ import org.apache.flink.table.delegation.Planner;
 
 import java.util.List;
 
-import cn.hutool.core.util.ReflectUtil;
-
 /** */
 public abstract class AbstractCustomTableEnvironment
         implements CustomTableEnvironment, DefaultTableEnvironmentInternal, DefaultStreamTableEnvironment {
@@ -63,14 +61,6 @@ public abstract class AbstractCustomTableEnvironment
     public Planner getPlanner() {
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).getPlanner();
     }
-
-    @Override
-    public void injectParser(CustomParser parser) {
-        ReflectUtil.setFieldValue(getPlanner(), "parser", new ParserWrapper(parser));
-    }
-
-    @Override
-    public void injectExtendedExecutor(CustomExtendedOperationExecutor extendedExecutor) {}
 
     @Override
     public Configuration getRootConfiguration() {
