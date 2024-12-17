@@ -31,8 +31,4 @@ import java.util.List;
 public interface RoleMenuMapper extends SuperMapper<RoleMenu> {
 
     int checkMenuExistRole(Integer menuId);
-
-    int deleteRoleMenuByRoleId(Integer roleId);
-
-    int batchRoleMenu(List<RoleMenu> roleMenuList);
 }

@@ -13,16 +13,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="checkMenuExistRole" resultType="Integer">
 	    select count(1) from dinky_sys_role_menu where menu_id = #{menuId}
 	</select>
-
-	<delete id="deleteRoleMenuByRoleId" parameterType="Long">
-		delete from dinky_sys_role_menu where role_id=#{roleId}
-	</delete>
-	
-	<insert id="batchRoleMenu">
-		insert into dinky_sys_role_menu(role_id, menu_id) values
-		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.roleId},#{item.menuId})
-		</foreach>
-	</insert>
-	
 </mapper> 
