@@ -24,8 +24,6 @@ import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
-
 /** MenuMapper */
 @Mapper
 public interface RoleMenuMapper extends SuperMapper<RoleMenu> {
