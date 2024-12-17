@@ -8,6 +8,7 @@ import {l} from "@/utils/intl";
 import {ProTable} from "@ant-design/pro-components";
 import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
 import {queryList} from "@/services/api";
+import TaskInfoModal from "@/pages/ApprovalCenter/TaskApproval/components/TaskInfoModal";
 
 
 type UserFormProps = {
@@ -23,7 +24,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   const [activeOperation, setActiveOperationType] = useState<OperationType>(OperationType.UNKNOWN);
   const [activeId, setActiveId] = useState(0);
   const [modalTitle, setModalTitle] = useState('');
-  const [reviewerList, setReviewerList] = useState([])
+  const [reviewerList, setReviewerList] = useState([]);
+  const [taskInfoOpen, setTaskInfoOpen] = useState(false);
 
   // init approval list
   useEffect(() => {
@@ -200,6 +202,22 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     )
   };
 
+  const renderInfo = (entity: ApprovalBasicInfo) => {
+    return (
+      <>
+        <Button
+          onClick={() => {
+            setTaskInfoOpen(true);
+            setActiveId(entity.id);
+          }}
+          size={'small'}
+        >
+          {l('button.check')}
+        </Button>
+      </>
+    )
+  }
+
   /**
    * status color
    */
@@ -237,6 +255,11 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
       title: l('approval.currentTaskVersion'),
       dataIndex: 'currentTaskVersion',
       hideInSearch: true
+    },
+    {
+      title: l('approval.taskInfo'),
+      valueType: 'option',
+      render: (_:any, record:ApprovalBasicInfo) => renderInfo(record)
     },
     {
       title: l('approval.status'),
@@ -294,6 +317,10 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         activeId={activeId}
         operationType={activeOperation}
         onFinish={handleModalSubmit}
+      />
+      <TaskInfoModal
+        open = {taskInfoOpen}
+        onCancel={() => {setTaskInfoOpen(false)}}
       />
       <ProTable<ApprovalBasicInfo>
         search={{filterType: 'query'}}

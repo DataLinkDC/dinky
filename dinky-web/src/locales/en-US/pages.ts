@@ -1426,5 +1426,6 @@ export default {
   'approval.operation,reject': 'Reject',
   'approval.reviewer.required': 'Please select a reviewer',
   'approval.submit.comment': 'Submit Remark',
-  'approval.review.comment': 'Review Comment'
+  'approval.review.comment': 'Review Comment',
+  'approval.taskInfo': 'Task Info'
 };

@@ -109,6 +109,8 @@ import {
   DolphinTaskMinInfo
 } from '@/types/Studio/data';
 import PushDolphin from '@/pages/DataStudio/CenterTabContent/SqlTask/PushDolphin';
+import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
+import {OperationType} from "@/types/ApprovalCenter/data.d";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -738,6 +740,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         language={matchLanguage(currentState.dialect)}
         fileName={currentState.name}
         onUse={updateTask}
+      />
+      <ApprovalModal open={false} title={'提交上线申请'} activeId={1} operationType={OperationType.SUBMIT} onOpenChange={() =>{}} onFinish={() => {}}
       />
       <Flex vertical style={{ height: 'inherit', width: '100%' }} ref={containerRef}>
         <ProForm

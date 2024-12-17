@@ -1338,5 +1338,6 @@ export default {
   'approval.operation.reject': '驳回',
   'approval.reviewer.required': '请选择一位审批人',
   'approval.submit.comment': '上线说明',
-  'approval.review.comment': '审批意见'
+  'approval.review.comment': '审批意见',
+  'approval.taskInfo': '上线任务详情'
 };
