@@ -3,7 +3,7 @@
 DINKY_LIB_DIR=$1
 
 echo -e "${GREEN}Start downloading the mysql driver package...${RESET}"
-# 执行查看文件是否存在
+# Run the command to check whether the file exists
 exec_result=$(ll "${DINKY_LIB_DIR}"/mysql-connector-j-8.4.0.jar)
 if [ "$exec_result" ]; then
     echo -e "${YELLOW}The mysql driver package already exists, no need to download it again. Skip this step。${RESET}"
