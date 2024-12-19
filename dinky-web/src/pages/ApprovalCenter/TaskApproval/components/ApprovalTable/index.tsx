@@ -9,6 +9,7 @@ import {ProTable} from "@ant-design/pro-components";
 import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
 import {queryList} from "@/services/api";
 import TaskInfoModal from "@/pages/ApprovalCenter/TaskApproval/components/TaskInfoModal";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 
 type UserFormProps = {
@@ -331,12 +332,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         dataSource={approvalListState.approvalList}
         columns={approvalColumns}
         request={(params, sorter, filter: any) =>
-          // TODO 后端分页查询接口
-          queryList('url', {
-            ...params,
-            sorter: {id: 'descend'},
-            filter
-          })
+          queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })
         }
       />
     </>

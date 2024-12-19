@@ -1,6 +1,7 @@
 package org.dinky.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +11,16 @@ import org.dinky.data.annotations.TaskId;
 import org.dinky.data.dto.ApprovalDTO;
 import org.dinky.data.enums.ApprovalEvent;
 import org.dinky.data.model.Approval;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.ApprovalService;
 import org.dinky.service.TaskService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -31,18 +32,16 @@ public class ApprovalController {
 
     private final ApprovalService approvalService;
 
-    //TODO 分页查询
-
     @GetMapping("/getSubmittedApproval")
     @ApiOperation("Get all approvals submitted by current user")
-    Result<List<Approval>> getSubmittedApproval() {
-        return Result.succeed(approvalService.getSubmittedApproval());
+    ProTableResult<Approval> getSubmittedApproval(@RequestBody JsonNode para) {
+        return approvalService.getSubmittedApproval(para);
     }
 
     @GetMapping("/getApprovalToBeReviewed")
     @ApiOperation("Get all approvals current user is required for review")
-    Result<List<Approval>> getApprovalToBeReviewed() {
-        return Result.succeed(approvalService.getApprovalToBeReviewed());
+    ProTableResult<Approval> getApprovalToBeReviewed(@RequestBody JsonNode para) {
+        return approvalService.getApprovalToBeReviewed(para);
     }
 
     @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
@@ -76,6 +75,13 @@ public class ApprovalController {
     @ApiOperation("Reject approval")
     Result<Void> reject(ApprovalDTO approvalDTO) {
         approvalService.handleApproveEvent(ApprovalEvent.REJECT, approvalDTO);
+        return Result.succeed();
+    }
+
+    @PostMapping("/cancel")
+    @ApiOperation("Reject approval")
+    Result<Void> cancel(ApprovalDTO approvalDTO) {
+        approvalService.handleApproveEvent(ApprovalEvent.CANCEL, approvalDTO);
         return Result.succeed();
     }
 
