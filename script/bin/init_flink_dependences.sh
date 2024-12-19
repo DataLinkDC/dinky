@@ -111,6 +111,10 @@ echo -e "${GREEN}Process flink-state-processor-api ...${RESET}"
 cp -r ${full_flink_dir_tmp}/opt/flink-state-processor-api*.jar ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/
 echo -e "${GREEN}Processing completed。${RESET}"
 
+echo -e "${GREEN}Process flink-s3-fs-presto ...${RESET}"
+cp -r ${full_flink_dir_tmp}/opt/flink-s3-fs-presto*.jar ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/
+echo -e "${GREEN}Processing completed。${RESET}"
+
 echo -e "${GREEN} ================= List files in the ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/ directory ==============${RESET}"
 ls -l ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/
 
