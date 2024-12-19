@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `dinky_approval`
 ) ENGINE = INNODB
   AUTO_INCREMENT = 2
   CHARACTER SET = Utf8mb4
-  COLLATE = utfmb4_general_ci COMMENT = 'approval'
+  COLLATE = utf8mb4_general_ci COMMENT = 'approval'
   ROW_FORMAT = Dynamic;
 
 INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`)
