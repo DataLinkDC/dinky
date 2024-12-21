@@ -3,7 +3,6 @@ package org.dinky.service.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.dto.ApprovalDTO;
@@ -15,16 +14,20 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Approval;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.rbac.Role;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.mapper.ApprovalMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ApprovalService;
+import org.dinky.service.RoleService;
 import org.dinky.service.TaskService;
+import org.dinky.service.UserRoleService;
 import org.dinky.service.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +41,8 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
 
     private final TaskService taskService;
     private final UserService userService;
+    private final RoleService roleService;
+    private final UserRoleService userRoleService;
     private Map<ApprovalEvent, Set<ApprovalStatus>> validPreStatusMap;
     private Map<ApprovalEvent, ApprovalStatus> operationResultMap;
 
@@ -80,31 +85,55 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         }
 
         TaskDTO taskDTO = taskService.getTaskInfoById(taskId);
-        return Approval.builder()
+        Approval createdApproval = Approval.builder()
                 .taskId(taskId)
                 .submitter(StpUtil.getLoginIdAsInt())
                 .status(ApprovalStatus.CREATED.getValue())
                 .previousTaskVersion(previousTaskVersion)
                 .currentTaskVersion(taskDTO.getVersionId())
                 .build();
+        baseMapper.insert(createdApproval);
+        return createdApproval;
     }
 
     @Override
-    public boolean isTaskApproved(Integer taskId) {
+    public boolean needApprove(Integer taskId) {
+        if (!SystemConfiguration.getInstances().enableTaskSubmitApprove()) {
+            return false;
+        }
         // only published task can be approved
         TaskDTO byId = taskService.getTaskInfoById(taskId);
-        if (JobLifeCycle.PUBLISH.equalsValue(byId.getStep())) {
-            return false;
+        if (!JobLifeCycle.PUBLISH.equalsValue(byId.getStep())) {
+           return true;
         }
         // check approval version
         List<Approval> approvalList = baseMapper.getApprovalByTaskId(taskId);
         for (Approval approval : approvalList) {
             if (ApprovalStatus.APPROVED.equals(ApprovalStatus.fromValue(approval.getStatus()))
                     && approval.getCurrentTaskVersion().equals(byId.getVersionId())) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
+    }
+
+    @Override
+    public List<User> getTaskReviewerList(Integer tenantId) {
+        // get reviewer roles
+        Set<String> reviewerRoles = SystemConfiguration.getInstances().getReviewerRoles();
+        List<Role> roles = roleService.list(new LambdaQueryWrapper<Role>().in(Role::getRoleCode, reviewerRoles).eq(Role::getTenantId, tenantId));
+        // get users
+        Map<Integer, User> userMap = new HashMap<>();
+        for (Role role : roles) {
+            List<User> userList = roleService.getUserListByRoleId(role.getId());
+            for (User user : userList) {
+                if (SystemConfiguration.getInstances().enforceCrossView() && user.getId().equals(StpUtil.getLoginIdAsInt())) {
+                    continue;
+                }
+                userMap.put(user.getId(), user);
+            }
+        }
+        return new ArrayList<>(userMap.values());
     }
 
     public void handleApproveEvent(ApprovalEvent event, ApprovalDTO approvalDTO) {

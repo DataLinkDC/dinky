@@ -84,15 +84,16 @@ import { DataStudioActionType } from '@/pages/DataStudio/data.d';
 import {
   getDataByParams,
   handleOption,
+  handlePutDataByParams,
   handlePutDataJson,
   queryDataByParams
 } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs, LineageDetailInfo } from '@/types/DevOps/data';
 import { lockTask, matchLanguage } from '@/pages/DataStudio/function';
-import { PushpinIcon } from '@/components/Icons/CustomIcons';
+import {ApprovalIcon, PushpinIcon} from '@/components/Icons/CustomIcons';
 import { assert, isSql } from '@/pages/DataStudio/utils';
-import { DIALECT } from '@/services/constants';
+import {DIALECT, TENANT_ID} from '@/services/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
@@ -111,6 +112,7 @@ import {
 import PushDolphin from '@/pages/DataStudio/CenterTabContent/SqlTask/PushDolphin';
 import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
 import {OperationType} from "@/types/ApprovalCenter/data.d";
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -217,6 +219,16 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     formValuesInfo: {}
   });
 
+  const [approvalState, setApprovalState] = useState<{
+    needApproval: boolean;
+    openSubmitModal: boolean;
+    currentApprovalId: number;
+  }>({
+    needApproval: false,
+    openSubmitModal: false,
+    currentApprovalId: -1
+  })
+
   useEffect(() => {
     if (sqlForm.enable) {
       setSqlForm((prevState) => ({
@@ -265,6 +277,12 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           });
         }
       }
+    }
+    // check if current task need approve
+    const needApproval = await queryDataByParams(API_CONSTANTS.TASK_NEED_APPROVE, { taskId: currentState.taskId });
+    console.log(needApproval)
+    if (needApproval) {
+      setApprovalState(prevState => ({...prevState, needApproval: true}));
     }
     setLoading(false);
   }, []);
@@ -724,6 +742,30 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     await handlePushDolphinCancel();
   };
 
+  const handleApprovalCheckBeforeSubmit = async () => {
+    if (approvalState.needApproval) {
+      // publish first
+      if (JOB_LIFE_CYCLE.PUBLISH != currentState.step) {
+        await handleChangeJobLife();
+      }
+      // create approval
+      const res = await handlePutDataByParams(
+        API_CONSTANTS.TASK_APPROVAL_CREATE,
+        l('approval.operation.create'),
+        { taskId:currentState.taskId }
+      );
+      // open submit modal
+      setApprovalState((prevState) => ({...prevState, currentApprovalId: res.data.id}));
+      handleApprovalModalOpenChange(true);
+    } else {
+      // submit if task don't need approval
+      await handleSubmit();
+    }
+  }
+
+  const handleApprovalModalOpenChange = (open: boolean) => {
+    setApprovalState((prevState) => ({...prevState, openSubmitModal: open}));
+  };
   return (
     <Skeleton
       loading={loading}
@@ -741,7 +783,12 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         fileName={currentState.name}
         onUse={updateTask}
       />
-      <ApprovalModal open={false} title={'提交上线申请'} activeId={1} operationType={OperationType.SUBMIT} onOpenChange={() =>{}} onFinish={() => {}}
+      <ApprovalModal
+        open={approvalState.openSubmitModal}
+        title={l('approval.operation.submit')}
+        activeId={approvalState.currentApprovalId}
+        operationType={OperationType.SUBMIT}
+        onOpenChange={handleApprovalModalOpenChange}
       />
       <Flex vertical style={{ height: 'inherit', width: '100%' }} ref={containerRef}>
         <ProForm
@@ -875,7 +922,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               color={'green'}
               desc={l('pages.datastudio.editor.exec')}
               icon={<CaretRightOutlined />}
-              onClick={handleSubmit}
+              onClick={handleApprovalCheckBeforeSubmit}
               hotKey={{
                 ...hotKeyConfig,
                 hotKeyDesc: 'Shift+F10',

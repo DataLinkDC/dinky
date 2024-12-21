@@ -2,6 +2,11 @@ import {ModalForm, ProFormSelect, ProFormTextArea} from "@ant-design/pro-compone
 import React from "react";
 import {ApprovalOperationInfo, OperationType} from "@/types/ApprovalCenter/data.d";
 import {l} from "@/utils/intl";
+import {API_CONSTANTS} from "@/services/endpoints";
+import {getValueFromLocalStorage} from "@/utils/function";
+import {TENANT_ID} from "@/services/constants";
+import {getData} from "@/services/api";
+import {handleOption} from "@/services/BusinessCrud";
 
 type ApprovalModelProps = {
   open: boolean,
@@ -9,14 +14,13 @@ type ApprovalModelProps = {
   activeId: number,
   operationType: OperationType,
   onOpenChange: (open: boolean) => void;
-  onFinish: (operation: ApprovalOperationInfo, operationType: OperationType) => void;
 };
 
 const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
 
-  const reviewer = {
-    1: 'admin',
-    2: 'reviewer'
+  const getReviewerList = async () => {
+    const reviewers = (await getData(API_CONSTANTS.GET_REVIEWERS, {tenantId: getValueFromLocalStorage(TENANT_ID)})).data;
+    return reviewers.map((t) => ({label: t.username, value: t.id}));
   }
 
   const approvalRender = () => {
@@ -26,7 +30,7 @@ const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
           <ProFormSelect
             name='reviewer'
             label={l('approval.reviewerName')}
-            valueEnum={reviewer}
+            request={async () => getReviewerList()}
             placeholder={l('approval.reviewer.required')}
             rules={[{required: true}]}
           />
@@ -43,7 +47,21 @@ const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
   };
 
   const submitForm = async (record: ApprovalOperationInfo) => {
-    props.onFinish(record, props.operationType);
+    record.id = props.activeId;
+    switch (props.operationType) {
+      case OperationType.SUBMIT:
+        await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), record);
+        break;
+      case OperationType.APPROVE:
+        await handleOption(API_CONSTANTS.APPROVAL_APPROVE, l('approval.operation.approve'), record);
+        break;
+      case OperationType.WITHDRAW:
+        await handleOption(API_CONSTANTS.APPROVAL_WITHDRAW, l('approval.operation.withdraw'), record);
+        break;
+      case OperationType.REJECT:
+        await handleOption(API_CONSTANTS.APPROVAL_REJECT, l('approval.operation.reject'), record);
+        break;
+    }
     props.onOpenChange(false);
   };
 

@@ -657,6 +657,7 @@ export const ResourceIcon = (props: any) => {
   );
 };
 
+// TODO update path
 export const ApprovalIcon = (props: any) => {
   const size = props.size || defaultSvgSize;
 

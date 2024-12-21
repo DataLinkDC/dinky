@@ -117,5 +117,6 @@ export default {
   'menu.datastudio.task.previewConfig': '预览配置',
 
   'menu.approval': '审批中心',
-  'menu.approval.taskApproval': '任务审批'
+  'menu.approval.taskApproval': '任务审批',
+  'menu.approval.submitApproval': '提交审核'
 };

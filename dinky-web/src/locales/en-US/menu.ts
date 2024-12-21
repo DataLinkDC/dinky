@@ -118,5 +118,6 @@ export default {
   'menu.datastudio.task.previewConfig': 'Preview Configuration',
 
   'menu.approval': 'Approval Center',
-  'menu.approval.taskApproval': 'Task Approval'
+  'menu.approval.taskApproval': 'Task Approval',
+  'menu.approval.submitApproval': 'Submit Approval'
 };

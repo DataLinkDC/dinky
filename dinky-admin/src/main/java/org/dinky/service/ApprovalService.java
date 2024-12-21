@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.dinky.data.dto.ApprovalDTO;
 import org.dinky.data.enums.ApprovalEvent;
 import org.dinky.data.model.Approval;
+import org.dinky.data.model.rbac.User;
 import org.dinky.data.result.ProTableResult;
 
 import java.util.List;
@@ -38,9 +39,17 @@ public interface ApprovalService extends IService<Approval> {
     void handleApproveEvent(ApprovalEvent event, ApprovalDTO approvalDTO);
 
     /**
-     * check if a task is approved
+     * check if a task need approve
      * @param taskId task id
-     * @return true if current task is approved
+     * @return true if current task need approve
      */
-    boolean isTaskApproved(Integer taskId);
+    boolean needApprove(Integer taskId);
+
+    /**
+     * get the reviewers of current tenant
+     *
+     * @param tenantId tenant Id
+     * @return A list of {@link User} objects representing the users that can review current task
+     */
+    List<User> getTaskReviewerList(Integer tenantId);
 }
