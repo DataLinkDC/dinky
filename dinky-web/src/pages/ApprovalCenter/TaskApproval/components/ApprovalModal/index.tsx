@@ -15,20 +15,10 @@ type ApprovalModelProps = {
   activeId: number,
   operationType: OperationType,
   onOpenChange: (open: boolean) => void;
-  handleSubmit: () => void;
+  handleSubmit: (record) => void;
 };
 
 const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const actionRef = useRef<ActionType>(); // table action
-
-  const executeAndCallbackRefresh = async (callback: () => void) => {
-    setLoading(true);
-    await callback();
-    setLoading(false);
-    actionRef.current?.reload?.();
-  };
 
   const getReviewerList = async () => {
     const reviewers = (await getData(API_CONSTANTS.GET_REVIEWERS, {tenantId: getValueFromLocalStorage(TENANT_ID)})).data;
@@ -57,35 +47,15 @@ const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
       )
     }
   };
-
-  const submitForm = async (record: ApprovalOperationInfo) => {
-    record.id = props.activeId;
-    switch (props.operationType) {
-      case OperationType.SUBMIT:
-        await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), record);
-        break;
-      case OperationType.APPROVE:
-        await handleOption(API_CONSTANTS.APPROVAL_APPROVE, l('approval.operation.approve'), record);
-        break;
-      case OperationType.WITHDRAW:
-        await handleOption(API_CONSTANTS.APPROVAL_WITHDRAW, l('approval.operation.withdraw'), record);
-        break;
-      case OperationType.REJECT:
-        await handleOption(API_CONSTANTS.APPROVAL_REJECT, l('approval.operation.reject'), record);
-        break;
-    }
-    props.onOpenChange(false);
-  };
-
   return (
     <ModalForm
       open={props.open}
       onOpenChange={props.onOpenChange}
       modalProps={{okText: props.title}}
       onFinish={async (record) => {
-        await submitForm(record);
+        record.id = props.activeId
+        await props.handleSubmit(record);
       }}
-      loading={loading}
     >
       {approvalRender()}
     </ModalForm>

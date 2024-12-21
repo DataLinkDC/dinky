@@ -43,7 +43,8 @@ export enum OperationType {
   SUBMIT = 'SUBMIT',
   WITHDRAW = 'WITHDRAW',
   APPROVE = 'APPROVE',
-  REJECT = 'REJECTED'
+  REJECT = 'REJECTED',
+  CANCEL = 'CANCEL'
 }
 
 export enum OperationStatus {
@@ -51,7 +52,8 @@ export enum OperationStatus {
   CREATED = 'CREATED',
   SUBMITTED = 'SUBMITTED',
   APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED'
+  REJECTED = 'REJECTED',
+  CANCELED = 'CANCELED'
 }
 
 

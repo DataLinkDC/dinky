@@ -10,6 +10,7 @@ import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/Approv
 import {queryList} from "@/services/api";
 import TaskInfoModal from "@/pages/ApprovalCenter/TaskApproval/components/TaskInfoModal";
 import {API_CONSTANTS} from "@/services/endpoints";
+import {handleOption} from "@/services/BusinessCrud";
 
 
 type UserFormProps = {
@@ -55,9 +56,32 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
 
   const handleWithdraw = async (id: number) => {
     await executeAndCallbackRefresh(async () => {
-      console.log(id);
+      await handleOption(API_CONSTANTS.APPROVAL_WITHDRAW, l('approval.operation.withdraw'), id);
     })
   };
+
+  const handleCancel = async (id: number) => {
+    await executeAndCallbackRefresh(async () => {
+      await handleOption(API_CONSTANTS.APPROVAL_CANCEL, l('approval.operation.withdraw'), id);
+    })
+  };
+
+  const handleApprovalEvent = async (record) => {
+    await executeAndCallbackRefresh(async () => {
+      switch (activeOperation) {
+        case OperationType.SUBMIT:
+          await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), record);
+          break;
+        case OperationType.REJECT:
+          await handleOption(API_CONSTANTS.APPROVAL_REJECT, l('approval.operation.reject'), record);
+          break;
+        case OperationType.APPROVE:
+          await handleOption(API_CONSTANTS.APPROVAL_APPROVE, l('approval.operation.approve'), record);
+          break;
+      }
+    });
+    setModalOpen(false);
+  }
 
   /**
    * render operation based on current state
@@ -78,46 +102,52 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
             {l('approval.operation.submit')}
           </Button>
         );
+        buttons.push(
+          <Button
+            size={'small'}
+            onClick={() => {
+              handleApprovalOperation(OperationType.CANCEL, entity);
+            }}
+          >
+            {l('approval.operation.cancel')}
+          </Button>
+        );
         break;
       case OperationStatus.SUBMITTED:
-        if (props.tableType == 'review') {
-          buttons.push(
-            <Button
-              size={'small'}
-              type={'primary'}
-              onClick={() => {
-                handleApprovalOperation(OperationType.APPROVE, entity);
-              }}
-            >
-              {l('approval.operation.approve')}
-            </Button>
-          );
-          buttons.push(
-            <Button
-              size={'small'}
-              type={'primary'}
-              onClick={() => {
-                handleApprovalOperation(OperationType.REJECT, entity);
-              }}
-              danger
-            >
-              {l('approval.operation.reject')}
-            </Button>
-          );
-        } else {
-          buttons.push(
-            <Button
-              size={'small'}
-              type={'primary'}
-              onClick={() => {
-                handleWithdraw(entity.id).then(r => {
-                });
-              }}
-              danger
-            >
-              {l('approval.operation.reject')}
-            </Button>)
-        }
+        buttons.push(
+          <Button
+            size={'small'}
+            type={'primary'}
+            onClick={() => {
+              handleApprovalOperation(OperationType.APPROVE, entity);
+            }}
+          >
+            {l('approval.operation.approve')}
+          </Button>
+        );
+        buttons.push(
+          <Button
+            size={'small'}
+            type={'primary'}
+            onClick={() => {
+              handleApprovalOperation(OperationType.REJECT, entity);
+            }}
+            danger
+          >
+            {l('approval.operation.reject')}
+          </Button>
+        );
+        buttons.push(
+          <Button
+            size={'small'}
+            onClick={async () => {
+              await handleWithdraw(entity.id)
+            }}
+            danger
+          >
+            {l('approval.operation.withdraw')}
+          </Button>
+        );
         break;
     }
     return (
@@ -243,6 +273,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         title={modalTitle}
         activeId={activeId}
         operationType={activeOperation}
+        handleSubmit={handleApprovalEvent}
       />
       <TaskInfoModal
         open = {taskInfoOpen}
