@@ -21,7 +21,6 @@ import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ApprovalService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TaskService;
-import org.dinky.service.UserRoleService;
 import org.dinky.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -42,13 +41,13 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
     private final TaskService taskService;
     private final UserService userService;
     private final RoleService roleService;
-    private final UserRoleService userRoleService;
     private Map<ApprovalEvent, Set<ApprovalStatus>> validPreStatusMap;
     private Map<ApprovalEvent, ApprovalStatus> operationResultMap;
 
     @Override
     public ProTableResult<Approval> getSubmittedApproval(JsonNode params) {
         Map<String, Object> paraMap = new HashMap<>();
+        // TODO 限制租户id
         paraMap.put("submitter", StpUtil.getLoginIdAsInt());
         return super.selectForProTable(params, paraMap);
     }
@@ -56,7 +55,7 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
     @Override
     public ProTableResult<Approval> getApprovalToBeReviewed(JsonNode params) {
         Map<String, Object> paraMap = new HashMap<>();
-        paraMap.put("reviewer",  StpUtil.getLoginIdAsInt());
+        paraMap.put("reviewer", StpUtil.getLoginIdAsInt());
         return super.selectForProTable(params, paraMap);
     }
 
@@ -104,7 +103,7 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         // only published task can be approved
         TaskDTO byId = taskService.getTaskInfoById(taskId);
         if (!JobLifeCycle.PUBLISH.equalsValue(byId.getStep())) {
-           return true;
+            return true;
         }
         // check approval version
         List<Approval> approvalList = baseMapper.getApprovalByTaskId(taskId);
@@ -143,7 +142,7 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
             throw new BusException("No operation permission!");
         }
         // only one approval in process check
-        if (event.equals(ApprovalEvent.SUBMIT) && !alreadyHaveOneInProcess(approval.getTaskId())) {
+        if (event.equals(ApprovalEvent.SUBMIT) && alreadyHaveOneInProcess(approval.getTaskId())) {
             throw new BusException("Already have a approval in process");
         }
         // status machine execute
@@ -193,8 +192,12 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
      * @return true if an approval is in process
      */
     private boolean alreadyHaveOneInProcess(Integer taskId) {
-        long count = baseMapper.getApprovalByTaskId(taskId).stream().filter((approval -> ApprovalStatus.isInProcess(ApprovalStatus.fromValue(approval.getStatus())))).count();
-        return count > 0;
+        for (Approval approval : baseMapper.getApprovalByTaskId(taskId)) {
+            if (ApprovalStatus.isInProcess(ApprovalStatus.valueOf(approval.getStatus()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

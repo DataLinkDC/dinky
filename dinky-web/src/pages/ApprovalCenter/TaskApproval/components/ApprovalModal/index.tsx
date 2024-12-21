@@ -1,5 +1,5 @@
 import {ModalForm, ProFormSelect, ProFormTextArea} from "@ant-design/pro-components";
-import React from "react";
+import React, {useRef, useState} from "react";
 import {ApprovalOperationInfo, OperationType} from "@/types/ApprovalCenter/data.d";
 import {l} from "@/utils/intl";
 import {API_CONSTANTS} from "@/services/endpoints";
@@ -7,6 +7,7 @@ import {getValueFromLocalStorage} from "@/utils/function";
 import {TENANT_ID} from "@/services/constants";
 import {getData} from "@/services/api";
 import {handleOption} from "@/services/BusinessCrud";
+import {ActionType} from "@ant-design/pro-table";
 
 type ApprovalModelProps = {
   open: boolean,
@@ -14,9 +15,20 @@ type ApprovalModelProps = {
   activeId: number,
   operationType: OperationType,
   onOpenChange: (open: boolean) => void;
+  handleSubmit: () => void;
 };
 
 const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const actionRef = useRef<ActionType>(); // table action
+
+  const executeAndCallbackRefresh = async (callback: () => void) => {
+    setLoading(true);
+    await callback();
+    setLoading(false);
+    actionRef.current?.reload?.();
+  };
 
   const getReviewerList = async () => {
     const reviewers = (await getData(API_CONSTANTS.GET_REVIEWERS, {tenantId: getValueFromLocalStorage(TENANT_ID)})).data;
@@ -73,6 +85,7 @@ const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
       onFinish={async (record) => {
         await submitForm(record);
       }}
+      loading={loading}
     >
       {approvalRender()}
     </ModalForm>

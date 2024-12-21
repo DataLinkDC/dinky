@@ -315,4 +315,6 @@ export enum API_CONSTANTS {
   APPROVAL_APPROVE = '/api/approval/approve',
   APPROVAL_WITHDRAW = '/api/approval/withdraw',
   APPROVAL_CANCEL = '/api/approval/cancel',
+  GET_SUBMITTED_APPROVAL = '/api/approval/getSubmittedApproval',
+  GET_REVIEW_REQUIRED_APPROVAL = '/api/approval/getApprovalToBeReviewed'
 }

@@ -25,75 +25,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   const [activeOperation, setActiveOperationType] = useState<OperationType>(OperationType.UNKNOWN);
   const [activeId, setActiveId] = useState(0);
   const [modalTitle, setModalTitle] = useState('');
-  const [reviewerList, setReviewerList] = useState([]);
   const [taskInfoOpen, setTaskInfoOpen] = useState(false);
-
-  // init approval list
-  useEffect(() => {
-    // TODO get from backend
-    const testApprovalList: ApprovalBasicInfo[] = [];
-
-    const createStatusApproval: ApprovalBasicInfo = {
-      id: 11,
-      taskId: 1,
-      previousTaskVersion: 1,
-      currentTaskVersion: 2,
-      status: OperationStatus.CREATED,
-      submitterName: 'test',
-      reviewerName: 'test',
-      submitterComment: 'Comment',
-      reviewerComment: 'Comment',
-      createTime: '2024-12-11',
-      updateTime: '2024-12-11'
-    };
-    testApprovalList.push(createStatusApproval);
-    const submitStatusApproval: ApprovalBasicInfo = {
-      id: 1,
-      taskId: 1,
-      previousTaskVersion: 1,
-      currentTaskVersion: 2,
-      status: OperationStatus.SUBMITTED,
-      submitterName: 'test',
-      reviewerName: 'test',
-      submitterComment: 'Comment',
-      reviewerComment: 'Comment',
-      createTime: '2024-12-11',
-      updateTime: '2024-12-11'
-    };
-    testApprovalList.push(submitStatusApproval);
-    const approvedStatusApproval: ApprovalBasicInfo = {
-      id: 12,
-      taskId: 1,
-      previousTaskVersion: 1,
-      currentTaskVersion: 2,
-      status: OperationStatus.APPROVED,
-      submitterName: 'test',
-      reviewerName: 'test',
-      submitterComment: 'Comment',
-      reviewerComment: 'Comment',
-      createTime: '2024-12-11',
-      updateTime: '2024-12-11'
-    };
-    testApprovalList.push(approvedStatusApproval);
-    const rejectedStatusApproval: ApprovalBasicInfo = {
-      id: 13,
-      taskId: 1,
-      previousTaskVersion: 1,
-      currentTaskVersion: 2,
-      status: OperationStatus.REJECTED,
-      submitterName: 'test',
-      reviewerName: 'test',
-      submitterComment: 'Comment',
-      reviewerComment: 'Comment',
-      createTime: '2024-12-11',
-      updateTime: '2024-12-11'
-    };
-    testApprovalList.push(rejectedStatusApproval);
-
-    setApprovalListState((prevState) => ({...prevState, approvalList: testApprovalList}));
-    setReviewerList([{1: 'admin'}, {2: 'reviewer'}]);
-  }, []);
-
   const actionRef = useRef<ActionType>(); // table action
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
@@ -119,12 +51,6 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     }
 
     setModalOpen(true);
-  };
-
-  const handleModalSubmit = async (info: ApprovalOperationInfo, type: OperationType) => {
-    await executeAndCallbackRefresh(async () => {
-      console.log(type + ' ' + info);
-    })
   };
 
   const handleWithdraw = async (id: number) => {
@@ -317,7 +243,6 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         title={modalTitle}
         activeId={activeId}
         operationType={activeOperation}
-        onFinish={handleModalSubmit}
       />
       <TaskInfoModal
         open = {taskInfoOpen}
@@ -329,10 +254,9 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         options={false}
         rowKey={(record) => record.id}
         loading={approvalListState.loading}
-        dataSource={approvalListState.approvalList}
         columns={approvalColumns}
         request={(params, sorter, filter: any) =>
-          queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })
+          queryList(props.tableType === 'review' ? API_CONSTANTS.GET_REVIEW_REQUIRED_APPROVAL : API_CONSTANTS.GET_SUBMITTED_APPROVAL, { ...params, sorter, filter })
         }
       />
     </>

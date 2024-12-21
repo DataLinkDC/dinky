@@ -40,4 +40,51 @@
         from dinky_approval
         where task_id = #{taskId}
     </select>
+
+    <select id="selectForProTable" resultType="org.dinky.data.model.Approval">
+        select a.*
+        from dinky_approval a
+        <where>
+            1=1
+            <if test='param.id!=null and param.id!=""'>
+                and a.id = #{param.id}
+            </if>
+            <if test='param.task_id!=null and param.task_id!=""'>
+                and a.task_id = #{param.task_id}
+            </if>
+            <if test='param.previous_task_version!=null and param.previous_task_version!=""'>
+                and a.previous_task_version = #{param.previous_task_version}
+            </if>
+            <if test='param.current_task_version!=null and param.current_task_version!=""'>
+                and a.current_task_version = #{param.current_task_version}
+            </if>
+            <if test='param.status!=null and param.status!=""'>
+                and a.status = #{param.status}
+            </if>
+            <if test='param.submitter!=null and param.submitter!=""'>
+                and a.submitter = #{param.submitter}
+            </if>
+            <if test='param.submitter_comment!=null and param.submitter_comment!=""'>
+                and a.submitter_comment like concat('%',#{param.submitter_comment},'%')
+            </if>
+            <if test='param.reviewer!=null and param.reviewer!=""'>
+                and a.reviewer = #{param.reviewer}
+            </if>
+            <if test='param.reviewer_comment!=null and param.reviewer_comment!=""'>
+                and a.reviewer_comment like concat('%',#{param.reviewer_comment},'%')
+            </if>
+            <if test='param.createTime!=null and param.createTime!=""'>
+                and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='param.updateTime!=null and param.updateTime!=""'>
+                and a.update_time <![CDATA[>=]]> str_to_date( #{param.updateTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
 </mapper>

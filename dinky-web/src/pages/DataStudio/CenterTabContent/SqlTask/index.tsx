@@ -113,6 +113,7 @@ import PushDolphin from '@/pages/DataStudio/CenterTabContent/SqlTask/PushDolphin
 import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
 import {OperationType} from "@/types/ApprovalCenter/data.d";
 import {UserBaseInfo} from "@/types/AuthCenter/data";
+import {getAllConfig} from "@/pages/Metrics/service";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -220,11 +221,13 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   });
 
   const [approvalState, setApprovalState] = useState<{
-    needApproval: boolean;
+    enableApproval: boolean,
+    currentTaskNeedApproval: boolean;
     openSubmitModal: boolean;
     currentApprovalId: number;
   }>({
-    needApproval: false,
+    enableApproval: false,
+    currentTaskNeedApproval: false,
     openSubmitModal: false,
     currentApprovalId: -1
   })
@@ -278,12 +281,22 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         }
       }
     }
-    // check if current task need approve
-    const needApproval = await queryDataByParams(API_CONSTANTS.TASK_NEED_APPROVE, { taskId: currentState.taskId });
-    console.log(needApproval)
-    if (needApproval) {
-      setApprovalState(prevState => ({...prevState, needApproval: true}));
+    // check approval config
+    const allConfig = await getAllConfig();
+    for (const config of allConfig.data.approval) {
+      if (config.key === 'sys.approval.settings.enableTaskSubmitReview') {
+        if (config.value) {
+          // enable approval submit button
+          setApprovalState(prevState => ({...prevState, enableApproval: true}));
+          // check if current task need approve
+          const needApproval = await queryDataByParams(API_CONSTANTS.TASK_NEED_APPROVE, { taskId: currentState.taskId });
+          if (needApproval) {
+            setApprovalState(prevState => ({...prevState, currentTaskNeedApproval: true}));
+          }
+        }
+      }
     }
+
     setLoading(false);
   }, []);
 
@@ -742,8 +755,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     await handlePushDolphinCancel();
   };
 
-  const handleApprovalCheckBeforeSubmit = async () => {
-    if (approvalState.needApproval) {
+  const handleOpenApprovalModal = async () => {
       // publish first
       if (JOB_LIFE_CYCLE.PUBLISH != currentState.step) {
         await handleChangeJobLife();
@@ -757,10 +769,6 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       // open submit modal
       setApprovalState((prevState) => ({...prevState, currentApprovalId: res.data.id}));
       handleApprovalModalOpenChange(true);
-    } else {
-      // submit if task don't need approval
-      await handleSubmit();
-    }
   }
 
   const handleApprovalModalOpenChange = (open: boolean) => {
@@ -789,6 +797,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         activeId={approvalState.currentApprovalId}
         operationType={OperationType.SUBMIT}
         onOpenChange={handleApprovalModalOpenChange}
+        handleSubmit={async () => {
+          await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), approvalState.currentApprovalId);
+        }}
       />
       <Flex vertical style={{ height: 'inherit', width: '100%' }} ref={containerRef}>
         <ProForm
@@ -922,7 +933,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               color={'green'}
               desc={l('pages.datastudio.editor.exec')}
               icon={<CaretRightOutlined />}
-              onClick={handleApprovalCheckBeforeSubmit}
+              onClick={handleSubmit}
               hotKey={{
                 ...hotKeyConfig,
                 hotKeyDesc: 'Shift+F10',
@@ -1033,6 +1044,13 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 hotKeyHandle: (e: KeyboardEvent) => e.ctrlKey && e.key === 'E'
               }}
               onClick={handlePushDolphinOpen}
+            />
+            <RunToolBarButton
+              isShow={approvalState.enableApproval}
+              showDesc={showDesc}
+              desc={l('approval.operation.create')}
+              icon={<ApprovalIcon/>}
+              onClick={handleOpenApprovalModal}
             />
           </Flex>
         </ProForm>

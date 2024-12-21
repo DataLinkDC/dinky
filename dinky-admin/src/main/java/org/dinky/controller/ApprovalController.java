@@ -36,13 +36,13 @@ public class ApprovalController {
 
     private final ApprovalService approvalService;
 
-    @GetMapping("/getSubmittedApproval")
+    @PostMapping("/getSubmittedApproval")
     @ApiOperation("Get all approvals submitted by current user")
     ProTableResult<Approval> getSubmittedApproval(@RequestBody JsonNode para) {
         return approvalService.getSubmittedApproval(para);
     }
 
-    @GetMapping("/getApprovalToBeReviewed")
+    @PostMapping("/getApprovalToBeReviewed")
     @ApiOperation("Get all approvals current user is required for review")
     ProTableResult<Approval> getApprovalToBeReviewed(@RequestBody JsonNode para) {
         return approvalService.getApprovalToBeReviewed(para);
