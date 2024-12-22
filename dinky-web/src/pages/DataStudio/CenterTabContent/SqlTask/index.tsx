@@ -716,7 +716,9 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     setPushDolphinState((prevState) => ({ ...prevState, loading: true }));
     await handleOption(
       API_CONSTANTS.SCHEDULER_CREATE_OR_UPDATE_TASK_DEFINITION,
-      `推送任务[${currentState.name}]至 DolphinScheduler`,
+      l('datastudio.header.pushdolphin.title', '', {
+        name: currentState?.name ?? ''
+      }),
       value
     );
     await handlePushDolphinCancel();
