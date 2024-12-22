@@ -1,8 +1,8 @@
-﻿import { Col, Descriptions, DescriptionsProps, Modal, Row, Table, Tabs, Typography } from "antd";
+﻿import { Col, Descriptions, DescriptionsProps, Modal, Row, Tabs, Typography } from "antd";
 import { l } from "@/utils/intl";
 import styles from "@/pages/DataStudio/CenterTabContent/index.less";
 import { DiffEditor } from "@monaco-editor/react";
-import { DIFF_EDITOR_PARAMS, PARAM_DIFF_TABLE_COL } from "@/pages/DataStudio/CenterTabContent/SqlTask/constants";
+import { DIFF_EDITOR_PARAMS } from "@/pages/DataStudio/CenterTabContent/SqlTask/constants";
 import { LoadCustomEditorLanguage } from "@/components/CustomEditor/languages";
 import { convertCodeEditTheme } from "@/utils/function";
 import React from "react";
@@ -14,8 +14,6 @@ type TaskInfoProps = {
   taskInfo: TaskState;
   preVersionStatement: string;
   curVersionStatement: string;
-  preVersionParams: [];
-  curVersionParams: [];
 }
 
 const {Text, Link} = Typography;

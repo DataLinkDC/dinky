@@ -50,9 +50,6 @@ CREATE TABLE IF NOT EXISTS `dinky_approval`
   ROW_FORMAT = Dynamic;
 
 INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`)
-VALUES (176, -1, '审批中心', '/approval', null, 'approval', 'LockOutlined', 'M', 0, 169, '2024-12-10 12:13:00', '2024-12-10 12:13:00', null);
-
-INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`)
-VALUES (177, 176, '任务中心', '/approval/taskApproval', './ApprovalCenter/TaskApproval', 'approval:taskApproval', 'CarryOutlined', 'C', 0, 170, '2024-12-10 12:13:00', '2024-12-10 12:13:00', null);
+VALUES (176, -1, '审批发布', '/auth/approval', './AuthCenter/Approval', 'auth:approval', 'LockOutlined', 'C', 0, 169, '2024-12-10 12:13:00', '2024-12-10 12:13:00', null);
 
 SET FOREIGN_KEY_CHECKS = 1;

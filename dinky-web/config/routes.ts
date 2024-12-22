@@ -207,48 +207,59 @@ export default [
     name: 'auth',
     icon: 'SafetyCertificateOutlined',
     path: '/auth',
-    access: 'canAdmin',
     footerRender: false,
     routes: [
       {
         path: '/auth',
-        redirect: '/auth/user'
+        redirect: '/auth/approval'
       },
       {
         path: '/auth/user',
         name: 'user',
+        access: 'canAdmin',
         icon: 'UserOutlined',
         component: './AuthCenter/User'
       },
       {
         path: '/auth/role',
         name: 'role',
+        access: 'canAdmin',
         icon: 'TeamOutlined',
         component: './AuthCenter/Role'
       },
       {
         path: '/auth/menu',
         name: 'menu',
+        access: 'canAdmin',
         icon: 'MenuOutlined',
         component: './AuthCenter/Menu'
       },
       {
         path: '/auth/rowpermissions',
         name: 'rowpermissions',
+        access: 'canAdmin',
         icon: 'SafetyCertificateOutlined',
         component: './AuthCenter/RowPermissions'
       },
       {
         path: '/auth/tenant',
         name: 'tenant',
+        access: 'canAdmin',
         icon: 'SecurityScanOutlined',
         component: './AuthCenter/Tenant'
       },
       {
         path: '/auth/token',
         name: 'token',
+        access: 'canAdmin',
         icon: 'SecurityScanOutlined',
         component: './AuthCenter/Token'
+      },
+      {
+        path: '/auth/approval',
+        name: 'approval',
+        icon: 'LockOutlined',
+        component: './AuthCenter/Approval'
       }
     ]
   },
@@ -286,25 +297,6 @@ export default [
         name: 'classloaderjars',
         icon: 'CodepenOutlined',
         component: './SettingCenter/ClassLoaderJars'
-      }
-    ]
-  },
-
-  {
-    name: 'approval',
-    icon: 'LockOutlined',
-    path: '/approval',
-    footerRender: false,
-    routes: [
-      {
-        path: '/approval',
-        redirect: '/approval/taskApproval'
-      },
-      {
-        path: '/approval/taskApproval',
-        name: 'taskApproval',
-        icon: 'CarryOutlined',
-        component: './ApprovalCenter/TaskApproval'
       }
     ]
   },

@@ -78,6 +78,7 @@ export default {
   'menu.auth.namespace': 'NameSpace',
   'menu.auth.tenant': 'Tenant',
   'menu.auth.token': 'Token',
+  'menu.auth.approval': 'Approval',
   'menu.settings': 'Setting Center',
   'menu.settings.globalsetting': 'Global Settings',
   'menu.settings.systemlog': 'System Log',

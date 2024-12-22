@@ -78,6 +78,7 @@ export default {
   'menu.auth.namespace': '命名空间',
   'menu.auth.tenant': '租户',
   'menu.auth.token': '令牌',
+  'menu.auth.approval': '审核发布',
   'menu.settings': '配置中心',
   'menu.settings.globalsetting': '全局配置',
   'menu.settings.systemlog': '系统日志',

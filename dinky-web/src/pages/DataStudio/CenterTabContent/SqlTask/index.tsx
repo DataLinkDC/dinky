@@ -93,7 +93,7 @@ import { Jobs, LineageDetailInfo } from '@/types/DevOps/data';
 import { lockTask, matchLanguage } from '@/pages/DataStudio/function';
 import {ApprovalIcon, PushpinIcon} from '@/components/Icons/CustomIcons';
 import { assert, isSql } from '@/pages/DataStudio/utils';
-import {DIALECT, TENANT_ID} from '@/services/constants';
+import { DIALECT } from '@/services/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
@@ -110,9 +110,8 @@ import {
   DolphinTaskMinInfo
 } from '@/types/Studio/data';
 import PushDolphin from '@/pages/DataStudio/CenterTabContent/SqlTask/PushDolphin';
-import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
+import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
 import {OperationType} from "@/types/ApprovalCenter/data.d";
-import {UserBaseInfo} from "@/types/AuthCenter/data";
 import {getAllConfig} from "@/pages/Metrics/service";
 
 export type FlinkSqlProps = {

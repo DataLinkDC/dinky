@@ -6,14 +6,13 @@ import { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Flex, Tag } from "antd";
 import { l } from "@/utils/intl";
 import { ProTable } from "@ant-design/pro-components";
-import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
 import { queryList } from "@/services/api";
-import TaskInfoModal from "@/pages/ApprovalCenter/TaskApproval/components/TaskInfoModal";
 import { API_CONSTANTS } from "@/services/endpoints";
 import { handleOption, queryDataByParams } from "@/services/BusinessCrud";
-import { TaskInfo } from "@/types/Studio/data";
 import { getTaskDetails } from "@/pages/DataStudio/service";
 import { TaskState } from "@/pages/DataStudio/type";
+import TaskInfoModal from "@/pages/AuthCenter/Approval/components/TaskInfoModal";
+import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
 
 
 type UserFormProps = {
@@ -31,8 +30,6 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   const [taskInfo, setTaskInfo] = useState<TaskState>({});
   const [preVersionStatement, setPreVersionStatement] = useState<string>("");
   const [curVersionStatement, setCurVersionStatement] = useState<string>("");
-  const [preVersionParams, setPreVersionParams] = useState<[]>([]);
-  const [curVersionParams, setCurVersionParams] = useState<[]>([]);
 
   const [modalTitle, setModalTitle] = useState('');
   const [taskInfoOpen, setTaskInfoOpen] = useState(false);
@@ -318,8 +315,6 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         taskInfo={taskInfo}
         preVersionStatement={preVersionStatement}
         curVersionStatement={curVersionStatement}
-        preVersionParams={preVersionParams}
-        curVersionParams={curVersionParams}
       />
       <ProTable<ApprovalBasicInfo>
         search={{filterType: 'query'}}
