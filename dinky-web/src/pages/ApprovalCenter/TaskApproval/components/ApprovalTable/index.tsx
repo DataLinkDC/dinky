@@ -1,16 +1,16 @@
-import {ApprovalBasicInfo, ApprovalOperationInfo, OperationStatus, OperationType} from "@/types/ApprovalCenter/data.d";
-import React, {useEffect, useRef, useState} from "react";
-import {ApprovalListState} from "@/types/ApprovalCenter/state.d";
-import {InitApprovalList} from "@/types/ApprovalCenter/init.d";
-import {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button, Flex, Tag} from "antd";
-import {l} from "@/utils/intl";
-import {ProTable} from "@ant-design/pro-components";
+import { ApprovalBasicInfo, OperationStatus, OperationType } from "@/types/ApprovalCenter/data.d";
+import React, { useRef, useState } from "react";
+import { ApprovalListState } from "@/types/ApprovalCenter/state.d";
+import { InitApprovalList } from "@/types/ApprovalCenter/init.d";
+import { ActionType, ProColumns } from "@ant-design/pro-table";
+import { Button, Flex, Tag } from "antd";
+import { l } from "@/utils/intl";
+import { ProTable } from "@ant-design/pro-components";
 import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/ApprovalModal";
-import {queryList} from "@/services/api";
+import { queryList } from "@/services/api";
 import TaskInfoModal from "@/pages/ApprovalCenter/TaskApproval/components/TaskInfoModal";
-import {API_CONSTANTS} from "@/services/endpoints";
-import {handleOption} from "@/services/BusinessCrud";
+import { API_CONSTANTS } from "@/services/endpoints";
+import { handleOption } from "@/services/BusinessCrud";
 
 
 type UserFormProps = {
@@ -32,8 +32,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   const executeAndCallbackRefresh = async (callback: () => void) => {
     setApprovalListState((prevState) => ({...prevState, loading: true}));
     await callback();
+    actionRef.current?.reload();
     setApprovalListState((prevState) => ({...prevState, loading: false}));
-    actionRef.current?.reload?.();
   };
 
   const handleApprovalOperation = (operation: OperationType, entity: ApprovalBasicInfo) => {
@@ -54,17 +54,25 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     setModalOpen(true);
   };
 
-  const handleWithdraw = async (id: number) => {
+  const handleWithdraw = async (entity: ApprovalBasicInfo) => {
     await executeAndCallbackRefresh(async () => {
-      await handleOption(API_CONSTANTS.APPROVAL_WITHDRAW, l('approval.operation.withdraw'), id);
+      await handleOption(API_CONSTANTS.APPROVAL_WITHDRAW, l('approval.operation.withdraw'), entity);
     })
   };
 
-  const handleCancel = async (id: number) => {
+  const handleCancel = async (entity: ApprovalBasicInfo) => {
     await executeAndCallbackRefresh(async () => {
-      await handleOption(API_CONSTANTS.APPROVAL_CANCEL, l('approval.operation.withdraw'), id);
+      await handleOption(API_CONSTANTS.APPROVAL_CANCEL, l('approval.operation.withdraw'), entity);
     })
   };
+
+  const queryApproval = async (params, sorter, filter: any) => {
+    return await queryList(props.tableType === 'review' ? API_CONSTANTS.GET_REVIEW_REQUIRED_APPROVAL : API_CONSTANTS.GET_SUBMITTED_APPROVAL, {
+      ...params,
+      sorter,
+      filter
+    });
+  }
 
   const handleApprovalEvent = async (record) => {
     await executeAndCallbackRefresh(async () => {
@@ -105,8 +113,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         buttons.push(
           <Button
             size={'small'}
-            onClick={() => {
-              handleApprovalOperation(OperationType.CANCEL, entity);
+            onClick={async () => {
+              await handleCancel(entity);
             }}
           >
             {l('approval.operation.cancel')}
@@ -141,7 +149,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
           <Button
             size={'small'}
             onClick={async () => {
-              await handleWithdraw(entity.id)
+              await handleWithdraw(entity)
             }}
             danger
           >
@@ -216,7 +224,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     {
       title: l('approval.taskInfo'),
       valueType: 'option',
-      render: (_:any, record:ApprovalBasicInfo) => renderInfo(record)
+      render: (_: any, record: ApprovalBasicInfo) => renderInfo(record)
     },
     {
       title: l('approval.status'),
@@ -276,8 +284,10 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         handleSubmit={handleApprovalEvent}
       />
       <TaskInfoModal
-        open = {taskInfoOpen}
-        onCancel={() => {setTaskInfoOpen(false)}}
+        open={taskInfoOpen}
+        onCancel={() => {
+          setTaskInfoOpen(false)
+        }}
       />
       <ProTable<ApprovalBasicInfo>
         search={{filterType: 'query'}}
@@ -286,9 +296,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         rowKey={(record) => record.id}
         loading={approvalListState.loading}
         columns={approvalColumns}
-        request={(params, sorter, filter: any) =>
-          queryList(props.tableType === 'review' ? API_CONSTANTS.GET_REVIEW_REQUIRED_APPROVAL : API_CONSTANTS.GET_SUBMITTED_APPROVAL, { ...params, sorter, filter })
-        }
+        request={queryApproval}
+        actionRef={actionRef}
       />
     </>
   );
