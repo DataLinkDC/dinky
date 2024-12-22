@@ -10,7 +10,10 @@ import ApprovalModal from "@/pages/ApprovalCenter/TaskApproval/components/Approv
 import { queryList } from "@/services/api";
 import TaskInfoModal from "@/pages/ApprovalCenter/TaskApproval/components/TaskInfoModal";
 import { API_CONSTANTS } from "@/services/endpoints";
-import { handleOption } from "@/services/BusinessCrud";
+import { handleOption, queryDataByParams } from "@/services/BusinessCrud";
+import { TaskInfo } from "@/types/Studio/data";
+import { getTaskDetails } from "@/pages/DataStudio/service";
+import { TaskState } from "@/pages/DataStudio/type";
 
 
 type UserFormProps = {
@@ -25,6 +28,12 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeOperation, setActiveOperationType] = useState<OperationType>(OperationType.UNKNOWN);
   const [activeId, setActiveId] = useState(0);
+  const [taskInfo, setTaskInfo] = useState<TaskState>({});
+  const [preVersionStatement, setPreVersionStatement] = useState<string>("");
+  const [curVersionStatement, setCurVersionStatement] = useState<string>("");
+  const [preVersionParams, setPreVersionParams] = useState<[]>([]);
+  const [curVersionParams, setCurVersionParams] = useState<[]>([]);
+
   const [modalTitle, setModalTitle] = useState('');
   const [taskInfoOpen, setTaskInfoOpen] = useState(false);
   const actionRef = useRef<ActionType>(); // table action
@@ -72,6 +81,23 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
       sorter,
       filter
     });
+  }
+
+  const queryTaskDiffInfo = async (taskId: number, preVersionId: number, curVersionId: number) => {
+    const taskInfo = await getTaskDetails(taskId);
+    setTaskInfo(taskInfo);
+
+    // when task submit first no previous version exits
+    setPreVersionStatement("");
+    const versions = await queryDataByParams(API_CONSTANTS.GET_JOB_VERSION, {taskId: taskId});
+
+    versions.forEach((version) => {
+      if (version.versionId == preVersionId) {
+        setPreVersionStatement(version.statement);
+      } else if (version.versionId == curVersionId) {
+        setCurVersionStatement(version.statement);
+      }
+    })
   }
 
   const handleApprovalEvent = async (record) => {
@@ -171,7 +197,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     return (
       <>
         <Button
-          onClick={() => {
+          onClick={async () => {
+            await queryTaskDiffInfo(entity.taskId, entity.previousTaskVersion, entity.currentTaskVersion);
             setTaskInfoOpen(true);
             setActiveId(entity.id);
           }}
@@ -288,6 +315,11 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         onCancel={() => {
           setTaskInfoOpen(false)
         }}
+        taskInfo={taskInfo}
+        preVersionStatement={preVersionStatement}
+        curVersionStatement={curVersionStatement}
+        preVersionParams={preVersionParams}
+        curVersionParams={curVersionParams}
       />
       <ProTable<ApprovalBasicInfo>
         search={{filterType: 'query'}}

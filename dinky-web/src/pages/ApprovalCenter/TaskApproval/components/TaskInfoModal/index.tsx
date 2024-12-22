@@ -1,18 +1,24 @@
-﻿import {Col, Descriptions, DescriptionsProps, Modal, Row, Table, Tabs, Typography} from "antd";
-import {l} from "@/utils/intl";
+﻿import { Col, Descriptions, DescriptionsProps, Modal, Row, Table, Tabs, Typography } from "antd";
+import { l } from "@/utils/intl";
 import styles from "@/pages/DataStudio/CenterTabContent/index.less";
-import {DiffEditor} from "@monaco-editor/react";
-import {DIFF_EDITOR_PARAMS, PARAM_DIFF_TABLE_COL} from "@/pages/DataStudio/CenterTabContent/SqlTask/constants";
-import {LoadCustomEditorLanguage} from "@/components/CustomEditor/languages";
-import {convertCodeEditTheme} from "@/utils/function";
+import { DiffEditor } from "@monaco-editor/react";
+import { DIFF_EDITOR_PARAMS, PARAM_DIFF_TABLE_COL } from "@/pages/DataStudio/CenterTabContent/SqlTask/constants";
+import { LoadCustomEditorLanguage } from "@/components/CustomEditor/languages";
+import { convertCodeEditTheme } from "@/utils/function";
 import React from "react";
+import { TaskState } from "@/pages/DataStudio/type";
 
 type TaskInfoProps = {
   open: boolean;
   onCancel: () => void;
+  taskInfo: TaskState;
+  preVersionStatement: string;
+  curVersionStatement: string;
+  preVersionParams: [];
+  curVersionParams: [];
 }
 
-const { Text, Link } = Typography;
+const {Text, Link} = Typography;
 
 const TaskInfoModal = (props: TaskInfoProps) => {
   const renderTaskInfo = () => {
@@ -20,23 +26,28 @@ const TaskInfoModal = (props: TaskInfoProps) => {
       {
         key: '1',
         label: '作业id',
-        children: <p>4</p>
-      },
-      {
-        key: '4',
-        label: '作业类型',
-        children: <p>Flinksql</p>
+        children: <p>{props.taskInfo.taskId}</p>
       },
       {
         key: '2',
-        label: '作业描述',
-        children: <p>这是一个测试上线的作业</p>
+        label: '作业名称',
+        children: <p>{props.taskInfo.name}</p>
       },
       {
         key: '3',
+        label: '作业类型',
+        children: <p>{props.taskInfo.dialect}</p>
+      },
+      {
+        key: '4',
+        label: '环境id',
+        children: <p>{props.taskInfo.envId}</p>
+      },
+      {
+        key: '5',
         label: '负责人',
-        children: <p>Mactavish Cui</p>
-      }
+        children: <p>{props.taskInfo.firstLevelOwner}</p>
+      },
     ];
 
     return (
@@ -56,11 +67,6 @@ const TaskInfoModal = (props: TaskInfoProps) => {
                 key: '1',
                 label: l('pages.datastudio.sql.sqldiff.title'),
                 children: renderStatementDiff()
-              },
-              {
-                key: '',
-                label: l('pages.datastudio.sql.paramdiff.title'),
-                children: renderParamDiff()
               }
             ]
           }
@@ -84,11 +90,11 @@ const TaskInfoModal = (props: TaskInfoProps) => {
           </Row>
           <DiffEditor
             {...DIFF_EDITOR_PARAMS}
-            language={'flinksql'}
+            language={props.taskInfo.dialect}
             // 挂载前加载语言 | Load language before mounting
             beforeMount={(monaco) => LoadCustomEditorLanguage(monaco.languages, monaco.editor)}
-            original={'select * from \n tableA'}
-            modified={'select * from \n tableB'}
+            original={props.preVersionStatement}
+            modified={props.curVersionStatement}
             theme={convertCodeEditTheme()}
           />
         </div>
@@ -96,19 +102,9 @@ const TaskInfoModal = (props: TaskInfoProps) => {
     );
   };
 
-  // Render the parameter diff section
-  const renderParamDiff = () => {
-    return (
-      <div className={styles.diff_content}>
-        {/*<Table size={'small'} dataSource={paramDiff} columns={PARAM_DIFF_TABLE_COL} />*/}
-        <Table size={'small'} columns={PARAM_DIFF_TABLE_COL}/>
-      </div>
-    );
-  };
-
   return (
     <>
-      <Modal open = {props.open} onCancel={props.onCancel} width={'75%'}>
+      <Modal open={props.open} onCancel={props.onCancel} width={'75%'}>
         {renderTaskInfo()}
         {renderVersionCompare()}
       </Modal>
