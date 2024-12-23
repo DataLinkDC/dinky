@@ -478,6 +478,7 @@ public enum Status {
     SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW_NOTE(209, "sys.approval.settings.enforceCrossReview.note"),
     SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES(210, "sys.approval.settings.taskReviewerRoles"),
     SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES_NOTE(211, "sys.approval.settings.taskReviewerRoles.note"),
+    SYS_APPROVAL_TASK_NOT_APPROVED(212, "sys.approval.taskNotApproved"),
     ;
     private final int code;
     private final String key;

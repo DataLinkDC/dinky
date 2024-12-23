@@ -797,7 +797,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         operationType={OperationType.SUBMIT}
         onOpenChange={handleApprovalModalOpenChange}
         handleSubmit={async () => {
-          await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), approvalState.currentApprovalId);
+          await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), { id: approvalState.currentApprovalId });
+          setApprovalState(prevState => ({...prevState, openSubmitModal: false}))
         }}
       />
       <Flex vertical style={{ height: 'inherit', width: '100%' }} ref={containerRef}>
