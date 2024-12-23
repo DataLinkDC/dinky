@@ -1,5 +1,5 @@
 import { ApprovalBasicInfo, OperationStatus, OperationType } from "@/types/ApprovalCenter/data.d";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ApprovalListState } from "@/types/ApprovalCenter/state.d";
 import { InitApprovalList } from "@/types/ApprovalCenter/init.d";
 import { ActionType, ProColumns } from "@ant-design/pro-table";
@@ -9,10 +9,13 @@ import { ProTable } from "@ant-design/pro-components";
 import { queryList } from "@/services/api";
 import { API_CONSTANTS } from "@/services/endpoints";
 import { handleOption, queryDataByParams } from "@/services/BusinessCrud";
-import { getTaskDetails } from "@/pages/DataStudio/service";
+import { getTaskDetails, getUserData } from "@/pages/DataStudio/service";
 import { TaskState } from "@/pages/DataStudio/type";
 import TaskInfoModal from "@/pages/AuthCenter/Approval/components/TaskInfoModal";
 import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
+import { useAsyncEffect } from "ahooks";
+import { getValueFromLocalStorage } from "@/utils/function";
+import { TENANT_ID } from "@/services/constants";
 
 
 type UserFormProps = {
@@ -35,6 +38,16 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   const [taskInfoOpen, setTaskInfoOpen] = useState(false);
   const actionRef = useRef<ActionType>(); // table action
 
+  const userMap: Map<number, string> = new Map();
+
+  useAsyncEffect(async () => {
+    const usersRes = await queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, {id: getValueFromLocalStorage(TENANT_ID)});
+    usersRes.users.forEach((user) => {
+      userMap.set(user.id, user.username);
+    })
+    console.log(userMap)
+  }, [])
+
   const executeAndCallbackRefresh = async (callback: () => void) => {
     setApprovalListState((prevState) => ({...prevState, loading: true}));
     await callback();
@@ -56,7 +69,6 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         setModalTitle(l('approval.operation.approve'));
         break;
     }
-
     setModalOpen(true);
   };
 
@@ -68,16 +80,23 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
 
   const handleCancel = async (entity: ApprovalBasicInfo) => {
     await executeAndCallbackRefresh(async () => {
-      await handleOption(API_CONSTANTS.APPROVAL_CANCEL, l('approval.operation.withdraw'), entity);
+      await handleOption(API_CONSTANTS.APPROVAL_CANCEL, l('approval.operation.cancel'), entity);
     })
   };
 
   const queryApproval = async (params, sorter, filter: any) => {
-    return await queryList(props.tableType === 'review' ? API_CONSTANTS.GET_REVIEW_REQUIRED_APPROVAL : API_CONSTANTS.GET_SUBMITTED_APPROVAL, {
+    const queryRes = await queryList(props.tableType === 'review' ? API_CONSTANTS.GET_REVIEW_REQUIRED_APPROVAL : API_CONSTANTS.GET_SUBMITTED_APPROVAL, {
       ...params,
       sorter,
       filter
     });
+    const convertedQueryRes = [];
+    queryRes.data.forEach((approval) => {
+      console.log(userMap)
+      convertedQueryRes.push({...approval, submitterName: userMap.get(approval.submitter), reviewerName: userMap.get(approval.reviewer)})
+    })
+    console.log(convertedQueryRes)
+    return {...queryRes, data: convertedQueryRes};
   }
 
   const queryTaskDiffInfo = async (taskId: number, preVersionId: number, curVersionId: number) => {
@@ -222,6 +241,9 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     },
     REJECTED: {
       text: <Tag color={'red'}>{l('approval.status.rejected')}</Tag>
+    },
+    CANCELED: {
+      text: <Tag color={'gray'}>{l('approval.status.canceled')}</Tag>
     },
   };
 

@@ -215,7 +215,7 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         //operation result
         operationResultMap = new HashMap<>();
         operationResultMap.put(ApprovalEvent.SUBMIT, ApprovalStatus.SUBMITTED);
-        operationResultMap.put(ApprovalEvent.CANCEL, ApprovalStatus.SUBMITTED);
+        operationResultMap.put(ApprovalEvent.CANCEL, ApprovalStatus.CANCELED);
         operationResultMap.put(ApprovalEvent.WITHDRAW, ApprovalStatus.CREATED);
         operationResultMap.put(ApprovalEvent.APPROVE, ApprovalStatus.APPROVED);
         operationResultMap.put(ApprovalEvent.REJECT, ApprovalStatus.REJECTED);
