@@ -235,7 +235,7 @@ const SettingOverView = () => {
         key: SettingConfigKeyEnum.APPROVAL,
         label: (
           <TagAlignCenter>
-            <ApprovalIcon size={imgSize} />
+            <ApprovalIcon size={imgSize} fill = '#1890FF'/>
             {l('sys.setting.approval')}
           </TagAlignCenter>
         ),

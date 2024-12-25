@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS public.dinky_approval
 (
     id                    SERIAL PRIMARY KEY          NOT NULL,
     task_id               INT                         NOT NULL,
+    tenant_id             INT                         NOT NULL default 1,
     previous_task_version INT                         NOT NULL,
     current_task_version  INT                         NOT NULL,
     status                VARCHAR(255)                null,
@@ -39,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.dinky_approval
 
 COMMENT ON COLUMN public.dinky_approval.id IS 'ID';
 COMMENT ON COLUMN public.dinky_approval.task_id IS 'name';
+COMMENT ON COLUMN public.dinky_approval.tenant_id IS 'tenant_id';
 COMMENT ON COLUMN public.dinky_approval.previous_task_version IS 'previous version of task';
 COMMENT ON COLUMN public.dinky_approval.current_task_version IS 'current version to be reviewed of task';
 COMMENT ON COLUMN public.dinky_approval.status IS 'approval status';
@@ -50,8 +52,8 @@ COMMENT ON COLUMN public.dinky_approval.create_time IS 'create time';
 COMMENT ON COLUMN public.dinky_approval.update_tIme IS 'update time';
 
 CREATE UNIQUE INDEX IF NOT EXISTS task_id_current_version_idx ON public.dinky_approval (task_id, current_task_version);
-CREATE INDEX IF NOT EXISTS submitter_idx ON public.dinky_approval (submitter);
-CREATE INDEX IF NOT EXISTS reviewer_idx ON public.dinky_approval (reviewer);
+CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_submitter_union_idx ON public.dinky_approval (submitter, tenant_id);
+CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_reviewer_union_idx ON public.dinky_approval (reviewer, tenant_id);
 
 
 

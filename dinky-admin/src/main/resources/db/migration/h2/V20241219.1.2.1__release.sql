@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS dinky_approval
 (
     id                    int(11) AUTO_INCREMENT COMMENT 'id',
     task_id               int(11)     NOT NULL COMMENT 'task id',
+    tenant_id             int(11)     NOT NULL COMMENT 'tenant id' default 1,
     previous_task_version int(11)          DEFAULT NULL COMMENT 'previous version of task',
     current_task_version  int(11)     NOT NULL COMMENT 'current version to be reviewed of task',
     status                VARCHAR(50) NOT NULL COMMENT 'approval status',

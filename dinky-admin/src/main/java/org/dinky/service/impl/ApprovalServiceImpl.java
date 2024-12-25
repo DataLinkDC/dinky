@@ -47,7 +47,6 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
     @Override
     public ProTableResult<Approval> getSubmittedApproval(JsonNode params) {
         Map<String, Object> paraMap = new HashMap<>();
-        // TODO 限制租户id
         paraMap.put("submitter", StpUtil.getLoginIdAsInt());
         return super.selectForProTable(params, paraMap);
     }

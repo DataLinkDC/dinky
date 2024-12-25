@@ -11,46 +11,45 @@ import { TaskState } from "@/pages/DataStudio/type";
 type TaskInfoProps = {
   open: boolean;
   onCancel: () => void;
-  taskInfo: TaskState;
+  taskInfo: TaskState | undefined;
   preVersionStatement: string;
   curVersionStatement: string;
 }
 
 const {Text, Link} = Typography;
-
 const TaskInfoModal = (props: TaskInfoProps) => {
   const renderTaskInfo = () => {
     const items: DescriptionsProps['item'] = [
       {
         key: '1',
-        label: '作业id',
-        children: <p>{props.taskInfo.taskId}</p>
+        label: l('pages.datastudio.label.jobInfo.id'),
+        children: <p>{props.taskInfo?.taskId}</p>
       },
       {
         key: '2',
-        label: '作业名称',
-        children: <p>{props.taskInfo.name}</p>
+        label: l('pages.datastudio.label.jobInfo.name'),
+        children: <p>{props.taskInfo?.name}</p>
       },
       {
         key: '3',
-        label: '作业类型',
-        children: <p>{props.taskInfo.dialect}</p>
+        label: l('pages.datastudio.label.jobInfo.dialect'),
+        children: <p>{props.taskInfo?.dialect}</p>
       },
       {
         key: '4',
-        label: '环境id',
-        children: <p>{props.taskInfo.envId}</p>
+        label: l('pages.datastudio.label.jobConfig.flinksql.env'),
+        children: <p>{props.taskInfo?.envId}</p>
       },
       {
         key: '5',
-        label: '负责人',
-        children: <p>{props.taskInfo.firstLevelOwner}</p>
+        label: l('pages.datastudio.label.jobInfo.firstLevelOwner'),
+        children: <p>{props.taskInfo?.firstLevelOwner}</p>
       },
     ];
 
     return (
       <>
-        <Descriptions title='作业信息' items={items}></Descriptions>
+        <Descriptions title={l('devops.jobinfo.config.JobBaseInfo')} items={items}></Descriptions>
       </>
     );
   }
@@ -80,15 +79,15 @@ const TaskInfoModal = (props: TaskInfoProps) => {
         <div className={styles.diff_content}>
           <Row style={{marginBottom: '5px'}}>
             <Col span={12}>
-              <Text type={'secondary'}>已上线版本</Text>
+              <Text type={'secondary'}>{l('approval.previousTaskVersion')}</Text>
             </Col>
             <Col span={12}>
-              <Text type={'secondary'}>提交审核版本</Text>
+              <Text type={'secondary'}>{l('approval.currentTaskVersion')}</Text>
             </Col>
           </Row>
           <DiffEditor
             {...DIFF_EDITOR_PARAMS}
-            language={props.taskInfo.dialect}
+            language={props.taskInfo?.dialect}
             // 挂载前加载语言 | Load language before mounting
             beforeMount={(monaco) => LoadCustomEditorLanguage(monaco.languages, monaco.editor)}
             original={props.preVersionStatement}

@@ -33,6 +33,9 @@ public class Approval extends Model<Approval> {
     @ApiModelProperty(value = "Task Id", dataType = "Integer", notes = "Task identifier for the task approval linked")
     private Integer taskId;
 
+    @ApiModelProperty(value = "Tenant Id", dataType = "Integer", notes = "Tenant id of current approval")
+    private Integer tenantId;
+
     @ApiModelProperty(value = "Previous Task Version", dataType = "Integer", notes = "Previous online version before this task is submitted")
     private Integer previousTaskVersion;
 

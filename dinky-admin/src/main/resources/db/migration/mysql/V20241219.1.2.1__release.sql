@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `dinky_approval`
 (
     `id`                    int(11)                                                      NOT NULL AUTO_INCREMENT COMMENT 'id',
     `task_id`               int(11)                                                      NOT NULL COMMENT 'task id',
+    `tenant_id`             int(11)                                                    NOT NULL default 1 COMMENT 'tenant id',
     `previous_task_version` int(11)                                                               DEFAULT NULL COMMENT 'previous version of task',
     `current_task_version`  int(11)                                                      NOT NULL COMMENT 'current version to be reviewed of task',
     `status`                varchar(50) CHARACTER SET Utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'approval status',
@@ -40,9 +41,9 @@ CREATE TABLE IF NOT EXISTS `dinky_approval`
     `create_time`           datetime                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_tIme`           datetime                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `task_id_current_version_idx` (`task_id`, `current_task_version`) USING BTREE,
-    INDEX `submitter_idx` (`submitter`) USING BTREE,
-    INDEX `reviewer_idx` (`reviewer`) USING BTREE
+    INDEX `task_id_current_version_union_idx` (`task_id`, `current_task_version`) USING BTREE,
+    INDEX `submitter_tenant_id_union_idx` (`submitter`, `tenant_id`) USING BTREE,
+    INDEX `reviewer_tenant_id_union_idx` (`reviewer`, `tenant_id`) USING BTREE
 ) ENGINE = INNODB
   AUTO_INCREMENT = 2
   CHARACTER SET = Utf8mb4

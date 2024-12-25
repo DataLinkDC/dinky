@@ -21,7 +21,7 @@ import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
 import { Button, Col, Divider, Flex, Row, Skeleton, TabsProps } from 'antd';
 import '../index.less';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { registerEditorKeyBindingAndAction } from '@/utils/function';
+import { getValueFromLocalStorage, registerEditorKeyBindingAndAction } from '@/utils/function';
 import { Monaco } from '@monaco-editor/react';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import {
@@ -755,19 +755,19 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   };
 
   const handleOpenApprovalModal = async () => {
-      // publish first
-      if (JOB_LIFE_CYCLE.PUBLISH != currentState.step) {
-        await handleChangeJobLife();
-      }
-      // create approval
-      const res = await handlePutDataByParams(
-        API_CONSTANTS.TASK_APPROVAL_CREATE,
-        l('approval.operation.create'),
-        { taskId:currentState.taskId }
-      );
-      // open submit modal
-      setApprovalState((prevState) => ({...prevState, currentApprovalId: res.data.id}));
-      handleApprovalModalOpenChange(true);
+    // publish first
+    if (JOB_LIFE_CYCLE.PUBLISH != currentState.step) {
+      await handleChangeJobLife();
+    }
+    // create approval
+    const res = await handlePutDataByParams(
+      API_CONSTANTS.TASK_APPROVAL_CREATE,
+      l('approval.operation.create'),
+      { taskId:currentState.taskId }
+    );
+    // open submit modal
+    setApprovalState((prevState) => ({...prevState, currentApprovalId: res.data.id}));
+    handleApprovalModalOpenChange(true);
   }
 
   const handleApprovalModalOpenChange = (open: boolean) => {
@@ -796,8 +796,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         activeId={approvalState.currentApprovalId}
         operationType={OperationType.SUBMIT}
         onOpenChange={handleApprovalModalOpenChange}
-        handleSubmit={async () => {
-          await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), { id: approvalState.currentApprovalId });
+        handleSubmit={async (record) => {
+          await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), record);
           setApprovalState(prevState => ({...prevState, openSubmitModal: false}))
         }}
       />

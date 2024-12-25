@@ -1,5 +1,5 @@
 import { ApprovalBasicInfo, OperationStatus, OperationType } from "@/types/ApprovalCenter/data.d";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { ApprovalListState } from "@/types/ApprovalCenter/state.d";
 import { InitApprovalList } from "@/types/ApprovalCenter/init.d";
 import { ActionType, ProColumns } from "@ant-design/pro-table";
@@ -9,7 +9,7 @@ import { ProTable } from "@ant-design/pro-components";
 import { queryList } from "@/services/api";
 import { API_CONSTANTS } from "@/services/endpoints";
 import { handleOption, queryDataByParams } from "@/services/BusinessCrud";
-import { getTaskDetails, getUserData } from "@/pages/DataStudio/service";
+import { getTaskDetails } from "@/pages/DataStudio/service";
 import { TaskState } from "@/pages/DataStudio/type";
 import TaskInfoModal from "@/pages/AuthCenter/Approval/components/TaskInfoModal";
 import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
@@ -23,30 +23,34 @@ type UserFormProps = {
 }
 
 const ApprovalTable: React.FC<UserFormProps> = (props) => {
-  //states
+
   // approval list
   const [approvalListState, setApprovalListState] = useState<ApprovalListState>(InitApprovalList);
-  // modal states
-  const [modalOpen, setModalOpen] = useState(false);
-  const [activeOperation, setActiveOperationType] = useState<OperationType>(OperationType.UNKNOWN);
-  const [activeId, setActiveId] = useState(0);
-  const [taskInfo, setTaskInfo] = useState<TaskState>({});
-  const [preVersionStatement, setPreVersionStatement] = useState<string>("");
-  const [curVersionStatement, setCurVersionStatement] = useState<string>("");
 
-  const [modalTitle, setModalTitle] = useState('');
-  const [taskInfoOpen, setTaskInfoOpen] = useState(false);
+  // active approval state
+  const [activeApprovalState, setActiveApprovalState] = useState<{
+    activeId: number;
+    taskInfoOpen: boolean;
+    taskBasicInfo: TaskState | undefined;
+    preVersionStatement: string;
+    curVersionStatement: string;
+  }>({activeId: -1, taskInfoOpen: false, taskBasicInfo: undefined, preVersionStatement: '', curVersionStatement: ''});
+
+  // operation modal states
+  const [operationState, setOperationState] = useState<{
+    operationType: OperationType;
+    operationModalOpen: boolean;
+    operationDesc: string;
+  }>({operationType: OperationType.SUBMIT, operationModalOpen: false, operationDesc: ''});
+
   const actionRef = useRef<ActionType>(); // table action
-
   const userMap: Map<number, string> = new Map();
-
   useAsyncEffect(async () => {
     const usersRes = await queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, {id: getValueFromLocalStorage(TENANT_ID)});
     usersRes.users.forEach((user) => {
       userMap.set(user.id, user.username);
-    })
-    console.log(userMap)
-  }, [])
+    });
+  }, []);
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
     setApprovalListState((prevState) => ({...prevState, loading: true}));
@@ -56,20 +60,33 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   };
 
   const handleApprovalOperation = (operation: OperationType, entity: ApprovalBasicInfo) => {
-    setActiveOperationType(operation);
-    setActiveId(entity.id);
+    setActiveApprovalState((prevState) => ({...prevState, activeId: entity.id}));
     switch (operation) {
       case OperationType.SUBMIT:
-        setModalTitle(l('approval.operation.submit'));
+        setOperationState((prevState) => ({
+          ...prevState,
+          operationDesc: l('approval.operation.submit'),
+          operationType: operation,
+          operationModalOpen: true
+        }));
         break;
       case OperationType.REJECT:
-        setModalTitle(l('approval.operation.reject'));
+        setOperationState((prevState) => ({
+          ...prevState,
+          operationDesc: l('approval.operation.reject'),
+          operationType: operation,
+          operationModalOpen: true
+        }));
         break;
       case OperationType.APPROVE:
-        setModalTitle(l('approval.operation.approve'));
+        setOperationState((prevState) => ({
+          ...prevState,
+          operationDesc: l('approval.operation.approve'),
+          operationType: operation,
+          operationModalOpen: true
+        }));
         break;
     }
-    setModalOpen(true);
   };
 
   const handleWithdraw = async (entity: ApprovalBasicInfo) => {
@@ -92,8 +109,11 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     });
     const convertedQueryRes = [];
     queryRes.data.forEach((approval) => {
-      console.log(userMap)
-      convertedQueryRes.push({...approval, submitterName: userMap.get(approval.submitter), reviewerName: userMap.get(approval.reviewer)})
+      convertedQueryRes.push({
+        ...approval,
+        submitterName: userMap.get(approval.submitter),
+        reviewerName: userMap.get(approval.reviewer)
+      })
     })
     console.log(convertedQueryRes)
     return {...queryRes, data: convertedQueryRes};
@@ -101,24 +121,34 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
 
   const queryTaskDiffInfo = async (taskId: number, preVersionId: number, curVersionId: number) => {
     const taskInfo = await getTaskDetails(taskId);
-    setTaskInfo(taskInfo);
-
-    // when task submit first no previous version exits
-    setPreVersionStatement("");
+    setActiveApprovalState((prevState) => ({
+      ...prevState,
+      taskBasicInfo: taskInfo,
+      preVersionStatement: '',
+      curVersionStatement: ''
+    }));
     const versions = await queryDataByParams(API_CONSTANTS.GET_JOB_VERSION, {taskId: taskId});
 
     versions.forEach((version) => {
       if (version.versionId == preVersionId) {
-        setPreVersionStatement(version.statement);
+        setActiveApprovalState((prevState) => ({
+          ...prevState,
+          taskBasicInfo: taskInfo,
+          preVersionStatement: version.statement
+        }));
       } else if (version.versionId == curVersionId) {
-        setCurVersionStatement(version.statement);
+        setActiveApprovalState((prevState) => ({
+          ...prevState,
+          taskBasicInfo: taskInfo,
+          curVersionStatement: version.statement
+        }));
       }
     })
   }
 
   const handleApprovalEvent = async (record) => {
     await executeAndCallbackRefresh(async () => {
-      switch (activeOperation) {
+      switch (operationState.operationType) {
         case OperationType.SUBMIT:
           await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), record);
           break;
@@ -130,7 +160,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
           break;
       }
     });
-    setModalOpen(false);
+    setOperationState((prevState) => ({...prevState, operationModalOpen: false}));
   }
 
   /**
@@ -139,65 +169,71 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
    */
   const renderOperation = (entity: ApprovalBasicInfo) => {
     const buttons = [];
+    // review list: approve and reject, submit list: submit withdraw cancel
     switch (entity.status) {
       case OperationStatus.CREATED:
-        buttons.push(
-          <Button
-            size={'small'}
-            type={'primary'}
-            onClick={() => {
-              handleApprovalOperation(OperationType.SUBMIT, entity);
-            }}
-          >
-            {l('approval.operation.submit')}
-          </Button>
-        );
-        buttons.push(
-          <Button
-            size={'small'}
-            onClick={async () => {
-              await handleCancel(entity);
-            }}
-          >
-            {l('approval.operation.cancel')}
-          </Button>
-        );
+        if (props.tableType == 'submit') {
+          buttons.push(
+            <Button
+              size={'small'}
+              type={'primary'}
+              onClick={() => {
+                handleApprovalOperation(OperationType.SUBMIT, entity);
+              }}
+            >
+              {l('approval.operation.submit')}
+            </Button>
+          );
+          buttons.push(
+            <Button
+              size={'small'}
+              onClick={async () => {
+                await handleCancel(entity);
+              }}
+            >
+              {l('approval.operation.cancel')}
+            </Button>
+          );
+        }
         break;
       case OperationStatus.SUBMITTED:
-        buttons.push(
-          <Button
-            size={'small'}
-            type={'primary'}
-            onClick={() => {
-              handleApprovalOperation(OperationType.APPROVE, entity);
-            }}
-          >
-            {l('approval.operation.approve')}
-          </Button>
-        );
-        buttons.push(
-          <Button
-            size={'small'}
-            type={'primary'}
-            onClick={() => {
-              handleApprovalOperation(OperationType.REJECT, entity);
-            }}
-            danger
-          >
-            {l('approval.operation.reject')}
-          </Button>
-        );
-        buttons.push(
-          <Button
-            size={'small'}
-            onClick={async () => {
-              await handleWithdraw(entity)
-            }}
-            danger
-          >
-            {l('approval.operation.withdraw')}
-          </Button>
-        );
+        if (props.tableType == 'review') {
+          buttons.push(
+            <Button
+              size={'small'}
+              type={'primary'}
+              onClick={() => {
+                handleApprovalOperation(OperationType.APPROVE, entity);
+              }}
+            >
+              {l('approval.operation.approve')}
+            </Button>
+          );
+          buttons.push(
+            <Button
+              size={'small'}
+              type={'primary'}
+              onClick={() => {
+                handleApprovalOperation(OperationType.REJECT, entity);
+              }}
+              danger
+            >
+              {l('approval.operation.reject')}
+            </Button>
+          );
+        } else {
+          buttons.push(
+            <Button
+              size={'small'}
+              onClick={async () => {
+                await handleWithdraw(entity)
+              }}
+              danger
+            >
+              {l('approval.operation.withdraw')}
+            </Button>
+          );
+        }
         break;
     }
     return (
@@ -215,8 +251,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         <Button
           onClick={async () => {
             await queryTaskDiffInfo(entity.taskId, entity.previousTaskVersion, entity.currentTaskVersion);
-            setTaskInfoOpen(true);
-            setActiveId(entity.id);
+            setActiveApprovalState(prevState => ({...prevState, taskInfoOpen: true, activeId: entity.id}))
           }}
           size={'small'}
         >
@@ -320,23 +355,25 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   return (
     <>
       <ApprovalModal
-        open={modalOpen}
+        open={
+          operationState.operationModalOpen
+        }
         onOpenChange={(open) => {
-          setModalOpen(open);
+          setOperationState(prevState => ({...prevState, operationModalOpen: open}))
         }}
-        title={modalTitle}
-        activeId={activeId}
-        operationType={activeOperation}
+        title={operationState.operationDesc}
+        activeId={activeApprovalState.activeId}
+        operationType={operationState.operationType}
         handleSubmit={handleApprovalEvent}
       />
       <TaskInfoModal
-        open={taskInfoOpen}
+        open={activeApprovalState.taskInfoOpen}
         onCancel={() => {
-          setTaskInfoOpen(false)
+          setActiveApprovalState(prevState => ({...prevState, taskInfoOpen: false}))
         }}
-        taskInfo={taskInfo}
-        preVersionStatement={preVersionStatement}
-        curVersionStatement={curVersionStatement}
+        taskInfo={activeApprovalState.taskBasicInfo}
+        preVersionStatement={activeApprovalState.preVersionStatement}
+        curVersionStatement={activeApprovalState.curVersionStatement}
       />
       <ProTable<ApprovalBasicInfo>
         search={{filterType: 'query'}}

@@ -24,6 +24,7 @@
     <sql id="columns">
         id,
         task_id,
+        tenant_id,
         previous_task_version,
         current_task_version,
         status,
@@ -51,6 +52,9 @@
             </if>
             <if test='param.task_id!=null and param.task_id!=""'>
                 and a.task_id = #{param.task_id}
+            </if>
+            <if test='param.tenant_id!=null and param.tenant_id!=""'>
+                and a.tenant_id = #{param.tenant_id}
             </if>
             <if test='param.previous_task_version!=null and param.previous_task_version!=""'>
                 and a.previous_task_version = #{param.previous_task_version}
