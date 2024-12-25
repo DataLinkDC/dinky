@@ -55,7 +55,7 @@ def addYarnCluster(session: Session) -> Optional[int]:
             client.upload(flink_lib_path + "/" + file, filepath)
     client.makedirs(yarn_dinky_app_jar)
     dinky_app_hdfs_jar_path = yarn_dinky_app_jar+"/"+dinky_app_jar
-    client.upload(yarn_dinky_app_jar, dinky_app_hdfs_jar_path)
+    client.upload(dinky_app_hdfs_jar_path, dinky_app_hdfs_jar_path)
     name = "yarn-test"
     params = {
         "type": "yarn-application",
