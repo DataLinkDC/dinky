@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS dinky_approval
     update_time           datetime(0) null DEFAULT null COMMENT 'update time',
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
--- 插入数据
+-- ----------------------------
+-- approval menu
+-- ----------------------------
 INSERT INTO `dinky_sys_menu` (id, parent_id, name, path, component, perms, icon, type, display, order_num, create_time,
                               update_time, note)
 VALUES (176, 4, '审批发布', '/auth/approval', './AuthCenter/Approval', 'auth:approval', 'LockOutlined', 'C', 0, 169,

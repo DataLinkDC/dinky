@@ -55,7 +55,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS task_id_current_version_idx ON public.dinky_ap
 CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_submitter_union_idx ON public.dinky_approval (submitter, tenant_id);
 CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_reviewer_union_idx ON public.dinky_approval (reviewer, tenant_id);
 
-
+-- ----------------------------
+-- approval menu
+-- ----------------------------
 
 INSERT INTO public.dinky_sys_menu(id, parent_id, name, path, component, perms, icon, type, display, order_num,
                                   create_time, update_time, note)

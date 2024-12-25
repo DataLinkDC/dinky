@@ -1,6 +1,7 @@
 package org.dinky.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.TaskId;
+import org.dinky.data.constant.PermissionConstants;
 import org.dinky.data.dto.ApprovalDTO;
 import org.dinky.data.enums.ApprovalEvent;
 import org.dinky.data.model.Approval;
@@ -70,6 +72,7 @@ public class ApprovalController {
 
     @PostMapping("/approve")
     @ApiOperation("Approve approval")
+    @SaCheckPermission(value = {PermissionConstants.AUTH_APPROVAL})
     Result<Void> approve(@RequestBody ApprovalDTO approvalDTO) {
         approvalService.handleApproveEvent(ApprovalEvent.APPROVE, approvalDTO);
         return Result.succeed();
@@ -77,6 +80,7 @@ public class ApprovalController {
 
     @PostMapping("/reject")
     @ApiOperation("Reject approval")
+    @SaCheckPermission(value = {PermissionConstants.AUTH_APPROVAL})
     Result<Void> reject(@RequestBody ApprovalDTO approvalDTO) {
         approvalService.handleApproveEvent(ApprovalEvent.REJECT, approvalDTO);
         return Result.succeed();

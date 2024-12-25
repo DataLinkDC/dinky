@@ -117,11 +117,13 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
 
     @Override
     public List<User> getTaskReviewerList(Integer tenantId) {
-        // get reviewer roles
+        // get users with reviewer role
         Set<String> reviewerRoles = SystemConfiguration.getInstances().getReviewerRoles();
         List<Role> roles = roleService.list(new LambdaQueryWrapper<Role>().in(Role::getRoleCode, reviewerRoles).eq(Role::getTenantId, tenantId));
-        // get users
+        // get super admin
+        User superAdmin = userService.getById(1);
         Map<Integer, User> userMap = new HashMap<>();
+        userMap.put(1, superAdmin);
         for (Role role : roles) {
             List<User> userList = roleService.getUserListByRoleId(role.getId());
             for (User user : userList) {
@@ -165,20 +167,26 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         // permission check
         switch (event) {
             case SUBMIT:
-                return taskService.checkTaskOperatePermission(approval.getTaskId());
+                // get reviewer permission
+                Integer reviewer = approval.getReviewer();
+                List<Role> roleList = roleService.getRoleByUserId(reviewer);
+                Set<String> reviewerRoles = SystemConfiguration.getInstances().getReviewerRoles();
+                boolean reviewerCheckSucceed = false;
+                for (Role role : roleList) {
+                    // reviewer role or super admin
+                    if (reviewerRoles.contains(role.getRoleName()) || reviewer == 1) {
+                        reviewerCheckSucceed = true;
+                        break;
+                    }
+                }
+                // check submitter task operate permission
+                return reviewerCheckSucceed && taskService.checkTaskOperatePermission(approval.getTaskId());
             case WITHDRAW:
             case CANCEL:
                 return StpUtil.getLoginIdAsInt() == approval.getSubmitter();
             case APPROVE:
             case REJECT:
-                List<Role> roleList = userService.getCurrentRole();
-                Set<String> reviewerRoles = SystemConfiguration.getInstances().getReviewerRoles();
-                int currentUserId = StpUtil.getLoginIdAsInt();
-                for (Role role : roleList) {
-                    if (reviewerRoles.contains(role.getRoleName())) {
-                        return (currentUserId == approval.getReviewer()) && (!SystemConfiguration.getInstances().enforceCrossView() || currentUserId != approval.getSubmitter());
-                    }
-                }
+                return StpUtil.getLoginIdAsInt() == approval.getReviewer();
             default:
                 throw new BusException("No approval permission");
         }
