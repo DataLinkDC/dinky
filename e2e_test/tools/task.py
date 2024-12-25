@@ -115,7 +115,7 @@ class Task:
             f"======================\nA Flink task is currently executed，name: {name}, statement: \n{statement}\n ======================")
 
         def taskFunc(mode: FlinkRunMode):
-            flink_task_name = name + "-" + mode.name
+            flink_task_name = name + "-" + mode.value
             task = self.addTask(flink_task_name, parent_id, "FlinkSql", statement, mode)
             job_instance_id = self.runTask(task.task_id)
             sleep(wait_time)
