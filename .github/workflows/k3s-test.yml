@@ -26,4 +26,4 @@ jobs:
           kubectl create clusterrolebinding flink-role-binding-flink --clusterrole=edit --serviceaccount=dinky:flink-service-account
       - name: test host
         run: |
-          curl https://172.28.0.1:6550
+          curl -k https://172.28.0.1:6550
