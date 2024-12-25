@@ -6,11 +6,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Init  Docker Network
+        run: |
+          docker network create -d bridge --subnet 172.28.0.0/16  --gateway 172.28.0.1 dinky_net
       - name: Init k3s
         uses: nolar/setup-k3d-k3s@v1
         with:
           version: v1.31.4+k3s1
-          k3d-args: --host-alias 172.28.0.1
+          k3d-args: --network dinky_net --k3s-arg "--tls-san `172.28.0.1`"
       - name: Get k3s kube config
         run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/k8s/g' ./kube/k3s.yaml
       - name: Init k8s RBAC and namespace
