@@ -227,9 +227,9 @@ jobs:
       - name: Init k8s RBAC and namespace
         run: |
           kubectl create namespace dinky
+          kubectl create serviceaccount dinky
           kubectl create clusterrolebinding flink-role-binding-default --clusterrole=edit --serviceaccount=dinky:dinky
-          kubectl create serviceaccount flink-service-account
-          kubectl create clusterrolebinding flink-role-binding-flink --clusterrole=edit --serviceaccount=dinky:flink-service-account
+          kubectl create clusterrolebinding flink-role-binding-flink --clusterrole=edit --serviceaccount=dinky:dinky
       - name: Test k3s host
         run: |
           curl -k https://172.28.0.1:6550
