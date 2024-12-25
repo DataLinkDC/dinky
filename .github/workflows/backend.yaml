@@ -236,8 +236,7 @@ jobs:
       - name: Cp Flink Jar Deps
         run: |
           docker cp dinky:/opt/dinky/ ./dinky-release
-          mv ./dinky-release/dinky-app*.jar ./dinky-release/dinky-app.jar
-          cp ./dinky-release/dinky-app.jar e2e_test/docker-compose-env/dinky/dinky-app.jar
+          mv ./dinky-release/jar/dinky-app*.jar e2e_test/docker-compose-env/dinky/dinky-app.jar
       - name: Run python http server
         run: |
           python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001
