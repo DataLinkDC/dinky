@@ -17,7 +17,7 @@ services:
       - ./mysql-connector-java-8.0.30.jar:/opt/dinky/lib/mysql-connector-java-8.0.30.jar
       - ./javax.ws.rs-api-2.1.1.jar:/opt/dinky/lib/javax.ws.rs-api-2.1.1.jar
       - ../flink/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar:/opt/dinky/lib/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar
-      - ../flink/conf/log4j-console.properties:/flink/conf/log4j-console.properties
-      - ../hadoop:/flink/conf
+      - ../flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties
+      - ../hadoop:/opt/flink/conf
     networks:
       - dinky_net

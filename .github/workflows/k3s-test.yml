@@ -27,3 +27,6 @@ jobs:
       - name: test host
         run: |
           curl -k https://172.28.0.1:6550
+      - name: run python http server
+        run: |
+          python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001

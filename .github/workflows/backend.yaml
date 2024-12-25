@@ -196,7 +196,7 @@ jobs:
           wget -O e2e_test/docker-compose-env/dinky/javax.ws.rs-api-2.1.1.jar  https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.1.1/javax.ws.rs-api-2.1.1.jar
       - name: Init  Docker Network
         run: |
-          docker network create -d bridge dinky_net
+          docker network create -d bridge --subnet 172.28.0.0/16  --gateway 172.28.0.1 dinky_net
       - name: Init Run Docker MySQL
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
@@ -216,9 +216,31 @@ jobs:
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
           compose-file: ./e2e_test/docker-compose-env/flink/docker-compose-${{ matrix.flink }}.yml
-
+          # k8s  env
+      - name: Init k3s
+        uses: nolar/setup-k3d-k3s@v1
+        with:
+          version: v1.31.4+k3s1
+          k3d-args: -s 1 --network dinky_net --api-port 172.28.0.1:6550
+      - name: Get k3s kube config
+        run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/172.28.0.1/g' ./kube/k3s.yaml
+      - name: Init k8s RBAC and namespace
+        run: |
+          kubectl create namespace dinky
+          kubectl create clusterrolebinding flink-role-binding-default --clusterrole=edit --serviceaccount=dinky:dinky
+          kubectl create serviceaccount flink-service-account
+          kubectl create clusterrolebinding flink-role-binding-flink --clusterrole=edit --serviceaccount=dinky:flink-service-account
+      - name: Test k3s host
+        run: |
+          curl -k https://172.28.0.1:6550
       - name: Cp Flink Jar Deps
-        run: docker cp dinky:/opt/dinky/ ./dinky-release
+        run: |
+          docker cp dinky:/opt/dinky/ ./dinky-release
+          mv ./dinky-release/dinky-app*.jar ./dinky-release/dinky-app.jar
+          cp ./dinky-release/dinky-app.jar e2e_test/docker-compose-env/dinky/dinky-app.jar
+      - name: Run python http server
+        run: |
+          python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001
       - name: Run Docker Python Script
         run: |
-          docker run -v ./dinky-release/extends/flink${{ matrix.flink }}:/flink/lib -v ./e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar:/flink/lib/mysql-connector-java-8.0.30.jar -v./e2e_test/docker-compose-env/flink/conf:/flink/conf -v ./dinky-release/jar:/dinky/jar  -v./e2e_test/tools:/app -w /app   --net dinky_net --rm --entrypoint /bin/bash python:3.9 -c  'pip install  -r requirements.txt  &&  python main.py dinky:8888'
+          docker run   -v./e2e_test/tools:/app -w /app -v ./kube:/kube  --net dinky_net --rm --entrypoint /bin/bash python:3.9 -c  'pip install  -r requirements.txt  &&  python main.py dinky:8888 ${{ matrix.flink }}'

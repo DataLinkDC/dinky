@@ -1,10 +1,8 @@
-import sys
-from logger import log
-from requests import Response
 from json import JSONDecodeError
 
-dinky_addr = sys.argv[1]
-log.info(f"The address of the current request:{dinky_addr}")
+from requests import Response
+
+from config import dinky_addr
 
 
 def url(path: str):
