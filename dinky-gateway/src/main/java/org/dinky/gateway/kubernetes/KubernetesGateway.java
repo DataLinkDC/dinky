@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.kubernetes;
 
+import cn.hutool.core.util.StrUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.Status;
@@ -48,8 +49,6 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import alluxio.shaded.client.org.apache.commons.lang3.StringUtils;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
@@ -150,7 +149,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     boolean isValidTaskName(String jobName) {
         String JOB_NAME_PATTERN = "^[a-z0-9][a-z0-9.-]*[a-z0-9]$";
         Pattern pattern = Pattern.compile(JOB_NAME_PATTERN);
-        if (StringUtils.isBlank(jobName)) {
+        if (StrUtil.isBlank(jobName)) {
             return false;
         }
         Matcher matcher = pattern.matcher(jobName);
