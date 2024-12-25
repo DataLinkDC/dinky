@@ -239,7 +239,7 @@ jobs:
           mv ./dinky-release/jar/dinky-app*.jar e2e_test/docker-compose-env/dinky/dinky-app.jar
       - name: Run python http server
         run: |
-          python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001
+          nohup python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001 > python_http.log &
       - name: Run Docker Python Script
         run: |
           docker run   -v./e2e_test/tools:/app -w /app -v ./kube:/kube  --net dinky_net --rm --entrypoint /bin/bash python:3.9 -c  'pip install  -r requirements.txt  &&  python main.py dinky:8888 ${{ matrix.flink }}'
