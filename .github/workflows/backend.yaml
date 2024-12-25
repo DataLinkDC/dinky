@@ -228,8 +228,7 @@ jobs:
         run: |
           kubectl create namespace dinky
           kubectl create serviceaccount dinky
-          kubectl create clusterrolebinding flink-role-binding-default --clusterrole=edit --serviceaccount=dinky:dinky
-          kubectl create clusterrolebinding flink-role-binding-flink --clusterrole=edit --serviceaccount=dinky:dinky
+          kubectl create clusterrolebinding flink-role-binding-dinky --clusterrole=edit --serviceaccount=default:dinky
       - name: Test k3s host
         run: |
           curl -k https://172.28.0.1:6550
