@@ -226,7 +226,7 @@ jobs:
         run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/172.28.0.1/g' ./kube/k3s.yaml
       - name: Init k8s RBAC and namespace
         run: |
-          kubectl create namespace dinky
+          kubectl create namespace dinky -n dinky
           kubectl create serviceaccount dinky
           kubectl create clusterrolebinding flink-role-binding-dinky --clusterrole=edit --serviceaccount=default:dinky
       - name: Test k3s host
