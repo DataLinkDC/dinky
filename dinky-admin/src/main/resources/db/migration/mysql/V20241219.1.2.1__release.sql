@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS `dinky_approval`
     `current_task_version`  int(11)                                                      NOT NULL COMMENT 'current version to be reviewed of task',
     `status`                varchar(50) CHARACTER SET Utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'approval status',
     `submitter`             int(11)                                                      NOT NULL COMMENT 'submitter user id',
-    `submitter_comment`     text                                                          DEFAULT NULL COMMENT 'submitter comment',
-    `reviewer`              int(11)                                                               COMMENT 'reviewer user id',
+    `submitter_comment`     text                                                                  DEFAULT NULL COMMENT 'submitter comment',
+    `reviewer`              int(11)                                                               DEFAULT NULL COMMENT 'reviewer user id',
     `reviewer_comment`      text                                                                  DEFAULT NULL COMMENT 'reviewer comment',
     `create_time`           datetime                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `update_tIme`           datetime                                                     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
@@ -49,7 +49,9 @@ CREATE TABLE IF NOT EXISTS `dinky_approval`
   COLLATE = utf8mb4_general_ci COMMENT = 'approval'
   ROW_FORMAT = Dynamic;
 
-INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`, `order_num`, `create_time`, `update_time`, `note`)
-VALUES (176, -1, '审批发布', '/auth/approval', './AuthCenter/Approval', 'auth:approval', 'LockOutlined', 'C', 0, 169, '2024-12-10 12:13:00', '2024-12-10 12:13:00', null);
+INSERT INTO `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`,
+                              `order_num`, `create_time`, `update_time`, `note`)
+VALUES (176, 4, '审批发布', '/auth/approval', './AuthCenter/Approval', 'auth:approval', 'LockOutlined', 'C', 0, 169,
+        '2024-12-10 12:13:00', '2024-12-10 12:13:00', null);
 
 SET FOREIGN_KEY_CHECKS = 1;
