@@ -266,5 +266,6 @@ jobs:
           ./e2e_test/view_k8s_all_pod_logs.sh dinky
       - name: Get Python HttpServer log
         if: ${{ always() }}
+
         run: |
           cat ./logs/python_http.log
