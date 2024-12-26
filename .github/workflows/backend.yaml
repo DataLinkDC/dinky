@@ -247,6 +247,7 @@ jobs:
       - name: Get k8s pods info and logs
         if: ${{ always() }}
         run: |
+          chmod -R 755 ./e2e_test/view_k8s_all_pod_logs.sh
           ./e2e_test/view_k8s_all_pod_logs.sh dinky
       - name: Get Python HttpServer log
         if: ${{ always() }}
