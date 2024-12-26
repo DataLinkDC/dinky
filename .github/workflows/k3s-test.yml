@@ -18,6 +18,9 @@ jobs:
           k3d-args: -s 1 --network dinky_net --api-port 172.28.0.1:6550
       - name: Get k3s kube config
         run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/k8s/g' ./kube/k3s.yaml
+      - name: get current k8s config
+        run: |
+          kubectl config view
       - name: Init k8s RBAC and namespace
         run: |
           kubectl create namespace dinky
