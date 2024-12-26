@@ -30,3 +30,15 @@ jobs:
       - name: test host
         run: |
           curl -k https://172.28.0.1:6550
+      - run: |
+          NAMESPACE=dinky
+          kubectl get pods -n $NAMESPACE
+
+          # 获取每个Pod的日志
+          echo "获取命名空间 $NAMESPACE 下每个Pod的日志"
+          for POD in $(kubectl get pods -n $NAMESPACE -o jsonpath='{.items[*].metadata.name}'); do
+          echo "Pod: $POD 的日志"
+          kubectl logs -n $NAMESPACE $POD
+          echo "------------------------"
+          done
+
