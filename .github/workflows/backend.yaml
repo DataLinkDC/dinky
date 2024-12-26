@@ -242,3 +242,15 @@ jobs:
       - name: Run Docker Python Script
         run: |
           docker run  -v ./e2e_test/tools:/app -w /app -v ./kube:/kube -v ./e2e_test/docker-compose-env/dinky:/dinky/jar -v ./dinky-release/extends/flink${{ matrix.flink }}:/opt/flink/lib -v ./e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar:/opt/flink/lib/mysql-connector-java-8.0.30.jar   --net dinky_net --rm --entrypoint /bin/bash python:3.9 -c  'pip install  -r requirements.txt  &&  python main.py dinky:8888 ${{ matrix.flink }}'
+      - name: Get k8s pods info and logs
+        run: |
+          NAMESPACE=dinky
+          kubectl get pods -n $NAMESPACE
+
+          # 获取每个Pod的日志
+          echo "获取命名空间 $NAMESPACE 下每个Pod的日志"
+          for POD in $(kubectl get pods -n $NAMESPACE -o jsonpath='{.items[*].metadata.name}'); do
+          echo "Pod: $POD 的日志"
+          kubectl logs -n $NAMESPACE $POD
+          echo "------------------------"
+          done
