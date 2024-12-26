@@ -191,7 +191,7 @@ jobs:
           build-args: |
             FLINK_VERSION=${{ matrix.flink }}
           tags: |
-            172.28.0.1:5000/dinky/dinky-test:flink
+            localhost:5000/dinky/dinky-test:flink
       - name: Build Flink Image
         uses: docker/build-push-action@v5
         with:
@@ -202,7 +202,7 @@ jobs:
           build-args: |
             FLINK_VERSION=${{ matrix.flink }}
           tags: |
-            172.28.0.1:5000/dinky/flink:latest
+            localhost:5000/dinky/flink:latest
       - name: Init  Env Jar
         run: |
           wget -O e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar  https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar &&
