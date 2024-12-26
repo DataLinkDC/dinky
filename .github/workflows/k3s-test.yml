@@ -24,12 +24,9 @@ jobs:
       - name: Init k8s RBAC and namespace
         run: |
           kubectl create namespace dinky
-          kubectl create clusterrolebinding flink-role-binding-default --clusterrole=edit --serviceaccount=dinky:dinky
-          kubectl create serviceaccount flink-service-account
-          kubectl create clusterrolebinding flink-role-binding-flink --clusterrole=edit --serviceaccount=dinky:flink-service-account
+          kubectl create serviceaccount dinky -n dinky
+          kubectl create clusterrolebinding flink-role-binding-dinky --clusterrole=edit --serviceaccount=default:dinky
+          kubectl get sa -n dinky
       - name: test host
         run: |
           curl -k https://172.28.0.1:6550
-      - name: run python http server
-        run: |
-          python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001
