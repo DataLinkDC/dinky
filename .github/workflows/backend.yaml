@@ -239,6 +239,7 @@ jobs:
       - name: Run python http server
         run: |
           mkdir -p logs
+          ls e2e_test/docker-compose-env/dinky/
           nohup python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001 > ./logs/python_http.log &
       - name: Run Docker Python Script
         run: |
@@ -246,16 +247,7 @@ jobs:
       - name: Get k8s pods info and logs
         if: ${{ always() }}
         run: |
-          NAMESPACE=dinky
-          kubectl get pods -n $NAMESPACE
-
-          # 获取每个Pod的日志
-          echo "获取命名空间 $NAMESPACE 下每个Pod的日志"
-          for POD in $(kubectl get pods -n $NAMESPACE -o jsonpath='{.items[*].metadata.name}'); do
-          echo "Pod: $POD 的日志"
-          kubectl logs -n $NAMESPACE $POD
-          echo "------------------------"
-          done
+          ./e2e_test/view_k8s_all_pod_logs.sh dinky
       - name: Get Python HttpServer log
         if: ${{ always() }}
         run: |
