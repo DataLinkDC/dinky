@@ -228,7 +228,7 @@ jobs:
         run: |
           kubectl create namespace dinky
           kubectl create serviceaccount dinky -n dinky
-          kubectl create clusterrolebinding flink-role-binding-dinky --clusterrole=edit --serviceaccount=default:dinky
+          kubectl create clusterrolebinding flink-role-binding-dinky --clusterrole=edit --serviceaccount=dinky:dinky
       - name: Init k3s main images
         run: |
           docker exec k3d-k3s-default-server-0 crictl pull library/busybox:latest
