@@ -244,6 +244,9 @@ jobs:
         run: |
           docker exec k3d-k3s-default-server-0 crictl pull library/busybox:latest
           docker exec k3d-k3s-default-server-0 crictl pull flink:${{ matrix.flink }}-scala_2.12-java8
+          docker tag localhost:5000/dinky/dinky-test:flink dinky/dinky-test:flink
+          docker export dinky/dinky-test:flink > flink.tar
+          k3d images  import ./flink.tar
       - name: Test k3s host
         run: |
           curl -k https://172.28.0.1:6550
