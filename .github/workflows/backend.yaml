@@ -229,6 +229,10 @@ jobs:
           kubectl create namespace dinky
           kubectl create serviceaccount dinky -n dinky
           kubectl create clusterrolebinding flink-role-binding-dinky --clusterrole=edit --serviceaccount=default:dinky
+      - name: Init k3s main images
+        run: |
+          docker exec -it k3d-k3s-default-server-0 ctr image pull library/busybox:latest
+          docker exec -it k3d-k3s-default-server-0 ctr image pull flink:${{ matrix.flink }}-scala_2.12-java8
       - name: Test k3s host
         run: |
           curl -k https://172.28.0.1:6550

@@ -17,6 +17,7 @@ for POD in $PODS; do
     for INIT_CONTAINER in $INIT_CONTAINERS; do
         echo "Init Container: $INIT_CONTAINER 的日志"
         kubectl logs -n $NAMESPACE $POD -c $INIT_CONTAINER --previous 2>&1
+        kubectl logs -n $NAMESPACE $POD -c $INIT_CONTAINER  2>&1
         echo "----------------------------------------------------"
     done
     echo "================= 普通 Container 日志 ================="
@@ -24,6 +25,7 @@ for POD in $PODS; do
     for CONTAINER in $CONTAINERS; do
         echo "Container: $CONTAINER 的日志"
         kubectl logs -n $NAMESPACE $POD -c $CONTAINER --previous 2>&1
+        kubectl logs -n $NAMESPACE $POD -c $CONTAINER  2>&1
         echo "----------------------------------------------------"
     done
     echo "====================================================="
