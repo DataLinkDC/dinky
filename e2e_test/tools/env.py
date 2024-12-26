@@ -54,7 +54,7 @@ def addYarnCluster(session: Session) -> Optional[int]:
             filepath = os.path.join(root, file)
             client.upload(flink_lib_path + "/" + file, filepath)
     client.makedirs(yarn_dinky_app_jar)
-    dinky_app_hdfs_jar_path = yarn_dinky_app_jar+"/"+dinky_app_jar
+    dinky_app_hdfs_jar_path = yarn_dinky_app_jar + "/" + dinky_app_jar
     client.upload(dinky_app_hdfs_jar_path, dinky_app_hdfs_jar_path)
     name = "yarn-test"
     params = {
@@ -105,7 +105,7 @@ def addK8sNativeCluster(session: Session) -> Optional[int]:
                     "kubernetes.ingress.enabled": False
                 },
                 "kubeConfig": kube_config_content,
-                "podTemplate": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: jobmanager-pod-template\nspec:\n  initContainers:\n    - name: artifacts-fetcher-dinky\n      image: library/busybox:latest\n      # Use wget or other tools to get user jars from remote storage\n      command: [ \\'wget\\', \\'http://172.28.0.1:9001/dinky-app.jar\\', \\'-O\\', \\'/flink-usrlib/dinky-app.jar\\' ]\n      volumeMounts:\n        - mountPath: /flink-usrlib\n          name: flink-usrlib\n    - name: artifacts-fetcher-mysql\n      image: library/busybox:latest\n      # Use wget or other tools to get user jars from remote storage\n      command: [ \\'wget\\', \\'http://172.28.0.1:9001/mysql-connector-java-8.0.30.jar\\', \\'-O\\', \\'/flink-usrlib/mysql-connector-java-8.0.30.jar\\' ]\n      volumeMounts:\n        - mountPath: /flink-usrlib\n          name: flink-usrlib\n\n  containers:\n    # Do not change the main container name\n    - name: flink-main-container\n      resources:\n        requests:\n          ephemeral-storage: 2048Mi\n        limits:\n          ephemeral-storage: 2048Mi\n      volumeMounts:\n        - mountPath: /opt/flink/usrlib\n          name: flink-usrlib\n  volumes:\n    - name: flink-usrlib\n      emptyDir: { }\n",
+                "podTemplate": podTemplate,
             },
             "clusterConfig": {
                 "flinkConfigPath": "/opt/flink/conf"
@@ -127,7 +127,7 @@ def addK8sNativeCluster(session: Session) -> Optional[int]:
                 }
             },
             "appConfig": {
-                "userJarPath": "local:/opt/flink/usrlib/"+dinky_app_jar,
+                "userJarPath": "local:/opt/flink/usrlib/" + dinky_app_jar,
             }
         }
     }
