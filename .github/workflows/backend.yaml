@@ -238,6 +238,7 @@ jobs:
           mv ./dinky-release/jar/dinky-app*.jar e2e_test/docker-compose-env/dinky/dinky-app.jar
       - name: Run python http server
         run: |
+          mkdir -p logs
           nohup python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001 > ./logs/python_http.log &
       - name: Run Docker Python Script
         run: |
