@@ -255,3 +255,7 @@ jobs:
           kubectl logs -n $NAMESPACE $POD
           echo "------------------------"
           done
+      - name: Get Python HttpServer log
+        if: ${{ always() }}
+        run: |
+          cat ./logs/python_http.log
