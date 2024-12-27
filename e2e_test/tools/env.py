@@ -119,6 +119,10 @@ def addK8sNativeCluster(session: Session) -> Optional[int]:
                     {
                         "name": "kubernetes.flink.conf.dir",
                         "value": "/opt/flink/conf"
+                    },
+                    {
+                        "name": "kubernetes.container.image.pull-policy",
+                        "value": "Never"
                     }
                 ],
                 "configuration": {

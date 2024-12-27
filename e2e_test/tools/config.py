@@ -23,6 +23,7 @@ spec:
   initContainers:
     - name: artifacts-fetcher-dinky
       image: library/busybox:latest
+      imagePullPolicy: Never
       # Use wget or other tools to get user jars from remote storage
       command: [ 'wget', 'http://172.28.0.1:9001/dinky-app.jar', '-O', '/flink-usrlib/dinky-app.jar' ]
       volumeMounts:
@@ -30,6 +31,7 @@ spec:
           name: flink-usrlib
     - name: artifacts-fetcher-mysql
       image: library/busybox:latest
+      imagePullPolicy: Never
       # Use wget or other tools to get user jars from remote storage
       command: [ 'wget', 'http://172.28.0.1:9001/mysql-connector-java-8.0.30.jar', '-O', '/flink-usrlib/mysql-connector-java-8.0.30.jar' ]
       volumeMounts:
