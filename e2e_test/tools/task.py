@@ -106,7 +106,7 @@ class Task:
         assertRespOk(run_task_resp, "Run Task")
         return run_task_resp.json()['data']['jobInstanceId']
 
-    def runFlinkTask(self, modes: list[FlinkRunMode] = FlinkRunMode.getAllMode(), wait_time: int = 10,
+    def runFlinkTask(self, modes: list[FlinkRunMode] = FlinkRunMode.getAllMode(), wait_time: int = 20,
                      is_async: bool = False):
         name = self.name
         statement = self.statement
