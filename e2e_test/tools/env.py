@@ -99,7 +99,7 @@ def addK8sNativeCluster(session: Session) -> Optional[int]:
                     "kubernetes.rest-service.exposed.type": "NodePort",
                     "kubernetes.namespace": "dinky",
                     "kubernetes.service-account": "dinky",
-                    "kubernetes.container.image": f"dinky/flink:latest"
+                    "kubernetes.container.image": f"dinky/flink:flink"
                 },
                 "ingressConfig": {
                     "kubernetes.ingress.enabled": False
