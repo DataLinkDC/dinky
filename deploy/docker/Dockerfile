@@ -11,7 +11,7 @@ ENV UMI_ENV=production
 
 # 单独分离 package.json，是为了安装依赖可最大限度利用缓存
 ADD ./dinky-web/package.json /build/package.json
-RUN npm install --legacy-peer-deps
+RUN npm install
 ADD ./dinky-web .
 RUN npm run build
 
