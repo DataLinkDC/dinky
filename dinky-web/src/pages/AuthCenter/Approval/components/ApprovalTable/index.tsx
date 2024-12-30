@@ -1,7 +1,25 @@
-import { ApprovalBasicInfo, OperationStatus, OperationType } from "@/types/ApprovalCenter/data.d";
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+import { ApprovalBasicInfo, OperationStatus, OperationType } from "@/types/AuthCenter/data.d";
 import React, { useRef, useState } from "react";
-import { ApprovalListState } from "@/types/ApprovalCenter/state.d";
-import { InitApprovalList } from "@/types/ApprovalCenter/init.d";
+import { InitApprovalList } from "@/types/AuthCenter/init.d";
 import { ActionType, ProColumns } from "@ant-design/pro-table";
 import { Button, Flex, Tag } from "antd";
 import { l } from "@/utils/intl";
@@ -14,8 +32,8 @@ import { TaskState } from "@/pages/DataStudio/type";
 import TaskInfoModal from "@/pages/AuthCenter/Approval/components/TaskInfoModal";
 import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
 import { useAsyncEffect } from "ahooks";
-import { getValueFromLocalStorage } from "@/utils/function";
-import { TENANT_ID } from "@/services/constants";
+import { getTenantByLocalStorage } from "@/utils/function";
+import { ApprovalListState } from "@/types/AuthCenter/state.d";
 
 
 type UserFormProps = {
@@ -26,6 +44,9 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
 
   // approval list
   const [approvalListState, setApprovalListState] = useState<ApprovalListState>(InitApprovalList);
+
+  // users
+  const [userMap, setUserMap] = useState<Map<number, string>>();
 
   // active approval state
   const [activeApprovalState, setActiveApprovalState] = useState<{
@@ -44,12 +65,16 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   }>({operationType: OperationType.SUBMIT, operationModalOpen: false, operationDesc: ''});
 
   const actionRef = useRef<ActionType>(); // table action
-  const userMap: Map<number, string> = new Map();
+
+  // get user list
   useAsyncEffect(async () => {
-    const usersRes = await queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, {id: getValueFromLocalStorage(TENANT_ID)});
+    const tempUserMap: Map<number, string> = new Map();
+    const usersRes = await queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, {id: getTenantByLocalStorage()});
     usersRes.users.forEach((user) => {
-      userMap.set(user.id, user.username);
+      tempUserMap.set(user.id, user.username);
     });
+    setUserMap(tempUserMap);
+    actionRef.current?.reload();
   }, []);
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
@@ -111,8 +136,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     queryRes.data.forEach((approval) => {
       convertedQueryRes.push({
         ...approval,
-        submitterName: userMap.get(approval.submitter),
-        reviewerName: userMap.get(approval.reviewer)
+        submitterName: userMap?.get(approval.submitter),
+        reviewerName: userMap?.get(approval.reviewer)
       })
     })
     console.log(convertedQueryRes)

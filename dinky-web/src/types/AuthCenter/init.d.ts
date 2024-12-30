@@ -26,7 +26,8 @@ import {
   TenantListState,
   TenantTransferState,
   TokenListState,
-  UserListState
+  UserListState,
+  ApprovalListState
 } from '@/types/AuthCenter/state.d';
 import { InitContextMenuPosition } from '@/types/Public/state.d';
 
@@ -141,6 +142,13 @@ export const InitUserListState: UserListState = {
 export const InitTokenListState: TokenListState = {
   loading: false,
   value: {},
+  addedOpen: false,
+  editOpen: false
+};
+
+export const InitApprovalList: ApprovalListState = {
+  approvalList: [],
+  loading: false,
   addedOpen: false,
   editOpen: false
 };

@@ -25,7 +25,7 @@ import { getValueFromLocalStorage, registerEditorKeyBindingAndAction } from '@/u
 import { Monaco } from '@monaco-editor/react';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import {
-  ApartmentOutlined,
+  ApartmentOutlined, AuditOutlined,
   BugOutlined,
   CaretRightOutlined,
   ClearOutlined,
@@ -91,7 +91,7 @@ import {
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs, LineageDetailInfo } from '@/types/DevOps/data';
 import { lockTask, matchLanguage } from '@/pages/DataStudio/function';
-import {ApprovalIcon, PushpinIcon} from '@/components/Icons/CustomIcons';
+import { PushpinIcon } from '@/components/Icons/CustomIcons';
 import { assert, isSql } from '@/pages/DataStudio/utils';
 import { DIALECT } from '@/services/constants';
 import { SysConfigStateType } from '@/pages/SettingCenter/GlobalSetting/model';
@@ -111,8 +111,8 @@ import {
 } from '@/types/Studio/data';
 import PushDolphin from '@/pages/DataStudio/CenterTabContent/SqlTask/PushDolphin';
 import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
-import {OperationType} from "@/types/ApprovalCenter/data.d";
-import {getAllConfig} from "@/pages/Metrics/service";
+import { OperationType } from "@/types/AuthCenter/data.d";
+import { getAllConfig } from "@/pages/Metrics/service";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -1047,9 +1047,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
             />
             <RunToolBarButton
               isShow={approvalState.enableApproval}
+              disabled={isLockTask}
               showDesc={showDesc}
               desc={l('approval.operation.create')}
-              icon={<ApprovalIcon/>}
+              icon={<AuditOutlined/>}
               onClick={handleOpenApprovalModal}
             />
           </Flex>

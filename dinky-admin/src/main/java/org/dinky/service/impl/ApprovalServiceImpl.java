@@ -1,16 +1,31 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import lombok.RequiredArgsConstructor;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.dto.ApprovalDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ApprovalEvent;
 import org.dinky.data.enums.ApprovalStatus;
 import org.dinky.data.enums.JobLifeCycle;
-import org.dinky.data.exception.BusException;
+import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.Approval;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.rbac.Role;
@@ -22,9 +37,7 @@ import org.dinky.service.ApprovalService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TaskService;
 import org.dinky.service.UserService;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +46,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.PostConstruct;
+
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.dev33.satoken.stp.StpUtil;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -119,7 +142,9 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
     public List<User> getTaskReviewerList(Integer tenantId) {
         // get users with reviewer role
         Set<String> reviewerRoles = SystemConfiguration.getInstances().getReviewerRoles();
-        List<Role> roles = roleService.list(new LambdaQueryWrapper<Role>().in(Role::getRoleCode, reviewerRoles).eq(Role::getTenantId, tenantId));
+        List<Role> roles = roleService.list(new LambdaQueryWrapper<Role>()
+                .in(Role::getRoleCode, reviewerRoles)
+                .eq(Role::getTenantId, tenantId));
         // get super admin
         User superAdmin = userService.getById(1);
         Map<Integer, User> userMap = new HashMap<>();
@@ -127,7 +152,8 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         for (Role role : roles) {
             List<User> userList = roleService.getUserListByRoleId(role.getId());
             for (User user : userList) {
-                if (SystemConfiguration.getInstances().enforceCrossView() && user.getId().equals(StpUtil.getLoginIdAsInt())) {
+                if (SystemConfiguration.getInstances().enforceCrossView()
+                        && user.getId().equals(StpUtil.getLoginIdAsInt())) {
                     continue;
                 }
                 userMap.put(user.getId(), user);
@@ -140,15 +166,19 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         Approval approval = baseMapper.selectById(approvalDTO.getId());
         // permission check
         if (!checkApprovalPermission(approval, event)) {
-            throw new BusException("No operation permission!");
+            throw new DinkyException("No operation permission!");
+        }
+        // reviewer check
+        if (event.equals(ApprovalEvent.SUBMIT) && !isValidReviewer(approvalDTO.getReviewer())) {
+            throw new DinkyException("Reviewer is not valid!");
         }
         // only one approval in process check
         if (event.equals(ApprovalEvent.SUBMIT) && alreadyHaveOneInProcess(approval.getTaskId())) {
-            throw new BusException("Already have a approval in process");
+            throw new DinkyException("Already have a approval in process");
         }
         // status machine execute
         if (!validPreStatusMap.get(event).contains(ApprovalStatus.fromValue(approval.getStatus()))) {
-            throw new BusException("Not a valid operation!");
+            throw new DinkyException("Not a valid operation!");
         }
         approval.setStatus(operationResultMap.get(event).getValue());
         // handle other information
@@ -167,20 +197,7 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         // permission check
         switch (event) {
             case SUBMIT:
-                // get reviewer permission
-                Integer reviewer = approval.getReviewer();
-                List<Role> roleList = roleService.getRoleByUserId(reviewer);
-                Set<String> reviewerRoles = SystemConfiguration.getInstances().getReviewerRoles();
-                boolean reviewerCheckSucceed = false;
-                for (Role role : roleList) {
-                    // reviewer role or super admin
-                    if (reviewerRoles.contains(role.getRoleName()) || reviewer == 1) {
-                        reviewerCheckSucceed = true;
-                        break;
-                    }
-                }
-                // check submitter task operate permission
-                return reviewerCheckSucceed && taskService.checkTaskOperatePermission(approval.getTaskId());
+                taskService.checkTaskOperatePermission(approval.getTaskId());
             case WITHDRAW:
             case CANCEL:
                 return StpUtil.getLoginIdAsInt() == approval.getSubmitter();
@@ -188,8 +205,29 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
             case REJECT:
                 return StpUtil.getLoginIdAsInt() == approval.getReviewer();
             default:
-                throw new BusException("No approval permission");
+                throw new DinkyException("No approval permission");
         }
+    }
+
+    /**
+     * check if user has reviewer role
+     * @param reviewer user id
+     * @return true if reviewer is valid
+     */
+    private boolean isValidReviewer(Integer reviewer) {
+        // super admin
+        if (reviewer == 1) {
+            return true;
+        }
+        List<Role> roleList = roleService.getRoleByUserId(reviewer);
+        Set<String> reviewerRoles = SystemConfiguration.getInstances().getReviewerRoles();
+        for (Role role : roleList) {
+            // reviewer role or super admin
+            if (reviewerRoles.contains(role.getRoleName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -216,10 +254,12 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         validPreStatusMap = new HashMap<>();
         validPreStatusMap.put(ApprovalEvent.SUBMIT, new HashSet<>(Collections.singletonList(ApprovalStatus.CREATED)));
         validPreStatusMap.put(ApprovalEvent.CANCEL, new HashSet<>(Collections.singletonList(ApprovalStatus.CREATED)));
-        validPreStatusMap.put(ApprovalEvent.WITHDRAW, new HashSet<>(Collections.singletonList(ApprovalStatus.SUBMITTED)));
-        validPreStatusMap.put(ApprovalEvent.APPROVE, new HashSet<>(Collections.singletonList(ApprovalStatus.SUBMITTED)));
+        validPreStatusMap.put(
+                ApprovalEvent.WITHDRAW, new HashSet<>(Collections.singletonList(ApprovalStatus.SUBMITTED)));
+        validPreStatusMap.put(
+                ApprovalEvent.APPROVE, new HashSet<>(Collections.singletonList(ApprovalStatus.SUBMITTED)));
         validPreStatusMap.put(ApprovalEvent.REJECT, new HashSet<>(Collections.singletonList(ApprovalStatus.SUBMITTED)));
-        //operation result
+        // operation result
         operationResultMap = new HashMap<>();
         operationResultMap.put(ApprovalEvent.SUBMIT, ApprovalStatus.SUBMITTED);
         operationResultMap.put(ApprovalEvent.CANCEL, ApprovalStatus.CANCELED);

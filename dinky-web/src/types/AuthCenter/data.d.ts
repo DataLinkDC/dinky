@@ -142,3 +142,36 @@ export interface SysToken extends ExcludeNameAndEnableColumns {
   creator: number;
   updator: number;
 }
+
+export type ApprovalBasicInfo = {
+  id: number;
+  taskId: number;
+  previousTaskVersion: number;
+  currentTaskVersion: number;
+  status: OperationStatus;
+  submitterName: string;
+  submitterComment: string;
+  reviewerName: string;
+  reviewerComment: string;
+  createTime: string;
+  updateTime: string;
+};
+
+export enum OperationType {
+  UNKNOWN = 'UNKNOWN',
+  CREATE = 'CREATE',
+  SUBMIT = 'SUBMIT',
+  WITHDRAW = 'WITHDRAW',
+  APPROVE = 'APPROVE',
+  REJECT = 'REJECTED',
+  CANCEL = 'CANCEL'
+}
+
+export enum OperationStatus {
+  UNKNOWN = 'UNKNOWN',
+  CREATED = 'CREATED',
+  SUBMITTED = 'SUBMITTED',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  CANCELED = 'CANCELED'
+}
