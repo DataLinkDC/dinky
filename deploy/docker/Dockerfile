@@ -3,7 +3,7 @@ ARG DINKY_VERSION
 
 FROM flink:${FLINK_VERSION}-scala_2.12-java8 as flink-base
 
-FROM  node:18.15.0-alpine3.17 AS ui-build
+FROM  node:18 AS ui-build
 WORKDIR /build/
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
@@ -11,7 +11,7 @@ ENV UMI_ENV=production
 
 # 单独分离 package.json，是为了安装依赖可最大限度利用缓存
 ADD ./dinky-web/package.json /build/package.json
-RUN npm install
+RUN npm install --legacy-peer-deps
 ADD ./dinky-web .
 RUN npm run build
 
