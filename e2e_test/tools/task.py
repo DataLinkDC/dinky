@@ -23,11 +23,13 @@ class FlinkRunMode(Enum):
 
     @staticmethod
     def getAllMode():
-        return [FlinkRunMode.LOCAL, FlinkRunMode.STANDALONE, FlinkRunMode.YARN_APPLICATION,FlinkRunMode.KUBERNETES_APPLICATION]
+        # todo 这里暂时剔除 local，因为并发场景下，会出现接口卡住问题
+        return [FlinkRunMode.STANDALONE, FlinkRunMode.YARN_APPLICATION, FlinkRunMode.KUBERNETES_APPLICATION]
 
 
 class Task:
-    def __init__(self, session: requests.Session, cluster_id: int, yarn_cluster_id: int,k8s_native_cluster_id: int, parent_id: int, name: str,
+    def __init__(self, session: requests.Session, cluster_id: int, yarn_cluster_id: int, k8s_native_cluster_id: int,
+                 parent_id: int, name: str,
                  statement):
         self.session = session
         self.cluster_id = cluster_id
@@ -125,7 +127,7 @@ class Task:
 
         if is_async:
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                results = [executor.submit(taskFunc, model ) for model in modes]
+                results = [executor.submit(taskFunc, model) for model in modes]
                 for result in results:
                     result.result()
         else:

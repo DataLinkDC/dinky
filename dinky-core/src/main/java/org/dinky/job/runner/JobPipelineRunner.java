@@ -83,7 +83,6 @@ public class JobPipelineRunner extends AbstractJobRunner {
         } else {
             log.error(
                     "Only one pipeline job is executed. The statement has be skipped: " + jobStatement.getStatement());
-            return;
         }
     }
 
