@@ -155,7 +155,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        flink: [ '1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20' ]
+        flink: [ '1.15', '1.16', '1.17', '1.18', '1.19', '1.20' ]
     runs-on: ubuntu-latest
     services:
       registry:
@@ -220,13 +220,10 @@ jobs:
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
           compose-file: ./e2e_test/docker-compose-env/hadoop/docker-compose.yml
-      - name: Replace Flink  docker-compose yml
-        run: |
-          export FLINK_VERSION=${{ matrix.flink }} && envsubst < ./e2e_test/docker-compose-env/flink/docker-compose.yml > ./e2e_test/docker-compose-env/flink/docker-compose-${{ matrix.flink }}.yml
       - name: Init Run Docker Flink
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
-          compose-file: ./e2e_test/docker-compose-env/flink/docker-compose-${{ matrix.flink }}.yml
+          compose-file: ./e2e_test/docker-compose-env/flink/docker-compose.yml
           # k8s  env
       - name: Init k3s
         uses: nolar/setup-k3d-k3s@v1
