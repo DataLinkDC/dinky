@@ -15,7 +15,7 @@ RUN npm install --legacy-peer-deps
 ADD ./dinky-web .
 RUN npm run build
 
-FROM maven:3.9-eclipse-temurin-8-alpine AS build
+FROM maven:3.9-eclipse-temurin-8 AS build
 WORKDIR /build/
 ARG FLINK_VERSION
 ARG DINKY_VERSION

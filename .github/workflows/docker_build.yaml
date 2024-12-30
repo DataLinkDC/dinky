@@ -52,7 +52,7 @@ jobs:
           username: ${{ secrets.DOCKER_IO_USER  }}
           password: ${{ secrets.DOCKER_IO_PASS  }}
       # 登录 aliyun docker hub
-      - name: Login to DockerHub
+      - name: Login to Aliyun Docker
         uses: docker/login-action@v3
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
