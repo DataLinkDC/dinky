@@ -47,7 +47,7 @@ USER root
 COPY --from=build /build/release/dinky /opt/dinky/
 COPY --from=flink-base  /opt/flink  /opt/flink
 COPY --from=flink-base  /docker-entrypoint.sh  /docker-entrypoint.sh
-RUN ln -sT /opt/flink/lib/*.jar  /opt/dinky/extends/flink${FLINK_VERSION}/flink
+RUN ln -s /opt/flink/lib/  /opt/dinky/extends/flink${FLINK_VERSION}/flink
 
 RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && sed -i 's/-Xms512M -Xmx2048M -XX:PermSize=512M/-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0/g' ./bin/auto.sh
 
