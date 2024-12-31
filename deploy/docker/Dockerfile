@@ -12,11 +12,10 @@ ENV H2_DB=./tmp/db/h2
 USER root
 
 ADD build/dinky-release*.tar.gz /opt
-RUN  mv /opt/dinky-release* /opt/dinky
+RUN  mv /opt/dinky-release* /opt/dinky && ln -s /opt/flink/lib/*  /opt/dinky/extends/flink${FLINK_VERSION}/
 ADD  build/dist/ /opt/dinky/html
 
 WORKDIR /opt/dinky/
-RUN ln -s /opt/flink/lib/*  /opt/dinky/extends/flink${FLINK_VERSION}/
 
 
 RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && sed -i 's/-Xms512M -Xmx2048M -XX:PermSize=512M/-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0/g' ./bin/auto.sh
