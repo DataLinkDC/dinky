@@ -25,7 +25,7 @@ on:
         required: true
 
 jobs:
-  build_releases:
+  build_docker_images:
     name: build releases
     runs-on: ubuntu-latest
     strategy:
@@ -73,3 +73,5 @@ jobs:
           tags: |
             dinkydocker/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
             registry.cn-hangzhou.aliyuncs.com/dinky/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
