@@ -2,6 +2,8 @@ ARG FLINK_VERSION
 ARG DINKY_VERSION
 
 FROM flink:${FLINK_VERSION}-scala_2.12-java8 as flink-base
+RUN rm -f /opt/flink/lib/flink-table-planner-loader*.jar  &&  cp /opt/flink/opt/flink-python*.jar /opt/flink/lib/ && cp /opt/flink/opt/flink-table-planner*.jar /opt/flink/lib/ 2>/dev/null || :
+
 
 FROM  node:18 AS ui-build
 WORKDIR /build/
@@ -43,10 +45,9 @@ WORKDIR /opt/dinky/
 USER root
 
 COPY --from=build /build/release/dinky /opt/dinky/
-COPY --from=flink-base  /opt/flink/lib/*.jar  /opt/dinky/extends/flink${FLINK_VERSION}/flink/
-RUN rm -f  /opt/dinky/extends/flink${FLINK_VERSION}/flink/flink-table-planner-loader*.jar
-
-COPY --from=flink-base  /opt/flink/opt/flink-table-planner*.jar /opt/dinky/extends/flink${FLINK_VERSION}/flink/
+COPY --from=flink-base  /opt/flink  /opt/flink
+COPY --from=flink-base  /docker-entrypoint.sh  /docker-entrypoint.sh
+RUN ln -sT /opt/flink/lib/*.jar  /opt/dinky/extends/flink${FLINK_VERSION}/flink
 
 RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && sed -i 's/-Xms512M -Xmx2048M -XX:PermSize=512M/-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0/g' ./bin/auto.sh
 
