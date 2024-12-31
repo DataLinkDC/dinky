@@ -50,6 +50,7 @@ import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.mybatis.util.ProTableUtil;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
+import org.dinky.service.FragmentVariableService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
@@ -85,6 +86,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final JobHistoryService jobHistoryService;
+    private final FragmentVariableService fragmentVariableService;
 
     @Override
     public JobInstance getByIdWithoutTenant(Integer id) {
@@ -295,7 +297,13 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement(), ExecutorConfig.DEFAULT);
+        ExecutorConfig config = ExecutorConfig.builder()
+                .checkpoint(0)
+                .parallelism(1)
+                .useSqlFragment(true)
+                .variables(fragmentVariableService.listEnabledVariables())
+                .build();
+        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement(), config);
     }
 
     @Override
