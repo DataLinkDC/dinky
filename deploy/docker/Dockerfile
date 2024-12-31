@@ -44,7 +44,7 @@ ENV H2_DB=./tmp/db/h2
 USER root
 
 ADD build/dinky-release*.tar.gz /opt
-RUN  mv /opt/dinky-release* /opt/dinky && tree /opt
+RUN  mv /opt/dinky-release* /opt/dinky && ls -R /opt
 ADD  build/dist/ /opt/dinky/html
 
 WORKDIR /opt/dinky/
