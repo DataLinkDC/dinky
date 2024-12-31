@@ -1,7 +1,7 @@
 ARG FLINK_VERSION
 ARG DINKY_VERSION
 
-FROM flink:${FLINK_VERSION}-scala_2.12-java8 as flink-base
+FROM flink:${FLINK_VERSION}-scala_2.12-java8
 RUN rm -f /opt/flink/lib/flink-table-planner-loader*.jar  &&  cp /opt/flink/opt/flink-python*.jar /opt/flink/lib/ && cp /opt/flink/opt/flink-table-planner*.jar /opt/flink/lib/ 2>/dev/null || :
 
 ENV FLINK_VERSION=${FLINK_VERSION}
@@ -12,7 +12,7 @@ ENV H2_DB=./tmp/db/h2
 USER root
 
 ADD build/dinky-release*.tar.gz /opt
-RUN  mv /opt/dinky-release* /opt/dinky && ls -R /opt
+RUN  mv /opt/dinky-release* /opt/dinky
 ADD  build/dist/ /opt/dinky/html
 
 WORKDIR /opt/dinky/
