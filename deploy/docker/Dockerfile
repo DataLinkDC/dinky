@@ -12,8 +12,8 @@ ENV H2_DB=./tmp/db/h2
 USER root
 
 ADD build/dinky-release*.tar.gz /opt
-RUN  mv /opt/dinky-release* /opt/dinky && ln -s /opt/flink/lib/*  /opt/dinky/extends/flink${FLINK_VERSION}/
-ADD  build/dist/ /opt/dinky/html
+RUN  mv /opt/dinky-release* /opt/dinky && ln -s /opt/flink/lib/*  /opt/dinky/extends/flink${FLINK_VERSION}/ && mkdir /opt/dinky/config/static
+ADD  build/dist/ /opt/dinky/config/static
 
 WORKDIR /opt/dinky/
 
