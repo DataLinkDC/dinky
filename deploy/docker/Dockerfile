@@ -46,7 +46,7 @@ USER root
 
 ADD build/dinky-release*.tar.gz /opt
 RUN ls /opt && mv /opt/dinky-release* /opt/dinky
-COPY  build/dist/ /opt/dinky/html
+ADD  build/dist/ /opt/dinky/html
 
 COPY --from=flink-base  /opt/flink  /opt/flink
 COPY --from=flink-base  /docker-entrypoint.sh  /docker-entrypoint.sh
