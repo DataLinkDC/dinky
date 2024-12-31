@@ -40,17 +40,18 @@ ENV FLINK_VERSION=${FLINK_VERSION}
 ENV DINKY_HOME=/opt/dinky/
 ENV H2_DB=./tmp/db/h2
 
-WORKDIR /opt/dinky/
 
 USER root
 
 ADD build/dinky-release*.tar.gz /opt
-RUN ls /opt && mv /opt/dinky-release* /opt/dinky
+RUN  mv /opt/dinky-release* /opt/dinky && tree /opt
 ADD  build/dist/ /opt/dinky/html
 
 COPY --from=flink-base  /opt/flink  /opt/flink
 COPY --from=flink-base  /docker-entrypoint.sh  /docker-entrypoint.sh
-RUN ln -s /opt/flink/lib/  /opt/dinky/extends/flink${FLINK_VERSION}/
+RUN ln -s /opt/flink/lib/  /opt/dinky/extends/flink${FLINK_VERSION}
+
+WORKDIR /opt/dinky/
 
 RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && sed -i 's/-Xms512M -Xmx2048M -XX:PermSize=512M/-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0/g' ./bin/auto.sh
 
