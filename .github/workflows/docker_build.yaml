@@ -133,6 +133,8 @@ jobs:
         with:
           name: dinky-web
           path: ./build
+      - run: |
+          tree ./build
       # 设置 QEMU, 后面 docker buildx 依赖此.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
