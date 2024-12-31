@@ -166,11 +166,12 @@ jobs:
           file: ./deploy/docker/Dockerfile
           # 是否 docker push
           push: true
+          context: .
           build-args: |
             FLINK_VERSION=${{ matrix.flink }}
             DINKY_VERSION=${{ inputs.dinky_version }}
           tags: |
             dinkydocker/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
             registry.cn-hangzhou.aliyuncs.com/dinky/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+#          cache-from: type=gha
+#          cache-to: type=gha,mode=max
