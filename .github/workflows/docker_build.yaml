@@ -112,7 +112,7 @@ jobs:
           path: ./build/dinky-release*.tar.gz
 
   build_image:
-    name: build releases
+    name: build image
     runs-on: ubuntu-latest
     needs: [build_front,build_release]
     strategy:
