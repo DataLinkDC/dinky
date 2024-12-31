@@ -185,11 +185,6 @@ public class PermissionConstants {
     public static final String AUTH_ROLE_VIEW_USER_LIST = "auth:role:viewUser";
 
     /**
-     * auth approval
-     */
-    public static final String AUTH_APPROVAL = "auth:approval";
-
-    /**
      * Row Permissions
      */
     public static final String AUTH_ROW_PERMISSIONS_ADD = "auth:rowPermissions:add";

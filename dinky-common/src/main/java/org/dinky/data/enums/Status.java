@@ -479,7 +479,7 @@ public enum Status {
     SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES(210, "sys.approval.settings.taskReviewerRoles"),
     SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES_NOTE(211, "sys.approval.settings.taskReviewerRoles.note"),
     SYS_APPROVAL_TASK_NOT_APPROVED(212, "sys.approval.taskNotApproved"),
-    ;
+    SYS_APPROVAL_DUPLICATE_APPROVAL_IN_PROCESS(213, "sys.approval.duplicateInProcess");
     private final int code;
     private final String key;
 

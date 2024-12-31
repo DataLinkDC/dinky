@@ -21,11 +21,12 @@ import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
 import { Button, Col, Divider, Flex, Row, Skeleton, TabsProps } from 'antd';
 import '../index.less';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { getValueFromLocalStorage, registerEditorKeyBindingAndAction } from '@/utils/function';
+import { registerEditorKeyBindingAndAction } from '@/utils/function';
 import { Monaco } from '@monaco-editor/react';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import {
-  ApartmentOutlined, AuditOutlined,
+  ApartmentOutlined,
+  AuditOutlined,
   BugOutlined,
   CaretRightOutlined,
   ClearOutlined,

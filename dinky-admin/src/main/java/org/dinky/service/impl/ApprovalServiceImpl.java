@@ -20,11 +20,14 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.constant.BaseConstant;
 import org.dinky.data.dto.ApprovalDTO;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.enums.ApprovalEvent;
 import org.dinky.data.enums.ApprovalStatus;
 import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.Approval;
 import org.dinky.data.model.SystemConfiguration;
@@ -146,9 +149,9 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
                 .in(Role::getRoleCode, reviewerRoles)
                 .eq(Role::getTenantId, tenantId));
         // get super admin
-        User superAdmin = userService.getById(1);
+        User superAdmin = userService.getById(BaseConstant.ADMIN_ID);
         Map<Integer, User> userMap = new HashMap<>();
-        userMap.put(1, superAdmin);
+        userMap.put(BaseConstant.ADMIN_ID, superAdmin);
         for (Role role : roles) {
             List<User> userList = roleService.getUserListByRoleId(role.getId());
             for (User user : userList) {
@@ -174,7 +177,7 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
         }
         // only one approval in process check
         if (event.equals(ApprovalEvent.SUBMIT) && alreadyHaveOneInProcess(approval.getTaskId())) {
-            throw new DinkyException("Already have a approval in process");
+            throw new BusException(Status.SYS_APPROVAL_DUPLICATE_APPROVAL_IN_PROCESS);
         }
         // status machine execute
         if (!validPreStatusMap.get(event).contains(ApprovalStatus.fromValue(approval.getStatus()))) {
@@ -216,7 +219,7 @@ public class ApprovalServiceImpl extends SuperServiceImpl<ApprovalMapper, Approv
      */
     private boolean isValidReviewer(Integer reviewer) {
         // super admin
-        if (reviewer == 1) {
+        if (reviewer == BaseConstant.ADMIN_ID) {
             return true;
         }
         List<Role> roleList = roleService.getRoleByUserId(reviewer);

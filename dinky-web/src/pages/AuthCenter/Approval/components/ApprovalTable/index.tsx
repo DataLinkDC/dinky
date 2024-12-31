@@ -84,7 +84,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     setApprovalListState((prevState) => ({...prevState, loading: false}));
   };
 
-  const handleApprovalOperation = (operation: OperationType, entity: ApprovalBasicInfo) => {
+  const handleOperationButtonClick = (operation: OperationType, entity: ApprovalBasicInfo) => {
     setActiveApprovalState((prevState) => ({...prevState, activeId: entity.id}));
     switch (operation) {
       case OperationType.SUBMIT:
@@ -117,13 +117,13 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   const handleWithdraw = async (entity: ApprovalBasicInfo) => {
     await executeAndCallbackRefresh(async () => {
       await handleOption(API_CONSTANTS.APPROVAL_WITHDRAW, l('approval.operation.withdraw'), entity);
-    })
+    });
   };
 
   const handleCancel = async (entity: ApprovalBasicInfo) => {
     await executeAndCallbackRefresh(async () => {
       await handleOption(API_CONSTANTS.APPROVAL_CANCEL, l('approval.operation.cancel'), entity);
-    })
+    });
   };
 
   const queryApproval = async (params, sorter, filter: any) => {
@@ -139,8 +139,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         submitterName: userMap?.get(approval.submitter),
         reviewerName: userMap?.get(approval.reviewer)
       })
-    })
-    console.log(convertedQueryRes)
+    });
     return {...queryRes, data: convertedQueryRes};
   }
 
@@ -171,7 +170,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     })
   }
 
-  const handleApprovalEvent = async (record) => {
+  const handleApprovalSubmit = async (record) => {
     await executeAndCallbackRefresh(async () => {
       switch (operationState.operationType) {
         case OperationType.SUBMIT:
@@ -203,7 +202,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
               size={'small'}
               type={'primary'}
               onClick={() => {
-                handleApprovalOperation(OperationType.SUBMIT, entity);
+                handleOperationButtonClick(OperationType.SUBMIT, entity);
               }}
             >
               {l('approval.operation.submit')}
@@ -228,7 +227,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
               size={'small'}
               type={'primary'}
               onClick={() => {
-                handleApprovalOperation(OperationType.APPROVE, entity);
+                handleOperationButtonClick(OperationType.APPROVE, entity);
               }}
             >
               {l('approval.operation.approve')}
@@ -239,7 +238,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
               size={'small'}
               type={'primary'}
               onClick={() => {
-                handleApprovalOperation(OperationType.REJECT, entity);
+                handleOperationButtonClick(OperationType.REJECT, entity);
               }}
               danger
             >
@@ -389,7 +388,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
         title={operationState.operationDesc}
         activeId={activeApprovalState.activeId}
         operationType={operationState.operationType}
-        handleSubmit={handleApprovalEvent}
+        handleSubmit={handleApprovalSubmit}
       />
       <TaskInfoModal
         open={activeApprovalState.taskInfoOpen}

@@ -17,13 +17,13 @@
  *
  */
 
-import React, {useState} from "react";
-import {Alert, Space} from "antd";
-import {l} from "@/utils/intl";
+import React, { useState } from "react";
+import { Alert, Space } from "antd";
+import { l } from "@/utils/intl";
 import useHookRequest from "@/hooks/useHookRequest";
-import {getAllConfig} from "@/pages/Metrics/service";
+import { getAllConfig } from "@/pages/Metrics/service";
 import SlowlyAppear from "@/components/Animation/SlowlyAppear";
-import {PageContainer, ProCard} from "@ant-design/pro-components";
+import { PageContainer, ProCard } from "@ant-design/pro-components";
 import ApprovalTable from "@/pages/AuthCenter/Approval/components/ApprovalTable";
 
 

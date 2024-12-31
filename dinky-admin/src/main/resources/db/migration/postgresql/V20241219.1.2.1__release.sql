@@ -61,7 +61,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_reviewer_union_idx ON public.dinky_a
 
 INSERT INTO public.dinky_sys_menu(id, parent_id, name, path, component, perms, icon, type, display, order_num,
                                   create_time, update_time, note)
-VALUES (176, 4, '审批发布', '/auth/approval', './AuthCenter/Approval', 'auth:approval', 'AuditOutlined', 'C', 0, 169,
+VALUES (176, 4, '审批发布', '/auth/approval', './AuthCenter/Approval', 'auth:approval:operate', 'AuditOutlined', 'C', 0, 169,
         '2024-12-10 12:13:00', '2024-12-10 12:13:00', null);
 
 insert into `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`,
