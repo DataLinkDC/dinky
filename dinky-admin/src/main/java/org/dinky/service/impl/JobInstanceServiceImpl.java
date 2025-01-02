@@ -297,13 +297,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        ExecutorConfig config = ExecutorConfig.builder()
-                .checkpoint(0)
-                .parallelism(1)
-                .useSqlFragment(true)
-                .variables(fragmentVariableService.listEnabledVariables())
-                .build();
-        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement(), config);
+        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement(), history.getConfigJson());
     }
 
     @Override
