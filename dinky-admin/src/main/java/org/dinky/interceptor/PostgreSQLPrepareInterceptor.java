@@ -44,7 +44,12 @@ public class PostgreSQLPrepareInterceptor implements Interceptor {
         BoundSql boundSql = statementHandler.getBoundSql();
         Field field = boundSql.getClass().getDeclaredField("sql");
         field.setAccessible(true);
-        field.set(boundSql, boundSql.getSql().replace("`", "\"").toLowerCase());
+        field.set(
+                boundSql,
+                boundSql.getSql()
+                        .replace("`", "\"")
+                        .replace("concat('%', ?, '%')", "concat('%', ?::text, '%')")
+                        .toLowerCase());
         return invocation.proceed();
     }
 
