@@ -307,7 +307,6 @@ export enum API_CONSTANTS {
   SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions',
 
   // ------------------------------------ approval ------------------------------------
-  TASK_NEED_APPROVE = '/api/approval/needApprove',
   TASK_APPROVAL_CREATE = '/api/approval/createTaskApproval',
   GET_REVIEWERS = '/api/approval/getReviewers',
   APPROVAL_SUBMIT = '/api/approval/submit',

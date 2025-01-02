@@ -222,12 +222,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
 
   const [approvalState, setApprovalState] = useState<{
     enableApproval: boolean,
-    currentTaskNeedApproval: boolean;
     openSubmitModal: boolean;
     currentApprovalId: number;
   }>({
     enableApproval: false,
-    currentTaskNeedApproval: false,
     openSubmitModal: false,
     currentApprovalId: -1
   })
@@ -286,13 +284,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     for (const config of allConfig.data.approval) {
       if (config.key === 'sys.approval.settings.enableTaskSubmitReview') {
         if (config.value) {
-          // enable approval submit button
+          // show approval submit button
           setApprovalState(prevState => ({...prevState, enableApproval: true}));
-          // check if current task need approve
-          const needApproval = await queryDataByParams(API_CONSTANTS.TASK_NEED_APPROVE, { taskId: currentState.taskId });
-          if (needApproval) {
-            setApprovalState(prevState => ({...prevState, currentTaskNeedApproval: true}));
-          }
         }
       }
     }

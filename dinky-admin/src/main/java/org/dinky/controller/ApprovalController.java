@@ -112,12 +112,6 @@ public class ApprovalController {
         return Result.succeed();
     }
 
-    @GetMapping("/needApprove")
-    @ApiOperation("If task is approved and published")
-    Result<Boolean> needApprove(@RequestParam Integer taskId) {
-        return Result.succeed(approvalService.needApprove(taskId));
-    }
-
     @GetMapping("/getReviewers")
     @ApiOperation("Get reviewers that from current tenant")
     Result<List<User>> getReviewers(@RequestParam Integer tenantId) {
