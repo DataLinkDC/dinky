@@ -21,11 +21,14 @@ package org.dinky.data.enums;
 
 import org.dinky.assertion.Asserts;
 
+import lombok.Getter;
+
 /**
  * SubmitType
  *
  * @since 2021/10/29
  */
+@Getter
 public enum GatewayType {
     LOCAL("l", "local"),
     STANDALONE("s", "standalone"),
@@ -44,28 +47,15 @@ public enum GatewayType {
         this.longValue = longValue;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public String getLongValue() {
-        return longValue;
-    }
-
     public static GatewayType get(String value) {
         for (GatewayType type : GatewayType.values()) {
-            if (Asserts.isEquals(type.getValue(), value) || Asserts.isEquals(type.getLongValue(), value)) {
+            if (Asserts.isEquals(type.getValue(), value)
+                    || Asserts.isEquals(type.getLongValue(), value)
+                    || Asserts.isEquals(type.toString(), value)) {
                 return type;
             }
         }
         return GatewayType.LOCAL;
-    }
-
-    public static GatewayType getSessionType(String value) {
-        if (value.contains("kubernetes")) {
-            return GatewayType.KUBERNETES_SESSION;
-        }
-        return GatewayType.YARN_SESSION;
     }
 
     public GatewayType getSessionType() {

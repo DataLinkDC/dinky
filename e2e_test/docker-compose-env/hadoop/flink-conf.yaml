@@ -30,6 +30,7 @@
 # automatically configure the host name based on the hostname of the node where the
 # JobManager runs.
 
+
 # The RPC port where the JobManager is reachable.
 
 jobmanager.rpc.port: 6123
@@ -39,14 +40,14 @@ jobmanager.rpc.port: 6123
 #
 # Note this accounts for all memory usage within the JobManager process, including JVM metaspace and other overhead.
 
-jobmanager.memory.process.size: 16000m
+jobmanager.memory.process.size: 1024m
 
 
 # The total process memory size for the TaskManager.
 #
 # Note this accounts for all memory usage within the TaskManager process, including JVM metaspace and other overhead.
 
-taskmanager.memory.process.size: 17280m
+taskmanager.memory.process.size: 1024m
 
 # To exclude JVM metaspace and overhead, please, use total Flink memory size instead of 'taskmanager.memory.process.size'.
 # It is not recommended to set both 'taskmanager.memory.process.size' and Flink memory.
@@ -55,7 +56,7 @@ taskmanager.memory.process.size: 17280m
 
 # The number of task slots that each TaskManager offers. Each slot runs one parallel pipeline.
 
-taskmanager.numberOfTaskSlots: 20
+taskmanager.numberOfTaskSlots: 1
 
 # taskmanager.cpu.cores: 1
 # taskmanager.memory.task.heap.size: 1200m
@@ -157,11 +158,15 @@ jobmanager.execution.failover-strategy: region
 # The port to which the REST client connects to. If rest.bind-port has
 # not been specified, then the server will bind to this port as well.
 #
-rest.port: 8282
+#rest.port: 8282
 
 # The address to which the REST client will connect to
 #
 #rest.address: 0.0.0.0
+
+# Port range for the REST and web server to bind to.
+#
+#rest.bind-port: 50000-50100
 
 # The address that the REST & web server binds to
 #

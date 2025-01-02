@@ -19,6 +19,7 @@ name: Backend
 
 on:
   push:
+  workflow_dispatch:
   pull_request:
     branches:
       - dev
@@ -57,17 +58,17 @@ jobs:
             frontend:
               - 'dinky-web/**'
       - uses: actions/setup-node@v3
-        if:  steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.frontend == 'true'
         with:
           node-version: 16
       - name: Get npm cache directory
         id: npm-cache-dir
-        if:  steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.frontend == 'true'
         run: |
           echo "::set-output name=dir::$(npm config get cache)"
       - uses: actions/cache@v3
         id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        if:  steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.frontend == 'true'
         with:
           path: |
             ${{ steps.npm-cache-dir.outputs.dir }}
@@ -76,20 +77,25 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install Dependencies
-        if:  steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.frontend == 'true'
         run: cd dinky-web && npm install --no-audit --progress=false --legacy-peer-deps
       - name: Npm Web Build
-        if:  steps.filter.outputs.frontend == 'true'
+        if: steps.filter.outputs.frontend == 'true'
         run: cd dinky-web && npm run build
-  build_jdk:
-    name: Build_JDK
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dinky-web
+          path: ./dinky-web/dist
+  build_release:
+    name: Build Release
     runs-on: ubuntu-latest
     needs: check
     strategy:
       fail-fast: true
       matrix:
-        jdk: [8, 11]
-        flink: ['1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20']
+        jdk: [ 8, 11 ]
+        flink: [ '1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20' ]
 
     timeout-minutes: 30
     env:
@@ -100,7 +106,7 @@ jobs:
       - name: Set up JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v2
         with:
-          java-version:  ${{ matrix.jdk }}
+          java-version: ${{ matrix.jdk }}
           distribution: 'adopt'
       - name: Cache local Maven repository
         uses: actions/cache@v3
@@ -132,6 +138,135 @@ jobs:
       - name: Check package size
         run: |
           ./check_package_size.sh
-#      - name: Run Unit tests
-#        run: |
-#          ./mvnw -T 2C -B clean verify -Dmaven.test.skip=false -Dgpg.skip=true --no-snapshot-updates
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.jdk  == 8 }}
+        with:
+          name: dinky-realease-${{ matrix.flink }}
+          path: ./build/dinky-release*.tar.gz
+  #      - name: Run Unit tests
+  #        run: |
+  #          ./mvnw -T 2C -B clean verify -Dmaven.test.skip=false -Dgpg.skip=true --no-snapshot-updates
+
+
+  run_e2e:
+    name: Run E2E
+    needs: build_release
+    strategy:
+      fail-fast: true
+      matrix:
+        flink: [ '1.15', '1.16', '1.17', '1.18', '1.19', '1.20' ]
+    runs-on: ubuntu-latest
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Init  Docker Network
+        run: |
+          docker network create -d bridge --subnet 172.28.0.0/16  --gateway 172.28.0.1 dinky_net
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dinky-realease-${{ matrix.flink }}
+          path: ./build
+      # 设置 QEMU, 后面 docker buildx 依赖此.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      # 设置 Docker buildx, 方便构建 Multi platform 镜像
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+      - name: Build Dinky Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./e2e_test/docker-compose-env/Dockerfile
+          # 是否 docker push
+          push: true
+          build-args: |
+            FLINK_VERSION=${{ matrix.flink }}
+          tags: |
+            localhost:5000/dinky/dinky-test:flink
+      - name: Build Flink Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./e2e_test/docker-compose-env/FlinkDockerfile
+          # 是否 docker push
+          push: true
+          build-args: |
+            FLINK_VERSION=${{ matrix.flink }}
+          tags: |
+            localhost:5000/dinky/flink:flink
+      - name: Init  Env Jar
+        run: |
+          wget -O e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar  https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar &&
+          wget -O e2e_test/docker-compose-env/flink/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar  https://repo1.maven.org/maven2/org/apache/flink/flink-shaded-hadoop-2-uber/2.8.3-10.0/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar &&
+          wget -O e2e_test/docker-compose-env/dinky/javax.ws.rs-api-2.1.1.jar  https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.1.1/javax.ws.rs-api-2.1.1.jar
+      - name: Init Run Docker MySQL
+        uses: hoverkraft-tech/compose-action@v2.0.2
+        with:
+          compose-file: ./e2e_test/docker-compose-env/mysql/docker-compose.yml
+      - name: Init Run Docker Dinky
+        uses: hoverkraft-tech/compose-action@v2.0.2
+        with:
+          compose-file: ./e2e_test/docker-compose-env/dinky/docker-compose.yml
+      - name: Init Run Docker Hadoop
+        uses: hoverkraft-tech/compose-action@v2.0.2
+        with:
+          compose-file: ./e2e_test/docker-compose-env/hadoop/docker-compose.yml
+      - name: Init Run Docker Flink
+        uses: hoverkraft-tech/compose-action@v2.0.2
+        with:
+          compose-file: ./e2e_test/docker-compose-env/flink/docker-compose.yml
+          # k8s  env
+      - name: Init k3s
+        uses: nolar/setup-k3d-k3s@v1
+        with:
+          version: v1.25.16+k3s4
+          k3d-args: -s 1 --network dinky_net --api-port 172.28.0.1:6550
+      - name: Get k3s kube config
+        run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/172.28.0.1/g' ./kube/k3s.yaml
+      - name: Init k8s RBAC and namespace
+        run: |
+          kubectl create namespace dinky
+          kubectl create serviceaccount dinky -n dinky
+          kubectl create clusterrolebinding flink-role-binding-dinky --clusterrole=edit --serviceaccount=dinky:dinky
+      - name: Init k3s main images
+        run: |
+          docker exec k3d-k3s-default-server-0 crictl pull library/busybox:latest
+          docker exec k3d-k3s-default-server-0 crictl pull flink:${{ matrix.flink }}-scala_2.12-java8
+          docker pull localhost:5000/dinky/flink:flink
+          docker tag localhost:5000/dinky/flink:flink dinky/flink:flink
+          docker save -o flink.tar dinky/flink:flink
+          k3d images  import ./flink.tar
+          rm -rf ./flink.tar
+      - name: Test k3s host
+        run: |
+          curl -k https://172.28.0.1:6550
+      - name: Cp Flink Jar Deps
+        run: |
+          docker cp dinky:/opt/dinky/ ./dinky-release
+          mv ./dinky-release/jar/dinky-app*.jar e2e_test/docker-compose-env/dinky/dinky-app.jar
+      - name: Run python http server
+        run: |
+          mkdir -p logs
+          ls e2e_test/docker-compose-env/dinky/
+          nohup python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001 > ./logs/python_http.log &
+      - name: Run Docker Python Script
+        run: |
+          docker run  -v ./e2e_test/tools:/app -w /app -v ./kube:/kube -v ./e2e_test/docker-compose-env/dinky:/dinky/jar -v ./dinky-release/extends/flink${{ matrix.flink }}:/opt/flink/lib -v ./e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar:/opt/flink/lib/mysql-connector-java-8.0.30.jar   --net dinky_net --rm --entrypoint /bin/bash python:3.9 -c  'pip install  -r requirements.txt  &&  python main.py dinky:8888 ${{ matrix.flink }}'
+      - name: Get k8s pods info and logs
+        if: ${{ always() }}
+        run: |
+          chmod -R 755 ./e2e_test/view_k8s_all_pod_logs.sh
+          ./e2e_test/view_k8s_all_pod_logs.sh dinky
+      - name: Get Python HttpServer log
+        if: ${{ always() }}
+        run: |
+          cat ./logs/python_http.log

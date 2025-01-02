@@ -237,6 +237,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           statement: sqlConvertForm?.initSqlStatement ?? ''
         });
         setOriginStatementValue(sqlConvertForm?.initSqlStatement ?? '');
+        updateCenterTab({ ...props.tabData, params: newParams });
         if (params?.statement && params?.statement !== sqlConvertForm?.initSqlStatement) {
           setDiff([
             { key: 'statement', server: sqlConvertForm?.initSqlStatement, cache: params.statement }

@@ -67,7 +67,7 @@ select order_number,price,first_name,last_name,order_time from Orders
 
 ![](https://pic.dinky.org.cn/dinky/docs/zh-CN//2024-11-22/fast-guide-preview-result.png)
 :::tip 说明
-预览功能只支持select语句查询结果(目前不支持Application与Prejob预览功能)，如果您是正常的带有insert的FlinkSql作业，请点击`执行按钮`
+预览功能支持select语句、包含insert语句的FlinkSQL作业或CDCSOURCE整库同步作业的调试查询结果(目前不支持Application与Prejob预览功能)。
 :::
 
 ### 任务提交
@@ -158,4 +158,4 @@ Dinky使用了Websocket技术作为日志推流，如果您使用了nginx代理�
 ```
 
 ## 写在最后
-至此，您已经了解了基础DInky使用流程，但Dinky的能力远不止于此，您可以继续阅读其他文档，了解更多Dinky的功能，尽享Dinky为你带来的丝滑开发体验
+至此，您已经了解了基础Dinky使用流程，但Dinky的能力远不止于此，您可以继续阅读其他文档，了解更多Dinky的功能，尽享Dinky为你带来的丝滑开发体验

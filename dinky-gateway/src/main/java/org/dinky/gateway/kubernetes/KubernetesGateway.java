@@ -49,11 +49,11 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import alluxio.shaded.client.org.apache.commons.lang3.StringUtils;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.text.StrFormatter;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
 import io.fabric8.kubernetes.api.model.Pod;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -150,7 +150,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
     boolean isValidTaskName(String jobName) {
         String JOB_NAME_PATTERN = "^[a-z0-9][a-z0-9.-]*[a-z0-9]$";
         Pattern pattern = Pattern.compile(JOB_NAME_PATTERN);
-        if (StringUtils.isBlank(jobName)) {
+        if (StrUtil.isBlank(jobName)) {
             return false;
         }
         Matcher matcher = pattern.matcher(jobName);

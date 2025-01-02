@@ -4,6 +4,7 @@ networks:
     external: true
 services:
   mysql:
+    container_name: mysql
     restart: always
     image: mysql:5.7
     volumes:
