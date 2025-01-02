@@ -123,12 +123,12 @@ jobs:
       # git checkout 代码
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Download artifact
+      - name: Download backed artifact
         uses: actions/download-artifact@v4
         with:
           name: dinky-realease-${{ matrix.flink }}
           path: ./build
-      - name: Download artifact
+      - name: Download front artifact
         uses: actions/download-artifact@v4
         with:
           name: dinky-web
