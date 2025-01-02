@@ -21,13 +21,11 @@ package org.apache.calcite.sql;
 
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.RowLevelPermissionsContext;
-import org.dinky.executor.ExtendedParser;
 
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.validate.SqlValidator;
 import org.apache.calcite.sql.validate.SqlValidatorScope;
 import org.apache.calcite.util.ImmutableNullableList;
-import org.apache.flink.table.delegation.Parser;
 
 import java.util.List;
 import java.util.Objects;
@@ -134,14 +132,7 @@ public class SqlSelect extends SqlCall {
         if (permissionsMap != null) {
             String permissionsStatement = permissionsMap.get(tableName);
             if (permissionsStatement != null && !"".equals(permissionsStatement)) {
-                Parser parser = CustomTableEnvironmentContext.get().getParser();
-                if (parser instanceof ExtendedParser) {
-                    ExtendedParser extendedParser = (ExtendedParser) parser;
-                    permissions =
-                            (SqlBasicCall) (extendedParser.getCustomParser()).parseExpression(permissionsStatement);
-                } else {
-                    throw new RuntimeException("CustomParser is not set");
-                }
+                permissions = (SqlBasicCall) CustomTableEnvironmentContext.get().parseSql(permissionsStatement);
             }
         }
 
