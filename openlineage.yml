@@ -1,0 +1,5 @@
+#serverUrl: "http://192.168.0.84:5000"
+transport:
+#  type: console
+  type: "http"
+  url: "http://hadoop804:5000/api/v1/lineage"

@@ -21,6 +21,7 @@ package org.dinky.context;
 
 import static org.dinky.ws.GlobalWebSocket.sendTopic;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.dinky.aop.ProcessAspect;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.ProcessStatus;
@@ -233,6 +234,13 @@ public class ConsoleContextHolder {
     public synchronized void finishedProcess(String processName, ProcessStatus status, Throwable e) {
         ProcessEntity process = logPross.get(processName);
         try {
+            if(process==null) {
+                if(e!=null) {
+                    appendLog(processName, null, LogUtil.getError(e.getCause()), true);
+                    log.error("[{}] process is null, finishedProcess error: {}", processName, ExceptionUtils.getStackTrace(e));
+                }
+                return;
+            }
             process.setStatus(status);
             process.setEndTime(LocalDateTime.now());
             process.setTime(Duration.between(process.getStartTime(), process.getEndTime())
