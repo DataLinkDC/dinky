@@ -379,6 +379,31 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-alert-http</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.openlineage</groupId>
+            <artifactId>openlineage-java</artifactId>
+            <version>1.21.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-${dinky.flink.version}</artifactId>
+            <version>${revision}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+            <version>${revision}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
