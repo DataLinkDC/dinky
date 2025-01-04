@@ -165,14 +165,14 @@ public class MockStatementExplainer {
 
     /**
      * generate table identifier with mocked prefix info
-     * @param tableName table name
+     * @param tableIdentifier table identifier
      * @return table identifier with mocked prefix info
      */
-    private List<String> generateMockedTableIdentifier(String tableName) {
+    private List<String> generateMockedTableIdentifier(String tableIdentifier) {
         List<String> names = new ArrayList<>();
         names.add("default_catalog");
         names.add("default_database");
-        names.add("mock_sink_" + tableName);
+        names.add("mock_sink_" + tableIdentifier.replace(".", "_"));
         return names;
     }
 }
