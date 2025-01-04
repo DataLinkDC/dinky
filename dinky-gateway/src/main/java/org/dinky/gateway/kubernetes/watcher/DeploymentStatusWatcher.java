@@ -19,7 +19,7 @@
 
 package org.dinky.gateway.kubernetes.watcher;
 
-import org.apache.hadoop.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
