@@ -2,6 +2,7 @@ ARG FLINK_VERSION
 ARG DINKY_VERSION
 
 FROM flink:${FLINK_VERSION}-scala_2.12-java8 as builder
+ARG FLINK_VERSION
 ADD build/dinky-release*.tar.gz /opt
 RUN  mv /opt/dinky-release* /opt/dinky && ln -s /opt/flink/lib/*  /opt/dinky/extends/flink${FLINK_VERSION}/ && mkdir /opt/dinky/config/static
 ADD  build/dist/ /opt/dinky/config/static
