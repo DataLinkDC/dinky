@@ -220,7 +220,6 @@ jobs:
         run: |
           ulimit -a
           sudo swapoff -a
-          free -h
           sudo sysctl -w vm.max_map_count=2000000
       - name: Init Run Docker Doris
         uses: hoverkraft-tech/compose-action@v2.0.2
@@ -272,6 +271,12 @@ jobs:
           mkdir -p logs
           ls e2e_test/docker-compose-env/dinky/
           nohup python -m http.server -d e2e_test/docker-compose-env/dinky/ 9001 > ./logs/python_http.log &
+      - name: Clear Temp Cache
+        run: |
+          docker builder prune
+          docker system prune
+          docker system df
+          df -h
       - name: Run Docker Python Script
         run: |
           docker run  -v ./e2e_test/tools:/app -w /app -v ./kube:/kube -v ./e2e_test/docker-compose-env/dinky:/dinky/jar -v ./dinky-release/extends/flink${{ matrix.flink }}:/opt/flink/lib -v ./e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar:/opt/flink/lib/mysql-connector-java-8.0.30.jar   --net dinky_net --rm --entrypoint /bin/bash python:3.9 -c  'pip install  -r requirements.txt  &&  python main.py dinky:8888 ${{ matrix.flink }}'
