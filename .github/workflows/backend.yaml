@@ -236,7 +236,7 @@ jobs:
       - name: Init k3s
         uses: nolar/setup-k3d-k3s@v1
         with:
-          version: v1.25.16+k3s4
+          version: latest
           k3d-args: -s 1 --network dinky_net --api-port 172.28.0.1:6550
       - name: Get k3s kube config
         run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/172.28.0.1/g' ./kube/k3s.yaml
