@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -587,7 +588,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 } catch (Throwable e) {
                     throw new BusException(
                             "UDF compilation failed and cannot be published. The error message is as follows:"
-                                    + e.getMessage());
+                                    + ExceptionUtil.stacktraceToOneLineString(e),e);
                 }
             }
         } else {
