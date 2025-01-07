@@ -112,7 +112,7 @@ public class FlinkAPI {
     }
 
     private JsonNode post(String route, String body) {
-        String url = NetConstant.SLASH + route;
+        String url = address + NetConstant.SLASH + route;
         if (!address.startsWith(NetConstant.HTTP) && !address.startsWith(NetConstant.HTTPS)) {
             url = NetConstant.HTTP + url;
         }
