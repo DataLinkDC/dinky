@@ -219,6 +219,7 @@ jobs:
       - name: Init System Env
         run: |
           ulimit -a
+          sudo swapoff -a
           free -h
           sudo sysctl -w vm.max_map_count=2000000
       - name: Init Run Docker Doris
