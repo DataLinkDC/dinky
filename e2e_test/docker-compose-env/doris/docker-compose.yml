@@ -20,8 +20,8 @@ services:
     environment:
       - FE_SERVERS=fe1:172.28.0.110:9010
       - BE_ADDR=172.28.0.111:9050
-    depends_on:
-      - fe
+#    depends_on:
+#      - fe
     networks:
       dinky_net:
         ipv4_address: 172.28.0.111
