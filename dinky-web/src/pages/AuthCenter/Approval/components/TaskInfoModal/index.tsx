@@ -17,7 +17,7 @@
  *
  */
 
-﻿import { Col, Descriptions, DescriptionsProps, Modal, Row, Tabs, Typography } from "antd";
+import { Col, Descriptions, DescriptionsProps, Modal, Row, Tabs, Typography } from "antd";
 import { l } from "@/utils/intl";
 import styles from "@/pages/DataStudio/CenterTabContent/index.less";
 import { DiffEditor } from "@monaco-editor/react";

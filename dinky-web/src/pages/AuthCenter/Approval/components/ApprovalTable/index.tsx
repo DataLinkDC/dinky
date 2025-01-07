@@ -160,7 +160,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
           taskBasicInfo: taskInfo,
           preVersionStatement: version.statement
         }));
-      } else if (version.versionId == curVersionId) {
+      }
+      if (version.versionId == curVersionId) {
         setActiveApprovalState((prevState) => ({
           ...prevState,
           taskBasicInfo: taskInfo,

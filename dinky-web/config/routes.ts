@@ -207,58 +207,53 @@ export default [
     name: 'auth',
     icon: 'SafetyCertificateOutlined',
     path: '/auth',
+    access: 'canAdmin',
     footerRender: false,
     routes: [
       {
         path: '/auth',
-        redirect: '/auth/approval'
+        redirect: '/auth/user'
       },
       {
         path: '/auth/user',
         name: 'user',
-        access: 'canAdmin',
         icon: 'UserOutlined',
         component: './AuthCenter/User'
       },
       {
         path: '/auth/role',
         name: 'role',
-        access: 'canAdmin',
         icon: 'TeamOutlined',
         component: './AuthCenter/Role'
       },
       {
         path: '/auth/menu',
         name: 'menu',
-        access: 'canAdmin',
         icon: 'MenuOutlined',
         component: './AuthCenter/Menu'
       },
       {
         path: '/auth/rowpermissions',
         name: 'rowpermissions',
-        access: 'canAdmin',
         icon: 'SafetyCertificateOutlined',
         component: './AuthCenter/RowPermissions'
       },
       {
         path: '/auth/tenant',
         name: 'tenant',
-        access: 'canAdmin',
         icon: 'SecurityScanOutlined',
         component: './AuthCenter/Tenant'
       },
       {
         path: '/auth/token',
         name: 'token',
-        access: 'canAdmin',
         icon: 'SecurityScanOutlined',
         component: './AuthCenter/Token'
       },
       {
         path: '/auth/approval',
         name: 'approval',
-        icon: 'LockOutlined',
+        icon: 'AuditOutlined',
         component: './AuthCenter/Approval'
       }
     ]
