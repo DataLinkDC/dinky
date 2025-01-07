@@ -218,6 +218,7 @@ jobs:
           compose-file: ./e2e_test/docker-compose-env/mysql/docker-compose.yml
       - name: Init System Env
         run: |
+          df -h
           ulimit -a
           sudo swapoff -a
           sudo sysctl -w vm.max_map_count=2000000
