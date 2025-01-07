@@ -218,9 +218,9 @@ jobs:
           compose-file: ./e2e_test/docker-compose-env/mysql/docker-compose.yml
       - name: Init System Env
         run: |
-          ulimit -n 65536
-          swapoff -a
-          sysctl -w vm.max_map_count=2000000
+          sudo ulimit -n 65536
+          sudo swapoff -a
+          sudo sysctl -w vm.max_map_count=2000000
       - name: Init Run Docker Doris
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
