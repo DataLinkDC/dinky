@@ -17,7 +17,7 @@ create table ods_order_sale_goods_snapshot_r
     id string,
     category_des string,
     proc_time as proctime(),
-    sale_time string  ,
+    sale_time TIMESTAMP(3)  ,
     origin_table STRING   ,
     PRIMARY KEY (id) NOT ENFORCED
 ) with (
@@ -56,7 +56,7 @@ create table ods_order_sale_order_details_r
     output_tax string,
     --useful int,
     proc_time as proctime(),
-    sale_time string ,
+    sale_time TIMESTAMP(3) ,
     PRIMARY KEY (sale_order_code,row_num,lot_num,good_code) NOT ENFORCED
 ) with (
       'connector'='datagen'
@@ -72,7 +72,7 @@ create table ods_order_sales_ordersalesman_r
     id string,
     row_num int,
     sale_details_id string,
-    sale_time string ,
+    sale_time TIMESTAMP(3) ,
     PRIMARY KEY (id) NOT ENFORCED
 ) with (
       'connector'='datagen'
@@ -106,7 +106,7 @@ create table ods_order_sale_order_r
     cash_free_money decimal,
     coupon_type string,
     proc_time as proctime(),
-    sale_time string ,
+    sale_time TIMESTAMP(3) ,
     PRIMARY KEY (sale_order_code) NOT ENFORCED
 ) with (
       'connector'='datagen'
