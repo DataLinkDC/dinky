@@ -54,8 +54,8 @@ public class BusException extends RuntimeException {
      *
      * @param message the detail message
      */
-    public BusException(String message,Throwable cause) {
-        super(message,cause);
+    public BusException(String message, Throwable cause) {
+        super(message, cause);
     }
     /**
      * Constructs a BusException with the specified message.
