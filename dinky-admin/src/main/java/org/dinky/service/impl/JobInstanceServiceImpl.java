@@ -41,7 +41,6 @@ import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.vo.task.JobInstanceVo;
-import org.dinky.executor.ExecutorConfig;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTask;
