@@ -8,7 +8,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: mkdir -p /mnt/lib/docker
+      - run: |
+          sudo mkdir -p /mnt/lib/docker
+          chmod -R 777 /mnt/lib/docker
       - name: Set up Docker
         uses: docker/setup-docker-action@v4
         with:
