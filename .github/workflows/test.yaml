@@ -8,4 +8,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: df -h
+      - run: |
+          df -h
+          docker info | grep Dir
