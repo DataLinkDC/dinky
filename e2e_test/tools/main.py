@@ -3,7 +3,7 @@ import os
 import requests
 
 from env import addStandaloneCluster, addYarnCluster, addK8sNativeCluster
-from login import login
+from login import login, changeFlinkJobWaitTime
 from task import addCatalogue, Task
 
 
@@ -15,6 +15,7 @@ def traverse_files(directory) -> list[str]:
 if __name__ == '__main__':
     session = requests.session()
     login(session)
+    changeFlinkJobWaitTime(session)
     clusterId = addStandaloneCluster(session)
     yarn_cluster_id = addYarnCluster(session)
     k8s_native_cluster_id = addK8sNativeCluster(session)
