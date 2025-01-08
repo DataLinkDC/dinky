@@ -275,8 +275,6 @@ jobs:
       - name: Clear Temp Cache
         run: |
           docker builder prune
-          docker system prune
-          docker system df
           df -h
       - name: Run Docker Python Script
         run: |
