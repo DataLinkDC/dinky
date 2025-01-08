@@ -218,7 +218,7 @@ jobs:
           compose-file: ./e2e_test/docker-compose-env/mysql/docker-compose.yml
       - name: Init System Env And Clear Docker Build Cache
         run: |
-          docker builder prune
+          echo y | docker builder prune
           df -h
           ulimit -a
           sudo swapoff -a
