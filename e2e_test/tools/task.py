@@ -3,6 +3,9 @@ from enum import Enum
 import requests
 
 import concurrent.futures
+
+from requests import Response
+
 from login import assertRespOk, url
 from logger import log
 
@@ -121,6 +124,7 @@ class Task:
             log.info(f"正在检查:{flink_task_name}任务状态")
             status = self.getFlinkTaskStatus(job_instance_id)
             assertFlinkTaskIsRunning(status, flink_task_name)
+            self.stopTask(task.task_id)
 
         if is_async:
             with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -130,6 +134,10 @@ class Task:
         else:
             for mode in modes:
                 taskFunc(mode)
+
+    def stopTask(self, taskId: int) -> None:
+        resp: Response = self.session.get(url(f"api/task/cancel?id={taskId}&withSavePoint=false&forceCancel=true"))
+        assertRespOk(resp, "StopTask")
 
 
 

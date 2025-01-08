@@ -21,7 +21,7 @@ def login(session: requests.Session):
 
 def changeFlinkJobWaitTime(session: requests.Session):
     log.info("Change Flink Job Waiting Time: 120 s")
-    login_resp: Response = session.post(url("api/sysConfig/modifyConfig"),
+    resp: Response = session.post(url("api/sysConfig/modifyConfig"),
                                         json={
                                             "key": "sys.flink.settings.jobIdWait",
                                             "name": "Job 提交等待时间",
@@ -32,4 +32,4 @@ def changeFlinkJobWaitTime(session: requests.Session):
                                             "value": "120",
                                             "index": 1
                                         })
-    assertRespOk(login_resp, "ChangeFlinkJobWaitTime")
+    assertRespOk(resp, "ChangeFlinkJobWaitTime")
