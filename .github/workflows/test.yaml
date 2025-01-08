@@ -8,6 +8,14 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      -
+        name: Set up Docker
+        uses: docker/setup-docker-action@v4
+        with:
+          daemon-config: |
+            {
+             "data-root": "/data02/docker/docker"
+            }
       - run: |
           df -h
           docker info | grep Dir
