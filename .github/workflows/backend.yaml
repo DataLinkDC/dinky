@@ -216,17 +216,17 @@ jobs:
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
           compose-file: ./e2e_test/docker-compose-env/mysql/docker-compose.yml
-      - name: Init System Env And Clear Docker Build Cache
-        run: |
-          echo y | docker builder prune
-          df -h
-          ulimit -a
-          sudo swapoff -a
-          sudo sysctl -w vm.max_map_count=2000000
-      - name: Init Run Docker Doris
-        uses: hoverkraft-tech/compose-action@v2.0.2
-        with:
-          compose-file: ./e2e_test/docker-compose-env/doris/docker-compose.yml
+#      - name: Init System Env And Clear Docker Build Cache
+#        run: |
+#          echo y | docker builder prune
+#          df -h
+#          ulimit -a
+#          sudo swapoff -a
+#          sudo sysctl -w vm.max_map_count=2000000
+#      - name: Init Run Docker Doris
+#        uses: hoverkraft-tech/compose-action@v2.0.2
+#        with:
+#          compose-file: ./e2e_test/docker-compose-env/doris/docker-compose.yml
       - name: Init Run Docker Dinky
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
