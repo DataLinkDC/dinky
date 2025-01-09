@@ -205,13 +205,28 @@ jobs:
             localhost:5000/dinky/flink:flink
       - name: Init  Env Jar
         run: |
+          mkdir O e2e_test/docker-compose-env/dinky/jars
           wget -O e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar  https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-connector-java-8.0.30.jar &&
           wget -O e2e_test/docker-compose-env/flink/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar  https://repo1.maven.org/maven2/org/apache/flink/flink-shaded-hadoop-2-uber/2.8.3-10.0/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar &&
           wget -O e2e_test/docker-compose-env/dinky/javax.ws.rs-api-2.1.1.jar  https://repo1.maven.org/maven2/javax/ws/rs/javax.ws.rs-api/2.1.1/javax.ws.rs-api-2.1.1.jar
+          wget -O e2e_test/docker-compose-env/dinky/jars/flink-doris-connector.jar  https://repo1.maven.org/maven2/org/apache/doris/flink-doris-connector-${{ matrix.flink }}/24.0.1/flink-doris-connector-${{ matrix.flink }}-24.0.1.jar
+          wget -O e2e_test/docker-compose-env/dinky/jars/flink-sql-connector-mysql-cdc.jar  https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-mysql-cdc/3.2.0/flink-sql-connector-mysql-cdc-3.2.0.jar
+          cp e2e_test/docker-compose-env/dinky/mysql-connector-java-8.0.30.jar e2e_test/docker-compose-env/dinky/jars/mysql-connector-java.jar
       - name: Init Run Docker MySQL
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
           compose-file: ./e2e_test/docker-compose-env/mysql/docker-compose.yml
+#      - name: Init System Env And Clear Docker Build Cache
+#        run: |
+#          echo y | docker builder prune
+#          df -h
+#          ulimit -a
+#          sudo swapoff -a
+#          sudo sysctl -w vm.max_map_count=2000000
+#      - name: Init Run Docker Doris
+#        uses: hoverkraft-tech/compose-action@v2.0.2
+#        with:
+#          compose-file: ./e2e_test/docker-compose-env/doris/docker-compose.yml
       - name: Init Run Docker Dinky
         uses: hoverkraft-tech/compose-action@v2.0.2
         with:
@@ -228,7 +243,7 @@ jobs:
       - name: Init k3s
         uses: nolar/setup-k3d-k3s@v1
         with:
-          version: v1.25.16+k3s4
+          version: latest
           k3d-args: -s 1 --network dinky_net --api-port 172.28.0.1:6550
       - name: Get k3s kube config
         run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/172.28.0.1/g' ./kube/k3s.yaml

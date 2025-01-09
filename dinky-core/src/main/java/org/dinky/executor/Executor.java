@@ -217,9 +217,12 @@ public abstract class Executor {
                 jobStatementPlan.addJobStatement(statement, JobStatementType.SET, operationType);
             } else if (operationType.equals(SqlType.EXECUTE_JAR)) {
                 JarSubmitParam jarSubmitParam = JarSubmitParam.build(statement);
-                jarSubmitParam.setUri("base64@" + Base64.encode(pretreatStatement(jarSubmitParam.getArgs())));
+                String args = jarSubmitParam.getArgs();
+                jarSubmitParam.setArgs("base64@"
+                        + Base64.encode(
+                                isUseSqlFragment() ? getVariableManager().parseVariable(args) : args));
                 jobStatementPlan.addJobStatement(
-                        jarSubmitParam.toString(), JobStatementType.EXECUTE_JAR, operationType);
+                        jarSubmitParam.getStatement(), JobStatementType.EXECUTE_JAR, operationType);
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 jobStatementPlan.addJobStatement(statement, JobStatementType.PIPELINE, operationType);
             } else if (operationType.equals(SqlType.PRINT)) {

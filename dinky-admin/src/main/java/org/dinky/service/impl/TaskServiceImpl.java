@@ -134,6 +134,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
@@ -587,7 +588,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 } catch (Throwable e) {
                     throw new BusException(
                             "UDF compilation failed and cannot be published. The error message is as follows:"
-                                    + e.getMessage());
+                                    + ExceptionUtil.stacktraceToOneLineString(e),
+                            e);
                 }
             }
         } else {
