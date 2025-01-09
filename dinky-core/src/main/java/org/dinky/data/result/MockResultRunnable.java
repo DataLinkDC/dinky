@@ -83,7 +83,7 @@ public class MockResultRunnable implements Runnable {
         try {
             tableResult.getJobClient().ifPresent(jobClient -> {
                 if (!ResultPool.containsKey(id)) {
-                    ResultPool.put(SelectResult.buildMockedResult(id));
+                    ResultPool.put(ResultBuilder.setResultColumnList(SelectResult.buildMockedResult(id), tableResult));
                 }
                 try {
                     if (isChangeLog) {

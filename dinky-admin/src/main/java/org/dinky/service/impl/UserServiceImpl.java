@@ -185,6 +185,11 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             return Result.authorizeFailed(e.getStatus());
         }
 
+        return loginUser(user, loginDTO.isAutoLogin());
+    }
+
+    @Override
+    public Result<UserDTO> loginUser(User user, boolean autoLogin) {
         // Check if the user is enabled
         if (!user.getEnabled()) {
             loginLogService.saveLoginLog(user, Status.USER_DISABLED_BY_ADMIN);
@@ -199,7 +204,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         // Perform login using StpUtil (Assuming it handles the session management)
         Integer userId = user.getId();
-        StpUtil.login(userId, loginDTO.isAutoLogin());
+        StpUtil.login(userId, autoLogin);
 
         // save login log record
         loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
@@ -323,6 +328,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public User getUserByUsername(String username) {
         return getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
     }
+//
+//    @Override
+//    public User getUserByUsernameOrId(String username) {
+//        return getOne(
+//                StringUtils.isNumeric(username) ? new LambdaQueryWrapper<User>().eq(User::getUsername, username) :
+//                        new LambdaQueryWrapper<User>().eq(User::getUsername, username)
+//                                .or().eq(User::getId, username).orderByAsc(User::getUsername));
+//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

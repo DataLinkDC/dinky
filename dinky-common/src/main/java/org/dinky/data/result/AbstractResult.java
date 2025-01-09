@@ -21,6 +21,7 @@ package org.dinky.data.result;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * AbstractResult
@@ -28,12 +29,20 @@ import java.time.LocalDateTime;
  * @since 2021/6/29 22:49
  */
 public class AbstractResult {
-
     protected boolean success;
     protected LocalDateTime startTime;
     protected LocalDateTime endTime;
     protected long time;
     protected String error;
+    protected List<?> columnList;
+
+    public List<?> getColumnList() {
+        return columnList;
+    }
+
+    public void setColumnList(List<?> columnList) {
+        this.columnList = columnList;
+    }
 
     public void success() {
         this.setEndTime(LocalDateTime.now());

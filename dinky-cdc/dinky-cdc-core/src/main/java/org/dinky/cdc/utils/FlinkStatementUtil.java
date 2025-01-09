@@ -27,6 +27,7 @@ import org.dinky.utils.SqlUtil;
 import org.apache.flink.runtime.util.EnvironmentInformation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,18 +64,27 @@ public class FlinkStatementUtil {
         }
     }
 
-    public static String getFlinkDDL(
-            Table table,
-            String tableName,
-            FlinkCDCConfig config,
-            String sinkSchemaName,
-            String sinkTableName,
-            String pkList) {
+    public static String getTemporaryKey(boolean isTemporary){
+        return isTemporary ? "TEMPORARY" : "";
+    }
+
+    public static String getFlinkDropDDL(String sinkSchemaName, String sinkTableName, boolean isTemporary) {
+        return String.format("DROP %s TABLE IF EXISTS %s;", getTemporaryKey(isTemporary), sinkTableName);
+    }
+
+    public static String getFlinkDDL(Table table, String tableName, FlinkCDCConfig config, String sinkSchemaName, String sinkTableName, String pkList){
+        return getFlinkDDL(table, tableName, config, sinkSchemaName, sinkTableName, pkList, false);
+    }
+
+    public static String getFlinkDDL(Table table, String tableName, FlinkCDCConfig config, String sinkSchemaName,
+                                     String sinkTableName, String pkList, boolean isTemporary) {
         StringBuilder sb = new StringBuilder();
+        sb.append("CREATE ");
+        sb.append(getTemporaryKey(isTemporary));
         if (Integer.parseInt(EnvironmentInformation.getVersion().split("\\.")[1]) < 13) {
-            sb.append("CREATE TABLE  `");
+            sb.append(" TABLE `");
         } else {
-            sb.append("CREATE TABLE IF NOT EXISTS `");
+            sb.append(" TABLE IF NOT EXISTS `");
         }
         sb.append(tableName);
         sb.append("` (\n");
@@ -150,12 +160,10 @@ public class FlinkStatementUtil {
 
     private static String getSinkConfigurationString(
             FlinkCDCConfig config, String sinkSchemaName, String sinkTableName, String pkList) {
-        String configurationString =
-                SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
-        configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
-        if (configurationString.contains("#{pkList}")) {
-            configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", pkList);
-        }
-        return configurationString;
+        return SqlUtil.replaceAllParam(config.getSinkConfigurationString(), new HashMap<String, String>(){{
+            put("schemaName", sinkSchemaName);
+            put("tableName", sinkTableName);
+            put("pkList", pkList);
+        }});
     }
 }

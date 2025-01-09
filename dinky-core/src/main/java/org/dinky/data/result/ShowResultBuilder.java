@@ -69,7 +69,7 @@ public class ShowResultBuilder extends AbstractResultBuilder implements ResultBu
             }
             rows.add(map);
         }
-        return new org.dinky.data.result.DDLResult(rows, rows.size(), column);
+        return ResultBuilder.setResultColumnList(new DDLResult(rows, rows.size(), column), tableResult);
     }
 
     /**
@@ -90,7 +90,7 @@ public class ShowResultBuilder extends AbstractResultBuilder implements ResultBu
                 new SelectResult(id, ddlResult.getRowData(), Sets.newLinkedHashSet(ddlResult.getColumns()));
         selectResult.setDestroyed(Boolean.TRUE);
         try {
-            ResultPool.put(selectResult);
+            ResultPool.put(ResultBuilder.setResultColumnList(selectResult, tableResult));
             jobHandler.persistResultData(Lists.newArrayList(this.id));
         } finally {
             ResultPool.remove(id);

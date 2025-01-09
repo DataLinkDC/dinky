@@ -43,6 +43,9 @@
         <module>dinky-metadata-starrocks</module>
         <module>dinky-metadata-presto</module>
         <module>dinky-metadata-paimon</module>
+        <module>dinky-metadata-dm</module>
+        <module>dinky-metadata-kingbase</module>
+        <module>dinky-metadata-trino</module>
     </modules>
 
     <dependencies>

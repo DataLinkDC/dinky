@@ -21,6 +21,7 @@ package org.dinky.job;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.google.common.io.Resources;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.result.ExplainResult;
 import org.dinky.executor.ExecutorConfig;
@@ -28,7 +29,6 @@ import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.flink.shaded.guava31.com.google.common.io.Resources;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -19,13 +19,11 @@
 
 package org.dinky.function.compiler;
 
-import org.dinky.function.constant.PathConstant;
-import org.dinky.function.data.model.UDF;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.ReadableConfig;
 import org.apache.flink.table.catalog.FunctionLanguage;
-
-import lombok.extern.slf4j.Slf4j;
+import org.dinky.function.constant.PathConstant;
+import org.dinky.function.data.model.UDF;
 
 /**
  * java 编译
@@ -56,7 +54,8 @@ public class JavaCompiler implements FunctionCompiler {
         } else {
             log.error("class compilation failed:{}", className);
             log.error(compiler.getCompilerMessage());
-            return false;
+            throw new RuntimeException(compiler.getCompilerMessage());
+            // return false;
         }
     }
 }

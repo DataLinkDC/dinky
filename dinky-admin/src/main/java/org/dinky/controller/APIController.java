@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.dinky.DinkyVersion;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.dto.APISavePointTaskDTO;
@@ -39,13 +40,9 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -76,10 +73,11 @@ public class APIController {
         return Result.succeed(DinkyVersion.getVersion(), Status.QUERY_SUCCESS);
     }
 
-    @PostMapping("/submitTask")
+    @RequestMapping(value = "/submitTask", method = {RequestMethod.POST, RequestMethod.GET})
     @ApiOperation("Submit Task")
     //    @Log(title = "Submit Task", businessType = BusinessType.SUBMIT)
-    public Result<JobResult> submitTask(@RequestBody TaskSubmitDto submitDto) throws Exception {
+    public Result<JobResult> submitTask(@RequestBody(required = false) TaskSubmitDto submitDto, @RequestParam(required = false) Map<String, ?> params) throws Exception {
+        BeanUtils.populate(submitDto= submitDto==null ? new TaskSubmitDto() : submitDto, params);
         taskService.initTenantByTaskId(submitDto.getId());
         JobResult jobResult = taskService.submitTask(submitDto);
         if (jobResult.isSuccess()) {

@@ -30,6 +30,6 @@ public class DDLResultBuilder implements ResultBuilder {
 
     @Override
     public IResult getResult(TableResult tableResult) {
-        return new DDLResult(true);
+        return ResultBuilder.setResultColumnList(new DDLResult(true), tableResult);
     }
 }

@@ -19,6 +19,7 @@
 
 package org.dinky.utils;
 
+import cn.hutool.core.util.StrUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Task;
@@ -26,11 +27,26 @@ import org.dinky.data.model.udf.UDFManage;
 import org.dinky.function.compiler.FunctionCompiler;
 import org.dinky.function.compiler.FunctionPackage;
 import org.dinky.function.data.model.UDF;
+import org.dinky.function.exception.UDFCompilerException;
 import org.dinky.function.util.UDFUtil;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
+import java.util.stream.Stream;
+
 public class UDFUtils extends UDFUtil {
+    public static UDF taskToUDFSilent(Task task) {
+        try {
+            return taskToUDF(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Stream<UDF> taskToUDFSilent(Stream<Task> tasks) {
+        return tasks.map(UDFUtils::taskToUDFSilent).filter(Asserts::isNotNull);
+    }
 
     public static UDF taskToUDF(Task task) {
         if (Asserts.isNotNull(task.getConfigJson())
@@ -40,8 +56,14 @@ public class UDFUtils extends UDFUtil {
                     .code(task.getStatement())
                     .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase()))
                     .build();
-
-            FunctionCompiler.getCompilerByTask(udf, task.getConfigJson().getCustomConfigMaps(), task.getId());
+            try {
+                if(!FunctionCompiler.getCompilerByTask(udf, task.getConfigJson().getCustomConfigMaps(), task.getId())){
+                    throw new UDFCompilerException(StrUtil.format(
+                            "codeLanguage:{} , className:{} 编译失败", udf.getFunctionLanguage(), udf.getClassName()));
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             FunctionPackage.bale(udf, task.getId());
             return udf;
         } else {

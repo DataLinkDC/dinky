@@ -19,7 +19,7 @@
 
 package org.dinky.cdc.debezium;
 
-import org.apache.flink.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.data.SchemaBuilder ;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;

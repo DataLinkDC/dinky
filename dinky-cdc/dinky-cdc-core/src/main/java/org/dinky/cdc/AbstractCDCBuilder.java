@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public abstract class AbstractCDCBuilder implements CDCBuilder {
 
@@ -56,12 +57,12 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
             Collections.addAll(schemaList, schemas);
         }
-
+        Pattern pattern = Pattern.compile("\\W");
         getTableList().stream()
                 .map(String::trim)
                 .filter(tableName -> Asserts.isNotNullString(tableName) && tableName.contains("."))
                 .map(tableName -> tableName.split("\\\\."))
-                .filter(names -> !schemaList.contains(names[0]))
+                .filter(names -> !pattern.matcher(names[0]).find() && !schemaList.contains(names[0]))
                 .forEach(names -> schemaList.add(names[0]));
         return schemaList;
     }
@@ -92,7 +93,7 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
 
     public Map<String, String> parseMetaDataSingleConfig(String url) {
         Map<String, String> configMap = new HashMap<>();
-        configMap.put(ClientConstant.METADATA_NAME, url);
+        configMap.put(ClientConstant.METADATA_NAME, getStandardName(url));
         configMap.put(ClientConstant.METADATA_URL, url);
         configMap.put(ClientConstant.METADATA_TYPE, getMetadataType());
         configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());

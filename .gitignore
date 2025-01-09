@@ -65,3 +65,6 @@ extends/*
 .idea
 .idea/vcs.xml
 dinky-web/package-lock.json
+
+
+**/.flattened-pom.xml

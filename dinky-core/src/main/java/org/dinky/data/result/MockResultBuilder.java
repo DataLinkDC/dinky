@@ -44,8 +44,8 @@ public class MockResultBuilder extends AbstractResultBuilder implements ResultBu
         if (tableResult.getJobClient().isPresent()) {
             MockResultRunnable runnable = new MockResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel);
             threadPoolExecutor.execute(runnable);
-            return SelectResult.buildSuccess(
-                    tableResult.getJobClient().get().getJobID().toHexString());
+            return ResultBuilder.setResultColumnList(SelectResult.buildSuccess(
+                    tableResult.getJobClient().get().getJobID().toHexString()), tableResult);
         } else {
             return SelectResult.buildFailed();
         }
@@ -62,7 +62,7 @@ public class MockResultBuilder extends AbstractResultBuilder implements ResultBu
                 jobHandler.persistResultData(com.google.common.collect.Lists.newArrayList(s));
             });
             threadPoolExecutor.execute(runnable);
-            return SelectResult.buildMockedResult(id);
+            return ResultBuilder.setResultColumnList(SelectResult.buildMockedResult(id), tableResult);
         } else {
             return SelectResult.buildFailed();
         }

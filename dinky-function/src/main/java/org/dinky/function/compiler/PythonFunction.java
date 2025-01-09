@@ -91,7 +91,8 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
                     "Python udf compilation failed; className:{}\n.reason: {}",
                     udf.getClassName(),
                     ExceptionUtil.getRootCauseMessage(e));
-            return false;
+            throw new RuntimeException(ExceptionUtil.getRootCauseMessage(e));
+            // return false;
         }
         FileUtil.del(zipFile);
         return true;

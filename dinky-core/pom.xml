@@ -105,6 +105,21 @@
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-dm</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-kingbase</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-trino</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
@@ -193,6 +208,18 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-jexl3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-cdc-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-base</artifactId>
         </dependency>
     </dependencies>
 

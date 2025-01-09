@@ -19,6 +19,7 @@
 
 package org.dinky.data.result;
 
+import org.apache.flink.table.catalog.ResolvedSchema;
 import org.dinky.data.job.SqlType;
 import org.dinky.job.JobHandler;
 
@@ -31,24 +32,11 @@ import org.apache.flink.table.api.TableResult;
  */
 public interface ResultBuilder {
 
-    static ResultBuilder build(
-            SqlType operationType,
-            String id,
-            Integer maxRowNum,
-            boolean isChangeLog,
-            boolean isAutoCancel,
-            String timeZone) {
+    static ResultBuilder build(SqlType operationType, String id, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
         return build(operationType, id, maxRowNum, isChangeLog, isAutoCancel, timeZone, false);
     }
 
-    static ResultBuilder build(
-            SqlType operationType,
-            String id,
-            Integer maxRowNum,
-            boolean isChangeLog,
-            boolean isAutoCancel,
-            String timeZone,
-            boolean isMockSinkFunction) {
+    static ResultBuilder build(SqlType operationType, String id, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone, boolean isMockSinkFunction) {
         switch (operationType) {
             case SELECT:
             case WITH:
@@ -59,9 +47,7 @@ public interface ResultBuilder {
                 return new ShowResultBuilder(id);
             case INSERT:
             case EXECUTE:
-                return isMockSinkFunction
-                        ? new MockResultBuilder(id, maxRowNum, isChangeLog, isAutoCancel)
-                        : new InsertResultBuilder();
+                return isMockSinkFunction ? new MockResultBuilder(id, maxRowNum, isChangeLog, isAutoCancel) : new InsertResultBuilder();
             default:
                 return new DDLResultBuilder();
         }
@@ -78,5 +64,17 @@ public interface ResultBuilder {
      */
     default IResult getResultWithPersistence(TableResult tableResult, JobHandler jobHandler) {
         return getResult(tableResult);
+    }
+
+    static <T extends AbstractResult> T setResultColumnList(T result, TableResult tableResult) {
+        ResolvedSchema resolvedSchema;
+        if (result.getColumnList() == null && (resolvedSchema = tableResult.getResolvedSchema()) != null) {
+            try {
+                result.setColumnList(resolvedSchema.getColumns());
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 }

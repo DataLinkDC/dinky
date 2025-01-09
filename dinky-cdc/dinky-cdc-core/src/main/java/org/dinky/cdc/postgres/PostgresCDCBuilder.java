@@ -19,25 +19,24 @@
 
 package org.dinky.cdc.postgres;
 
+import com.ververica.cdc.connectors.postgres.PostgreSQLSource;
+import com.ververica.cdc.debezium.DebeziumSourceFunction;
+import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
-import org.apache.flink.cdc.connectors.postgres.PostgreSQLSource;
-import org.apache.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
-
     public static final String KEY_WORD = "postgres-cdc";
-    private static final String METADATA_TYPE = "PostgreSql";
 
     public PostgresCDCBuilder() {}
 
@@ -51,23 +50,24 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
     }
 
     @Override
+    protected String getMetadataType() {
+        return "PostgreSql";
+    }
+
+    public String getSourceName(){
+        return "Postgres CDC Source";
+    }
+
+    public String getDriverPrefix(){
+        return "jdbc:postgresql";
+    }
+
+    @Override
     public CDCBuilder create(FlinkCDCConfig config) {
         return new PostgresCDCBuilder(config);
     }
 
-    @Override
-    public DataStreamSource<String> build(StreamExecutionEnvironment env) {
-
-        String decodingPluginName = config.getSource().get("decoding.plugin.name");
-        String slotName = config.getSource().get("slot.name");
-
-        Properties debeziumProperties = new Properties();
-        for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
-                debeziumProperties.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
-
+    public DebeziumSourceFunction<String> createSourceFunction(Properties debeziumProperties, String decodingPluginName, String slotName) {
         PostgreSQLSource.Builder<String> sourceBuilder = PostgreSQLSource.<String>builder()
                 .hostname(config.getHostname())
                 .port(config.getPort())
@@ -95,12 +95,34 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
         if (Asserts.isNotNullString(decodingPluginName)) {
             sourceBuilder.decodingPluginName(decodingPluginName);
         }
-
         if (Asserts.isNotNullString(slotName)) {
             sourceBuilder.slotName(slotName);
         }
+        return sourceBuilder.build();
+    }
 
-        return env.addSource(sourceBuilder.build(), "Postgres CDC Source");
+    @Override
+    public DataStreamSource<String> build(StreamExecutionEnvironment env) {
+        Properties debeziumProperties = new Properties();
+        // 为部分转换添加默认值
+        debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
+        debeziumProperties.setProperty("decimal.handling.mode", "string");
+
+        for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
+            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+                debeziumProperties.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+
+        String decodingPluginName = config.getSource().get("decoding.plugin.name");
+        String slotName = config.getSource().get("slot.name");
+        if(StringUtils.isBlank(slotName)){
+            slotName = debeziumProperties.getProperty("slot.name", "flink");
+        } else {
+            debeziumProperties.setProperty("slot.name", slotName);
+        }
+
+        return env.addSource(createSourceFunction(debeziumProperties, decodingPluginName, slotName), getSourceName());
     }
 
     @Override
@@ -110,12 +132,6 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
 
     @Override
     public String generateUrl(String schema) {
-        String format = "jdbc:postgresql://%s:%s/%s";
-        return String.format(format, config.getHostname(), config.getPort(), config.getDatabase());
-    }
-
-    @Override
-    protected String getMetadataType() {
-        return METADATA_TYPE;
+        return String.format("%s://%s:%s/%s", getDriverPrefix(), config.getHostname(), config.getPort(), config.getDatabase());
     }
 }

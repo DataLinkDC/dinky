@@ -20,6 +20,8 @@
         <flink.shaded.version>19.0</flink.shaded.version>
         <flink.version>1.20.0</flink.version>
         <flinkcdc.version>3.2.0</flinkcdc.version>
+        <flinkcdc2.version>2.3-SNAPSHOT-${flink.version}</flinkcdc2.version>
+        <flinkjdbc.version>3.1-SNAPSHOT-${flink.version}</flinkjdbc.version>
     </properties>
 
     <dependencies>
@@ -61,6 +63,18 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-compiler</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -76,7 +90,17 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-jdbc</artifactId>
-            <version>3.2.0-1.19</version>
+            <version>${flinkjdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-jdbc-dm</artifactId>
+            <version>${flinkjdbc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-jdbc-kingbase</artifactId>
+            <version>${flinkjdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -87,6 +111,20 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-scala-bridge_2.12</artifactId>
             <version>${flink.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-compiler</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-reflect</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -112,7 +150,7 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka</artifactId>
-            <version>3.2.0-1.19</version>
+            <version>3.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.doris</groupId>
@@ -125,35 +163,57 @@
             <version>32.1.3-jre-${flink.shaded.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.flink</groupId>
+            <groupId>com.ververica</groupId>
             <artifactId>flink-sql-connector-mysql-cdc</artifactId>
-            <version>${flinkcdc.version}</version>
+            <version>${flinkcdc2.version}</version>
+            <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.flink</groupId>
+            <groupId>com.ververica</groupId>
             <artifactId>flink-sql-connector-oracle-cdc</artifactId>
-            <version>${flinkcdc.version}</version>
+            <version>${flinkcdc2.version}</version>
+            <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.flink</groupId>
+            <groupId>com.ververica</groupId>
             <artifactId>flink-sql-connector-sqlserver-cdc</artifactId>
-            <version>${flinkcdc.version}</version>
+            <version>${flinkcdc2.version}</version>
+            <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.flink</groupId>
+            <groupId>com.ververica</groupId>
             <artifactId>flink-sql-connector-postgres-cdc</artifactId>
-            <version>${flinkcdc.version}</version>
+            <version>${flinkcdc2.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-sql-connector-kingbase-cdc</artifactId>
+            <version>${flinkcdc2.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-sql-connector-dm-cdc</artifactId>
+            <version>${flinkcdc2.version}</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-cdc-cli</artifactId>
             <version>${flinkcdc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-kubernetes</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-cdc-pipeline-connector-mysql</artifactId>
             <version>${flinkcdc.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-cdc-pipeline-connector-doris</artifactId>

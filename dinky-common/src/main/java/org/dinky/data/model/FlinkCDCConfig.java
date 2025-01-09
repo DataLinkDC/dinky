@@ -171,7 +171,7 @@ public class FlinkCDCConfig {
             return "'connector' = 'dinky-mock'";
         }
         return sink.entrySet().stream()
-                .filter(t -> !isSkip(t.getKey()))
+                .filter(t -> !(isSkip(t.getKey())  || ("connector".equals(t.getKey()) && "paimon".equalsIgnoreCase(t.getValue())) ))
                 .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
                 .collect(Collectors.joining(",\n"));
     }

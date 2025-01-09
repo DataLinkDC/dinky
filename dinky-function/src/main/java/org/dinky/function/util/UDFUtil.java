@@ -19,11 +19,13 @@
 
 package org.dinky.function.util;
 
+import cn.hutool.extra.spring.SpringUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.data.model.SystemConfiguration;
@@ -48,6 +50,7 @@ import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -335,6 +338,16 @@ public class UDFUtil {
             }
 
             UDF udf = UdfCodePool.getUDF(className);
+            if(udf == null) {
+                // add or update udf pool, 发布任务时，内存中没有UDF可以找到相关已发布UDF类编译，没有才返回错误
+                Object o = SpringUtil.getBean("taskServiceImpl");
+                try {
+                    udf = (UDF) o.getClass().getDeclaredMethod("addOrUpdateUdfCodePool", String.class)
+                            .invoke(o, className);
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             if (udf != null) {
                 return UDF.builder()
                         .name(udfName)
@@ -356,6 +369,8 @@ public class UDFUtil {
         }
         return null;
     }
+
+
 
     // create FlinkUdfPathContextHolder from UdfCodePool
     public static FlinkUdfPathContextHolder createFlinkUdfPathContextHolder() {
@@ -456,8 +471,12 @@ public class UDFUtil {
                 .map(URLUtil::getURL)
                 .collect(Collectors.toList()));
 
-        FileUtil.writeUtf8String(
+        File file =  FileUtil.writeUtf8String(
                 JsonUtils.toJsonString(flinkUdfManifest),
                 PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
+
+        // 设置所有人可读可写
+        file.setReadable(true, false);
+        file.setWritable(true, false);
     }
 }

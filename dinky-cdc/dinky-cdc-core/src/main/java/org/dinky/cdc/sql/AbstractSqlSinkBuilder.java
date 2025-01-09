@@ -19,6 +19,9 @@
 
 package org.dinky.cdc.sql;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.flink.configuration.ConfigOption;
+import org.apache.flink.configuration.ConfigOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractSinkBuilder;
 import org.dinky.cdc.convert.DataTypeConverter;
@@ -48,6 +51,7 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,6 +59,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder implements Serializable {
+    private static final long serialVersionUID = -4655498892278666404L;
+    protected ZoneId sinkTimeZone = ZoneId.of("UTC");
+    public static final ConfigOption<Boolean> DROP_TABLE_IF_EXISTS = ConfigOptions.key("drop.table.if.exists").booleanType().defaultValue(false);
+    public static final ConfigOption<Boolean> CREATE_TEMPORARY_TABLE = ConfigOptions.key("create.temporary.table").booleanType().defaultValue(false);
 
     protected AbstractSqlSinkBuilder() {}
 
@@ -70,15 +78,15 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 switch (value.get("op").toString()) {
                     case "r":
                     case "c":
-                        rowCollect(columnNameList, columnTypeList, out, RowKind.INSERT, (Map) value.get("after"));
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.INSERT, (Map) value.get("after"), schemaTableName);
                         break;
                     case "d":
-                        rowCollect(columnNameList, columnTypeList, out, RowKind.DELETE, (Map) value.get("before"));
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.DELETE, (Map) value.get("before"), schemaTableName);
                         break;
                     case "u":
                         rowCollect(
-                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, (Map) value.get("before"));
-                        rowCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, (Map) value.get("after"));
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, (Map) value.get("before"), schemaTableName);
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, (Map) value.get("after"), schemaTableName);
                         break;
                     default:
                 }
@@ -87,7 +95,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                         "SchemaTable: {} - Row: {} - Exception {}",
                         schemaTableName,
                         JsonUtils.toJsonString(value),
-                        e.toString());
+                        ExceptionUtils.getStackTrace(e));
                 throw e;
             }
         };
@@ -99,16 +107,23 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
             List<LogicalType> columnTypeList,
             Collector<Row> out,
             RowKind rowKind,
-            Map value) {
+            Map value, String schemaTableName) {
         if (Asserts.isNull(value)) {
             return;
         }
         Row row = Row.withPositions(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
-            row.setField(
-                    i,
-                    DataTypeConverter.convertToRow(
-                            value.get(columnNameList.get(i)), columnTypeList.get(i), sinkTimeZone));
+            LogicalType logicalType = columnTypeList.get(i);
+            String name = columnNameList.get(i);
+            Object val = value.get(name);
+            try {
+                row.setField(i, DataTypeConverter.convertToRow(val, logicalType, sinkTimeZone));
+            } catch (RuntimeException e) {
+                logger.info("AbstractSqlSinkBuilder.rowCollect : field -> {}#{} ; javaType -> {} ; flinkType -> {} ; value -> {}",
+                        schemaTableName, name,
+                        val == null ? null : val.getClass().getName(), columnTypeList.get(i).getTypeRoot().name(), val);
+                throw e;
+            }
         }
         out.collect(row);
     }

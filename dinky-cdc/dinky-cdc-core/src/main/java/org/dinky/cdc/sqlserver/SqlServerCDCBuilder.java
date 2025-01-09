@@ -19,15 +19,15 @@
 
 package org.dinky.cdc.sqlserver;
 
+import com.ververica.cdc.connectors.sqlserver.table.StartupOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
-import org.apache.flink.cdc.connectors.base.options.StartupOptions;
-import org.apache.flink.cdc.connectors.sqlserver.SqlServerSource;
-import org.apache.flink.cdc.debezium.JsonDebeziumDeserializationSchema;
+import com.ververica.cdc.connectors.sqlserver.SqlServerSource;
+import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 

@@ -19,6 +19,11 @@
 
 package org.dinky.job.handler;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import lombok.Builder;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.job.History;
@@ -32,10 +37,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import lombok.Builder;
-
 @Builder
 public class ClearJobHistoryHandler {
     private JobInstanceService jobInstanceService;
@@ -45,7 +46,8 @@ public class ClearJobHistoryHandler {
 
     /**
      * Clears job history records based on the specified criteria.
-     * @param maxRetainDays The maximum number of days to retain job history.
+     *
+     * @param maxRetainDays  The maximum number of days to retain job history.
      * @param maxRetainCount The maximum count to retain job history.
      */
     public void clearJobHistory(Integer maxRetainDays, Integer maxRetainCount) {
@@ -107,7 +109,8 @@ public class ClearJobHistoryHandler {
 
     /**
      * Clears dinky history records based on the specified criteria.
-     * @param maxRetainDays The maximum number of days to retain dinky history.
+     *
+     * @param maxRetainDays  The maximum number of days to retain dinky history.
      * @param maxRetainCount The maximum count to retain dinky history.
      */
     public void clearDinkyHistory(Integer maxRetainDays, Integer maxRetainCount) {
@@ -122,17 +125,14 @@ public class ClearJobHistoryHandler {
         for (History history : historyList) {
             // Check if the count exceeds the maximum retain count
             if (history.getCount() > maxRetainCount) {
-                List<History> reservedHistory = historyService
-                        .lambdaQuery()
-                        .eq(History::getTaskId, history.getTaskId())
+                List<History> reservedHistory = eq(historyService.lambdaQuery(), History::getTaskId, history.getTaskId())
                         .orderByDesc(History::getId)
                         .last("limit " + maxRetainCount)
                         .list();
                 // Create a query wrapper to delete history records older than the maximum retain days
                 QueryWrapper<History> deleteWrapper = new QueryWrapper<>();
-                deleteWrapper
-                        .lambda()
-                        .eq(History::getTaskId, history.getTaskId())
+                eq(deleteWrapper
+                        .lambda(), History::getTaskId, history.getTaskId())
                         .lt(History::getStartTime, LocalDateTime.now().minusDays(maxRetainDays))
                         .notIn(
                                 true,
@@ -141,5 +141,13 @@ public class ClearJobHistoryHandler {
                 historyService.remove(deleteWrapper);
             }
         }
+    }
+
+    public static  <T, R> LambdaQueryWrapper<T> eq(LambdaQueryWrapper<T> wrapper, SFunction<T, R> column, Object val) {
+        return val == null ? wrapper.isNull(column) : wrapper.eq(true, column, val);
+    }
+
+    public static  <T, R> LambdaQueryChainWrapper<T> eq(LambdaQueryChainWrapper<T> wrapper, SFunction<T, R> column, Object val) {
+        return val == null ? wrapper.isNull(column) : wrapper.eq(true, column, val);
     }
 }

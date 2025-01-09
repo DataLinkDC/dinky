@@ -19,12 +19,14 @@
 
 package org.dinky.configure;
 
+import cn.dev33.satoken.exception.StopMatchException;
+import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.router.SaRouter;
+import cn.dev33.satoken.stp.StpUtil;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
-
-import java.util.Locale;
-
+import org.dinky.ltpa.interceptor.LtpaTokenInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -32,10 +34,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-import cn.dev33.satoken.exception.StopMatchException;
-import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.router.SaRouter;
-import cn.dev33.satoken.stp.StpUtil;
+import javax.annotation.Resource;
+import java.util.Locale;
 
 /**
  * AppConfiguration
@@ -44,6 +44,10 @@ import cn.dev33.satoken.stp.StpUtil;
  */
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
+    @Resource
+    private LtpaTokenInterceptor ltpaTokenInterceptor;
+
+
     /**
      * Cookie
      *
@@ -73,6 +77,13 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+        // 注册 LTPA Token 拦截器
+        registry.addInterceptor(ltpaTokenInterceptor)
+//                .addPathPatterns("/**")
+                .addPathPatterns("/api/**", "/openapi/**")
+                .excludePathPatterns("/api/login", "/api/ldap/ldapEnableStatus", "/download/**", "/druid/**");
+        ;
+
         // 注册Sa-Token的路由拦截器
         registry.addInterceptor(new SaInterceptor(handler -> {
                     SaRouter.match("/openapi/**", r -> {

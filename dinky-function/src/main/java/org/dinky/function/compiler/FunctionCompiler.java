@@ -19,29 +19,25 @@
 
 package org.dinky.function.compiler;
 
-import org.dinky.function.data.model.UDF;
-import org.dinky.function.exception.UDFCompilerException;
-
+import cn.hutool.core.lang.Singleton;
+import cn.hutool.core.util.StrUtil;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.ReadableConfig;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import org.dinky.assertion.Asserts;
+import org.dinky.function.data.model.UDF;
+import org.dinky.function.exception.UDFCompilerException;
+import org.dinky.function.pool.UdfCodePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.hutool.core.lang.Singleton;
-import cn.hutool.core.util.StrUtil;
+import java.util.List;
+import java.util.Map;
 
 /** @since 0.6.8 */
 public interface FunctionCompiler {
     Logger log = LoggerFactory.getLogger(FunctionCompiler.class);
 
-    Set<String> COMPILER_CACHE = new HashSet<>();
-
+    // Set<String> COMPILER_CACHE = new HashSet<>();
     /**
      * 函数代码在线动态编译
      *
@@ -64,10 +60,10 @@ public interface FunctionCompiler {
      * @return 编译状态
      */
     static boolean getCompiler(UDF udf, ReadableConfig conf, Integer taskId) {
-        log.info("Compiled UDF: {},; Language: {}", udf.getClassName(), udf.getFunctionLanguage());
-
-        String key = udf.getClassName() + udf.getFunctionLanguage();
-        if (COMPILER_CACHE.contains(key)) {
+        Asserts.checkNull(udf, "udf为空");
+        Asserts.checkNull(udf.getCode(), "udf 代码为空");
+        UDF cache = UdfCodePool.getUDF(udf.getClassName());
+        if (cache!=null && udf.getCode().equals(cache.getCode())) {
             return true;
         }
         boolean success;
@@ -86,7 +82,7 @@ public interface FunctionCompiler {
                         udf.getFunctionLanguage().name());
         }
         if (success) {
-            COMPILER_CACHE.add(key);
+            UdfCodePool.addOrUpdate(udf);  // COMPILER_CACHE.add(key);
         }
         return success;
     }

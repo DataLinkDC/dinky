@@ -217,7 +217,8 @@ public class SystemInit implements ApplicationRunner {
     public void registerUDF() {
         List<Task> allUDF = taskService.getReleaseUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
-            UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
+            // 启动只打印错误
+            UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDFSilent).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
     }

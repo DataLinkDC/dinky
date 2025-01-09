@@ -20,6 +20,8 @@
 package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.cdc.dm.DmCDCBuilder;
+import org.dinky.cdc.kingbase.KingbaseCDCBuilder;
 import org.dinky.cdc.mysql.MysqlCDCBuilder;
 import org.dinky.cdc.oracle.OracleCDCBuilder;
 import org.dinky.cdc.postgres.PostgresCDCBuilder;
@@ -41,6 +43,8 @@ public class CDCBuilderFactory {
                     .put(OracleCDCBuilder.KEY_WORD, OracleCDCBuilder::new)
                     .put(PostgresCDCBuilder.KEY_WORD, PostgresCDCBuilder::new)
                     .put(SqlServerCDCBuilder.KEY_WORD, SqlServerCDCBuilder::new)
+                    .put(KingbaseCDCBuilder.KEY_WORD, KingbaseCDCBuilder::new)
+                    .put(DmCDCBuilder.KEY_WORD, DmCDCBuilder::new)
                     .build();
 
     public static CDCBuilder buildCDCBuilder(FlinkCDCConfig config) {

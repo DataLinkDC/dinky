@@ -19,21 +19,19 @@
 
 package org.dinky.flink.checkpoint.source;
 
-import org.dinky.flink.checkpoint.SupportSplitSerializer;
-
-import org.apache.flink.cdc.connectors.mysql.source.split.MySqlBinlogSplit;
-import org.apache.flink.cdc.connectors.mysql.source.split.MySqlSnapshotSplit;
-import org.apache.flink.cdc.connectors.mysql.source.split.MySqlSplit;
-import org.apache.flink.cdc.connectors.mysql.source.split.MySqlSplitSerializer;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.ververica.cdc.connectors.mysql.source.split.MySqlBinlogSplit;
+import com.ververica.cdc.connectors.mysql.source.split.MySqlSnapshotSplit;
+import com.ververica.cdc.connectors.mysql.source.split.MySqlSplit;
+import com.ververica.cdc.connectors.mysql.source.split.MySqlSplitSerializer;
+import org.dinky.flink.checkpoint.SupportSplitSerializer;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @SupportSplitSerializer(clazz = MySqlSplitSerializer.class, order = -1)
 public class MysqlCdcSource extends BaseCheckpointSource<MySqlSplit> {

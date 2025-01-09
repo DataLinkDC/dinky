@@ -19,6 +19,7 @@
 
 package org.dinky.cdc.convert;
 
+import org.apache.flink.table.types.logical.utils.LogicalTypeParser;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 
@@ -49,6 +50,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.DatatypeConverter;
@@ -61,6 +63,8 @@ public class DataTypeConverter {
     public static final long MILLIS_PER_DAY = 86400000L; // = 24 * 60 * 60 * 1000
 
     public static LogicalType getLogicalType(Column column) {
+        return LogicalTypeParser.parse(column.getFlinkType(), DataTypeConverter.class.getClassLoader());
+        /*
         switch (column.getJavaType()) {
             case BOOLEAN:
             case JAVA_LANG_BOOLEAN:
@@ -111,13 +115,14 @@ public class DataTypeConverter {
             case STRING:
             default:
                 return new VarCharType(Asserts.isNull(column.getLength()) ? Integer.MAX_VALUE : column.getLength());
-        }
+        }*/
     }
 
     public static Object convertToRow(Object value, LogicalType logicalType, ZoneId timeZone) {
         if (Asserts.isNull(value)) {
             return null;
         }
+
         switch (logicalType.getTypeRoot()) {
             case BOOLEAN:
                 return convertToBoolean(value);

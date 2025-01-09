@@ -56,7 +56,7 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
             ResultRunnable runnable =
                     new ResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
             threadPoolExecutor.execute(runnable);
-            return SelectResult.buildSuccess(jobId);
+            return ResultBuilder.setResultColumnList(SelectResult.buildSuccess(jobId), tableResult);
         } else {
             return SelectResult.buildFailed();
         }
@@ -82,7 +82,7 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
                 jobHandler.persistResultData(Lists.newArrayList(s));
             });
             threadPoolExecutor.execute(runnable);
-            return SelectResult.buildSuccess(jobId);
+            return ResultBuilder.setResultColumnList(SelectResult.buildSuccess(jobId), tableResult);
         } else {
             return SelectResult.buildFailed();
         }

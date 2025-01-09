@@ -127,12 +127,12 @@ public class CatalogueController {
             required = true,
             dataType = "Catalogue",
             dataTypeClass = Catalogue.class)
-    public Result<Void> saveOrUpdateCatalogue(@RequestBody Catalogue catalogue) {
+    public Result<Catalogue> saveOrUpdateCatalogue(@RequestBody Catalogue catalogue) {
         if (catalogueService.checkNameIsExistByParentId(catalogue)) {
             return Result.failed(Status.NAME_IS_EXIST);
         }
         if (catalogueService.saveOrUpdateOrRename(catalogue)) {
-            return Result.succeed(Status.SAVE_SUCCESS);
+            return Result.succeed(catalogue, Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
         }

@@ -181,6 +181,10 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 }
             }
 
+            if(schemaTableNameList.size()<1){
+                logger.info("Could not find any related tables. Regexp => SchemaList: {} , TableList: {}", schemaNameList, tableRegList);
+                throw new Exception("Could not find any related tables.");
+            }
             logger.info("A total of {} tables were detected...", schemaTableNameList.size());
             for (int i = 0; i < schemaTableNameList.size(); i++) {
                 logger.info("{}: {}", i + 1, schemaTableNameList.get(i));

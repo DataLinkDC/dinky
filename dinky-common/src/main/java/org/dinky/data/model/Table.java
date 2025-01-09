@@ -109,14 +109,10 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     @Transient
     public String getFlinkTableWith(String flinkConfig) {
-        if (Asserts.isNotNullString(flinkConfig)) {
-            Map<String, String> replacements = new HashMap<>();
-            replacements.put("schemaName", schema);
-            replacements.put("tableName", name);
-
-            return SqlUtil.replaceAllParam(flinkConfig, replacements);
-        }
-        return "";
+        return SqlUtil.replaceAllParam(flinkConfig, new HashMap<String, String>(){{
+            put("schemaName", schema);
+            put("tableName", name);
+        }});
     }
 
     @Transient

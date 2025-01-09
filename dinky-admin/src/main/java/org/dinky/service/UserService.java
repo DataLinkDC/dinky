@@ -80,6 +80,8 @@ public interface UserService extends ISuperService<User> {
      */
     Result<UserDTO> loginUser(LoginDTO loginDTO);
 
+    Result<UserDTO> loginUser(User user, boolean autoLogin);
+
     /**
      * get user by username
      *

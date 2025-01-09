@@ -82,5 +82,15 @@
       <appender-ref ref="LogSseAppender"/>
     </root>
 
+    <Logger name="org.apache.flink.table.api.internal" level="debug" additivity="false">
+      <appender-ref ref="Console"/>
+      <appender-ref ref="RollingFile"/>
+      <appender-ref ref="LogSseAppender"/>
+    </Logger>
+    <Logger name="org.apache.lineage.flink.sql.metadata" level="debug" additivity="false">
+      <appender-ref ref="Console"/>
+      <appender-ref ref="RollingFile"/>
+      <appender-ref ref="LogSseAppender"/>
+    </Logger>
   </loggers>
 </configuration>

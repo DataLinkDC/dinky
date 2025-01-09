@@ -1734,6 +1734,7 @@ public class YarnClusterDescriptor implements ClusterDescriptor<ApplicationId> {
         final int port = report.getRpcPort();
 
         LOG.info("Found Web Interface {}:{} of application '{}'.", host, port, appId);
+        LOG.info("Found TracKing UI : {}", report.getTrackingUrl());
 
         flinkConfiguration.set(JobManagerOptions.ADDRESS, host);
         flinkConfiguration.set(JobManagerOptions.PORT, port);

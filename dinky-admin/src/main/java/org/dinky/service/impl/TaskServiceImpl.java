@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import static org.dinky.data.model.SystemConfiguration.FLINK_JOB_ARCHIVE;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.config.Dialect;
@@ -63,6 +64,7 @@ import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.sqllineage.SQLLineageBuilder;
+import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
@@ -104,14 +106,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -576,27 +571,31 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition {
         TaskDTO task = getTaskInfoById(taskId);
         task.setStep(lifeCycle.getValue());
-        if (lifeCycle == JobLifeCycle.PUBLISH) {
-            Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
-            task.setVersionId(taskVersionId);
-            if (Dialect.isUDF(task.getDialect())) {
-                // compile udf class
-                try {
-                    UDF udf = UDFUtils.taskToUDF(task.buildTask());
-                    UdfCodePool.addOrUpdate(udf);
-                } catch (Throwable e) {
-                    throw new BusException(
-                            "UDF compilation failed and cannot be published. The error message is as follows:"
-                                    + e.getMessage());
+
+        if (Dialect.isUDF(task.getDialect())
+                && Asserts.isNotNull(task.getConfigJson())
+                && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
+            // 发布前重新清除，不正常情况，待发布，内存已定义，或者下线没清成功，如启动多个服务
+            UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
+
+            if (lifeCycle == JobLifeCycle.PUBLISH) {
+                Integer taskVersionId = taskVersionService.createTaskVersionSnapshot(task);
+                task.setVersionId(taskVersionId);
+                if (Dialect.isUDF(task.getDialect())) {
+                    // compile udf class
+                    try {
+                        // 必须抛出异常，不修复数据的任务状态
+                        UDF udf = UDFUtils.taskToUDF(task.buildTask());
+                        UdfCodePool.addOrUpdate(udf);
+                    } catch (Throwable e) {
+                        throw new BusException(
+                                "UDF compilation failed and cannot be published. The error message is as follows:"
+                                        + ExceptionUtils.getStackTrace(e));
+                    }
                 }
             }
-        } else {
-            if (Dialect.isUDF(task.getDialect())
-                    && Asserts.isNotNull(task.getConfigJson())
-                    && Asserts.isNotNull(task.getConfigJson().getUdfConfig())) {
-                UdfCodePool.remove(task.getConfigJson().getUdfConfig().getClassName());
-            }
         }
+
         boolean saved = saveOrUpdate(task.buildTask());
         if (saved && Asserts.isNotNull(task.getJobInstanceId())) {
             JobInstance jobInstance = jobInstanceService.getById(task.getJobInstanceId());
@@ -612,6 +611,40 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
         }
         return saved;
+    }
+
+    public List<Task> getUDFByClassName(String className) {
+        return list(new LambdaQueryWrapper<Task>()
+                .in(Task::getDialect, Dialect.JAVA.getValue(), Dialect.SCALA.getValue(), Dialect.PYTHON.getValue())
+                .eq(Task::getEnabled, 1)
+                .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue())
+                .like(Task::getConfigJson, "\"className\":\"" + className + "\""));
+    }
+
+    /**
+     * use : org.dinky.function.util.UDFUtil.toUDF
+     * 发布任务时，内存中没有UDF可以找到相关已发布UDF类编译，没有才返回错误
+     */
+    public UDF addOrUpdateUdfCodePool(String className) {
+        List<Task> tasks = getUDFByClassName(className)
+                .stream().filter(task->Asserts.isNotNull(task.getConfigJson().getUdfConfig())).collect(Collectors.toList());
+        switch (tasks.size()) {
+            case 1:
+                Task task = tasks.get(0);
+                UDF udf = UDFUtils.taskToUDF(task);
+                try {
+                    FunctionFactory.initUDF(Collections.singletonList(udf), task.getId());
+                } catch (Throwable e) {
+                    throw new BusException(
+                            "UDF compilation failed and cannot be published. The error message is as follows:"
+                                    + ExceptionUtils.getStackTrace(e));
+                }
+                UdfCodePool.addOrUpdate(udf);
+                return udf;
+            default:
+                log.error("found duplicate class [{}] , task name : {}", className, String.join(", ", tasks.stream().map(t->t.getName()).collect(Collectors.toSet())));
+        }
+        return null;
     }
 
     @Override

@@ -19,12 +19,14 @@
 
 package org.dinky.function;
 
+import cn.hutool.core.util.StrUtil;
 import org.dinky.function.compiler.FunctionCompiler;
 import org.dinky.function.compiler.FunctionPackage;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.data.model.UDFPath;
 
 import org.apache.flink.configuration.Configuration;
+import org.dinky.function.exception.UDFCompilerException;
 
 import java.util.List;
 
@@ -42,8 +44,10 @@ public class FunctionFactory {
 
     public static void initUDF(UDF udf, Integer taskId) {
         // 编译
-        FunctionCompiler.getCompiler(udf, new Configuration(), taskId);
-
+        if(!FunctionCompiler.getCompiler(udf, new Configuration(), taskId)){
+            throw new UDFCompilerException(StrUtil.format(
+                    "codeLanguage:{} , className:{} 编译失败", udf.getFunctionLanguage(), udf.getClassName()));
+        }
         // 打包
         FunctionPackage.bale(udf, taskId);
     }

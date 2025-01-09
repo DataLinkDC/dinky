@@ -20,6 +20,11 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -68,24 +73,35 @@ public class SqlUtil {
         return sql;
     }
 
+    /*
     public static String replaceAllParam(String sql, String name, String value) {
         return sql.replaceAll("#\\{" + name + "\\}", value);
-    }
+    }*/
 
-    /**
-     * replace sql context with values params, map's key is origin variable express by `${key}`,
-     * value is replacement. for example, if key="name", value="replacement", and sql is "${name}",
-     * the result will be "replacement".
-     *
-     * @param sql sql context
-     * @param values replacement
-     * @return replace variable result
-     */
     public static String replaceAllParam(String sql, Map<String, String> values) {
+        if (Asserts.isNullString(sql)) {
+            return "";
+        }
+        EvaluationContext context = new StandardEvaluationContext(values);
         for (Map.Entry<String, String> entry : values.entrySet()) {
             sql = replaceAllParam(sql, entry.getKey(), entry.getValue());
+            context.setVariable(entry.getKey(), entry.getValue());
         }
-        return sql;
+        return replaceAllParamSPEL(sql, context);
+    }
+
+    public static String replaceAllParam(String sql, String name, String value) {
+        return sql.replaceAll("\\$\\{" + name + "}", value);
+    }
+
+    private static final TemplateParserContext template = new TemplateParserContext();
+    private static final ExpressionParser parser = new SpelExpressionParser();
+    public static String replaceAllParamSPEL(String expressionString, EvaluationContext context) {
+        return (String) parser.parseExpression(expressionString, template).getValue(context);
+    }
+
+    public static String replaceAllParamSPEL(String expressionString, Object properties) {
+        return (String) parser.parseExpression(expressionString, template).getValue(new StandardEvaluationContext(properties));
     }
 
     public static String addLineNumber(String input) {

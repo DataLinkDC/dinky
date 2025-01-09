@@ -84,7 +84,7 @@ public class ResultRunnable implements Runnable {
         try {
             tableResult.getJobClient().ifPresent(jobClient -> {
                 if (!ResultPool.containsKey(id)) {
-                    ResultPool.put(new SelectResult(id, new ArrayList<>(), new LinkedHashSet<>()));
+                    ResultPool.put(ResultBuilder.setResultColumnList(new SelectResult(id, new ArrayList<>(), new LinkedHashSet<>()), tableResult));
                 }
                 try {
                     if (isChangeLog) {

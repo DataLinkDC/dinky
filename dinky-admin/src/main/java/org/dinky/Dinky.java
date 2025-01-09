@@ -22,9 +22,11 @@ package org.dinky;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.security.NoExitSecurityManager;
 
+import org.dinky.ltpa.config.LtpaTokenProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -41,6 +43,7 @@ import lombok.SneakyThrows;
 @EnableTransactionManagement
 @SpringBootApplication(exclude = FreeMarkerAutoConfiguration.class)
 @EnableCaching
+@EnableConfigurationProperties(LtpaTokenProperties.class)
 public class Dinky {
 
     static {

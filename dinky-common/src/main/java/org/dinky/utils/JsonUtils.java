@@ -25,6 +25,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN
 import static com.fasterxml.jackson.databind.MapperFeature.REQUIRE_SETTERS_FOR_GETTERS;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.dinky.assertion.Asserts;
 import org.dinky.serializer.LocalDateTimeDeserializer;
 import org.dinky.serializer.LocalDateTimeSerializer;
@@ -86,6 +87,7 @@ public class JsonUtils {
                 .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
                 .configure(REQUIRE_SETTERS_FOR_GETTERS, true)
                 .registerModule(javaTimeModule)
+                .registerModule(new Jdk8Module())
                 .setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .setTimeZone(TimeZone.getDefault());
     }

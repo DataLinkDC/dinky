@@ -31,6 +31,7 @@ import org.apache.flink.types.Row;
 import java.io.Serializable;
 
 public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
+    private static final long serialVersionUID = 2185746285547955809L;
 
     public static final String KEY_WORD = "sql-catalog";
 

@@ -100,7 +100,7 @@ public class FlinkTableMetadataUtil {
                                 .keyFlag(isPrimaryKey.get())
                                 .isNullable(logicalType.isNullable())
                                 .position(i)
-                                .build();
+                                .autoIncrement(false).build();
                         if (logicalType instanceof VarCharType) {
                             column.setLength(((VarCharType) logicalType).getLength());
                         } else if (logicalType instanceof TimestampType) {

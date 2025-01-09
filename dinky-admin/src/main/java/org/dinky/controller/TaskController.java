@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.ExecuteProcess;
 import org.dinky.data.annotations.Log;
@@ -32,6 +33,7 @@ import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.ProcessType;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.CodeEnum;
 import org.dinky.data.exception.NotSupportExplainExcepition;
 import org.dinky.data.exception.SqlExplainExcepition;
 import org.dinky.data.model.JarSubmitParam;
@@ -174,11 +176,18 @@ public class TaskController {
     @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Boolean> changeTaskLife(@TaskId @RequestParam Integer taskId, @RequestParam Integer lifeCycle)
             throws SqlExplainExcepition {
-        if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
-            return Result.succeed(lifeCycle == 2 ? Status.PUBLISH_SUCCESS : Status.OFFLINE_SUCCESS);
-        } else {
-            return Result.failed(lifeCycle == 2 ? Status.PUBLISH_FAILED : Status.OFFLINE_FAILED);
+        // 返回UDF编译错误原因，以便前端排除
+        String msg="";
+        try {
+            if (taskService.changeTaskLifeRecyle(taskId, JobLifeCycle.get(lifeCycle))) {
+                return Result.succeed(true, lifeCycle == 2 ? Status.PUBLISH_SUCCESS : Status.OFFLINE_SUCCESS);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg = ExceptionUtils.getStackTrace(e);
         }
+        return Result.of(false, CodeEnum.ERROR.getCode(),
+                String.format("%s.\n%s", (lifeCycle == 2 ? Status.PUBLISH_FAILED : Status.OFFLINE_FAILED).getMessage(), msg));
     }
 
     @PostMapping("/explainSql")

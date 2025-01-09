@@ -33,7 +33,11 @@ export const DATA_SOURCE_TYPE = {
   PRESTO: 'Presto',
   PHOENIX: 'Phoenix',
   HIVE: 'Hive',
-  PAIMON: 'Paimon'
+  PAIMON: 'Paimon',
+  dm: 'dm',
+  kingbase: 'kingbase',
+  Presto: 'Presto',
+  Trino: 'Trino',
 };
 /**
  * data source type
@@ -62,6 +66,14 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
       {
         label: 'Phoenix',
         value: DATA_SOURCE_TYPE.PHOENIX
+      },
+      {
+        label: 'dm',
+        value: DATA_SOURCE_TYPE.dm
+      },
+      {
+        label: 'kingbase',
+        value: DATA_SOURCE_TYPE.kingbase
       }
     ]
   },
@@ -87,6 +99,10 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
       {
         label: 'Paimon',
         value: DATA_SOURCE_TYPE.PAIMON
+      },
+      {
+        label: 'Trino',
+        value: DATA_SOURCE_TYPE.Trino
       }
     ]
   },

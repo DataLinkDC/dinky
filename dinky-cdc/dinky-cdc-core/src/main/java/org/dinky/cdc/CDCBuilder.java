@@ -47,4 +47,8 @@ public interface CDCBuilder {
     default Map<String, String> parseMetaDataConfig() {
         throw new SplitTableException("此数据源并未实现分库分表");
     }
+
+    default String getStandardName(String name){
+        return name.replaceAll("\\W", "_");
+    }
 }

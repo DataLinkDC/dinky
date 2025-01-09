@@ -248,6 +248,30 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-metadata/dinky-metadata-dm/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-metadata-dm-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dinky-metadata/dinky-metadata-kingbase/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-metadata-kingbase-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dinky-metadata/dinky-metadata-trino/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-metadata-trino-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-alert/dinky-alert-dingtalk/target
             </directory>
             <outputDirectory>lib</outputDirectory>
