@@ -466,6 +466,20 @@ export default {
   'pages.datastudio.label.execConfig.mocksink': '开启SinkMock',
   'pages.datastudio.label.execConfig.mocksink.tip':
     '将SinkFunction进行Mock，调试过程中不会向线上环境执行写入，但可以通过dinky预览Sink结果',
+  'pages.datastudio.label.execConfig.mocksource': '开启SourceMock',
+  'pages.datastudio.label.execConfig.mocksource.tip':
+    '基于任务血缘对任务所读取的表单进行Mock输入所给定的测试用例',
+  'pages.datastudio.label.execConfig.mocksource.getTestCase': '获取表结构与测试用例',
+  'pages.datastudio.label.execConfig.mocksource.saveTestCase': '保存测试用例',
+  'pages.datastudio.label.execConfig.mocksource.handleRowData': '操作',
+  'pages.datastudio.label.execConfig.mocksource.editeRowData': '编辑',
+  'pages.datastudio.label.execConfig.mocksource.deleteRowData': '删除',
+  'pages.datastudio.label.execConfig.mocksource.testcase': '测试用例',
+  'pages.datastudio.label.execConfig.mocksource.testcase.tips':
+    '上传当前任务的测试用例，仅在SourceMock开启时有效',
+  'pages.datastudio.label.execConfig.mocksource.testcase.top': '添加到顶部',
+  'pages.datastudio.label.execConfig.mocksource.testcase.bottom': '添加到底部',
+  'pages.datastudio.label.execConfig.mocksource.testcase.hidden': '隐藏',
   'pages.datastudio.label.jobConfig': '作业配置',
   'pages.datastudio.label.jobConfig.addConfig': '添加配置项',
   'pages.datastudio.label.jobConfig.addConfig.params': '参数',

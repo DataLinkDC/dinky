@@ -1,2 +1,3 @@
 org.dinky.connector.printnet.sink.PrintNetDynamicTableSinkFactory
 org.dinky.connector.mock.sink.MockDynamicTableSinkFactory
+org.dinky.connector.mock.source.MockDynamicTableSourceFactory

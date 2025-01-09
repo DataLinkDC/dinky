@@ -29,8 +29,11 @@ import org.dinky.job.JobManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * LineageBuilder
@@ -108,5 +111,15 @@ public class LineageBuilder {
         }
         List<LineageTable> tables = new ArrayList<>(tableMap.values());
         return LineageResult.build(tables, relations);
+    }
+
+    public static List<LineageTable> getSourceTablesByLogicalPlan(String statement, ExecutorConfig executorConfig) {
+        LineageResult lineageResult = LineageBuilder.getColumnLineageByLogicalPlan(statement, executorConfig);
+        List<LineageRelation> relations = lineageResult.getRelations();
+        // get source tables based on lineage
+        Set<String> sourceTableIdSet = new HashSet<>();
+        relations.forEach((relation) ->
+                sourceTableIdSet.add(relation.getSrcTableId()));
+        return lineageResult.getTables().stream().filter((table) -> sourceTableIdSet.contains(table.getId())).collect(Collectors.toList());
     }
 }

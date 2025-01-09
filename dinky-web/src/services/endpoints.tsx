@@ -304,5 +304,9 @@ export enum API_CONSTANTS {
   FLINK_CONF_CONFIG_OPTIONS = '/api/flinkConf/configOptions',
 
   // ------------------------------------ suggestion ------------------------------------
-  SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions'
+  SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions',
+
+  // ------------------------------------ test case ------------------------------------
+  LIST_TASK_TEST_CASE_BY_STATEMENT = "/api/testcase/listTaskTestCaseByStatement",
+  SAVE_OR_UPDATE_TEST_CASE ='/api/testCase/save0rUpdateTestcase'
 }

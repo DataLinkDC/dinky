@@ -27,6 +27,7 @@ import org.dinky.data.dto.TaskSubmitDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.NotSupportExplainExcepition;
+import org.dinky.data.model.TableTestCase;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -40,6 +41,7 @@ import org.dinky.service.TaskService;
 
 import java.util.List;
 
+import org.dinky.service.TaskTestCaseService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,6 +71,7 @@ public class APIController {
 
     private final TaskService taskService;
     private final JobInstanceService jobInstanceService;
+    private final TaskTestCaseService taskTestCaseService;
 
     @GetMapping("/version")
     @ApiOperation(value = "Query Service Version", notes = "Query Dinky Service Version Number")
@@ -216,5 +219,10 @@ public class APIController {
             dataTypeClass = JsonNode.class)
     public ProTableResult<JobInstanceVo> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
+    }
+
+    @GetMapping("/getTableTestCase")
+    public Result<TableTestCase> getTableTestCase(@RequestParam Integer taskId, @RequestParam String tableName) {
+        return Result.succeed(taskTestCaseService.getTestCaseByTaskIdAndTableName(taskId,tableName));
     }
 }

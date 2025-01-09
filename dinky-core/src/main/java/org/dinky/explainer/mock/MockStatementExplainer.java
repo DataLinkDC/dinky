@@ -19,32 +19,39 @@
 
 package org.dinky.explainer.mock;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.calcite.config.Lex;
+import org.apache.calcite.sql.SqlCall;
+import org.apache.calcite.sql.SqlIdentifier;
+import org.apache.calcite.sql.SqlInsert;
+import org.apache.calcite.sql.SqlJoin;
+import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.SqlNodeList;
+import org.apache.calcite.sql.SqlSelect;
+import org.apache.calcite.sql.dialect.AnsiSqlDialect;
+import org.apache.calcite.sql.parser.SqlParser;
+import org.apache.calcite.sql.parser.SqlParserPos;
+import org.apache.calcite.sql.util.SqlBasicVisitor;
+import org.apache.calcite.sql.util.SqlVisitor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.sql.parser.ddl.SqlCreateTable;
 import org.dinky.connector.mock.sink.MockDynamicTableSinkFactory;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.JobStatementType;
 import org.dinky.data.job.SqlType;
 import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.executor.ExecutorConfig;
+import org.dinky.explainer.lineage.LineageBuilder;
+import org.dinky.explainer.lineage.LineageTable;
 import org.dinky.job.JobStatementPlan;
 import org.dinky.utils.JsonUtils;
-
-import org.apache.calcite.config.Lex;
-import org.apache.calcite.sql.SqlIdentifier;
-import org.apache.calcite.sql.SqlInsert;
-import org.apache.calcite.sql.SqlNode;
-import org.apache.calcite.sql.SqlNodeList;
-import org.apache.calcite.sql.dialect.AnsiSqlDialect;
-import org.apache.calcite.sql.parser.SqlParser;
-import org.apache.calcite.sql.parser.SqlParserPos;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.sql.parser.ddl.SqlCreateTable;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class MockStatementExplainer {
@@ -101,6 +108,39 @@ public class MockStatementExplainer {
             }
         }
         log.debug("Mock sink succeed: {}", JsonUtils.toJsonString(jobStatementPlan));
+    }
+
+    /**
+     * TODO implement source table mock based on sql statement context
+     *
+     * @param jobStatementPlan
+     */
+    private void mockSource(JobStatementPlan jobStatementPlan) {
+        List<LineageTable> sourceTables = LineageBuilder.getSourceTablesByLogicalPlan(jobStatementPlan.getStatements(), ExecutorConfig.DEFAULT);
+        Set<String> targetTableNames = sourceTables.stream().map((source) -> source.getName().split("\\.")[2]).collect(Collectors.toSet());// modify trans
+        SqlVisitor<SqlNode> visitor = new SqlBasicVisitor<SqlNode>() {
+            @Override
+            public SqlNode visit(SqlCall call) {
+                //If directly select from or join a table
+                if (call instanceof SqlSelect) {
+                    SqlNode from = ((SqlSelect) call).getFrom();
+                    if (from instanceof SqlIdentifier) {
+                        // mockTransTableName((SqlIdentifier)from,mockedTableName);
+                    }
+                } else if (call instanceof SqlJoin) {
+                    SqlJoin sqlJoin = (SqlJoin) call;
+                    // left right check
+                }
+                //Recursive processing of nested queries
+                List<SqlNode> operandList = call.getOperandList();
+                for (SqlNode sqlNode : operandList) {
+                    if (sqlNode instanceof SqlCall) {
+                        visit((SqlCall) sqlNode);
+                    }
+                }
+                return call;
+            }
+        };
     }
 
     /**

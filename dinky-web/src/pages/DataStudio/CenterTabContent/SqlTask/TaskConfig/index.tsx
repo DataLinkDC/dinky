@@ -27,6 +27,7 @@ import { TaskState, TempData } from '@/pages/DataStudio/type';
 import { BasicConfig } from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig/BasicConfig';
 import { isSql, assert } from '@/pages/DataStudio/utils';
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
+import { TestCaseFlinkSqlConfig } from "@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig/testCase";
 
 export default (props: {
   tempData: TempData;
@@ -87,6 +88,18 @@ export default (props: {
               }}
               {...SWITCH_OPTIONS()}
             />
+            <ProFormSwitch
+              label={l('pages.datastudio.label.execConfig.mocksource')}
+              name='mockSourceFunction'
+              tooltip={{
+                title: l('pages.datastudio.label.execConfig.mocksource.tip'),
+                icon: <InfoCircleOutlined />
+              }}
+              {...SWITCH_OPTIONS()}
+            />
+            <ProFormGroup>
+              <TestCaseFlinkSqlConfig params={data}/>
+            </ProFormGroup>
           </>
         );
       }
