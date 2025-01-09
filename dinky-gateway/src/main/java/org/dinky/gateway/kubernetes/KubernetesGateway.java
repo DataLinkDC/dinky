@@ -31,9 +31,11 @@ import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.utils.TextUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.DeploymentOptions;
+import org.apache.flink.configuration.DeploymentOptionsInternal;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.kubernetes.KubernetesClusterClientFactory;
@@ -86,6 +88,12 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     protected void initConfig() {
         flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
+
+        // The user-defined flink conf path overrides the flink conf path parameter.
+        if (StringUtils.isNotBlank(flinkConfigPath)) {
+            addConfigParas(DeploymentOptionsInternal.CONF_DIR, flinkConfigPath);
+        }
+
         flinkConfig = config.getFlinkConfig();
         String jobName = flinkConfig.getJobName();
         if (TextUtil.isEmpty(jobName)) {
@@ -222,9 +230,9 @@ public abstract class KubernetesGateway extends AbstractGateway {
             }
             return TestResult.success();
         } catch (Exception e) {
-            logger.error(Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e);
+            logger.error(Status.GATEWAY_KUBERNETES_TEST_FAILED.getMessage(), e);
             return TestResult.fail(
-                    StrFormatter.format("{}:{}", Status.GAETWAY_KUBERNETS_TEST_FAILED.getMessage(), e.getMessage()));
+                    StrFormatter.format("{}:{}", Status.GATEWAY_KUBERNETES_TEST_FAILED.getMessage(), e.getMessage()));
         } finally {
             close();
         }
