@@ -41,7 +41,6 @@ import { isSql } from '@/pages/DataStudio/utils';
 import { TableDataNode } from '@/pages/DataStudio/Toolbar/Catalog/data';
 import { DataStudioActionType } from '@/pages/DataStudio/data.d';
 import Search from "antd/es/input/Search";
-import { debounce } from "@/utils/function";
 
 type CatalogState = {
   envId?: number;
