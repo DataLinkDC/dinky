@@ -64,9 +64,17 @@ public class Explainer {
     private Executor executor;
     private JobManager jobManager;
 
+    public Explainer(Executor executor) {
+        this.executor = executor;
+    }
+
     public Explainer(Executor executor, JobManager jobManager) {
         this.executor = executor;
         this.jobManager = jobManager;
+    }
+
+    public static Explainer build(Executor executor) {
+        return new Explainer(executor);
     }
 
     public static Explainer build(JobManager jobManager) {
@@ -85,6 +93,10 @@ public class Explainer {
                     .jobStatementPlanMock(jobStatementPlanWithMock);
         }
         return jobStatementPlanWithMock;
+    }
+
+    public JobStatementPlan parseStatementsForApplicationMode(String[] statements) {
+        return executor.parseStatementIntoJobStatementPlan(statements);
     }
 
     private void generateUDFStatement(JobStatementPlan jobStatementPlan) {

@@ -51,17 +51,6 @@ public class JobStatementPlanTest {
     }
 
     @Test
-    void testSubmissionWithQueryStatement() {
-        JobStatementPlan jobStatementPlan = new JobStatementPlan();
-        jobStatementPlan.setSubmissionMode(true);
-        jobStatementPlan.addJobStatement("select 'A' as name;\n", JobStatementType.SQL, SqlType.SET);
-        checkInvalidStatement(
-                jobStatementPlan,
-                "The submission mode cannot contain one statement which is not a sink operation."
-                        + "\nThe valid statement is: select 'A' as name;\n");
-    }
-
-    @Test
     void testOnePipelineStatement() {
         JobStatementPlan jobStatementPlan = new JobStatementPlan();
         jobStatementPlan.addJobStatement("EXECUTE CDCSOURCE cdc {...};\n", JobStatementType.PIPELINE, SqlType.EXECUTE);

@@ -42,6 +42,7 @@ import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -52,6 +53,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,9 +64,37 @@ public class JobSqlRunner extends AbstractJobRunner {
 
     private List<JobStatement> statements;
 
+    public JobSqlRunner(Executor executor) {
+        this.executor = executor;
+        this.statements = new ArrayList<>();
+    }
+
     public JobSqlRunner(JobManager jobManager) {
         this.jobManager = jobManager;
+        this.executor = jobManager.getExecutor();
         this.statements = new ArrayList<>();
+    }
+
+    @Override
+    public Optional<JobClient> execute(JobStatement jobStatement) throws Exception {
+        statements.add(jobStatement);
+        if (jobStatement.isFinalExecutableStatement()) {
+            if (inferStatementSet()) {
+                TableResult tableResult = executor.executeStatements(statements);
+                return tableResult.getJobClient();
+            } else {
+                FlinkInterceptorResult flinkInterceptorResult =
+                        FlinkInterceptor.build(executor, statements.get(0).getStatement());
+                if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
+                    return flinkInterceptorResult.getTableResult().getJobClient();
+                } else if (!flinkInterceptorResult.isNoExecute()) {
+                    TableResult tableResult =
+                            executor.executeSql(statements.get(0).getStatement());
+                    return tableResult.getJobClient();
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -85,8 +115,7 @@ public class JobSqlRunner extends AbstractJobRunner {
         // show and desc
         if (!jobStatement.getSqlType().isPipeline()) {
             try {
-                resultBuilder = SqlExplainResult.newBuilder(
-                        jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
+                resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(jobStatement.getStatement()));
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
                 String error = LogUtil.getError(
@@ -118,8 +147,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             if (!inserts.isEmpty()) {
                 String sqlSet = StringUtils.join(inserts, FlinkSQLConstant.SEPARATOR);
                 try {
-                    resultBuilder =
-                            SqlExplainResult.newBuilder(jobManager.getExecutor().explainStatementSet(statements));
+                    resultBuilder = SqlExplainResult.newBuilder(executor.explainStatementSet(statements));
                 } catch (Exception e) {
                     String error = LogUtil.getError(
                             "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()),
@@ -145,8 +173,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             return resultBuilder.invalid().build();
         } else {
             try {
-                resultBuilder = SqlExplainResult.newBuilder(
-                        jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement()));
+                resultBuilder = SqlExplainResult.newBuilder(executor.explainSqlRecord(jobStatement.getStatement()));
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
                 String error = LogUtil.getError(
@@ -177,7 +204,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             return null;
         }
         if (!statements.isEmpty()) {
-            return jobManager.getExecutor().getStreamGraphFromStatement(statements);
+            return executor.getStreamGraphFromStatement(statements);
         }
         throw new DinkyException("None jobs in statement.");
     }
@@ -189,7 +216,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             return null;
         }
         if (!statements.isEmpty()) {
-            return jobManager.getExecutor().getJobPlanInfoFromStatements(statements);
+            return executor.getJobPlanInfoFromStatements(statements);
         }
         throw new DinkyException("None jobs in statement.");
     }
@@ -222,19 +249,13 @@ public class JobSqlRunner extends AbstractJobRunner {
     }
 
     private void processWithGateway() {
-        List<String> inserts =
-                statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
-        jobManager.setCurrentSql(StringUtils.join(inserts, FlinkSQLConstant.SEPARATOR));
         GatewayResult gatewayResult = submitByGateway(statements);
         setJobResultFromGatewayResult(gatewayResult);
     }
 
     private void processWithoutGateway() {
         if (!statements.isEmpty()) {
-            List<String> inserts =
-                    statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
-            jobManager.setCurrentSql(StringUtils.join(inserts, FlinkSQLConstant.SEPARATOR));
-            TableResult tableResult = jobManager.getExecutor().executeStatements(statements);
+            TableResult tableResult = executor.executeStatements(statements);
             updateJobWithTableResult(tableResult);
         }
     }
@@ -242,7 +263,6 @@ public class JobSqlRunner extends AbstractJobRunner {
     private void processSingleInsertWithGateway() {
         List<JobStatement> singleInsert = Collections.singletonList(statements.get(0));
         jobManager.getJob().setPipeline(statements.get(0).getSqlType().isPipeline());
-        jobManager.setCurrentSql(statements.get(0).getStatement());
         GatewayResult gatewayResult = submitByGateway(singleInsert);
         setJobResultFromGatewayResult(gatewayResult);
     }
@@ -254,17 +274,15 @@ public class JobSqlRunner extends AbstractJobRunner {
         // Only process the first statement when not using statement set
         JobStatement item = statements.get(0);
         jobManager.getJob().setPipeline(item.getSqlType().isPipeline());
-        jobManager.setCurrentSql(item.getStatement());
         processSingleStatement(item);
     }
 
     private void processSingleStatement(JobStatement item) {
-        FlinkInterceptorResult flinkInterceptorResult =
-                FlinkInterceptor.build(jobManager.getExecutor(), item.getStatement());
+        FlinkInterceptorResult flinkInterceptorResult = FlinkInterceptor.build(executor, item.getStatement());
         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
             updateJobWithTableResult(flinkInterceptorResult.getTableResult(), item.getSqlType());
         } else if (!flinkInterceptorResult.isNoExecute()) {
-            TableResult tableResult = jobManager.getExecutor().executeSql(item.getStatement());
+            TableResult tableResult = executor.executeSql(item.getStatement());
             updateJobWithTableResult(tableResult, item.getSqlType());
         }
     }
@@ -306,7 +324,7 @@ public class JobSqlRunner extends AbstractJobRunner {
                             jobManager.getConfig().getMaxRowNum(),
                             jobManager.getConfig().isUseChangeLog(),
                             jobManager.getConfig().isUseAutoCancel(),
-                            jobManager.getExecutor().getTimeZone(),
+                            executor.getTimeZone(),
                             jobManager.getConfig().isMockSinkFunction())
                     .getResultWithPersistence(tableResult, jobManager.getHandler());
             jobManager.getJob().setResult(result);
@@ -316,7 +334,6 @@ public class JobSqlRunner extends AbstractJobRunner {
     private GatewayResult submitByGateway(List<JobStatement> inserts) {
         JobConfig config = jobManager.getConfig();
         GatewayType runMode = jobManager.getRunMode();
-        Executor executor = jobManager.getExecutor();
 
         GatewayResult gatewayResult = null;
 
