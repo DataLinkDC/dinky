@@ -17,7 +17,7 @@
  *
  */
 
-import { Circle, Group, Path } from '@antv/g';
+import {Circle, Group, Path} from '@antv/g';
 import {
   ExtensionCategory,
   Graph,
@@ -26,13 +26,12 @@ import {
   RectComboStyleProps,
   register
 } from '@antv/g6';
-import { memo, useContext, useEffect, useRef } from 'react';
-import { Flex } from 'antd';
-import { ReactNode } from '@antv/g6-extension-react';
-import { Graphin } from '@antv/graphin';
-import { DagreLayout, GridLayout } from '@antv/layout';
-import { LineageDetailInfo } from '@/types/DevOps/data';
-import { DataStudioContext } from '@/pages/DataStudio/DataStudioContext';
+import {memo, useContext, useEffect, useRef} from 'react';
+import {ReactNode} from '@antv/g6-extension-react';
+import {Graphin} from '@antv/graphin';
+import {DagreLayout, GridLayout} from '@antv/layout';
+import {LineageDetailInfo} from '@/types/DevOps/data';
+import {DataStudioContext} from '@/pages/DataStudio/DataStudioContext';
 
 const collapse = (x: number, y: number, r: number) => {
   return [
@@ -63,26 +62,26 @@ class RectComboWithExtraButton extends RectCombo {
   }
 
   drawButton(attributes: Required<RectComboStyleProps>) {
-    const { collapsed } = attributes;
+    const {collapsed} = attributes;
     const [, height] = this.getKeySize(attributes);
     const btnR = 8;
-    const y = -(height / 2 + btnR);
+    const y = (height / 2 + btnR + 2);
     const d = collapsed ? expand(0, y, btnR) : collapse(0, y, btnR);
 
     const hitArea = this.upsert(
       'hit-area',
       Circle,
-      { cy: y, r: 10, fill: '#fff', cursor: 'pointer' },
+      {cy: y, r: 10, fill: '#fff', cursor: 'pointer', cx: 0},
       this
     );
-    this.upsert('button', Path, { stroke: '#3d81f7', d, cursor: 'pointer' }, hitArea!!);
+    this.upsert('button', Path, {stroke: '#3d81f7', d, cursor: 'pointer'}, hitArea!!);
   }
 
   onCreate() {
     this.shapeMap['hit-area'].addEventListener('click', () => {
       const id = this.id;
       const collapsed = !this.attributes.collapsed;
-      const { graph } = this.attributes.context!!;
+      const {graph} = this.context;
       if (collapsed) graph.collapseElement(id);
       else graph.expandElement(id);
     });
@@ -93,8 +92,8 @@ register(ExtensionCategory.COMBO, 'circle-combo-with-extra-button', RectComboWit
 
 register(ExtensionCategory.NODE, 'react', ReactNode);
 export const Lineage = memo((props: { data: LineageDetailInfo }) => {
-  const { data } = props;
-  const { theme } = useContext(DataStudioContext);
+  const {data} = props;
+  const {theme} = useContext(DataStudioContext);
   const graphRef = useRef<Graph>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -114,81 +113,98 @@ export const Lineage = memo((props: { data: LineageDetailInfo }) => {
     observer.observe(element);
     return () => observer.unobserve(element);
   }, []);
-  // 把data.tables 的id ,name转成map
-  const tablesMap = data.tables.reduce(
-    (acc, item) => {
-      acc[item.id] = item.name;
-      return acc;
-    },
-    {} as Record<string, string>
-  );
+  const tables = data.tables.map(x => x.name)
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{width: '100%', height: '100%'}}>
       <Graphin
         ref={graphRef}
-        style={{ overflow: 'hidden', display: 'flex', flex: '1 1 auto' }}
+        style={{overflow: 'hidden', display: 'flex', flex: '1 1 auto'}}
         options={{
           autoResize: true,
           theme: theme === 'light' ? theme : 'dark',
           data: {
-            nodes: data.tables.flatMap((item) =>
-              item.columns.map((column) => ({
-                id: item.id + column.name,
-                combo: item.id,
-                data: { name: column.name }
-              }))
+            nodes: data.tables.flatMap((item) => {
+                const lengths = item.columns.map(x => x.name.length);
+                const width = Math.max(...lengths) * 10;
+                const tableSplit = item.name.split(".")
+                return [{
+                  id: item.name, combo: item.id, data: {name: tableSplit[tableSplit.length - 1], tables: tableSplit},
+                  palette: {
+                    type: 'group',
+                    field: 'name',
+                  },
+                  style: {
+                    fill: '#3c3f41',
+                    radius: [10, 10, 0, 0],
+                    size: [300, 30],
+                    labelFill: 'white'
+                  }
+                },
+                  ...item.columns.map((column) => ({
+                    id: item.id + column.name,
+                    combo: item.id,
+                    data: {name: column.name, width, catalog: item.name},
+                    style: {
+                      fill: 'white',
+                      size: [300, 30],
+                      labelFill: 'black',
+                      // todo
+                      port: false,
+                      ports: [{placement: 'right'}, {placement: 'left'}],
+                      portR: 3,
+                    },
+                  }))]
+              }
             ),
             edges: data.relations.map((item) => ({
               source: item.srcTableId + item.srcTableColName,
               target: item.tgtTableId + item.tgtTableColName
             })),
-            combos: data.tables.map((item) => ({ id: item.id }))
+            combos: data.tables.map((item) => ({id: item.id}))
           },
           combo: {
             type: 'circle-combo-with-extra-button',
             style: {
-              labelText: (d) => tablesMap[d.id]
+              padding: [0, 0],
+              fill: '#FFF',
+              radius: 10,
             }
           },
           node: {
-            type: 'react',
+            type: 'rect',
             style: {
-              size: [240, 20],
-              component: (data: { data: { name: string } }) => (
-                <Flex
-                  justify={'center'}
-                  align={'center'}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    background: 'var(--main-background-color)',
-                    borderRadius: 5,
-                    border: '1px solid gray'
-                  }}
-                  vertical
-                >
-                  {data.data.name}
-                </Flex>
-              ),
-              port: true,
-              ports: [{ placement: 'right' }, { placement: 'left' }]
+              // iconText: (d: { data: { name: string } }) => d.data.name,
+              labelText: (d: { data: { name: string } }) => d.data.name,
+              labelPlacement: 'center'
+            },
+            state: {
+              highlight: {
+                fill: '#dfe0d9',
+              }
             }
+
           },
           edge: {
             type: 'cubic-horizontal',
             style: {
               endArrow: true,
-              endArrowType: 'vee'
+              endArrowType: 'vee',
+              lineDash: 5
+            },
+            state: {
+              highlight: {
+                lineDash: 0
+              }
             }
           },
           layout: {
             type: 'combo-combined',
-            innerLayout: new GridLayout({ cols: 1, condense: true }),
+            innerLayout: new GridLayout({cols: 1, condense: true}),
             outerLayout: new DagreLayout({
               rankdir: 'LR',
               edgeLabelSpace: false,
-              nodesep: 5,
-              ranksep: 50
+              nodesep: 15,
+              ranksep: 150
             })
           },
           behaviors: [
@@ -197,7 +213,7 @@ export const Lineage = memo((props: { data: LineageDetailInfo }) => {
             'zoom-canvas',
             {
               type: 'hover-activate',
-              enable: (event: any) => event.targetType === 'node',
+              enable: (event: any) => event.targetType === 'node' && !tables.find(x => x === event.target.id),
               degree: 1, // 👈🏻 Activate relations.
               state: 'highlight',
               inactiveState: 'dim',
@@ -238,16 +254,28 @@ export const Lineage = memo((props: { data: LineageDetailInfo }) => {
               },
               getItems: () => {
                 return [
-                  { id: 'zoom-in', value: 'zoom-in' },
-                  { id: 'zoom-out', value: 'zoom-out' },
-                  { id: 'auto-fit', value: 'auto-fit' }
+                  {id: 'zoom-in', value: 'zoom-in'},
+                  {id: 'zoom-out', value: 'zoom-out'},
+                  {id: 'auto-fit', value: 'auto-fit'}
                 ];
               },
               style: {
                 backgroundColor: 'var(--btn-background-color)'
               }
             },
-            { key: 'background', type: 'background', background: 'var(--primary-color)' }
+            {key: 'background', type: 'background', background: 'var(--primary-color)'},
+            {
+              type: 'tooltip',
+              enable: (event: any) => event.targetType === 'node' && tables.find(x => x === event.target.id),
+              trigger: "click",
+              getContent: (event: any, items: any) => {
+                const ts = items[0].data.tables;
+                const catalog = `<h4>catalog: ${ts[0]}</h4>`;
+                const database = `<h4>database: ${ts[1]}</h4>`;
+                const table = `<h4>table: ${ts[2]}</h4>`;
+                return catalog + database + table;
+              },
+            },
           ],
           transforms: ['process-parallel-edges'],
           autoFit: 'view'
