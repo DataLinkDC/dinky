@@ -1,0 +1,11 @@
+version: "3"
+networks:
+  dinky_net:
+    external: true
+services:
+  doris:
+    image: yagagagaga/doris-standalone:2.1.7
+    hostname: doris
+    container_name: doris
+    networks:
+      - dinky_net
