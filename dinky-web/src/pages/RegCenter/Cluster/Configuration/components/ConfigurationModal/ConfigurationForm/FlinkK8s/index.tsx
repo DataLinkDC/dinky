@@ -201,7 +201,7 @@ export default (props: {
               placeholder={l('rc.cc.flinkConfigPathPlaceholder')}
               tooltip={l('rc.cc.flinkConfigPathHelp')}
             />
-            {type && type === ClusterType.KUBERNETES_APPLICATION && (
+            {type && (type === ClusterType.KUBERNETES_APPLICATION || type === ClusterType.KUBERNETES_OPERATOR) && (
               <ProFormSwitch
                 name={['config', 'kubernetesConfig', 'ingressConfig', 'kubernetes.ingress.enabled']}
                 label={l('rc.cc.k8s.ingress.enabled')}
@@ -210,7 +210,7 @@ export default (props: {
                 unCheckedChildren={l('button.disable')}
               />
             )}
-            {type && type === ClusterType.KUBERNETES_APPLICATION && ingressEnabled && (
+            {type && (type === ClusterType.KUBERNETES_APPLICATION || type === ClusterType.KUBERNETES_OPERATOR) && ingressEnabled && (
               <ProFormText
                 tooltip={l('rc.cc.k8s.ingress.domainHelp')}
                 name={['config', 'kubernetesConfig', 'ingressConfig', 'kubernetes.ingress.domain']}

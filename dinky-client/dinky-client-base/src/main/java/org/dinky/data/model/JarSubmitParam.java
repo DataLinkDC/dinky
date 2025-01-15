@@ -106,4 +106,8 @@ public class JarSubmitParam {
                 getArgs(),
                 getAllowNonRestoredState());
     }
+
+    public String toString() {
+        return this.getStatement();
+    }
 }
