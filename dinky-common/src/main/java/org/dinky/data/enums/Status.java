@@ -444,8 +444,8 @@ public enum Status {
     /**
      * gateway config
      */
-    GAETWAY_KUBERNETS_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
-    GAETWAY_KUBERNETS_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
+    GATEWAY_KUBERNETES_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
+    GATEWAY_KUBERNETES_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
 
     /**
      * process
