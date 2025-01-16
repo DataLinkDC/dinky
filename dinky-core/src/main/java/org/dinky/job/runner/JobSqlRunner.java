@@ -46,7 +46,12 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.ResultKind;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.api.internal.TableResultImpl;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.data.StringData;
+import org.apache.flink.util.CloseableIterator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -297,6 +302,16 @@ public class JobSqlRunner extends AbstractJobRunner {
             jobManager
                     .getJob()
                     .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
+        } else if (ResultKind.SUCCESS_WITH_CONTENT.equals(tableResult.getResultKind())) {
+            TableResultImpl tableResultImpl = (TableResultImpl) tableResult;
+            CloseableIterator<RowData> rowDataCloseableIterator = tableResultImpl.collectInternal();
+            if (rowDataCloseableIterator.hasNext()) {
+                RowData rowData = rowDataCloseableIterator.next();
+                StringData jobIDStringData = rowData.getString(0);
+                String jobID = jobIDStringData.toString().replace("JobID=", "");
+                jobManager.getJob().setJobId(jobID);
+                jobManager.getJob().setJids(Collections.singletonList(jobID));
+            }
         }
 
         if (jobManager.getConfig().isUseResult()) {
