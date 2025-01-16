@@ -49,8 +49,7 @@ import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ResultKind;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.api.internal.TableResultImpl;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.data.StringData;
+import org.apache.flink.types.Row;
 import org.apache.flink.util.CloseableIterator;
 
 import java.time.LocalDateTime;
@@ -304,13 +303,15 @@ public class JobSqlRunner extends AbstractJobRunner {
                     .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
         } else if (ResultKind.SUCCESS_WITH_CONTENT.equals(tableResult.getResultKind())) {
             TableResultImpl tableResultImpl = (TableResultImpl) tableResult;
-            CloseableIterator<RowData> rowDataCloseableIterator = tableResultImpl.collectInternal();
-            if (rowDataCloseableIterator.hasNext()) {
-                RowData rowData = rowDataCloseableIterator.next();
-                StringData jobIDStringData = rowData.getString(0);
-                String jobID = jobIDStringData.toString().replace("JobID=", "");
-                jobManager.getJob().setJobId(jobID);
-                jobManager.getJob().setJids(Collections.singletonList(jobID));
+            CloseableIterator<Row> rowCloseableIterator = tableResultImpl.collect();
+            if (rowCloseableIterator.hasNext()) {
+                Row row = rowCloseableIterator.next();
+                String jobIDStringData = String.valueOf(row.getField(0));
+                if (Asserts.isNotNullString(jobIDStringData)) {
+                    String jobID = jobIDStringData.replace("JobID=", "");
+                    jobManager.getJob().setJobId(jobID);
+                    jobManager.getJob().setJids(Collections.singletonList(jobID));
+                }
             }
         }
 
