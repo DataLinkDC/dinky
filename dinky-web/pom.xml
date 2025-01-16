@@ -49,43 +49,34 @@
                 <configuration>
                     <nodeVersion>v18.15.0</nodeVersion>
                     <npmVersion>10.5.0</npmVersion>
+                    <pnpmVersion>9.15.4</pnpmVersion>
                     <!-- 国内node下载加速 -->
-                    <!--<nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
-                    <!--<npmDownloadRoot>https://repo.huaweicloud.com/npm-software/</npmDownloadRoot>-->
+<!--                    <nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
+<!--                    <npmDownloadRoot>https://repo.huaweicloud.com/npm-software/</npmDownloadRoot>-->
                 </configuration>
                 <executions>
                     <execution>
                         <id>install node and npm</id>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>install-node-and-pnpm</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>install pnpm</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <!-- For domestic npm source acceleration, you can check the profile of npm Huawei or npm Taobao -->
-                            <arguments>install -g pnpm --registry ${npm-registry-repo}</arguments>
-                        </configuration>
                     </execution>
                   <execution>
                     <id>install</id>
                     <goals>
-                      <goal>corepack</goal>
+                      <goal>pnpm</goal>
                     </goals>
                     <configuration>
-                      <arguments>pnpm install --registry ${npm-registry-repo}</arguments>
+                      <arguments>install --registry ${npm-registry-repo}</arguments>
                     </configuration>
                   </execution>
                   <execution>
                     <id>build</id>
                     <goals>
-                      <goal>corepack</goal>
+                      <goal>pnpm</goal>
                     </goals>
                     <configuration>
-                      <arguments>pnpm run build</arguments>
+                      <arguments>run build</arguments>
                     </configuration>
                   </execution>
                 </executions>
