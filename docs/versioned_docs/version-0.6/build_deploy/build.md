@@ -25,10 +25,10 @@ title: 编译
 
 下载完成后，双击傻瓜式安装即可
 
-由于Dinky编译NPM最低版本为7.19.0，因此需要把NPM版本升级到7.19.0。具体操作如下
+由于Dinky编译需要pnpm
 
 ```
-npm install -g npm@7.19.0
+npm install -g pnpm
 ```
 
 ### Linux 版本
@@ -46,10 +46,10 @@ export PATH=$NODEJS_HOME/bin:$PATH
 source /etc/profile #刷新环境变量
 ```
 
-由于Dinky编译NPM最低版本为7.19.0，因此需要把NPM版本升级到7.19.0。具体操作如下：
+由于Dinky编译需要PNPM
 
 ```
-npm install -g npm@7.19.0
+npm install -g pnpm
 ```
 
 ## MySQL 部署

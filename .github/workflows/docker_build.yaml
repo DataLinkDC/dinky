@@ -53,7 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install Dependencies
-        run: cd dinky-web && npm install --no-audit --progress=false --legacy-peer-deps
+        run: cd dinky-web && npm install -g pnpm && pnpm install
       - name: Npm Web Build
         run: cd dinky-web && npm run build
       - name: Upload artifact
