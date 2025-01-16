@@ -85,7 +85,7 @@
                       <goal>corepack</goal>
                     </goals>
                     <configuration>
-                      <arguments>pnpm build</arguments>
+                      <arguments>pnpm run build</arguments>
                     </configuration>
                   </execution>
                 </executions>

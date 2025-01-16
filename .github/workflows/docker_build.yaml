@@ -55,7 +55,7 @@ jobs:
       - name: Install Dependencies
         run: cd dinky-web && npm install -g pnpm && pnpm install
       - name: Npm Web Build
-        run: cd dinky-web && npm run build
+        run: cd dinky-web && pnpm run build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
