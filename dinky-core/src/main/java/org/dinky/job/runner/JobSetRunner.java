@@ -22,6 +22,7 @@ package org.dinky.job.runner;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.SqlType;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.executor.Executor;
 import org.dinky.job.JobManager;
 import org.dinky.trans.ddl.CustomSetOperation;
 import org.dinky.utils.LogUtil;
@@ -34,15 +35,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobSetRunner extends AbstractJobRunner {
 
+    public JobSetRunner(Executor executor) {
+        this.executor = executor;
+    }
+
     public JobSetRunner(JobManager jobManager) {
         this.jobManager = jobManager;
+        this.executor = jobManager.getExecutor();
     }
 
     @Override
     public void run(JobStatement jobStatement) throws Exception {
         if (SqlType.SET.equals(jobStatement.getSqlType())) {
             CustomSetOperation customSetOperation = new CustomSetOperation(jobStatement.getStatement());
-            customSetOperation.execute(jobManager.getExecutor().getCustomTableEnvironment());
+            customSetOperation.execute(executor.getCustomTableEnvironment());
         } else if (SqlType.RESET.equals(jobStatement.getSqlType())) {
             // todo: reset
             throw new RuntimeException("Not support reset operation.");
@@ -54,8 +60,8 @@ public class JobSetRunner extends AbstractJobRunner {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
         try {
             CustomSetOperation customSetOperation = new CustomSetOperation(jobStatement.getStatement());
-            String explain = customSetOperation.explain(jobManager.getExecutor().getCustomTableEnvironment());
-            customSetOperation.execute(jobManager.getExecutor().getCustomTableEnvironment());
+            String explain = customSetOperation.explain(executor.getCustomTableEnvironment());
+            customSetOperation.execute(executor.getCustomTableEnvironment());
             resultBuilder
                     .explain(explain)
                     .parseTrue(true)
