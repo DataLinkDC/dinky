@@ -83,6 +83,30 @@ public class JobStatementPlan {
         }
     }
 
+    public void buildFinalExecutableStatement() {
+        checkStatement();
+
+        int executableIndex = -1;
+        for (int i = 0; i < jobStatementList.size(); i++) {
+            if (jobStatementList.get(i).getSqlType().isPipeline()) {
+                executableIndex = i;
+            }
+        }
+        if (executableIndex >= 0) {
+            jobStatementList.get(executableIndex).asFinalExecutableStatement();
+        } else {
+            // If there is no INSERT/CTAS/RTAS/CALL statement, use the first SELECT/WITH/SHOW/DESC SQL statement as the
+            // final
+            // statement.
+            for (int i = 0; i < jobStatementList.size(); i++) {
+                if (jobStatementList.get(i).getStatementType().equals(JobStatementType.SQL)) {
+                    jobStatementList.get(i).asFinalExecutableStatement();
+                    break;
+                }
+            }
+        }
+    }
+
     public void checkStatement() {
         checkEmptyStatement();
         checkPipelineStatement();
