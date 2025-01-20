@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS dinky_approval
 (
     id                    int(11) AUTO_INCREMENT COMMENT 'id',
     task_id               int(11)     NOT NULL COMMENT 'task id',
-    tenant_id             int(11)     NOT NULL COMMENT 'tenant id' default 1,
+    tenant_id             int(11)     NOT NULL default 1 COMMENT 'tenant id',
     previous_task_version int(11)                                  DEFAULT NULL COMMENT 'previous version of task',
     current_task_version  int(11)     NOT NULL COMMENT 'current version to be reviewed of task',
     status                VARCHAR(50) NOT NULL COMMENT 'approval status',
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS dinky_approval
     reviewer              int(11)                                  DEFAULT NULL COMMENT 'reviewer user id',
     reviewer_comment      varchar(255)                             DEFAULT NULL COMMENT 'reviewer comment',
     create_time           datetime(0) null                         DEFAULT null COMMENT 'create time',
-    update_time           datetime(0) null                         DEFAULT null COMMENT 'update time',
+    update_time           datetime(0) null                         DEFAULT null COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 
 -- ----------------------------
