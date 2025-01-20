@@ -55,6 +55,12 @@ CREATE UNIQUE INDEX IF NOT EXISTS task_id_current_version_idx ON public.dinky_ap
 CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_submitter_union_idx ON public.dinky_approval (submitter, tenant_id);
 CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_reviewer_union_idx ON public.dinky_approval (reviewer, tenant_id);
 
+CREATE OR REPLACE TRIGGER set_update_time_dinky_approval
+    BEFORE UPDATE
+    ON public.dinky_approval
+    FOR EACH ROW
+EXECUTE FUNCTION trigger_set_timestamp();
+
 -- ----------------------------
 -- approval menu
 -- ----------------------------
@@ -64,12 +70,12 @@ INSERT INTO public.dinky_sys_menu(id, parent_id, name, path, component, perms, i
 VALUES (176, 4, '审批发布', '/auth/approval', './AuthCenter/Approval', 'auth:approval:operate', 'AuditOutlined', 'C', 0, 169,
         '2024-12-10 12:13:00', '2024-12-10 12:13:00', null);
 
-insert into `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`,
-                              `order_num`, `create_time`, `update_time`, `note`)
+insert into public.dinky_sys_menu (id, parent_id, name, path, component, perms, icon, type, display,
+                              order_num, create_time, update_time, note)
 values (177, 24, '审批配置', '/settings/globalsetting/approval', null, 'settings:globalsetting:approval',
         'SettingOutlined', 'F', 0, 170, '2024-12-30 23:45:30', '2024-12-30 23:45:30', null);
 
-insert into `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `perms`, `icon`, `type`, `display`,
-                              `order_num`, `create_time`, `update_time`, `note`)
+insert into public.dinky_sys_menu (id, parent_id, name, path, component, perms, icon, type, display,
+                              order_num, create_time, update_time, note)
 values (178, 177, '编辑', '/settings/globalsetting/approval/edit', null, 'settings:globalsetting:approval:edit',
         'EditOutlined', 'F', 0, 171, '2024-12-30 23:45:30', '2024-12-30 23:45:30', null);
