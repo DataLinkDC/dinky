@@ -301,6 +301,7 @@ public enum Status {
      * udf template
      */
     UDF_TEMPLATE_EXIST_RELATIONSHIP(23001, "udf.template.exist.relationship"),
+    UDF_SAVE_SUCCESS_PLACEHOLDER(23002, "udf.save.success.placeholder"),
 
     /**
      * Resource

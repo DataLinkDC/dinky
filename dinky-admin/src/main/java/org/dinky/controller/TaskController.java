@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.config.Dialect;
 import org.dinky.data.annotations.CheckTaskApproval;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.ExecuteProcess;
@@ -213,6 +214,9 @@ public class TaskController {
     @CheckTaskOwner(checkParam = TaskId.class, checkInterface = TaskService.class)
     public Result<Void> saveOrUpdateTask(@Validated({Save.class}) @RequestBody TaskSaveDTO task) {
         if (taskService.saveOrUpdateTask(task.toTaskEntity())) {
+            if (Dialect.isUDF(task.getDialect())) {
+                return Result.succeed(Status.UDF_SAVE_SUCCESS_PLACEHOLDER);
+            }
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
