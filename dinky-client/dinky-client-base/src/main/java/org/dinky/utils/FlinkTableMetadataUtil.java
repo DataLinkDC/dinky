@@ -69,7 +69,7 @@ public class FlinkTableMetadataUtil {
             Table table = Table.build(tableName, catalogName);
             customTableEnvironment.getCatalogManager().getCatalog(catalogName).ifPresent(t -> {
                 try {
-                    CatalogBaseTable baseTable = t.getTable(new ObjectPath(catalogName, tableName));
+                    CatalogBaseTable baseTable = t.getTable(new ObjectPath(database, tableName));
                     table.setComment(baseTable.getComment());
                     table.setOptions(baseTable.getOptions().toString());
                 } catch (Exception e) {
