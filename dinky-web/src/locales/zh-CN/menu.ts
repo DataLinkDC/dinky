@@ -78,6 +78,7 @@ export default {
   'menu.auth.namespace': '命名空间',
   'menu.auth.tenant': '租户',
   'menu.auth.token': '令牌',
+  'menu.auth.approval': '审核发布',
   'menu.settings': '配置中心',
   'menu.settings.globalsetting': '全局配置',
   'menu.settings.systemlog': '系统日志',
@@ -114,5 +115,9 @@ export default {
   'menu.datastudio.tool.text-comparison': '文本比对',
   'menu.datastudio.tool.jsonToSql': 'JSON转Flink-SQL',
   'menu.datastudio.task.baseConfig': '基础配置',
-  'menu.datastudio.task.previewConfig': '预览配置'
+  'menu.datastudio.task.previewConfig': '预览配置',
+
+  'menu.approval': '审批中心',
+  'menu.approval.taskApproval': '任务审批',
+  'menu.approval.submitApproval': '提交审核'
 };

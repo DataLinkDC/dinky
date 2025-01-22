@@ -29,6 +29,7 @@ import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
 import java.util.Collections;
@@ -127,19 +128,25 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
             // sleep a time ,because some time the service will not be found
             Thread.sleep(3000);
 
-            // get jobmanager addr by service
-            ListOptions options = new ListOptions();
-            String serviceName = config.getFlinkConfig().getJobName() + "-rest";
-            options.setFieldSelector("metadata.name=" + serviceName);
-            ServiceList list = kubernetesClient
-                    .services()
-                    // fixed bug can't find service list #3700
-                    .inNamespace(configuration.get(KubernetesConfigOptions.NAMESPACE))
-                    .list(options);
-            if (Objects.nonNull(list) && list.getItems().isEmpty()) {
-                throw new RuntimeException("service list is empty, please check svc list is exists");
+            ServiceList list = null;
+            String ipPort = null;
+            if (!(StringUtils.isNotEmpty(getIngressUrl()) && pingIpPort(getIngressUrl()))) {
+                // get jobmanager addr by service
+                ListOptions options = new ListOptions();
+                String serviceName = config.getFlinkConfig().getJobName() + "-rest";
+                options.setFieldSelector("metadata.name=" + serviceName);
+                list = kubernetesClient
+                        .services()
+                        // fixed bug can't find service list #3700
+                        .inNamespace(configuration.get(KubernetesConfigOptions.NAMESPACE))
+                        .list(options);
+                if (Objects.nonNull(list) && list.getItems().isEmpty()) {
+                    throw new RuntimeException("service list is empty, please check svc list is exists");
+                }
+                ipPort = getWebUrl(list, kubernetesClient);
+            } else {
+                ipPort = getIngressUrl();
             }
-            String ipPort = getWebUrl(list, kubernetesClient);
             result.setWebURL("http://" + ipPort);
             result.setId(result.getJids().get(0) + System.currentTimeMillis());
             result.success();
@@ -163,6 +170,11 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
         StringBuilder ipPort = new StringBuilder();
         StringBuilder svcRestPort = new StringBuilder();
         StringBuilder svcType = new StringBuilder();
+
+        if (StringUtils.isNotEmpty(getIngressUrl()) && pingIpPort(getIngressUrl())) {
+            return getIngressUrl();
+        }
+
         logger.debug("kubernetes service list : [{}] \n kubernetesClient: [{}]", list, kubernetesClient);
         for (Service item : list.getItems()) {
             svcRestPort

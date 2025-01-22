@@ -26,6 +26,7 @@ import { Monaco } from '@monaco-editor/react';
 import { Panel, PanelGroup } from 'react-resizable-panels';
 import {
   ApartmentOutlined,
+  AuditOutlined,
   BugOutlined,
   CaretRightOutlined,
   ClearOutlined,
@@ -84,6 +85,7 @@ import { DataStudioActionType } from '@/pages/DataStudio/data.d';
 import {
   getDataByParams,
   handleOption,
+  handlePutDataByParams,
   handlePutDataJson,
   queryDataByParams
 } from '@/services/BusinessCrud';
@@ -109,6 +111,9 @@ import {
   DolphinTaskMinInfo
 } from '@/types/Studio/data';
 import PushDolphin from '@/pages/DataStudio/CenterTabContent/SqlTask/PushDolphin';
+import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
+import { OperationType } from "@/types/AuthCenter/data.d";
+import { getAllConfig } from "@/pages/Metrics/service";
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -215,6 +220,16 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     formValuesInfo: {}
   });
 
+  const [approvalState, setApprovalState] = useState<{
+    enableApproval: boolean,
+    openSubmitModal: boolean;
+    currentApprovalId: number;
+  }>({
+    enableApproval: false,
+    openSubmitModal: false,
+    currentApprovalId: -1
+  })
+
   useEffect(() => {
     if (sqlForm.enable) {
       setSqlForm((prevState) => ({
@@ -265,6 +280,17 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         }
       }
     }
+    // check approval config
+    const allConfig = await getAllConfig();
+    for (const config of allConfig.data.approval) {
+      if (config.key === 'sys.approval.settings.enableTaskSubmitReview') {
+        if (config.value) {
+          // show approval submit button
+          setApprovalState(prevState => ({...prevState, enableApproval: true}));
+        }
+      }
+    }
+
     setLoading(false);
   }, []);
 
@@ -724,6 +750,25 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     await handlePushDolphinCancel();
   };
 
+  const handleOpenApprovalModal = async () => {
+    // publish first
+    if (JOB_LIFE_CYCLE.PUBLISH != currentState.step) {
+      await handleChangeJobLife();
+    }
+    // create approval
+    const res = await handlePutDataByParams(
+      API_CONSTANTS.TASK_APPROVAL_CREATE,
+      l('approval.operation.create'),
+      { taskId:currentState.taskId }
+    );
+    // open submit modal
+    setApprovalState((prevState) => ({...prevState, currentApprovalId: res.data.id}));
+    handleApprovalModalOpenChange(true);
+  }
+
+  const handleApprovalModalOpenChange = (open: boolean) => {
+    setApprovalState((prevState) => ({...prevState, openSubmitModal: open}));
+  };
   return (
     <Skeleton
       loading={loading}
@@ -740,6 +785,17 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         language={matchLanguage(currentState.dialect)}
         fileName={currentState.name}
         onUse={updateTask}
+      />
+      <ApprovalModal
+        open={approvalState.openSubmitModal}
+        title={l('approval.operation.submit')}
+        activeId={approvalState.currentApprovalId}
+        operationType={OperationType.SUBMIT}
+        onOpenChange={handleApprovalModalOpenChange}
+        handleSubmit={async (record) => {
+          await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), record);
+          setApprovalState(prevState => ({...prevState, openSubmitModal: false}))
+        }}
       />
       <Flex vertical style={{ height: 'inherit', width: '100%' }} ref={containerRef}>
         <ProForm
@@ -984,6 +1040,14 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
                 hotKeyHandle: (e: KeyboardEvent) => e.ctrlKey && e.key === 'E'
               }}
               onClick={handlePushDolphinOpen}
+            />
+            <RunToolBarButton
+              isShow={approvalState.enableApproval}
+              disabled={isLockTask}
+              showDesc={showDesc}
+              desc={l('approval.operation.create')}
+              icon={<AuditOutlined/>}
+              onClick={handleOpenApprovalModal}
             />
           </Flex>
         </ProForm>

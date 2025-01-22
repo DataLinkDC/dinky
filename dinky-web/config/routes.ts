@@ -249,6 +249,12 @@ export default [
         name: 'token',
         icon: 'SecurityScanOutlined',
         component: './AuthCenter/Token'
+      },
+      {
+        path: '/auth/approval',
+        name: 'approval',
+        icon: 'AuditOutlined',
+        component: './AuthCenter/Approval'
       }
     ]
   },

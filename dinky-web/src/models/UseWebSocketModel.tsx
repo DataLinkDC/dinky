@@ -59,7 +59,7 @@ export default () => {
   const ws = useRef<WebSocket>();
 
   const reconnect = () => {
-    if (ws.current && ws.current.readyState === WebSocket.CLOSED) {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       ws.current.close();
     }
     ws.current = new WebSocket(wsUrl);

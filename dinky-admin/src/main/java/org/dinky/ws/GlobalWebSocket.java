@@ -94,7 +94,9 @@ public class GlobalWebSocket {
     private static final Map<Session, RequestDTO> TOPICS = new ConcurrentHashMap<>();
 
     @OnOpen
-    public void onOpen(Session session) {}
+    public void onOpen(Session session) {
+        session.setMaxIdleTimeout(30000);
+    }
 
     @OnClose
     public void onClose(Session session) {

@@ -1180,6 +1180,8 @@ export default {
   'sys.ldap.settings.keyword': '可输入用户名/昵称进行搜索,支持模糊查询,输入关键词后回车即可',
   'sys.ldap.settings.loadable': '是否可以导入',
   'sys.setting.ingress': 'Ingress 配置',
+  'sys.setting.approval': '审批配置',
+  'sys.setting.approval.tooltip': '作业上线的审批配置',
   /**
    *
    * tenant
@@ -1330,5 +1332,35 @@ export default {
   'datastudio.toolbar.rightClick.hideToolbarDesc': '隐藏工具栏窗口名称',
   'datastudio.toolbar.rightClick.showToolbarDesc': '显示工具栏窗口名称',
   'datastudio.toolbar.rightClick.closeCompact': '关闭紧凑模式',
-  'datastudio.toolbar.rightClick.openCompact': '打开紧凑模式'
+  'datastudio.toolbar.rightClick.openCompact': '打开紧凑模式',
+
+  'approval.dinky.not.open': '暂未开启审批功能，请前往 配置中心 -> 审批配置 进行配置',
+  'approval.reviewList': '审批列表',
+  'approval.submitList': '申请列表',
+  'approval.id': '工单id',
+  'approval.taskId': '任务id',
+  'approval.previousTaskVersion': '线上版本',
+  'approval.currentTaskVersion': '提交审核版本',
+  'approval.status': '工单状态',
+  'approval.submitterName': '提交人',
+  'approval.submitterComment': '上线备注',
+  'approval.reviewer': '审核人id',
+  'approval.reviewerName': '审核人',
+  'approval.reviewerComment': '审核备注',
+  'approval.status.created': '已创建',
+  'approval.status.withdrawn': '已撤回',
+  'approval.status.submitted': '已提交',
+  'approval.status.approved': '已通过',
+  'approval.status.rejected': '已驳回',
+  'approval.status.canceled': '已取消',
+  'approval.operation.create': '创建审批',
+  'approval.operation.withdraw': '撤回审批',
+  'approval.operation.submit': '提交审批',
+  'approval.operation.approve': '通过审批',
+  'approval.operation.reject': '驳回审批',
+  'approval.operation.cancel': '取消审批',
+  'approval.reviewer.required': '请选择一位审批人',
+  'approval.submit.comment': '上线说明',
+  'approval.review.comment': '审批意见',
+  'approval.taskInfo': '上线任务详情'
 };

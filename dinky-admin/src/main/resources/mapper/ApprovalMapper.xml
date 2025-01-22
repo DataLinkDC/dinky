@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~
+  ~  Licensed to the Apache Software Foundation (ASF) under one or more
+  ~  contributor license agreements.  See the NOTICE file distributed with
+  ~  this work for additional information regarding copyright ownership.
+  ~  The ASF licenses this file to You under the Apache License, Version 2.0
+  ~  (the "License"); you may not use this file except in compliance with
+  ~  the License.  You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dinky.mapper.ApprovalMapper">
+
+    <sql id="columns">
+        id,
+        task_id,
+        tenant_id,
+        previous_task_version,
+        current_task_version,
+        status,
+        submitter,
+        submitter_comment,
+        reviewer,
+        reviewer_comment,
+        create_time,
+        update_time
+    </sql>
+
+    <select id="getApprovalByTaskId" resultType="org.dinky.data.model.Approval">
+        select <include refid="columns"/>
+        from dinky_approval
+        where task_id = #{taskId}
+    </select>
+
+    <select id="selectForProTable" resultType="org.dinky.data.model.Approval">
+        select a.*
+        from dinky_approval a
+        <where>
+            1=1
+            <if test='param.id!=null and param.id!=""'>
+                and a.id = #{param.id}
+            </if>
+            <if test='param.task_id!=null and param.task_id!=""'>
+                and a.task_id = #{param.task_id}
+            </if>
+            <if test='param.tenant_id!=null and param.tenant_id!=""'>
+                and a.tenant_id = #{param.tenant_id}
+            </if>
+            <if test='param.previous_task_version!=null and param.previous_task_version!=""'>
+                and a.previous_task_version = #{param.previous_task_version}
+            </if>
+            <if test='param.current_task_version!=null and param.current_task_version!=""'>
+                and a.current_task_version = #{param.current_task_version}
+            </if>
+            <if test='param.status!=null and param.status!=""'>
+                and a.status = #{param.status}
+            </if>
+            <if test='param.submitter!=null and param.submitter!=""'>
+                and a.submitter = #{param.submitter}
+            </if>
+            <if test='param.submitter_comment!=null and param.submitter_comment!=""'>
+                and a.submitter_comment like concat('%',#{param.submitter_comment},'%')
+            </if>
+            <if test='param.reviewer!=null and param.reviewer!=""'>
+                and a.reviewer = #{param.reviewer}
+            </if>
+            <if test='param.reviewer_comment!=null and param.reviewer_comment!=""'>
+                and a.reviewer_comment like concat('%',#{param.reviewer_comment},'%')
+            </if>
+            <if test='param.createTime!=null and param.createTime!=""'>
+                and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='param.updateTime!=null and param.updateTime!=""'>
+                and a.update_time <![CDATA[>=]]> str_to_date( #{param.updateTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+</mapper>

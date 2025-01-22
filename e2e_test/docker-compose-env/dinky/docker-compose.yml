@@ -19,5 +19,6 @@ services:
       - ../flink/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar:/opt/dinky/lib/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar
       - ../flink/conf/log4j-console.properties:/opt/flink/conf/log4j-console.properties
       - ../hadoop:/opt/flink/conf
+      - ./jars:/dinky
     networks:
       - dinky_net

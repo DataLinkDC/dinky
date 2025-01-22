@@ -23,14 +23,98 @@ on:
       dinky_version:
         description: 'dinky version'
         required: true
-      docker_space:
-              description: 'docker space(eg: dinky)'
-              required: true
 
 jobs:
-  build_releases:
-    name: build releases
+  build_front:
+    name: Build_NPM
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'dinky-web/**'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ${{ steps.npm-cache-dir.outputs.dir }}
+            dinky-web/dist
+          key: ${{ runner.os }}-node-${{ hashFiles('dinky-web/**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Dependencies
+        run: cd dinky-web && npm install --no-audit --progress=false --legacy-peer-deps
+      - name: Npm Web Build
+        run: cd dinky-web && npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dinky-web
+          path: ./dinky-web/dist
+
+
+  build_release:
+    name: Build Release
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        flink: [ '1.14', '1.15', '1.16', '1.17', '1.18', '1.19', '1.20' ]
+    env:
+      MAVEN_OPTS: -Xmx2G -Xms2G
+    steps:
+      - uses: actions/checkout@v3
+      # maven编译
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 8
+          distribution: 'adopt'
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository/*/*/*
+            !~/.m2/repository/org/apache/flink
+          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Cache local Flink repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository/org/apache/flink
+          key: ${{ runner.os }}-${{ matrix.flink }}-maven-${{ hashFiles('pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.flink }}-maven-
+      - name: Build and Package
+        run: |
+          ./mvnw -B clean install \
+                  -Dmaven.test.skip=true \
+                 -Dspotless.check.skip=true \
+                 -Denforcer.skip=false \
+                 -Dmaven.javadoc.skip=true \
+                 -P prod,flink-single-version,flink-${{ matrix.flink }},maven-central \
+                 --no-snapshot-updates
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dinky-realease-${{ matrix.flink }}
+          path: ./build/dinky-release*.tar.gz
+
+  build_image:
+    name: build image
+    runs-on: ubuntu-latest
+    needs: [build_front,build_release]
     strategy:
       fail-fast: true
       matrix:
@@ -39,6 +123,18 @@ jobs:
       # git checkout 代码
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Download backed artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dinky-realease-${{ matrix.flink }}
+          path: ./build
+      - name: Download front artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dinky-web
+          path: ./build/dist
+      - run: |
+          tree ./build
       # 设置 QEMU, 后面 docker buildx 依赖此.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -54,16 +150,28 @@ jobs:
           # DOCKERHUB_TOKEN: docker hub => Account Setting => Security 创建.
           username: ${{ secrets.DOCKER_IO_USER  }}
           password: ${{ secrets.DOCKER_IO_PASS  }}
+      # 登录 aliyun docker hub
+      - name: Login to Aliyun Docker
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
+          username: ${{ secrets.DOCKER_ALIYUN_USER  }}
+          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
       # 构建 Docker 并推送到 Docker hub
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v5
         with:
+          platforms: linux/amd64,linux/arm64
           file: ./deploy/docker/Dockerfile
           # 是否 docker push
           push: true
+          context: .
           build-args: |
             FLINK_VERSION=${{ matrix.flink }}
             DINKY_VERSION=${{ inputs.dinky_version }}
           tags: |
-            ${{inputs.docker_space}}/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
+            dinkydocker/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
+            registry.cn-hangzhou.aliyuncs.com/dinky/dinky-standalone-server:${{ inputs.dinky_version }}-flink${{ matrix.flink }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

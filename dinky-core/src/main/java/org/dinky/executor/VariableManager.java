@@ -134,25 +134,21 @@ public final class VariableManager {
         checkArgument(
                 !StringUtils.isNullOrWhitespaceOnly(variableName),
                 "sql variable name or jexl key cannot be null or empty.");
-        try {
-            if (variables.containsKey(variableName)) {
-                return variables.get(variableName);
-            }
-            // load expression variable class
-            if (parseAndMatchExpressionVariable(variableName)) {
-                return ENGINE.eval(variableName, EngineContextHolder.getEngineContext(), null);
-            }
-            return null;
-        } catch (Exception e) {
-            String error = format(
-                    "The variable name or jexl key of sql \"${%s}\" does not exist.\n"
-                            + "Please follow the following methods to resolve the problem:\n"
-                            + "1. global variables are enabled ? \n"
-                            + "2. variable is exists ? it`s defined in sql ? or  global variable is defined ? \n"
-                            + "3. If it is a custom function variable, please check whether the class is loaded correctly",
-                    variableName);
-            throw new BusException(error);
+        if (variables.containsKey(variableName)) {
+            return variables.get(variableName);
         }
+        // load expression variable class
+        if (parseAndMatchExpressionVariable(variableName)) {
+            return ENGINE.eval(variableName, EngineContextHolder.getEngineContext(), null);
+        }
+        String error = format(
+                "The variable name or jexl key of sql \"${%s}\" does not exist.\n"
+                        + "Please follow the following methods to resolve the problem:\n"
+                        + "1. global variables are enabled ? \n"
+                        + "2. variable is exists ? it`s defined in sql ? or  global variable is defined ? \n"
+                        + "3. If it is a custom function variable, please check whether the class is loaded correctly",
+                variableName);
+        throw new BusException(error);
     }
 
     public boolean parseAndMatchExpressionVariable(String variableName) {

@@ -3,6 +3,9 @@ from enum import Enum
 import requests
 
 import concurrent.futures
+
+from requests import Response
+
 from login import assertRespOk, url
 from logger import log
 
@@ -29,15 +32,23 @@ class FlinkRunMode(Enum):
 
 class Task:
     def __init__(self, session: requests.Session, cluster_id: int, yarn_cluster_id: int, k8s_native_cluster_id: int,
-                 parent_id: int, name: str,
-                 statement):
+                 parent_id: int):
         self.session = session
         self.cluster_id = cluster_id
         self.yarn_cluster_id = yarn_cluster_id
         self.k8s_native_cluster_id = k8s_native_cluster_id
         self.parent_id = parent_id
-        self.name = name
-        self.statement = statement
+    def addBaseTask(self, params:dict):
+        session = self.session
+        add_parent_dir_resp = session.put(url("api/catalogue/saveOrUpdateCatalogueAndTask"), json=params)
+        assertRespOk(add_parent_dir_resp, "Create a task")
+        get_all_tasks_resp = session.post(url("api/catalogue/getCatalogueTreeData"), json={
+            "sortValue": "",
+            "sortType": ""
+        })
+        assertRespOk(get_all_tasks_resp, "Get job details")
+        data_list: list[dict] = get_all_tasks_resp.json()['data']
+        return getTask(data_list, params['name'])
 
     def addTask(self, name: str, parent_id: int = 0, dialect: str = "FlinkSql",
                 statement: str = "", run_model: FlinkRunMode = FlinkRunMode.LOCAL) -> CatalogueTree:
@@ -50,7 +61,6 @@ class Task:
         :return CatalogueTree
         """
         model_str = run_model.value
-        session = self.session
         params = {
             "name": name,
             "type": dialect,
@@ -75,15 +85,7 @@ class Task:
             params["task"]["clusterConfigurationId"] = self.yarn_cluster_id
         elif run_model == FlinkRunMode.KUBERNETES_APPLICATION:
             params["task"]["clusterConfigurationId"] = self.k8s_native_cluster_id
-        add_parent_dir_resp = session.put(url("api/catalogue/saveOrUpdateCatalogueAndTask"), json=params)
-        assertRespOk(add_parent_dir_resp, "Create a task")
-        get_all_tasks_resp = session.post(url("api/catalogue/getCatalogueTreeData"), json={
-            "sortValue": "",
-            "sortType": ""
-        })
-        assertRespOk(get_all_tasks_resp, "Get job details")
-        data_list: list[dict] = get_all_tasks_resp.json()['data']
-        return getTask(data_list, name)
+        return self.addBaseTask(params)
 
     def getFlinkTaskStatus(self, jobInstanceId: int) -> str:
         """
@@ -108,22 +110,21 @@ class Task:
         assertRespOk(run_task_resp, "Run Task")
         return run_task_resp.json()['data']['jobInstanceId']
 
-    def runFlinkTask(self, modes: list[FlinkRunMode] = FlinkRunMode.getAllMode(), wait_time: int = 20,
-                     is_async: bool = False):
-        name = self.name
-        statement = self.statement
+    def runFlinkTask(self,statement: str, name: str,dialect:str="FlinkSql", modes: list[FlinkRunMode] = FlinkRunMode.getAllMode(), wait_time: int = 20,
+                     is_async: bool = False ) -> CatalogueTree:
         parent_id = self.parent_id
         log.info(
             f"======================\nA Flink task is currently executed，name: {name}, statement: \n{statement}\n ======================")
 
         def taskFunc(mode: FlinkRunMode):
             flink_task_name = name + "-" + mode.value
-            task = self.addTask(flink_task_name, parent_id, "FlinkSql", statement, mode)
+            task = self.addTask(flink_task_name, parent_id, dialect, statement, mode)
             job_instance_id = self.runTask(task.task_id)
             sleep(wait_time)
             log.info(f"正在检查:{flink_task_name}任务状态")
             status = self.getFlinkTaskStatus(job_instance_id)
             assertFlinkTaskIsRunning(status, flink_task_name)
+            self.stopTask(task.task_id)
 
         if is_async:
             with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -133,6 +134,11 @@ class Task:
         else:
             for mode in modes:
                 taskFunc(mode)
+
+    def stopTask(self, taskId: int) -> None:
+        resp: Response = self.session.get(url(f"api/task/cancel?id={taskId}&withSavePoint=false&forceCancel=true"))
+        assertRespOk(resp, "StopTask")
+
 
 
 def assertFlinkTaskIsRunning(status: str, name: str):

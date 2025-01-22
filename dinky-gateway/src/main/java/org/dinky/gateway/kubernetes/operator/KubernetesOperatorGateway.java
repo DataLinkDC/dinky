@@ -19,6 +19,9 @@
 
 package org.dinky.gateway.kubernetes.operator;
 
+import static org.dinky.gateway.kubernetes.utils.DinkyKubernetsConstants.DINKY_K8S_INGRESS_DOMAIN_KEY;
+import static org.dinky.gateway.kubernetes.utils.DinkyKubernetsConstants.DINKY_K8S_INGRESS_ENABLED_KEY;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.enums.UpgradeMode;
@@ -27,10 +30,13 @@ import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec.Resource;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeploymentSpec;
+import org.dinky.gateway.kubernetes.operator.api.IngressSpec;
 import org.dinky.gateway.kubernetes.operator.api.JobSpec;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.configuration.JobManagerOptions;
@@ -38,6 +44,7 @@ import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +55,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 
+import cn.hutool.core.text.StrFormatter;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -220,6 +228,8 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
         flinkDeploymentSpec.setImage(image);
         flinkDeployment.setSpec(flinkDeploymentSpec);
 
+        flinkDeploymentSpec.setIngress(this.buildIngress());
+
         if (Asserts.isNotNull(serviceAccount)) {
             flinkDeploymentSpec.setServiceAccount(serviceAccount);
             logger.info("serviceAccount is : {}", serviceAccount);
@@ -227,6 +237,46 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
             logger.info("serviceAccount not config, use default");
             flinkDeploymentSpec.setServiceAccount("default");
         }
+    }
+
+    private IngressSpec buildIngress() {
+        String ingressDomain = checkUseIngress();
+        if (StringUtils.isNotEmpty(ingressDomain)) {
+            IngressSpec ingressSpec = new IngressSpec();
+            ingressSpec.setTemplate(ingressDomain + "/{{namespace}}/{{name}}(/|$)(.*)");
+            ingressSpec.setClassName("nginx");
+            HashMap annotations = new HashMap<String, String>();
+            annotations.put("nginx.ingress.kubernetes.io/rewrite-target", "/$2");
+            ingressSpec.setAnnotations(annotations);
+            return ingressSpec;
+        }
+        return null;
+    }
+
+    private String checkUseIngress() {
+        Map<String, Object> ingressConfig = k8sConfig.getIngressConfig();
+        if (MapUtils.isNotEmpty(ingressConfig)) {
+            boolean ingressEnable = Boolean.parseBoolean(ingressConfig
+                    .getOrDefault(DINKY_K8S_INGRESS_ENABLED_KEY, "false")
+                    .toString());
+            String ingressDomain = ingressConfig
+                    .getOrDefault(DINKY_K8S_INGRESS_DOMAIN_KEY, StringUtils.EMPTY)
+                    .toString();
+            if (ingressEnable && StringUtils.isNotEmpty(ingressDomain)) {
+                return ingressDomain;
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    protected String getIngressUrl() {
+        String jobName = config.getFlinkConfig().getJobName();
+        String nameSpace = kubernetesConfiguration.get("kubernetes.namespace");
+        String ingressDomain = checkUseIngress();
+        if (StringUtils.isNotEmpty(ingressDomain)) {
+            return StrFormatter.format("{}/{}/{}", ingressDomain, nameSpace, jobName);
+        }
+        return StringUtils.EMPTY;
     }
 
     private void initBase() {

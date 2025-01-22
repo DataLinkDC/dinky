@@ -78,6 +78,7 @@ export default {
   'menu.auth.namespace': 'NameSpace',
   'menu.auth.tenant': 'Tenant',
   'menu.auth.token': 'Token',
+  'menu.auth.approval': 'Approval',
   'menu.settings': 'Setting Center',
   'menu.settings.globalsetting': 'Global Settings',
   'menu.settings.systemlog': 'System Log',
@@ -115,5 +116,9 @@ export default {
   'menu.datastudio.tool.text-comparison': 'Text Comparison',
   'menu.datastudio.tool.jsonToSql': 'JSON TO Flink-SQL',
   'menu.datastudio.task.baseConfig': 'Basic Configuration',
-  'menu.datastudio.task.previewConfig': 'Preview Configuration'
+  'menu.datastudio.task.previewConfig': 'Preview Configuration',
+
+  'menu.approval': 'Approval Center',
+  'menu.approval.taskApproval': 'Task Approval',
+  'menu.approval.submitApproval': 'Submit Approval'
 };

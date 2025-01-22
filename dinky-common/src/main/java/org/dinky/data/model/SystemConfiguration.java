@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -326,6 +327,19 @@ public class SystemConfiguration {
             .booleanType()
             .defaultValue(true)
             .note(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE);
+    private final Configuration<Boolean> enableTaskSubmitReview =
+            key(Status.SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW)
+                    .booleanType()
+                    .defaultValue(false)
+                    .note(Status.SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW_NOTE);
+    private final Configuration<Boolean> enforceCrossReview = key(Status.SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW)
+            .booleanType()
+            .defaultValue(true)
+            .note(Status.SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW_NOTE);
+    private final Configuration<String> taskReviewerRoles = key(Status.SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES)
+            .stringType()
+            .defaultValue("SuperAdmin")
+            .note(Status.SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES_NOTE);
 
     /**
      * Initialize after spring bean startup
@@ -453,5 +467,19 @@ public class SystemConfiguration {
             config.put("historyserver.archive.clean-expired-jobs", "true");
         }
         return config;
+    }
+
+    public boolean enableTaskSubmitApprove() {
+        return enableTaskSubmitReview.getValue();
+    }
+
+    public boolean enforceCrossView() {
+        return enforceCrossReview.getValue();
+    }
+
+    public Set<String> getReviewerRoles() {
+        return Arrays.stream(taskReviewerRoles.getValue().split(","))
+                .map(String::trim)
+                .collect(Collectors.toSet());
     }
 }

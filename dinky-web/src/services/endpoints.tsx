@@ -304,5 +304,16 @@ export enum API_CONSTANTS {
   FLINK_CONF_CONFIG_OPTIONS = '/api/flinkConf/configOptions',
 
   // ------------------------------------ suggestion ------------------------------------
-  SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions'
+  SUGGESTION_QUERY_ALL_SUGGESTIONS = '/api/suggestion/queryAllSuggestions',
+
+  // ------------------------------------ approval ------------------------------------
+  TASK_APPROVAL_CREATE = '/api/approval/createTaskApproval',
+  GET_REVIEWERS = '/api/approval/getReviewers',
+  APPROVAL_SUBMIT = '/api/approval/submit',
+  APPROVAL_REJECT = '/api/approval/reject',
+  APPROVAL_APPROVE = '/api/approval/approve',
+  APPROVAL_WITHDRAW = '/api/approval/withdraw',
+  APPROVAL_CANCEL = '/api/approval/cancel',
+  GET_SUBMITTED_APPROVAL = '/api/approval/getSubmittedApproval',
+  GET_REVIEW_REQUIRED_APPROVAL = '/api/approval/getApprovalToBeReviewed'
 }

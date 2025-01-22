@@ -301,6 +301,7 @@ public enum Status {
      * udf template
      */
     UDF_TEMPLATE_EXIST_RELATIONSHIP(23001, "udf.template.exist.relationship"),
+    UDF_SAVE_SUCCESS_PLACEHOLDER(23002, "udf.save.success.placeholder"),
 
     /**
      * Resource
@@ -444,8 +445,8 @@ public enum Status {
     /**
      * gateway config
      */
-    GAETWAY_KUBERNETS_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
-    GAETWAY_KUBERNETS_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
+    GATEWAY_KUBERNETES_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
+    GATEWAY_KUBERNETES_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
 
     /**
      * process
@@ -468,7 +469,18 @@ public enum Status {
             204, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval"),
     SYS_FLINK_SETTINGS_FLINK_HISTORY_SERVER_ARCHIVE_REFRESH_INTERVAL_NOTE(
             205, "sys.flink.settings.flinkHistoryServerArchiveRefreshInterval.note"),
-    ;
+
+    /**
+     * approval
+     * */
+    SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW(206, "sys.approval.settings.enableTaskSubmitReview"),
+    SYS_APPROVAL_SETTINGS_ENABLE_TASK_SUBMIT_REVIEW_NOTE(207, "sys.approval.settings.enableTaskSubmitReview.note"),
+    SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW(208, "sys.approval.settings.enforceCrossReview"),
+    SYS_APPROVAL_SETTINGS_ENFORCE_CROSS_REVIEW_NOTE(209, "sys.approval.settings.enforceCrossReview.note"),
+    SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES(210, "sys.approval.settings.taskReviewerRoles"),
+    SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES_NOTE(211, "sys.approval.settings.taskReviewerRoles.note"),
+    SYS_APPROVAL_TASK_NOT_APPROVED(212, "sys.approval.taskNotApproved"),
+    SYS_APPROVAL_DUPLICATE_APPROVAL_IN_PROCESS(213, "sys.approval.duplicateInProcess");
     private final int code;
     private final String key;
 

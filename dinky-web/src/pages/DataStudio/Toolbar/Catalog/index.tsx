@@ -32,7 +32,7 @@ import { Button, Col, Empty, Flex, Modal, Row, Select, Spin } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { DefaultOptionType } from 'rc-select/lib/Select';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getMSCatalogs, getMSColumns, getMSSchemaInfo } from './service';
 import { useAsyncEffect } from 'ahooks';
 import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
@@ -40,6 +40,7 @@ import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 import { isSql } from '@/pages/DataStudio/utils';
 import { TableDataNode } from '@/pages/DataStudio/Toolbar/Catalog/data';
 import { DataStudioActionType } from '@/pages/DataStudio/data.d';
+import Search from "antd/es/input/Search";
 
 type CatalogState = {
   envId?: number;
@@ -65,6 +66,7 @@ const Catalog = (props: {
   const [row, setRow] = useState<TableDataNode>();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentState, setCurrentState] = useState<CatalogState>();
+  const [searchValue, setSearchValue] = useState('');
 
   const currentData = tabs.find((tab) => activeTab == tab.id);
 
@@ -335,6 +337,22 @@ const Catalog = (props: {
     setModalVisit(false);
     setTable('');
   };
+
+  const buildCatalogTree = (data: any, searchValue = ''): any =>
+    data.map((item: any) => {
+      return {
+        ...item,
+        children: item.children.filter((child: any) => child.title.indexOf(searchValue) > -1)
+      };
+    });
+
+  const onSearchChange = useCallback(
+    (e: { target: { value: React.SetStateAction<string> } }) => {
+      setSearchValue(e.target.value);
+    },
+    [searchValue]
+  );
+
   // <Empty description={l('pages.datastudio.catalog.openMission')}/>;
   return (
     <Spin spinning={loading} style={{ height: 'inherit' }}>
@@ -351,15 +369,24 @@ const Catalog = (props: {
             />
           </Col>
         </Row>
-
         {treeData.length > 0 ? (
-          <DirectoryTree
-            showIcon
-            switcherIcon={<DownOutlined />}
-            treeData={treeData}
-            onRightClick={({ node }: any) => openColumnInfo(node)}
-            onSelect={(_, info: any) => openColumnInfo(info.node)}
-          />
+          <>
+            <Search
+              style={{ margin: '8px 0px' }}
+              placeholder={l('global.search.text')}
+              onChange={onSearchChange}
+              allowClear={true}
+              defaultValue={searchValue}
+            />
+            <DirectoryTree
+              showIcon
+              switcherIcon={<DownOutlined />}
+              className={'treeList'}
+              treeData={buildCatalogTree(treeData, searchValue)}
+              onRightClick={({ node }: any) => openColumnInfo(node)}
+              onSelect={(_, info: any) => openColumnInfo(info.node)}
+            />
+          </>
         ) : (
           <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
         )}

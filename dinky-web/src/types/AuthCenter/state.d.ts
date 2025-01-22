@@ -17,7 +17,7 @@
  *
  */
 
-import { RowPermissions, SysMenu, SysToken, UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { RowPermissions, SysMenu, SysToken, UserBaseInfo, ApprovalBasicInfo } from '@/types/AuthCenter/data.d';
 import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import { Key } from '@ant-design/pro-components';
 
@@ -111,4 +111,8 @@ export interface UserListState extends BaseState {
 
 export interface TokenListState extends BaseState {
   value: Partial<SysToken>;
+}
+
+export interface ApprovalListState extends BaseState {
+  approvalList: ApprovalBasicInfo[];
 }

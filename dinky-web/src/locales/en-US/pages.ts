@@ -1267,6 +1267,8 @@ export default {
     'You can enter your username/nickname for search, support fuzzy queries, enter keywords and press enter to complete the search',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
   'sys.setting.ingress': 'Ingress configuration',
+  'sys.setting.approval': 'Approval Configuration',
+  'sys.setting.approval.tooltip': 'Approval Configuration for task submit',
   /**
    *
    * tenant
@@ -1419,5 +1421,34 @@ export default {
   'datastudio.toolbar.rightClick.hideToolbarDesc': 'hides the toolbar window name',
   'datastudio.toolbar.rightClick.showToolbarDesc': 'displays the toolbar window name',
   'datastudio.toolbar.rightClick.closeCompact': 'turn off compact mode',
-  'datastudio.toolbar.rightClick.openCompact': 'turn on compact mode'
+  'datastudio.toolbar.rightClick.openCompact': 'turn on compact mode',
+
+  'approval.dinky.not.open': 'Dinky approval is not enabled, please go to the Setting Center -> Approval Configuration switch to open',
+  'approval.reviewList': 'Review List',
+  'approval.submitList': 'Submit List',
+  'approval.id': 'Approval Id',
+  'approval.taskId': 'Task Id',
+  'approval.previousTaskVersion': 'Previous Task Version Id',
+  'approval.currentTaskVersion': 'Current Task Version Id',
+  'approval.status': 'Approval Status',
+  'approval.submitterName': 'Submitter Name',
+  'approval.submitterComment': 'Submitter Comment',
+  'approval.reviewerName': 'Reviewer Name',
+  'approval.reviewerComment': 'Reviewer Comment',
+  'approval.status.created': 'CREATED',
+  'approval.status.withdrawn': 'WITHDRAWN',
+  'approval.status.submitted': 'SUBMITTED',
+  'approval.status.approved': 'APPROVED',
+  'approval.status.rejected': 'REJECTED',
+  'approval.status.canceled': 'CANCELED',
+  'approval.operation.create': 'Create Approval',
+  'approval.operation.withdraw': 'Withdraw Approval',
+  'approval.operation.submit': 'Submit Approval',
+  'approval.operation.approve': 'Approve Approval',
+  'approval.operation,reject': 'Reject Approval',
+  'approval.operation.cancel': 'Cancel Approval',
+  'approval.reviewer.required': 'Please select a reviewer',
+  'approval.submit.comment': 'Submit Remark',
+  'approval.review.comment': 'Review Comment',
+  'approval.taskInfo': 'Task Info'
 };
