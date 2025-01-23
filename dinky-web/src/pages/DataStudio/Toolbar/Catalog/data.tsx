@@ -35,3 +35,17 @@ export type TableDataNode = {
   isTable: boolean;
 } & DataNode &
   DataSources.Table;
+
+export type ViewDataNode = {
+  isView: boolean;
+  schema: string;
+  catalog: string;
+} & DataNode;
+
+export type CatalogState = {
+  envId?: number;
+  databaseId?: number;
+  dialect?: string;
+  fragment?: boolean;
+  engine?: string;
+};

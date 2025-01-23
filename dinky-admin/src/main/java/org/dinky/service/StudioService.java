@@ -53,4 +53,6 @@ public interface StudioService {
     Schema getMSSchemaInfo(StudioMetaStoreDTO studioMetaStoreDTO);
 
     List<Column> getMSColumns(StudioMetaStoreDTO studioMetaStoreDTO);
+
+    boolean dropMSTable(StudioMetaStoreDTO studioMetaStoreDTO);
 }

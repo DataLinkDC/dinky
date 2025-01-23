@@ -152,6 +152,9 @@ export default {
   'datastudio.sqlTask.flinkJar.args': '程序运行参数（args）',
   'datastudio.sqlTask.flinkJar.args.tip': '请输入程序运行参数（args）',
   'datastudio.sqlTask.flinkJar.allowNonRestoredState': '忽略未声明状态(allowNonRestoredState)',
+  'datastudio.project.delete.table': '删除 [{catalog}.{database}.{table}]',
+  'datastudio.project.delete.table.confirm':
+    '此操作将执行Drop语句来删除当前表单.\n\t\t\t\t请谨慎操作! 该操作不可逆!!!\n\t\t\t\t\t确认删除吗?',
   /**
    *
    * devops

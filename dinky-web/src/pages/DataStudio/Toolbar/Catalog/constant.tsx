@@ -17,21 +17,14 @@
  *
  */
 
-import { postAll } from '@/services/api';
-import { API_CONSTANTS } from '@/services/endpoints';
-import { StudioMetaStoreParam } from '@/pages/DataStudio/Toolbar/Catalog/data';
-import { handleOption } from "@/services/BusinessCrud";
+import { MenuItemType } from "antd/es/menu/interface";
+import { DeleteTwoTone } from "@ant-design/icons";
 import { l } from "@/utils/intl";
 
-export async function getMSSchemaInfo(params: StudioMetaStoreParam) {
-  return (await postAll(API_CONSTANTS.STUDIO_GET_MSSCHEMA_INFO, params)).data;
-}
-export async function getMSCatalogs(params: StudioMetaStoreParam) {
-  return (await postAll(API_CONSTANTS.STUDIO_GET_MSCATALOGS, params)).data;
-}
-export async function getMSColumns(params: StudioMetaStoreParam) {
-  return (await postAll(API_CONSTANTS.STUDIO_GET_MSCOLUMNS, params)).data;
-}
-export async function dropMSTable(params: StudioMetaStoreParam) {
-  return (await handleOption(API_CONSTANTS.STUDIO_DROP_MSTABLE, l('right.menu.delete'), params))
-}
+export const TABLE_RIGHT_MENU = (): MenuItemType[] => [
+  {
+    key: 'delete',
+    icon: <DeleteTwoTone twoToneColor={'red'}/>,
+    label: l('button.delete')
+  }
+];

@@ -26,6 +26,8 @@ import org.dinky.data.dto.StudioDDLDTO;
 import org.dinky.data.dto.StudioLineageDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
 import org.dinky.data.dto.TaskDTO;
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Column;
@@ -49,9 +51,13 @@ import org.dinky.service.TaskService;
 import org.dinky.utils.FlinkTableMetadataUtil;
 import org.dinky.utils.RunTimeUtil;
 
+import org.apache.flink.table.catalog.ObjectPath;
+import org.apache.flink.table.catalog.exceptions.TableNotExistException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -207,6 +213,32 @@ public class StudioServiceImpl implements StudioService {
                     FlinkTableMetadataUtil.getColumnList(customTableEnvironment, catalogName, database, tableName));
         }
         return columns;
+    }
+
+    @Override
+    public boolean dropMSTable(StudioMetaStoreDTO studioMetaStoreDTO) {
+        String catalogName = studioMetaStoreDTO.getCatalog();
+        String database = studioMetaStoreDTO.getDatabase();
+        String tableName = studioMetaStoreDTO.getTable();
+        if (Dialect.isCommonSql(studioMetaStoreDTO.getDialect())) {
+            throw new BusException(Status.SYS_CATALOG_ONLY_SUPPORT_FLINK_SQL_OPERATION);
+        } else {
+            String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
+            JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
+            CustomTableEnvironment customTableEnvironment =
+                    jobManager.getExecutor().getCustomTableEnvironment();
+            Optional<org.apache.flink.table.catalog.Catalog> catalogOptional =
+                    customTableEnvironment.getCatalogManager().getCatalog(catalogName);
+            if (catalogOptional.isPresent()) {
+                try {
+                    catalogOptional.get().dropTable(new ObjectPath(database, tableName), true);
+                    return true;
+                } catch (TableNotExistException e) {
+                    log.error("Drop table {}.{}.{} error, detail {}", catalogName, database, tableName, e);
+                }
+            }
+        }
+        return false;
     }
 
     private JobManager getJobManager(StudioMetaStoreDTO studioMetaStoreDTO, String envSql) {

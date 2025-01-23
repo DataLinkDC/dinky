@@ -38,17 +38,12 @@ import { useAsyncEffect } from 'ahooks';
 import { CenterTab, DataStudioState } from '@/pages/DataStudio/model';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 import { isSql } from '@/pages/DataStudio/utils';
-import { TableDataNode } from '@/pages/DataStudio/Toolbar/Catalog/data';
+import { CatalogState, TableDataNode, ViewDataNode } from '@/pages/DataStudio/Toolbar/Catalog/data';
 import { DataStudioActionType } from '@/pages/DataStudio/data.d';
 import Search from "antd/es/input/Search";
-
-type CatalogState = {
-  envId?: number;
-  databaseId?: number;
-  dialect?: string;
-  fragment?: boolean;
-  engine?: string;
-};
+import { useRightContext } from "@/pages/DataStudio/Toolbar/Catalog/RightContext";
+import { handleRightClick } from "@/pages/DataStudio/function";
+import type { Key } from 'rc-tree/lib/interface';
 
 const Catalog = (props: {
   tabs: CenterTab[];
@@ -67,6 +62,8 @@ const Catalog = (props: {
   const [loading, setLoading] = useState<boolean>(false);
   const [currentState, setCurrentState] = useState<CatalogState>();
   const [searchValue, setSearchValue] = useState('');
+  const [selectKeys, setSelectKeys] = useState<Key[] | undefined>([]);
+  const [expandKeys, setExpandKeys] = useState<Key[] | undefined>([])
 
   const currentData = tabs.find((tab) => activeTab == tab.id);
 
@@ -206,14 +203,17 @@ const Catalog = (props: {
           children: tablesData
         });
 
-        const viewsData: DataNode[] = [];
+        const viewsData: ViewDataNode[] = [];
         if (res.views) {
           for (let i = 0; i < res.views.length; i++) {
             viewsData.push({
               title: res.views[i],
               key: res.views[i],
               icon: <BlockOutlined />,
-              isLeaf: true
+              isLeaf: true,
+              isView: true,
+              schema: databaseTmp,
+              catalog: catalog
             });
           }
         }
@@ -353,6 +353,26 @@ const Catalog = (props: {
     [searchValue]
   );
 
+  const onSelect = (keys, info: any) => {
+    setSelectKeys(keys);
+    openColumnInfo(info.node);
+  };
+
+  const onExpand = (keys, info: any) => {
+    setExpandKeys(keys);
+  };
+
+  const { RightContent, setRightContextMenuState, handleProjectRightClick } = useRightContext({
+    refreshMetaStoreTables,
+    catalogState: currentState
+  });
+
+  const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
+
+  const onRightClick = (info: any) => {
+    handleProjectRightClick(info);
+  };
+
   // <Empty description={l('pages.datastudio.catalog.openMission')}/>;
   return (
     <Spin spinning={loading} style={{ height: 'inherit' }}>
@@ -383,8 +403,12 @@ const Catalog = (props: {
               switcherIcon={<DownOutlined />}
               className={'treeList'}
               treeData={buildCatalogTree(treeData, searchValue)}
-              onRightClick={({ node }: any) => openColumnInfo(node)}
-              onSelect={(_, info: any) => openColumnInfo(info.node)}
+              onRightClick={onRightClick}
+              onContextMenu={rightContextMenuHandle}
+              onSelect={onSelect}
+              onExpand={onExpand}
+              selectedKeys={selectKeys}
+              expandedKeys={expandKeys}
             />
           </>
         ) : (
@@ -411,6 +435,7 @@ const Catalog = (props: {
       >
         <SchemaDesc tableInfo={row} />
       </Modal>
+      {RightContent}
     </Spin>
   );
 };

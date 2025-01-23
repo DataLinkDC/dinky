@@ -167,4 +167,30 @@ public class StudioController {
     public Result<List<Column>> getMSColumns(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
         return Result.succeed(studioService.getMSColumns(studioMetaStoreDTO));
     }
+
+    /** Drop Meta Store Flink Table */
+    @PostMapping("/dropMSTable")
+    @ApiOperation("Drop Flink Table")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "envId", value = "envId", required = true, dataType = "Integer", paramType = "query"),
+        @ApiImplicitParam(
+                name = "catalog",
+                value = "catalog",
+                required = true,
+                dataType = "String",
+                paramType = "query"),
+        @ApiImplicitParam(
+                name = "database",
+                value = "database",
+                required = true,
+                dataType = "String",
+                paramType = "query"),
+        @ApiImplicitParam(name = "table", value = "table", required = true, dataType = "String", paramType = "query")
+    })
+    public Result<List<Column>> dropMSTable(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
+        if (studioService.dropMSTable(studioMetaStoreDTO)) {
+            return Result.succeed();
+        }
+        return Result.failed();
+    }
 }

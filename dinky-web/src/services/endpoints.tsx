@@ -218,6 +218,7 @@ export enum API_CONSTANTS {
   STUDIO_GET_MSSCHEMA_INFO = '/api/studio/getMSSchemaInfo',
   STUDIO_GET_MSCATALOGS = '/api/studio/getMSCatalogs',
   STUDIO_GET_MSCOLUMNS = '/api/studio/getMSColumns',
+  STUDIO_DROP_MSTABLE = '/api/studio/dropMSTable',
 
   // ------------------------------------ savepoints  ------------------------------------
   GET_SAVEPOINT_LIST_BY_TASK_ID = '/api/savepoints/listSavepointsByTaskId',
