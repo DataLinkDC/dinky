@@ -51,13 +51,9 @@ import org.dinky.service.TaskService;
 import org.dinky.utils.FlinkTableMetadataUtil;
 import org.dinky.utils.RunTimeUtil;
 
-import org.apache.flink.table.catalog.ObjectPath;
-import org.apache.flink.table.catalog.exceptions.TableNotExistException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -227,18 +223,8 @@ public class StudioServiceImpl implements StudioService {
             JobManager jobManager = getJobManager(studioMetaStoreDTO, envSql);
             CustomTableEnvironment customTableEnvironment =
                     jobManager.getExecutor().getCustomTableEnvironment();
-            Optional<org.apache.flink.table.catalog.Catalog> catalogOptional =
-                    customTableEnvironment.getCatalogManager().getCatalog(catalogName);
-            if (catalogOptional.isPresent()) {
-                try {
-                    catalogOptional.get().dropTable(new ObjectPath(database, tableName), true);
-                    return true;
-                } catch (TableNotExistException e) {
-                    log.error("Drop table {}.{}.{} error, detail {}", catalogName, database, tableName, e);
-                }
-            }
+            return FlinkTableMetadataUtil.dropTable(customTableEnvironment, catalogName, database, tableName);
         }
-        return false;
     }
 
     private JobManager getJobManager(StudioMetaStoreDTO studioMetaStoreDTO, String envSql) {

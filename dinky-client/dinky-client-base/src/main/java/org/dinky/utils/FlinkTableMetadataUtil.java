@@ -29,6 +29,7 @@ import org.dinky.executor.CustomTableEnvironment;
 import org.apache.flink.table.catalog.CatalogBaseTable;
 import org.apache.flink.table.catalog.ObjectIdentifier;
 import org.apache.flink.table.catalog.ObjectPath;
+import org.apache.flink.table.catalog.exceptions.TableNotExistException;
 import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
@@ -37,6 +38,7 @@ import org.apache.flink.table.types.logical.VarCharType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FlinkTableMetadataUtil {
@@ -130,5 +132,20 @@ public class FlinkTableMetadataUtil {
                     }
                 });
         return columns;
+    }
+
+    public static boolean dropTable(
+            CustomTableEnvironment customTableEnvironment, String catalogName, String database, String tableName) {
+        Optional<org.apache.flink.table.catalog.Catalog> catalogOptional =
+                customTableEnvironment.getCatalogManager().getCatalog(catalogName);
+        if (catalogOptional.isPresent()) {
+            try {
+                catalogOptional.get().dropTable(new ObjectPath(database, tableName), true);
+                return true;
+            } catch (TableNotExistException e) {
+                return false;
+            }
+        }
+        return false;
     }
 }
