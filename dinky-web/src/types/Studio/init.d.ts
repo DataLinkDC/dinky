@@ -72,7 +72,6 @@ export const InitCateLogState: CateLogState = {
 
 export const InitCatalogTreeState: CatalogTreeState = {
   rightActiveKey: '',
-  cutId: 0,
   contextMenuPosition: InitContextMenuPosition,
   contextMenuOpen: false,
   menuItems: [],
