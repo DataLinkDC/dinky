@@ -353,12 +353,12 @@ const Catalog = (props: {
     [searchValue]
   );
 
-  const onSelect = (keys, info: any) => {
+  const onSelect = (keys: Key[], info: any) => {
     setSelectKeys(keys);
     openColumnInfo(info.node);
   };
 
-  const onExpand = (keys, info: any) => {
+  const onExpand = (keys: Key[], info: any) => {
     setExpandKeys(keys);
   };
 

@@ -38,7 +38,7 @@ export type RightContextProps = {
 export const useRightContext = (props: RightContextProps) => {
   const {
     refreshMetaStoreTables,
-    catalogState: CatalogState
+    catalogState
   } = props;
 
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
@@ -80,7 +80,7 @@ export const useRightContext = (props: RightContextProps) => {
 
   const handleDeleteSubmit = async () => {
     const { key: table, catalog, schema: database } = catalogTreeState.rightClickedNode;
-    const { envId, dialect } = props.catalogState;
+    const { envId, dialect } = catalogState ?? {};
 
     handleContextCancel();
     Modal.confirm({
