@@ -166,8 +166,8 @@ export default {
   'datastudio.sqlTask.flinkJar.args.tip': 'Please enter the program running parameters (args)',
   'datastudio.sqlTask.flinkJar.allowNonRestoredState':
     'Ignore undeclared state (allowNonRestoredState)',
-  'datastudio.project.delete.table': 'Drop [{catalog}.{database}.{table}]',
-  'datastudio.project.delete.table.confirm':
+  'datastudio.catalog.delete.table': 'Drop [{catalog}.{database}.{table}]',
+  'datastudio.catalog.delete.table.confirm':
     'Drop statement will be called to delete the table. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
 
   /**

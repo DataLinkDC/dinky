@@ -69,3 +69,20 @@ export const InitCateLogState: CateLogState = {
   loading: false,
   columnData: []
 };
+
+export const InitCatalogTreeState: ProjectState = {
+  rightActiveKey: '',
+  cutId: 0,
+  contextMenuPosition: InitContextMenuPosition,
+  contextMenuOpen: false,
+  menuItems: [],
+  selectedKeys: [],
+  isLeaf: false,
+  rightClickedNode: {},
+  isCreateSub: false,
+  isEdit: false,
+  isRename: false,
+  isCreateTask: false,
+  isCut: false,
+  value: {}
+};

@@ -35,3 +35,13 @@ export interface ProjectState {
   isCut: boolean;
   value: any;
 }
+
+export interface CatalogTreeState {
+  rightActiveKey: string;
+  contextMenuPosition: ContextMenuPosition;
+  contextMenuOpen: boolean;
+  menuItems: MenuItemType[];
+  isLeaf: boolean;
+  rightClickedNode?: any;
+  value: any;
+}

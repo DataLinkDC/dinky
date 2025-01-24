@@ -19,8 +19,8 @@
 
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
-import { InitProjectState } from '@/types/Studio/init.d';
-import { ProjectState } from '@/types/Studio/state';
+import { InitCatalogTreeState } from '@/types/Studio/init.d';
+import { CatalogTreeState } from '@/types/Studio/state';
 import { Modal, Typography } from 'antd';
 import { RightContextMenuState } from '@/pages/DataStudio/data.d';
 import { InitContextMenuPosition } from '@/pages/DataStudio/function';
@@ -45,24 +45,23 @@ export const useRightContext = (props: RightContextProps) => {
     show: false,
     position: InitContextMenuPosition
   });
-  const [projectState, setProjectState] = useState<ProjectState>(InitProjectState);
+  const [catalogTreeState, setCatalogTreeState] = useState<CatalogTreeState>(InitCatalogTreeState);
   useEffect(() => {
-    setProjectState((prevState) => ({
+    setCatalogTreeState((prevState) => ({
       ...prevState,
       menuItems: []
     }));
-  }, [projectState.isCut, projectState.cutId]);
+  }, []);
   /**
    * the right click event
    * @param info
    */
-  const handleProjectRightClick = (info: any) => {
+  const handleCatalogRightClick = (info: any) => {
     const {
-      node: {isLeaf, key, fullInfo, isTable, isView},
-      node,
-      event
+      node: {isLeaf, fullInfo, isTable, isView},
+      node
     } = info;
-    setProjectState((prevState) => ({
+    setCatalogTreeState((prevState) => ({
       ...prevState,
       isLeaf: isLeaf,
       menuItems: isTable || isView ? TABLE_RIGHT_MENU() : [],
@@ -73,25 +72,23 @@ export const useRightContext = (props: RightContextProps) => {
   };
 
   const handleContextCancel = () => {
-    setProjectState((prevState) => ({
+    setCatalogTreeState((prevState) => ({
       ...prevState,
       contextMenuOpen: false
     }));
   };
 
   const handleDeleteSubmit = async () => {
-    const {name, type, key: table, catalog, schema: database} = projectState.rightClickedNode;
-    const {envId, dialect} = props.catalogState;
+    const { key: table, catalog, schema: database } = catalogTreeState.rightClickedNode;
+    const { envId, dialect } = props.catalogState;
 
     handleContextCancel();
-    console.log(projectState.rightClickedNode);
-    console.log(props.catalogState)
     Modal.confirm({
-      title: l('datastudio.project.delete.table', '', {catalog, database, table}),
+      title: l('datastudio.catalog.delete.table', '', {catalog, database, table}),
       width: '30%',
       content: (
         <Text className={'needWrap'} type='danger'>
-          {l('datastudio.project.delete.table.confirm')}
+          {l('datastudio.catalog.delete.table.confirm')}
         </Text>
       ),
       okText: l('button.confirm'),
@@ -109,7 +106,7 @@ export const useRightContext = (props: RightContextProps) => {
     });
   };
   const handleMenuClick = async (node: MenuInfo) => {
-    setProjectState((prevState) => ({...prevState, rightActiveKey: node.key}));
+    setCatalogTreeState((prevState) => ({...prevState, rightActiveKey: node.key}));
     switch (node.key) {
       case 'delete':
         await handleDeleteSubmit();
@@ -129,12 +126,12 @@ export const useRightContext = (props: RightContextProps) => {
           openChange={() =>
             setRightContextMenuState((prevState) => ({...prevState, show: false}))
           }
-          items={projectState.menuItems}
+          items={catalogTreeState.menuItems}
           onClick={handleMenuClick}
         />
       </>
     ),
     setRightContextMenuState,
-    handleProjectRightClick
+    handleCatalogRightClick
   };
 };

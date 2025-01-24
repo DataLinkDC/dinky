@@ -362,7 +362,7 @@ const Catalog = (props: {
     setExpandKeys(keys);
   };
 
-  const { RightContent, setRightContextMenuState, handleProjectRightClick } = useRightContext({
+  const { RightContent, setRightContextMenuState, handleCatalogRightClick } = useRightContext({
     refreshMetaStoreTables,
     catalogState: currentState
   });
@@ -370,7 +370,7 @@ const Catalog = (props: {
   const rightContextMenuHandle = (e: any) => handleRightClick(e, setRightContextMenuState);
 
   const onRightClick = (info: any) => {
-    handleProjectRightClick(info);
+    handleCatalogRightClick(info);
   };
 
   // <Empty description={l('pages.datastudio.catalog.openMission')}/>;
