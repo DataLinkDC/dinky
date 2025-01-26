@@ -32,7 +32,7 @@ import { Empty, Space, Typography } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import DirectoryTree from 'antd/es/tree/DirectoryTree';
 import { Key, useEffect, useRef, useState } from 'react';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 
 const { Text } = Typography;
 
@@ -99,7 +99,7 @@ export default (props: { taskId: number }) => {
 
   const refreshProcess = () => {
     onUpdate(undefined);
-    subscribeTopic(Topic.PROCESS_CONSOLE, [process], (data: SseData) =>
+    subscribeTopic(Topic.PROCESS_CONSOLE, [process], (data: WsData) =>
       onUpdate(data?.data[process])
     );
   };

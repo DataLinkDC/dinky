@@ -21,7 +21,7 @@ import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
 import { Button, GlobalToken, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 import { DataStudioState } from '@/pages/DataStudio/model';
 import { formatDate } from '@/pages/DataStudio/FooterContainer/function';
 
@@ -39,7 +39,7 @@ export default (props: { token: GlobalToken; centerContent: DataStudioState['cen
   }));
 
   useEffect(() => {
-    return subscribeTopic(Topic.JVM_INFO, null, (data: SseData) => {
+    return subscribeTopic(Topic.JVM_INFO, null, (data: WsData) => {
       const respData = data.data['none-params'];
       setMemDetailInfo(
         Number(respData['heapUsed'] / 1024 / 1024).toFixed(0) +

@@ -17,27 +17,42 @@
  *
  */
 
-package org.dinky.ws.topic;
+package org.dinky.ws.handler;
 
 import org.dinky.data.metrics.Jvm;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import cn.hutool.core.map.MapUtil;
+import org.dinky.ws.GlobalWebSocketTopic;
+import org.springframework.stereotype.Service;
 
-public class JvmInfo extends BaseTopic {
-    public static final JvmInfo INSTANCE = new JvmInfo();
+@Service
+public class JvmInfo extends ScheduleMessageEventHandler {
 
-    private JvmInfo() {}
 
     @Override
-    public Map<String, Object> autoDataSend(Set<String> allParams) {
-        return firstDataSend(allParams);
+    protected long scheduleDelay() {
+
+        return TimeUnit.SECONDS.toMillis(3);
     }
 
     @Override
-    public Map<String, Object> firstDataSend(Set<String> allParams) {
+    public Map<String, Object> autoMessageSend() {
         return MapUtil.<String, Object>builder().put(NONE_PARAMS, Jvm.of()).build();
+    }
+
+    @Override
+    public Map<String, Object> firstSubscribe(Set<String> allParams) {
+        return autoMessageSend();
+    }
+
+
+
+    @Override
+    public GlobalWebSocketTopic getTopic() {
+        return GlobalWebSocketTopic.JVM_INFO;
     }
 }

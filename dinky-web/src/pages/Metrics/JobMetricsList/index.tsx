@@ -33,7 +33,7 @@ import { ProCard, ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-co
 import { Empty, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ListPagination from '@/components/Flink/ListPagination';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 
 export type MetricsProps = {
   timeRange: MetricsTimeFilter;
@@ -88,7 +88,7 @@ const JobMetricsList = (props: MetricsProps) => {
       });
       setJobIds(jids.join(','));
       if (timeRange.isReal) {
-        return subscribeTopic(Topic.METRICS, params, (data: SseData) => {
+        return subscribeTopic(Topic.METRICS, params, (data: WsData) => {
           //todo ws 实时待优化实现
           // setChartDatas((prevState) => dataProcess(prevState, [data.data]));
         });

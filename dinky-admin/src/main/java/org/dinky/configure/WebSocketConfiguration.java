@@ -19,8 +19,11 @@
 
 package org.dinky.configure;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import org.dinky.ws.handler.WsMessageEventHandler;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.web.embedded.undertow.UndertowBuilderCustomizer;
 import org.springframework.boot.web.embedded.undertow.UndertowDeploymentInfoCustomizer;
@@ -29,8 +32,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
+@AllArgsConstructor
 public class WebSocketConfiguration {
+    private final List<WsMessageEventHandler> wsMessageEventHandlerList;
 
     @Bean
     public ServerEndpointExporter serverEndpointExporter() {
@@ -48,4 +55,11 @@ public class WebSocketConfiguration {
                 .addAll(builderCustomizers.orderedStream().collect(Collectors.toList()));
         return factory;
     }
+
+    @PostConstruct
+    public void init() {
+        wsMessageEventHandlerList.forEach(WsMessageEventHandler::run);
+    }
+
+
 }

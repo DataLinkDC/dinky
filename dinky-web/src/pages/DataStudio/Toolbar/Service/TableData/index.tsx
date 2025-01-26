@@ -23,7 +23,7 @@ import { useModel } from '@@/exports';
 import { Modal, Select, Tabs } from 'antd';
 import { Tab } from 'rc-tabs/lib/interface.d';
 import React, { memo, useEffect, useState } from 'react';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import { AutoSizer, List } from 'react-virtualized';
 
@@ -46,7 +46,7 @@ export const DataPage = (props: any) => {
 
   useEffect(() => {
     if (title) {
-      return subscribeTopic(Topic.PRINT_TABLE, [title.fullTableName], (data: SseData) => {
+      return subscribeTopic(Topic.PRINT_TABLE, [title.fullTableName], (data: WsData) => {
         if (data?.data[title.fullTableName]) {
           setData((prevData) => [...prevData, data.data[title.fullTableName]]);
         }

@@ -17,8 +17,9 @@
  *
  */
 
-package org.dinky.ws.topic;
+package org.dinky.ws.handler;
 
+import cn.hutool.core.map.MapUtil;
 import org.dinky.context.ConsoleContextHolder;
 import org.dinky.data.model.ProcessEntity;
 
@@ -27,20 +28,16 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
+import org.dinky.ws.GlobalWebSocketTopic;
+import org.dinky.ws.WsSendEvent;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-public class ProcessConsole extends BaseTopic {
-    public static final ProcessConsole INSTANCE = new ProcessConsole();
-
-    private ProcessConsole() {}
+@Service
+public class ProcessConsole extends ManualMessageEventHandler {
 
     @Override
-    public Map<String, Object> autoDataSend(Set<String> allParams) {
-        return new HashMap<>();
-    }
-
-    @Override
-    public Map<String, Object> firstDataSend(Set<String> allParams) {
+    public Map<String, Object> firstSubscribe(Set<String> allParams) {
         Map<String, Object> result = new HashMap<>();
         allParams.forEach(processName -> {
             ProcessEntity process = ConsoleContextHolder.getInstances().getProcess(processName);
@@ -49,5 +46,10 @@ public class ProcessConsole extends BaseTopic {
             }
         });
         return result;
+    }
+
+    @Override
+    public GlobalWebSocketTopic getTopic() {
+        return GlobalWebSocketTopic.PROCESS_CONSOLE;
     }
 }
