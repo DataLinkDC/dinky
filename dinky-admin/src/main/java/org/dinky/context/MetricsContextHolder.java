@@ -21,10 +21,10 @@ package org.dinky.context;
 
 import static org.dinky.data.constant.MonitorTableConstant.JOB_ID;
 
-import cn.hutool.extra.spring.SpringUtil;
 import org.dinky.data.constant.MonitorTableConstant;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.SqliteUtil;
+import org.dinky.ws.handler.ProcessConsole;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -39,10 +39,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.dinky.ws.handler.Metrics;
-import org.dinky.ws.handler.ProcessConsole;
 
 /**
  * The MetricsContextHolder class is used to manage the metric context,
@@ -88,12 +87,10 @@ public class MetricsContextHolder {
             }
             metricsVOS.clear();
         }
-        Map<String, Object> data =
-                MapUtil.<String, Object>builder().put(key, o).build();
+        Map<String, Object> data = MapUtil.<String, Object>builder().put(key, o).build();
 
         // send ws event
         SpringUtil.getBean(ProcessConsole.class).sendData(data);
-
     }
 
     public List<List<String>> convertMetricsVOsToStringList(List<MetricsVO> metricsVOS) {

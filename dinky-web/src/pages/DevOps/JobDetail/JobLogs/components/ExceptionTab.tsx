@@ -52,7 +52,7 @@ const ExceptionTab = (props: JobProps) => {
       stacktrace: rte,
       exceptionName: rte
     });
-    logs.push(...jobDetail.jobDataDto?.exceptions?.['exceptionHistory']?.['entries'] ?? []);
+    logs.push(...(jobDetail.jobDataDto?.exceptions?.['exceptionHistory']?.['entries'] ?? []));
     return (
       <Row>
         <Col span={3}>

@@ -17,11 +17,11 @@
  *
  */
 
-import {useEffect, useRef, useState} from 'react';
-import {ErrorMessage} from '@/utils/messages';
-import {v4 as uuidv4} from 'uuid';
-import {TOKEN_KEY} from '@/services/constants';
-import {TOKEN_MODEL_ASYNC} from "@/pages/AuthCenter/Token/component/model";
+import { useEffect, useRef, useState } from 'react';
+import { ErrorMessage } from '@/utils/messages';
+import { v4 as uuidv4 } from 'uuid';
+import { TOKEN_KEY } from '@/services/constants';
+import { TOKEN_MODEL_ASYNC } from '@/pages/AuthCenter/Token/component/model';
 
 export type WsData = {
   topic: string;
@@ -56,7 +56,7 @@ export default () => {
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
   const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
   const wsUrl = `${protocol}://${window.location.hostname}:${window.location.port}/api/ws/global/${token}`;
-  const [wsState, setWsState] = useState<WsState>({wsOnReady: true, wsUrl});
+  const [wsState, setWsState] = useState<WsState>({ wsOnReady: true, wsUrl });
 
   const ws = useRef<WebSocket>();
 
@@ -67,12 +67,12 @@ export default () => {
     ws.current = new WebSocket(wsUrl);
     ws.current.onopen = () => {
       lastPongTimeRef.current = new Date().getTime();
-      setWsState({wsOnReady: true, wsUrl});
+      setWsState({ wsOnReady: true, wsUrl });
       receiveMessage();
       subscribe();
     };
-    ws.current.onerror = () => setWsState({wsOnReady: false, wsUrl});
-    ws.current.onclose = () => setWsState({wsOnReady: false, wsUrl});
+    ws.current.onerror = () => setWsState({ wsOnReady: false, wsUrl });
+    ws.current.onclose = () => setWsState({ wsOnReady: false, wsUrl });
   };
 
   const subscribe = () => {
@@ -90,7 +90,7 @@ export default () => {
     if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
       reconnect();
     } else if (ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify({topics, type: 'SUBSCRIBE'}));
+      ws.current.send(JSON.stringify({ topics, type: 'SUBSCRIBE' }));
     } else {
       //TODO do someting
     }
@@ -123,14 +123,14 @@ export default () => {
         if (currentTime - lastPongTimeRef.current > 15000) {
           reconnect();
         } else if (currentTime - lastPongTimeRef.current > 5000) {
-          ws.current.send(JSON.stringify({type: 'PING'}));
+          ws.current.send(JSON.stringify({ type: 'PING' }));
         }
       }
     }, 2000);
   }, []);
 
   const subscribeTopic = (topic: Topic, params: string[], onMessage: (data: WsData) => void) => {
-    const sub: SubscriberData = {topic: topic, call: onMessage, params: params, key: uuidv4()};
+    const sub: SubscriberData = { topic: topic, call: onMessage, params: params, key: uuidv4() };
     subscriberRef.current.push(sub);
     subscribe();
     return () => {

@@ -97,7 +97,7 @@ export const Project = (props: any) => {
   const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState([]);
 
   useEffect(() => {
-    subscribeTopic(Topic.TASK_RUN_INSTANCE, ["RunningTaskId"], (data: WsData) => {
+    subscribeTopic(Topic.TASK_RUN_INSTANCE, ['RunningTaskId'], (data: WsData) => {
       if (data?.data?.RunningTaskId) {
         setCurrentRunningTaskIds(data?.data?.RunningTaskId);
       }

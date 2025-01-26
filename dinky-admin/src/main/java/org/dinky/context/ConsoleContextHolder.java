@@ -19,8 +19,6 @@
 
 package org.dinky.context;
 
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import org.dinky.aop.ProcessAspect;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.ProcessStatus;
@@ -31,6 +29,7 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ProcessEntity;
 import org.dinky.data.model.ProcessStepEntity;
 import org.dinky.utils.LogUtil;
+import org.dinky.ws.handler.ProcessConsole;
 
 import org.apache.http.util.TextUtils;
 
@@ -43,7 +42,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.dinky.ws.handler.ProcessConsole;
 import org.slf4j.MDC;
 
 import com.alibaba.fastjson2.JSONObject;
@@ -51,7 +49,9 @@ import com.alibaba.fastjson2.JSONObject;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -150,7 +150,8 @@ public class ConsoleContextHolder {
             process.setLastUpdateStep(stepNode);
         }
         // send ws event
-        Map<String, Object> data = MapUtil.<String,Object>builder(processName, process).build();
+        Map<String, Object> data =
+                MapUtil.<String, Object>builder(processName, process).build();
         SpringUtil.getBean(ProcessConsole.class).sendData(data);
     }
 

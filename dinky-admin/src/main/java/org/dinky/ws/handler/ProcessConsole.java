@@ -19,18 +19,17 @@
 
 package org.dinky.ws.handler;
 
-import cn.hutool.core.map.MapUtil;
 import org.dinky.context.ConsoleContextHolder;
 import org.dinky.data.model.ProcessEntity;
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
-import org.dinky.ws.GlobalWebSocketTopic;
-import org.dinky.ws.WsSendEvent;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

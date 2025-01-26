@@ -1423,7 +1423,8 @@ export default {
   'datastudio.toolbar.rightClick.closeCompact': 'turn off compact mode',
   'datastudio.toolbar.rightClick.openCompact': 'turn on compact mode',
 
-  'approval.dinky.not.open': 'Dinky approval is not enabled, please go to the Setting Center -> Approval Configuration switch to open',
+  'approval.dinky.not.open':
+    'Dinky approval is not enabled, please go to the Setting Center -> Approval Configuration switch to open',
   'approval.reviewList': 'Review List',
   'approval.submitList': 'Submit List',
   'approval.id': 'Approval Id',

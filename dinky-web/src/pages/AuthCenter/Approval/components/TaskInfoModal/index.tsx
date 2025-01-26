@@ -17,15 +17,15 @@
  *
  */
 
-import { Col, Descriptions, DescriptionsProps, Modal, Row, Tabs, Typography } from "antd";
-import { l } from "@/utils/intl";
-import styles from "@/pages/DataStudio/CenterTabContent/index.less";
-import { DiffEditor } from "@monaco-editor/react";
-import { DIFF_EDITOR_PARAMS } from "@/pages/DataStudio/CenterTabContent/SqlTask/constants";
-import { LoadCustomEditorLanguage } from "@/components/CustomEditor/languages";
-import { convertCodeEditTheme } from "@/utils/function";
-import React from "react";
-import { TaskState } from "@/pages/DataStudio/type";
+import { Col, Descriptions, DescriptionsProps, Modal, Row, Tabs, Typography } from 'antd';
+import { l } from '@/utils/intl';
+import styles from '@/pages/DataStudio/CenterTabContent/index.less';
+import { DiffEditor } from '@monaco-editor/react';
+import { DIFF_EDITOR_PARAMS } from '@/pages/DataStudio/CenterTabContent/SqlTask/constants';
+import { LoadCustomEditorLanguage } from '@/components/CustomEditor/languages';
+import { convertCodeEditTheme } from '@/utils/function';
+import React from 'react';
+import { TaskState } from '@/pages/DataStudio/type';
 
 type TaskInfoProps = {
   open: boolean;
@@ -33,9 +33,9 @@ type TaskInfoProps = {
   taskInfo: TaskState | undefined;
   preVersionStatement: string;
   curVersionStatement: string;
-}
+};
 
-const {Text, Link} = Typography;
+const { Text, Link } = Typography;
 const TaskInfoModal = (props: TaskInfoProps) => {
   const renderTaskInfo = () => {
     const items: DescriptionsProps['item'] = [
@@ -63,7 +63,7 @@ const TaskInfoModal = (props: TaskInfoProps) => {
         key: '5',
         label: l('pages.datastudio.label.jobInfo.firstLevelOwner'),
         children: <p>{props.taskInfo?.firstLevelOwner}</p>
-      },
+      }
     ];
 
     return (
@@ -71,24 +71,22 @@ const TaskInfoModal = (props: TaskInfoProps) => {
         <Descriptions title={l('devops.jobinfo.config.JobBaseInfo')} items={items}></Descriptions>
       </>
     );
-  }
+  };
 
   const renderVersionCompare = () => {
     return (
       <>
         <Tabs
-          items={
-            [
-              {
-                key: '1',
-                label: l('pages.datastudio.sql.sqldiff.title'),
-                children: renderStatementDiff()
-              }
-            ]
-          }
+          items={[
+            {
+              key: '1',
+              label: l('pages.datastudio.sql.sqldiff.title'),
+              children: renderStatementDiff()
+            }
+          ]}
         />
       </>
-    )
+    );
   };
 
   // Render the statement diff section
@@ -96,7 +94,7 @@ const TaskInfoModal = (props: TaskInfoProps) => {
     return (
       <>
         <div className={styles.diff_content}>
-          <Row style={{marginBottom: '5px'}}>
+          <Row style={{ marginBottom: '5px' }}>
             <Col span={12}>
               <Text type={'secondary'}>{l('approval.previousTaskVersion')}</Text>
             </Col>
@@ -125,7 +123,7 @@ const TaskInfoModal = (props: TaskInfoProps) => {
         {renderVersionCompare()}
       </Modal>
     </>
-  )
-}
+  );
+};
 
 export default TaskInfoModal;

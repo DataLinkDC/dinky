@@ -82,7 +82,7 @@ const JobList = (props: connect) => {
   const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState([]);
 
   useEffect(() => {
-    return subscribeTopic(Topic.TASK_RUN_INSTANCE, ["RunningTaskId"], (data: WsData) => {
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, ['RunningTaskId'], (data: WsData) => {
       if (data?.data?.RunningTaskId) {
         setCurrentRunningTaskIds(data?.data?.RunningTaskId);
       }

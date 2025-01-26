@@ -40,7 +40,7 @@ import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 import { isSql } from '@/pages/DataStudio/utils';
 import { TableDataNode } from '@/pages/DataStudio/Toolbar/Catalog/data';
 import { DataStudioActionType } from '@/pages/DataStudio/data.d';
-import Search from "antd/es/input/Search";
+import Search from 'antd/es/input/Search';
 
 type CatalogState = {
   envId?: number;

@@ -20,18 +20,18 @@
 package org.dinky.ws.handler;
 
 import org.dinky.data.metrics.Jvm;
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import cn.hutool.core.map.MapUtil;
-import org.dinky.ws.GlobalWebSocketTopic;
 import org.springframework.stereotype.Service;
+
+import cn.hutool.core.map.MapUtil;
 
 @Service
 public class JvmInfo extends ScheduleMessageEventHandler {
-
 
     @Override
     protected long scheduleDelay() {
@@ -48,8 +48,6 @@ public class JvmInfo extends ScheduleMessageEventHandler {
     public Map<String, Object> firstSubscribe(Set<String> allParams) {
         return autoMessageSend();
     }
-
-
 
     @Override
     public GlobalWebSocketTopic getTopic() {

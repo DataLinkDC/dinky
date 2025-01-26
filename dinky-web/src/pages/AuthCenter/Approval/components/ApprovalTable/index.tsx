@@ -17,31 +17,29 @@
  *
  */
 
-import { ApprovalBasicInfo, OperationStatus, OperationType } from "@/types/AuthCenter/data.d";
-import React, { useRef, useState } from "react";
-import { InitApprovalList } from "@/types/AuthCenter/init.d";
-import { ActionType, ProColumns } from "@ant-design/pro-table";
-import { Button, Flex, Tag } from "antd";
-import { l } from "@/utils/intl";
-import { ProTable } from "@ant-design/pro-components";
-import { queryList } from "@/services/api";
-import { API_CONSTANTS } from "@/services/endpoints";
-import { handleOption, queryDataByParams } from "@/services/BusinessCrud";
-import { getTaskDetails } from "@/pages/DataStudio/service";
-import { TaskState } from "@/pages/DataStudio/type";
-import TaskInfoModal from "@/pages/AuthCenter/Approval/components/TaskInfoModal";
-import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
-import { useAsyncEffect } from "ahooks";
-import { getTenantByLocalStorage } from "@/utils/function";
-import { ApprovalListState } from "@/types/AuthCenter/state.d";
-
+import { ApprovalBasicInfo, OperationStatus, OperationType } from '@/types/AuthCenter/data.d';
+import React, { useRef, useState } from 'react';
+import { InitApprovalList } from '@/types/AuthCenter/init.d';
+import { ActionType, ProColumns } from '@ant-design/pro-table';
+import { Button, Flex, Tag } from 'antd';
+import { l } from '@/utils/intl';
+import { ProTable } from '@ant-design/pro-components';
+import { queryList } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { handleOption, queryDataByParams } from '@/services/BusinessCrud';
+import { getTaskDetails } from '@/pages/DataStudio/service';
+import { TaskState } from '@/pages/DataStudio/type';
+import TaskInfoModal from '@/pages/AuthCenter/Approval/components/TaskInfoModal';
+import ApprovalModal from '@/pages/AuthCenter/Approval/components/ApprovalModal';
+import { useAsyncEffect } from 'ahooks';
+import { getTenantByLocalStorage } from '@/utils/function';
+import { ApprovalListState } from '@/types/AuthCenter/state.d';
 
 type UserFormProps = {
-  tableType: 'review' | 'submit'
-}
+  tableType: 'review' | 'submit';
+};
 
 const ApprovalTable: React.FC<UserFormProps> = (props) => {
-
   // approval list
   const [approvalListState, setApprovalListState] = useState<ApprovalListState>(InitApprovalList);
 
@@ -55,21 +53,29 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     taskBasicInfo: TaskState | undefined;
     preVersionStatement: string;
     curVersionStatement: string;
-  }>({activeId: -1, taskInfoOpen: false, taskBasicInfo: undefined, preVersionStatement: '', curVersionStatement: ''});
+  }>({
+    activeId: -1,
+    taskInfoOpen: false,
+    taskBasicInfo: undefined,
+    preVersionStatement: '',
+    curVersionStatement: ''
+  });
 
   // operation modal states
   const [operationState, setOperationState] = useState<{
     operationType: OperationType;
     operationModalOpen: boolean;
     operationDesc: string;
-  }>({operationType: OperationType.SUBMIT, operationModalOpen: false, operationDesc: ''});
+  }>({ operationType: OperationType.SUBMIT, operationModalOpen: false, operationDesc: '' });
 
   const actionRef = useRef<ActionType>(); // table action
 
   // get user list
   useAsyncEffect(async () => {
     const tempUserMap: Map<number, string> = new Map();
-    const usersRes = await queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, {id: getTenantByLocalStorage()});
+    const usersRes = await queryDataByParams(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, {
+      id: getTenantByLocalStorage()
+    });
     usersRes.users.forEach((user) => {
       tempUserMap.set(user.id, user.username);
     });
@@ -78,14 +84,14 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   }, []);
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setApprovalListState((prevState) => ({...prevState, loading: true}));
+    setApprovalListState((prevState) => ({ ...prevState, loading: true }));
     await callback();
     actionRef.current?.reload();
-    setApprovalListState((prevState) => ({...prevState, loading: false}));
+    setApprovalListState((prevState) => ({ ...prevState, loading: false }));
   };
 
   const handleOperationButtonClick = (operation: OperationType, entity: ApprovalBasicInfo) => {
-    setActiveApprovalState((prevState) => ({...prevState, activeId: entity.id}));
+    setActiveApprovalState((prevState) => ({ ...prevState, activeId: entity.id }));
     switch (operation) {
       case OperationType.SUBMIT:
         setOperationState((prevState) => ({
@@ -127,21 +133,26 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   };
 
   const queryApproval = async (params, sorter, filter: any) => {
-    const queryRes = await queryList(props.tableType === 'review' ? API_CONSTANTS.GET_REVIEW_REQUIRED_APPROVAL : API_CONSTANTS.GET_SUBMITTED_APPROVAL, {
-      ...params,
-      sorter,
-      filter
-    });
+    const queryRes = await queryList(
+      props.tableType === 'review'
+        ? API_CONSTANTS.GET_REVIEW_REQUIRED_APPROVAL
+        : API_CONSTANTS.GET_SUBMITTED_APPROVAL,
+      {
+        ...params,
+        sorter,
+        filter
+      }
+    );
     const convertedQueryRes = [];
     queryRes.data.forEach((approval) => {
       convertedQueryRes.push({
         ...approval,
         submitterName: userMap?.get(approval.submitter),
         reviewerName: userMap?.get(approval.reviewer)
-      })
+      });
     });
-    return {...queryRes, data: convertedQueryRes};
-  }
+    return { ...queryRes, data: convertedQueryRes };
+  };
 
   const queryTaskDiffInfo = async (taskId: number, preVersionId: number, curVersionId: number) => {
     const taskInfo = await getTaskDetails(taskId);
@@ -151,7 +162,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
       preVersionStatement: '',
       curVersionStatement: ''
     }));
-    const versions = await queryDataByParams(API_CONSTANTS.GET_JOB_VERSION, {taskId: taskId});
+    const versions = await queryDataByParams(API_CONSTANTS.GET_JOB_VERSION, { taskId: taskId });
 
     versions.forEach((version) => {
       if (version.versionId == preVersionId) {
@@ -168,8 +179,8 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
           curVersionStatement: version.statement
         }));
       }
-    })
-  }
+    });
+  };
 
   const handleApprovalSubmit = async (record) => {
     await executeAndCallbackRefresh(async () => {
@@ -181,12 +192,16 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
           await handleOption(API_CONSTANTS.APPROVAL_REJECT, l('approval.operation.reject'), record);
           break;
         case OperationType.APPROVE:
-          await handleOption(API_CONSTANTS.APPROVAL_APPROVE, l('approval.operation.approve'), record);
+          await handleOption(
+            API_CONSTANTS.APPROVAL_APPROVE,
+            l('approval.operation.approve'),
+            record
+          );
           break;
       }
     });
-    setOperationState((prevState) => ({...prevState, operationModalOpen: false}));
-  }
+    setOperationState((prevState) => ({ ...prevState, operationModalOpen: false }));
+  };
 
   /**
    * render operation based on current state
@@ -251,7 +266,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
             <Button
               size={'small'}
               onClick={async () => {
-                await handleWithdraw(entity)
+                await handleWithdraw(entity);
               }}
               danger
             >
@@ -267,7 +282,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
           {buttons}
         </Flex>
       </>
-    )
+    );
   };
 
   const renderInfo = (entity: ApprovalBasicInfo) => {
@@ -275,16 +290,24 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
       <>
         <Button
           onClick={async () => {
-            await queryTaskDiffInfo(entity.taskId, entity.previousTaskVersion, entity.currentTaskVersion);
-            setActiveApprovalState(prevState => ({...prevState, taskInfoOpen: true, activeId: entity.id}))
+            await queryTaskDiffInfo(
+              entity.taskId,
+              entity.previousTaskVersion,
+              entity.currentTaskVersion
+            );
+            setActiveApprovalState((prevState) => ({
+              ...prevState,
+              taskInfoOpen: true,
+              activeId: entity.id
+            }));
           }}
           size={'small'}
         >
           {l('button.check')}
         </Button>
       </>
-    )
-  }
+    );
+  };
 
   /**
    * status color
@@ -304,7 +327,7 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
     },
     CANCELED: {
       text: <Tag color={'gray'}>{l('approval.status.canceled')}</Tag>
-    },
+    }
   };
 
   const approvalColumns: ProColumns<ApprovalBasicInfo>[] = [
@@ -380,11 +403,9 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
   return (
     <>
       <ApprovalModal
-        open={
-          operationState.operationModalOpen
-        }
+        open={operationState.operationModalOpen}
         onOpenChange={(open) => {
-          setOperationState(prevState => ({...prevState, operationModalOpen: open}))
+          setOperationState((prevState) => ({ ...prevState, operationModalOpen: open }));
         }}
         title={operationState.operationDesc}
         activeId={activeApprovalState.activeId}
@@ -394,15 +415,15 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
       <TaskInfoModal
         open={activeApprovalState.taskInfoOpen}
         onCancel={() => {
-          setActiveApprovalState(prevState => ({...prevState, taskInfoOpen: false}))
+          setActiveApprovalState((prevState) => ({ ...prevState, taskInfoOpen: false }));
         }}
         taskInfo={activeApprovalState.taskBasicInfo}
         preVersionStatement={activeApprovalState.preVersionStatement}
         curVersionStatement={activeApprovalState.curVersionStatement}
       />
       <ProTable<ApprovalBasicInfo>
-        search={{filterType: 'query'}}
-        pagination={{pageSize: 20, size: 'small'}}
+        search={{ filterType: 'query' }}
+        pagination={{ pageSize: 20, size: 'small' }}
         options={false}
         rowKey={(record) => record.id}
         loading={approvalListState.loading}
@@ -412,8 +433,6 @@ const ApprovalTable: React.FC<UserFormProps> = (props) => {
       />
     </>
   );
-}
+};
 
 export default ApprovalTable;
-
-

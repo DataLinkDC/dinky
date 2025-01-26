@@ -19,18 +19,17 @@
 
 package org.dinky.ws.handler;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.daemon.pool.FlinkJobThreadPool;
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 
-import lombok.extern.slf4j.Slf4j;
-import org.dinky.ws.GlobalWebSocketTopic;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

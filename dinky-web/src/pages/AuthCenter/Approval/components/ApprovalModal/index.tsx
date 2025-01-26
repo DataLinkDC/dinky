@@ -17,29 +17,30 @@
  *
  */
 
-import { ModalForm, ProFormSelect, ProFormTextArea } from "@ant-design/pro-components";
-import React from "react";
-import { OperationType } from "@/types/AuthCenter/data.d";
-import { l } from "@/utils/intl";
-import { API_CONSTANTS } from "@/services/endpoints";
-import { getTenantByLocalStorage } from "@/utils/function";
-import { getData } from "@/services/api";
+import { ModalForm, ProFormSelect, ProFormTextArea } from '@ant-design/pro-components';
+import React from 'react';
+import { OperationType } from '@/types/AuthCenter/data.d';
+import { l } from '@/utils/intl';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { getTenantByLocalStorage } from '@/utils/function';
+import { getData } from '@/services/api';
 
 type ApprovalModelProps = {
-  open: boolean,
-  title: string,
-  activeId: number,
-  operationType: OperationType,
+  open: boolean;
+  title: string;
+  activeId: number;
+  operationType: OperationType;
   onOpenChange: (open: boolean) => void;
   handleSubmit: (record) => void;
 };
 
 const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
-
   const getReviewerList = async () => {
-    const reviewers = (await getData(API_CONSTANTS.GET_REVIEWERS, {tenantId: getTenantByLocalStorage()})).data;
-    return reviewers.map((t) => ({label: t.username, value: t.id}));
-  }
+    const reviewers = (
+      await getData(API_CONSTANTS.GET_REVIEWERS, { tenantId: getTenantByLocalStorage() })
+    ).data;
+    return reviewers.map((t) => ({ label: t.username, value: t.id }));
+  };
 
   const approvalRender = () => {
     if (props.operationType == OperationType.SUBMIT) {
@@ -50,26 +51,26 @@ const ApprovalModal: React.FC<ApprovalModelProps> = (props) => {
             label={l('approval.reviewerName')}
             request={async () => getReviewerList()}
             placeholder={l('approval.reviewer.required')}
-            rules={[{required: true}]}
+            rules={[{ required: true }]}
           />
-          <ProFormTextArea name='comment' label={l('approval.submit.comment')}/>
+          <ProFormTextArea name='comment' label={l('approval.submit.comment')} />
         </>
-      )
+      );
     } else {
       return (
         <>
-          <ProFormTextArea name='comment' label={l('approval.review.comment')}/>
+          <ProFormTextArea name='comment' label={l('approval.review.comment')} />
         </>
-      )
+      );
     }
   };
   return (
     <ModalForm
       open={props.open}
       onOpenChange={props.onOpenChange}
-      modalProps={{okText: props.title}}
+      modalProps={{ okText: props.title }}
       onFinish={async (record) => {
-        record.id = props.activeId
+        record.id = props.activeId;
         await props.handleSubmit(record);
       }}
     >

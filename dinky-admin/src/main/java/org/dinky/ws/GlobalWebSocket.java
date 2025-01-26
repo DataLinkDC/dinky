@@ -19,15 +19,12 @@
 
 package org.dinky.ws;
 
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.extra.spring.SpringUtil;
-import lombok.AllArgsConstructor;
 import org.dinky.data.vo.WsDataVo;
 import org.dinky.utils.JsonUtils;
+import org.dinky.ws.handler.WsMessageEventHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,13 +37,14 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import org.dinky.ws.handler.WsMessageEventHandler;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -61,9 +59,7 @@ public class GlobalWebSocket {
         SpringUtil.getBeansOfType(WsMessageEventHandler.class).forEach((beanName, eventHandler) -> {
             wsMessageEventHandlerMap.put(eventHandler.getTopic(), eventHandler);
         });
-
     }
-
 
     @Getter
     @Setter
@@ -72,7 +68,9 @@ public class GlobalWebSocket {
         private EventType type;
 
         public enum EventType {
-            SUBSCRIBE, PING, PONG
+            SUBSCRIBE,
+            PING,
+            PONG
         }
     }
 
@@ -136,20 +134,22 @@ public class GlobalWebSocket {
     private Map<GlobalWebSocketTopic, Set<String>> getRequestParamMap() {
         Map<GlobalWebSocketTopic, Set<String>> temp = new HashMap<>();
         // Get all the parameters of the theme
-        TOPICS.values().forEach(requestDTO -> requestDTO.topics.forEach((topic, params) -> {
-            if (temp.containsKey(topic)) {
-                temp.get(topic).addAll(params);
-            } else {
-                temp.put(topic, params);
-            }
-        }));
+        TOPICS.values()
+                .forEach(requestDTO -> requestDTO.topics.forEach((topic, params) -> {
+                    if (temp.containsKey(topic)) {
+                        temp.get(topic).addAll(params);
+                    } else {
+                        temp.put(topic, params);
+                    }
+                }));
         return temp;
     }
 
     private void firstSend() {
         Map<GlobalWebSocketTopic, Set<String>> allParams = getRequestParamMap();
         // Send data
-        allParams.forEach((topic, params) -> sendTopic(topic, params, wsMessageEventHandlerMap.get(topic).firstSubscribe(params)));
+        allParams.forEach((topic, params) ->
+                sendTopic(topic, params, wsMessageEventHandlerMap.get(topic).firstSubscribe(params)));
     }
 
     private void send(Session session, WsDataVo data) {
@@ -159,13 +159,15 @@ public class GlobalWebSocket {
             log.error("send ws data error", e);
             throw new RuntimeException(e);
         }
-
     }
 
     public void sendTopic(GlobalWebSocketTopic topic, Set<String> params, Map<String, Object> result) {
         TOPICS.forEach((session, topics) -> {
             if (topics.getTopics().containsKey(topic)) {
-                WsDataVo data = new WsDataVo(session.getId(), topic.name(), params == null ? result.get(WsMessageEventHandler.NONE_PARAMS) : result);
+                WsDataVo data = new WsDataVo(
+                        session.getId(),
+                        topic.name(),
+                        params == null ? result.get(WsMessageEventHandler.NONE_PARAMS) : result);
                 send(session, data);
             }
         });
@@ -175,7 +177,8 @@ public class GlobalWebSocket {
         Map<Session, Set<String>> tempMap = new HashMap<>();
         TOPICS.forEach((session, requestDTO) -> paramsAndData.forEach((params, data) -> {
             Map<GlobalWebSocketTopic, Set<String>> topics = requestDTO.getTopics();
-            if ((topics.containsKey(topic) && topics.get(topic).contains(params))|| params.equals(WsMessageEventHandler.NONE_PARAMS)) {
+            if ((topics.containsKey(topic) && topics.get(topic).contains(params))
+                    || params.equals(WsMessageEventHandler.NONE_PARAMS)) {
                 tempMap.computeIfAbsent(session, k -> topics.get(topic)).add(params);
             }
         }));
