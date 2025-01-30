@@ -82,7 +82,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
         tableResult = executor.executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
             JobClient jobClient =
-                executor.executeAsync(executor.getExecutorConfig().getJobName());
+                    executor.executeAsync(executor.getExecutorConfig().getJobName());
             return Optional.ofNullable(jobClient);
         }
         log.error("Only one pipeline job is executed. The statement has be skipped: " + jobStatement.getStatement());
@@ -107,7 +107,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
             }
         } else {
             log.error(
-                "Only one pipeline job is executed. The statement has be skipped: " + jobStatement.getStatement());
+                    "Only one pipeline job is executed. The statement has be skipped: " + jobStatement.getStatement());
         }
     }
 
@@ -124,17 +124,33 @@ public class JobPipelineRunner extends AbstractJobRunner {
         if (statements.size() == 1) {
             try {
                 resultBuilder
-                    .explain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(executor.getStreamGraph()))
-                    .type(jobStatement.getSqlType().getType())
-                    .parseTrue(true)
-                    .explainTrue(true)
-                    .sql(jobStatement.getStatement())
-                    .explainTime(LocalDateTime.now())
-                    .index(jobStatement.getIndex());
+                        .explain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(executor.getStreamGraph()))
+                        .type(jobStatement.getSqlType().getType())
+                        .parseTrue(true)
+                        .explainTrue(true)
+                        .sql(jobStatement.getStatement())
+                        .explainTime(LocalDateTime.now())
+                        .index(jobStatement.getIndex());
             } catch (Exception e) {
                 String error = LogUtil.getError(
-                    "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
+                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
+                        .parseTrue(false)
+                        .error(error)
+                        .explainTrue(false)
+                        .type(jobStatement.getSqlType().getType())
+                        .sql(jobStatement.getStatement())
+                        .explainTime(LocalDateTime.now())
+                        .index(jobStatement.getIndex());
+                log.error(error);
+                return resultBuilder.build();
+            }
+            return resultBuilder.build();
+        } else {
+            String error =
+                    "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement();
+            log.error(error);
+            resultBuilder
                     .parseTrue(false)
                     .error(error)
                     .explainTrue(false)
@@ -142,22 +158,6 @@ public class JobPipelineRunner extends AbstractJobRunner {
                     .sql(jobStatement.getStatement())
                     .explainTime(LocalDateTime.now())
                     .index(jobStatement.getIndex());
-                log.error(error);
-                return resultBuilder.build();
-            }
-            return resultBuilder.build();
-        } else {
-            String error =
-                "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement();
-            log.error(error);
-            resultBuilder
-                .parseTrue(false)
-                .error(error)
-                .explainTrue(false)
-                .type(jobStatement.getSqlType().getType())
-                .sql(jobStatement.getStatement())
-                .explainTime(LocalDateTime.now())
-                .index(jobStatement.getIndex());
             return resultBuilder.build();
         }
     }
@@ -175,7 +175,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
             return executor.getStreamGraph();
         } else {
             throw new DinkyException(
-                "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement());
+                    "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement());
         }
     }
 
@@ -192,7 +192,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
             return executor.getJobPlanInfo();
         } else {
             throw new DinkyException(
-                "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement());
+                    "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement());
         }
     }
 
@@ -205,7 +205,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
         if (jobManager.getRunMode().isApplicationMode()) {
             config.getGatewayConfig().setSql(jobManager.getJobStatementPlan().getStatements());
             gatewayResult = Gateway.build(config.getGatewayConfig())
-                .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
+                    .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
         } else {
             StreamGraph streamGraph = executor.getStreamGraph();
             streamGraph.setJobName(config.getJobName());
@@ -241,22 +241,22 @@ public class JobPipelineRunner extends AbstractJobRunner {
             final List<Row> rowList = new ArrayList<>();
             tableResult.getResolvedSchema().getColumns().forEach(column -> rowList.add(Row.of(-1)));
             tableResult = CustomTableResultImpl.builder()
-                .resultKind(tableResult.getResultKind())
-                .schema(tableResult.getResolvedSchema())
-                .data(rowList)
-                .jobClient(jobClient)
-                .build();
+                    .resultKind(tableResult.getResultKind())
+                    .schema(tableResult.getResolvedSchema())
+                    .data(rowList)
+                    .jobClient(jobClient)
+                    .build();
         }
         if (config.isUseResult()) {
             IResult result = ResultBuilder.build(
-                    SqlType.EXECUTE,
-                    job.getId().toString(),
-                    config.getMaxRowNum(),
-                    config.isUseChangeLog(),
-                    config.isUseAutoCancel(),
-                    executor.getTimeZone(),
-                    jobManager.getConfig().isMockSinkFunction())
-                .getResultWithPersistence(tableResult, jobManager.getHandler());
+                            SqlType.EXECUTE,
+                            job.getId().toString(),
+                            config.getMaxRowNum(),
+                            config.isUseChangeLog(),
+                            config.isUseAutoCancel(),
+                            executor.getTimeZone(),
+                            jobManager.getConfig().isMockSinkFunction())
+                    .getResultWithPersistence(tableResult, jobManager.getHandler());
             job.setResult(result);
         }
     }
