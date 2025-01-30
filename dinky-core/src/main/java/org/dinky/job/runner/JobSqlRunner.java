@@ -83,17 +83,18 @@ public class JobSqlRunner extends AbstractJobRunner {
     public Optional<JobClient> execute(JobStatement jobStatement) throws Exception {
         statements.add(jobStatement);
         if (jobStatement.isFinalExecutableStatement()) {
+            jobManager.getJob().setPipeline(isPipeline());
             if (inferStatementSet()) {
                 TableResult tableResult = executor.executeStatements(statements);
                 return tableResult.getJobClient();
             } else {
                 FlinkInterceptorResult flinkInterceptorResult =
-                        FlinkInterceptor.build(executor, statements.get(0).getStatement());
+                    FlinkInterceptor.build(executor, statements.get(0).getStatement());
                 if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
                     return flinkInterceptorResult.getTableResult().getJobClient();
                 } else if (!flinkInterceptorResult.isNoExecute()) {
                     TableResult tableResult =
-                            executor.executeSql(statements.get(0).getStatement());
+                        executor.executeSql(statements.get(0).getStatement());
                     return tableResult.getJobClient();
                 }
             }
@@ -123,22 +124,22 @@ public class JobSqlRunner extends AbstractJobRunner {
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
                 String error = LogUtil.getError(
-                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
+                    "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
-                        .type(jobStatement.getSqlType().getType())
-                        .index(jobStatement.getIndex())
-                        .error(error)
-                        .parseTrue(false)
-                        .explainTrue(false)
-                        .explainTime(LocalDateTime.now());
+                    .type(jobStatement.getSqlType().getType())
+                    .index(jobStatement.getIndex())
+                    .error(error)
+                    .parseTrue(false)
+                    .explainTrue(false)
+                    .explainTime(LocalDateTime.now());
                 log.error(error);
                 return resultBuilder.build();
             }
             resultBuilder
-                    .index(jobStatement.getIndex())
-                    .type(jobStatement.getSqlType().getType())
-                    .explainTime(LocalDateTime.now())
-                    .sql(jobStatement.getStatement());
+                .index(jobStatement.getIndex())
+                .type(jobStatement.getSqlType().getType())
+                .explainTime(LocalDateTime.now())
+                .sql(jobStatement.getStatement());
             return resultBuilder.build();
         }
         statements.add(jobStatement);
@@ -147,31 +148,31 @@ public class JobSqlRunner extends AbstractJobRunner {
         }
         if (inferStatementSet()) {
             List<String> inserts =
-                    statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
+                statements.stream().map(JobStatement::getStatement).collect(Collectors.toList());
             if (!inserts.isEmpty()) {
                 String sqlSet = StringUtils.join(inserts, FlinkSQLConstant.SEPARATOR);
                 try {
                     resultBuilder = SqlExplainResult.newBuilder(executor.explainStatementSet(statements));
                 } catch (Exception e) {
                     String error = LogUtil.getError(
-                            "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()),
-                            e);
+                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()),
+                        e);
                     resultBuilder
-                            .sql(sqlSet)
-                            .index(jobStatement.getIndex())
-                            .type(SqlType.INSERT.getType())
-                            .error(error)
-                            .parseTrue(false)
-                            .explainTrue(false)
-                            .explainTime(LocalDateTime.now());
+                        .sql(sqlSet)
+                        .index(jobStatement.getIndex())
+                        .type(SqlType.INSERT.getType())
+                        .error(error)
+                        .parseTrue(false)
+                        .explainTrue(false)
+                        .explainTime(LocalDateTime.now());
                     log.error(error);
                     return resultBuilder.build();
                 }
                 resultBuilder
-                        .type(SqlType.INSERT.getType())
-                        .index(jobStatement.getIndex())
-                        .explainTime(LocalDateTime.now())
-                        .sql(sqlSet);
+                    .type(SqlType.INSERT.getType())
+                    .index(jobStatement.getIndex())
+                    .explainTime(LocalDateTime.now())
+                    .sql(sqlSet);
                 return resultBuilder.build();
             }
             return resultBuilder.invalid().build();
@@ -181,22 +182,22 @@ public class JobSqlRunner extends AbstractJobRunner {
                 resultBuilder.parseTrue(true).explainTrue(true);
             } catch (Exception e) {
                 String error = LogUtil.getError(
-                        "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
+                    "Exception in explaining FlinkSQL:\n" + SqlUtil.addLineNumber(jobStatement.getStatement()), e);
                 resultBuilder
-                        .type(jobStatement.getSqlType().getType())
-                        .index(jobStatement.getIndex())
-                        .error(error)
-                        .parseTrue(false)
-                        .explainTrue(false)
-                        .explainTime(LocalDateTime.now());
+                    .type(jobStatement.getSqlType().getType())
+                    .index(jobStatement.getIndex())
+                    .error(error)
+                    .parseTrue(false)
+                    .explainTrue(false)
+                    .explainTime(LocalDateTime.now());
                 log.error(error);
                 return resultBuilder.build();
             }
             resultBuilder
-                    .type(jobStatement.getSqlType().getType())
-                    .index(jobStatement.getIndex())
-                    .explainTime(LocalDateTime.now())
-                    .sql(jobStatement.getStatement());
+                .type(jobStatement.getSqlType().getType())
+                .index(jobStatement.getIndex())
+                .explainTime(LocalDateTime.now())
+                .sql(jobStatement.getStatement());
             return resultBuilder.build();
         }
     }
@@ -223,6 +224,10 @@ public class JobSqlRunner extends AbstractJobRunner {
             return executor.getJobPlanInfoFromStatements(statements);
         }
         throw new DinkyException("None jobs in statement.");
+    }
+
+    private boolean isPipeline() {
+        return statements.stream().anyMatch(jobStatement -> jobStatement.getSqlType().isPipeline());
     }
 
     private boolean inferStatementSet() {
@@ -266,7 +271,6 @@ public class JobSqlRunner extends AbstractJobRunner {
 
     private void processSingleInsertWithGateway() {
         List<JobStatement> singleInsert = Collections.singletonList(statements.get(0));
-        jobManager.getJob().setPipeline(statements.get(0).getSqlType().isPipeline());
         GatewayResult gatewayResult = submitByGateway(singleInsert);
         setJobResultFromGatewayResult(gatewayResult);
     }
@@ -276,9 +280,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             return;
         }
         // Only process the first statement when not using statement set
-        JobStatement item = statements.get(0);
-        jobManager.getJob().setPipeline(item.getSqlType().isPipeline());
-        processSingleStatement(item);
+        processSingleStatement(statements.get(0));
     }
 
     private void processSingleStatement(JobStatement item) {
@@ -309,16 +311,16 @@ public class JobSqlRunner extends AbstractJobRunner {
     private void updateJobWithTableResult(TableResult tableResult, SqlType sqlType) {
         if (tableResult.getJobClient().isPresent()) {
             jobManager
-                    .getJob()
-                    .setJobId(tableResult.getJobClient().get().getJobID().toHexString());
+                .getJob()
+                .setJobId(tableResult.getJobClient().get().getJobID().toHexString());
             jobManager
-                    .getJob()
-                    .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
+                .getJob()
+                .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
         } else if (!sqlType.getCategory().getHasJobClient()) {
             jobManager.getJob().setJobId(UUID.randomUUID().toString().replace("-", ""));
             jobManager
-                    .getJob()
-                    .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
+                .getJob()
+                .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
         } else if (ResultKind.SUCCESS_WITH_CONTENT.equals(tableResult.getResultKind())) {
             TableResultImpl tableResultImpl = (TableResultImpl) tableResult;
             CloseableIterator<Row> rowCloseableIterator = tableResultImpl.collect();
@@ -335,14 +337,14 @@ public class JobSqlRunner extends AbstractJobRunner {
 
         if (jobManager.getConfig().isUseResult()) {
             IResult result = ResultBuilder.build(
-                            sqlType,
-                            jobManager.getJob().getId().toString(),
-                            jobManager.getConfig().getMaxRowNum(),
-                            jobManager.getConfig().isUseChangeLog(),
-                            jobManager.getConfig().isUseAutoCancel(),
-                            executor.getTimeZone(),
-                            jobManager.getConfig().isMockSinkFunction())
-                    .getResultWithPersistence(tableResult, jobManager.getHandler());
+                    sqlType,
+                    jobManager.getJob().getId().toString(),
+                    jobManager.getConfig().getMaxRowNum(),
+                    jobManager.getConfig().isUseChangeLog(),
+                    jobManager.getConfig().isUseAutoCancel(),
+                    executor.getTimeZone(),
+                    jobManager.getConfig().isMockSinkFunction())
+                .getResultWithPersistence(tableResult, jobManager.getHandler());
             jobManager.getJob().setResult(result);
         }
     }
@@ -359,7 +361,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             // Application mode need to submit dinky-app.jar that in the hdfs or image.
             config.getGatewayConfig().setSql(jobManager.getJobStatementPlan().getStatements());
             gatewayResult = Gateway.build(config.getGatewayConfig())
-                    .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
+                .submitJar(executor.getDinkyClassLoader().getUdfPathContextHolder());
         } else {
             JobGraph jobGraph = executor.getJobGraphFromInserts(inserts);
             // Perjob mode need to set savepoint restore path, when recovery from savepoint.

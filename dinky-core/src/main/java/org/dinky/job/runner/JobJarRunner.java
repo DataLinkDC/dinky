@@ -87,12 +87,13 @@ public class JobJarRunner extends AbstractJobRunner {
     @Override
     public Optional<JobClient> execute(JobStatement jobStatement) throws Exception {
         JobClient jobClient = FlinkStreamEnvironmentUtil.executeAsync(
-                getPipeline(jobStatement), executor.getCustomTableEnvironment());
+            getPipeline(jobStatement), executor.getCustomTableEnvironment());
         return Optional.ofNullable(jobClient);
     }
 
     @Override
     public void run(JobStatement jobStatement) throws Exception {
+        jobManager.getJob().setPipeline(true);
         if (!jobManager.isUseGateway()) {
             submitNormal(jobStatement);
         } else {
@@ -125,23 +126,23 @@ public class JobJarRunner extends AbstractJobRunner {
             // Execute task does not support statement set.
             Pipeline pipeline = getPipeline(jobStatement);
             resultBuilder
-                    .explain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(pipeline))
-                    .type(jobStatement.getSqlType().getType())
-                    .parseTrue(true)
-                    .explainTrue(true)
-                    .sql(jobStatement.getStatement())
-                    .index(jobStatement.getIndex());
+                .explain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(pipeline))
+                .type(jobStatement.getSqlType().getType())
+                .parseTrue(true)
+                .explainTrue(true)
+                .sql(jobStatement.getStatement())
+                .index(jobStatement.getIndex());
         } catch (Exception e) {
             String error = StrFormatter.format(
-                    "Exception in explaining FlinkSQL:\n{}\n{}",
-                    SqlUtil.addLineNumber(jobStatement.getStatement()),
-                    LogUtil.getError(e));
+                "Exception in explaining FlinkSQL:\n{}\n{}",
+                SqlUtil.addLineNumber(jobStatement.getStatement()),
+                LogUtil.getError(e));
             resultBuilder
-                    .error(error)
-                    .explainTrue(false)
-                    .type(jobStatement.getSqlType().getType())
-                    .sql(jobStatement.getStatement())
-                    .index(jobStatement.getIndex());
+                .error(error)
+                .explainTrue(false)
+                .type(jobStatement.getSqlType().getType())
+                .sql(jobStatement.getStatement())
+                .index(jobStatement.getIndex());
             log.error(error);
         } finally {
             resultBuilder.explainTime(LocalDateTime.now());
@@ -167,9 +168,9 @@ public class JobJarRunner extends AbstractJobRunner {
         GatewayConfig gatewayConfig = jobManager.getConfig().getGatewayConfig();
         List<String> uriList = getUris(jobStatement.getStatement());
         String[] jarPaths = uriList.stream()
-                .map(URLUtils::toFile)
-                .map(File::getAbsolutePath)
-                .toArray(String[]::new);
+            .map(URLUtils::toFile)
+            .map(File::getAbsolutePath)
+            .toArray(String[]::new);
         gatewayConfig.setJarPaths(jarPaths);
         return Gateway.build(gatewayConfig).submitJobGraph(jobGraph);
     }
@@ -177,11 +178,13 @@ public class JobJarRunner extends AbstractJobRunner {
     private Pipeline getPipeline(JobStatement jobStatement) {
         Pipeline pipeline = getJarStreamGraph(jobStatement.getStatement(), jobManager.getDinkyClassLoader());
         if (pipeline instanceof StreamGraph) {
-            if (Asserts.isNotNullString(jobManager.getConfig().getSavePointPath())) {
+            if (Asserts.isNotNullString(jobManager.getConfig().getSavePointPath())
+                || (Asserts.isNotNull(jobManager.getConfig().getConfigJson())
+                && Asserts.isNotNullString(jobManager.getConfig().getConfigJson().get(SavepointConfigOptions.SAVEPOINT_PATH)))) {
                 ((StreamGraph) pipeline)
-                        .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
-                                jobManager.getConfig().getSavePointPath(),
-                                configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
+                    .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
+                        jobManager.getConfig().getSavePointPath(),
+                        configuration.get(SavepointConfigOptions.SAVEPOINT_IGNORE_UNCLAIMED_STATE)));
             }
         }
         return pipeline;
@@ -189,12 +192,12 @@ public class JobJarRunner extends AbstractJobRunner {
 
     private void submitNormal(JobStatement jobStatement) throws Exception {
         JobClient jobClient = FlinkStreamEnvironmentUtil.executeAsync(
-                getPipeline(jobStatement), executor.getCustomTableEnvironment());
+            getPipeline(jobStatement), executor.getCustomTableEnvironment());
         if (Asserts.isNotNull(jobClient)) {
             jobManager.getJob().setJobId(jobClient.getJobID().toHexString());
             jobManager
-                    .getJob()
-                    .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
+                .getJob()
+                .setJids(Collections.singletonList(jobManager.getJob().getJobId()));
             jobManager.getJob().setStatus(Job.JobStatus.SUCCESS);
         } else {
             jobManager.getJob().setStatus(Job.JobStatus.FAILED);

@@ -54,7 +54,7 @@ public class Job {
     private Executor executor;
     private boolean useGateway;
     private List<String> jids;
-    private boolean isPipeline = true;
+    private boolean isPipeline = false;
 
     @Getter
     public enum JobStatus {
@@ -71,13 +71,13 @@ public class Job {
     }
 
     public Job(
-            JobConfig jobConfig,
-            GatewayType type,
-            JobStatus status,
-            String statement,
-            ExecutorConfig executorConfig,
-            Executor executor,
-            boolean useGateway) {
+        JobConfig jobConfig,
+        GatewayType type,
+        JobStatus status,
+        String statement,
+        ExecutorConfig executorConfig,
+        Executor executor,
+        boolean useGateway) {
         this.jobConfig = jobConfig;
         this.type = type;
         this.status = status;
@@ -89,12 +89,12 @@ public class Job {
     }
 
     public static Job build(
-            GatewayType type,
-            JobConfig jobConfig,
-            ExecutorConfig executorConfig,
-            Executor executor,
-            String statement,
-            boolean useGateway) {
+        GatewayType type,
+        JobConfig jobConfig,
+        ExecutorConfig executorConfig,
+        Executor executor,
+        String statement,
+        boolean useGateway) {
         Job job = new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorConfig, executor, useGateway);
         if (!useGateway) {
             job.setJobManagerAddress(executorConfig.getJobManagerAddress());
@@ -104,18 +104,18 @@ public class Job {
 
     public JobResult getJobResult() {
         return new JobResult(
-                id,
-                jobInstanceId,
-                jobConfig,
-                jobManagerAddress,
-                status,
-                statement,
-                jobId,
-                error,
-                result,
-                startTime,
-                endTime,
-                isPipeline);
+            id,
+            jobInstanceId,
+            jobConfig,
+            jobManagerAddress,
+            status,
+            statement,
+            jobId,
+            error,
+            result,
+            startTime,
+            endTime,
+            isPipeline);
     }
 
     public boolean isFailed() {
