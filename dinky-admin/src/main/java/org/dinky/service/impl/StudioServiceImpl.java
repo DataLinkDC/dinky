@@ -52,6 +52,7 @@ import org.dinky.utils.RunTimeUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -122,9 +123,10 @@ public class StudioServiceImpl implements StudioService {
             TaskDTO taskDTO = taskService.getTaskInfoById(studioCADTO.getTaskId());
             taskDTO.setStatement(taskService.buildEnvSql(taskDTO) + studioCADTO.getStatement());
             JobConfig jobConfig = taskDTO.getJobConfig();
-            jobConfig.setUdfRefer(studioCADTO.getConfigJson().getUdfReferMaps());
-            jobConfig.setConfigJson(studioCADTO.getConfigJson().getCustomConfigMaps());
-
+            Optional.ofNullable(studioCADTO.getConfigJson()).ifPresent(config -> {
+                jobConfig.setUdfRefer(studioCADTO.getConfigJson().getUdfReferMaps());
+                jobConfig.setConfigJson(studioCADTO.getConfigJson().getCustomConfigMaps());
+            });
             return LineageBuilder.getColumnLineageByLogicalPlan(taskDTO.getStatement(), jobConfig);
         }
     }
