@@ -56,6 +56,8 @@
 
 ## 参与贡献
 
+dev 分支为 Dinky 1.3.0, 1.2 分支为 Dinky 1.2.2。
+
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/DataLinkDC/dinky/pulls)
 
 欢迎加入社区，共建共赢，贡献流程请参考： [参与贡献](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/developer_guide/contribution/how_contribute.md)

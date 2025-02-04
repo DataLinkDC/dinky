@@ -52,6 +52,9 @@ Its main features are as follows:
 ![metrics](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/v1-2/metrics.png)
 
 ## Participate in Contributions
+
+The dev branch is Dinky 1.3.0, and the 1.2 branch is Dinky 1.2.2.
+
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/DataLinkDC/dinky/pulls)
 
 Welcome to join the community, build a win-win situation, please refer to the contribution process： [How to contribute](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/developer_guide/contribution/how_contribute.md).
