@@ -569,7 +569,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Integer tenantId = baseMapper.getTenantByTaskId(id);
         Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
-        log.info("Init task tenan finished..");
+        log.info("Init task tenant finished..");
     }
 
     @Override
@@ -997,7 +997,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public LineageResult getTaskLineage(Integer id) {
         TaskDTO task = getTaskInfoById(id);
-        if (!Dialect.isCommonSql(task.getDialect())) {
+        if (Dialect.isCommonSql(task.getDialect())) {
             if (Asserts.isNull(task.getDatabaseId())) {
                 return null;
             }

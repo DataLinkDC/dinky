@@ -35,20 +35,11 @@ import java.util.stream.Collectors;
 public class JobStatementPlan {
 
     private List<JobStatement> jobStatementList = new ArrayList<>();
-    private boolean isSubmissionMode;
 
     public JobStatementPlan() {}
 
     public List<JobStatement> getJobStatementList() {
         return jobStatementList;
-    }
-
-    public boolean isSubmissionMode() {
-        return isSubmissionMode;
-    }
-
-    public void setSubmissionMode(boolean isSubmissionMode) {
-        this.isSubmissionMode = isSubmissionMode;
     }
 
     public void addJobStatement(String statement, JobStatementType statementType, SqlType sqlType) {
@@ -76,7 +67,8 @@ public class JobStatementPlan {
         if (executableIndex >= 0) {
             jobStatementList.get(executableIndex).asFinalExecutableStatement();
         } else {
-            // If there is no INSERT/CTAS/RTAS statement, use the first SELECT/WITH/SHOW/DESC SQL statement as the final
+            // If there is no INSERT/CTAS/RTAS/CALL statement, use the first SELECT/WITH/SHOW/DESC SQL statement as the
+            // final
             // statement.
             for (int i = 0; i < jobStatementList.size(); i++) {
                 if (jobStatementList.get(i).getStatementType().equals(JobStatementType.SQL)) {
@@ -94,42 +86,12 @@ public class JobStatementPlan {
 
     public void checkStatement() {
         checkEmptyStatement();
-        checkSubmissionStatement();
         checkPipelineStatement();
     }
 
     private void checkEmptyStatement() {
         if (jobStatementList.isEmpty()) {
             throw new DinkyException("None of valid statement is executed. Please check your statements.");
-        }
-        boolean hasSqlStatement = false;
-        for (JobStatement jobStatement : jobStatementList) {
-            if (jobStatement.getStatement().trim().isEmpty()) {
-                throw new DinkyException("The statement cannot be empty. Please check your statements.");
-            }
-            if (jobStatement.getStatementType().equals(JobStatementType.SQL)
-                    || jobStatement.getStatementType().equals(JobStatementType.PIPELINE)
-                    || jobStatement.getStatementType().equals(JobStatementType.EXECUTE_JAR)) {
-                hasSqlStatement = true;
-            }
-        }
-        if (!hasSqlStatement) {
-            throw new DinkyException(
-                    "The statements must contain at least one INSERT/CTAS/RTAS/SELECT/WITH/SHOW/DESC statement.");
-        }
-    }
-
-    private void checkSubmissionStatement() {
-        if (isSubmissionMode) {
-            for (JobStatement jobStatement : jobStatementList) {
-                if (jobStatement.getStatementType().equals(JobStatementType.SQL)) {
-                    if (!jobStatement.getSqlType().isSinkyModify()) {
-                        throw new DinkyException(
-                                "The submission mode cannot contain one statement which is not a sink operation."
-                                        + "\nThe valid statement is: " + jobStatement.getStatement());
-                    }
-                }
-            }
         }
     }
 

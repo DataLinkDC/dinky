@@ -88,6 +88,8 @@ public enum SqlType {
 
     WITH("WITH", "^WITH.*", SqlCategory.DQL),
 
+    CALL("CALL", "^CALL.*", SqlCategory.DQL),
+
     UNKNOWN("UNKNOWN", "^UNKNOWN.*", SqlCategory.UNKNOWN);
 
     private String type;
@@ -95,11 +97,12 @@ public enum SqlType {
     private final SqlCategory category;
 
     private static final List<SqlType> TRANS_SQL_TYPES =
-            Lists.newArrayList(INSERT, SELECT, WITH, SHOW, DESCRIBE, DESC, CTAS, RTAS, UPDATE, DELETE);
+            Lists.newArrayList(INSERT, SELECT, WITH, SHOW, DESCRIBE, DESC, CTAS, RTAS, UPDATE, DELETE, CALL);
 
     private static final List<SqlType> CTAS_TYPES = Lists.newArrayList(CTAS, RTAS, PRINT);
 
-    private static final List<SqlType> PIPELINE_SQL_TYPES = Lists.newArrayList(INSERT, SELECT, WITH, CTAS, RTAS, PRINT);
+    private static final List<SqlType> PIPELINE_SQL_TYPES =
+            Lists.newArrayList(INSERT, SELECT, WITH, CTAS, RTAS, PRINT, CALL);
 
     private static final List<SqlType> SINK_MODIFY_SQL_TYPES = Lists.newArrayList(INSERT, CTAS, RTAS, PRINT);
 

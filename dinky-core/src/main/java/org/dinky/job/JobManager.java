@@ -247,7 +247,6 @@ public class JobManager {
                 .collect(Collectors.toList());
         statement = String.join(";\n", statements);
         jobStatementPlan = Explainer.build(this).parseStatements(SqlUtil.getStatements(statement));
-        jobStatementPlan.setSubmissionMode(config.isSubmissionMode());
         jobStatementPlan.buildFinalStatement();
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
@@ -282,7 +281,6 @@ public class JobManager {
         ready();
         try {
             jobStatementPlan = Explainer.build(this).parseStatements(SqlUtil.getStatements(statement));
-            jobStatementPlan.setSubmissionMode(config.isSubmissionMode());
             jobStatementPlan.buildFinalStatement();
             JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(this);
             for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
