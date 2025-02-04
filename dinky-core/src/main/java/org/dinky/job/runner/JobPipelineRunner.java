@@ -51,6 +51,7 @@ import org.apache.flink.types.Row;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,9 +61,32 @@ public class JobPipelineRunner extends AbstractJobRunner {
     private List<JobStatement> statements;
     private TableResult tableResult;
 
+    public JobPipelineRunner(Executor executor) {
+        this.executor = executor;
+        this.statements = new ArrayList<>();
+    }
+
     public JobPipelineRunner(JobManager jobManager) {
         this.jobManager = jobManager;
+        this.executor = jobManager.getExecutor();
         this.statements = new ArrayList<>();
+    }
+
+    @Override
+    public Optional<JobClient> execute(JobStatement jobStatement) throws Exception {
+        if (ExecuteJarParseStrategy.INSTANCE.match(jobStatement.getStatement())) {
+            JobJarRunner jobJarRunner = new JobJarRunner(jobManager);
+            return jobJarRunner.execute(jobStatement);
+        }
+        statements.add(jobStatement);
+        tableResult = executor.executeSql(jobStatement.getStatement());
+        if (statements.size() == 1) {
+            JobClient jobClient =
+                    executor.executeAsync(executor.getExecutorConfig().getJobName());
+            return Optional.ofNullable(jobClient);
+        }
+        log.error("Only one pipeline job is executed. The statement has be skipped: " + jobStatement.getStatement());
+        return Optional.empty();
     }
 
     @Override
@@ -73,7 +97,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
             return;
         }
         statements.add(jobStatement);
-        tableResult = jobManager.getExecutor().executeSql(jobStatement.getStatement());
+        tableResult = executor.executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
             if (jobManager.isUseGateway()) {
                 processWithGateway();
@@ -95,12 +119,11 @@ public class JobPipelineRunner extends AbstractJobRunner {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();
         statements.add(jobStatement);
         // pipeline job execute to generate stream graph.
-        jobManager.getExecutor().executeSql(jobStatement.getStatement());
+        executor.executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
             try {
                 resultBuilder
-                        .explain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(
-                                jobManager.getExecutor().getStreamGraph()))
+                        .explain(FlinkStreamEnvironmentUtil.getStreamingPlanAsJSON(executor.getStreamGraph()))
                         .type(jobStatement.getSqlType().getType())
                         .parseTrue(true)
                         .explainTrue(true)
@@ -146,9 +169,9 @@ public class JobPipelineRunner extends AbstractJobRunner {
         }
         statements.add(jobStatement);
         // pipeline job execute to generate stream graph.
-        jobManager.getExecutor().executeSql(jobStatement.getStatement());
+        executor.executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
-            return jobManager.getExecutor().getStreamGraph();
+            return executor.getStreamGraph();
         } else {
             throw new DinkyException(
                     "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement());
@@ -163,9 +186,9 @@ public class JobPipelineRunner extends AbstractJobRunner {
         }
         statements.add(jobStatement);
         // pipeline job execute to generate stream graph.
-        jobManager.getExecutor().executeSql(jobStatement.getStatement());
+        executor.executeSql(jobStatement.getStatement());
         if (statements.size() == 1) {
-            return jobManager.getExecutor().getJobPlanInfo();
+            return executor.getJobPlanInfo();
         } else {
             throw new DinkyException(
                     "Only one pipeline job is explained. The statement has be skipped: " + jobStatement.getStatement());
@@ -173,7 +196,6 @@ public class JobPipelineRunner extends AbstractJobRunner {
     }
 
     private void processWithGateway() throws Exception {
-        Executor executor = jobManager.getExecutor();
         JobConfig config = jobManager.getConfig();
         Job job = jobManager.getJob();
         config.addGatewayConfig(executor.getSetConfig());
@@ -205,7 +227,6 @@ public class JobPipelineRunner extends AbstractJobRunner {
     }
 
     private void processWithoutGateway() throws Exception {
-        Executor executor = jobManager.getExecutor();
         JobConfig config = jobManager.getConfig();
         Job job = jobManager.getJob();
         JobClient jobClient = executor.executeAsync(config.getJobName());

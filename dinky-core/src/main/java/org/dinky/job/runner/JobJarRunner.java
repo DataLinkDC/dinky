@@ -27,6 +27,7 @@ import org.dinky.data.job.SqlType;
 import org.dinky.data.model.JarSubmitParam;
 import org.dinky.data.result.InsertResult;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.executor.Executor;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.result.GatewayResult;
@@ -71,10 +72,15 @@ import lombok.extern.slf4j.Slf4j;
 public class JobJarRunner extends AbstractJobRunner {
     private final Configuration configuration;
 
+    public JobJarRunner(Executor executor) {
+        this.executor = executor;
+        configuration = executor.getCustomTableEnvironment().getConfig().getConfiguration();
+    }
+
     public JobJarRunner(JobManager jobManager) {
         this.jobManager = jobManager;
-        configuration =
-                jobManager.getExecutor().getCustomTableEnvironment().getConfig().getConfiguration();
+        this.executor = jobManager.getExecutor();
+        configuration = executor.getCustomTableEnvironment().getConfig().getConfiguration();
     }
 
     @Override
@@ -175,7 +181,7 @@ public class JobJarRunner extends AbstractJobRunner {
 
     private void submitNormal(JobStatement jobStatement) throws Exception {
         JobClient jobClient = FlinkStreamEnvironmentUtil.executeAsync(
-                getPipeline(jobStatement), jobManager.getExecutor().getCustomTableEnvironment());
+                getPipeline(jobStatement), executor.getCustomTableEnvironment());
         if (Asserts.isNotNull(jobClient)) {
             jobManager.getJob().setJobId(jobClient.getJobID().toHexString());
             jobManager
@@ -192,7 +198,7 @@ public class JobJarRunner extends AbstractJobRunner {
         String[] statements = SqlUtil.getStatements(statement);
         ExecuteJarOperation executeJarOperation = null;
         for (String sql : statements) {
-            String sqlStatement = jobManager.getExecutor().pretreatStatement(sql);
+            String sqlStatement = executor.pretreatStatement(sql);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 executeJarOperation = new ExecuteJarOperation(sqlStatement);
                 break;
@@ -200,27 +206,27 @@ public class JobJarRunner extends AbstractJobRunner {
             SqlType operationType = Operations.getOperationType(sqlStatement);
             if (operationType.equals(SqlType.SET) && SetSqlParseStrategy.INSTANCE.match(sqlStatement)) {
                 CustomSetOperation customSetOperation = new CustomSetOperation(sqlStatement);
-                customSetOperation.execute(jobManager.getExecutor().getCustomTableEnvironment());
+                customSetOperation.execute(executor.getCustomTableEnvironment());
             } else if (operationType.equals(SqlType.ADD)) {
                 Set<File> files = AddJarSqlParseStrategy.getAllFilePath(sqlStatement);
-                files.forEach(jobManager.getExecutor()::addJar);
+                files.forEach(executor::addJar);
                 files.forEach(jobManager.getUdfPathContextHolder()::addOtherPlugins);
             } else if (operationType.equals(SqlType.ADD_FILE)) {
                 Set<File> files = AddFileSqlParseStrategy.getAllFilePath(sqlStatement);
-                files.forEach(jobManager.getExecutor()::addJar);
+                files.forEach(executor::addJar);
                 files.forEach(jobManager.getUdfPathContextHolder()::addFile);
             }
         }
         Assert.notNull(executeJarOperation, () -> new DinkyException("Not found execute jar operation."));
         List<URL> urLs = jobManager.getAllFileSet();
-        return executeJarOperation.explain(jobManager.getExecutor().getCustomTableEnvironment(), urLs);
+        return executeJarOperation.explain(executor.getCustomTableEnvironment(), urLs);
     }
 
     public List<String> getUris(String statement) {
         String[] statements = SqlUtil.getStatements(statement);
         List<String> uriList = new ArrayList<>();
         for (String sql : statements) {
-            String sqlStatement = jobManager.getExecutor().pretreatStatement(sql);
+            String sqlStatement = executor.pretreatStatement(sql);
             if (ExecuteJarParseStrategy.INSTANCE.match(sqlStatement)) {
                 uriList.add(JarSubmitParam.getInfo(statement).getUri());
                 break;

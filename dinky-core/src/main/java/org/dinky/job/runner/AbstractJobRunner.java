@@ -21,15 +21,18 @@ package org.dinky.job.runner;
 
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.executor.Executor;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobRunner;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import cn.hutool.core.text.StrFormatter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,13 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractJobRunner implements JobRunner {
 
     protected JobManager jobManager;
+
+    protected Executor executor;
+
+    public Optional<JobClient> execute(JobStatement jobStatement) throws Exception {
+        run(jobStatement);
+        return Optional.empty();
+    }
 
     public SqlExplainResult explain(JobStatement jobStatement) {
         SqlExplainResult.Builder resultBuilder = SqlExplainResult.Builder.newBuilder();

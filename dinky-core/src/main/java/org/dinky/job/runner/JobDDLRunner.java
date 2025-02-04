@@ -26,6 +26,7 @@ import org.dinky.data.job.JobStatement;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.executor.Executor;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
@@ -38,6 +39,7 @@ import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.table.catalog.FunctionLanguage;
 
@@ -47,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 
 import cn.hutool.core.collection.CollUtil;
@@ -58,8 +61,28 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobDDLRunner extends AbstractJobRunner {
 
+    public JobDDLRunner(Executor executor) {
+        this.executor = executor;
+    }
+
     public JobDDLRunner(JobManager jobManager) {
         this.jobManager = jobManager;
+        this.executor = jobManager.getExecutor();
+    }
+
+    @Override
+    public Optional<JobClient> execute(JobStatement jobStatement) throws Exception {
+        switch (jobStatement.getSqlType()) {
+            case ADD:
+            case ADD_FILE:
+                break;
+            case ADD_JAR:
+                Configuration combinationConfig = getCombinationConfig();
+                FileSystem.initialize(combinationConfig, null);
+            default:
+                executor.executeSql(jobStatement.getStatement());
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -81,7 +104,7 @@ public class JobDDLRunner extends AbstractJobRunner {
                     break;
                 }
             default:
-                jobManager.getExecutor().executeSql(jobStatement.getStatement());
+                executor.executeSql(jobStatement.getStatement());
         }
     }
 
@@ -103,7 +126,7 @@ public class JobDDLRunner extends AbstractJobRunner {
                 case CREATE:
                     if (UDFUtil.isUdfStatement(jobStatement.getStatement())) {
                         executeCreateFunction(jobStatement.getStatement());
-                        recordResult = jobManager.getExecutor().explainSqlRecord(jobStatement.getStatement());
+                        recordResult = executor.explainSqlRecord(jobStatement.getStatement());
                         break;
                     }
                 default:
@@ -136,34 +159,34 @@ public class JobDDLRunner extends AbstractJobRunner {
     private void executeAdd(String statement) {
         Set<File> allFilePath = AddJarSqlParseStrategy.getAllFilePath(statement);
         allFilePath.forEach(t -> jobManager.getUdfPathContextHolder().addOtherPlugins(t));
-        (jobManager.getExecutor().getDinkyClassLoader())
+        (executor.getDinkyClassLoader())
                 .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getOtherPluginsFiles()));
-        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
+        executor.addJar(ArrayUtil.toArray(allFilePath, File.class));
     }
 
     private void executeAddFile(String statement) {
         Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(statement);
         allFilePath.forEach(t -> jobManager.getUdfPathContextHolder().addFile(t));
-        (jobManager.getExecutor().getDinkyClassLoader())
+        (executor.getDinkyClassLoader())
                 .addURLs(URLUtils.getURLs(jobManager.getUdfPathContextHolder().getFiles()));
-        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
+        executor.addJar(ArrayUtil.toArray(allFilePath, File.class));
     }
 
     private void executeAddJar(String statement) {
         Set<File> allFilePath = AddFileSqlParseStrategy.getAllFilePath(statement);
         Configuration combinationConfig = getCombinationConfig();
         FileSystem.initialize(combinationConfig, null);
-        jobManager.getExecutor().addJar(ArrayUtil.toArray(allFilePath, File.class));
-        jobManager.getExecutor().executeSql(statement);
+        executor.addJar(ArrayUtil.toArray(allFilePath, File.class));
+        executor.executeSql(statement);
     }
 
     private void executeCreateFunction(String udfStatement) {
-        UDF udf = toUDF(udfStatement, jobManager.getExecutor().getDinkyClassLoader());
+        UDF udf = toUDF(udfStatement, executor.getDinkyClassLoader());
         if (udf != null) {
             // 创建文件路径快捷链接
             copyUdfFileLinkAndAddToClassloader(udf, udf.getName());
         }
-        jobManager.getExecutor().executeSql(udfStatement);
+        executor.executeSql(udfStatement);
     }
 
     /**
@@ -198,7 +221,7 @@ public class JobDDLRunner extends AbstractJobRunner {
         } else {
             jobManager.getUdfPathContextHolder().addUdfPath(udfLinkFile);
             jobManager.getDinkyClassLoader().addURLs(CollUtil.newArrayList(udfLinkFile));
-            jobManager.getExecutor().addJar(udfLinkFile);
+            executor.addJar(udfLinkFile);
         }
     }
 
@@ -219,19 +242,19 @@ public class JobDDLRunner extends AbstractJobRunner {
     }
 
     private SqlExplainResult explainAddJar(String statement) {
-        SqlExplainResult sqlExplainResult = jobManager.getExecutor().explainSqlRecord(statement);
+        SqlExplainResult sqlExplainResult = executor.explainSqlRecord(statement);
         executeAddJar(statement);
         return sqlExplainResult;
     }
 
     private SqlExplainResult explainOtherDDL(String statement) {
-        SqlExplainResult sqlExplainResult = jobManager.getExecutor().explainSqlRecord(statement);
-        jobManager.getExecutor().executeSql(statement);
+        SqlExplainResult sqlExplainResult = executor.explainSqlRecord(statement);
+        executor.executeSql(statement);
         return sqlExplainResult;
     }
 
     private Configuration getCombinationConfig() {
-        CustomTableEnvironment cte = jobManager.getExecutor().getCustomTableEnvironment();
+        CustomTableEnvironment cte = executor.getCustomTableEnvironment();
         Configuration rootConfig = cte.getRootConfiguration();
         Configuration config = cte.getConfig().getConfiguration();
         Configuration combinationConfig = new Configuration();

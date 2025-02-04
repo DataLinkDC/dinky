@@ -62,21 +62,23 @@ import lombok.extern.slf4j.Slf4j;
 public class Explainer {
 
     private Executor executor;
-    private boolean useStatementSet;
     private JobManager jobManager;
 
-    public Explainer(Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public Explainer(Executor executor) {
         this.executor = executor;
-        this.useStatementSet = useStatementSet;
+    }
+
+    public Explainer(Executor executor, JobManager jobManager) {
+        this.executor = executor;
         this.jobManager = jobManager;
     }
 
-    public static Explainer build(JobManager jobManager) {
-        return new Explainer(jobManager.getExecutor(), true, jobManager);
+    public static Explainer build(Executor executor) {
+        return new Explainer(executor);
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet, JobManager jobManager) {
-        return new Explainer(executor, useStatementSet, jobManager);
+    public static Explainer build(JobManager jobManager) {
+        return new Explainer(jobManager.getExecutor(), jobManager);
     }
 
     public JobStatementPlan parseStatements(String[] statements) {
@@ -91,6 +93,10 @@ public class Explainer {
                     .jobStatementPlanMock(jobStatementPlanWithMock);
         }
         return jobStatementPlanWithMock;
+    }
+
+    public JobStatementPlan parseStatementsForApplicationMode(String[] statements) {
+        return executor.parseStatementIntoJobStatementPlan(statements);
     }
 
     private void generateUDFStatement(JobStatementPlan jobStatementPlan) {
@@ -185,7 +191,7 @@ public class Explainer {
                 .type(GatewayType.LOCAL.getLongValue())
                 .useRemote(false)
                 .fragment(true)
-                .statementSet(useStatementSet)
+                .statementSet(false)
                 .parallelism(1)
                 .udfRefer(jobManager.getConfig().getUdfRefer())
                 .configJson(executor.getTableConfig().getConfiguration().toMap())

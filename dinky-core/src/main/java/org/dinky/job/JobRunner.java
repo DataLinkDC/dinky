@@ -22,10 +22,15 @@ package org.dinky.job;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.result.SqlExplainResult;
 
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 
+import java.util.Optional;
+
 public interface JobRunner {
+
+    Optional<JobClient> execute(JobStatement jobStatement) throws Exception;
 
     void run(JobStatement jobStatement) throws Exception;
 
