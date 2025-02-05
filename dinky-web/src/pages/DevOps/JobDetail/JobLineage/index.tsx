@@ -24,7 +24,7 @@ import { l } from '@/utils/intl';
 import { Card, Result } from 'antd';
 import React, { useEffect } from 'react';
 import { Lineage } from '@/pages/DataStudio/Toolbar/Service/Lineage';
-import { useTheme } from "@/hooks/useThemeValue";
+import { useTheme } from '@/hooks/useThemeValue';
 import { DataStudioContext } from '@/pages/DataStudio/DataStudioContext';
 
 const JobLineage = (props: { jobDetail: { id: number } }) => {
@@ -57,9 +57,9 @@ const JobLineage = (props: { jobDetail: { id: number } }) => {
         style={{ height: parent.innerHeight - 180 }}
       >
         {lineageData && (lineageData.tables.length !== 0 || lineageData.relations.length !== 0) ? (
-            <DataStudioContext.Provider value={{ theme: theme }}>
-              <Lineage data={lineageData} />
-            </DataStudioContext.Provider>
+          <DataStudioContext.Provider value={{ theme: theme }}>
+            <Lineage data={lineageData} />
+          </DataStudioContext.Provider>
         ) : (
           <Result style={{ height: '100%' }} status='warning' title={l('lineage.getError')} />
         )}

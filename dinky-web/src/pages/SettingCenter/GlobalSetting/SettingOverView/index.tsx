@@ -46,7 +46,7 @@ import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { memo, useEffect, useState } from 'react';
-import { ApprovalConfig } from "@/pages/SettingCenter/GlobalSetting/SettingOverView/ApprovalConfig";
+import { ApprovalConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/ApprovalConfig';
 
 const imgSize = 25;
 

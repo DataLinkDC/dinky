@@ -100,7 +100,7 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
 import TaskConfig from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig';
 import SelectDb from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectDb';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { buildResourceTreeDataAtTreeForm } from '@/pages/RegCenter/Resource/components/FileTree/function';
 import { ProFormDependency } from '@ant-design/pro-form';
@@ -111,9 +111,9 @@ import {
   DolphinTaskMinInfo
 } from '@/types/Studio/data';
 import PushDolphin from '@/pages/DataStudio/CenterTabContent/SqlTask/PushDolphin';
-import ApprovalModal from "@/pages/AuthCenter/Approval/components/ApprovalModal";
-import { OperationType } from "@/types/AuthCenter/data.d";
-import { getAllConfig } from "@/pages/Metrics/service";
+import ApprovalModal from '@/pages/AuthCenter/Approval/components/ApprovalModal';
+import { OperationType } from '@/types/AuthCenter/data.d';
+import { getAllConfig } from '@/pages/Metrics/service';
 
 export type FlinkSqlProps = {
   showDesc: boolean;
@@ -221,14 +221,14 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   });
 
   const [approvalState, setApprovalState] = useState<{
-    enableApproval: boolean,
+    enableApproval: boolean;
     openSubmitModal: boolean;
     currentApprovalId: number;
   }>({
     enableApproval: false,
     openSubmitModal: false,
     currentApprovalId: -1
-  })
+  });
 
   useEffect(() => {
     if (sqlForm.enable) {
@@ -286,7 +286,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       if (config.key === 'sys.approval.settings.enableTaskSubmitReview') {
         if (config.value) {
           // show approval submit button
-          setApprovalState(prevState => ({...prevState, enableApproval: true}));
+          setApprovalState((prevState) => ({ ...prevState, enableApproval: true }));
         }
       }
     }
@@ -304,7 +304,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     }));
   }, [params]);
   useEffect(() => {
-    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, ['RunningTaskId'], (data: WsData) => {
       if (data?.data?.RunningTaskId) {
         setIsRunning(data?.data?.RunningTaskId.includes(params.taskId));
       }
@@ -758,15 +758,15 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     const res = await handlePutDataByParams(
       API_CONSTANTS.TASK_APPROVAL_CREATE,
       l('approval.operation.create'),
-      { taskId:currentState.taskId }
+      { taskId: currentState.taskId }
     );
     // open submit modal
-    setApprovalState((prevState) => ({...prevState, currentApprovalId: res.data.id}));
+    setApprovalState((prevState) => ({ ...prevState, currentApprovalId: res.data.id }));
     handleApprovalModalOpenChange(true);
-  }
+  };
 
   const handleApprovalModalOpenChange = (open: boolean) => {
-    setApprovalState((prevState) => ({...prevState, openSubmitModal: open}));
+    setApprovalState((prevState) => ({ ...prevState, openSubmitModal: open }));
   };
   return (
     <Skeleton
@@ -793,7 +793,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         onOpenChange={handleApprovalModalOpenChange}
         handleSubmit={async (record) => {
           await handleOption(API_CONSTANTS.APPROVAL_SUBMIT, l('approval.operation.submit'), record);
-          setApprovalState(prevState => ({...prevState, openSubmitModal: false}))
+          setApprovalState((prevState) => ({ ...prevState, openSubmitModal: false }));
         }}
       />
       <Flex vertical style={{ height: 'inherit', width: '100%' }} ref={containerRef}>
@@ -1045,7 +1045,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               disabled={isLockTask}
               showDesc={showDesc}
               desc={l('approval.operation.create')}
-              icon={<AuditOutlined/>}
+              icon={<AuditOutlined />}
               onClick={handleOpenApprovalModal}
             />
           </Flex>

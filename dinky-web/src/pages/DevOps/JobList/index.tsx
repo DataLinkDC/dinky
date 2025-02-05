@@ -54,7 +54,7 @@ import { buildProjectTree } from '@/pages/DataStudio/Toolbar/Project/function';
 import { showFirstLevelOwner, showSecondLevelOwners } from '@/pages/DataStudio/function';
 import { generateList, getLeafKeyList, searchInTree } from '@/utils/treeUtils';
 import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 
 const { DirectoryTree } = Tree;
 
@@ -82,7 +82,7 @@ const JobList = (props: connect) => {
   const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState([]);
 
   useEffect(() => {
-    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, ['RunningTaskId'], (data: WsData) => {
       if (data?.data?.RunningTaskId) {
         setCurrentRunningTaskIds(data?.data?.RunningTaskId);
       }

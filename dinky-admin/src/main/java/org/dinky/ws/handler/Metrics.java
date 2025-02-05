@@ -17,37 +17,27 @@
  *
  */
 
-package org.dinky.ws.topic;
+package org.dinky.ws.handler;
 
-import org.dinky.context.ConsoleContextHolder;
-import org.dinky.data.model.ProcessEntity;
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-@Slf4j
-public class ProcessConsole extends BaseTopic {
-    public static final ProcessConsole INSTANCE = new ProcessConsole();
-
-    private ProcessConsole() {}
+@Service
+public class Metrics extends ManualMessageEventHandler {
 
     @Override
-    public Map<String, Object> autoDataSend(Set<String> allParams) {
+    public Map<String, Object> firstSubscribe(Set<String> allParams) {
+        //        monitorService.getMetricsLayoutByName(layoutName)
         return new HashMap<>();
     }
 
     @Override
-    public Map<String, Object> firstDataSend(Set<String> allParams) {
-        Map<String, Object> result = new HashMap<>();
-        allParams.forEach(processName -> {
-            ProcessEntity process = ConsoleContextHolder.getInstances().getProcess(processName);
-            if (process != null) {
-                result.put(processName, process);
-            }
-        });
-        return result;
+    public GlobalWebSocketTopic getTopic() {
+        return GlobalWebSocketTopic.METRICS;
     }
 }

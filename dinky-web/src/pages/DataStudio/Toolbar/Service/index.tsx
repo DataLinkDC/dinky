@@ -55,7 +55,7 @@ import { assert } from '@/pages/DataStudio/utils';
 import { connect } from '@umijs/max';
 import { Lineage } from '@/pages/DataStudio/Toolbar/Service/Lineage';
 import { useModel } from '@umijs/max';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 
 const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) => {
   const {
@@ -74,7 +74,7 @@ const Service = (props: { showDesc: boolean; tabs: CenterTab[]; action: any }) =
   const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState<number[]>([]);
 
   useEffect(() => {
-    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, ['RunningTaskId'], (data: WsData) => {
       if (data?.data?.RunningTaskId) {
         setCurrentRunningTaskIds(data?.data?.RunningTaskId);
       }

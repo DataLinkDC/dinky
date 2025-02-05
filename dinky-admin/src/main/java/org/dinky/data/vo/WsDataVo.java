@@ -24,19 +24,19 @@ import org.dinky.ws.GlobalWebSocket;
 import lombok.Data;
 
 @Data
-public class SseDataVo {
+public class WsDataVo {
     private String sessionKey;
     private String topic;
     private Object data;
     private GlobalWebSocket.RequestDTO.EventType type;
 
-    public SseDataVo(String sessionKey, String topic, Object data) {
+    public WsDataVo(String sessionKey, String topic, Object data) {
         this.sessionKey = sessionKey;
         this.topic = topic;
         this.data = data;
     }
 
-    public SseDataVo(String sessionKey, GlobalWebSocket.RequestDTO.EventType type) {
+    public WsDataVo(String sessionKey, GlobalWebSocket.RequestDTO.EventType type) {
         this.sessionKey = sessionKey;
         this.type = type;
     }

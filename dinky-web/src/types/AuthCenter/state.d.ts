@@ -17,7 +17,13 @@
  *
  */
 
-import { RowPermissions, SysMenu, SysToken, UserBaseInfo, ApprovalBasicInfo } from '@/types/AuthCenter/data.d';
+import {
+  RowPermissions,
+  SysMenu,
+  SysToken,
+  UserBaseInfo,
+  ApprovalBasicInfo
+} from '@/types/AuthCenter/data.d';
 import { BaseState, ContextMenuPosition } from '@/types/Public/state.d';
 import { Key } from '@ant-design/pro-components';
 

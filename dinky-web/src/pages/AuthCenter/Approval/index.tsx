@@ -17,15 +17,14 @@
  *
  */
 
-import React, { useState } from "react";
-import { Alert, Space } from "antd";
-import { l } from "@/utils/intl";
-import useHookRequest from "@/hooks/useHookRequest";
-import { getAllConfig } from "@/pages/Metrics/service";
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
-import { PageContainer, ProCard } from "@ant-design/pro-components";
-import ApprovalTable from "@/pages/AuthCenter/Approval/components/ApprovalTable";
-
+import React, { useState } from 'react';
+import { Alert, Space } from 'antd';
+import { l } from '@/utils/intl';
+import useHookRequest from '@/hooks/useHookRequest';
+import { getAllConfig } from '@/pages/Metrics/service';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
+import ApprovalTable from '@/pages/AuthCenter/Approval/components/ApprovalTable';
 
 const ApprovalFormList: React.FC = () => {
   const [activeKey, setActiveKey] = useState('reviewList');
@@ -34,23 +33,13 @@ const ApprovalFormList: React.FC = () => {
   const tabList = [
     {
       key: 'reviewList',
-      label: (
-        <Space>
-          {l('approval.reviewList')}
-        </Space>
-
-      ),
-      children: <ApprovalTable tableType={'review'}/>
+      label: <Space>{l('approval.reviewList')}</Space>,
+      children: <ApprovalTable tableType={'review'} />
     },
     {
       key: 'submitList',
-      label: (
-        <Space>
-          {l('approval.submitList')}
-        </Space>
-
-      ),
-      children: <ApprovalTable tableType={'submit'}/>
+      label: <Space>{l('approval.submitList')}</Space>,
+      children: <ApprovalTable tableType={'submit'} />
     }
   ];
 
@@ -78,7 +67,7 @@ const ApprovalFormList: React.FC = () => {
         loading={showServer.loading}
         subTitle={
           !showServer.data && (
-            <Alert message={l('approval.dinky.not.open')} type={'warning'} banner showIcon/>
+            <Alert message={l('approval.dinky.not.open')} type={'warning'} banner showIcon />
           )
         }
         title={false}
@@ -103,5 +92,3 @@ const ApprovalFormList: React.FC = () => {
 };
 
 export default ApprovalFormList;
-
-

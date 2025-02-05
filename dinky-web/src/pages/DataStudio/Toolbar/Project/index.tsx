@@ -44,7 +44,7 @@ import { useRightContext } from '@/pages/DataStudio/Toolbar/Project/RightContext
 import { TreeVo } from '@/pages/DataStudio/type';
 import FolderModal from '@/pages/DataStudio/Toolbar/Project/FolderModal';
 import { getTaskSortTypeData } from '@/pages/DataStudio/service';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 
 export const Project = (props: any) => {
   const {
@@ -97,7 +97,7 @@ export const Project = (props: any) => {
   const [currentRunningTaskIds, setCurrentRunningTaskIds] = useState([]);
 
   useEffect(() => {
-    subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+    subscribeTopic(Topic.TASK_RUN_INSTANCE, ['RunningTaskId'], (data: WsData) => {
       if (data?.data?.RunningTaskId) {
         setCurrentRunningTaskIds(data?.data?.RunningTaskId);
       }

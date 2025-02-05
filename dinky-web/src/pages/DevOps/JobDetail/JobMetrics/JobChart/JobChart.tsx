@@ -31,7 +31,7 @@ import ListPagination from '@/components/Flink/ListPagination';
 import { Chart } from '@ant-design/plots/es/interface';
 import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Filter, isBlank } from '@/pages/Metrics/JobMetricsList';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { WsData, Topic } from '@/models/UseWebSocketModel';
 
 export type JobChartProps = {
   jobDetail: Jobs.JobInfoDetail;
@@ -76,7 +76,7 @@ const JobChart = (props: JobChartProps) => {
 
   useEffect(() => {
     if (timeRange.isReal) {
-      return subscribeTopic(Topic.METRICS, [jobDetail.instance.jid], (data: SseData) => {
+      return subscribeTopic(Topic.METRICS, [jobDetail.instance.jid], (data: WsData) => {
         const currentData = data?.data[jobDetail.instance.jid];
         if (currentData) {
           dataProcess(chartDatas, currentData);

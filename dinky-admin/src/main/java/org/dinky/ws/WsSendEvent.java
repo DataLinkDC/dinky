@@ -19,18 +19,16 @@
 
 package org.dinky.ws;
 
-import lombok.AllArgsConstructor;
+import java.util.Map;
+
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
-public enum GlobalWebSocketTopic {
-    JVM_INFO("jvmInfo", 5000),
-    PROCESS_CONSOLE("PROCESS_CONSOLE", Integer.MAX_VALUE),
-    PRINT_TABLE("PRINT_TABLE", Integer.MAX_VALUE),
-    METRICS("METRICS", Integer.MAX_VALUE),
-    TASK_RUN_INSTANCE("TASK_RUN_INSTANCE", 1000),
-    ;
-    private final String topic;
-    private final int delaySend;
+@Setter
+@Builder
+public class WsSendEvent {
+    private GlobalWebSocketTopic topic;
+    private Map<String, ?> paramsAndData;
 }
