@@ -134,8 +134,6 @@ public class JobStatementPlan {
         }
     }
 
-    }
-
     private void checkPipelineStatement() {
         int pipelineStatement = 0;
         for (JobStatement jobStatement : jobStatementList) {
