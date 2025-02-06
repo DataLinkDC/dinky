@@ -96,6 +96,7 @@ public interface CustomTableEnvironment
             addConfiguration(PipelineOptions.JARS, pathList);
         } else {
             CollUtil.addAll(jars, pathList);
+            addConfiguration(PipelineOptions.JARS, jars);
         }
     }
 
