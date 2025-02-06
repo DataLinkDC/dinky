@@ -83,7 +83,6 @@ public class JobSqlRunner extends AbstractJobRunner {
     public Optional<JobClient> execute(JobStatement jobStatement) throws Exception {
         statements.add(jobStatement);
         if (jobStatement.isFinalExecutableStatement()) {
-            jobManager.getJob().setPipeline(isPipeline());
             if (inferStatementSet()) {
                 TableResult tableResult = executor.executeStatements(statements);
                 return tableResult.getJobClient();
