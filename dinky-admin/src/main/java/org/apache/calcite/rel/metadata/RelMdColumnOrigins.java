@@ -125,6 +125,7 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
         if (iOutputColumn < nLeftColumns) {
             return mq.getColumnOrigins(rel.getLeft(), iOutputColumn);
         } else {
+            Uncollect uncollect = null;
             if (rel.getRight() instanceof TableFunctionScan) {
                 final Set<RelColumnOrigin> set = new LinkedHashSet<>();
                 for (Integer iInput : rel.getRequiredColumns().asList()) {
@@ -134,7 +135,26 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
                 TableFunctionScan tableFunctionScan = (TableFunctionScan) rel.getRight();
                 String transform = computeTransform(set, tableFunctionScan.getCall()) + DELIMITER + tableFunctionScan.getRowType().getFieldNames().get(iOutputColumn - nLeftColumns);
                 return createDerivedColumnOrigins(set, transform);
+            } else if (rel.getRight() instanceof Uncollect) {
+                uncollect = (Uncollect)rel.getRight();
+            } else if(rel.getRight() instanceof Project) {
+                Project project = ((Project) rel.getRight());
+                final RelNode input = project.getInput();
+                if(input instanceof Uncollect) {
+                    uncollect = (Uncollect)input;
+                }
             }
+            if(uncollect != null) {
+                final Set<RelColumnOrigin> set = new LinkedHashSet<>();
+                for (Integer iInput : rel.getRequiredColumns().asList()) {
+                    set.addAll(mq.getColumnOrigins(rel.getLeft(), iInput));
+                }
+//                List<String> nameList = uncollect.getInput().getRowType().getFieldNames(); // String.join(",", nameList) + DELIMITER +
+                String fieldName = uncollect.getRowType().getFieldNames().get(iOutputColumn - nLeftColumns);
+                String transform = computeTransform(set, "UNNEST("+fieldName+")");
+                return createDerivedColumnOrigins(set, transform);
+            }
+
             return mq.getColumnOrigins(rel.getRight(), iOutputColumn - nLeftColumns);
         }
     }
@@ -164,6 +184,27 @@ public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.Colum
     public Set<RelColumnOrigin> getColumnOrigins(SingleRel rel, RelMetadataQuery mq, int iOutputColumn) {
         return mq.getColumnOrigins(rel.getInput(), iOutputColumn);
     }
+
+    /*public Set<RelColumnOrigin> getColumnOrigins(Uncollect rel, RelMetadataQuery mq, int iOutputColumn) {
+        final RelNode input = rel.getInput();
+        List<String> fieldNameList = input.getRowType().getFieldNames();
+        String fieldName = rel.getRowType().getFieldNames().get(iOutputColumn);
+
+        final Set<RelColumnOrigin> set;
+        if (input instanceof Project) {
+            Project project = (Project) input;
+            final RexNode rexNode = project.getProjects().get(iOutputColumn);
+            if (rexNode instanceof RexInputRef) {
+                RexInputRef inputRef = (RexInputRef) rexNode;
+                return mq.getColumnOrigins(input, inputRef.getIndex());
+            } // RexFieldAccess
+            set = getMultipleColumns(rexNode, input, mq);
+        } else {
+            set = mq.getColumnOrigins(input, iOutputColumn);
+        }
+
+        return createDerivedColumnOrigins(set);
+    }*/
 
     /**
      * Support for new fields in the source table similar to those created with the LOCALTIMESTAMP function
