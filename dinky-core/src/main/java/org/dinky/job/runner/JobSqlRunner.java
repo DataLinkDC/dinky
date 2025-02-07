@@ -105,6 +105,7 @@ public class JobSqlRunner extends AbstractJobRunner {
     public void run(JobStatement jobStatement) throws Exception {
         statements.add(jobStatement);
         if (jobStatement.isFinalExecutableStatement()) {
+            jobManager.getJob().setPipeline(isPipeline());
             if (inferStatementSet()) {
                 handleStatementSet();
             } else {
@@ -225,6 +226,11 @@ public class JobSqlRunner extends AbstractJobRunner {
         throw new DinkyException("None jobs in statement.");
     }
 
+    private boolean isPipeline() {
+        return statements.stream()
+                .anyMatch(jobStatement -> jobStatement.getSqlType().isPipeline());
+    }
+
     private boolean inferStatementSet() {
         boolean hasInsert = false;
         for (JobStatement item : statements) {
@@ -266,7 +272,6 @@ public class JobSqlRunner extends AbstractJobRunner {
 
     private void processSingleInsertWithGateway() {
         List<JobStatement> singleInsert = Collections.singletonList(statements.get(0));
-        jobManager.getJob().setPipeline(statements.get(0).getSqlType().isPipeline());
         GatewayResult gatewayResult = submitByGateway(singleInsert);
         setJobResultFromGatewayResult(gatewayResult);
     }
@@ -276,9 +281,7 @@ public class JobSqlRunner extends AbstractJobRunner {
             return;
         }
         // Only process the first statement when not using statement set
-        JobStatement item = statements.get(0);
-        jobManager.getJob().setPipeline(item.getSqlType().isPipeline());
-        processSingleStatement(item);
+        processSingleStatement(statements.get(0));
     }
 
     private void processSingleStatement(JobStatement item) {

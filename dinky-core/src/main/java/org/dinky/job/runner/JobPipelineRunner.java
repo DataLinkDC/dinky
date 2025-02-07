@@ -91,6 +91,7 @@ public class JobPipelineRunner extends AbstractJobRunner {
 
     @Override
     public void run(JobStatement jobStatement) throws Exception {
+        jobManager.getJob().setPipeline(true);
         if (ExecuteJarParseStrategy.INSTANCE.match(jobStatement.getStatement())) {
             JobJarRunner jobJarRunner = new JobJarRunner(jobManager);
             jobJarRunner.run(jobStatement);

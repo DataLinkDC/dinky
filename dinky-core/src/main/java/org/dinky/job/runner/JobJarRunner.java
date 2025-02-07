@@ -85,6 +85,7 @@ public class JobJarRunner extends AbstractJobRunner {
 
     @Override
     public void run(JobStatement jobStatement) throws Exception {
+        jobManager.getJob().setPipeline(true);
         if (!jobManager.isUseGateway()) {
             submitNormal(jobStatement);
         } else {
@@ -169,7 +170,12 @@ public class JobJarRunner extends AbstractJobRunner {
     private Pipeline getPipeline(JobStatement jobStatement) {
         Pipeline pipeline = getJarStreamGraph(jobStatement.getStatement(), jobManager.getDinkyClassLoader());
         if (pipeline instanceof StreamGraph) {
-            if (Asserts.isNotNullString(jobManager.getConfig().getSavePointPath())) {
+            if (Asserts.isNotNullString(jobManager.getConfig().getSavePointPath())
+                    || (Asserts.isNotNull(jobManager.getConfig().getConfigJson())
+                            && Asserts.isNotNullString(jobManager
+                                    .getConfig()
+                                    .getConfigJson()
+                                    .get(SavepointConfigOptions.SAVEPOINT_PATH)))) {
                 ((StreamGraph) pipeline)
                         .setSavepointRestoreSettings(SavepointRestoreSettings.forPath(
                                 jobManager.getConfig().getSavePointPath(),
