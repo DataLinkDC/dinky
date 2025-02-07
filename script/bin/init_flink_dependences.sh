@@ -28,27 +28,37 @@ if [ -f "${FLINK_STORE_DIR}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.t
   fi
 fi
 
-try_tsinghua_mirror() {
+try_mirrors_download_file() {
     local tsinghua_url="https://mirrors.tuna.tsinghua.edu.cn/apache/flink/flink-${CURRENT_FLINK_FULL_VERSION}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz"
+    local aliyun_url="https://mirrors.aliyun.com/apache/flink/flink-${CURRENT_FLINK_FULL_VERSION}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz"
     local apache_url="https://archive.apache.org/dist/flink/flink-${CURRENT_FLINK_FULL_VERSION}/flink-${CURRENT_FLINK_FULL_VERSION}-bin-scala_2.12.tgz"
-
     echo -e "${GREEN}Start downloading the Flink-${FLINK_VERSION_SCAN} installation package... Store it in the ${FLINK_STORE_DIR} directory${RESET}"
-    if download_file "$tsinghua_url" "${FLINK_STORE_DIR}"; then
-        echo -e "${BLUE}The address of the currently downloaded Flink installation package is：${tsinghua_url}${RESET}"
+    exec_tsinghua_result=$(download_file "$tsinghua_url" "${FLINK_STORE_DIR}")
+    if [ ! "$exec_tsinghua_result" ]; then
+        echo -e "${BLUE}The tsinghua address of the currently downloaded Flink installation package is：${tsinghua_url}${RESET}"
         return 0
     else
-        echo -e "${YELLOW}File not found in Tsinghua University mirror, try downloading from Apache official source...${RESET}"
-        if download_file "$apache_url" "${FLINK_STORE_DIR}"; then
-            echo -e "${BLUE}The address of the currently downloaded Flink installation package is：${apache_url}${RESET}"
+        echo -e "${YELLOW}Failed to download from Tsinghua mirror, try downloading from Aliyun mirror...${RESET}"
+        exec_aliyun_result=$(download_file "$aliyun_url" "${FLINK_STORE_DIR}")
+        if [ "$exec_aliyun_result" ]; then
+            echo -e "${BLUE}The aliyun address of the currently downloaded Flink installation package is：${aliyun_url}${RESET}"
             return 0
         else
-            echo -e "${RED}Downloading from Apache official source also failed, please check the network or download manually。${RESET}"
-            return 1
+            echo -e "${YELLOW}Failed to download from Aliyun mirror too, try downloading from Apache official source...${RESET}"
+
+            exec_apache_result=$(download_file "$apache_url" "${FLINK_STORE_DIR}")
+            if [ "$exec_apache_result" ]; then
+                echo -e "${RED}Downloading from Apache official source also failed, please check the network or download manually。${RESET}"
+                return 1
+            else
+                echo -e "${BLUE}The apache address of the currently downloaded Flink installation package is：${apache_url}${RESET}"
+                return 0
+            fi
         fi
     fi
 }
 
-if ! try_tsinghua_mirror; then
+if ! try_mirrors_download_file; then
     exit 0
 fi
 
@@ -98,6 +108,10 @@ echo -e "${GREEN}Processing completed。${RESET}"
 
 echo -e "${GREEN}Process flink-state-processor-api ...${RESET}"
 cp -r ${full_flink_dir_tmp}/opt/flink-state-processor-api*.jar ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/
+echo -e "${GREEN}Processing completed。${RESET}"
+
+echo -e "${GREEN}Process flink-s3-fs-presto ...${RESET}"
+cp -r ${full_flink_dir_tmp}/opt/flink-s3-fs-presto*.jar ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/
 echo -e "${GREEN}Processing completed。${RESET}"
 
 echo -e "${GREEN} ================= List files in the ${EXTENDS_HOME}/flink${FLINK_VERSION_SCAN}/ directory ==============${RESET}"

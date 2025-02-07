@@ -51,24 +51,17 @@ function get_home_path() {
         [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
     done
     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-    RETURN_HOME_PATH=$(dirname "$DIR")
+    local possible_path=$(dirname "$DIR")
+    if [ -d "$possible_path" ]; then  # Verify that the path obtained is a directory, increasing robustness
+        RETURN_HOME_PATH="$possible_path"
+    else
+        echo -e "${RED}Calculated path $possible_path is not a valid directory. Please check the script location or deployment setup.${RESET}"
+        exit 1
+    fi
 }
 
-
-
-if [ -z "${DINKY_HOME}" ]; then
-    echo -e "${RED}DINKY_HOME environment variable is not set. Attempting to determine the correct path...${RESET}"
-    get_home_path
-    APP_HOME="${RETURN_HOME_PATH}"
-else
-    get_home_path
-    if [ "${DINKY_HOME}" != "${RETURN_HOME_PATH}" ]; then
-        echo -e "${YELLOW}DINKY_HOME is not equal to the current path, use new path to init: ${RETURN_HOME_PATH}${RESET}"
-        APP_HOME="${RETURN_HOME_PATH}"
-    else
-        echo -e "${GREEN}DINKY_HOME is already set to: ${DINKY_HOME}${RESET}"
-    fi
-fi
+get_home_path
+APP_HOME="${RETURN_HOME_PATH}"
 
 echo -e "${GREEN}Dinky root path: ${APP_HOME} ${RESET}"
 
@@ -131,7 +124,12 @@ function download_file() {
     target_file_dir=$2
     echo -e "${GREEN}Start downloading $source_url to $target_file_dir...${RESET}"
     wget -P "${target_file_dir}" "${source_url}"
+    if [ $? -ne 0 ]; then
+      echo -e "${RED}Failed to download $source_url to $target_file_dir. Please check the network connection and try again.${RESET}"
+      return 1
+    fi
     echo -e "${GREEN}Download completed. The downloaded file storage address is: $target_file_dir ${RESET}"
+    return 0
 }
 
 export -f download_file

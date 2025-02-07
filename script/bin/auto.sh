@@ -140,7 +140,6 @@ function wait_start_process() {
          for code in "${success_status_codes[@]}"; do
              if [ "$health_status" == "$code" ]; then
                  echo -ne "\r[==================================================] 100%\n"
-                 echo -e "${GREEN}Application started completed.${RESET}"
                  return 0
              fi
          done
@@ -149,11 +148,11 @@ function wait_start_process() {
          local filled_length=$((progress * bar_length / 100))
          local empty_length=$((bar_length - filled_length))
          local bar=$(printf '>%.0s' $(seq 1 $filled_length))$(printf ' %.0s' $(seq 1 $empty_length))
-         echo -ne "\r[${bar}] ${progress}% (time consuming: ${formatted_time})"
+         local processing_inline="\r[${bar}] ${progress}% (time consuming: ${formatted_time})"
+         echo -ne "${processing_inline}"
          sleep $delay
      done
-     echo -ne "\r[==================================================] 100% (time consuming: ${formatted_time})\n"
-     echo -e "${RED}Application start failed. Please check the log for details.${RESET}"
+     echo -ne "${processing_inline}\n"
      return 1
 }
 
@@ -218,7 +217,10 @@ start() {
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     PID=$!
     echo "${PID}" >"${PID_PATH}"/${PID_FILE}
-    wait_start_process
+    if ! wait_start_process; then
+      echo -e "${RED}Application start failed. Please check the log for details. you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log ${RESET}"
+      exit 1
+    fi
     echo -e "${GREEN}........................................Start Dinky Successfully........................................${RESET}"
     echo -e "${GREEN}current log path : ${DINKY_LOG_PATH}/dinky-start.log , you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log${RESET}"
   else
@@ -243,7 +245,10 @@ startWithJmx() {
   if [ -z "$pid" ]; then
     nohup java ${PARAMS_OPT} ${JVM_OPTS} ${OOM_OPT} ${GC_OPT} -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky  ${JAR_PARAMS_OPT}  > ${DINKY_LOG_PATH}/dinky-start.log 2>&1 &
     PID=$!
-    wait_start_process
+    if ! wait_start_process; then
+      echo -e "${RED}Application start failed. Please check the log for details. you can execute tail -fn1000 ${DINKY_LOG_PATH}/dinky-start.log to watch the log ${RESET}"
+      exit 1
+    fi
     echo -e "$GREEN........................................Start Dinky with Jmx Successfully........................................$RESET"
     updatePid
 
