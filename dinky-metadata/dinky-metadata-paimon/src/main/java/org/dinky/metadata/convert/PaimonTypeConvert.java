@@ -29,8 +29,11 @@ import org.apache.paimon.data.GenericRow;
 import org.apache.paimon.data.InternalRow;
 import org.apache.paimon.types.DataField;
 import org.apache.paimon.types.DataTypeRoot;
+import org.apache.paimon.types.DecimalType;
+import org.apache.paimon.types.TimestampType;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 
 /**
@@ -63,7 +66,7 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
         register("int", ColumnType.INT, ColumnType.INTEGER);
     }
 
-    public static Object SafeGetRowData(DataField fieldType, InternalRow row, int ordinal) {
+    public static Object getRowDataSafe(DataField fieldType, InternalRow row, int ordinal) {
         if (row.isNullAt(ordinal)) {
             return null;
         }
@@ -73,14 +76,17 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
             case VARCHAR:
                 return row.getString(ordinal).toString();
             case BOOLEAN:
-                return row.getBoolean(ordinal);
+                return String.valueOf(row.getBoolean(ordinal));
             case BINARY:
             case VARBINARY:
                 return "<Binary Type>";
-                //            case DECIMAL:
-                //                return "<DECIMAL Type>";
+            case DECIMAL:
+                DecimalType decimalType = (DecimalType) fieldType.type();
+                return row.getDecimal(ordinal, decimalType.getPrecision(), decimalType.getScale())
+                        .toString();
             case TINYINT:
             case SMALLINT:
+                return row.getShort(ordinal);
             case INTEGER:
                 return row.getInt(ordinal);
             case BIGINT:
@@ -90,12 +96,15 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
             case DOUBLE:
                 return row.getDouble(ordinal);
             case DATE:
-                int timeInt = row.getInt(ordinal);
-                return LocalDate.of(1970, 1, 1).plusDays(timeInt);
+                int dateInt = row.getInt(ordinal);
+                return LocalDate.of(1970, 1, 1).plusDays(dateInt);
             case TIME_WITHOUT_TIME_ZONE:
+                int timeInt = row.getInt(ordinal);
+                return LocalTime.ofSecondOfDay(timeInt / 1000);
             case TIMESTAMP_WITHOUT_TIME_ZONE:
             case TIMESTAMP_WITH_LOCAL_TIME_ZONE:
-                return row.getTimestamp(ordinal, 3).toLocalDateTime();
+                TimestampType timestampType = (TimestampType) fieldType.type();
+                return row.getTimestamp(ordinal, timestampType.getPrecision()).toLocalDateTime();
             case ARRAY:
             case MULTISET:
                 return row.getArray(ordinal).toString();
