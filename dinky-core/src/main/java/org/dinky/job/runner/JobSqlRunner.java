@@ -105,6 +105,7 @@ public class JobSqlRunner extends AbstractJobRunner {
     public void run(JobStatement jobStatement) throws Exception {
         statements.add(jobStatement);
         if (jobStatement.isFinalExecutableStatement()) {
+            jobManager.getJob().setPipeline(isPipeline());
             if (inferStatementSet()) {
                 handleStatementSet();
             } else {
