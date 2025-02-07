@@ -24,6 +24,7 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.JobStatementType;
+import org.dinky.data.job.SqlCategory;
 import org.dinky.data.job.SqlType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
@@ -212,7 +213,7 @@ public class Explainer {
             try {
                 if (sqlType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else if (!sqlType.equals(SqlType.SELECT) && !sqlType.equals(SqlType.PRINT)) {
+                } else if (SqlCategory.DDL.equals(sqlType.getCategory())) {
                     jobRunnerFactory.getJobRunner(item.getStatementType()).run(item);
                 }
             } catch (Exception e) {
