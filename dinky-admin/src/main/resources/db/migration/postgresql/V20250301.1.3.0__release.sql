@@ -51,9 +51,9 @@ COMMENT ON COLUMN public.dinky_approval.reviewer_comment IS 'reviewer comment';
 COMMENT ON COLUMN public.dinky_approval.create_time IS 'create time';
 COMMENT ON COLUMN public.dinky_approval.update_tIme IS 'update time';
 
-CREATE UNIQUE INDEX IF NOT EXISTS task_id_current_version_idx ON public.dinky_approval (task_id, current_task_version);
-CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_submitter_union_idx ON public.dinky_approval (submitter, tenant_id);
-CREATE UNIQUE INDEX IF NOT EXISTS tenant_id_reviewer_union_idx ON public.dinky_approval (reviewer, tenant_id);
+CREATE INDEX IF NOT EXISTS task_id_current_version_idx ON public.dinky_approval (task_id, current_task_version);
+CREATE INDEX IF NOT EXISTS tenant_id_submitter_union_idx ON public.dinky_approval (submitter, tenant_id);
+CREATE INDEX IF NOT EXISTS tenant_id_reviewer_union_idx ON public.dinky_approval (reviewer, tenant_id);
 
 CREATE OR REPLACE TRIGGER set_update_time_dinky_approval
     BEFORE UPDATE
