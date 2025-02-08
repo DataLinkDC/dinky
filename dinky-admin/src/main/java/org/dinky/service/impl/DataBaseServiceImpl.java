@@ -411,6 +411,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
 
     @Override
     public Table getTable(Integer id, String schemaName, String tableName) {
+        if (Asserts.isNullString(tableName)) {
+            return null;
+        }
         DataBase dataBase = getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMessage());
         try (Driver driver = Driver.build(dataBase.getDriverConfig())) {
