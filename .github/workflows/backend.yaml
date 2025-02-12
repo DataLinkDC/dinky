@@ -43,8 +43,8 @@ jobs:
       - name: Check Style
         run: |
           ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check -P flink-all
-  build_npm:
-    name: Build_NPM
+  build_web:
+    name: Build_Web
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: check
