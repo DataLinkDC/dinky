@@ -79,6 +79,9 @@ public class FragmentController {
             value = {PermissionConstants.REGISTRATION_FRAGMENT_ADD, PermissionConstants.REGISTRATION_FRAGMENT_EDIT},
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateFragment(@RequestBody FragmentVariable fragmentVariable) {
+        if (fragmentVariableService.isNestedDefined(fragmentVariable)) {
+            return Result.failed(Status.NESTED_DEFINED_DENY);
+        }
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {

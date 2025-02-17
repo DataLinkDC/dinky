@@ -93,6 +93,7 @@ public enum Status {
     OFFLINE_FAILED(9036, "offline.failed"),
     VERSION_ROLLBACK_SUCCESS(9037, "version.rollback.success"),
     VERSION_ROLLBACK_FAILED(9038, "version.rollback.failed"),
+    NESTED_DEFINED_DENY(9039, "nested.defined.deny"),
 
     /**
      * user,tenant,role
