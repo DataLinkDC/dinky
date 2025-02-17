@@ -28,12 +28,11 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { PermissionConstants } from '@/types/Public/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { BookOutlined, ConsoleSqlOutlined, HighlightOutlined } from '@ant-design/icons';
+import { BookOutlined, ConsoleSqlOutlined, HighlightOutlined, SearchOutlined } from '@ant-design/icons';
 import { ProCardTabsProps } from '@ant-design/pro-card/es/typing';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
-import { SearchOutline } from 'antd-mobile-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAsyncEffect } from 'ahooks';
 
 /**
@@ -81,7 +80,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       key: 'query',
       label: (
         <Space>
-          <SearchOutline />
+          <SearchOutlined />
           {l('rc.ds.detail.tag.query')}
         </Space>
       ),
