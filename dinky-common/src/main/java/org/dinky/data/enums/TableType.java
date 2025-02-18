@@ -19,17 +19,16 @@
 
 package org.dinky.data.enums;
 
-/** 分库分表的类型 */
+/** The types of database and table division */
 public enum TableType {
 
-    /** 分库分表 */
+    /** Separation of databases and tables */
     SPLIT_DATABASE_AND_TABLE,
-    /** 分表单库 */
+    /** Database division with single table */
     SPLIT_DATABASE_AND_SINGLE_TABLE,
-    /** 单库分表 */
-    SINGLE_DATABASE_AND_SPLIT_TABLE
-    /** 单库单表 */
-    ,
+    /** Single database with table division */
+    SINGLE_DATABASE_AND_SPLIT_TABLE,
+    /** Single database and single table */
     SINGLE_DATABASE_AND_TABLE;
 
     public static TableType type(boolean splitDatabase, boolean splitTable) {

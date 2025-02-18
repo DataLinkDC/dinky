@@ -262,11 +262,6 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     }
 
     @Override
-    public boolean generateCreateTable(Table table) throws Exception {
-        return false;
-    }
-
-    @Override
     public boolean dropTable(Table table) throws Exception {
         return false;
     }
@@ -288,11 +283,6 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
 
     @Override
     public String getTruncateTableSql(Table table) {
-        return null;
-    }
-
-    @Override
-    public String generateCreateTableSql(Table table) {
         return null;
     }
 

@@ -189,11 +189,6 @@ class AbstractDriverTest {
         }
 
         @Override
-        public boolean generateCreateTable(Table table) throws Exception {
-            return false;
-        }
-
-        @Override
         public boolean dropTable(Table table) throws Exception {
             return false;
         }
@@ -215,11 +210,6 @@ class AbstractDriverTest {
 
         @Override
         public String getTruncateTableSql(Table table) {
-            return null;
-        }
-
-        @Override
-        public String generateCreateTableSql(Table table) {
             return null;
         }
 

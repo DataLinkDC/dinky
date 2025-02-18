@@ -196,8 +196,6 @@ public interface Driver extends AutoCloseable {
 
     boolean createTable(Table table) throws Exception;
 
-    boolean generateCreateTable(Table table) throws Exception;
-
     boolean dropTable(Table table) throws Exception;
 
     boolean truncateTable(Table table) throws Exception;
@@ -209,8 +207,6 @@ public interface Driver extends AutoCloseable {
     String getDropTableSql(Table table);
 
     String getTruncateTableSql(Table table);
-
-    String generateCreateTableSql(Table table);
 
     /*
      * boolean insert(Table table, JsonNode data);

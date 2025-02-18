@@ -81,16 +81,11 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
         return "schema";
     }
 
-    public Map<String, Map<String, String>> parseMetaDataConfigs() {
-        Map<String, Map<String, String>> allConfigMap = new HashMap<>();
-        for (String schema : getSchemaList()) {
-            String url = generateUrl(schema);
-            allConfigMap.put(schema, parseMetaDataSingleConfig(url));
-        }
-        return allConfigMap;
+    public Map<String, String> generateMetaDataConfig(String schema) {
+        return parseMetaDataSingleConfig(generateUrl(schema));
     }
 
-    public Map<String, String> parseMetaDataSingleConfig(String url) {
+    protected Map<String, String> parseMetaDataSingleConfig(String url) {
         Map<String, String> configMap = new HashMap<>();
         configMap.put(ClientConstant.METADATA_NAME, url);
         configMap.put(ClientConstant.METADATA_URL, url);

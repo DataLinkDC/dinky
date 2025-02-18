@@ -51,8 +51,8 @@
                     <npmVersion>10.5.0</npmVersion>
                     <pnpmVersion>9.15.4</pnpmVersion>
                     <!-- 国内node下载加速 -->
-<!--                    <nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
-<!--                    <npmDownloadRoot>https://repo.huaweicloud.com/npm-software/</npmDownloadRoot>-->
+                    <!--                    <nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
+                    <!--                    <npmDownloadRoot>https://repo.huaweicloud.com/npm-software/</npmDownloadRoot>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -61,24 +61,24 @@
                             <goal>install-node-and-pnpm</goal>
                         </goals>
                     </execution>
-                  <execution>
-                    <id>install</id>
-                    <goals>
-                      <goal>pnpm</goal>
-                    </goals>
-                    <configuration>
-                      <arguments>install --registry ${npm-registry-repo}</arguments>
-                    </configuration>
-                  </execution>
-                  <execution>
-                    <id>build</id>
-                    <goals>
-                      <goal>pnpm</goal>
-                    </goals>
-                    <configuration>
-                      <arguments>run build</arguments>
-                    </configuration>
-                  </execution>
+                    <execution>
+                        <id>install</id>
+                        <goals>
+                            <goal>pnpm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install --registry ${npm-registry-repo}</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build</id>
+                        <goals>
+                            <goal>pnpm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

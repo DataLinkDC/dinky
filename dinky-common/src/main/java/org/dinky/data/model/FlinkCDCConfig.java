@@ -19,6 +19,8 @@
 
 package org.dinky.data.model;
 
+import org.dinky.assertion.Asserts;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +176,10 @@ public class FlinkCDCConfig {
                 .filter(t -> !isSkip(t.getKey()))
                 .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
                 .collect(Collectors.joining(",\n"));
+    }
+
+    public boolean isAutoCreateSchemaAndTables() {
+        return Asserts.isEqualsIgnoreCase(sink.get(FlinkCDCConfig.AUTO_CREATE), "true");
     }
 
     public String getType() {

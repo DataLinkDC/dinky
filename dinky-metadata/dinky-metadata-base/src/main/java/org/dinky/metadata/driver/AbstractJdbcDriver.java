@@ -463,16 +463,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
     }
 
     @Override
-    public boolean generateCreateTable(Table table) throws Exception {
-        String sql = generateCreateTableSql(table).replaceAll("\r\n", " ");
-        if (Asserts.isNotNull(sql)) {
-            return execute(sql);
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public boolean dropTable(Table table) throws Exception {
         String sql = getDropTableSql(table).replaceAll("\r\n", " ");
         if (Asserts.isNotNull(sql)) {
@@ -544,12 +534,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         }
         sb.append(table.getName());
         return sb.toString();
-    }
-
-    // todu impl by subclass
-    @Override
-    public String generateCreateTableSql(Table table) {
-        return "";
     }
 
     @Override
@@ -799,7 +783,6 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
     public List<Map<String, String>> getSplitSchemaList() {
         PreparedStatement preparedStatement = null;
         ResultSet results = null;
-        IDBQuery dbQuery = getDBQuery();
         String sql = "select DATA_LENGTH,TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT"
                 + " AS COMMENT,TABLE_CATALOG AS `CATALOG`,TABLE_TYPE AS `TYPE`,ENGINE AS"
                 + " `ENGINE`,CREATE_OPTIONS AS `OPTIONS`,TABLE_ROWS AS"
@@ -831,6 +814,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         return schemas;
     }
 
+    // get target tables (merged tabled)
     @Override
     public Set<Table> getSplitTables(List<String> tableRegList, Map<String, String> splitConfig) {
         Set<Table> set = new HashSet<>();
