@@ -327,8 +327,10 @@ public class TaskController {
             }
         }
         // example :   set 'key'= 'value' \n EXECUTE JAR WITH(...);
-        // If the statement before "EXECUTE JAR WITH" is not correctly terminated with a semicolon (";"), it will not be properly matched by ExecuteJarParseStrategyUtil.match().
-        // However, this splitting method might treat multiple "EXECUTE JAR WITH" statements as a single statement for processing. Therefore, it is preferable to use the preceding splitting method.
+        // If the statement before "EXECUTE JAR WITH" is not correctly terminated with a semicolon (";"), it will not be
+        // properly matched by ExecuteJarParseStrategyUtil.match().
+        // However, this splitting method might treat multiple "EXECUTE JAR WITH" statements as a single statement for
+        // processing. Therefore, it is preferable to use the preceding splitting method.
         // 中文：果EXECUTE JAR WITH前的语句没有正确的使用";"来结束，将无法正常匹配ExecuteJarParseStrategyUtil.match()，只能手动切分;
         // 但是这个切分方法可能会把多个EXECUTE JAR WITH语句当作一个进行处理，因此优先使用前面的切分方法
         String regex = "(?is)(\\n *|^ *)EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)\\s*;?\\s*";
@@ -345,10 +347,9 @@ public class TaskController {
         }
         JarSubmitParam info = JarSubmitParam.getInfo(lastSqlStatement);
         flinkJarSqlConvertVO.setJarSubmitParam(info);
-        //Only clear the 'Execute Jar' part of the original sqlStatement, while retaining all other statements.
-        //中文： 只清理 Execute Jar 的语句，保留其他各种语句与注释
-        String sql = sqlStatement.replaceAll("\u00A0", " ")
-                .replaceAll(regex, "");
+        // Only clear the 'Execute Jar' part of the original sqlStatement, while retaining all other statements.
+        // 中文： 只清理 Execute Jar 的语句，保留其他各种语句与注释
+        String sql = sqlStatement.replaceAll("\u00A0", " ").replaceAll(regex, "");
         flinkJarSqlConvertVO.setInitSqlStatement(sql);
         return Result.succeed(flinkJarSqlConvertVO);
     }
@@ -362,8 +363,7 @@ public class TaskController {
         if (Asserts.isNotNullString(initSqlStatement)) {
             initSqlStatement = initSqlStatement
                     .replaceAll("\u00A0", " ")
-                    .replaceAll("(?is)(\\n *|^ *)EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)\\s*;?\\s*","");
-
+                    .replaceAll("(?is)(\\n *|^ *)EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)\\s*;?\\s*", "");
         }
         Dict objectMap = Dict.create()
                 .set("uri", Opt.ofNullable(jarSubmitParam.getUri()).orElse(""))
@@ -371,7 +371,7 @@ public class TaskController {
                         "args",
                         "base64@"
                                 + Base64.encode(
-                                Opt.ofNullable(jarSubmitParam.getArgs()).orElse("")))
+                                        Opt.ofNullable(jarSubmitParam.getArgs()).orElse("")))
                 .set("mainClass", Opt.ofNullable(jarSubmitParam.getMainClass()).orElse(""))
                 .set(
                         "allowNonRestoredState",
