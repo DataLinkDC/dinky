@@ -19,13 +19,26 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
-import org.dinky.data.annotations.CheckTaskApproval;
-import org.dinky.data.annotations.CheckTaskOwner;
-import org.dinky.data.annotations.ExecuteProcess;
-import org.dinky.data.annotations.Log;
-import org.dinky.data.annotations.ProcessId;
-import org.dinky.data.annotations.TaskId;
+import org.dinky.data.annotations.*;
 import org.dinky.data.dto.TaskDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.dto.TaskSaveDTO;
@@ -50,39 +63,13 @@ import org.dinky.service.ApprovalService;
 import org.dinky.service.TaskService;
 import org.dinky.trans.ExecuteJarParseStrategyUtil;
 import org.dinky.utils.SqlUtil;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.codec.Base64;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.extra.template.TemplateConfig;
-import cn.hutool.extra.template.TemplateEngine;
-import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
@@ -318,21 +305,36 @@ public class TaskController {
             flinkJarSqlConvertVO.setInitSqlStatement(sqlStatement);
             return Result.succeed(flinkJarSqlConvertVO);
         }
+        String lastSqlStatement = null;
         Integer lastExecuteJarSqlStatementIndex = null;
         for (int i = 0; i < statements.length; i++) {
             if (ExecuteJarParseStrategyUtil.match(statements[i])) {
                 lastExecuteJarSqlStatementIndex = i;
             }
         }
+        // example :   set 'key'= 'value' \n EXECUTE JAR WITH(...);
+        // If the statement before "EXECUTE JAR WITH" is not correctly terminated with a semicolon (";"), it will not be properly matched by ExecuteJarParseStrategyUtil.match().
+        // However, this splitting method might treat multiple "EXECUTE JAR WITH" statements as a single statement for processing. Therefore, it is preferable to use the preceding splitting method.
+        // 中文：果EXECUTE JAR WITH前的语句没有正确的使用";"来结束，将无法正常匹配ExecuteJarParseStrategyUtil.match()，只能手动切分;
+        // 但是这个切分方法可能会把多个EXECUTE JAR WITH语句当作一个进行处理，因此优先使用前面的切分方法
+        String regex = "(?is)(\\n *|^ *)EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)\\s*;?\\s*";
         if (lastExecuteJarSqlStatementIndex == null) {
+            Matcher matcher = Pattern.compile(regex).matcher(sqlStatement);
+            while (matcher.find()) {
+                lastSqlStatement = matcher.group();
+            }
+        } else {
+            lastSqlStatement = statements[lastExecuteJarSqlStatementIndex];
+        }
+        if (lastSqlStatement == null) {
             return Result.succeed(flinkJarSqlConvertVO);
         }
-        String lastSqlStatement = statements[lastExecuteJarSqlStatementIndex];
         JarSubmitParam info = JarSubmitParam.getInfo(lastSqlStatement);
         flinkJarSqlConvertVO.setJarSubmitParam(info);
-        String sql = Arrays.stream(ArrayUtil.remove(statements, lastExecuteJarSqlStatementIndex))
-                .map(x -> x + ";")
-                .collect(Collectors.joining("\n"));
+        //Only clear the 'Execute Jar' part of the original sqlStatement, while retaining all other statements.
+        //中文： 只清理 Execute Jar 的语句，保留其他各种语句与注释
+        String sql = sqlStatement.replaceAll("\u00A0", " ")
+                .replaceAll(regex, "");
         flinkJarSqlConvertVO.setInitSqlStatement(sql);
         return Result.succeed(flinkJarSqlConvertVO);
     }
@@ -341,6 +343,14 @@ public class TaskController {
     @ApiOperation("FlinkJar FormConvertSql")
     public Result<String> flinkJarFormConvertSql(@RequestBody FlinkJarSqlConvertVO dto) {
         JarSubmitParam jarSubmitParam = dto.getJarSubmitParam();
+        String initSqlStatement = dto.getInitSqlStatement();
+        // remove Other Execute Jar
+        if (Asserts.isNotNullString(initSqlStatement)) {
+            initSqlStatement = initSqlStatement
+                    .replaceAll("\u00A0", " ")
+                    .replaceAll("(?is)(\\n *|^ *)EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)\\s*;?\\s*","");
+
+        }
         Dict objectMap = Dict.create()
                 .set("uri", Opt.ofNullable(jarSubmitParam.getUri()).orElse(""))
                 .set(
@@ -355,6 +365,6 @@ public class TaskController {
                                 .orElse(false)
                                 .toString());
         String executeJarSql = ENGINE.getTemplate("executeJar.sql").render(objectMap);
-        return Result.succeed(Opt.ofNullable(dto.getInitSqlStatement()).orElse("") + "\n" + executeJarSql, "");
+        return Result.succeed(Opt.ofNullable(initSqlStatement).orElse("") + "\n" + executeJarSql, "");
     }
 }
