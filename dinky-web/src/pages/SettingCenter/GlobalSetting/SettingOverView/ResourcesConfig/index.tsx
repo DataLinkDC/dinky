@@ -18,11 +18,11 @@
  */
 
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {BaseConfigProperties, GLOBAL_SETTING_KEYS} from '@/types/SettingCenter/data.d';
-import {l} from '@/utils/intl';
-import {RadioChangeEvent, Tag} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {GeneralComponentConfigProps} from "@/pages/SettingCenter/GlobalSetting/data.d";
+import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter/data.d';
+import { l } from '@/utils/intl';
+import { RadioChangeEvent, Tag } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { GeneralComponentConfigProps } from '@/pages/SettingCenter/GlobalSetting/data.d';
 
 const ModelType = {
   HDFS: 'HDFS',
@@ -35,7 +35,7 @@ type ResourceConfig = {
   oss: BaseConfigProperties[];
 };
 
-export const ResourcesConfig = ({data, onSave, auth}: GeneralComponentConfigProps) => {
+export const ResourcesConfig = ({ data, onSave, auth }: GeneralComponentConfigProps) => {
   const [loading, setLoading] = React.useState(false);
   const [model, setModel] = React.useState('hdfs');
   const [filterData, setFilterData] = useState<ResourceConfig>({
@@ -55,7 +55,7 @@ export const ResourcesConfig = ({data, onSave, auth}: GeneralComponentConfigProp
     const oss: BaseConfigProperties[] = data.filter((d) =>
       d.key.startsWith('sys.resource.settings.oss')
     );
-    setFilterData({base, hdfs, oss});
+    setFilterData({ base, hdfs, oss });
     // 获取当前的 model
     const currentModel = base.find(
       (d) => d.key === GLOBAL_SETTING_KEYS.SYS_RESOURCE_SETTINGS_BASE_MODEL
@@ -71,7 +71,7 @@ export const ResourcesConfig = ({data, onSave, auth}: GeneralComponentConfigProp
     setLoading(false);
   };
   const selectChange = async (e: RadioChangeEvent, entity: BaseConfigProperties) => {
-    const {value, name} = e.target;
+    const { value, name } = e.target;
     await onSaveHandler({
       hidden: entity.hidden,
       name: entity.name,

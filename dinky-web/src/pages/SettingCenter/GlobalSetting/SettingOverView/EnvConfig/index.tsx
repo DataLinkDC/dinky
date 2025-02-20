@@ -22,8 +22,7 @@ import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter
 import { l } from '@/utils/intl';
 import { RadioChangeEvent, Tag } from 'antd';
 import React from 'react';
-import {GeneralComponentConfigProps} from "@/pages/SettingCenter/GlobalSetting/data.d";
-
+import { GeneralComponentConfigProps } from '@/pages/SettingCenter/GlobalSetting/data.d';
 
 export const EnvConfig = ({ data, onSave, auth }: GeneralComponentConfigProps) => {
   const [loading, setLoading] = React.useState(false);

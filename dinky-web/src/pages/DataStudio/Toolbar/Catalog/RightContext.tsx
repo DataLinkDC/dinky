@@ -26,20 +26,17 @@ import { RightContextMenuState } from '@/pages/DataStudio/data.d';
 import { InitContextMenuPosition } from '@/pages/DataStudio/function';
 import RightContextMenu from '@/pages/DataStudio/RightContextMenu';
 import { l } from '@/utils/intl';
-import { dropMSTable } from "@/pages/DataStudio/Toolbar/Catalog/service";
-import { CatalogState } from "@/pages/DataStudio/Toolbar/Catalog/data";
-import { TABLE_RIGHT_MENU } from "@/pages/DataStudio/Toolbar/Catalog/constant";
+import { dropMSTable } from '@/pages/DataStudio/Toolbar/Catalog/service';
+import { CatalogState } from '@/pages/DataStudio/Toolbar/Catalog/data';
+import { TABLE_RIGHT_MENU } from '@/pages/DataStudio/Toolbar/Catalog/constant';
 
-const {Text} = Typography;
+const { Text } = Typography;
 export type RightContextProps = {
   refreshMetaStoreTables: () => Promise<any>;
   catalogState: CatalogState | undefined;
 };
 export const useRightContext = (props: RightContextProps) => {
-  const {
-    refreshMetaStoreTables,
-    catalogState
-  } = props;
+  const { refreshMetaStoreTables, catalogState } = props;
 
   const [rightContextMenuState, setRightContextMenuState] = useState<RightContextMenuState>({
     show: false,
@@ -58,7 +55,7 @@ export const useRightContext = (props: RightContextProps) => {
    */
   const handleCatalogRightClick = (info: any) => {
     const {
-      node: {isLeaf, fullInfo, isTable, isView},
+      node: { isLeaf, fullInfo, isTable, isView },
       node
     } = info;
     setCatalogTreeState((prevState) => ({
@@ -66,7 +63,7 @@ export const useRightContext = (props: RightContextProps) => {
       isLeaf: isLeaf,
       menuItems: isTable || isView ? TABLE_RIGHT_MENU() : [],
       contextMenuOpen: true,
-      rightClickedNode: {...node, ...fullInfo},
+      rightClickedNode: { ...node, ...fullInfo },
       value: fullInfo
     }));
   };
@@ -84,7 +81,7 @@ export const useRightContext = (props: RightContextProps) => {
 
     handleContextCancel();
     Modal.confirm({
-      title: l('datastudio.catalog.delete.table', '', {catalog, database, table}),
+      title: l('datastudio.catalog.delete.table', '', { catalog, database, table }),
       width: '30%',
       content: (
         <Text className={'needWrap'} type='danger'>
@@ -106,11 +103,11 @@ export const useRightContext = (props: RightContextProps) => {
     });
   };
   const handleMenuClick = async (node: MenuInfo) => {
-    setCatalogTreeState((prevState) => ({...prevState, rightActiveKey: node.key}));
+    setCatalogTreeState((prevState) => ({ ...prevState, rightActiveKey: node.key }));
     switch (node.key) {
       case 'delete':
         await handleDeleteSubmit();
-        break
+        break;
       default:
         handleContextCancel();
         break;
@@ -124,7 +121,7 @@ export const useRightContext = (props: RightContextProps) => {
           contextMenuPosition={rightContextMenuState.position}
           open={rightContextMenuState.show}
           openChange={() =>
-            setRightContextMenuState((prevState) => ({...prevState, show: false}))
+            setRightContextMenuState((prevState) => ({ ...prevState, show: false }))
           }
           items={catalogTreeState.menuItems}
           onClick={handleMenuClick}

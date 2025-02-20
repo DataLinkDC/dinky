@@ -267,7 +267,8 @@ public class SystemConfiguration {
     private final Configuration<Boolean> resourcesEnable = key(Status.SYS_RESOURCE_SETTINGS_ENABLE)
             .booleanType()
             .defaultValue(true)
-            .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE).hidden(true);
+            .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE)
+            .hidden(true);
 
     private final Configuration<Boolean> physicalDeletion = key(Status.SYS_RESOURCE_SETTINGS_PHYSICAL_DELETION)
             .booleanType()

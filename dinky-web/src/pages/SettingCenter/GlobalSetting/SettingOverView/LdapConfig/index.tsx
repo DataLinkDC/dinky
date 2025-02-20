@@ -28,8 +28,7 @@ import { SuccessMessage } from '@/utils/messages';
 import { ApiFilled } from '@ant-design/icons';
 import { Space, Tag } from 'antd';
 import React from 'react';
-import {GeneralComponentConfigProps} from "@/pages/SettingCenter/GlobalSetting/data.d";
-
+import { GeneralComponentConfigProps } from '@/pages/SettingCenter/GlobalSetting/data.d';
 
 export const LdapConfig = ({ data, onSave, auth }: GeneralComponentConfigProps) => {
   const [loading, setLoading] = React.useState(false);

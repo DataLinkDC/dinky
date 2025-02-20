@@ -18,14 +18,13 @@
  */
 
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {l} from '@/utils/intl';
-import {Tag} from 'antd';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
 import React from 'react';
-import {GeneralComponentConfigProps} from "@/pages/SettingCenter/GlobalSetting/data.d";
+import { GeneralComponentConfigProps } from '@/pages/SettingCenter/GlobalSetting/data.d';
 
-
-export const ApprovalConfig = ({data, onSave, auth}: GeneralComponentConfigProps) => {
+export const ApprovalConfig = ({ data, onSave, auth }: GeneralComponentConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
