@@ -21,7 +21,9 @@ package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
 
+import java.util.ArrayList;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -37,22 +39,28 @@ public class SqlUtil {
     private SqlUtil() {}
 
     public static String[] getStatements(String sql) {
-        return getStatements(sql, SQL_SEPARATOR);
+        return getStatements(sql, SEMICOLON);
     }
 
     public static String[] getStatements(String sql, String sqlSeparator) {
         if (Asserts.isNullString(sql)) {
             return new String[0];
         }
-
-        final String localSqlSeparator = ";\\s*(?:\\n|--.*)";
-        String[] splits = sql.replace("\r\n", "\n").split(localSqlSeparator);
-        String lastStatement = splits[splits.length - 1].trim();
-        if (lastStatement.endsWith(SEMICOLON)) {
-            splits[splits.length - 1] = lastStatement.substring(0, lastStatement.length() - 1);
+        String regex = "(?ms)(?:[^'" + sqlSeparator + "]|'(?:[^']|'')*')*" + sqlSeparator;
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(removeNote(sql));
+        ArrayList<String> statements = new ArrayList<>();
+        while (matcher.find()) {
+            String stmt = matcher.group().trim();
+            if (stmt.endsWith(sqlSeparator)) {
+                stmt = stmt.substring(0, stmt.length() - 1);
+            }
+            stmt = stmt.trim();
+            if (!stmt.isEmpty()) {
+                statements.add(stmt);
+            }
         }
-
-        return splits;
+        return statements.toArray(new String[0]);
     }
 
     public static String removeNote(String sql) {
