@@ -19,26 +19,6 @@
 
 package org.dinky.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.codec.Base64;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.extra.template.TemplateConfig;
-import cn.hutool.extra.template.TemplateEngine;
-import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.CheckTaskApproval;
 import org.dinky.data.annotations.CheckTaskOwner;
@@ -70,6 +50,11 @@ import org.dinky.service.ApprovalService;
 import org.dinky.service.TaskService;
 import org.dinky.trans.ExecuteJarParseStrategyUtil;
 import org.dinky.utils.SqlUtil;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +64,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -343,7 +347,7 @@ public class TaskController {
                         "args",
                         "base64@"
                                 + Base64.encode(
-                                Opt.ofNullable(jarSubmitParam.getArgs()).orElse("")))
+                                        Opt.ofNullable(jarSubmitParam.getArgs()).orElse("")))
                 .set("mainClass", Opt.ofNullable(jarSubmitParam.getMainClass()).orElse(""))
                 .set(
                         "allowNonRestoredState",
