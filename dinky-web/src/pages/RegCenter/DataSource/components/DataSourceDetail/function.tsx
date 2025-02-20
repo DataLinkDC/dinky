@@ -17,9 +17,9 @@
  *
  */
 
-import {folderSeparator, searchTreeNode} from '@/utils/function';
-import {DatabaseTwoTone, TableOutlined} from '@ant-design/icons';
-import {l} from "@/utils/intl";
+import { folderSeparator, searchTreeNode } from '@/utils/function';
+import { DatabaseTwoTone, TableOutlined } from '@ant-design/icons';
+import { l } from '@/utils/intl';
 
 /**
  *  build schema tree
@@ -28,24 +28,30 @@ import {l} from "@/utils/intl";
  */
 export const buildSchemaTree = (data: any, searchValue = ''): any =>
   data.map((item: any) => {
-
-    const title = <p style={{
-      marginBottom: 0,
-      padding: 0,
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      display: 'flex',
-      alignItems: 'center'
-    }}>{item.name} <span
-      style={{fontSize: 12, color: '#999'}}>({l('rc.ds.total.table', '', {total: item.tables.length})})</span></p>
-
+    const title = (
+      <p
+        style={{
+          marginBottom: 0,
+          padding: 0,
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        {item.name}{' '}
+        <span style={{ fontSize: 12, color: '#999' }}>
+          ({l('rc.ds.total.table', '', { total: item.tables.length })})
+        </span>
+      </p>
+    );
 
     return {
       isLeaf: false,
       name: item.name,
       parentId: item.name,
-      icon: <DatabaseTwoTone/>,
+      icon: <DatabaseTwoTone />,
       content: item.name,
       path: item.name,
       title: title,
@@ -59,7 +65,7 @@ export const buildSchemaTree = (data: any, searchValue = ''): any =>
             isLeaf: true,
             name: table.name,
             parentId: item.name,
-            icon: <TableOutlined/>,
+            icon: <TableOutlined />,
             content: table.name,
             path: item.name + folderSeparator() + table.name,
             title: searchTreeNode(table.name, searchValue),
