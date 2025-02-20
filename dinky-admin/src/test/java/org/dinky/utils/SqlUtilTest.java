@@ -64,57 +64,52 @@ public class SqlUtilTest {
 
     @Test
     public void testGetStatementsWithMultiComment() {
-        String sql = "set 'key1' =  'value1';-- 同行注释1\n" +
-                "-- 多行注释1\n" +
-                " -- 多行注释2\n" +
-                "-- 多行注释3\n" +
-                "set 'key2' =  'value2'; -- 同行注释2\n" +
-                "  -- 注释1\n" +
-                "set 'key3' =  'value4'; -- 同行注释3 --同行注释4\n" +
-                "-- 注释2\n" +
-                ";\n" +
-                "\n" +
-                ";;\n" +
-                "\n" +
-                "\n" +
-                "select \n" +
-                "  * \n" +
-                "   -- sql内注释1\n" +
-                "   -- sql内注释2\n" +
-                "  from table1 ; \n" +
-                " select ';--' as `test1`,';  --' as `test2`,'; \n" +
-                " --' as `test2`,* from table2;\n" +
-                "select ' select * from tb1 ; \n" +
-                "\n" +
-                " select * from tb2; ' as sql_stmt;\n" +
-                "-- 注释3\n" +
-                "--注释4\n" +
-                " --注释5\n" +
-                "EXECUTE JAR WITH (\n" +
-                "'uri'='a.jar',\n" +
-                "'main-class'='realtime.app.DwdKafkaToDelay',\n" +
-                "'args'='base64@LS1vZmZzZXQuaW5pdCBsYXRlc3Q=',\n" +
-                "'allowNonRestoredState'='false'\n" +
-                ");\n";
+        String sql = "set 'key1' =  'value1';-- 同行注释1\n" + "-- 多行注释1\n"
+                + " -- 多行注释2\n"
+                + "-- 多行注释3\n"
+                + "set 'key2' =  'value2'; -- 同行注释2\n"
+                + "  -- 注释1\n"
+                + "set 'key3' =  'value4'; -- 同行注释3 --同行注释4\n"
+                + "-- 注释2\n"
+                + ";\n"
+                + "\n"
+                + ";;\n"
+                + "\n"
+                + "\n"
+                + "select \n"
+                + "  * \n"
+                + "   -- sql内注释1\n"
+                + "   -- sql内注释2\n"
+                + "  from table1 ; \n"
+                + " select ';--' as `test1`,';  --' as `test2`,'; \n"
+                + " --' as `test2`,* from table2;\n"
+                + "select ' select * from tb1 ; \n"
+                + "\n"
+                + " select * from tb2; ' as sql_stmt;\n"
+                + "-- 注释3\n"
+                + "--注释4\n"
+                + " --注释5\n"
+                + "EXECUTE JAR WITH (\n"
+                + "'uri'='a.jar',\n"
+                + "'main-class'='realtime.app.DwdKafkaToDelay',\n"
+                + "'args'='base64@LS1vZmZzZXQuaW5pdCBsYXRlc3Q=',\n"
+                + "'allowNonRestoredState'='false'\n"
+                + ");\n";
         String[] statements = SqlUtil.getStatements(sql);
         Assertions.assertThat(statements.length).isEqualTo(7);
         Assertions.assertThat(statements[0]).isEqualTo("set 'key1' =  'value1'");
         Assertions.assertThat(statements[1]).isEqualTo("set 'key2' =  'value2'");
         Assertions.assertThat(statements[2]).isEqualTo("set 'key3' =  'value4'");
-        Assertions.assertThat(statements[3]).isEqualTo("select \n" +
-                "  * \n" +
-                "   \n" +
-                "   \n" +
-                "  from table1");
-        Assertions.assertThat(statements[4]).isEqualTo("select ';--' as `test1`,';  --' as `test2`,'; \n" +
-                " --' as `test2`,* from table2");
-        Assertions.assertThat(statements[5]).isEqualTo("select ' select * from tb1 ; \n" +
-                " select * from tb2; ' as sql_stmt");
-        Assertions.assertThat(statements[6]).isEqualTo("EXECUTE JAR WITH (\n" +
-                "'uri'='a.jar',\n" +
-                "'main-class'='realtime.app.DwdKafkaToDelay',\n" +
-                "'args'='base64@LS1vZmZzZXQuaW5pdCBsYXRlc3Q=',\n" +
-                "'allowNonRestoredState'='false'\n" +
-                ")");
+        Assertions.assertThat(statements[3]).isEqualTo("select \n" + "  * \n" + "   \n" + "   \n" + "  from table1");
+        Assertions.assertThat(statements[4])
+                .isEqualTo("select ';--' as `test1`,';  --' as `test2`,'; \n" + " --' as `test2`,* from table2");
+        Assertions.assertThat(statements[5])
+                .isEqualTo("select ' select * from tb1 ; \n" + " select * from tb2; ' as sql_stmt");
+        Assertions.assertThat(statements[6])
+                .isEqualTo("EXECUTE JAR WITH (\n" + "'uri'='a.jar',\n"
+                        + "'main-class'='realtime.app.DwdKafkaToDelay',\n"
+                        + "'args'='base64@LS1vZmZzZXQuaW5pdCBsYXRlc3Q=',\n"
+                        + "'allowNonRestoredState'='false'\n"
+                        + ")");
     }
 }
