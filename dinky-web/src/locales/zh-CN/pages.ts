@@ -927,6 +927,8 @@ export default {
   'rc.ds.default': '默认值',
   'rc.ds.delete': '删除数据源',
   'rc.ds.deleteConfirm': '确定删除该数据源吗？',
+  'rc.ds.total.db': '共{total}个库',
+  'rc.ds.total.table': '共{total}个表',
   'rc.ds.detail.tag.console': '控制台',
   'rc.ds.detail.tag.console.clear.log': '清除日志...',
   'rc.ds.detail.tag.desc': '描述',
