@@ -21,6 +21,7 @@ on:
       - 'docs/**'
       - '**/*.md'
       - '**/*.sql'
+      - '**/package-lock.json'
 
 concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}
