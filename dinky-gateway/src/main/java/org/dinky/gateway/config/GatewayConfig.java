@@ -24,6 +24,7 @@ import org.dinky.gateway.model.FlinkClusterConfig;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -92,6 +93,11 @@ public class GatewayConfig {
         Assert.notNull(config);
         GatewayConfig gatewayConfig = new GatewayConfig();
         BeanUtil.copyProperties(config, gatewayConfig);
+        gatewayConfig
+                .getFlinkConfig()
+                .getConfiguration()
+                .entrySet()
+                .removeIf(entry -> StrUtil.isBlank(entry.getValue()));
         return gatewayConfig;
     }
 }
