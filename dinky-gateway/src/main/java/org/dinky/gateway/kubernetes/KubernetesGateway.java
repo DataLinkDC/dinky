@@ -140,7 +140,6 @@ public abstract class KubernetesGateway extends AbstractGateway {
             resetCheckpointInApplicationMode(flinkConfig.getJobName());
         }
 
-        preparPodTemplate(k8sConfig.getKubeConfig(), KubernetesConfigOptions.KUBE_CONFIG_FILE);
         k8sClientHelper = new K8sClientHelper(configuration, k8sConfig.getKubeConfig());
 
         String sql = config.getSql();
