@@ -52,8 +52,8 @@ Dinky 1.0.0 之后,全面支持 JDK 11,如果你的 JDK 环境为 JDK 8,那么�
 > 由于在 Dinky 1.0.0 之后,前端代码也需要进行格式化,但是在 本地只能通过手动执行格式化的方式来实现,所以在此提供一种方案,进行前端代码格式化. 如果配置了服务端格式化,那么可以忽略此步骤.由 GITHUB Actions 服务来执行格式化.
 
 步骤:
-1. 进入 dinky-web 目录,执行 `npm install -f` 安装依赖
-2. 执行 `npm run prettier` 进行格式化.
+1. 进入 dinky-web 目录,执行 `pnpm install` 安装依赖
+2. 执行 `pnpm run prettier` 进行格式化.
 
 
 :::tip 提示

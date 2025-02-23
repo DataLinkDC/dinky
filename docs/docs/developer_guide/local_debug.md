@@ -74,7 +74,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 代码 Clone 完成后，进入 `dinky-web` 目录，执行以下命令安装依赖
 
 ```bash
-npm install --force
+pnpm install
 ```
 
 ### 启动前端

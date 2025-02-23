@@ -42,12 +42,12 @@ import {
   EditOutlined,
   FieldNumberOutlined,
   LineChartOutlined,
-  PlusOutlined
+  PlusOutlined,
+  SettingOutlined
 } from '@ant-design/icons';
 import _ from 'lodash';
 import * as echarts from 'echarts';
 import { ProCard } from '@ant-design/pro-components';
-import { SetOutline } from 'antd-mobile-icons';
 import { history, useLocation } from '@@/exports';
 import useHookRequest from '@/hooks/useHookRequest';
 import { addOrUpdate, getDataDetailById } from '@/pages/Dashboard/service';
@@ -271,7 +271,7 @@ export default () => {
               extra={
                 <Button
                   type={'text'}
-                  icon={<SetOutline fontSize={24} />}
+                  icon={<SettingOutlined size={24} />}
                   onClick={() => {
                     setUpdateModel(l.i);
                     setEditIsUpdate(true);

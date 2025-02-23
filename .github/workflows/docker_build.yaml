@@ -26,7 +26,7 @@ on:
 
 jobs:
   build_front:
-    name: Build_NPM
+    name: Build_Web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,7 +38,7 @@ jobs:
               - 'dinky-web/**'
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
       - name: Get npm cache directory
         id: npm-cache-dir
         run: |
@@ -53,9 +53,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install Dependencies
-        run: cd dinky-web && npm install --no-audit --progress=false --legacy-peer-deps
+        run: cd dinky-web && npm install -g pnpm && pnpm install
       - name: Npm Web Build
-        run: cd dinky-web && npm run build
+        run: cd dinky-web && pnpm run build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

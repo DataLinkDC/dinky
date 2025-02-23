@@ -49,4 +49,12 @@ public interface FragmentVariableService extends ISuperService<FragmentVariable>
      * @return {@link Boolean}
      */
     Boolean modifyFragmentStatus(Integer id);
+
+    /**
+     * check fragmentVariable is nested
+     *
+     * @param fragmentVariable
+     * @return {@link Boolean}
+     */
+    Boolean isNestedDefined(FragmentVariable fragmentVariable);
 }

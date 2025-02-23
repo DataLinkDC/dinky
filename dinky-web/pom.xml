@@ -45,35 +45,35 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.12.0</version>
+                <version>1.15.1</version>
                 <configuration>
                     <nodeVersion>v18.15.0</nodeVersion>
                     <npmVersion>10.5.0</npmVersion>
+                    <pnpmVersion>9.15.4</pnpmVersion>
                     <!-- 国内node下载加速 -->
                     <!--<nodeDownloadRoot>https://mirrors.huaweicloud.com/nodejs/</nodeDownloadRoot>-->
                     <!--<npmDownloadRoot>https://repo.huaweicloud.com/npm-software/</npmDownloadRoot>-->
                 </configuration>
                 <executions>
                     <execution>
-                        <id>install node and npm</id>
+                        <id>install node and pnpm</id>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>install-node-and-pnpm</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>npm install</id>
+                        <id>install</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>pnpm</goal>
                         </goals>
                         <configuration>
-                            <!-- For domestic npm source acceleration, you can check the profile of npm Huawei or npm Taobao -->
-                            <arguments>install --force --registry ${npm-registry-repo}</arguments>
+                            <arguments>install --registry ${npm-registry-repo}</arguments>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm run build</id>
+                        <id>build</id>
                         <goals>
-                            <goal>npm</goal>
+                            <goal>pnpm</goal>
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>
