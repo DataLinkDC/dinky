@@ -99,7 +99,9 @@ public final class VariableManager {
      */
     public void registerVariable(Map<String, String> variableMap) {
         if (Asserts.isNotNull(variableMap)) {
-            variables.putAll(variableMap);
+            for (Map.Entry<String, String> variable : variableMap.entrySet()) {
+                registerVariable(variable.getKey(), variable.getValue());
+            }
         }
     }
 
@@ -155,6 +157,9 @@ public final class VariableManager {
         checkArgument(
                 !StringUtils.isNullOrWhitespaceOnly(variableName),
                 "sql variable name or jexl key cannot be null or empty.");
+        if (!StrUtil.contains(variableName, ".")) {
+            return false;
+        }
         // key 格式是 dateUtil.getVariable("key") 按照这个格式解析 出 dateUtil
         String substring = variableName.substring(0, variableName.indexOf("."));
         return StrUtil.isNotBlank(EngineContextHolder.getEngineContext().getStr(substring));
