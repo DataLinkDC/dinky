@@ -104,6 +104,16 @@ public abstract class KubernetesGateway extends AbstractGateway {
         }
         k8sConfig = config.getKubernetesConfig();
 
+        // Be compatible with kubernetes.container.image and kubernetes.container.image.ref
+        final String oldContainerImageKey = "kubernetes.container.image";
+        if (k8sConfig.getConfiguration().containsKey(oldContainerImageKey)) {
+            k8sConfig
+                    .getConfiguration()
+                    .put(
+                            KubernetesConfigOptions.CONTAINER_IMAGE.key(),
+                            k8sConfig.getConfiguration().get(oldContainerImageKey));
+        }
+
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
         try {
             addConfigParas(
