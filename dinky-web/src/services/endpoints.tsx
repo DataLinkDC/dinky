@@ -92,7 +92,7 @@ export enum API_CONSTANTS {
 
   // ------------------------------------ cluster configuration ------------------------------------
   CLUSTER_CONFIGURATION = '/api/clusterConfiguration/list',
-  CLUSTER_CONFIGURATION_LIST_ENABLE_ALL = '/api/clusterConfiguration/listEnabledAll',
+  CLUSTER_CONFIGURATION_LIST_ALL = '/api/clusterConfiguration/listAll',
   CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/saveOrUpdate',
   CLUSTER_CONFIGURATION_DELETE = '/api/clusterConfiguration/delete',
   CLUSTER_CONFIGURATION_ENABLE = '/api/clusterConfiguration/enable',

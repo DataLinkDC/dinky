@@ -24,6 +24,9 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.Task;
+import org.dinky.mybatis.model.SuperEntity;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * Assert
@@ -62,6 +65,14 @@ public interface DinkyAssert {
     static void checkNull(Object o, String msg) {
         if (o == null) {
             throw new BusException(msg);
+        }
+    }
+
+    static void checkEnable(Object o, String msg) {
+        if (o instanceof SuperEntity) {
+            if (BooleanUtils.isFalse(((SuperEntity<?>) o).getEnabled())) {
+                throw new BusException(msg);
+            }
         }
     }
 
