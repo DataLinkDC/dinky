@@ -28,7 +28,9 @@ import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -57,6 +59,7 @@ public class ResultRunnable implements Runnable {
     private final boolean isAutoCancel;
     private final String timeZone;
     private BiConsumer<String, SelectResult> callback;
+    private static final DateTimeFormatter FORMATTER_CACHE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public ResultRunnable(
             TableResult tableResult,
@@ -164,9 +167,11 @@ public class ResultRunnable implements Runnable {
                         ((Instant) field)
                                 .atZone(ZoneId.of(timeZone))
                                 .toLocalDateTime()
-                                .toString());
+                                .format(FORMATTER_CACHE));
             } else if (field instanceof Boolean) {
                 map.put(column, field.toString());
+            } else if (field instanceof LocalDateTime) {
+                map.put(column, ((LocalDateTime) field).format(FORMATTER_CACHE));
             } else {
                 map.put(column, field);
             }
