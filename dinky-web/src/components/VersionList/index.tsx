@@ -25,20 +25,20 @@ import { ListItemTypeProps } from 'antd/es/list/Item';
 
 export type TaskVersionListItem = {
   id: number;
-  taskId?: number;
+  taskId: number;
   name?: string;
   dialect?: string;
   type?: string;
   statement: string;
-  versionId?: string;
+  versionId: number;
   createTime?: string;
   isLatest?: boolean;
 };
 export interface VersionListProps {
   data: TaskVersionListItem[];
-  onSelectListen?: (value: TaskVersionListItem) => void;
-  onDeleteListen?: (value: TaskVersionListItem) => void;
-  onRollBackListen?: (value: TaskVersionListItem) => void;
+  onSelectListen: (value: TaskVersionListItem) => void;
+  onDeleteListen: (value: TaskVersionListItem) => void;
+  onRollBackListen: (value: TaskVersionListItem) => void;
   loading?: boolean;
   header?: string;
   options?: ListItemTypeProps;

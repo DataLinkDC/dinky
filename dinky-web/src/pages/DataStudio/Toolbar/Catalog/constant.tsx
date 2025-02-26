@@ -17,14 +17,14 @@
  *
  */
 
-import { MenuItemType } from "antd/es/menu/interface";
-import { DeleteTwoTone } from "@ant-design/icons";
-import { l } from "@/utils/intl";
+import { MenuItemType } from 'antd/es/menu/interface';
+import { DeleteTwoTone } from '@ant-design/icons';
+import { l } from '@/utils/intl';
 
 export const TABLE_RIGHT_MENU = (): MenuItemType[] => [
   {
     key: 'delete',
-    icon: <DeleteTwoTone twoToneColor={'red'}/>,
+    icon: <DeleteTwoTone twoToneColor={'red'} />,
     label: l('button.delete')
   }
 ];
