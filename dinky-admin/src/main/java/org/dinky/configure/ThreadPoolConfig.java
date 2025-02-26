@@ -51,4 +51,26 @@ public class ThreadPoolConfig {
         threadPoolTaskExecutor.initialize();
         return threadPoolTaskExecutor;
     }
+
+    /**
+     *websocket event  thread executor
+     * @return executor
+     */
+    @Bean
+    public Executor wsSendExecutor() {
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        // 核心线程数
+        threadPoolTaskExecutor.setCorePoolSize(10);
+        threadPoolTaskExecutor.setAllowCoreThreadTimeOut(true);
+        // 最大线程数
+        threadPoolTaskExecutor.setMaxPoolSize(200);
+        // 配置队列大小
+        threadPoolTaskExecutor.setQueueCapacity(1000);
+        // 配置线程池前缀
+        threadPoolTaskExecutor.setThreadNamePrefix("ws-send-");
+        // 阻塞策略
+        threadPoolTaskExecutor.setRejectedExecutionHandler(new BlockPolicy());
+        threadPoolTaskExecutor.initialize();
+        return threadPoolTaskExecutor;
+    }
 }

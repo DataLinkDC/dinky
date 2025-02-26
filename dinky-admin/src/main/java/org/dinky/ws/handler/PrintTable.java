@@ -17,9 +17,7 @@
  *
  */
 
-package org.dinky.ws.topic;
-
-import static org.dinky.ws.GlobalWebSocket.sendTopic;
+package org.dinky.ws.handler;
 
 import org.dinky.service.impl.PrintTableServiceImpl;
 import org.dinky.ws.GlobalWebSocketTopic;
@@ -28,17 +26,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.stereotype.Service;
+
 import cn.hutool.core.map.MapUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PrintTable extends BaseTopic {
-    public static final PrintTable INSTANCE = new PrintTable();
-
-    private PrintTable() {
-        PrintTableServiceImpl.PrintTableListener printer = new PrintTableServiceImpl.PrintTableListener(this::send);
-        printer.start();
-    }
+@Service
+public class PrintTable extends ManualMessageEventHandler {
 
     public void send(String message) {
         try {
@@ -46,19 +41,26 @@ public class PrintTable extends BaseTopic {
 
             Map<String, Object> result =
                     MapUtil.<String, Object>builder().put(data[0], data[1]).build();
-            sendTopic(GlobalWebSocketTopic.PRINT_TABLE, result);
+            sendData(result);
         } catch (Exception e) {
             log.error("send message failed: {}", e.getMessage());
         }
     }
 
     @Override
-    public Map<String, Object> autoDataSend(Set<String> allParams) {
+    public void run() {
+        super.run();
+        PrintTableServiceImpl.PrintTableListener printer = new PrintTableServiceImpl.PrintTableListener(this::send);
+        printer.start();
+    }
+
+    @Override
+    public Map<String, Object> firstSubscribe(Set<String> allParams) {
         return new HashMap<>();
     }
 
     @Override
-    public Map<String, Object> firstDataSend(Set<String> allParams) {
-        return new HashMap<>();
+    public GlobalWebSocketTopic getTopic() {
+        return GlobalWebSocketTopic.PRINT_TABLE;
     }
 }

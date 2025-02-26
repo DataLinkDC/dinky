@@ -17,26 +17,25 @@
  *
  */
 
-package org.dinky.ws.topic;
+package org.dinky.ws.handler;
+
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import java.util.Map;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
+public interface WsMessageEventHandler {
+    String NONE_PARAMS = "none-params";
 
-@AllArgsConstructor
-public abstract class BaseTopic {
-    public static final String NONE_PARAMS = "none-params";
-
-    /**
-     * Data sending ideas, including data acquisition and sending
-     */
-    public abstract Map<String, Object> autoDataSend(Set<String> allParams);
+    Map<String, ?> autoMessageSend();
 
     /**
-     * The first send after changing the subscription
-     * @param allParams All parameters
-     * @return The data sent will be converted by JSON when it is finally sent
+     * First subscription
+     * @return data
      */
-    public abstract Map<String, Object> firstDataSend(Set<String> allParams);
+    Map<String, Object> firstSubscribe(Set<String> allParams);
+
+    void run();
+
+    GlobalWebSocketTopic getTopic();
 }

@@ -17,25 +17,17 @@
  *
  */
 
-package org.dinky.ws.topic;
+package org.dinky.ws.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-public class Metrics extends BaseTopic {
-    public static final Metrics INSTANCE = new Metrics();
-
-    private Metrics() {}
-
+public abstract class ManualMessageEventHandler extends WsBaseMessageEventHandler {
     @Override
-    public Map<String, Object> autoDataSend(Set<String> allParams) {
+    public Map<String, Object> autoMessageSend() {
         return new HashMap<>();
     }
 
     @Override
-    public Map<String, Object> firstDataSend(Set<String> allParams) {
-        //        monitorService.getMetricsLayoutByName(layoutName)
-        return new HashMap<>();
-    }
+    public void run() {}
 }

@@ -17,20 +17,25 @@
  *
  */
 
-package org.dinky.ws;
+package org.dinky.ws.handler;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import org.dinky.ws.GlobalWebSocketTopic;
+import org.dinky.ws.WsSendEvent;
 
-@Getter
-@AllArgsConstructor
-public enum GlobalWebSocketTopic {
-    JVM_INFO("jvmInfo", 5000),
-    PROCESS_CONSOLE("PROCESS_CONSOLE", Integer.MAX_VALUE),
-    PRINT_TABLE("PRINT_TABLE", Integer.MAX_VALUE),
-    METRICS("METRICS", Integer.MAX_VALUE),
-    TASK_RUN_INSTANCE("TASK_RUN_INSTANCE", 1000),
-    ;
-    private final String topic;
-    private final int delaySend;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.springframework.context.ApplicationEventPublisher;
+
+public abstract class WsBaseMessageEventHandler implements WsMessageEventHandler {
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    public void sendData(Map<String, Object> paramsAndData) {
+        GlobalWebSocketTopic topic = getTopic();
+        WsSendEvent data =
+                WsSendEvent.builder().topic(topic).paramsAndData(paramsAndData).build();
+        applicationEventPublisher.publishEvent(data);
+    }
 }

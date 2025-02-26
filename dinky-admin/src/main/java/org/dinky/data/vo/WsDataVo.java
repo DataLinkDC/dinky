@@ -17,27 +17,27 @@
  *
  */
 
-package org.dinky.ws.topic;
+package org.dinky.data.vo;
 
-import org.dinky.data.metrics.Jvm;
+import org.dinky.ws.GlobalWebSocket;
 
-import java.util.Map;
-import java.util.Set;
+import lombok.Data;
 
-import cn.hutool.core.map.MapUtil;
+@Data
+public class WsDataVo {
+    private String sessionKey;
+    private String topic;
+    private Object data;
+    private GlobalWebSocket.RequestDTO.EventType type;
 
-public class JvmInfo extends BaseTopic {
-    public static final JvmInfo INSTANCE = new JvmInfo();
-
-    private JvmInfo() {}
-
-    @Override
-    public Map<String, Object> autoDataSend(Set<String> allParams) {
-        return firstDataSend(allParams);
+    public WsDataVo(String sessionKey, String topic, Object data) {
+        this.sessionKey = sessionKey;
+        this.topic = topic;
+        this.data = data;
     }
 
-    @Override
-    public Map<String, Object> firstDataSend(Set<String> allParams) {
-        return MapUtil.<String, Object>builder().put(NONE_PARAMS, Jvm.of()).build();
+    public WsDataVo(String sessionKey, GlobalWebSocket.RequestDTO.EventType type) {
+        this.sessionKey = sessionKey;
+        this.type = type;
     }
 }
