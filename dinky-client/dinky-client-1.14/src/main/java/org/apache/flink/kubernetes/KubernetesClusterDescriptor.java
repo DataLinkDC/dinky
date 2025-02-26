@@ -21,7 +21,6 @@ package org.apache.flink.kubernetes;
 
 import static org.apache.flink.util.Preconditions.checkNotNull;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.client.deployment.ClusterDeploymentException;
 import org.apache.flink.client.deployment.ClusterDescriptor;
 import org.apache.flink.client.deployment.ClusterRetrieveException;
@@ -33,7 +32,6 @@ import org.apache.flink.client.program.PackagedProgramUtils;
 import org.apache.flink.client.program.rest.RestClusterClient;
 import org.apache.flink.configuration.BlobServerOptions;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.DeploymentOptionsInternal;
 import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.RestOptions;
@@ -47,14 +45,8 @@ import org.apache.flink.kubernetes.kubeclient.Endpoint;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkPod;
 import org.apache.flink.kubernetes.kubeclient.KubernetesJobManagerSpecification;
-import org.apache.flink.kubernetes.kubeclient.decorators.ExternalServiceDecorator;
 import org.apache.flink.kubernetes.kubeclient.factory.KubernetesJobManagerFactory;
 import org.apache.flink.kubernetes.kubeclient.parameters.KubernetesJobManagerParameters;
-import org.apache.flink.kubernetes.shaded.io.fabric8.kubernetes.api.model.ConfigMap;
-import org.apache.flink.kubernetes.shaded.io.fabric8.kubernetes.api.model.HasMetadata;
-import org.apache.flink.kubernetes.shaded.io.fabric8.kubernetes.api.model.KeyToPath;
-import org.apache.flink.kubernetes.shaded.io.fabric8.kubernetes.api.model.KeyToPathBuilder;
-import org.apache.flink.kubernetes.shaded.io.fabric8.kubernetes.api.model.Volume;
 import org.apache.flink.kubernetes.utils.Constants;
 import org.apache.flink.kubernetes.utils.KubernetesUtils;
 import org.apache.flink.runtime.entrypoint.ClusterEntrypoint;
@@ -63,16 +55,11 @@ import org.apache.flink.runtime.highavailability.nonha.standalone.StandaloneClie
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobmanager.HighAvailabilityMode;
 import org.apache.flink.runtime.rpc.AddressResolution;
-import org.apache.flink.shaded.guava31.com.google.common.io.Files;
 import org.apache.flink.util.FlinkException;
 import org.apache.flink.util.Preconditions;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -107,8 +94,7 @@ public class KubernetesClusterDescriptor implements ClusterDescriptor<String> {
         return () -> {
             final Configuration configuration = new Configuration(flinkConfig);
 
-            final Optional<Endpoint> restEndpoint;
-            restEndpoint = client.getRestEndpoint(clusterId);
+            final Optional<Endpoint> restEndpoint = client.getRestEndpoint(clusterId);
 
             if (restEndpoint.isPresent()) {
                 configuration.setString(RestOptions.ADDRESS, restEndpoint.get().getAddress());
@@ -181,8 +167,7 @@ public class KubernetesClusterDescriptor implements ClusterDescriptor<String> {
     public ClusterClientProvider<String> deployApplicationCluster(
             final ClusterSpecification clusterSpecification, final ApplicationConfiguration applicationConfiguration)
             throws ClusterDeploymentException {
-        if (client.getService(ExternalServiceDecorator.getExternalServiceName(clusterId))
-                .isPresent()) {
+        if (client.getRestService(clusterId).isPresent()) {
             client.stopAndCleanupCluster(clusterId);
             LOG.warn("The Flink cluster {} already exists, automatically stopAndCleanupCluster.", clusterId);
         }
@@ -262,7 +247,6 @@ public class KubernetesClusterDescriptor implements ClusterDescriptor<String> {
             final KubernetesJobManagerSpecification kubernetesJobManagerSpec =
                     KubernetesJobManagerFactory.buildKubernetesJobManagerSpecification(
                             podTemplate, kubernetesJobManagerParameters);
-            mountLogConfFile(kubernetesJobManagerSpec, flinkConfig);
 
             client.createJobManagerComponent(kubernetesJobManagerSpec);
 
@@ -277,56 +261,6 @@ public class KubernetesClusterDescriptor implements ClusterDescriptor<String> {
                 LOG.info("Failed to stop and clean up the Kubernetes cluster \"{}\".", clusterId, e1);
             }
             throw new ClusterDeploymentException("Could not create Kubernetes cluster \"" + clusterId + "\".", e);
-        }
-    }
-
-    // Mount log4j.properties, logback.xml and other log configs to the JobManager pod.
-    private void mountLogConfFile(KubernetesJobManagerSpecification kubernetesJobManagerSpec, Configuration flinkConfig)
-            throws IOException {
-        List<HasMetadata> accompanyingResources = kubernetesJobManagerSpec.getAccompanyingResources();
-        Optional<HasMetadata> flinkConfigMapOptional = accompanyingResources.stream()
-                .filter(hasMetadata -> "ConfigMap".equals(hasMetadata.getKind())
-                        && StringUtils.startsWith(hasMetadata.getMetadata().getName(), Constants.CONFIG_MAP_PREFIX))
-                .findFirst();
-
-        List<Volume> volumes = kubernetesJobManagerSpec
-                .getDeployment()
-                .getSpec()
-                .getTemplate()
-                .getSpec()
-                .getVolumes();
-        Optional<Volume> flinkConfVolumeOptional = volumes.stream()
-                .filter(volume -> Constants.FLINK_CONF_VOLUME.equals(volume.getName()))
-                .findFirst();
-
-        if (!flinkConfigMapOptional.isPresent() || !flinkConfVolumeOptional.isPresent()) {
-            return;
-        }
-
-        final String configDir = flinkConfig
-                .getOptional(DeploymentOptionsInternal.CONF_DIR)
-                .orElse(flinkConfig.get(KubernetesConfigOptions.FLINK_CONF_DIR));
-
-        List<String> flinkLogConfFileNameList = Arrays.asList(
-                "log4j.properties",
-                "log4j-session.properties",
-                "logback.xml",
-                "logback-session.xml",
-                "log4j-cli.properties");
-        Map<String, String> flinkConfigMapData = ((ConfigMap) flinkConfigMapOptional.get()).getData();
-        List<KeyToPath> flinkConfVolumeItems =
-                flinkConfVolumeOptional.get().getConfigMap().getItems();
-
-        for (String flinkLogConfFileName : flinkLogConfFileNameList) {
-            File localLogConfFile = new File(configDir, flinkLogConfFileName);
-            if (localLogConfFile.exists()) {
-                flinkConfVolumeItems.add(new KeyToPathBuilder()
-                        .withKey(flinkLogConfFileName)
-                        .withPath(flinkLogConfFileName)
-                        .build());
-                flinkConfigMapData.put(
-                        localLogConfFile.getName(), Files.toString(localLogConfFile, StandardCharsets.UTF_8));
-            }
         }
     }
 
