@@ -426,7 +426,7 @@ vim prometheus.yml 检查是否有dinky配置文件  如果没有则添加
 
 ### 5.2 Grafana 配置
 
-通过下图展示的url进去grafana配置图表，默认登陆账户密码：admin ：admin
+通过下图展示的url进去grafana配置图表，默认登录账户密码：admin ：admin
 ![bbbb](https://github.com/user-attachments/assets/9f8478ad-3a64-4d3a-bf26-e97036e2d3c0)
 
 ### 5.3 创建Grafana 模板文件

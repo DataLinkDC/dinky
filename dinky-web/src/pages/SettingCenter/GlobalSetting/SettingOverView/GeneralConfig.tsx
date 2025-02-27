@@ -38,7 +38,7 @@ type GeneralConfigProps = {
   onSave: (data: BaseConfigProperties) => void;
   loading: boolean;
   toolBarRender?: any;
-  selectChanges?: (e: RadioChangeEvent) => void;
+  selectChanges?: (e: RadioChangeEvent, entity: BaseConfigProperties) => void;
   auth: string;
 };
 
@@ -101,7 +101,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     } else if (entity.frontType === ButtonFrontendType.OPTION) {
       return (
         <Radio.Group
-          onChange={selectChanges}
+          onChange={(e) => selectChanges?.(e, entity)}
           value={entity.value.toLowerCase()}
           disabled={!HasAuthority(auth)}
           name={entity.key}
@@ -153,7 +153,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     loading: loading,
     actionRef: actionRef,
     size: 'small',
-    dataSource: data,
+    dataSource: data.filter((item) => item.hidden !== true),
     showActions: 'hover',
     metas: { ...metasRestProps },
     editable: {

@@ -28,14 +28,9 @@ import { SuccessMessage } from '@/utils/messages';
 import { ApiFilled } from '@ant-design/icons';
 import { Space, Tag } from 'antd';
 import React from 'react';
+import { GeneralComponentConfigProps } from '@/pages/SettingCenter/GlobalSetting/data.d';
 
-interface LdapConfigProps {
-  data: BaseConfigProperties[];
-  onSave: (data: BaseConfigProperties) => void;
-  auth: string;
-}
-
-export const LdapConfig = ({ data, onSave, auth }: LdapConfigProps) => {
+export const LdapConfig = ({ data, onSave, auth }: GeneralComponentConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const testConnection = async () => {

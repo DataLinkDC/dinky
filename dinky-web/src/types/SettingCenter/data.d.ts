@@ -76,6 +76,7 @@ export type Settings = {
   ldap: BaseConfigProperties[];
   metrics: BaseConfigProperties[];
   resource: BaseConfigProperties[];
+  approval: BaseConfigProperties[];
 };
 
 export type BaseConfigProperties = {
@@ -85,6 +86,7 @@ export type BaseConfigProperties = {
   note: string;
   frontType: string;
   example: string[];
+  hidden: boolean | undefined;
 };
 
 export interface LogInfo {
