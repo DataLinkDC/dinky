@@ -19,6 +19,7 @@
 
 package org.dinky.ws.handler;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.ws.GlobalWebSocketTopic;
 import org.dinky.ws.WsSendEvent;
 
@@ -50,11 +51,13 @@ public abstract class ScheduleMessageEventHandler implements WsMessageEventHandl
                     @Override
                     public void run() {
                         Map<String, ?> data = autoMessageSend();
-                        WsSendEvent event = WsSendEvent.builder()
-                                .topic(topic)
-                                .paramsAndData(data)
-                                .build();
-                        applicationEventPublisher.publishEvent(event);
+                        if (Asserts.isNotNullMap(data)) {
+                            WsSendEvent event = WsSendEvent.builder()
+                                    .topic(topic)
+                                    .paramsAndData(data)
+                                    .build();
+                            applicationEventPublisher.publishEvent(event);
+                        }
                     }
                 },
                 0,

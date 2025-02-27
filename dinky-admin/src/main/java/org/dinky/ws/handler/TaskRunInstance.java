@@ -25,6 +25,7 @@ import org.dinky.ws.GlobalWebSocketTopic;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.stereotype.Service;
@@ -34,7 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class TaskRunInstance extends ScheduleMessageEventHandler {
-    // todo 这里需要优化下，应该触发hook调用
+
+    private Set<Integer> runningJobIds = new ConcurrentSkipListSet<>();
 
     @Override
     public Map<String, Object> firstSubscribe(Set<String> allParams) {
@@ -51,11 +53,14 @@ public class TaskRunInstance extends ScheduleMessageEventHandler {
     @Override
     public Map<String, Object> autoMessageSend() {
         Set<Integer> currentMonitorTaskIds = FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds();
-        Map<String, Object> result = new HashMap<>();
-        if (!currentMonitorTaskIds.isEmpty()) {
+        if (!runningJobIds.equals(currentMonitorTaskIds)) {
+            runningJobIds.clear();
+            runningJobIds.addAll(currentMonitorTaskIds);
+            Map<String, Object> result = new HashMap<>();
             result.put("RunningTaskId", currentMonitorTaskIds);
+            return result;
         }
-        return result;
+        return new HashMap<>();
     }
 
     @Override
