@@ -134,12 +134,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.text.StrFormatter;
+import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -777,7 +779,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         Task updateTask = new Task();
         BeanUtil.copyProperties(taskVersion, updateTask);
-        BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
+        BeanUtil.copyProperties(
+                taskVersion.getTaskConfigure(), updateTask, CopyOptions.create().setIgnoreError(true));
+        updateTask.setConfigJson(JSONUtil.toBean(taskVersion.getTaskConfigure().getConfigJson(), TaskExtConfig.class));
         updateTask.setId(taskVersion.getTaskId());
         updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
         return baseMapper.updateById(updateTask) > 0;
