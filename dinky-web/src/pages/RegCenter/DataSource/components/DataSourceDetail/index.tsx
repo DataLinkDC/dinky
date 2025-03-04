@@ -133,7 +133,7 @@ export default () => {
    */
   return (
     <ProCard loading={loading} ghost gutter={[16, 16]} split='vertical'>
-      <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan='16%'>
+      <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan='22%'>
         {/* tree */}
         <Authorized
           key='schemaTree'

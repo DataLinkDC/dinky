@@ -17,14 +17,10 @@
  *
  */
 
-import { MenuItemType } from 'antd/es/menu/interface';
-import { DeleteTwoTone } from '@ant-design/icons';
-import { l } from '@/utils/intl';
+import { BaseConfigProperties } from '@/types/SettingCenter/data.d';
 
-export const TABLE_RIGHT_MENU = (): MenuItemType[] => [
-  {
-    key: 'delete',
-    icon: <DeleteTwoTone twoToneColor={'red'} />,
-    label: l('button.delete')
-  }
-];
+export interface GeneralComponentConfigProps {
+  data: BaseConfigProperties[];
+  onSave: (data: BaseConfigProperties) => void;
+  auth: string;
+}

@@ -22,14 +22,9 @@ import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter
 import { l } from '@/utils/intl';
 import { RadioChangeEvent, Tag } from 'antd';
 import React from 'react';
+import { GeneralComponentConfigProps } from '@/pages/SettingCenter/GlobalSetting/data.d';
 
-interface EnvConfigProps {
-  data: BaseConfigProperties[];
-  onSave: (data: BaseConfigProperties) => void;
-  auth: string;
-}
-
-export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
+export const EnvConfig = ({ data, onSave, auth }: GeneralComponentConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -38,15 +33,15 @@ export const EnvConfig = ({ data, onSave, auth }: EnvConfigProps) => {
     setLoading(false);
   };
 
-  const selectChange = async (e: RadioChangeEvent) => {
+  const selectChange = async (e: RadioChangeEvent, entity: BaseConfigProperties) => {
     const { value, name } = e.target;
-
     await onSaveHandler({
-      name: '',
-      example: [],
-      frontType: '',
+      hidden: entity.hidden,
+      name: entity.name,
+      example: entity.example,
+      frontType: entity.frontType,
       key: name ?? '',
-      note: '',
+      note: entity.note,
       value: value.toString().toLocaleUpperCase()
     });
   };

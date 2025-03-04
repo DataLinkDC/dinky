@@ -83,7 +83,7 @@ export const SelectFlinkRunMode = memo((props: { data: FlinkCluster[] }) => {
           <span key={label}>
             {label}{' '}
             {labels.length > 1 && (
-              <Tag color={option.enabled ? 'processing' : 'error'}>{selectedOptions[0].label}</Tag>
+              <Tag color={option.enabled ? 'success' : 'error'}>{selectedOptions[0].label}</Tag>
             )}
           </span>
         )

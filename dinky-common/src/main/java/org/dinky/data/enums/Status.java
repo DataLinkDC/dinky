@@ -93,6 +93,7 @@ public enum Status {
     OFFLINE_FAILED(9036, "offline.failed"),
     VERSION_ROLLBACK_SUCCESS(9037, "version.rollback.success"),
     VERSION_ROLLBACK_FAILED(9038, "version.rollback.failed"),
+    NESTED_DEFINED_DENY(9039, "nested.defined.deny"),
 
     /**
      * user,tenant,role
@@ -196,7 +197,7 @@ public enum Status {
     CATALOGUE_NOT_EXIST(12017, "catalogue.not.exist"),
     CATALOGUE_IS_EXIST(12018, "catalogue.is.exist"),
     TASK_NAME_NOT_MATCH_CATALOGUE_NAME(12019, "task.name.not.match.catalogue.name"),
-    NAME_IS_EXIST(12021, "A task and a directory cannot have the same name under the same parent directory."),
+    NAME_IS_EXIST(12021, "catalogue.name.not.exist"),
 
     /**
      * alert instance

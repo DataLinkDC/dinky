@@ -359,7 +359,7 @@ export const Project = (props: any) => {
           <DirectoryTree
             ref={treeRef}
             showLine
-            virtual
+            virtual={false}
             switcherIcon={<DownOutlined />}
             className={'treeList'}
             height={treeHeight}

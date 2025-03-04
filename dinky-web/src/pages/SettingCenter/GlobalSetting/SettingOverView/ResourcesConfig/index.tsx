@@ -22,12 +22,7 @@ import { BaseConfigProperties, GLOBAL_SETTING_KEYS } from '@/types/SettingCenter
 import { l } from '@/utils/intl';
 import { RadioChangeEvent, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
-
-interface ResourcesConfigProps {
-  data: BaseConfigProperties[];
-  onSave: (data: BaseConfigProperties) => void;
-  auth: string;
-}
+import { GeneralComponentConfigProps } from '@/pages/SettingCenter/GlobalSetting/data.d';
 
 const ModelType = {
   HDFS: 'HDFS',
@@ -40,7 +35,7 @@ type ResourceConfig = {
   oss: BaseConfigProperties[];
 };
 
-export const ResourcesConfig = ({ data, onSave, auth }: ResourcesConfigProps) => {
+export const ResourcesConfig = ({ data, onSave, auth }: GeneralComponentConfigProps) => {
   const [loading, setLoading] = React.useState(false);
   const [model, setModel] = React.useState('hdfs');
   const [filterData, setFilterData] = useState<ResourceConfig>({
@@ -75,18 +70,19 @@ export const ResourcesConfig = ({ data, onSave, auth }: ResourcesConfigProps) =>
     await onSave(data);
     setLoading(false);
   };
-  const selectChange = async (e: RadioChangeEvent) => {
+  const selectChange = async (e: RadioChangeEvent, entity: BaseConfigProperties) => {
     const { value, name } = e.target;
-    setModel(value);
     await onSaveHandler({
-      name: '',
-      example: [],
-      frontType: '',
+      hidden: entity.hidden,
+      name: entity.name,
+      example: entity.example,
+      frontType: entity.frontType,
       key: name ?? '',
-      note: '',
+      note: entity.note,
       value: value.toString().toLocaleUpperCase()
     });
   };
+
   return (
     <>
       <GeneralConfig

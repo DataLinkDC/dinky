@@ -18,7 +18,7 @@
  */
 
 import { API_CONSTANTS } from '@/services/endpoints';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { TaskVersionListItem } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import moment from 'moment';
@@ -30,13 +30,22 @@ import { handleOption, handleRemoveById } from '@/services/BusinessCrud';
 import VersionList from '@/components/VersionList';
 import { useRequest } from '@umijs/max';
 
-export const HistoryVersion = (props: { taskId: number; statement: string; updateTime: Date }) => {
-  const { taskId, statement, updateTime } = props;
+export const HistoryVersion = (props: {
+  taskId: number;
+  statement: string;
+  updateTime: Date;
+  lastVersionId: number;
+  rollbackTask: (taskId: number, versionId: number) => void;
+}) => {
+  const { taskId, statement, updateTime, lastVersionId, rollbackTask } = props;
 
-  const { data, refresh, loading } = useRequest({
-    url: API_CONSTANTS.GET_JOB_VERSION,
-    params: { taskId: taskId }
-  });
+  const { data, refresh, loading } = useRequest(
+    {
+      url: API_CONSTANTS.GET_JOB_VERSION,
+      params: { taskId: taskId }
+    },
+    { refreshDeps: [lastVersionId] }
+  );
 
   const [versionDiffVisible, setVersionDiffVisible] = useState<boolean>(false);
   const [versionDiffRow, setVersionDiffRow] = useState<TaskVersionListItem>();
@@ -113,17 +122,7 @@ export const HistoryVersion = (props: { taskId: number; statement: string; updat
       }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
-      onOk: async () => {
-        const TaskVersionRollbackItem = {
-          taskId: row.taskId,
-          versionId: row.versionId
-        };
-        await handleOption(
-          'api/task/rollbackTask',
-          l('pages.datastudio.label.version.rollback.flinksql'),
-          TaskVersionRollbackItem
-        );
-      }
+      onOk: async () => rollbackTask(row.taskId, row.versionId)
     });
   };
 

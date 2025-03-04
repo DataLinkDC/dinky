@@ -20,6 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.crypto.CryptoComponent;
+import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.model.FragmentVariable;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.mapper.FragmentVariableMapper;
@@ -30,6 +31,7 @@ import org.dinky.utils.FragmentVariableUtils;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import javax.annotation.Resource;
 
@@ -100,5 +102,14 @@ public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariab
         FragmentVariable fragmentVariable = getById(id);
         fragmentVariable.setEnabled(!fragmentVariable.getEnabled());
         return updateById(fragmentVariable);
+    }
+
+    @Override
+    public Boolean isNestedDefined(FragmentVariable fragmentVariable) {
+        Matcher m = CommonConstant.GLOBAL_VARIABLE_PATTERN.matcher(fragmentVariable.getFragmentValue());
+        if (m.find()) {
+            return true;
+        }
+        return false;
     }
 }

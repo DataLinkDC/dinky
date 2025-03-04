@@ -106,20 +106,20 @@ public class ClusterConfigurationController {
     }
 
     /**
-     * query cluster config list of enabled
+     * query cluster config list of all
      *
      * @return
      */
-    @GetMapping("/listEnabledAll")
-    @ApiOperation("Cluster Config List Enabled All")
+    @GetMapping("/listAll")
+    @ApiOperation("Cluster Config List All")
     @ApiImplicitParam(
             name = "para",
             value = "Cluster Configuration",
             dataType = "JsonNode",
             paramType = "body",
             required = true)
-    public Result<List<ClusterConfiguration>> listEnabledAllClusterConfig() {
-        return Result.succeed(clusterConfigurationService.listEnabledAllClusterConfig());
+    public Result<List<ClusterConfiguration>> listAllClusterConfig() {
+        return Result.succeed(clusterConfigurationService.listAllClusterConfig());
     }
 
     /**
