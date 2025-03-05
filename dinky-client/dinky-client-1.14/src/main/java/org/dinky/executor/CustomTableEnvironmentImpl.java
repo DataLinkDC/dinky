@@ -204,7 +204,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return getParser().parseSql(sql);
     }
 
-    private static Executor lookupExecutor(
+    protected static Executor lookupExecutor(
             ClassLoader classLoader, String executorIdentifier, StreamExecutionEnvironment executionEnvironment) {
         try {
             final ExecutorFactory executorFactory =

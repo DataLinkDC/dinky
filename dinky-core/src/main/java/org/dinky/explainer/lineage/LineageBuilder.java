@@ -40,12 +40,12 @@ import java.util.Map;
 public class LineageBuilder {
 
     public static LineageResult getColumnLineageByLogicalPlan(String statement, JobConfig jobConfig) {
-        Explainer explainer = Explainer.build(JobManager.buildPlanMode(jobConfig));
+        Explainer explainer = Explainer.build(JobManager.buildPlanModeWithPlanner(jobConfig));
         return getColumnLineageByLogicalPlan(explainer.getLineage(statement));
     }
 
     public static LineageResult getColumnLineageByLogicalPlan(String statement, ExecutorConfig executorConfig) {
-        JobManager jobManager = JobManager.buildPlanMode(JobConfig.buildPlanConfig());
+        JobManager jobManager = JobManager.buildPlanModeWithPlanner(JobConfig.buildPlanConfig());
         Executor executor = ExecutorFactory.buildExecutor(executorConfig, jobManager.getDinkyClassLoader());
         jobManager.setExecutor(executor);
         Explainer explainer = Explainer.build(jobManager);
