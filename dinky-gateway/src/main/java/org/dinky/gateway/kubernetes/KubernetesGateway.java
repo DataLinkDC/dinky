@@ -47,6 +47,7 @@ import org.apache.flink.python.PythonOptions;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,17 +105,6 @@ public abstract class KubernetesGateway extends AbstractGateway {
                     + " is not Valid. In Kubernetes mode, task names must start and end with a lowercase letter or a digit, "
                     + "and can contain lowercase letters, digits, dots, and hyphens in between.");
         }
-        k8sConfig = config.getKubernetesConfig();
-
-        // 兼容kubernetes.container.image 和 kubernetes.container.image.ref
-        final String oldContainerImageKey = "kubernetes.container.image";
-        if (k8sConfig.getConfiguration().containsKey(oldContainerImageKey)) {
-            k8sConfig
-                    .getConfiguration()
-                    .put(
-                            KubernetesConfigOptions.CONTAINER_IMAGE.key(),
-                            k8sConfig.getConfiguration().get(oldContainerImageKey));
-        }
 
         configuration.set(CoreOptions.CLASSLOADER_RESOLVE_ORDER, "parent-first");
         try {
@@ -124,8 +114,17 @@ public abstract class KubernetesGateway extends AbstractGateway {
             logger.warn("load locale config yaml failed：{},Skip config it", e.getMessage());
         }
 
+        k8sConfig = config.getKubernetesConfig();
+        // 兼容kubernetes.container.image 和 kubernetes.container.image.ref
+        Map<String, String> k8sConfiguration = k8sConfig.getConfiguration();
+        final String oldContainerImageKey = "kubernetes.container.image";
+        if (k8sConfiguration.containsKey(oldContainerImageKey)) {
+            String containerImageValue = k8sConfiguration.get(oldContainerImageKey);
+            k8sConfiguration.remove(oldContainerImageKey);
+            k8sConfiguration.put(KubernetesConfigOptions.CONTAINER_IMAGE.key(), containerImageValue);
+        }
         // -------------------Note: the sequence can not be changed, priority problem----------------
-        addConfigParas(k8sConfig.getConfiguration());
+        addConfigParas(k8sConfiguration);
         addConfigParas(flinkConfig.getConfiguration());
         // -------------------------------------------
         addConfigParas(DeploymentOptions.TARGET, getType().getLongValue());
