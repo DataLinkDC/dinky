@@ -377,7 +377,7 @@ public class TaskController {
                         "args",
                         "base64@"
                                 + Base64.encode(
-                                Opt.ofNullable(jarSubmitParam.getArgs()).orElse("")))
+                                        Opt.ofNullable(jarSubmitParam.getArgs()).orElse("")))
                 .set("mainClass", Opt.ofNullable(jarSubmitParam.getMainClass()).orElse(""))
                 .set(
                         "allowNonRestoredState",
