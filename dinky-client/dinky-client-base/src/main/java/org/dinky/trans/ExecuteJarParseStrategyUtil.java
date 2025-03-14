@@ -30,7 +30,6 @@ public class ExecuteJarParseStrategyUtil {
     }
 
     public static String removeExecuteJarStatement(String statement) {
-        return Singleton.get(ExecuteJarParseStrategy.class)
-                .replaceAll(statement.replaceAll("\u00A0", " "),"");
+        return Singleton.get(ExecuteJarParseStrategy.class).replaceAll(statement.replaceAll("\u00A0", " "), "");
     }
 }
