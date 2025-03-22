@@ -27,6 +27,8 @@ import org.dinky.metadata.config.DriverConfig;
 
 import org.apache.paimon.data.GenericRow;
 import org.apache.paimon.data.InternalRow;
+import org.apache.paimon.data.columnar.ColumnarArray;
+import org.apache.paimon.types.ArrayType;
 import org.apache.paimon.types.DataField;
 import org.apache.paimon.types.DataTypeRoot;
 import org.apache.paimon.types.DecimalType;
@@ -86,6 +88,7 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
                         .toString();
             case TINYINT:
             case SMALLINT:
+                return row.getShort(ordinal);
             case INTEGER:
                 return row.getInt(ordinal);
             case BIGINT:
@@ -106,6 +109,39 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
                 return row.getTimestamp(ordinal, timestampType.getPrecision()).toLocalDateTime();
             case ARRAY:
             case MULTISET:
+                if (row.getArray(ordinal) instanceof ColumnarArray) {
+                    ColumnarArray columnarArray = (ColumnarArray) row.getArray(ordinal);
+                    ArrayType arrayType = (ArrayType) fieldType.type();
+                    boolean isString = true;
+                    switch (arrayType.getElementType().asSQLString().toUpperCase()) {
+                        case "SHORT":
+                        case "TINYINT":
+                        case "INT":
+                        case "BIGINT":
+                        case "FLOAT":
+                        case "DOUBLE":
+                        case "DECIMAL":
+                            isString = false;
+                            break;
+                        default:
+                            break;
+                    }
+                    StringBuilder columnarArrayStringBuild = new StringBuilder("[ ");
+                    for (int i = 0; i < columnarArray.size(); i++) {
+                        if (i > 0) {
+                            columnarArrayStringBuild.append(", ");
+                        }
+                        if (isString) {
+                            columnarArrayStringBuild.append("\"");
+                        }
+                        columnarArrayStringBuild.append(columnarArray.getString(i));
+                        if (isString) {
+                            columnarArrayStringBuild.append("\"");
+                        }
+                    }
+                    columnarArrayStringBuild.append(" ]");
+                    return columnarArrayStringBuild.toString();
+                }
                 return row.getArray(ordinal).toString();
             case MAP:
                 return row.getMap(ordinal).toString();
