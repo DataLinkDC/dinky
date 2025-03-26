@@ -38,7 +38,7 @@ public final class ExecutorFactory {
     }
 
     public static Executor buildExecutor(ExecutorConfig executorConfig, DinkyClassLoader classLoader) {
-        if (executorConfig.isRemote()) {
+        if (executorConfig.isRemote() && !executorConfig.isPlan()) {
             return buildRemoteExecutor(executorConfig, classLoader);
         } else {
             return buildLocalExecutor(executorConfig, classLoader);

@@ -24,6 +24,7 @@ import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.JobStatementType;
+import org.dinky.data.job.SqlCategory;
 import org.dinky.data.job.SqlType;
 import org.dinky.data.model.LineageRel;
 import org.dinky.data.result.ExplainResult;
@@ -62,21 +63,23 @@ import lombok.extern.slf4j.Slf4j;
 public class Explainer {
 
     private Executor executor;
-    private boolean useStatementSet;
     private JobManager jobManager;
 
-    public Explainer(Executor executor, boolean useStatementSet, JobManager jobManager) {
+    public Explainer(Executor executor) {
         this.executor = executor;
-        this.useStatementSet = useStatementSet;
+    }
+
+    public Explainer(Executor executor, JobManager jobManager) {
+        this.executor = executor;
         this.jobManager = jobManager;
     }
 
-    public static Explainer build(JobManager jobManager) {
-        return new Explainer(jobManager.getExecutor(), true, jobManager);
+    public static Explainer build(Executor executor) {
+        return new Explainer(executor);
     }
 
-    public static Explainer build(Executor executor, boolean useStatementSet, JobManager jobManager) {
-        return new Explainer(executor, useStatementSet, jobManager);
+    public static Explainer build(JobManager jobManager) {
+        return new Explainer(jobManager.getExecutor(), jobManager);
     }
 
     public JobStatementPlan parseStatements(String[] statements) {
@@ -91,6 +94,10 @@ public class Explainer {
                     .jobStatementPlanMock(jobStatementPlanWithMock);
         }
         return jobStatementPlanWithMock;
+    }
+
+    public JobStatementPlan parseStatementsForApplicationMode(String[] statements) {
+        return executor.parseStatementIntoJobStatementPlan(statements);
     }
 
     private void generateUDFStatement(JobStatementPlan jobStatementPlan) {
@@ -185,7 +192,7 @@ public class Explainer {
                 .type(GatewayType.LOCAL.getLongValue())
                 .useRemote(false)
                 .fragment(true)
-                .statementSet(useStatementSet)
+                .statementSet(false)
                 .parallelism(1)
                 .udfRefer(jobManager.getConfig().getUdfRefer())
                 .configJson(executor.getTableConfig().getConfiguration().toMap())
@@ -206,7 +213,7 @@ public class Explainer {
             try {
                 if (sqlType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else if (!sqlType.equals(SqlType.SELECT) && !sqlType.equals(SqlType.PRINT)) {
+                } else if (SqlCategory.DDL.equals(sqlType.getCategory())) {
                     jobRunnerFactory.getJobRunner(item.getStatementType()).run(item);
                 }
             } catch (Exception e) {

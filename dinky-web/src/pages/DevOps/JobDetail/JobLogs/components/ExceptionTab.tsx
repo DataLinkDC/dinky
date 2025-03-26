@@ -46,13 +46,13 @@ const ExceptionTab = (props: JobProps) => {
 
   const renderLogTab = () => {
     let logs = [];
-    const rte = jobDetail?.jobDataDto?.exceptions['root-exception'];
+    const rte = jobDetail?.jobDataDto?.exceptions?.['root-exception'] ?? undefined;
     logs.push({
       taskName: 'RootException',
       stacktrace: rte,
       exceptionName: rte
     });
-    logs.push(...jobDetail.jobDataDto?.exceptions['exceptionHistory']['entries']);
+    logs.push(...(jobDetail.jobDataDto?.exceptions?.['exceptionHistory']?.['entries'] ?? []));
     return (
       <Row>
         <Col span={3}>

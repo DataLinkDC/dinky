@@ -591,7 +591,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         return getBaseMapper()
                 .exists(new LambdaQueryWrapper<Catalogue>()
                         .eq(Catalogue::getName, catalogue.getName())
-                        .ne(catalogue.getParentId() != null, Catalogue::getParentId, catalogue.getParentId()));
+                        .eq(catalogue.getParentId() != null, Catalogue::getParentId, catalogue.getParentId()));
     }
 
     private CatalogueTaskDTO getCatalogueTaskDTO(String name, Integer parentId) {

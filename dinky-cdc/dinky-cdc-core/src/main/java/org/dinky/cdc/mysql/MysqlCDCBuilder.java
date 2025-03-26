@@ -215,16 +215,9 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
     @Override
     public Map<String, String> parseMetaDataConfig() {
-        boolean tinyInt1isBit = !config.getJdbc().containsKey("tinyInt1isBit")
-                || "true".equalsIgnoreCase(config.getJdbc().get("tinyInt1isBit"));
-        boolean transformedBitIsBoolean = !config.getJdbc().containsKey("transformedBitIsBoolean")
-                || "true".equalsIgnoreCase(config.getJdbc().get("transformedBitIsBoolean"));
-        String url = String.format("jdbc:mysql://%s:%d/", config.getHostname(), config.getPort());
-        if (tinyInt1isBit && transformedBitIsBoolean) {
-            url += "?tinyInt1isBit=true";
-        } else {
-            url += "?tinyInt1isBit=false";
-        }
+        String url = String.format(
+                "jdbc:mysql://%s:%d/%s",
+                config.getHostname(), config.getPort(), composeJdbcProperties(config.getJdbc()));
         return parseMetaDataSingleConfig(url);
     }
 
@@ -250,6 +243,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
                 config.getHostname(), config.getPort(), schema, composeJdbcProperties(config.getJdbc()));
     }
 
+    // Append jdbc properties, such as: ?tinyInt1isBit=true&useSSL=true
     private String composeJdbcProperties(Map<String, String> jdbcProperties) {
         if (jdbcProperties == null || jdbcProperties.isEmpty()) {
             return "";

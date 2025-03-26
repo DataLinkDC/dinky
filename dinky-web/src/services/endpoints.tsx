@@ -92,7 +92,7 @@ export enum API_CONSTANTS {
 
   // ------------------------------------ cluster configuration ------------------------------------
   CLUSTER_CONFIGURATION = '/api/clusterConfiguration/list',
-  CLUSTER_CONFIGURATION_LIST_ENABLE_ALL = '/api/clusterConfiguration/listEnabledAll',
+  CLUSTER_CONFIGURATION_LIST_ALL = '/api/clusterConfiguration/listAll',
   CLUSTER_CONFIGURATION_ADD_OR_UPDATE = '/api/clusterConfiguration/saveOrUpdate',
   CLUSTER_CONFIGURATION_DELETE = '/api/clusterConfiguration/delete',
   CLUSTER_CONFIGURATION_ENABLE = '/api/clusterConfiguration/enable',
@@ -283,6 +283,7 @@ export enum API_CONSTANTS {
   CATALOGUE_GET_CATALOGUE_SORT_TYPE_DATA = '/api/catalogue/getCatalogueSortType',
   GET_JOB_VERSION = '/api/task/version',
   RESTART_TASK = '/api/task/restartTask',
+  ROLLBACK_TASK = '/api/task/rollbackTask',
   SAVEPOINT = '/api/task/savepoint',
   RESTART_TASK_FROM_CHECKPOINT = '/api/task/selectSavePointRestartTask',
   LIST_FLINK_SQL_ENV = '/api/task/listFlinkSQLEnv',

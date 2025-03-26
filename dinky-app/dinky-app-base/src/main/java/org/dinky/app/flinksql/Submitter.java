@@ -20,23 +20,25 @@
 package org.dinky.app.flinksql;
 
 import org.dinky.app.db.DBUtil;
-import org.dinky.app.model.StatementParam;
 import org.dinky.app.model.SysConfig;
 import org.dinky.app.util.FlinkAppUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.constant.CustomerConfigureOptions;
-import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.data.app.AppParamConfig;
 import org.dinky.data.app.AppTask;
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.enums.GatewayType;
+import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.SqlType;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorConfig;
 import org.dinky.executor.ExecutorFactory;
+import org.dinky.explainer.Explainer;
+import org.dinky.job.JobRunnerFactory;
+import org.dinky.job.JobStatementPlan;
 import org.dinky.resource.BaseResourceManager;
 import org.dinky.trans.Operations;
 import org.dinky.trans.dml.ExecuteJarOperation;
@@ -60,7 +62,6 @@ import org.apache.flink.python.PythonOptions;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.TableResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +73,6 @@ import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -141,7 +141,7 @@ public class Submitter {
             if (Dialect.FLINK_JAR == appTask.getDialect()) {
                 jobClient = executeJarJob(appTask.getType(), executor, statements);
             } else {
-                jobClient = executeJob(executor, statements);
+                jobClient = executeJob(executor, sql);
             }
         } finally {
             log.info("Start Monitor Job");
@@ -305,85 +305,31 @@ public class Submitter {
         return jobClient;
     }
 
-    public static Optional<JobClient> executeJob(Executor executor, String[] statements) {
+    public static Optional<JobClient> executeJob(Executor executor, String statements) {
         Optional<JobClient> jobClient = Optional.empty();
 
-        ExecutorConfig executorConfig = executor.getExecutorConfig();
-        List<StatementParam> ddl = new ArrayList<>();
-        List<StatementParam> trans = new ArrayList<>();
-        List<StatementParam> execute = new ArrayList<>();
-
-        for (String item : statements) {
-            if (item.isEmpty()) {
-                continue;
-            }
-
-            SqlType operationType = Operations.getOperationType(item);
-            if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
-                trans.add(new StatementParam(item, operationType));
-                if (!executorConfig.isUseStatementSet()) {
-                    break;
-                }
-            } else if (operationType.equals(SqlType.EXECUTE)) {
-                execute.add(new StatementParam(item, operationType));
-                if (!executorConfig.isUseStatementSet()) {
-                    break;
-                }
-            } else {
-                ddl.add(new StatementParam(item, operationType));
-            }
-        }
-
-        for (StatementParam item : ddl) {
-            log.info("Executing FlinkSQL: {}", item.getValue());
-            executor.executeSql(item.getValue());
-            log.info("Execution succeeded.");
-        }
-
-        if (!trans.isEmpty()) {
-            if (executorConfig.isUseStatementSet()) {
-                List<String> inserts = new ArrayList<>();
-                for (StatementParam item : trans) {
-                    if (item.getType().equals(SqlType.INSERT)) {
-                        inserts.add(item.getValue());
-                    }
-                }
-                log.info("Executing FlinkSQL statement set: {}", String.join(FlinkSQLConstant.SEPARATOR, inserts));
-                TableResult tableResult = executor.executeStatementSet(inserts);
-                jobClient = tableResult.getJobClient();
+        JobStatementPlan jobStatementPlan =
+                Explainer.build(executor).parseStatementsForApplicationMode(SqlUtil.getStatements(statements));
+        jobStatementPlan.buildFinalExecutableStatement();
+        JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(executor);
+        String currentSql = "";
+        try {
+            for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
+                currentSql = jobStatement.getStatement();
+                log.info("Executing FlinkSQL: {}", currentSql);
+                Optional<JobClient> optionalJobClient = jobRunnerFactory
+                        .getJobRunner(jobStatement.getStatementType())
+                        .execute(jobStatement);
                 log.info("Execution succeeded.");
-            } else {
-                // UseStatementSet defaults to true, where the logic is never executed
-                StatementParam item = trans.get(0);
-                log.info("Executing FlinkSQL: {}", item.getValue());
-                TableResult tableResult = executor.executeSql(item.getValue());
-                jobClient = tableResult.getJobClient();
-                log.info("Execution succeeded.");
-            }
-        }
-
-        if (!execute.isEmpty()) {
-            List<String> executes = new ArrayList<>();
-            for (StatementParam item : execute) {
-                executes.add(item.getValue());
-                executor.executeSql(item.getValue());
-                if (!executorConfig.isUseStatementSet()) {
+                if (optionalJobClient.isPresent()) {
+                    jobClient = optionalJobClient;
                     break;
                 }
             }
-
-            log.info(
-                    "The FlinkSQL statement set is being executed： {}",
-                    String.join(FlinkSQLConstant.SEPARATOR, executes));
-            try {
-                JobClient client = executor.executeAsync(executorConfig.getJobName());
-                jobClient = Optional.of(client);
-                log.info("The execution was successful");
-            } catch (Exception e) {
-                log.error("Execution failed, {}", e.getMessage(), e);
-            }
+        } catch (Exception e) {
+            log.error("Execution failed. Current statement: {} \n Error: {}", currentSql, e.getMessage(), e);
         }
-        log.info("{} The task is successfully submitted", LocalDateTime.now());
+        log.info("The task is successfully submitted.");
         return jobClient;
     }
 }

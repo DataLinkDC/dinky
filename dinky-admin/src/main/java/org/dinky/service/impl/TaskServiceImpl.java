@@ -242,7 +242,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (GatewayType.get(task.getType()).isDeployCluster()) {
             log.info("Init gateway config, type:{}", task.getType());
             FlinkClusterConfig flinkClusterCfg =
-                    clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
+                    clusterCfgService.getAndCheckEnableFlinkClusterCfg(config.getClusterConfigurationId());
             flinkClusterCfg.getAppConfig().setUserJarParas(buildParams(config.getTaskId()));
             flinkClusterCfg.getAppConfig().setUserJarMainAppClass(CommonConstant.DINKY_APP_MAIN_CLASS);
             config.buildGatewayConfig(flinkClusterCfg);
@@ -568,7 +568,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Integer tenantId = baseMapper.getTenantByTaskId(id);
         Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
         TenantContextHolder.set(tenantId);
-        log.info("Init task tenan finished..");
+        log.info("Init task tenant finished..");
     }
 
     @Override
@@ -995,7 +995,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public LineageResult getTaskLineage(Integer id) {
         TaskDTO task = getTaskInfoById(id);
-        if (!Dialect.isCommonSql(task.getDialect())) {
+        if (Dialect.isCommonSql(task.getDialect())) {
             if (Asserts.isNull(task.getDatabaseId())) {
                 return null;
             }
@@ -1101,10 +1101,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private Boolean hasTaskOperatePermission(Integer firstLevelOwner, List<Integer> secondLevelOwners) {
         boolean isFirstLevelOwner = firstLevelOwner != null && firstLevelOwner == StpUtil.getLoginIdAsInt();
         if (TaskOwnerLockStrategyEnum.OWNER.equals(
-                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy().getValue())) {
             return isFirstLevelOwner;
         } else if (TaskOwnerLockStrategyEnum.OWNER_AND_MAINTAINER.equals(
-                SystemConfiguration.getInstances().getTaskOwnerLockStrategy())) {
+                SystemConfiguration.getInstances().getTaskOwnerLockStrategy().getValue())) {
             return isFirstLevelOwner
                     || (secondLevelOwners != null && secondLevelOwners.contains(StpUtil.getLoginIdAsInt()));
         }

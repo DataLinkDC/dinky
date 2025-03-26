@@ -44,7 +44,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /**
  * ClusterConfigServiceImpl
@@ -68,8 +67,16 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
     }
 
     @Override
-    public List<ClusterConfiguration> listEnabledAllClusterConfig() {
-        return this.list(new QueryWrapper<ClusterConfiguration>().eq("enabled", 1));
+    public List<ClusterConfiguration> listAllClusterConfig() {
+        return this.list();
+    }
+
+    @Override
+    public FlinkClusterConfig getAndCheckEnableFlinkClusterCfg(Integer id) {
+        ClusterConfiguration cfg = this.getClusterConfigById(id);
+        DinkyAssert.checkNull(cfg, "The clusterConfiguration not exists!");
+        DinkyAssert.checkEnable(cfg, "The clusterConfiguration is Disable!");
+        return FlinkClusterConfig.create(cfg.getType(), cfg.getConfigJson());
     }
 
     @Override

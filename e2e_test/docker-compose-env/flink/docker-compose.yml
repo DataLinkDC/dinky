@@ -7,10 +7,14 @@ services:
     hostname: jobmanager
     container_name: jobmanager
     restart: always
-    image: flink:${FLINK_VERSION}-scala_2.12-java8
+    image: localhost:5000/dinky/flink:flink
     command: jobmanager
     environment:
       - HADOOP_CONF_DIR=/opt/flink/conf
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        parallelism.default: 1
     volumes:
       - ./conf:/opt/flink/conf
       - ./flink-shaded-hadoop-2-uber-2.8.3-10.0.jar:/opt/flink/lib/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar
@@ -19,10 +23,15 @@ services:
   taskmanager:
     hostname: taskmanager
     container_name: taskmanager
-    image: flink:${FLINK_VERSION}-scala_2.12-java8
+    image: localhost:5000/dinky/flink:flink
     command: taskmanager
     environment:
       - HADOOP_CONF_DIR=/opt/flink/conf
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 20
+        parallelism.default: 1
     volumes:
       - ./conf:/opt/flink/conf
       - ./flink-shaded-hadoop-2-uber-2.8.3-10.0.jar:/opt/flink/lib/flink-shaded-hadoop-2-uber-2.8.3-10.0.jar

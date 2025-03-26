@@ -17,29 +17,43 @@
  *
  */
 
-package org.dinky.ws.topic;
+package org.dinky.ws.handler;
 
 import org.dinky.daemon.pool.FlinkJobThreadPool;
+import org.dinky.ws.GlobalWebSocketTopic;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TaskRunInstance extends BaseTopic {
-    public static final TaskRunInstance INSTANCE = new TaskRunInstance();
+@Service
+public class TaskRunInstance extends ScheduleMessageEventHandler {
+
     private Set<Integer> runningJobIds = new ConcurrentSkipListSet<>();
 
-    private TaskRunInstance() {}
+    @Override
+    public Map<String, Object> firstSubscribe(Set<String> allParams) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("RunningTaskId", FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds());
+        return result;
+    }
 
     @Override
-    public Map<String, Object> autoDataSend(Set<String> allParams) {
+    public GlobalWebSocketTopic getTopic() {
+        return GlobalWebSocketTopic.TASK_RUN_INSTANCE;
+    }
+
+    @Override
+    public Map<String, Object> autoMessageSend() {
         Set<Integer> currentMonitorTaskIds = FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds();
         if (!runningJobIds.equals(currentMonitorTaskIds)) {
-            log.info("New Status:" + currentMonitorTaskIds.toString());
             runningJobIds.clear();
             runningJobIds.addAll(currentMonitorTaskIds);
             Map<String, Object> result = new HashMap<>();
@@ -50,9 +64,7 @@ public class TaskRunInstance extends BaseTopic {
     }
 
     @Override
-    public Map<String, Object> firstDataSend(Set<String> allParams) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("RunningTaskId", FlinkJobThreadPool.getInstance().getCurrentMonitorTaskIds());
-        return result;
+    protected long scheduleDelay() {
+        return TimeUnit.SECONDS.toMillis(1);
     }
 }

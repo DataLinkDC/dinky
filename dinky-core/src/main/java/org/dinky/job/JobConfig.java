@@ -29,7 +29,6 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.model.FlinkClusterConfig;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;
@@ -43,14 +42,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * JobConfig
  *
  * @since 2021/6/27 18:45
  */
-@Slf4j
 @Data
 @Builder
 @AllArgsConstructor
@@ -193,13 +190,6 @@ public class JobConfig {
             notes = "Flag indicating whether to mock sink function")
     private boolean mockSinkFunction;
 
-    @ApiModelProperty(
-            value = "Flag indicating whether to be submission mode",
-            dataType = "boolean",
-            example = "true",
-            notes = "Flag indicating whether to be submission mode")
-    private boolean isSubmissionMode;
-
     @ApiModelProperty(value = "Gateway configuration", dataType = "GatewayConfig", notes = "Gateway configuration")
     private GatewayConfig gatewayConfig;
 
@@ -261,17 +251,9 @@ public class JobConfig {
             flinkConfig.getConfiguration().put(customConfig.getName(), customConfig.getValue());
         }
 
-        Map<String, String> configuration = flinkConfig.getConfiguration();
-
-        // In Kubernetes mode, must set jobmanager.memory.process.size.
-        if (StringUtils.isBlank(configuration.get("jobmanager.memory.process.size"))) {
-            log.warn("In Kubernetes mode, please configure 'jobmanager.memory.process.size', default 2048m");
-            configuration.put("jobmanager.memory.process.size", "2048m");
-        }
-
-        // Load job configuration content afterwards
-        configuration.putAll(getConfigJson());
-        configuration.put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
+        // Load job configuration content afterwords
+        flinkConfig.getConfiguration().putAll(getConfigJson());
+        flinkConfig.getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
         flinkConfig.setJobName(getJobName());
 
         gatewayConfig = GatewayConfig.build(config);

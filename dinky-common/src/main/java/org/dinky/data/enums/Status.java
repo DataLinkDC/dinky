@@ -196,7 +196,7 @@ public enum Status {
     CATALOGUE_NOT_EXIST(12017, "catalogue.not.exist"),
     CATALOGUE_IS_EXIST(12018, "catalogue.is.exist"),
     TASK_NAME_NOT_MATCH_CATALOGUE_NAME(12019, "task.name.not.match.catalogue.name"),
-    NAME_IS_EXIST(12021, "A task and a directory cannot have the same name under the same parent directory."),
+    NAME_IS_EXIST(12021, "catalogue.name.not.exist"),
 
     /**
      * alert instance
@@ -301,7 +301,7 @@ public enum Status {
      * udf template
      */
     UDF_TEMPLATE_EXIST_RELATIONSHIP(23001, "udf.template.exist.relationship"),
-
+    UDF_SAVE_SUCCESS_PLACEHOLDER(23002, "udf.save.success.placeholder"),
     /**
      * Resource
      */
@@ -444,8 +444,8 @@ public enum Status {
     /**
      * gateway config
      */
-    GAETWAY_KUBERNETS_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
-    GAETWAY_KUBERNETS_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
+    GATEWAY_KUBERNETES_TEST_FAILED(180, "gateway.kubernetes.test.failed"),
+    GATEWAY_KUBERNETES_TEST_SUCCESS(181, "gateway.kubernetes.test.success"),
 
     /**
      * process

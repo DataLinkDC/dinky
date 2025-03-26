@@ -45,9 +45,9 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
     /**
      * List all enabled cluster configurations.
      *
-     * @return A list of {@link ClusterConfiguration} objects representing all enabled cluster configurations.
+     * @return A list of {@link ClusterConfiguration} objects representing all cluster configurations.
      */
-    List<ClusterConfiguration> listEnabledAllClusterConfig();
+    List<ClusterConfiguration> listAllClusterConfig();
 
     /**
      * Get the Flink cluster configuration with the given ID.
@@ -56,6 +56,14 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
      * @return A {@link FlinkClusterConfig} object representing the found Flink cluster configuration.
      */
     FlinkClusterConfig getFlinkClusterCfg(Integer id);
+
+    /**
+     * Get and Check Enable the Flink cluster configuration with the given ID.
+     *
+     * @param id The ID of the Flink cluster configuration to get.
+     * @return A {@link FlinkClusterConfig} object representing the found Flink cluster configuration.
+     */
+    FlinkClusterConfig getAndCheckEnableFlinkClusterCfg(Integer id);
 
     /**
      * Test the given cluster configuration.

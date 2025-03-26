@@ -37,28 +37,7 @@ public class JobStatementPlanTest {
     @Test
     void testEmptyStatement() {
         JobStatementPlan jobStatementPlan = new JobStatementPlan();
-        jobStatementPlan.addJobStatement("", JobStatementType.SQL, SqlType.UNKNOWN);
-        checkInvalidStatement(jobStatementPlan, "The statement cannot be empty. Please check your statements.");
-    }
-
-    @Test
-    void testNoSqlStatement() {
-        JobStatementPlan jobStatementPlan = new JobStatementPlan();
-        jobStatementPlan.addJobStatement("set 'parallelism.default' = '2';\n", JobStatementType.DDL, SqlType.SET);
-        checkInvalidStatement(
-                jobStatementPlan,
-                "The statements must contain at least one INSERT/CTAS/RTAS/SELECT/WITH/SHOW/DESC statement.");
-    }
-
-    @Test
-    void testSubmissionWithQueryStatement() {
-        JobStatementPlan jobStatementPlan = new JobStatementPlan();
-        jobStatementPlan.setSubmissionMode(true);
-        jobStatementPlan.addJobStatement("select 'A' as name;\n", JobStatementType.SQL, SqlType.SET);
-        checkInvalidStatement(
-                jobStatementPlan,
-                "The submission mode cannot contain one statement which is not a sink operation."
-                        + "\nThe valid statement is: select 'A' as name;\n");
+        checkInvalidStatement(jobStatementPlan, "None of valid statement is executed. Please check your statements.");
     }
 
     @Test

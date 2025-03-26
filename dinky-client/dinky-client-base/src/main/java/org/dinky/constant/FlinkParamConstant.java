@@ -19,6 +19,9 @@
 
 package org.dinky.constant;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * FlinkParam
  *
@@ -26,4 +29,13 @@ package org.dinky.constant;
  */
 public final class FlinkParamConstant {
     public static final String SPLIT = ",";
+
+    public static final List<String> CONFIG_FILE_NAME_LIST = Arrays.asList(
+            "logback.xml",
+            "log4j.properties",
+            "logback-console.xml",
+            "log4j-console.properties",
+            "logback-session.xml",
+            "log4j-session.properties",
+            "log4j-cli.properties");
 }

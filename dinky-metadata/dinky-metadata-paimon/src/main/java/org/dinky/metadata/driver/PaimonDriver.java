@@ -99,7 +99,7 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
                         LinkedHashMap<String, Object> rowList = new LinkedHashMap<>();
                         for (int i = 0; i < row.getFieldCount(); i++) {
                             String name = fieldTypes.get(i).name();
-                            Object data = PaimonTypeConvert.SafeGetRowData(fieldTypes.get(i), row, i);
+                            Object data = PaimonTypeConvert.getRowDataSafe(fieldTypes.get(i), row, i);
                             rowList.put(name, data);
                         }
                         datas.add(rowList);

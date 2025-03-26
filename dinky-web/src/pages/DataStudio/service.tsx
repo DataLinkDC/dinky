@@ -84,7 +84,7 @@ export function getEnvData() {
 }
 
 export function getClusterConfigurationData() {
-  return queryDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_LIST_ENABLE_ALL);
+  return queryDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_LIST_ALL);
 }
 
 export function getFlinkConfigs() {

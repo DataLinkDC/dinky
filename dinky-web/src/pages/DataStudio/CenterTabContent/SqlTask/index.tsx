@@ -98,7 +98,7 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import DiffModal from '@/pages/DataStudio/CenterTabContent/SqlTask/DiffModal';
 import TaskConfig from '@/pages/DataStudio/CenterTabContent/SqlTask/TaskConfig';
 import SelectDb from '@/pages/DataStudio/CenterTabContent/RunToolbar/SelectDb';
-import { SseData, Topic } from '@/models/UseWebSocketModel';
+import { Topic, WsData } from '@/models/UseWebSocketModel';
 import { ResourceInfo } from '@/types/RegCenter/data';
 import { buildResourceTreeDataAtTreeForm } from '@/pages/RegCenter/Resource/components/FileTree/function';
 import { ProFormDependency } from '@ant-design/pro-form';
@@ -194,6 +194,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     subscribeTopic: model.subscribeTopic
   }));
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [lastVersion, setLastVersion] = useState<number>(currentState.versionId);
 
   const [pushDolphinState, setPushDolphinState] = useState<{
     modalVisible: boolean;
@@ -237,6 +238,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           statement: sqlConvertForm?.initSqlStatement ?? ''
         });
         setOriginStatementValue(sqlConvertForm?.initSqlStatement ?? '');
+        updateCenterTab({ ...props.tabData, params: newParams });
         if (params?.statement && params?.statement !== sqlConvertForm?.initSqlStatement) {
           setDiff([
             { key: 'statement', server: sqlConvertForm?.initSqlStatement, cache: params.statement }
@@ -277,7 +279,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     }));
   }, [params]);
   useEffect(() => {
-    return subscribeTopic(Topic.TASK_RUN_INSTANCE, null, (data: SseData) => {
+    return subscribeTopic(Topic.TASK_RUN_INSTANCE, ['RunningTaskId'], (data: WsData) => {
       if (data?.data?.RunningTaskId) {
         setIsRunning(data?.data?.RunningTaskId.includes(params.taskId));
       }
@@ -400,6 +402,25 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     taskOwnerLockingStrategy
   );
 
+  const handleRollbackVersion = async (taskId: number, versionId: number) => {
+    const result = await handleOption(
+      API_CONSTANTS.ROLLBACK_TASK,
+      l('pages.datastudio.label.version.rollback.flinksql'),
+      {
+        taskId,
+        versionId
+      }
+    );
+    if (result && result.success) {
+      // 更新当前编辑器内的sql语句
+      const task = await getTaskDetails(taskId);
+      if (task) {
+        setOriginStatementValue(task.statement);
+        setCurrentState((prevState) => ({ ...prevState, ...task }));
+      }
+    }
+  };
+
   const rightToolbarItem: TabsProps['items'] = [];
   if (
     isSql(currentState.dialect) ||
@@ -428,6 +449,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
           taskId={currentState.taskId}
           statement={currentState.statement}
           updateTime={currentState.updateTime}
+          lastVersionId={lastVersion}
+          rollbackTask={handleRollbackVersion}
         />
       )
     });
@@ -648,11 +671,17 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       currentState.step = JOB_LIFE_CYCLE.DEVELOP;
     } else {
       await handleSave();
-      await changeTaskLife(
+      const result = await changeTaskLife(
         l('global.table.lifecycle.publishing'),
         currentState.taskId,
         JOB_LIFE_CYCLE.PUBLISH
       );
+      if (result.success) {
+        const taskDetails = await getTaskDetails(currentState.taskId);
+        if (taskDetails) {
+          setLastVersion(taskDetails.versionId);
+        }
+      }
       currentState.step = JOB_LIFE_CYCLE.PUBLISH;
     }
     setCurrentState((prevState) => ({ ...prevState, step: currentState.step }));

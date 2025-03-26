@@ -17,27 +17,39 @@
  *
  */
 
-package org.dinky.data.vo;
+package org.dinky.ws.handler;
 
-import org.dinky.ws.GlobalWebSocket;
+import org.dinky.data.metrics.Jvm;
+import org.dinky.ws.GlobalWebSocketTopic;
 
-import lombok.Data;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-@Data
-public class SseDataVo {
-    private String sessionKey;
-    private String topic;
-    private Object data;
-    private GlobalWebSocket.RequestDTO.EventType type;
+import org.springframework.stereotype.Service;
 
-    public SseDataVo(String sessionKey, String topic, Object data) {
-        this.sessionKey = sessionKey;
-        this.topic = topic;
-        this.data = data;
+import cn.hutool.core.map.MapUtil;
+
+@Service
+public class JvmInfo extends ScheduleMessageEventHandler {
+
+    @Override
+    protected long scheduleDelay() {
+        return TimeUnit.SECONDS.toMillis(3);
     }
 
-    public SseDataVo(String sessionKey, GlobalWebSocket.RequestDTO.EventType type) {
-        this.sessionKey = sessionKey;
-        this.type = type;
+    @Override
+    public Map<String, Object> autoMessageSend() {
+        return MapUtil.<String, Object>builder().put(NONE_PARAMS, Jvm.of()).build();
+    }
+
+    @Override
+    public Map<String, Object> firstSubscribe(Set<String> allParams) {
+        return autoMessageSend();
+    }
+
+    @Override
+    public GlobalWebSocketTopic getTopic() {
+        return GlobalWebSocketTopic.JVM_INFO;
     }
 }

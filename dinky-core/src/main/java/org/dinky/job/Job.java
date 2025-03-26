@@ -54,7 +54,7 @@ public class Job {
     private Executor executor;
     private boolean useGateway;
     private List<String> jids;
-    private boolean isPipeline = true;
+    private boolean isPipeline = false;
 
     @Getter
     public enum JobStatus {

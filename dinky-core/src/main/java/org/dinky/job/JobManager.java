@@ -79,7 +79,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -242,18 +241,14 @@ public class JobManager {
 
     @ProcessStep(type = ProcessStepType.SUBMIT_EXECUTE)
     public JobResult executeJarSql(String statement) throws Exception {
-        List<String> statements = Arrays.stream(SqlUtil.getStatements(statement))
-                .map(t -> executor.pretreatStatement(t))
-                .collect(Collectors.toList());
-        statement = String.join(";\n", statements);
-        jobStatementPlan = Explainer.build(this).parseStatements(SqlUtil.getStatements(statement));
-        jobStatementPlan.setSubmissionMode(config.isSubmissionMode());
-        jobStatementPlan.buildFinalStatement();
         job = Job.build(runMode, config, executorConfig, executor, statement, useGateway);
         ready();
-        JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(this);
         try {
+            jobStatementPlan = Explainer.build(this).parseStatements(SqlUtil.getStatements(statement));
+            jobStatementPlan.buildFinalStatement();
+            JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(this);
             for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
+                setCurrentSql(jobStatement.getStatement());
                 jobRunnerFactory.getJobRunner(jobStatement.getStatementType()).run(jobStatement);
             }
             if (job.isFailed()) {
@@ -282,10 +277,10 @@ public class JobManager {
         ready();
         try {
             jobStatementPlan = Explainer.build(this).parseStatements(SqlUtil.getStatements(statement));
-            jobStatementPlan.setSubmissionMode(config.isSubmissionMode());
             jobStatementPlan.buildFinalStatement();
             JobRunnerFactory jobRunnerFactory = JobRunnerFactory.create(this);
             for (JobStatement jobStatement : jobStatementPlan.getJobStatementList()) {
+                setCurrentSql(jobStatement.getStatement());
                 jobRunnerFactory.getJobRunner(jobStatement.getStatementType()).run(jobStatement);
             }
             job.setEndTime(LocalDateTime.now());

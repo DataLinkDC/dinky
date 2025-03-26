@@ -218,7 +218,9 @@ public abstract class Executor {
             } else if (operationType.equals(SqlType.EXECUTE_JAR)) {
                 JarSubmitParam jarSubmitParam = JarSubmitParam.build(statement);
                 String args = jarSubmitParam.getArgs();
-                jarSubmitParam.setArgs("base64@" + Base64.encode(isUseSqlFragment() ? pretreatStatement(args) : args));
+                jarSubmitParam.setArgs("base64@"
+                        + Base64.encode(
+                                isUseSqlFragment() ? getVariableManager().parseVariable(args) : args));
                 jobStatementPlan.addJobStatement(
                         jarSubmitParam.getStatement(), JobStatementType.EXECUTE_JAR, operationType);
             } else if (operationType.equals(SqlType.EXECUTE)) {

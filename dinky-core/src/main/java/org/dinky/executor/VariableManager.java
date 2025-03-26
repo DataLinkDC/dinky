@@ -99,7 +99,9 @@ public final class VariableManager {
      */
     public void registerVariable(Map<String, String> variableMap) {
         if (Asserts.isNotNull(variableMap)) {
-            variables.putAll(variableMap);
+            for (Map.Entry<String, String> variable : variableMap.entrySet()) {
+                registerVariable(variable.getKey(), variable.getValue());
+            }
         }
     }
 
@@ -134,31 +136,30 @@ public final class VariableManager {
         checkArgument(
                 !StringUtils.isNullOrWhitespaceOnly(variableName),
                 "sql variable name or jexl key cannot be null or empty.");
-        try {
-            if (variables.containsKey(variableName)) {
-                return variables.get(variableName);
-            }
-            // load expression variable class
-            if (parseAndMatchExpressionVariable(variableName)) {
-                return ENGINE.eval(variableName, EngineContextHolder.getEngineContext(), null);
-            }
-            return null;
-        } catch (Exception e) {
-            String error = format(
-                    "The variable name or jexl key of sql \"${%s}\" does not exist.\n"
-                            + "Please follow the following methods to resolve the problem:\n"
-                            + "1. global variables are enabled ? \n"
-                            + "2. variable is exists ? it`s defined in sql ? or  global variable is defined ? \n"
-                            + "3. If it is a custom function variable, please check whether the class is loaded correctly",
-                    variableName);
-            throw new BusException(error);
+        if (variables.containsKey(variableName)) {
+            return variables.get(variableName);
         }
+        // load expression variable class
+        if (parseAndMatchExpressionVariable(variableName)) {
+            return ENGINE.eval(variableName, EngineContextHolder.getEngineContext(), null);
+        }
+        String error = format(
+                "The variable name or jexl key of sql \"${%s}\" does not exist.\n"
+                        + "Please follow the following methods to resolve the problem:\n"
+                        + "1. global variables are enabled ? \n"
+                        + "2. variable is exists ? it`s defined in sql ? or  global variable is defined ? \n"
+                        + "3. If it is a custom function variable, please check whether the class is loaded correctly",
+                variableName);
+        throw new BusException(error);
     }
 
     public boolean parseAndMatchExpressionVariable(String variableName) {
         checkArgument(
                 !StringUtils.isNullOrWhitespaceOnly(variableName),
                 "sql variable name or jexl key cannot be null or empty.");
+        if (!StrUtil.contains(variableName, ".")) {
+            return false;
+        }
         // key 格式是 dateUtil.getVariable("key") 按照这个格式解析 出 dateUtil
         String substring = variableName.substring(0, variableName.indexOf("."));
         return StrUtil.isNotBlank(EngineContextHolder.getEngineContext().getStr(substring));

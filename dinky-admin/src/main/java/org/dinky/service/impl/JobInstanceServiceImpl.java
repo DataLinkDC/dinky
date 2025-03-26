@@ -41,7 +41,6 @@ import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.vo.task.JobInstanceVo;
-import org.dinky.executor.ExecutorConfig;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTask;
@@ -295,7 +294,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public LineageResult getLineage(Integer id) {
         History history = getJobInfoDetail(id).getHistory();
-        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement(), ExecutorConfig.DEFAULT);
+        return LineageBuilder.getColumnLineageByLogicalPlan(history.getStatement(), history.getConfigJson());
     }
 
     @Override
