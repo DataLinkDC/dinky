@@ -113,6 +113,14 @@
             <artifactId>dinky-function</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-sandbox-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-sandbox-memory</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
         </dependency>

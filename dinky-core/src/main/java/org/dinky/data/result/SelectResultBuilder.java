@@ -24,9 +24,8 @@ import org.dinky.job.JobHandler;
 
 import org.apache.flink.table.api.TableResult;
 
+import java.util.Collections;
 import java.util.Objects;
-
-import com.google.common.collect.Lists;
 
 /**
  * SelectBuilder
@@ -78,8 +77,8 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
             ResultRunnable runnable =
                     new ResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
-            runnable.registerCallback((s, selectResult) -> {
-                jobHandler.persistResultData(Lists.newArrayList(s));
+            runnable.registerCallback((name) -> {
+                jobHandler.persistResultData(Collections.singletonList(name));
             });
             threadPoolExecutor.execute(runnable);
             return SelectResult.buildSuccess(jobId);
