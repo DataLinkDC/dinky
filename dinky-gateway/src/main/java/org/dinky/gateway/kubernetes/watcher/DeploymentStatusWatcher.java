@@ -19,12 +19,11 @@
 
 package org.dinky.gateway.kubernetes.watcher;
 
-import org.apache.hadoop.util.StringUtils;
-
 import java.util.List;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentCondition;
 import io.fabric8.kubernetes.client.Watcher;
@@ -42,7 +41,7 @@ public class DeploymentStatusWatcher implements Watcher<Deployment> {
                 && CollectionUtil.isNotEmpty(deployment.getStatus().getConditions())) {
             List<DeploymentCondition> conditions = deployment.getStatus().getConditions();
             conditions.forEach(condition -> {
-                if (StringUtils.equalsIgnoreCase(condition.getStatus(), "true")) {
+                if (StrUtil.equalsIgnoreCase(condition.getStatus(), "true")) {
                     log.info(
                             "deployment name: {}, deployment status: {}, message: {}",
                             deploymentName,
