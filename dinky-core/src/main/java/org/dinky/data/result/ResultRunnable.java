@@ -116,7 +116,7 @@ public class ResultRunnable implements Runnable {
     private void catchRow(TableType tableType) {
         TableId tableId = TableId.withPrivate(id);
         List<Column> columns = FlinkUtil.getColumns(tableResult);
-        int[] primaryKeyIndexes = tableResult.getResolvedSchema().getPrimaryKeyIndexes();
+        int[] primaryKeyIndexes = FlinkUtil.getPrimaryKeyIndexes(tableResult);
         sandbox.registerTable(tableId, tableType, columns, primaryKeyIndexes);
         Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
             sandbox.appendOrUpsertData(tableId, row, timeZone);

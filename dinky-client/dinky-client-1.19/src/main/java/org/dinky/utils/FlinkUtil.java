@@ -59,6 +59,10 @@ public class FlinkUtil {
         return tableResult.getResolvedSchema().getColumns();
     }
 
+    public static int[] getPrimaryKeyIndexes(TableResult tableResult) {
+        return tableResult.getResolvedSchema().getPrimaryKeyIndexes();
+    }
+
     public static String triggerSavepoint(ClusterClient clusterClient, String jobId, String savePoint)
             throws ExecutionException, InterruptedException {
         return clusterClient

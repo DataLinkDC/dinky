@@ -57,6 +57,19 @@ public class FlinkUtil {
         return tableResult.getResolvedSchema().getColumns();
     }
 
+    public static int[] getPrimaryKeyIndexes(TableResult tableResult) {
+        final List<Column> columns = tableResult.getResolvedSchema().getColumns();
+        final List<Integer> primaryKeyIndexes = new ArrayList<>();
+        tableResult.getResolvedSchema().getPrimaryKey().ifPresent(primaryKey -> {
+            for (int i = 0; i < columns.size(); i++) {
+                if (primaryKey.getColumns().contains(columns.get(i).getName())) {
+                    primaryKeyIndexes.add(i);
+                }
+            }
+        });
+        return primaryKeyIndexes.stream().mapToInt(Integer::intValue).toArray();
+    }
+
     public static String triggerSavepoint(ClusterClient clusterClient, String jobId, String savePoint)
             throws ExecutionException, InterruptedException {
         return clusterClient
