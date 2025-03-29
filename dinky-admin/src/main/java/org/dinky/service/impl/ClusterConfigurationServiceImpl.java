@@ -74,8 +74,8 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
     @Override
     public FlinkClusterConfig getAndCheckEnableFlinkClusterCfg(Integer id) {
         ClusterConfiguration cfg = this.getClusterConfigById(id);
-        DinkyAssert.checkNull(cfg, "The clusterConfiguration not exists!");
-        DinkyAssert.checkEnable(cfg, "The clusterConfiguration is Disable!");
+        DinkyAssert.checkNull(cfg, "The cluster configuration does not exist.");
+        DinkyAssert.checkEnable(cfg, "The cluster configuration has been disabled.");
         return FlinkClusterConfig.create(cfg.getType(), cfg.getConfigJson());
     }
 
