@@ -77,7 +77,7 @@ const JobModal: React.FC<JobModalProps> = (props) => {
       firstLevelOwner: values.task?.firstLevelOwner,
       secondLevelOwners: values.task?.secondLevelOwners
     };
-    if (modalVisible) form.resetFields();
+    if (!modalVisible) form.resetFields();
     form.setFieldsValue(newValues);
   }, [open, values, form]);
 
