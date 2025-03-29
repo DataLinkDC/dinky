@@ -778,7 +778,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task updateTask = new Task();
         BeanUtil.copyProperties(taskVersion, updateTask);
         BeanUtil.copyProperties(
-            taskVersion.getTaskConfigure(), updateTask, CopyOptions.create().setIgnoreError(true));
+                taskVersion.getTaskConfigure(), updateTask, CopyOptions.create().setIgnoreError(true));
         updateTask.setConfigJson(JSONUtil.toBean(taskVersion.getTaskConfigure().getConfigJson(), TaskExtConfig.class));
         updateTask.setId(taskVersion.getTaskId());
         updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
