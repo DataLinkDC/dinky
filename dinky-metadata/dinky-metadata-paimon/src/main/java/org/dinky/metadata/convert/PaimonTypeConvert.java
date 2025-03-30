@@ -88,7 +88,11 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
                         .toString();
             case TINYINT:
             case SMALLINT:
-                return row.getShort(ordinal);
+                try {
+                    return row.getShort(ordinal);
+                } catch (Exception e) {
+                    return row.getByte(ordinal);
+                }
             case INTEGER:
                 return row.getInt(ordinal);
             case BIGINT:
