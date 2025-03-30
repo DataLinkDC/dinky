@@ -27,7 +27,9 @@ import {
   RocketOutlined,
   SyncOutlined
 } from '@ant-design/icons';
-import { Descriptions, Space, Tag } from 'antd';
+import { Button, Descriptions, Space, Tag } from 'antd';
+import {recoveryCheckPoint} from "@/pages/DevOps/JobDetail/CheckPointsTab/components/functions";
+import {l} from "@/utils/intl";
 
 const CkDesc = (props: JobProps) => {
   const { jobDetail } = props;
@@ -83,6 +85,15 @@ const CkDesc = (props: JobProps) => {
               {latest?.completed?.external_path ?? 'None'}
             </EllipsisMiddle>
           </Tag>
+          {latest?.completed?.external_path ? (
+            <Button
+              onClick={() =>
+                recoveryCheckPoint(jobDetail?.instance?.taskId, latest?.completed?.external_path)
+              }
+            >
+              {l('devops.jobinfo.ck.recovery.recoveryTo')}
+            </Button>
+          ) : undefined}
         </Descriptions.Item>
 
         <Descriptions.Item label='Persist Checkpoints Externally Enabled'>
