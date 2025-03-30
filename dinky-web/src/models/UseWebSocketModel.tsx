@@ -43,11 +43,6 @@ export type SubscriberData = {
   call: (data: WsData) => void;
 };
 
-export type WsState = {
-  wsOnReady: boolean;
-  wsUrl: string;
-};
-
 export default () => {
   const subscriberRef = useRef<SubscriberData[]>([]);
   const lastPongTimeRef = useRef<number>(new Date().getTime());
@@ -55,8 +50,6 @@ export default () => {
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
   const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
   const wsUrl = `${protocol}://${window.location.hostname}:${window.location.port}/api/ws/global/${token}`;
-  const [wsState, setWsState] = useState<WsState>({ wsOnReady: true, wsUrl });
-
   const ws = useRef<WebSocket>();
 
   const reconnect = () => {
@@ -66,12 +59,9 @@ export default () => {
     ws.current = new WebSocket(wsUrl);
     ws.current.onopen = () => {
       lastPongTimeRef.current = new Date().getTime();
-      setWsState({ wsOnReady: true, wsUrl });
       receiveMessage();
       subscribe();
     };
-    ws.current.onerror = () => setWsState({ wsOnReady: false, wsUrl });
-    ws.current.onclose = () => setWsState({ wsOnReady: false, wsUrl });
   };
 
   const subscribe = () => {
@@ -91,7 +81,7 @@ export default () => {
     } else if (ws.current.readyState === WebSocket.OPEN) {
       ws.current.send(JSON.stringify({ topics, type: 'SUBSCRIBE' }));
     } else {
-      //TODO do someting
+      //TODO do something
     }
   };
 
@@ -125,7 +115,7 @@ export default () => {
           ws.current.send(JSON.stringify({ type: 'PING' }));
         }
       }
-    }, 2000);
+    }, 10000);
   }, []);
 
   const subscribeTopic = (topic: Topic, params: string[], onMessage: (data: WsData) => void) => {
@@ -141,7 +131,6 @@ export default () => {
 
   return {
     subscribeTopic,
-    reconnect,
-    wsState
+    reconnect
   };
 };
