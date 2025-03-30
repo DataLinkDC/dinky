@@ -23,6 +23,7 @@ import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
+import org.apache.flink.table.catalog.Column;
 import org.apache.flink.table.catalog.ObjectIdentifier;
 
 import java.util.ArrayList;
@@ -50,6 +51,23 @@ public class FlinkUtil {
 
     public static List<String> catchColumn(TableResult tableResult) {
         return tableResult.getResolvedSchema().getColumnNames();
+    }
+
+    public static List<Column> getColumns(TableResult tableResult) {
+        return tableResult.getResolvedSchema().getColumns();
+    }
+
+    public static int[] getPrimaryKeyIndexes(TableResult tableResult) {
+        final List<Column> columns = tableResult.getResolvedSchema().getColumns();
+        final List<Integer> primaryKeyIndexes = new ArrayList<>();
+        tableResult.getResolvedSchema().getPrimaryKey().ifPresent(primaryKey -> {
+            for (int i = 0; i < columns.size(); i++) {
+                if (primaryKey.getColumns().contains(columns.get(i).getName())) {
+                    primaryKeyIndexes.add(i);
+                }
+            }
+        });
+        return primaryKeyIndexes.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public static String triggerSavepoint(ClusterClient clusterClient, String jobId, String savePoint)

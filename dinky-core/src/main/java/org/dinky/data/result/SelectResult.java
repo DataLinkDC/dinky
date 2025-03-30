@@ -19,10 +19,12 @@
 
 package org.dinky.data.result;
 
+import org.dinky.sandbox.metadata.TableInfo;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ import com.google.common.collect.Sets;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.lang.Tuple;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -50,7 +53,6 @@ public class SelectResult extends AbstractResult implements IResult {
     private String jobID;
     private List<Map<String, Object>> rowData;
     private Integer total;
-    private Integer currentCount;
     private LinkedHashSet<String> columns;
     private boolean isDestroyed;
     private boolean truncationFlag = false;
@@ -59,13 +61,11 @@ public class SelectResult extends AbstractResult implements IResult {
     public SelectResult(
             List<Map<String, Object>> rowData,
             Integer total,
-            Integer currentCount,
             LinkedHashSet<String> columns,
             String jobID,
             boolean success) {
         this.rowData = rowData;
         this.total = total;
-        this.currentCount = currentCount;
         this.columns = columns;
         this.jobID = jobID;
         this.success = success;
@@ -151,5 +151,24 @@ public class SelectResult extends AbstractResult implements IResult {
         SelectResult selectResult = new SelectResult(jobID, new ArrayList<>(), new LinkedHashSet<>());
         selectResult.setMockSinkResult(true);
         return selectResult;
+    }
+
+    public static SelectResult buildBySandbox(String jobID, TableInfo tableInfo, List<Tuple> data) {
+        if (tableInfo == null) {
+            return SelectResult.buildDestruction(jobID);
+        }
+        LinkedHashSet<String> columns = new LinkedHashSet<>();
+        tableInfo.getColumns().forEach(columnInfo -> {
+            columns.add(columnInfo.getName());
+        });
+        List<Map<String, Object>> rowData = new ArrayList<>();
+        data.forEach(tuple -> {
+            Map<String, Object> map = new HashMap<>();
+            for (int i = 0; i < tuple.size(); i++) {
+                map.put(tableInfo.getColumns().get(i).getName(), tuple.get(i));
+            }
+            rowData.add(map);
+        });
+        return new SelectResult(jobID, rowData, columns);
     }
 }

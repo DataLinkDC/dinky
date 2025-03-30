@@ -19,11 +19,9 @@
 
 package org.dinky.data.result;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @since 2021/7/1 22:20
  */
+@Deprecated
 @Slf4j
 public final class ResultPool {
 
@@ -69,9 +68,5 @@ public final class ResultPool {
 
     public static void clear() {
         RESULTS.clear();
-    }
-
-    public static List<String> getJobIds() {
-        return Lists.newArrayList(RESULTS.keySet());
     }
 }

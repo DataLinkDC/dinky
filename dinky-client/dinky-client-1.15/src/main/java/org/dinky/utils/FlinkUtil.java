@@ -24,6 +24,7 @@ import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.core.execution.SavepointFormatType;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
+import org.apache.flink.table.catalog.Column;
 import org.apache.flink.table.catalog.ContextResolvedTable;
 import org.apache.flink.table.catalog.ObjectIdentifier;
 
@@ -52,6 +53,14 @@ public class FlinkUtil {
 
     public static List<String> catchColumn(TableResult tableResult) {
         return tableResult.getResolvedSchema().getColumnNames();
+    }
+
+    public static List<Column> getColumns(TableResult tableResult) {
+        return tableResult.getResolvedSchema().getColumns();
+    }
+
+    public static int[] getPrimaryKeyIndexes(TableResult tableResult) {
+        return tableResult.getResolvedSchema().getPrimaryKeyIndexes();
     }
 
     public static String triggerSavepoint(ClusterClient clusterClient, String jobId, String savePoint)

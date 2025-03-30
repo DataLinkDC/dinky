@@ -164,7 +164,7 @@ PID_FILE="dinky.pid"
 # Log configuration file path
 LOG_CONFIG=${APP_HOME}/config/log4j2.xml
 
-if [ ${JAVA_VERSION} == "1.8" ];then
+if [ ${JAVA_VERSION} = "1.8" ];then
   # JVM options G1GC and OOM dump ; Note: Do not set the DisableExplicitGC parameter. Because there is a call to System. gc() in the code.
    GC_OPT="-XX:+UseG1GC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -XX:+PrintGCCause -Xloggc:${APP_HOME}/logs/gc-%t.log -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=20M"
 else
