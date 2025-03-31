@@ -429,5 +429,14 @@
                 </dependency>
             </dependencies>
         </profile>
+        <profile>
+            <id>flink-1.20</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-cdc-plus</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 </project>
