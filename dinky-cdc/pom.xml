@@ -53,5 +53,11 @@
                 <module>dinky-cdc-plus</module>
             </modules>
         </profile>
+        <profile>
+            <id>flink-1.20</id>
+            <modules>
+                <module>dinky-cdc-plus</module>
+            </modules>
+        </profile>
     </profiles>
 </project>
