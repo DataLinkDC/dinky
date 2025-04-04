@@ -79,13 +79,11 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     public JdbcSelectResult query(QueryData queryData) {
         queryData.setTableName(queryData.getTableName());
         JdbcSelectResult result = JdbcSelectResult.buildResult();
-        Identifier identifier =
-                Identifier.create(queryData.getSchemaName(), queryData.getTableName());
+        Identifier identifier = Identifier.create(queryData.getSchemaName(), queryData.getTableName());
         try {
             org.apache.paimon.table.Table table = catalog.getTable(identifier);
             List<DataField> fieldTypes = table.rowType().getFields();
-            List<String> columNames =
-                    fieldTypes.stream().map(DataField::name).collect(Collectors.toList());
+            List<String> columNames = fieldTypes.stream().map(DataField::name).collect(Collectors.toList());
             result.setColumns(columNames);
 
             ReadBuilder readBuilder = table.newReadBuilder();
@@ -96,11 +94,8 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
             String where = queryData.getOption().getWhere();
             if (StringUtils.isNotBlank(where)) {
                 RowType paimonRowType = table.rowType();
-                PlainSelect plainSelect =
-                        convertToPlainSelect(
-                                String.format(
-                                        "select * from %s where %s",
-                                        queryData.getTableName(), where));
+                PlainSelect plainSelect = convertToPlainSelect(
+                        String.format("select * from %s where %s", queryData.getTableName(), where));
                 Predicate predicate = convertSqlWhereToPaimonPredicate(paimonRowType, plainSelect);
                 readBuilder.withFilter(predicate);
             }
@@ -118,8 +113,7 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
                         LinkedHashMap<String, Object> rowList = new LinkedHashMap<>();
                         for (int i = 0; i < row.getFieldCount(); i++) {
                             String name = fieldTypes.get(i).name();
-                            Object data =
-                                    PaimonTypeConvert.getRowDataSafe(fieldTypes.get(i), row, i);
+                            Object data = PaimonTypeConvert.getRowDataSafe(fieldTypes.get(i), row, i);
                             rowList.put(name, data);
                         }
                         datas.add(rowList);
@@ -215,9 +209,7 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     @Override
     public List<Table> listTables(String schemaName) {
         try {
-            return catalog.listTables(schemaName).stream()
-                    .map(Table::new)
-                    .collect(Collectors.toList());
+            return catalog.listTables(schemaName).stream().map(Table::new).collect(Collectors.toList());
         } catch (Catalog.DatabaseNotExistException e) {
             throw new RuntimeException(e);
         }

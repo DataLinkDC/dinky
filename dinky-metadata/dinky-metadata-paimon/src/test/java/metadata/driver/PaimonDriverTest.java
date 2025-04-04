@@ -82,8 +82,7 @@ public class PaimonDriverTest {
 
         FileStoreTable table = (FileStoreTable) catalog.getTable(identifier);
         BatchWriteBuilder batchWriteBuilder = table.newBatchWriteBuilder();
-        try (TableWrite tableWrite =
-                batchWriteBuilder.newWrite().withIOManager(IOManager.create(splitPaths(tmpDir)))) {
+        try (TableWrite tableWrite = batchWriteBuilder.newWrite().withIOManager(IOManager.create(splitPaths(tmpDir)))) {
             for (int i = 0; i < 10; i++) {
                 BinaryRow row = new BinaryRow(table.rowType().getFieldCount());
                 BinaryRowWriter writer = new BinaryRowWriter(row);
@@ -94,8 +93,7 @@ public class PaimonDriverTest {
                 row.setRowKind(RowKind.INSERT);
                 tableWrite.write(row, 0);
             }
-            List<CommitMessage> commitMessages =
-                    ((StreamTableWrite) tableWrite).prepareCommit(true, 1);
+            List<CommitMessage> commitMessages = ((StreamTableWrite) tableWrite).prepareCommit(true, 1);
             try (BatchTableCommit batchTableCommit = batchWriteBuilder.newCommit()) {
                 batchTableCommit.commit(commitMessages);
             }

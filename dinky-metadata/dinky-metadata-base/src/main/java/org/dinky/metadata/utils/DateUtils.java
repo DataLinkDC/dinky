@@ -42,28 +42,22 @@ public class DateUtils {
     private static final Map<Formatter, DateTimeFormatter> FORMATTER_MAP = new HashMap<>();
 
     static {
-        FORMATTER_MAP.put(
-                Formatter.YYYY_MM_DD, DateTimeFormatter.ofPattern(Formatter.YYYY_MM_DD.value));
-        FORMATTER_MAP.put(
-                Formatter.YYYY_MM_DD_SPOT,
-                DateTimeFormatter.ofPattern(Formatter.YYYY_MM_DD_SPOT.value));
-        FORMATTER_MAP.put(
-                Formatter.YYYY_MM_DD_SLASH,
-                DateTimeFormatter.ofPattern(Formatter.YYYY_MM_DD_SLASH.value));
+        FORMATTER_MAP.put(Formatter.YYYY_MM_DD, DateTimeFormatter.ofPattern(Formatter.YYYY_MM_DD.value));
+        FORMATTER_MAP.put(Formatter.YYYY_MM_DD_SPOT, DateTimeFormatter.ofPattern(Formatter.YYYY_MM_DD_SPOT.value));
+        FORMATTER_MAP.put(Formatter.YYYY_MM_DD_SLASH, DateTimeFormatter.ofPattern(Formatter.YYYY_MM_DD_SLASH.value));
     }
 
-    public static final Pattern[] PATTERN_ARRAY =
-            new Pattern[] {
-                Pattern.compile("\\d{4}-\\d{2}-\\d{2}"),
-                Pattern.compile("\\d{4}年\\d{2}月\\d{2}日"),
-                Pattern.compile("\\d{4}/\\d{2}/\\d{2}"),
-                Pattern.compile("\\d{4}\\.\\d{2}\\.\\d{2}"),
-                Pattern.compile("\\d{8}"),
-                Pattern.compile("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z"),
-                Pattern.compile("\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}"),
-                Pattern.compile("\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?"),
-                Pattern.compile("\\d{4}/\\d{1,2}/\\d{1,2}")
-            };
+    public static final Pattern[] PATTERN_ARRAY = new Pattern[] {
+        Pattern.compile("\\d{4}-\\d{2}-\\d{2}"),
+        Pattern.compile("\\d{4}年\\d{2}月\\d{2}日"),
+        Pattern.compile("\\d{4}/\\d{2}/\\d{2}"),
+        Pattern.compile("\\d{4}\\.\\d{2}\\.\\d{2}"),
+        Pattern.compile("\\d{8}"),
+        Pattern.compile("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?Z"),
+        Pattern.compile("\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}"),
+        Pattern.compile("\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,9})?"),
+        Pattern.compile("\\d{4}/\\d{1,2}/\\d{1,2}")
+    };
 
     public static final Map<Pattern, DateTimeFormatter> DATE_FORMATTER_MAP = new HashMap();
 
@@ -79,55 +73,51 @@ public class DateUtils {
                 PATTERN_ARRAY[1],
                 new DateTimeFormatterBuilder()
                         .parseCaseInsensitive()
-                        .append(
-                                new DateTimeFormatterBuilder()
-                                        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-                                        .appendLiteral("年")
-                                        .appendValue(MONTH_OF_YEAR, 2)
-                                        .appendLiteral("月")
-                                        .appendValue(DAY_OF_MONTH, 2)
-                                        .appendLiteral("日")
-                                        .toFormatter())
+                        .append(new DateTimeFormatterBuilder()
+                                .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+                                .appendLiteral("年")
+                                .appendValue(MONTH_OF_YEAR, 2)
+                                .appendLiteral("月")
+                                .appendValue(DAY_OF_MONTH, 2)
+                                .appendLiteral("日")
+                                .toFormatter())
                         .toFormatter());
 
         DATE_FORMATTER_MAP.put(
                 PATTERN_ARRAY[2],
                 new DateTimeFormatterBuilder()
                         .parseCaseInsensitive()
-                        .append(
-                                new DateTimeFormatterBuilder()
-                                        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-                                        .appendLiteral('/')
-                                        .appendValue(MONTH_OF_YEAR, 2)
-                                        .appendLiteral('/')
-                                        .appendValue(DAY_OF_MONTH, 2)
-                                        .toFormatter())
+                        .append(new DateTimeFormatterBuilder()
+                                .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+                                .appendLiteral('/')
+                                .appendValue(MONTH_OF_YEAR, 2)
+                                .appendLiteral('/')
+                                .appendValue(DAY_OF_MONTH, 2)
+                                .toFormatter())
                         .toFormatter());
 
         DATE_FORMATTER_MAP.put(
                 PATTERN_ARRAY[3],
                 new DateTimeFormatterBuilder()
                         .parseCaseInsensitive()
-                        .append(
-                                new DateTimeFormatterBuilder()
-                                        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-                                        .appendLiteral('.')
-                                        .appendValue(MONTH_OF_YEAR, 2)
-                                        .appendLiteral('.')
-                                        .appendValue(DAY_OF_MONTH, 2)
-                                        .toFormatter())
+                        .append(new DateTimeFormatterBuilder()
+                                .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+                                .appendLiteral('.')
+                                .appendValue(MONTH_OF_YEAR, 2)
+                                .appendLiteral('.')
+                                .appendValue(DAY_OF_MONTH, 2)
+                                .toFormatter())
                         .toFormatter());
 
         DATE_FORMATTER_MAP.put(
                 PATTERN_ARRAY[4],
                 new DateTimeFormatterBuilder()
                         .parseCaseInsensitive()
-                        .append(
-                                new DateTimeFormatterBuilder()
-                                        .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
-                                        .appendValue(MONTH_OF_YEAR, 2)
-                                        .appendValue(DAY_OF_MONTH, 2)
-                                        .toFormatter())
+                        .append(new DateTimeFormatterBuilder()
+                                .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)
+                                .appendValue(MONTH_OF_YEAR, 2)
+                                .appendValue(DAY_OF_MONTH, 2)
+                                .toFormatter())
                         .toFormatter());
         DATE_FORMATTER_MAP.put(
                 PATTERN_ARRAY[5],
@@ -135,18 +125,17 @@ public class DateUtils {
                         .parseCaseInsensitive()
                         .append(ISO_LOCAL_DATE)
                         .appendLiteral('T')
-                        .append(
-                                new DateTimeFormatterBuilder()
-                                        .appendValue(HOUR_OF_DAY, 2)
-                                        .appendLiteral(':')
-                                        .appendValue(MINUTE_OF_HOUR, 2)
-                                        .optionalStart()
-                                        .appendLiteral(':')
-                                        .appendValue(SECOND_OF_MINUTE, 2)
-                                        .optionalStart()
-                                        .appendFraction(NANO_OF_SECOND, 0, 9, true)
-                                        .appendLiteral('Z')
-                                        .toFormatter())
+                        .append(new DateTimeFormatterBuilder()
+                                .appendValue(HOUR_OF_DAY, 2)
+                                .appendLiteral(':')
+                                .appendValue(MINUTE_OF_HOUR, 2)
+                                .optionalStart()
+                                .appendLiteral(':')
+                                .appendValue(SECOND_OF_MINUTE, 2)
+                                .optionalStart()
+                                .appendFraction(NANO_OF_SECOND, 0, 9, true)
+                                .appendLiteral('Z')
+                                .toFormatter())
                         .toFormatter());
         DATE_FORMATTER_MAP.put(PATTERN_ARRAY[6], ISO_OFFSET_TIME);
         DATE_FORMATTER_MAP.put(PATTERN_ARRAY[7], ISO_LOCAL_TIME);

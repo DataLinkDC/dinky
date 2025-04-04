@@ -101,8 +101,7 @@ public class SqlToPaimonPredicateConverter {
         return plainSelect;
     }
 
-    public static int[] convertSqlSelectToPaimonProjectionIndex(
-            String[] fieldNames, PlainSelect plainSelect) {
+    public static int[] convertSqlSelectToPaimonProjectionIndex(String[] fieldNames, PlainSelect plainSelect) {
         int[] projectionIndex = null;
         List<SelectItem<?>> selectItems = plainSelect.getSelectItems();
 
@@ -117,25 +116,21 @@ public class SqlToPaimonPredicateConverter {
         }
 
         String[] columnNamesArray = columnNames.toArray(new String[0]);
-        projectionIndex =
-                IntStream.range(0, columnNamesArray.length)
-                        .map(
-                                i -> {
-                                    String fieldName = columnNamesArray[i];
-                                    int index = Arrays.asList(fieldNames).indexOf(fieldName);
-                                    if (index == -1) {
-                                        throw new IllegalArgumentException(
-                                                "column " + fieldName + " does not exist.");
-                                    }
-                                    return index;
-                                })
-                        .toArray();
+        projectionIndex = IntStream.range(0, columnNamesArray.length)
+                .map(i -> {
+                    String fieldName = columnNamesArray[i];
+                    int index = Arrays.asList(fieldNames).indexOf(fieldName);
+                    if (index == -1) {
+                        throw new IllegalArgumentException("column " + fieldName + " does not exist.");
+                    }
+                    return index;
+                })
+                .toArray();
 
         return projectionIndex;
     }
 
-    public static Predicate convertSqlWhereToPaimonPredicate(
-            RowType rowType, PlainSelect plainSelect) {
+    public static Predicate convertSqlWhereToPaimonPredicate(RowType rowType, PlainSelect plainSelect) {
         Expression whereExpression = plainSelect.getWhere();
         if (Objects.isNull(whereExpression)) {
             return null;
@@ -158,87 +153,68 @@ public class SqlToPaimonPredicateConverter {
             EqualsTo equalsTo = (EqualsTo) expression;
             Column column = (Column) equalsTo.getLeftExpression();
             int columnIndex = getColumnIndex(builder, column);
-            Object jsqlParserDataTypeValue =
-                    getJSQLParserDataTypeValue(equalsTo.getRightExpression());
+            Object jsqlParserDataTypeValue = getJSQLParserDataTypeValue(equalsTo.getRightExpression());
             Object paimonDataValue =
-                    convertValueByPaimonDataType(
-                            rowType, column.getColumnName(), jsqlParserDataTypeValue);
+                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlParserDataTypeValue);
             return builder.equal(columnIndex, paimonDataValue);
         } else if (expression instanceof GreaterThan) {
             GreaterThan greaterThan = (GreaterThan) expression;
             Column column = (Column) greaterThan.getLeftExpression();
             int columnIndex = getColumnIndex(builder, column);
-            Object jsqlParserDataTypeValue =
-                    getJSQLParserDataTypeValue(greaterThan.getRightExpression());
+            Object jsqlParserDataTypeValue = getJSQLParserDataTypeValue(greaterThan.getRightExpression());
             Object paimonDataValue =
-                    convertValueByPaimonDataType(
-                            rowType, column.getColumnName(), jsqlParserDataTypeValue);
+                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlParserDataTypeValue);
             return builder.greaterThan(columnIndex, paimonDataValue);
         } else if (expression instanceof GreaterThanEquals) {
             GreaterThanEquals greaterThanEquals = (GreaterThanEquals) expression;
             Column column = (Column) greaterThanEquals.getLeftExpression();
             int columnIndex = getColumnIndex(builder, column);
-            Object jsqlParserDataTypeValue =
-                    getJSQLParserDataTypeValue(greaterThanEquals.getRightExpression());
+            Object jsqlParserDataTypeValue = getJSQLParserDataTypeValue(greaterThanEquals.getRightExpression());
             Object paimonDataValue =
-                    convertValueByPaimonDataType(
-                            rowType, column.getColumnName(), jsqlParserDataTypeValue);
+                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlParserDataTypeValue);
             return builder.greaterOrEqual(columnIndex, paimonDataValue);
         } else if (expression instanceof MinorThan) {
             MinorThan minorThan = (MinorThan) expression;
             Column column = (Column) minorThan.getLeftExpression();
             int columnIndex = getColumnIndex(builder, column);
-            Object jsqlParserDataTypeValue =
-                    getJSQLParserDataTypeValue(minorThan.getRightExpression());
+            Object jsqlParserDataTypeValue = getJSQLParserDataTypeValue(minorThan.getRightExpression());
             Object paimonDataValue =
-                    convertValueByPaimonDataType(
-                            rowType, column.getColumnName(), jsqlParserDataTypeValue);
+                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlParserDataTypeValue);
             return builder.lessThan(columnIndex, paimonDataValue);
         } else if (expression instanceof MinorThanEquals) {
             MinorThanEquals minorThanEquals = (MinorThanEquals) expression;
             Column column = (Column) minorThanEquals.getLeftExpression();
             int columnIndex = getColumnIndex(builder, column);
-            Object jsqlParserDataTypeValue =
-                    getJSQLParserDataTypeValue(minorThanEquals.getRightExpression());
+            Object jsqlParserDataTypeValue = getJSQLParserDataTypeValue(minorThanEquals.getRightExpression());
             Object paimonDataValue =
-                    convertValueByPaimonDataType(
-                            rowType, column.getColumnName(), jsqlParserDataTypeValue);
+                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlParserDataTypeValue);
             return builder.lessOrEqual(columnIndex, paimonDataValue);
         } else if (expression instanceof NotEqualsTo) {
             NotEqualsTo notEqualsTo = (NotEqualsTo) expression;
             Column column = (Column) notEqualsTo.getLeftExpression();
             int columnIndex = getColumnIndex(builder, column);
-            Object jsqlParserDataTypeValue =
-                    getJSQLParserDataTypeValue(notEqualsTo.getRightExpression());
+            Object jsqlParserDataTypeValue = getJSQLParserDataTypeValue(notEqualsTo.getRightExpression());
             Object paimonDataValue =
-                    convertValueByPaimonDataType(
-                            rowType, column.getColumnName(), jsqlParserDataTypeValue);
+                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlParserDataTypeValue);
             return builder.notEqual(columnIndex, paimonDataValue);
         } else if (expression instanceof AndExpression) {
             AndExpression andExpression = (AndExpression) expression;
-            Predicate leftPredicate =
-                    parseExpressionToPredicate(builder, rowType, andExpression.getLeftExpression());
-            Predicate rightPredicate =
-                    parseExpressionToPredicate(
-                            builder, rowType, andExpression.getRightExpression());
+            Predicate leftPredicate = parseExpressionToPredicate(builder, rowType, andExpression.getLeftExpression());
+            Predicate rightPredicate = parseExpressionToPredicate(builder, rowType, andExpression.getRightExpression());
             return PredicateBuilder.and(leftPredicate, rightPredicate);
         } else if (expression instanceof OrExpression) {
             OrExpression orExpression = (OrExpression) expression;
-            Predicate leftPredicate =
-                    parseExpressionToPredicate(builder, rowType, orExpression.getLeftExpression());
-            Predicate rightPredicate =
-                    parseExpressionToPredicate(builder, rowType, orExpression.getRightExpression());
+            Predicate leftPredicate = parseExpressionToPredicate(builder, rowType, orExpression.getLeftExpression());
+            Predicate rightPredicate = parseExpressionToPredicate(builder, rowType, orExpression.getRightExpression());
             return PredicateBuilder.or(leftPredicate, rightPredicate);
         } else if (expression instanceof Between) {
             Between between = (Between) expression;
             Column column = (Column) between.getLeftExpression();
             int columnIndex = getColumnIndex(builder, column);
             Object jsqlStartVal = getJSQLParserDataTypeValue(between.getBetweenExpressionStart());
-            Object paimonStartVal =
-                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlStartVal);
+            Object paimonStartVal = convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlStartVal);
             Object jsqlEndVal = getJSQLParserDataTypeValue(between.getBetweenExpressionEnd());
-            Object paimonEndVal =
-                    convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlEndVal);
+            Object paimonEndVal = convertValueByPaimonDataType(rowType, column.getColumnName(), jsqlEndVal);
             return builder.between(columnIndex, paimonStartVal, paimonEndVal);
         } else if (expression instanceof Parenthesis) {
             Parenthesis parenthesis = (Parenthesis) expression;
@@ -250,10 +226,9 @@ public class SqlToPaimonPredicateConverter {
 
     private static Object convertValueByPaimonDataType(
             RowType rowType, String columnName, Object jsqlParserDataTypeValue) {
-        Optional<DataField> theFiled =
-                rowType.getFields().stream()
-                        .filter(field -> field.name().equalsIgnoreCase(columnName))
-                        .findFirst();
+        Optional<DataField> theFiled = rowType.getFields().stream()
+                .filter(field -> field.name().equalsIgnoreCase(columnName))
+                .findFirst();
         String strValue = jsqlParserDataTypeValue.toString();
         if (theFiled.isPresent()) {
             DataType dataType = theFiled.get().type();
@@ -266,9 +241,7 @@ public class SqlToPaimonPredicateConverter {
                 case DECIMAL:
                     DecimalType decimalType = (DecimalType) dataType;
                     return Decimal.fromBigDecimal(
-                            new BigDecimal(strValue),
-                            decimalType.getPrecision(),
-                            decimalType.getScale());
+                            new BigDecimal(strValue), decimalType.getPrecision(), decimalType.getScale());
                 case TINYINT:
                     return Byte.parseByte(strValue);
                 case SMALLINT:
@@ -287,15 +260,12 @@ public class SqlToPaimonPredicateConverter {
                     return DateTimeUtils.toInternal(TimeUtils.parse(strValue));
                 case TIMESTAMP_WITHOUT_TIME_ZONE:
                 case TIMESTAMP_WITH_LOCAL_TIME_ZONE:
-                    return Timestamp.fromLocalDateTime(
-                            org.dinky.metadata.utils.DateTimeUtils.parse(strValue));
+                    return Timestamp.fromLocalDateTime(org.dinky.metadata.utils.DateTimeUtils.parse(strValue));
                 default:
-                    throw new IllegalArgumentException(
-                            "Unsupported Paimon data type :" + dataType.getTypeRoot());
+                    throw new IllegalArgumentException("Unsupported Paimon data type :" + dataType.getTypeRoot());
             }
         }
-        throw new IllegalArgumentException(
-                String.format("The column named [%s] is not exists", columnName));
+        throw new IllegalArgumentException(String.format("The column named [%s] is not exists", columnName));
     }
 
     private static Object getJSQLParserDataTypeValue(Expression expression) {

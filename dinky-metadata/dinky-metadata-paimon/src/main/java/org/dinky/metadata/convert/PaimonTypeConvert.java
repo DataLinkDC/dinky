@@ -120,8 +120,7 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
         }
     }
 
-    private static Optional<ColumnType> convertTinyint(
-            Column column, DriverConfig<AbstractJdbcConfig> driverConfig) {
+    private static Optional<ColumnType> convertTinyint(Column column, DriverConfig<AbstractJdbcConfig> driverConfig) {
         Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
         if (!length.equals(1)) {
             return Optional.empty();
@@ -130,10 +129,7 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         boolean tinyInt1isBit =
                 Asserts.isNotNullString(driverConfig.getConnectConfig().getUrl())
-                        && !driverConfig
-                                .getConnectConfig()
-                                .getUrl()
-                                .contains("tinyInt1isBit=false");
+                        && !driverConfig.getConnectConfig().getUrl().contains("tinyInt1isBit=false");
         if (tinyInt1isBit) {
             if (isNullable) {
                 return Optional.of(ColumnType.JAVA_LANG_BOOLEAN);
@@ -158,10 +154,7 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         boolean tinyInt1isBit =
                 Asserts.isNotNullString(driverConfig.getConnectConfig().getUrl())
-                        && !driverConfig
-                                .getConnectConfig()
-                                .getUrl()
-                                .contains("tinyInt1isBit=false");
+                        && !driverConfig.getConnectConfig().getUrl().contains("tinyInt1isBit=false");
         if (t.contains("numeric") || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("bigint")) {
@@ -202,10 +195,7 @@ public class PaimonTypeConvert extends AbstractJdbcTypeConvert {
             columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
             columnType = ColumnType.BYTES;
-        } else if (t.contains("tinyint")
-                || t.contains("mediumint")
-                || t.contains("smallint")
-                || t.contains("int")) {
+        } else if (t.contains("tinyint") || t.contains("mediumint") || t.contains("smallint") || t.contains("int")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {

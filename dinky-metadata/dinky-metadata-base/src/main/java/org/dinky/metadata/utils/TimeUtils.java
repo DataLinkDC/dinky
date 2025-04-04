@@ -26,14 +26,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class TimeUtils {
-    private static final Map<Formatter, DateTimeFormatter> FORMATTER_MAP =
-            new HashMap<Formatter, DateTimeFormatter>();
+    private static final Map<Formatter, DateTimeFormatter> FORMATTER_MAP = new HashMap<Formatter, DateTimeFormatter>();
 
     static {
-        FORMATTER_MAP.put(
-                Formatter.HH_MM_SS, DateTimeFormatter.ofPattern(Formatter.HH_MM_SS.value));
-        FORMATTER_MAP.put(
-                Formatter.HH_MM_SS_SSS, DateTimeFormatter.ofPattern(Formatter.HH_MM_SS_SSS.value));
+        FORMATTER_MAP.put(Formatter.HH_MM_SS, DateTimeFormatter.ofPattern(Formatter.HH_MM_SS.value));
+        FORMATTER_MAP.put(Formatter.HH_MM_SS_SSS, DateTimeFormatter.ofPattern(Formatter.HH_MM_SS_SSS.value));
     }
 
     public static LocalTime parse(String time, Formatter formatter) {
@@ -44,11 +41,9 @@ public class TimeUtils {
         return LocalTime.parse(dateTime, FORMATTER_MAP.get(matchTimeFormatter(dateTime)));
     }
 
-    public static final Pattern[] PATTERN_ARRAY =
-            new Pattern[] {
-                Pattern.compile("\\d{2}:\\d{2}:\\d{2}"),
-                Pattern.compile("\\d{2}:\\d{2}:\\d{2}.\\d{3}"),
-            };
+    public static final Pattern[] PATTERN_ARRAY = new Pattern[] {
+        Pattern.compile("\\d{2}:\\d{2}:\\d{2}"), Pattern.compile("\\d{2}:\\d{2}:\\d{2}.\\d{3}"),
+    };
 
     public static Formatter matchTimeFormatter(String dateTime) {
         for (int j = 0; j < PATTERN_ARRAY.length; j++) {

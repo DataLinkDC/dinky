@@ -55,10 +55,7 @@ public class QueryData {
             notes = "SQL query string")
     private String sql;
 
-    @ApiModelProperty(
-            value = "Query options",
-            dataType = "Option",
-            notes = "Options for customizing the query")
+    @ApiModelProperty(value = "Query options", dataType = "Option", notes = "Options for customizing the query")
     private Option option;
 
     @Data
