@@ -19,6 +19,9 @@
 
 package org.dinky.metadata.driver;
 
+import static org.dinky.metadata.convert.SqlToPaimonPredicateConverter.convertSqlWhereToPaimonPredicate;
+import static org.dinky.metadata.convert.SqlToPaimonPredicateConverter.convertToPlainSelect;
+
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.exception.BusException;
@@ -41,7 +44,9 @@ import org.apache.paimon.catalog.CatalogFactory;
 import org.apache.paimon.catalog.Identifier;
 import org.apache.paimon.data.InternalRow;
 import org.apache.paimon.options.Options;
+import org.apache.paimon.predicate.Predicate;
 import org.apache.paimon.reader.RecordReader;
+import org.apache.paimon.shade.org.apache.commons.lang.StringUtils;
 import org.apache.paimon.table.source.ReadBuilder;
 import org.apache.paimon.table.source.Split;
 import org.apache.paimon.table.source.TableRead;
@@ -57,6 +62,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.statement.select.PlainSelect;
 
 /**
  * MysqlDriver
@@ -73,11 +79,13 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     public JdbcSelectResult query(QueryData queryData) {
         queryData.setTableName(queryData.getTableName());
         JdbcSelectResult result = JdbcSelectResult.buildResult();
-        Identifier identifier = Identifier.create(queryData.getSchemaName(), queryData.getTableName());
+        Identifier identifier =
+                Identifier.create(queryData.getSchemaName(), queryData.getTableName());
         try {
             org.apache.paimon.table.Table table = catalog.getTable(identifier);
             List<DataField> fieldTypes = table.rowType().getFields();
-            List<String> columNames = fieldTypes.stream().map(DataField::name).collect(Collectors.toList());
+            List<String> columNames =
+                    fieldTypes.stream().map(DataField::name).collect(Collectors.toList());
             result.setColumns(columNames);
 
             ReadBuilder readBuilder = table.newReadBuilder();
@@ -85,10 +93,21 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
             // Paimon无法做到分页，所以这里逻辑只取前N条
             int length = option.getLimitEnd() - option.getLimitStart();
             readBuilder.withLimit(length);
+            String where = queryData.getOption().getWhere();
+            if (StringUtils.isNotBlank(where)) {
+                RowType paimonRowType = table.rowType();
+                PlainSelect plainSelect =
+                        convertToPlainSelect(
+                                String.format(
+                                        "select * from %s where %s",
+                                        queryData.getTableName(), where));
+                Predicate predicate = convertSqlWhereToPaimonPredicate(paimonRowType, plainSelect);
+                readBuilder.withFilter(predicate);
+            }
             List<Split> splits = readBuilder.newScan().plan().splits();
 
             // 4. Read a split in task
-            TableRead read = readBuilder.newRead();
+            TableRead read = readBuilder.newRead().executeFilter();
             List<LinkedHashMap<String, Object>> datas;
             try (RecordReader<InternalRow> reader = read.createReader(splits)) {
                 datas = new ArrayList<>();
@@ -99,7 +118,8 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
                         LinkedHashMap<String, Object> rowList = new LinkedHashMap<>();
                         for (int i = 0; i < row.getFieldCount(); i++) {
                             String name = fieldTypes.get(i).name();
-                            Object data = PaimonTypeConvert.getRowDataSafe(fieldTypes.get(i), row, i);
+                            Object data =
+                                    PaimonTypeConvert.getRowDataSafe(fieldTypes.get(i), row, i);
                             rowList.put(name, data);
                         }
                         datas.add(rowList);
@@ -176,12 +196,15 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
 
     @Override
     public boolean existSchema(String schemaName) {
-        return false;
+        return catalog.listDatabases().contains(schemaName);
     }
 
     @Override
     public boolean createSchema(String schemaName) throws Exception {
-        return false;
+        if (!existSchema(schemaName)) {
+            catalog.createDatabase(schemaName, true);
+        }
+        return true;
     }
 
     @Override
@@ -192,7 +215,9 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     @Override
     public List<Table> listTables(String schemaName) {
         try {
-            return catalog.listTables(schemaName).stream().map(Table::new).collect(Collectors.toList());
+            return catalog.listTables(schemaName).stream()
+                    .map(Table::new)
+                    .collect(Collectors.toList());
         } catch (Catalog.DatabaseNotExistException e) {
             throw new RuntimeException(e);
         }
@@ -228,7 +253,8 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
                 // TODO: 使用CovertType
                 column.setJavaType(ColumnType.STRING);
                 column.setKeyFlag(primaryKeys.contains(field.name()));
-                //                column.setPartaionKey(partitionKeys.contains(field.name()));
+                //
+                // column.setPartaionKey(partitionKeys.contains(field.name()));
                 column.setNullable(field.type().isNullable());
                 columns.add(column);
             }
@@ -268,6 +294,8 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
 
     @Override
     public boolean dropTable(Table table) throws Exception {
+        Identifier identifier = Identifier.create(table.getSchema(), table.getName());
+        catalog.dropTable(identifier, true);
         return false;
     }
 
@@ -334,5 +362,9 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     @Override
     public Stream<JdbcSelectResult> StreamExecuteSql(String statement, Integer maxRowNum) {
         return null;
+    }
+
+    public Catalog getCatalog() {
+        return catalog;
     }
 }

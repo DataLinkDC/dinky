@@ -126,6 +126,7 @@
         <sqlite-jdbc.version>3.46.0.0</sqlite-jdbc.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
+        <jsqlparser.version>4.9</jsqlparser.version>
     </properties>
 
     <dependencyManagement>
