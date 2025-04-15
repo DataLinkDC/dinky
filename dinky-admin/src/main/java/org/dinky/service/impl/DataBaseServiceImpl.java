@@ -37,6 +37,7 @@ import org.dinky.data.model.Table;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.job.Job;
+import org.dinky.job.Job.JobStatus;
 import org.dinky.job.JobResult;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
@@ -305,6 +306,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             result.setSuccess(false);
             result.setError("please assign data source");
             result.setEndTime(LocalDateTime.now());
+            result.setStatus(JobStatus.FAILED);
             return result;
         }
 
@@ -313,6 +315,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             result.setSuccess(false);
             result.setError("data source not exist.");
             result.setEndTime(LocalDateTime.now());
+            result.setStatus(JobStatus.FAILED);
             return result;
         }
 
@@ -324,9 +327,11 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         result.setResult(selectResult);
         if (selectResult.isSuccess()) {
             result.setSuccess(true);
+            result.setStatus(JobStatus.SUCCESS);
         } else {
             result.setSuccess(false);
             result.setError(selectResult.getError());
+            result.setStatus(JobStatus.FAILED);
         }
         result.setEndTime(LocalDateTime.now());
         return result;
