@@ -34,6 +34,8 @@ public interface GatewayResult {
 
     String getWebURL();
 
+    String getConfig();
+
     List<String> getJids();
 
     String getError();

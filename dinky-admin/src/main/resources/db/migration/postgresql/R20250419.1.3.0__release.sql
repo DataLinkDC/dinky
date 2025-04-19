@@ -1,0 +1,1 @@
+ALTER TABLE public.dinky_cluster DROP  config;

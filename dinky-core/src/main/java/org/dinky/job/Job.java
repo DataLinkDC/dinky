@@ -42,6 +42,7 @@ public class Job {
     private Integer jobInstanceId;
     private JobConfig jobConfig;
     private String jobManagerAddress;
+    private String config;
     private JobStatus status;
     private GatewayType type;
     private String statement;

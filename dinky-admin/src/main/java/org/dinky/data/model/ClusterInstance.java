@@ -72,6 +72,14 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
     private String jobManagerHost;
 
     @ApiModelProperty(
+            value = "config",
+            required = true,
+            dataType = "String",
+            example = "{\"applicaitonId\":\"application_1745048813572_0007\",\"resourceManager\":[\"0.0.0.0:8032\"]}",
+            notes = "A JSON string that contains configuration information such as the ResourceManager and ApplicationID")
+    private String config;
+
+    @ApiModelProperty(
             value = "version",
             required = true,
             dataType = "String",

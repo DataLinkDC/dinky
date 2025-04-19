@@ -56,6 +56,13 @@ public class YarnResult extends AbstractGatewayResult {
             notes = "List of job IDs associated with the YARN application")
     private List<String> jids;
 
+    @ApiModelProperty(
+            value = "config",
+            dataType = "String",
+            example = "{\"applicaitonId\":\"application_1745048813572_0007\",\"resourceManager\":[\"0.0.0.0:8032\"]}",
+            notes = "A JSON string that contains configuration information such as the ResourceManager and ApplicationID")
+    private String config;
+
     public YarnResult(GatewayType type, LocalDateTime startTime) {
         super(type, startTime);
     }
@@ -96,7 +103,18 @@ public class YarnResult extends AbstractGatewayResult {
         this.jids = jids;
     }
 
+
+    public void setConfig(String config) {
+        this.config = config;
+    }
+
+    public String getConfig() {
+        return config;
+    }
+
     public static YarnResult build(GatewayType type) {
         return new YarnResult(type, LocalDateTime.now());
     }
+
+
 }

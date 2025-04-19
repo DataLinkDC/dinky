@@ -73,6 +73,11 @@ public class KubernetesResult extends AbstractGatewayResult {
         return this;
     }
 
+    @Override
+    public String getConfig() {
+        return null;
+    }
+
     public KubernetesResult setWebURL(String webURL) {
         this.webURL = webURL;
         return this;

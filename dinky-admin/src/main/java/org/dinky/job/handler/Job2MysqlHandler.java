@@ -157,6 +157,7 @@ public class Job2MysqlHandler extends AbsJobHandler {
                     .taskId(taskId)
                     .autoRegisters(true)
                     .enabled(true)
+                    .config(job.getConfig())
                     .build());
 
             if (Asserts.isNotNull(clusterInstance)) {

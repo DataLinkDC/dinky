@@ -80,6 +80,11 @@ public class SavePointResult extends AbstractGatewayResult {
     }
 
     @Override
+    public String getConfig() {
+        return null;
+    }
+
+    @Override
     public List<String> getJids() {
         return null;
     }

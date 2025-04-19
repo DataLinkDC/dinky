@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.yarn;
 
+import org.apache.http.HttpResponse;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -89,6 +90,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -100,6 +103,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import com.google.gson.Gson;
 
 public abstract class YarnGateway extends AbstractGateway {
     private static final String HTML_TAG_REGEX = "<pre>(.*)</pre>";
@@ -414,7 +418,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 logger.info("yarn application api url:" + url);
                 logger.info(
                         "HTTP API return code 401, try to authenticate using the Kerberos get yarn application state.");
-                org.apache.http.HttpResponse httpResponse = null;
+                HttpResponse httpResponse = null;
                 String principal = configuration.get(SecurityOptions.KERBEROS_LOGIN_PRINCIPAL);
                 String keytab = configuration.get(SecurityOptions.KERBEROS_LOGIN_KEYTAB);
                 logger.info("get principal:" + principal + "||keytab:" + keytab);
@@ -462,6 +466,7 @@ public abstract class YarnGateway extends AbstractGateway {
                 jobIds.add(jobDetails.getJobId().toHexString());
             }
             result.setJids(jobIds);
+            result.setConfig(getResourceManagerAndApplicationId(yarnConfiguration,clusterClient));
         }
         return webUrl;
     }
@@ -579,5 +584,34 @@ public abstract class YarnGateway extends AbstractGateway {
         } else {
             return "";
         }
+    }
+
+    private String getResourceManagerAndApplicationId(YarnConfiguration yarnConfiguration,ClusterClient<ApplicationId> clusterClient){
+        List<String> rmAddresses = new ArrayList<>();
+        Map<String, Object> jsonMap = new HashMap<>();
+        // 检查是否启用了HA
+        boolean isHAEnabled = yarnConfiguration.getBoolean("yarn.resourcemanager.ha.enabled", false);
+
+        if (isHAEnabled) {
+            String[] rmIds = yarnConfiguration.getStrings("yarn.resourcemanager.ha.rm-ids");
+            if (rmIds != null) {
+                for (String rmId : rmIds) {
+                    String addressKey = "yarn.resourcemanager.webapp.address." + rmId;
+                    String address = yarnConfiguration.get(addressKey);
+                    if (address != null && !address.isEmpty()) {
+                        rmAddresses.add(address);
+                    }
+                }
+            }
+        } else {
+            String singleAddress = yarnConfiguration.get("yarn.resourcemanager.webapp.address");
+            if (singleAddress != null && !singleAddress.isEmpty()) {
+                rmAddresses.add(singleAddress);
+            }
+        }
+        jsonMap.put("resourceManager", rmAddresses);
+        jsonMap.put("applicaitonId",clusterClient.getClusterId().toString());
+        // 生成JSON字符串
+        return new Gson().toJson(jsonMap);
     }
 }

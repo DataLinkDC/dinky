@@ -97,6 +97,14 @@ public class ClusterInstanceDTO {
     @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
     private Boolean enabled;
 
+    @ApiModelProperty(
+            value = "config",
+            required = true,
+            dataType = "String",
+            example = "{\"applicaitonId\":\"application_1745048813572_0007\",\"resourceManager\":[\"0.0.0.0:8032\"]}",
+            notes = "A JSON string that contains configuration information such as the ResourceManager and ApplicationID")
+    private String config;
+
     public ClusterInstance toBean() {
         ClusterInstance clusterInstance = new ClusterInstance();
         BeanUtil.copyProperties(this, clusterInstance);

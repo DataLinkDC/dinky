@@ -113,7 +113,6 @@ public class YarnApplicationGateway extends YarnGateway {
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
 
             webUrl = getWebUrl(clusterClient, result);
-
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setId(applicationId.toString());
             result.setWebURL(webUrl);

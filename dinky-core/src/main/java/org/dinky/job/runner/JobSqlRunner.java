@@ -299,6 +299,7 @@ public class JobSqlRunner extends AbstractJobRunner {
         jobManager.getJob().setJobId(gatewayResult.getId());
         jobManager.getJob().setJids(gatewayResult.getJids());
         jobManager.getJob().setJobManagerAddress(URLUtils.formatAddress(gatewayResult.getWebURL()));
+        jobManager.getJob().setConfig(gatewayResult.getConfig());
         jobManager.getJob().setStatus(gatewayResult.isSuccess() ? Job.JobStatus.SUCCESS : Job.JobStatus.FAILED);
         if (!gatewayResult.isSuccess()) {
             jobManager.getJob().setError(gatewayResult.getError());
