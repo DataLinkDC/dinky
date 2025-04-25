@@ -195,6 +195,9 @@ declare namespace Cluster {
     autoRegisters: boolean;
     version: string;
     status: number;
+    config: string;
+    resourceManager: string;
+    applicationId: string;
     note: string;
     clusterConfigurationId: number;
   };

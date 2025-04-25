@@ -24,7 +24,7 @@ import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDelet
 import { Authorized, HasAuthority } from '@/hooks/useAccess';
 import useHookRequest from '@/hooks/useHookRequest';
 import { CLUSTER_TYPE_OPTIONS } from '@/pages/RegCenter/Cluster/constants';
-import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
+import {isOnYarnCluster, renderWebUiRedirect} from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import { getData } from '@/services/api';
 import {
@@ -118,6 +118,14 @@ export default () => {
    */
   const handleSubmit = async (value: Partial<Cluster.Instance>) => {
     await executeAndCallback(async () => {
+      let newValue: Partial<Cluster.Instance> = value;
+      if(isOnYarnCluster(newValue.type)){
+        newValue.config = JSON.stringify({
+          resourceManager: newValue.resourceManager,
+          applicationId: newValue.applicationId,
+        });
+      }
+
       await handleAddOrUpdate(API_CONSTANTS.CLUSTER_INSTANCE, value);
       await handleCancel();
     });
@@ -128,10 +136,18 @@ export default () => {
    * @param value
    */
   const handleEdit = async (value: Partial<Cluster.Instance>) => {
+    let newValue: Partial<Cluster.Instance> = value;
+    if(value.config){
+      let config = JSON.parse(value.config);
+      if(isOnYarnCluster(newValue.type)) {
+        newValue.resourceManager = config.resourceManager;
+        newValue.applicationId = config.applicationId;
+      }
+    }
     setClusterInstanceStatus((prevState) => ({
       ...prevState,
       editOpen: true,
-      value: value
+      value: newValue
     }));
   };
 

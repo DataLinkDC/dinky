@@ -102,7 +102,8 @@ public class ClusterInstanceDTO {
             required = true,
             dataType = "String",
             example = "{\"applicaitonId\":\"application_1745048813572_0007\",\"resourceManager\":[\"0.0.0.0:8032\"]}",
-            notes = "A JSON string that contains configuration information such as the ResourceManager and ApplicationID")
+            notes =
+                    "A JSON string that contains configuration information such as the ResourceManager and ApplicationID")
     private String config;
 
     public ClusterInstance toBean() {

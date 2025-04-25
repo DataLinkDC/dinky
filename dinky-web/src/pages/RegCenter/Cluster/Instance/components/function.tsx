@@ -23,6 +23,7 @@ import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { Typography } from 'antd';
 import { RuleObject } from 'rc-field-form/es/interface';
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 const { Text, Paragraph, Link } = Typography;
 
@@ -72,4 +73,10 @@ export const renderWebUiRedirect = (record: Cluster.Instance) => {
     );
   }
   return <Link>{record.hosts}</Link>;
+};
+
+export const isOnYarnCluster = (type: string| undefined) => {
+  return (type === ClusterType.YARN_SESSION ||
+    type === ClusterType.YARN ||
+    type === ClusterType.YARN_APPLICATION);
 };

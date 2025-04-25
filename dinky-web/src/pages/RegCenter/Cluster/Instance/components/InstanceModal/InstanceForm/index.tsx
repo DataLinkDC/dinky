@@ -18,23 +18,30 @@
  */
 
 import { ClusterType, CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/constants';
-import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
+import {isOnYarnCluster, validatorJMHAAdderess} from '@/pages/RegCenter/Cluster/Instance/components/function';
 import { Cluster } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import {
+  ProForm,
   ProFormGroup,
   ProFormSelect,
   ProFormText,
   ProFormTextArea
 } from '@ant-design/pro-components';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
 import { Alert } from 'antd';
 import React from 'react';
 
 type InstanceFormProps = {
+  form: FormInstance<Values>;
   values: Partial<Cluster.Instance>;
 };
+
 const InstanceForm: React.FC<InstanceFormProps> = (props) => {
-  const { values } = props;
+  const { form, values } = props;
+  const [type, setType] = React.useState<string>(values.type || ClusterType.STANDALONE);
+
   const renderForm = () => {
     return (
       <>
@@ -87,6 +94,26 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
             ]}
             placeholder={l('rc.ci.jmhaPlaceholder')}
           />
+
+          {isOnYarnCluster(type) && (<>
+          <ProFormTextArea
+            name='resourceManager'
+            label={l('rc.ci.rm')}
+            width='md'
+            tooltip={l('rc.ci.rm.tips')}
+            validateTrigger={['onChange']}
+            placeholder={l('rc.ci.rmPlaceholder')}
+          />
+
+          <ProFormTextArea
+            name='applicationId'
+            label={l('rc.ci.aid')}
+            width='md'
+            tooltip={l('rc.ci.aid.tips')}
+            validateTrigger={['onChange']}
+            placeholder={l('rc.ci.aidPlaceholder')}
+          />
+          </>)}
           <ProFormTextArea
             name='note'
             disabled={values && values.autoRegisters}
@@ -99,7 +126,16 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
     );
   };
 
-  return <>{renderForm()}</>;
+  const handleValueChange = (changedValues: any, values: any) => {
+    if (values.type) setType(values.type);
+  };
+
+  return <ProForm
+    onValuesChange={handleValueChange}
+    form={form}
+    initialValues={{ ...values, type }}
+    submitter={false}
+  >{renderForm()}</ProForm>;
 };
 
 export default InstanceForm;
