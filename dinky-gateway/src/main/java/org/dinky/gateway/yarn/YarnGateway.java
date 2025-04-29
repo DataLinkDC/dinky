@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.yarn;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -95,8 +96,8 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
@@ -612,8 +613,13 @@ public abstract class YarnGateway extends AbstractGateway {
             }
         }
         jsonMap.put("resourceManager", rmAddresses);
-        jsonMap.put("applicaitonId", clusterClient.getClusterId().toString());
+        jsonMap.put("applicationId", clusterClient.getClusterId().toString());
         // 生成JSON字符串
-        return new Gson().toJson(jsonMap);
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(jsonMap);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
