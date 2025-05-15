@@ -30,9 +30,10 @@ import org.dinky.data.exception.BusException;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.ClusterInstance;
+import org.dinky.data.model.CustomConfig;
 import org.dinky.data.model.Task;
+import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.JobConfig;
@@ -60,6 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -227,9 +229,17 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public ClusterInstance deploySessionCluster(Integer id) {
         ClusterConfiguration clusterCfg = clusterConfigurationService.getClusterConfigById(id);
-        if (Asserts.isNull(clusterCfg)) {
-            throw new GatewayException("The cluster configuration does not exist.");
+        DinkyAssert.checkNull(clusterCfg, "The clusterConfiguration not exists!");
+        DinkyAssert.checkEnable(clusterCfg, "The cluster is Disable!");
+
+        // add custom configuration.
+        FlinkConfig flinkConfig = clusterCfg.getConfigJson().getFlinkConfig();
+        for (CustomConfig customConfig : flinkConfig.getFlinkConfigList()) {
+            Assert.notNull(customConfig.getName(), "Custom flink config has null key");
+            Assert.notNull(customConfig.getValue(), "Custom flink config has null value");
+            flinkConfig.getConfiguration().put(customConfig.getName(), customConfig.getValue());
         }
+
         GatewayConfig gatewayConfig =
                 GatewayConfig.build(FlinkClusterConfig.create(clusterCfg.getType(), clusterCfg.getConfigJson()));
         gatewayConfig.setType(gatewayConfig.getType().getSessionType());

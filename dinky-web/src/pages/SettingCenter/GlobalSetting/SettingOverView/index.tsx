@@ -273,8 +273,7 @@ const SettingOverView = () => {
           animated: true,
           onChange: (key: any) => setActiveKey(key),
           items: renderDataTag().filter(
-            (menu) =>
-              !!!menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
+            (menu) => !menu.path || !!AuthorizedObject({ path: menu.path, children: menu, access })
           )
         }}
       />

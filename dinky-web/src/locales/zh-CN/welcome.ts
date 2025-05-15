@@ -33,7 +33,7 @@ export default {
   'welcome.finish.title': '初始化完成！',
   'welcome.finish': '立即开始你的Dinky之旅吧！',
 
-  'welcome.goLogin': '去登陆！',
+  'welcome.goLogin': '去登录！',
   'welcome.base.config.title': '基本配置',
   'welcome.base.config.dinky.url.title': 'Dinky地址：',
   'welcome.base.config.dinky.url':

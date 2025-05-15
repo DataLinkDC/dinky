@@ -20,9 +20,11 @@
 package org.dinky.job;
 
 import org.dinky.context.TenantContextHolder;
-import org.dinky.data.result.ResultPool;
+import org.dinky.sandbox.Sandbox;
+import org.dinky.sandbox.SandboxFactory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 
@@ -43,15 +45,21 @@ public class JobShutdownConfig {
     @PreDestroy
     public void destroy() {
         log.info("Job shutdown.");
-        List<String> jobIds = ResultPool.getJobIds();
-        if (CollectionUtil.isEmpty(jobIds)) {
-            log.info("Result pool is empty.");
-            return;
+        // TODO: Change it to be configuration - based
+        if ("MemorySandbox".equals("MemorySandbox")) {
+            Sandbox sandbox = SandboxFactory.getSandbox("MemorySandbox");
+            List<String> jobIds = sandbox.getAllTables().stream()
+                    .filter(tableInfo -> tableInfo.getTableId().isPrivate())
+                    .map(tableInfo -> tableInfo.getTableId().getPrivateName())
+                    .collect(Collectors.toList());
+            if (CollectionUtil.isEmpty(jobIds)) {
+                log.info("Memory Sandbox is empty.");
+                return;
+            }
+            // set job result status to destroyed
+            JobHandler jobHandler = JobHandler.build();
+            TenantContextHolder.ignoreTenant();
+            jobHandler.persistResultData(jobIds);
         }
-        // set job result status to destroyed
-        jobIds.stream().map(ResultPool::get).forEach(jobResult -> jobResult.setDestroyed(Boolean.TRUE));
-        JobHandler jobHandler = JobHandler.build();
-        TenantContextHolder.ignoreTenant();
-        jobHandler.persistResultData(jobIds);
     }
 }

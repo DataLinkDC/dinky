@@ -36,11 +36,14 @@ import org.dinky.data.model.job.JobHistory;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.mapping.ClusterConfigurationMapping;
 import org.dinky.data.model.mapping.ClusterInstanceMapping;
-import org.dinky.data.result.ResultPool;
 import org.dinky.data.result.SelectResult;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.job.Job;
 import org.dinky.job.JobReadHandler;
+import org.dinky.sandbox.Sandbox;
+import org.dinky.sandbox.SandboxFactory;
+import org.dinky.sandbox.metadata.TableId;
+import org.dinky.sandbox.metadata.TableInfo;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -56,6 +59,7 @@ import java.util.stream.Collectors;
 import org.springframework.context.annotation.DependsOn;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Tuple;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -257,8 +261,15 @@ public class Job2MysqlHandler extends AbsJobHandler {
         List<History> historyList = jobIds.stream()
                 .map(jobIdStr -> {
                     Integer jobId = Integer.parseInt(jobIdStr);
-                    SelectResult selectResult = ResultPool.get(jobIdStr);
-                    if (Objects.isNull(selectResult)) {
+                    Sandbox sandbox = SandboxFactory.getSandbox("MemorySandbox");
+                    TableId tableId = TableId.withPrivate(jobId.toString());
+                    SelectResult selectResult = null;
+                    if (sandbox.existTable(tableId)) {
+                        TableInfo tableInfo = sandbox.getTableInfo(tableId);
+                        List<Tuple> data = sandbox.getData(tableId);
+                        selectResult = SelectResult.buildBySandbox(jobId.toString(), tableInfo, data);
+                    }
+                    if (Asserts.isNull(selectResult)) {
                         log.info("The result data does not exist. Job id: {}", jobId);
                         return null;
                     }

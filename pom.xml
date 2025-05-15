@@ -32,6 +32,7 @@
         <module>dinky-flink</module>
         <module>dinky-common</module>
         <module>dinky-client</module>
+        <module>dinky-sandbox</module>
         <module>dinky-cdc</module>
         <module>dinky-catalog</module>
         <module>dinky-gateway</module>
@@ -739,6 +740,16 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-scheduler</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-sandbox-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-sandbox-memory</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

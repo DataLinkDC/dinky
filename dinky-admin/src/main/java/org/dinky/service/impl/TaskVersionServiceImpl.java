@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.json.JSONUtil;
 
 @Service
 public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, TaskVersion>
@@ -64,6 +65,7 @@ public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, 
 
         TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
         BeanUtil.copyProperties(task, taskVersionConfigureDTO);
+        taskVersionConfigureDTO.setConfigJson(JSONUtil.toJsonStr(task.getConfigJson()));
 
         taskVersion.setTaskConfigure(taskVersionConfigureDTO);
         taskVersion.setTaskId(taskVersion.getId());

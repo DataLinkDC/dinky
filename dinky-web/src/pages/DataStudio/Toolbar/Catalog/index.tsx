@@ -40,9 +40,9 @@ import { mapDispatchToProps } from '@/pages/DataStudio/DvaFunction';
 import { isSql } from '@/pages/DataStudio/utils';
 import { CatalogState, TableDataNode, ViewDataNode } from '@/pages/DataStudio/Toolbar/Catalog/data';
 import { DataStudioActionType } from '@/pages/DataStudio/data.d';
-import Search from "antd/es/input/Search";
-import { useRightContext } from "@/pages/DataStudio/Toolbar/Catalog/RightContext";
-import { handleRightClick } from "@/pages/DataStudio/function";
+import Search from 'antd/es/input/Search';
+import { useRightContext } from '@/pages/DataStudio/Toolbar/Catalog/RightContext';
+import { handleRightClick } from '@/pages/DataStudio/function';
 import type { Key } from 'rc-tree/lib/interface';
 
 const Catalog = (props: {
@@ -63,7 +63,7 @@ const Catalog = (props: {
   const [currentState, setCurrentState] = useState<CatalogState>();
   const [searchValue, setSearchValue] = useState('');
   const [selectKeys, setSelectKeys] = useState<Key[] | undefined>([]);
-  const [expandKeys, setExpandKeys] = useState<Key[] | undefined>([])
+  const [expandKeys, setExpandKeys] = useState<Key[] | undefined>([]);
 
   const currentData = tabs.find((tab) => activeTab == tab.id);
 

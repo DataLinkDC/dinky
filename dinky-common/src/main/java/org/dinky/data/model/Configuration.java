@@ -64,6 +64,8 @@ public class Configuration<T> implements Serializable {
 
     private final T defaultValue;
 
+    private Boolean hidden = false;
+
     @JsonIgnore
     private final transient List<Consumer<T>> changeEventConsumer = new LinkedList<>();
 
@@ -75,6 +77,11 @@ public class Configuration<T> implements Serializable {
 
     public Configuration<T> note(Status status) {
         this.noteKey = status.getKey();
+        return this;
+    }
+
+    public Configuration<T> hidden(boolean isHidden) {
+        this.hidden = isHidden;
         return this;
     }
 

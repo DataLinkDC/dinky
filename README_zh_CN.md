@@ -56,7 +56,7 @@
 
 ## 参与贡献
 
-dev 分支为 Dinky 1.3.0, 1.2 分支为 Dinky 1.2.2。
+dev 分支为 Dinky 1.3.0, 1.2 分支为 Dinky 1.2.4。
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/DataLinkDC/dinky/pulls)
 

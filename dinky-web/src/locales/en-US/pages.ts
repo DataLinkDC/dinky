@@ -1006,6 +1006,8 @@ export default {
   'rc.ds.default': 'Default Value',
   'rc.ds.delete': 'Delete DataSource',
   'rc.ds.deleteConfirm': 'Are you sure to delete this DataSource? ',
+  'rc.ds.total.db': 'Total {total} databases',
+  'rc.ds.total.table': 'Total {total} tables',
   'rc.ds.detail.tag.console': 'Console',
   'rc.ds.detail.tag.desc': 'Description',
   'rc.ds.detail.tag.gensql': 'Generate SQL',

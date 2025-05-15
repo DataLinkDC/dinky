@@ -72,7 +72,7 @@ public class SystemConfiguration {
             .collect(Collectors.toList());
 
     private final Configuration<Boolean> isFirstSystemIn =
-            key(Status.SYS_GLOBAL_IS_FIRST).booleanType().defaultValue(true);
+            key(Status.SYS_GLOBAL_IS_FIRST).booleanType().defaultValue(true).hidden(true);
 
     private final Configuration<Boolean> useRestAPI = key(Status.SYS_FLINK_SETTINGS_USERESTAPI)
             .booleanType()
@@ -267,7 +267,8 @@ public class SystemConfiguration {
     private final Configuration<Boolean> resourcesEnable = key(Status.SYS_RESOURCE_SETTINGS_ENABLE)
             .booleanType()
             .defaultValue(true)
-            .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE);
+            .note(Status.SYS_RESOURCE_SETTINGS_ENABLE_NOTE)
+            .hidden(true);
 
     private final Configuration<Boolean> physicalDeletion = key(Status.SYS_RESOURCE_SETTINGS_PHYSICAL_DELETION)
             .booleanType()

@@ -43,7 +43,6 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
 
   /**
    * search tree node
-   * @type {(e: {target: {value: React.SetStateAction<string>}}) => void}
    */
   const onSearchChange = useCallback(
     (e: { target: { value: React.SetStateAction<string> } }) => {
@@ -59,15 +58,35 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
     <>
       {treeData.length > 0 ? (
         <>
-          <Input
-            placeholder={l('global.search.text')}
-            allowClear
-            style={{ marginBottom: 8 }}
-            value={searchValue}
-            onChange={onSearchChange}
-          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              borderBottom: '5px',
+              flexDirection: 'row',
+              alignItems: 'center'
+            }}
+          >
+            <Input
+              placeholder={l('global.search.text')}
+              allowClear
+              style={{ marginBottom: 8 }}
+              value={searchValue}
+              onChange={onSearchChange}
+            />
+            <span
+              style={{
+                marginLeft: '5px',
+                whiteSpace: 'nowrap',
+                fontSize: '10px'
+              }}
+            >
+              {l('rc.ds.total.db', '', { total: treeData.length })}
+            </span>
+          </div>
           <DirectoryTree
             height={height}
+            style={{ overflow: 'auto' }}
             expandedKeys={expandKeys}
             selectedKeys={selectKeys}
             onExpand={onExpand}
