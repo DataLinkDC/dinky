@@ -2297,6 +2297,22 @@ INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, desc
 VALUES (249, 'Property', 'FLINK_OPTIONS', 'FlinkSql', 'restart-strategy', '重启策略', 'fixed-delay', '1.15', 0, true,
         '2024-03-01 15:10:31', '2024-03-01 15:10:31', 1, 1);
 
+INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num,
+                                         enabled, create_time, update_time, creator, updater)
+ VALUES (250,'Variable','FLINK_OPTIONS','','s3.endpoint',NULL,'''s3.endpoint'' = ''http://localhost:9000''',
+         'All Versions',0,true,'2025-03-24 18:04:05','2025-03-26 09:01:39',1,1);
+INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num,
+                                         enabled, create_time, update_time, creator, updater)
+ VALUES (251,'Variable','FLINK_OPTIONS','','s3.access-key',NULL,'''s3.access-key'' = ''minio''','All Versions',0,true,
+         '2025-03-24 18:08:07','2025-03-26 09:02:50',1,1);
+INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num,
+                                         enabled, create_time, update_time, creator, updater)
+ VALUES (252,'Variable','FLINK_OPTIONS','','s3.secret-key',NULL,'''s3.secret-key'' = ''your_s3_secret_key''',
+         'All Versions',0,true,'2025-03-24 18:08:32','2025-03-26 09:04:32',1,1);
+INSERT INTO public.dinky_flink_document (id, category, type, subtype, name, description, fill_value, version, like_num,
+                                         enabled, create_time, update_time, creator, updater)
+ VALUES (253,'Variable','FLINK_OPTIONS','','s3.path.style.access',NULL,'''s3.path.style.access'' = ''true''',
+         'All Versions',0,true,'2025-03-24 18:09:00','2025-03-26 09:04:58',1,1);
 
 
 -- ----------------------------
