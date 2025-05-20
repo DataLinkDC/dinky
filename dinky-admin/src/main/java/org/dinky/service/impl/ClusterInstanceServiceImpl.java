@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.assertion.DinkyAssert;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
+import org.dinky.cluster.FlinkClusterInstanceConfig;
 import org.dinky.data.dto.ClusterInstanceDTO;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.enums.Status;
@@ -60,6 +61,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.thread.ThreadUtil;
@@ -82,16 +85,26 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Lazy
     private TaskService taskService;
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     @Override
-    public FlinkClusterInfo checkHeartBeat(String hosts, String host) {
-        return FlinkCluster.testFlinkJobManagerIP(hosts, host);
+    public FlinkClusterInfo checkHeartBeat(ClusterInstance clusterInstance) {
+        try {
+            JsonNode configNode = mapper.readTree(clusterInstance.getConfig());
+            return FlinkCluster.testFlinkJobManagerIP(FlinkClusterInstanceConfig.build(
+                    GatewayType.get(clusterInstance.getType()),
+                    clusterInstance.getHosts(),
+                    clusterInstance.getJobManagerHost(),
+                    configNode));
+        } catch (Exception e) {
+            return FlinkClusterInfo.INEFFECTIVE;
+        }
     }
 
     @Override
     public String getJobManagerAddress(ClusterInstance clusterInstance) {
         DinkyAssert.check(clusterInstance);
-        FlinkClusterInfo info =
-                FlinkCluster.testFlinkJobManagerIP(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
+        FlinkClusterInfo info = checkHeartBeat(clusterInstance);
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
@@ -305,7 +318,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     private boolean checkHealth(ClusterInstance clusterInstance) {
-        FlinkClusterInfo info = checkHeartBeat(clusterInstance.getHosts(), clusterInstance.getJobManagerHost());
+        FlinkClusterInfo info = checkHeartBeat(clusterInstance);
         if (!info.isEffective()) {
             clusterInstance.setJobManagerHost("");
             clusterInstance.setStatus(0);

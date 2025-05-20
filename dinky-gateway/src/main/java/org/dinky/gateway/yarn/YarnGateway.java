@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CustomerConfigureOptions;
 import org.dinky.context.FlinkUdfPathContextHolder;
@@ -96,8 +95,9 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.convert.Convert;
@@ -601,18 +601,39 @@ public abstract class YarnGateway extends AbstractGateway {
                 for (String rmId : rmIds) {
                     String addressKey = "yarn.resourcemanager.webapp.address." + rmId;
                     String address = yarnConfiguration.get(addressKey);
-                    if (address != null && !address.isEmpty()) {
+                    if (Asserts.isNotNullString(address)) {
                         rmAddresses.add(address);
+                        continue;
+                    }
+                    String hostnameKey = "yarn.resourcemanager.hostname." + rmId;
+                    String hostname = yarnConfiguration.get(hostnameKey);
+                    if (Asserts.isNotNullString(hostname)) {
+                        String port = yarnConfiguration.get("yarn.resourcemanager.port." + rmId);
+                        if (Asserts.isNotNullString(port)) {
+                            rmAddresses.add(hostname + ":" + port);
+                        } else {
+                            rmAddresses.add(hostname + ":8088");
+                        }
                     }
                 }
             }
         } else {
             String singleAddress = yarnConfiguration.get("yarn.resourcemanager.webapp.address");
-            if (singleAddress != null && !singleAddress.isEmpty()) {
+            if (Asserts.isNotNullString(singleAddress)) {
                 rmAddresses.add(singleAddress);
+            } else {
+                String singleHostname = yarnConfiguration.get("yarn.resourcemanager.hostname");
+                if (Asserts.isNotNullString(singleHostname)) {
+                    String port = yarnConfiguration.get("yarn.resourcemanager.port");
+                    if (Asserts.isNotNullString(port)) {
+                        rmAddresses.add(singleHostname + ":" + port);
+                    } else {
+                        rmAddresses.add(singleHostname + ":8088");
+                    }
+                }
             }
         }
-        jsonMap.put("resourceManager", rmAddresses);
+        jsonMap.put("resourceManager", String.join(",", rmAddresses));
         jsonMap.put("applicationId", clusterClient.getClusterId().toString());
         // 生成JSON字符串
         ObjectMapper objectMapper = new ObjectMapper();

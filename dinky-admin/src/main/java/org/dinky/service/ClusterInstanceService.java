@@ -33,11 +33,10 @@ public interface ClusterInstanceService extends ISuperService<ClusterInstance> {
     /**
      * check cluster heartbeat status
      *
-     * @param hosts {@link String} eg: host1:8081,host2:8082,host3:8083,host4:8084
-     * @param host {@link String} eg: host1
+     * @param clusterInstance {@link ClusterInstance}
      * @return {@link FlinkClusterInfo}
      */
-    FlinkClusterInfo checkHeartBeat(String hosts, String host);
+    FlinkClusterInfo checkHeartBeat(ClusterInstance clusterInstance);
 
     /**
      * get job manager address

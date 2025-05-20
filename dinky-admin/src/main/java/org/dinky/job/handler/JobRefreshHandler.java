@@ -359,9 +359,18 @@ public class JobRefreshHandler {
             return;
         }
 
-        FlinkClusterInfo flinkClusterInfo = clusterInstanceService.checkHeartBeat(
-                jobInfoDetail.getClusterInstance().getHosts(),
-                jobInfoDetail.getClusterInstance().getJobManagerHost());
+        FlinkClusterInfo flinkClusterInfo = clusterInstanceService.checkHeartBeat(jobInfoDetail.getClusterInstance());
+        if (flinkClusterInfo.isEffective()
+                && Asserts.isNotNull(jobInfoDetail.getClusterInstance().getJobManagerHost())
+                && !jobInfoDetail
+                        .getClusterInstance()
+                        .getJobManagerHost()
+                        .equals(flinkClusterInfo.getJobManagerAddress())) {
+            jobInfoDetail.getClusterInstance().setJobManagerHost(flinkClusterInfo.getJobManagerAddress());
+            jobInfoDetail.getHistory().setJobManagerAddress(flinkClusterInfo.getJobManagerAddress());
+            clusterInstanceService.updateById(jobInfoDetail.getClusterInstance());
+            historyService.updateById(jobInfoDetail.getHistory());
+        }
         if (!flinkClusterInfo.isEffective()) {
             ClusterConfigurationDTO clusterCfg = jobInfoDetail.getClusterConfiguration();
             ClusterInstance clusterInstance = jobInfoDetail.getClusterInstance();

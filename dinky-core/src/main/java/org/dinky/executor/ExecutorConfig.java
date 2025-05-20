@@ -170,7 +170,7 @@ public class ExecutorConfig {
         String host = null;
         Integer port = null;
         String hostPort = address;
-        if (Asserts.isNotNullString(address)) {
+        if (Asserts.isNotNullString(address) && !address.contains("proxy")) {
             if (address.startsWith(NetConstant.HTTP) || address.startsWith(NetConstant.HTTPS)) {
                 hostPort = address.replace(NetConstant.HTTP, "").replace(NetConstant.HTTPS, "");
             }

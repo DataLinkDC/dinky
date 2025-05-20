@@ -75,7 +75,8 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
             value = "config",
             required = true,
             dataType = "String",
-            example = "{\"applicaitonId\":\"application_1745048813572_0007\",\"resourceManager\":[\"0.0.0.0:8032\"]}",
+            example =
+                    "{\"applicationId\":\"application_1745048813572_0007\",\"resourceManager\":\"127.0.0.1:8032,127.0.0.2:8032\"}",
             notes =
                     "A JSON string that contains configuration information such as the ResourceManager and ApplicationID")
     private String config;
@@ -104,7 +105,7 @@ public class ClusterInstance extends SuperEntity<ClusterInstance> {
             required = true,
             dataType = "Boolean",
             example = "test",
-            notes = "is auto registers, if this record from projob/application mode , it will be true")
+            notes = "is auto registers, if this record from per-job/application mode , it will be true")
     private boolean autoRegisters;
 
     @ApiModelProperty(

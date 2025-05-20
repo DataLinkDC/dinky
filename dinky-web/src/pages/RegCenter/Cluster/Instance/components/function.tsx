@@ -62,9 +62,13 @@ export const renderWebUiRedirect = (record: Cluster.Instance) => {
       record.type === RUN_MODE.YARN_APPLICATION ||
       record.type === RUN_MODE.YARN_PER_JOB)
   ) {
+    let address = record.jobManagerHost;
+    if (!address.startsWith("http://") && !address.startsWith("https://")){
+      address = API_CONSTANTS.BASE_URL + '/api/flink/' + record.jobManagerHost;
+    }
     return (
       <Link
-        href={`${API_CONSTANTS.BASE_URL}/api/flink/${record.jobManagerHost}/#/overview`}
+        href={`${address}/#/overview`}
         key={`${record.id}_webui`}
         target='_blank'
       >

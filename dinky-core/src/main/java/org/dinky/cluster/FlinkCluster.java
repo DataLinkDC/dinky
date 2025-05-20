@@ -25,6 +25,8 @@ import org.dinky.assertion.Asserts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import cn.hutool.core.io.IORuntimeException;
 
 /**
@@ -36,14 +38,34 @@ public class FlinkCluster {
 
     private static Logger logger = LoggerFactory.getLogger(FlinkCluster.class);
 
-    public static FlinkClusterInfo testFlinkJobManagerIP(String hosts, String host) {
-        if (Asserts.isNotNullString(host)) {
-            FlinkClusterInfo info = executeSocketTest(host);
+    public static FlinkClusterInfo testFlinkJobManagerIP(FlinkClusterInstanceConfig config) {
+        if (config.getClusterType().isDeployYarnCluster()) {
+            JsonNode configNode = config.getConfig();
+            if (configNode != null && configNode.has("applicationId") && configNode.has("resourceManager")) {
+                String applicationId = configNode.get("applicationId").asText();
+                String resourceManagerStr = configNode.get("resourceManager").asText();
+                if (Asserts.isNotNullString(resourceManagerStr)) {
+                    String[] resourceManagers = resourceManagerStr.split(",");
+                    for (String resourceManager : resourceManagers) {
+                        if (Asserts.isNotNullString(resourceManager.trim())) {
+                            String yarnUrl = "http://" + resourceManager.trim() + "/proxy/" + applicationId + "/";
+                            FlinkClusterInfo info = executeSocketTest(yarnUrl);
+                            if (info.isEffective()) {
+                                return info;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (Asserts.isNotNullString(config.getHost())) {
+            FlinkClusterInfo info = executeSocketTest(config.getHost());
             if (info.isEffective()) {
                 return info;
             }
         }
-        String[] servers = hosts.split(",");
+        String[] servers = config.getHosts().split(",");
         for (String server : servers) {
             FlinkClusterInfo info = executeSocketTest(server);
             if (info.isEffective()) {
