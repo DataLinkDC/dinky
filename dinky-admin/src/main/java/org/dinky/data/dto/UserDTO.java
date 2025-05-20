@@ -32,6 +32,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dinky.data.model.rbac.UserRole;
 
 @Data
 @NoArgsConstructor
@@ -44,6 +45,11 @@ public class UserDTO {
 
     @ApiModelProperty(value = "roleList", required = true, dataType = "List<Role>", allowEmptyValue = false)
     private List<Role> roleList;
+
+    @ApiModelProperty(value = "userRoleList", required = false, dataType = "List<UserRole>", allowEmptyValue = false)
+    private List<UserRole> userRoleList;
+
+    private String redirectUri;
 
     @ApiModelProperty(value = "tenantList", required = true, dataType = "List<Tenant>", allowEmptyValue = false)
     private List<Tenant> tenantList;

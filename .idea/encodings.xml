@@ -83,6 +83,12 @@
     <file url="file://$PROJECT_DIR$/dinky-metadata/dinky-metadata-starrocks/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dinky-metadata/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dinky-metadata/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dinky-sandbox/dinky-sandbox-base/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dinky-sandbox/dinky-sandbox-base/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dinky-sandbox/dinky-sandbox-memory/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dinky-sandbox/dinky-sandbox-memory/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dinky-sandbox/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/dinky-sandbox/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dinky-scheduler/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/dinky-scheduler/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
