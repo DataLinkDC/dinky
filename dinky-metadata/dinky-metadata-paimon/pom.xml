@@ -35,6 +35,7 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-base</artifactId>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.paimon/paimon-bundle -->
         <dependency>
             <groupId>org.apache.paimon</groupId>
@@ -48,6 +49,18 @@
             <artifactId>paimon-s3</artifactId>
             <version>0.8.1</version>
             <scope>${scope.runtime}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-hadoop</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>${jsqlparser.version}</version>
         </dependency>
 
         <!-- test dependencies -->

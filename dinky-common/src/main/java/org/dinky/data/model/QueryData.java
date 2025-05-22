@@ -60,7 +60,7 @@ public class QueryData {
 
     @Data
     @ApiModel(value = "Option", description = "Options for customizing a SQL query")
-    public class Option {
+    public static class Option {
 
         @ApiModelProperty(
                 value = "WHERE clause for the query",

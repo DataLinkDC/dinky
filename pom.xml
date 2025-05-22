@@ -80,6 +80,7 @@
         <jaxb.version>2.3.0</jaxb.version>
         <jedis.version>2.9.0</jedis.version>
         <jgit.version>5.13.3.202401111512-r</jgit.version>
+        <jsqlparser.version>4.9</jsqlparser.version>
         <junit5.version>5.9.1</junit5.version>
         <knife4j.version>4.1.0</knife4j.version>
         <kubernetes-client.version>5.12.4</kubernetes-client.version>
