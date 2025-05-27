@@ -28,7 +28,12 @@ import { API_CONSTANTS } from '@/services/endpoints';
 import { PermissionConstants } from '@/types/Public/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { BookOutlined, ConsoleSqlOutlined, HighlightOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  BookOutlined,
+  ConsoleSqlOutlined,
+  HighlightOutlined,
+  SearchOutlined
+} from '@ant-design/icons';
 import { ProCardTabsProps } from '@ant-design/pro-card/es/typing';
 import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
