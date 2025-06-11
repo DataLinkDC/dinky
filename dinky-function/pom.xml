@@ -41,6 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
+<!--            <artifactId>dinky-client-${dinky.flink.version}</artifactId>-->
             <artifactId>dinky-client-${dinky.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
