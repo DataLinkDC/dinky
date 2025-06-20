@@ -77,7 +77,7 @@ public class KubernetesApplicationOperatorGateway extends KubernetesOperatorGate
 
             kubernetesClient.resource(flinkDeployment).delete();
             kubernetesClient.resource(flinkDeployment).waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
-            logger.debug("flinkDeployment => {}", JsonUtils.toJsonString(flinkDeployment));
+            logger.info("flinkDeployment => {}", JsonUtils.toJsonString(flinkDeployment));
             kubernetesClient.resource(flinkDeployment).createOrReplace();
 
             kubernetesClient

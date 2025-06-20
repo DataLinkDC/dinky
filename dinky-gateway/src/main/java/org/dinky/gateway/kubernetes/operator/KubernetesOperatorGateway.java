@@ -74,6 +74,9 @@ public abstract class KubernetesOperatorGateway extends KubernetesGateway {
     public void init() {
         kubernetesConfiguration = config.getKubernetesConfig().getConfiguration();
         initConfig();
+        //operator not need this config, must be delete, or will throw exception
+        this.removeConfigParas(KubernetesConfigOptions.KUBE_CONFIG_FILE.key());
+
         initBase();
         initMetadata();
         initSpec();
