@@ -89,6 +89,10 @@ public abstract class AbstractGateway implements Gateway {
 
     protected abstract void init();
 
+    protected boolean removeConfigParas(ConfigOption<String> configOption) {
+        return this.configuration.removeConfig(configOption);
+    }
+
     protected void addConfigParas(Map<String, String> configMap) {
         if (Asserts.isNotNull(configMap)) {
             configMap.entrySet().stream()
