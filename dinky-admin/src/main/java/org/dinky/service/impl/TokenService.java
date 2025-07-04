@@ -300,27 +300,31 @@ public class TokenService implements SaTokenDao {
      */
     @Override
     public void init() {
-        DateTime now = DateUtil.date();
         List<SysToken> sysTokens = tokenMapper.selectList(new LambdaQueryWrapper<>());
         for (SysToken sysToken : sysTokens) {
-            Integer userId = sysToken.getUserId();
-            dataMap.put(stpLogic.splicingKeyTokenValue(sysToken.getTokenValue()), userId.toString());
-            dataMap.put(stpLogic.splicingKeyLastActiveTime(sysToken.getTokenValue()), StrUtil.toString(now.getTime()));
-            UserDTO userInfo = new UserDTO();
-            User user = new User();
-            user.setId(userId);
-            userInfo.setUser(user);
-            userInfo.setTenantList(Collections.singletonList(tenantMapper.selectById(sysToken.getTenantId())));
-            UserInfoContextHolder.set(userId, userInfo);
-            if (sysToken.getExpireType() == 1) {
-                expireMap.put(stpLogic.splicingKeyTokenValue(sysToken.getTokenValue()), NEVER_EXPIRE);
-            } else {
-                expireMap.put(
-                        stpLogic.splicingKeyTokenValue(sysToken.getTokenValue()),
-                        sysToken.getExpireEndTime().getTime());
-            }
+            injectToken(sysToken);
         }
         initRefreshThread();
+    }
+
+    public void injectToken(SysToken sysToken) {
+        DateTime now = DateUtil.date();
+        Integer userId = sysToken.getUserId();
+        dataMap.put(stpLogic.splicingKeyTokenValue(sysToken.getTokenValue()), userId.toString());
+        dataMap.put(stpLogic.splicingKeyLastActiveTime(sysToken.getTokenValue()), StrUtil.toString(now.getTime()));
+        UserDTO userInfo = new UserDTO();
+        User user = new User();
+        user.setId(userId);
+        userInfo.setUser(user);
+        userInfo.setTenantList(Collections.singletonList(tenantMapper.selectById(sysToken.getTenantId())));
+        UserInfoContextHolder.set(userId, userInfo);
+        if (sysToken.getExpireType() == 1) {
+            expireMap.put(stpLogic.splicingKeyTokenValue(sysToken.getTokenValue()), NEVER_EXPIRE);
+        } else {
+            expireMap.put(
+                    stpLogic.splicingKeyTokenValue(sysToken.getTokenValue()),
+                    sysToken.getExpireEndTime().getTime());
+        }
     }
 
     /**
