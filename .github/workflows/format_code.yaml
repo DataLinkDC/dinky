@@ -51,7 +51,7 @@ jobs:
       - uses: actions/setup-node@v3
         if: steps.filter.outputs.frontend == 'true'
         with:
-          node-version: 16
+          node-version: 18
       - name: Get npm cache directory
         id: npm-cache-dir
         if: steps.filter.outputs.frontend == 'true'
@@ -64,7 +64,7 @@ jobs:
           path: |
             ${{ steps.npm-cache-dir.outputs.dir }}
             dinky-web/dist
-          key: ${{ runner.os }}-node-${{ hashFiles('dinky-web/**/package.json') }}
+          key: ${{ runner.os }}-node18-${{ hashFiles('dinky-web/**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install Dependencies

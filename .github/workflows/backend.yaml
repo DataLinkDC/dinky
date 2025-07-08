@@ -243,8 +243,9 @@ jobs:
       - name: Init k3s
         uses: nolar/setup-k3d-k3s@v1
         with:
-          version: latest
+          version: v1.27.16+k3s1
           k3d-args: -s 1 --network dinky_net --api-port 172.28.0.1:6550
+          k3d-tag: v5.7.5
       - name: Get k3s kube config
         run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/172.28.0.1/g' ./kube/k3s.yaml
       - name: Init k8s RBAC and namespace
