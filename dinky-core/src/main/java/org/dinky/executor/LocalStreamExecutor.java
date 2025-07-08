@@ -28,11 +28,11 @@ import org.apache.flink.configuration.RestOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Opt;
 
 /**
  * LocalStreamExecutor
@@ -52,23 +52,22 @@ public class LocalStreamExecutor extends Executor {
                                     .map(FileUtil::getAbsolutePath)
                                     .collect(Collectors.joining(",")));
         }
-        if (!executorConfig.isPlan()) {
-            Configuration configuration = Configuration.fromMap(
-                    Opt.ofNullable(executorConfig.getConfig()).orElse(new HashMap<>()));
-            if (!configuration.contains(RestOptions.PORT)) {
-                if (Asserts.isNotNull(executorConfig.getPort())) {
-                    configuration.set(RestOptions.PORT, executorConfig.getPort());
-                }
-            }
-            this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
-        } else {
-            this.environment = StreamExecutionEnvironment.createLocalEnvironment();
+        Configuration configuration = Configuration.fromMap(
+                Optional.ofNullable(executorConfig.getConfig()).orElse(new HashMap<>()));
+        if (!executorConfig.isPlan()
+                && !configuration.contains(RestOptions.PORT)
+                && Asserts.isNotNull(executorConfig.getPort())) {
+            configuration.set(RestOptions.PORT, executorConfig.getPort());
         }
+        this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
         init(classLoader);
     }
 
     @Override
     CustomTableEnvironment createCustomTableEnvironment(ClassLoader classLoader) {
+        if (this.executorConfig.isUseFlinkPlanner()) {
+            return PlannerTableEnvironmentImpl.create(environment, classLoader);
+        }
         return CustomTableEnvironmentImpl.create(environment, classLoader);
     }
 }

@@ -24,6 +24,7 @@ import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.JobStatementType;
 import org.dinky.data.job.SqlType;
 import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.executor.PlannerTableEnvironmentImpl;
 import org.dinky.job.JobStatementPlan;
 import org.dinky.utils.JsonUtils;
 
@@ -78,11 +79,14 @@ public class MockStatementExplainer {
         Set<String> tablesNeedMock = getTableNamesNeedMockAndModifyTrans(jobStatementPlan);
         // mock insert table ddl
         List<JobStatement> jobStatementList = jobStatementPlan.getJobStatementList();
+        PlannerTableEnvironmentImpl plannerTableEnvironment = PlannerTableEnvironmentImpl.create(
+                tableEnv.getStreamExecutionEnvironment(), tableEnv.getUserClassLoader());
         for (int i = 0; i < jobStatementList.size(); i++) {
             if (!jobStatementList.get(i).getSqlType().equals(SqlType.CREATE)) {
                 continue;
             }
-            SqlNode sqlNode = tableEnv.parseSql(jobStatementList.get(i).getStatement());
+            SqlNode sqlNode =
+                    plannerTableEnvironment.parseSql(jobStatementList.get(i).getStatement());
             if (sqlNode instanceof SqlCreateTable) {
                 SqlCreateTable sqlCreateTable = (SqlCreateTable) sqlNode;
                 String tableName = sqlCreateTable.getTableName().toString();

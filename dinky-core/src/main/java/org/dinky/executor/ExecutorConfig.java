@@ -100,6 +100,13 @@ public class ExecutorConfig {
     private boolean isPlan;
 
     @ApiModelProperty(
+            value = "Flag indicating whether to use flink planner",
+            dataType = "boolean",
+            example = "false",
+            notes = "Flag indicating whether to use flink planner")
+    private boolean useFlinkPlanner;
+
+    @ApiModelProperty(
             value = "Checkpoint interval",
             dataType = "Integer",
             example = "5000",
@@ -193,6 +200,7 @@ public class ExecutorConfig {
                 .useSqlFragment(useSqlFragment)
                 .useStatementSet(useStatementSet)
                 .useBatchModel(useBatchModel)
+                .useFlinkPlanner(false)
                 .savePointPath(savePointPath)
                 .jobName(jobName)
                 .config(config)
@@ -282,6 +290,14 @@ public class ExecutorConfig {
 
     public void setPlan(boolean plan) {
         isPlan = plan;
+    }
+
+    public boolean isUseFlinkPlanner() {
+        return useFlinkPlanner;
+    }
+
+    public void setUseFlinkPlanner(boolean useFlinkPlanner) {
+        this.useFlinkPlanner = useFlinkPlanner;
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImp
 import org.apache.flink.table.delegation.ExtendedOperationExecutor;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.planner.delegation.PlannerBase;
+import org.apache.flink.table.planner.delegation.StreamPlanner;
 
 import java.util.List;
 
@@ -73,11 +74,21 @@ public abstract class AbstractCustomTableEnvironment
 
     @Override
     public void injectExtendedExecutor(CustomExtendedOperationExecutor extendedExecutor) {
-        PlannerBase plannerBase = (PlannerBase) getPlanner();
-        ExtendedOperationExecutor extendedOperationExecutor =
-                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor(), extendedExecutor);
+        Planner planner = getPlanner();
+        if (planner instanceof StreamPlanner) {
+            StreamPlanner streamPlanner = (StreamPlanner) planner;
+            ExtendedOperationExecutor extendedOperationExecutor = new ExtendedOperationExecutorWrapper(
+                    streamPlanner.getExtendedOperationExecutor(), extendedExecutor);
 
-        ReflectUtil.setFieldValue(getPlanner(), "extendedOperationExecutor", extendedOperationExecutor);
+            ReflectUtil.setFieldValue(planner, "extendedOperationExecutor", extendedOperationExecutor);
+        } else if (planner instanceof PlannerBase) {
+            PlannerBase plannerBase = (PlannerBase) planner;
+
+            ExtendedOperationExecutor extendedOperationExecutor =
+                    new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor(), extendedExecutor);
+
+            ReflectUtil.setFieldValue(planner, "extendedOperationExecutor", extendedOperationExecutor);
+        }
     }
 
     @Override
