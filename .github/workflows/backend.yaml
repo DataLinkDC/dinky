@@ -246,7 +246,6 @@ jobs:
         with:
           version: v1.21.2
           k3d-args: -s 1 --network dinky_net --api-port 172.28.0.1:6550
-          k3d-tag: v5.7.5
       - name: Get k3s kube config
         run: k3d kubeconfig get --all  && mkdir ./kube && k3d kubeconfig get --all >  ./kube/k3s.yaml && sed -i 's/0.0.0.0/172.28.0.1/g' ./kube/k3s.yaml
       - name: Init k8s RBAC and namespace
