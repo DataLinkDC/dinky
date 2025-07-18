@@ -18,7 +18,7 @@
  */
 
 import { ClusterType, CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/constants';
-import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
+import { validatorJMHAAddress } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import { Cluster } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import {
@@ -82,7 +82,7 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
             rules={[
               {
                 required: true,
-                validator: (rule, hostsValue) => validatorJMHAAdderess(rule, hostsValue)
+                validator: (rule, hostsValue) => validatorJMHAAddress(rule, hostsValue)
               }
             ]}
             placeholder={l('rc.ci.jmhaPlaceholder')}
