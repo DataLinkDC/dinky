@@ -214,14 +214,6 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
     }
 
     @Override
-    public Map<String, String> parseMetaDataConfig() {
-        String url = String.format(
-                "jdbc:mysql://%s:%d/%s",
-                config.getHostname(), config.getPort(), composeJdbcProperties(config.getJdbc()));
-        return parseMetaDataSingleConfig(url);
-    }
-
-    @Override
     public String getSchemaFieldName() {
         return "db";
     }

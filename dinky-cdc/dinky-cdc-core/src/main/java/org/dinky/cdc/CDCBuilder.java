@@ -19,7 +19,6 @@
 
 package org.dinky.cdc;
 
-import org.dinky.data.exception.SplitTableException;
 import org.dinky.data.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -40,11 +39,7 @@ public interface CDCBuilder {
 
     List<String> getTableList();
 
-    Map<String, Map<String, String>> parseMetaDataConfigs();
+    Map<String, String> generateMetaDataConfig(String schema);
 
     String getSchemaFieldName();
-
-    default Map<String, String> parseMetaDataConfig() {
-        throw new SplitTableException("此数据源并未实现分库分表");
-    }
 }

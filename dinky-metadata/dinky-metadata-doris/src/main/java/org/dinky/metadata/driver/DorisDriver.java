@@ -134,13 +134,6 @@ public class DorisDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public String generateCreateTableSql(Table table) {
-        String genTableSql = genTable(table);
-        log.info("Auto generateCreateTableSql {}", genTableSql);
-        return genTableSql;
-    }
-
-    @Override
     public String getCreateTableSql(Table table) {
         return genTable(table);
     }
