@@ -123,6 +123,10 @@ export const Project = (props: any) => {
   });
 
   useEffect(() => {
+    // Only execute if the directory tree has data
+    if (!data) {
+      return;
+    }
     switch (actionType) {
       // 折叠
       case DataStudioActionType.PROJECT_COLLAPSE_ALL:
@@ -152,14 +156,18 @@ export const Project = (props: any) => {
           'equal'
         );
         updateProject({ expandKeys: [...expandKeys, ...expandedKeys], selectedKeys: [params.key] });
-        treeRef.current!!.scrollTo({ key: params.key });
+        // Get the DirectoryTree component initialization status through treeData
+        // Only after initialization is completed, the following operations are performed
+        if (treeData && treeRef.current) {
+          treeRef.current.scrollTo({ key: params.key });
+        }
         break;
       case DataStudioActionType.PROJECT_REFRESH:
         setInitDid(true);
         refresh();
         break;
     }
-  }, [actionType, params]);
+  }, [actionType, params, data, treeData]);
 
   useAsyncEffect(async () => {
     if (data) {
