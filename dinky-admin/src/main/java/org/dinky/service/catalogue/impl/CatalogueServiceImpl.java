@@ -250,8 +250,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Override
     public Catalogue findByTaskId(Integer taskId) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<Catalogue>()
-                .eq(Catalogue::getTaskId, taskId));
+        return baseMapper.selectOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, taskId));
     }
 
     /**
