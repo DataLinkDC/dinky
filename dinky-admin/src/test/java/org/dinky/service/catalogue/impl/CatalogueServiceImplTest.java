@@ -177,4 +177,47 @@ public class CatalogueServiceImplTest {
         catalogueServiceImplTest.importCatalogue(importCatalogueDto);
         verify(taskService, times(2)).saveBatch(anyList());
     }
+
+    @Test
+    public void findByTaskIdTest() {
+        // Given
+        Integer taskId = 123;
+        Catalogue expectedCatalogue = new Catalogue();
+        expectedCatalogue.setId(1);
+        expectedCatalogue.setName("Test Catalogue");
+        expectedCatalogue.setTaskId(taskId);
+        expectedCatalogue.setType("FlinkSQL");
+        expectedCatalogue.setParentId(0);
+        expectedCatalogue.setIsLeaf(true);
+
+        // Mock
+        when(catalogueMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(expectedCatalogue);
+
+        // When
+        Catalogue result = catalogueServiceImplTest.findByTaskId(taskId);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(expectedCatalogue.getId(), result.getId());
+        assertEquals(expectedCatalogue.getName(), result.getName());
+        assertEquals(expectedCatalogue.getTaskId(), result.getTaskId());
+        assertEquals(expectedCatalogue.getType(), result.getType());
+        assertEquals(expectedCatalogue.getParentId(), result.getParentId());
+        assertEquals(expectedCatalogue.getIsLeaf(), result.getIsLeaf());
+    }
+
+    @Test
+    public void findByTaskIdNotFoundTest() {
+        // Given
+        Integer taskId = 999;
+
+        // Mock - return null when catalogue not found
+        when(catalogueMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(null);
+
+        // When
+        Catalogue result = catalogueServiceImplTest.findByTaskId(taskId);
+
+        // Then
+        assertNull(result);
+    }
 }
