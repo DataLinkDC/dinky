@@ -18,7 +18,7 @@
  */
 
 import { CLUSTER_INSTANCE_TYPE } from '@/pages/RegCenter/Cluster/constants';
-import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/components/function';
+import { validatorJMHAAddress } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
@@ -97,7 +97,7 @@ const EditJobInstanceForm = (props: {
         rules={[
           {
             required: true,
-            validator: (rule, hostsValue) => validatorJMHAAdderess(rule, hostsValue)
+            validator: (rule, hostsValue) => validatorJMHAAddress(rule, hostsValue)
           }
         ]}
         placeholder={l('rc.ci.jmhaPlaceholder')}

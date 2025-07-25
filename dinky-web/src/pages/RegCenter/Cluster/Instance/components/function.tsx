@@ -27,20 +27,17 @@ import { RuleObject } from 'rc-field-form/es/interface';
 const { Text, Paragraph, Link } = Typography;
 
 /**
- * validatorJMHAAdderess
+ * validatorJMHAAddress
  * @param rule
  * @param value
  */
-export const validatorJMHAAdderess = (rule: RuleObject, value = '') => {
+export const validatorJMHAAddress = (rule: RuleObject, value = '') => {
   let hostArray = [];
   if (value.trim().length === 0) {
     return Promise.reject(new Error(l('rc.ci.jmhaPlaceholder')));
   } else {
     hostArray = value.split(',');
     for (let i = 0; i < hostArray.length; i++) {
-      if (hostArray[i].includes('/')) {
-        return Promise.reject(new Error(l('rc.ci.jmha.validate.slash')));
-      }
       if (parseInt(hostArray[i].split(':')[1]) >= 65535) {
         return Promise.reject(new Error(l('rc.ci.jmha.validate.port')));
       }
