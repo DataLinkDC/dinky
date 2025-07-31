@@ -53,7 +53,7 @@ Its main features are as follows:
 
 ## Participate in Contributions
 
-The dev branch is Dinky 1.3.0, and the 1.2 branch is Dinky 1.2.4.
+The dev branch is Dinky 1.3.0, and the 1.2 branch is Dinky 1.2.5.
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/DataLinkDC/dinky/pulls)
 
