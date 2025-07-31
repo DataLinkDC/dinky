@@ -17,7 +17,6 @@ WORKDIR /opt/dinky/
 
 USER root
 COPY --from=flink-base  /opt/flink/lib/*.jar  /opt/dinky/extends/flink${FLINK_VERSION}/flink/
-RUN rm -f  /opt/dinky/extends/flink${FLINK_VERSION}/flink/flink-table-planner-loader*.jar
 
 COPY --from=flink-base  /opt/flink/opt/flink-table-planner*.jar /opt/dinky/extends/flink${FLINK_VERSION}/flink/
 
