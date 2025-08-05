@@ -98,6 +98,7 @@ public class JobManager {
     private Executor executor;
     private boolean useGateway = false;
     private boolean isPlanMode = false;
+    private boolean isPlannerLoader = true;
     private boolean useStatementSet = false;
     private boolean useMockSinkFunction = false;
     private boolean useRestAPI = false;
@@ -148,6 +149,14 @@ public class JobManager {
 
     public boolean isPlanMode() {
         return isPlanMode;
+    }
+
+    public boolean isPlannerLoader() {
+        return isPlannerLoader;
+    }
+
+    public void setPlannerLoader(boolean plannerLoader) {
+        isPlannerLoader = plannerLoader;
     }
 
     public boolean isUseStatementSet() {
@@ -204,6 +213,15 @@ public class JobManager {
         return manager;
     }
 
+    public static JobManager buildPlanModeWithPlanner(JobConfig config) {
+        JobManager manager = new JobManager(config);
+        manager.setPlanMode(true);
+        manager.setPlannerLoader(false);
+        manager.init();
+        log.info("Build Flink plan mode with planner success.");
+        return manager;
+    }
+
     public void init() {
         if (!isPlanMode) {
             runMode = GatewayType.get(config.getType());
@@ -215,8 +233,11 @@ public class JobManager {
         useRestAPI = SystemConfiguration.getInstances().isUseRestAPI();
         executorConfig = config.getExecutorSetting();
         executorConfig.setPlan(isPlanMode);
-        executor = ExecutorFactory.buildExecutor(executorConfig, getDinkyClassLoader());
-        DinkyClassLoaderUtil.initClassLoader(config, getDinkyClassLoader());
+        executorConfig.setUseFlinkPlanner(!isPlannerLoader);
+        DinkyClassLoader dinkyClassLoaderWithPlanner = getDinkyClassLoader();
+        Thread.currentThread().setContextClassLoader(dinkyClassLoaderWithPlanner);
+        executor = ExecutorFactory.buildExecutor(executorConfig, dinkyClassLoaderWithPlanner);
+        DinkyClassLoaderUtil.initClassLoader(config, dinkyClassLoaderWithPlanner);
     }
 
     private boolean ready() {

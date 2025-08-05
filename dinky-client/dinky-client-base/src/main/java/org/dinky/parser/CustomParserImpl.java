@@ -39,33 +39,9 @@ import cn.hutool.core.util.ReflectUtil;
 public class CustomParserImpl implements CustomParser {
 
     private final Parser parser;
-    private final Supplier<FlinkPlannerImpl> validatorSupplier;
-    private final Supplier<CalciteParser> calciteParserSupplier;
 
     public CustomParserImpl(Parser parser) {
         this.parser = parser;
-        this.calciteParserSupplier = getCalciteParserSupplier(this.parser);
-        this.validatorSupplier = getValidatorSupplier(this.parser);
-    }
-
-    public static Supplier<CalciteParser> getCalciteParserSupplier(Parser parser) {
-        if (parser instanceof ParserImpl) {
-            ParserImpl parserImpl = (ParserImpl) parser;
-            return (Supplier<CalciteParser>) ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
-        } else {
-            throw new RuntimeException("Unsupported parser type for getCalciteParserSupplier: "
-                    + parser.getClass().getName());
-        }
-    }
-
-    public static Supplier<FlinkPlannerImpl> getValidatorSupplier(Parser parser) {
-        if (parser instanceof ParserImpl) {
-            ParserImpl parserImpl = (ParserImpl) parser;
-            return (Supplier<FlinkPlannerImpl>) ReflectUtil.getFieldValue(parserImpl, "validatorSupplier");
-        } else {
-            throw new RuntimeException("Unsupported parser type for getValidatorSupplier: "
-                    + parser.getClass().getName());
-        }
     }
 
     @Override
@@ -88,16 +64,25 @@ public class CustomParserImpl implements CustomParser {
 
     @Override
     public SqlNode parseExpression(String sqlExpression) {
+        ParserImpl parserImpl = (ParserImpl) parser;
+        Supplier<CalciteParser> calciteParserSupplier =
+                (Supplier<CalciteParser>) ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
         return calciteParserSupplier.get().parseExpression(sqlExpression);
     }
 
     @Override
     public SqlNode parseSql(String statement) {
+        ParserImpl parserImpl = (ParserImpl) parser;
+        Supplier<CalciteParser> calciteParserSupplier =
+                (Supplier<CalciteParser>) ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
         return calciteParserSupplier.get().parse(statement);
     }
 
     @Override
     public SqlNode validate(SqlNode sqlNode) {
+        ParserImpl parserImpl = (ParserImpl) parser;
+        Supplier<FlinkPlannerImpl> validatorSupplier =
+                (Supplier<FlinkPlannerImpl>) ReflectUtil.getFieldValue(parserImpl, "validatorSupplier");
         FlinkPlannerImpl flinkPlanner = validatorSupplier.get();
         return flinkPlanner.validate(sqlNode);
     }

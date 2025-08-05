@@ -133,14 +133,7 @@ public class SqlSelect extends SqlCall {
         if (permissionsMap != null) {
             String permissionsStatement = permissionsMap.get(tableName);
             if (permissionsStatement != null && !"".equals(permissionsStatement)) {
-                if (CustomTableEnvironmentContext.get().getParser() instanceof ExtendedParser) {
-                    ExtendedParser extendedParser =
-                            (ExtendedParser) CustomTableEnvironmentContext.get().getParser();
-                    permissions =
-                            (SqlBasicCall) (extendedParser.getCustomParser()).parseExpression(permissionsStatement);
-                } else {
-                    throw new RuntimeException("CustomParser is not set");
-                }
+                permissions = (SqlBasicCall) CustomTableEnvironmentContext.get().parseSql(permissionsStatement);
             }
         }
 
