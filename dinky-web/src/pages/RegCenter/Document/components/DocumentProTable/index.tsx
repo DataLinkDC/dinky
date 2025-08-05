@@ -46,7 +46,10 @@ import React, { useRef, useState } from 'react';
 import { Select } from 'antd';
 import { JOB_TYPE } from '@/pages/DataStudio/Toolbar/Project/constants';
 
-const FUNCTION_TYPES = Object.values(DOCUMENT_FUNCTION_TYPE_ENUMS).map(item => ({ label: item.text, value: item.value }));
+const FUNCTION_TYPES = Object.values(DOCUMENT_FUNCTION_TYPE_ENUMS).map((item) => ({
+  label: item.text,
+  value: item.value
+}));
 
 const DocumentTableList: React.FC = () => {
   const [documentState, setDocumentState] = useState<DocumentState>(InitDocumentState);
@@ -130,11 +133,9 @@ const DocumentTableList: React.FC = () => {
       valueEnum: DOCUMENT_FUNCTION_TYPE_ENUMS,
       renderFormItem: (item, { type }, form) => {
         const currentType = form.getFieldValue('type');
-        let options = currentType === DOCUMENT_TYPE_ENUMS.FUN_UDF.value ? FUNCTION_TYPES :  JOB_TYPE;
-        return (
-          <Select allowClear options={options} />
-        );
-      },
+        let options = currentType === DOCUMENT_TYPE_ENUMS.FUN_UDF.value ? FUNCTION_TYPES : JOB_TYPE;
+        return <Select allowClear options={options} />;
+      }
     },
     {
       title: l('rc.doc.category'),
