@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.data.annotations.CheckTaskApproval;
 import org.dinky.data.annotations.CheckTaskOwner;
@@ -51,9 +52,7 @@ import org.dinky.service.TaskService;
 import org.dinky.trans.ExecuteJarParseStrategyUtil;
 import org.dinky.utils.SqlUtil;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -320,19 +319,20 @@ public class TaskController {
         }
         Integer lastExecuteJarSqlStatementIndex = null;
         for (int i = 0; i < statements.length; i++) {
-            if (ExecuteJarParseStrategyUtil.match(statements[i])) {
+            if (ExecuteJarParseStrategyUtil.find(statements[i])) {
                 lastExecuteJarSqlStatementIndex = i;
             }
         }
         if (lastExecuteJarSqlStatementIndex == null) {
+            flinkJarSqlConvertVO.setInitSqlStatement(sqlStatement);
             return Result.succeed(flinkJarSqlConvertVO);
         }
         String lastSqlStatement = statements[lastExecuteJarSqlStatementIndex];
         JarSubmitParam info = JarSubmitParam.getInfo(lastSqlStatement);
         flinkJarSqlConvertVO.setJarSubmitParam(info);
-        String sql = Arrays.stream(ArrayUtil.remove(statements, lastExecuteJarSqlStatementIndex))
-                .map(x -> x + ";")
-                .collect(Collectors.joining("\n"));
+        // English: Only clear the 'Execute Jar' part of the original sqlStatement, while retaining all other
+        // statements.
+        String sql = ExecuteJarParseStrategyUtil.removeExecuteJarStatement(sqlStatement);
         flinkJarSqlConvertVO.setInitSqlStatement(sql);
         return Result.succeed(flinkJarSqlConvertVO);
     }
@@ -341,6 +341,11 @@ public class TaskController {
     @ApiOperation("FlinkJar FormConvertSql")
     public Result<String> flinkJarFormConvertSql(@RequestBody FlinkJarSqlConvertVO dto) {
         JarSubmitParam jarSubmitParam = dto.getJarSubmitParam();
+        String initSqlStatement = dto.getInitSqlStatement();
+        // remove Other Execute Jar
+        if (Asserts.isNotNullString(initSqlStatement)) {
+            initSqlStatement = ExecuteJarParseStrategyUtil.removeExecuteJarStatement(initSqlStatement);
+        }
         Dict objectMap = Dict.create()
                 .set("uri", Opt.ofNullable(jarSubmitParam.getUri()).orElse(""))
                 .set(
@@ -355,6 +360,6 @@ public class TaskController {
                                 .orElse(false)
                                 .toString());
         String executeJarSql = ENGINE.getTemplate("executeJar.sql").render(objectMap);
-        return Result.succeed(Opt.ofNullable(dto.getInitSqlStatement()).orElse("") + "\n" + executeJarSql, "");
+        return Result.succeed(Opt.ofNullable(initSqlStatement).orElse("") + "\n" + executeJarSql, "");
     }
 }

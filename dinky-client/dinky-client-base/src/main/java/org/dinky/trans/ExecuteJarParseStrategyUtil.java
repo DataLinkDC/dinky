@@ -25,7 +25,11 @@ import cn.hutool.core.lang.Singleton;
 
 public class ExecuteJarParseStrategyUtil {
 
-    public static boolean match(String statement) {
-        return Singleton.get(ExecuteJarParseStrategy.class).match(statement);
+    public static boolean find(String statement) {
+        return Singleton.get(ExecuteJarParseStrategy.class).find(statement);
+    }
+
+    public static String removeExecuteJarStatement(String statement) {
+        return Singleton.get(ExecuteJarParseStrategy.class).replaceAll(statement.replaceAll("\u00A0", " "), "");
     }
 }

@@ -21,6 +21,7 @@ package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -40,19 +41,43 @@ public class SqlUtil {
         return getStatements(sql, SQL_SEPARATOR);
     }
 
+    /**
+     * This method only splits valid statements.
+     * First, remove all comments.
+     * Then, use semicolons (;) not enclosed in single quotes as the splitting delimiter and trim the results.
+     * @param sql
+     * @param sqlSeparator
+     * @return statement string array
+     */
     public static String[] getStatements(String sql, String sqlSeparator) {
         if (Asserts.isNullString(sql)) {
             return new String[0];
         }
 
-        final String localSqlSeparator = ";\\s*(?:\\n|--.*)";
-        String[] splits = sql.replace("\r\n", "\n").split(localSqlSeparator);
-        String lastStatement = splits[splits.length - 1].trim();
-        if (lastStatement.endsWith(SEMICOLON)) {
-            splits[splits.length - 1] = lastStatement.substring(0, lastStatement.length() - 1);
-        }
+        String sqlWithoutNote = removeNote(sql);
+        ArrayList<String> statements = new ArrayList<>();
+        int start = 0;
+        boolean inSingleQuote = false;
 
-        return splits;
+        for (int i = 0; i < sqlWithoutNote.length(); ) {
+            char currentChar = sqlWithoutNote.charAt(i);
+            if (currentChar == '\'') {
+                inSingleQuote = !inSingleQuote;
+            }
+            if (!inSingleQuote && currentChar == ';') {
+                String part = sqlWithoutNote.substring(start, i).trim();
+                if (!part.isEmpty()) {
+                    statements.add(part);
+                }
+                start = i + 1;
+            }
+            i++;
+        }
+        String lastPart = sqlWithoutNote.substring(start).trim();
+        if (!lastPart.isEmpty()) {
+            statements.add(lastPart);
+        }
+        return statements.toArray(new String[0]);
     }
 
     public static String removeNote(String sql) {

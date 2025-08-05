@@ -27,7 +27,7 @@ import org.apache.flink.table.planner.parse.AbstractRegexParseStrategy;
 import java.util.regex.Pattern;
 
 public class ExecuteJarParseStrategy extends AbstractRegexParseStrategy {
-    private static final String PATTERN_STR = "^EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)";
+    private static final String PATTERN_STR = "(\\n *|^ *)EXECUTE\\s+JAR\\s+WITH\\s*\\(.+\\)\\s*;?\\s*";
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     public static final ExecuteJarParseStrategy INSTANCE = new ExecuteJarParseStrategy();
 
@@ -43,5 +43,13 @@ public class ExecuteJarParseStrategy extends AbstractRegexParseStrategy {
     @Override
     public String[] getHints() {
         return new String[0];
+    }
+
+    public boolean find(String statement) {
+        return PATTERN.matcher(statement.trim()).find();
+    }
+
+    public String replaceAll(String statement, String replacement) {
+        return PATTERN.matcher(statement).replaceAll(replacement);
     }
 }
