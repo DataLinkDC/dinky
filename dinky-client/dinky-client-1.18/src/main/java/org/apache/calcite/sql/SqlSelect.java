@@ -21,7 +21,6 @@ package org.apache.calcite.sql;
 
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.RowLevelPermissionsContext;
-import org.dinky.executor.ExtendedParser;
 
 import org.apache.calcite.sql.parser.SqlParserPos;
 import org.apache.calcite.sql.validate.SqlValidator;
