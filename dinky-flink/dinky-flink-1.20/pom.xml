@@ -198,5 +198,10 @@
             <artifactId>flink-sql-client</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.paimon</groupId>
+            <artifactId>paimon-flink-1.20</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>
