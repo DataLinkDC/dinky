@@ -163,6 +163,28 @@ public class CatalogueController {
     }
 
     /**
+     * find catalogue by task id
+     * @param taskId task id
+     * @return {@link Result}< {@link Catalogue}>}
+     */
+    @GetMapping("/findByTaskId")
+    @ApiOperation("Find Catalogue By Task ID")
+    @ApiImplicitParam(
+            name = "taskId",
+            value = "taskId",
+            required = true,
+            dataType = "Integer",
+            dataTypeClass = Integer.class)
+    public Result<Catalogue> findByTaskId(@RequestParam Integer taskId) {
+        Catalogue catalogue = catalogueService.findByTaskId(taskId);
+        if (catalogue != null) {
+            return Result.succeed(catalogue);
+        } else {
+            return Result.failed(Status.CATALOGUE_NOT_EXIST);
+        }
+    }
+
+    /**
      * create catalogue and task
      * @param catalogueTaskDTO {@link CatalogueTaskDTO}
      * @return {@link Result}< {@link Catalogue}>}

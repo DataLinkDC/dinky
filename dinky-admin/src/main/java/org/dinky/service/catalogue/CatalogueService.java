@@ -62,6 +62,14 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     Catalogue findByParentIdAndName(Integer parentId, String name);
 
     /**
+     * Find a catalogue by its task ID.
+     *
+     * @param taskId The ID of the task to find the catalogue for.
+     * @return A {@link Catalogue} object representing the found catalogue, or null if not found.
+     */
+    Catalogue findByTaskId(Integer taskId);
+
+    /**
      * Save or update a catalogue and its tasks.
      *
      * @param catalogueTaskDTO A {@link CatalogueTaskDTO} object representing the updated catalogue and tasks.
