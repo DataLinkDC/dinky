@@ -39,6 +39,7 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.gateway.utils.RequestKerberosUrlUtils;
 import org.dinky.utils.FlinkJsonUtil;
+import org.dinky.utils.FlinkUtil;
 import org.dinky.utils.ThreadUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -94,7 +95,6 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
@@ -513,7 +513,8 @@ public abstract class YarnGateway extends AbstractGateway {
                         + HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM.key()
                         + "'.");
             }
-            int sessionTimeout = Convert.toInt(configuration.get(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT));
+            int sessionTimeout = FlinkUtil.getZookeeperSessionTimeout(
+                    configuration, HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT);
             String root = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
             String namespace = configuration.getValue(HighAvailabilityOptions.HA_CLUSTER_ID);
 
