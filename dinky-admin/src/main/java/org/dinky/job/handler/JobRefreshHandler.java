@@ -194,6 +194,9 @@ public class JobRefreshHandler {
 
         isDone = !isTransition && isDone;
 
+        //we use jobInstanceId get info and update, ignore tenant ，Otherwise, it will cause tenant condition filtering errors
+        TenantContextHolder.ignoreTenant();
+
         if (!oldStatus.equals(jobInstance.getStatus()) || isDone || needSave) {
             log.debug("Dump JobInfo to database: {}->{}", jobInstance.getId(), jobInstance.getName());
             if (jobInstance.getStatus().equals(JobStatus.UNKNOWN.getValue())
