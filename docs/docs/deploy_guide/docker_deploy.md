@@ -44,7 +44,7 @@ docker run --restart=always -p 8888:8888 \
   -e DB_ACTIVE=pgsql \
   -e POSTGRES_ADDR=127.0.0.1:5432 \ 
   -e POSTGRES_DATABASE=dinky \ 
-  -e POSTGRES_USERNAME=dinky \
+  -e POSTGRES_USER=dinky \
   -e POSTGRES_PASSWORD=dinky \
   -v /opt/lib:/opt/dinky/customJar/ \ 
   dinkydocker/dinky-standalone-server:1.1.0-flink1.17
