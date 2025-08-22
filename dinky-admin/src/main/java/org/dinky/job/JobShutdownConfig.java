@@ -47,7 +47,7 @@ public class JobShutdownConfig {
         log.info("Job shutdown.");
         // TODO: Change it to be configuration - based
         if ("MemorySandbox".equals("MemorySandbox")) {
-            Sandbox sandbox = SandboxFactory.getSandbox("MemorySandbox");
+            Sandbox sandbox = SandboxFactory.getDefaultSandbox();
             List<String> jobIds = sandbox.getAllTables().stream()
                     .filter(tableInfo -> tableInfo.getTableId().isPrivate())
                     .map(tableInfo -> tableInfo.getTableId().getPrivateName())

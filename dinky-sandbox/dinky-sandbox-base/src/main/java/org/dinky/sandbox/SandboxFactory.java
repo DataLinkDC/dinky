@@ -56,4 +56,14 @@ public class SandboxFactory {
             return optionalSandbox.get();
         }
     }
+
+    public static Sandbox getDefaultSandbox() {
+        synchronized (Sandbox.class) {
+            Optional<Sandbox> optionalSandbox = get("memory");
+            if (!optionalSandbox.isPresent()) {
+                throw new DinkyException(String.format("Missing dinky-sandbox-memory dependency package"));
+            }
+            return optionalSandbox.get();
+        }
+    }
 }

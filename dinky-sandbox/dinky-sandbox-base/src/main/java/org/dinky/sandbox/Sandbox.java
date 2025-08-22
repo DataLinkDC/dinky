@@ -24,14 +24,13 @@ import org.dinky.sandbox.metadata.ColumnInfo;
 import org.dinky.sandbox.metadata.TableId;
 import org.dinky.sandbox.metadata.TableInfo;
 import org.dinky.sandbox.metadata.TableType;
+import org.dinky.sandbox.metadata.Tuple;
 
 import org.apache.flink.table.catalog.Column;
 import org.apache.flink.types.Row;
 
 import java.util.List;
 import java.util.function.Consumer;
-
-import cn.hutool.core.lang.Tuple;
 
 public interface Sandbox extends AutoCloseable {
 
@@ -53,7 +52,7 @@ public interface Sandbox extends AutoCloseable {
 
     List<Tuple> getData(TableId tableId);
 
-    void appendOrUpsertData(TableId tableId, Row row, String timeZone);
+    void writeRowData(TableId tableId, Row row, String timeZone);
 
     void appendData(TableId tableId, List<Tuple> tuples);
 

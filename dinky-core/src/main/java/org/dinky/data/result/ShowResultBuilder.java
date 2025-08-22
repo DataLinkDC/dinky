@@ -25,6 +25,7 @@ import org.dinky.sandbox.SandboxFactory;
 import org.dinky.sandbox.metadata.ColumnInfo;
 import org.dinky.sandbox.metadata.TableId;
 import org.dinky.sandbox.metadata.TableType;
+import org.dinky.sandbox.metadata.Tuple;
 import org.dinky.utils.FlinkUtil;
 
 import org.apache.flink.table.api.TableResult;
@@ -43,8 +44,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 
-import cn.hutool.core.lang.Tuple;
-
 /**
  * ShowResultBuilder
  *
@@ -58,7 +57,7 @@ public class ShowResultBuilder extends AbstractResultBuilder implements ResultBu
 
     public ShowResultBuilder(String id) {
         this.id = id;
-        this.sandbox = SandboxFactory.getSandbox("MemorySandbox");
+        this.sandbox = SandboxFactory.getDefaultSandbox();
     }
 
     @Override

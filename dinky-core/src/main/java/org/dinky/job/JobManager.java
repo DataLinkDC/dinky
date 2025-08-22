@@ -55,6 +55,7 @@ import org.dinky.sandbox.Sandbox;
 import org.dinky.sandbox.SandboxFactory;
 import org.dinky.sandbox.metadata.TableId;
 import org.dinky.sandbox.metadata.TableInfo;
+import org.dinky.sandbox.metadata.Tuple;
 import org.dinky.trans.Operations;
 import org.dinky.trans.parse.AddFileSqlParseStrategy;
 import org.dinky.trans.parse.AddJarSqlParseStrategy;
@@ -85,7 +86,6 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Tuple;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -364,7 +364,7 @@ public class JobManager {
     }
 
     public static SelectResult getJobData(String jobId) {
-        Sandbox sandbox = SandboxFactory.getSandbox("MemorySandbox");
+        Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         TableId tableId = TableId.withPrivate(jobId);
         if (sandbox.existTable(tableId)) {
             TableInfo tableInfo = sandbox.getTableInfo(tableId);

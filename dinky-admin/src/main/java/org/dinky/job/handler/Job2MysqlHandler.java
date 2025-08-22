@@ -44,6 +44,7 @@ import org.dinky.sandbox.Sandbox;
 import org.dinky.sandbox.SandboxFactory;
 import org.dinky.sandbox.metadata.TableId;
 import org.dinky.sandbox.metadata.TableInfo;
+import org.dinky.sandbox.metadata.Tuple;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -59,7 +60,6 @@ import java.util.stream.Collectors;
 import org.springframework.context.annotation.DependsOn;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.lang.Tuple;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -261,7 +261,7 @@ public class Job2MysqlHandler extends AbsJobHandler {
         List<History> historyList = jobIds.stream()
                 .map(jobIdStr -> {
                     Integer jobId = Integer.parseInt(jobIdStr);
-                    Sandbox sandbox = SandboxFactory.getSandbox("MemorySandbox");
+                    Sandbox sandbox = SandboxFactory.getDefaultSandbox();
                     TableId tableId = TableId.withPrivate(jobId.toString());
                     SelectResult selectResult = null;
                     if (sandbox.existTable(tableId)) {

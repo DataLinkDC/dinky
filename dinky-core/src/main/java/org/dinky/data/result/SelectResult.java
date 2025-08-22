@@ -20,6 +20,7 @@
 package org.dinky.data.result;
 
 import org.dinky.sandbox.metadata.TableInfo;
+import org.dinky.sandbox.metadata.Tuple;
 import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,6 @@ import com.google.common.collect.Sets;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.lang.Tuple;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

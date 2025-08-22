@@ -49,6 +49,22 @@ public class TableId implements Serializable {
         this.isPrivate = isPrivate;
     }
 
+    public String getBoxName() {
+        return boxName;
+    }
+
+    public String getCatalogName() {
+        return catalogName;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
     public static TableId of(String boxName, String catalogName, String databaseName, String tableName) {
         return new TableId(boxName, catalogName, databaseName, tableName, false);
     }

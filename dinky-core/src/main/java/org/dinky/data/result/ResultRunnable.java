@@ -68,7 +68,7 @@ public class ResultRunnable implements Runnable {
         this.isChangeLog = isChangeLog;
         this.isAutoCancel = isAutoCancel;
         this.timeZone = timeZone;
-        this.sandbox = SandboxFactory.getSandbox("MemorySandbox");
+        this.sandbox = SandboxFactory.getDefaultSandbox();
     }
 
     public ResultRunnable registerCallback(Consumer<String> callback) {
@@ -119,7 +119,7 @@ public class ResultRunnable implements Runnable {
         int[] primaryKeyIndexes = FlinkUtil.getPrimaryKeyIndexes(tableResult);
         sandbox.registerTable(tableId, tableType, columns, primaryKeyIndexes);
         Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
-            sandbox.appendOrUpsertData(tableId, row, timeZone);
+            sandbox.writeRowData(tableId, row, timeZone);
         });
     }
 }
