@@ -363,6 +363,10 @@ public enum Status {
 
     SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT(120, "sys.env.settings.diffMinuteMaxSendCount"),
     SYS_ENV_SETTINGS_DIFF_MINUTE_MAX_SEND_COUNT_NOTE(121, "sys.env.settings.diffMinuteMaxSendCount.note"),
+
+    SYS_ENV_SETTINGS_IS_OWNER_REFERENCE(122, "sys.env.settings.isOwnerReference"),
+    SYS_ENV_SETTINGS_IS_OWNER_REFERENCE_NOTE(123, "sys.env.settings.isOwnerReference.note"),
+
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS(1171, "sys.env.settings.maxRetainDays"),
     SYS_ENV_SETTINGS_MAX_RETAIN_DAYS_NOTE(1172, "sys.env.settings.maxRetainDays.note"),
     SYS_ENV_SETTINGS_MAX_RETAIN_COUNT(1173, "sys.env.settings.maxRetainCount"),

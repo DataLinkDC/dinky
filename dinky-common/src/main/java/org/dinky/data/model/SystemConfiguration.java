@@ -341,6 +341,10 @@ public class SystemConfiguration {
             .stringType()
             .defaultValue("SuperAdmin")
             .note(Status.SYS_APPROVAL_SETTINGS_TASK_REVIEWER_ROLES_NOTE);
+    private final Configuration<Boolean> isOwnerReference = key(Status.SYS_ENV_SETTINGS_IS_OWNER_REFERENCE)
+            .booleanType()
+            .defaultValue(true)
+            .note(Status.SYS_ENV_SETTINGS_IS_OWNER_REFERENCE_NOTE);
 
     /**
      * Initialize after spring bean startup
@@ -482,5 +486,9 @@ public class SystemConfiguration {
         return Arrays.stream(taskReviewerRoles.getValue().split(","))
                 .map(String::trim)
                 .collect(Collectors.toSet());
+    }
+
+    public Boolean isOwnerReference() {
+        return isOwnerReference.getValue();
     }
 }
