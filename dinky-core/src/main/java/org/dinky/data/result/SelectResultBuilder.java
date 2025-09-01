@@ -52,9 +52,9 @@ public class SelectResultBuilder extends AbstractResultBuilder implements Result
     public IResult getResult(TableResult tableResult) {
         if (tableResult.getJobClient().isPresent()) {
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
-            ResultRunnable runnable =
+            /*ResultRunnable runnable =
                     new ResultRunnable(tableResult, id, maxRowNum, isChangeLog, isAutoCancel, timeZone);
-            threadPoolExecutor.execute(runnable);
+            threadPoolExecutor.execute(runnable);*/
             return SelectResult.buildSuccess(jobId);
         } else {
             return SelectResult.buildFailed();

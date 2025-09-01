@@ -533,6 +533,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-connector-embedded</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-function</artifactId>
                 <version>${project.version}</version>
             </dependency>

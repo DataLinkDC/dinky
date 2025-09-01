@@ -51,8 +51,10 @@ import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
+import org.dinky.utils.JsonUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -258,22 +260,28 @@ public class Job2MysqlHandler extends AbsJobHandler {
         if (CollectionUtil.isEmpty(jobIds)) {
             return;
         }
+        final Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         List<History> historyList = jobIds.stream()
                 .map(jobIdStr -> {
-                    Integer jobId = Integer.parseInt(jobIdStr);
-                    Sandbox sandbox = SandboxFactory.getDefaultSandbox();
-                    TableId tableId = TableId.withPrivate(jobId.toString());
-                    SelectResult selectResult = null;
-                    if (sandbox.existTable(tableId)) {
-                        TableInfo tableInfo = sandbox.getTableInfo(tableId);
-                        List<Tuple> data = sandbox.getData(tableId);
-                        selectResult = SelectResult.buildBySandbox(jobId.toString(), tableInfo, data);
-                    }
-                    if (Asserts.isNull(selectResult)) {
+                    final Integer jobId = Integer.parseInt(jobIdStr);
+                    final List<TableInfo> allTables = sandbox.getAllTables(jobId.toString());
+                    if (allTables.isEmpty()) {
                         log.info("The result data does not exist. Job id: {}", jobId);
                         return null;
                     }
-                    String resultJsonStr = selectResult.toTruncateJson(MysqlConstant.MEDIUMTEXT_MAX_LENGTH);
+                    final List<SelectResult> selectResults = new ArrayList<>();
+                    for (TableInfo tableInfo : allTables) {
+                        final TableId tableId = tableInfo.getTableId();
+                        if (sandbox.existTable(tableId)) {
+                            List<Tuple> data = sandbox.getData(tableId);
+                            selectResults.add(SelectResult.buildBySandbox(jobId.toString(), tableInfo, data));
+                        }
+                    }
+
+                    final String resultJsonStr = JsonUtils.toJsonString(selectResults);
+                    if (resultJsonStr.length() > MysqlConstant.MEDIUMTEXT_MAX_LENGTH) {
+                        return null;
+                    }
                     History history = new History();
                     history.setId(jobId);
                     history.setResult(resultJsonStr);

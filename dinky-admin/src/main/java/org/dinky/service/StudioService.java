@@ -28,6 +28,7 @@ import org.dinky.data.model.Schema;
 import org.dinky.data.result.IResult;
 import org.dinky.data.result.SelectResult;
 import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.sandbox.metadata.TableInfo;
 
 import java.util.List;
 
@@ -43,6 +44,10 @@ public interface StudioService {
     IResult executeDDL(StudioDDLDTO studioDDLDTO);
 
     SelectResult getJobData(String jobId);
+
+    SelectResult getJobDataByTableName(String boxName, String tableName);
+
+    List<TableInfo> getJobDataTableInfos(String jobId);
 
     LineageResult getLineage(StudioLineageDTO studioCADTO);
 

@@ -17,15 +17,17 @@
  *
  */
 
-package org.dinky.sandbox.socket;
+package org.dinky.sandbox;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.dinky.sandbox.Sandbox;
-import org.dinky.sandbox.SandboxFactory;
+import org.dinky.sandbox.metadata.ColumnInfo;
 import org.dinky.sandbox.metadata.TableId;
+import org.dinky.sandbox.metadata.TableInfo;
 import org.dinky.sandbox.metadata.TableType;
 import org.dinky.sandbox.metadata.Tuple;
+import org.dinky.sandbox.socket.SandboxSocketServer;
+import org.dinky.sandbox.socket.SocketClient;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.catalog.Column;
@@ -37,16 +39,65 @@ import java.util.List;
 
 import org.junit.Test;
 
-/**
- * SandboxSocketServer 使用示例和测试类
- */
 public class SandboxSocketServerTest {
 
     private static final int SERVER_PORT = 9999;
 
     @Test
+    public void createTableTest() {
+        List<ColumnInfo> columns = Arrays.asList(
+                ColumnInfo.buildByFlinkColumn(Column.physical("id", DataTypes.INT()), false),
+                ColumnInfo.buildByFlinkColumn(Column.physical("name", DataTypes.STRING()), false),
+                ColumnInfo.buildByFlinkColumn(Column.physical("age", DataTypes.INT()), false),
+                ColumnInfo.buildByFlinkColumn(Column.physical("email", DataTypes.STRING()), false));
+        TableId tableId = TableId.of("test_db", "test_create_table");
+        Sandbox sandbox = SandboxFactory.getDefaultSandbox();
+
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT);
+        sandboxSocketServer.start();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        try (SocketClient client = new SocketClient("localhost", SERVER_PORT)) {
+            client.connect();
+
+            boolean success = client.sendCreateTableEvent("public", tableId.identifier(), columns, "PRIMARY_KEY_TABLE");
+            assertThat(success).isTrue();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        sandboxSocketServer.stop();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        assertThat(sandbox.existTable(tableId)).isTrue();
+
+        TableInfo tableInfo = sandbox.getTableInfo(tableId);
+        assertThat(tableInfo).isNotNull();
+        assertThat(tableInfo.getTableId()).isEqualTo(tableId);
+        assertThat(tableInfo.getTableType()).isEqualTo(TableType.PRIMARY_KEY_TABLE);
+        assertThat(tableInfo.getColumns()).hasSize(4);
+
+        assertThat(tableInfo.getColumns().get(0).getName()).isEqualTo("id");
+        assertThat(tableInfo.getColumns().get(1).getName()).isEqualTo("name");
+        assertThat(tableInfo.getColumns().get(2).getName()).isEqualTo("age");
+        assertThat(tableInfo.getColumns().get(3).getName()).isEqualTo("email");
+
+        List<Tuple> data = sandbox.getData(tableId);
+        assertThat(data).isEmpty();
+    }
+
+    @Test
     public void appendDataTest() {
-        // 1. 创建表
         List<Column> columns =
                 Arrays.asList(Column.physical("id", DataTypes.INT()), Column.physical("name", DataTypes.STRING()));
         List<Row> data = Arrays.asList(
@@ -58,39 +109,33 @@ public class SandboxSocketServerTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         sandbox.registerTable(tableId, TableType.APPEND_TABLE, columns, new int[] {0});
 
-        // 2. 创建 SandboxSocketServer
         SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT);
         sandboxSocketServer.start();
 
-        // 等待服务器启动
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        // 3. 使用客户端发送数据
         try (SocketClient client = new SocketClient("localhost", SERVER_PORT)) {
             client.connect();
 
             data.forEach(dataRow -> {
-                client.sendData(tableId.getTableName(), tableId.getDatabaseName(), dataRow, "UTC");
+                client.sendData("public", tableId.identifier(), dataRow, "UTC");
             });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        // 4. 停止服务器
         sandboxSocketServer.stop();
 
-        // 等待服务器完全停止
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        // 5. 验证数据
         List<Tuple> sanboxData = sandbox.getData(tableId);
         assertThat(sanboxData).isNotEmpty();
         assertThat(sanboxData.size()).isEqualTo(4);
@@ -100,7 +145,6 @@ public class SandboxSocketServerTest {
 
     @Test
     public void upsertDataTest() {
-        // 1. 创建表
         List<Column> columns =
                 Arrays.asList(Column.physical("id", DataTypes.INT()), Column.physical("name", DataTypes.STRING()));
         List<Row> data = Arrays.asList(
@@ -112,39 +156,33 @@ public class SandboxSocketServerTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         sandbox.registerTable(tableId, TableType.PRIMARY_KEY_TABLE, columns, new int[] {0});
 
-        // 2. 创建 SandboxSocketServer
         SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT);
         sandboxSocketServer.start();
 
-        // 等待服务器启动
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        // 3. 使用客户端发送数据
         try (SocketClient client = new SocketClient("localhost", SERVER_PORT)) {
             client.connect();
 
             data.forEach(dataRow -> {
-                client.sendData(tableId.getTableName(), tableId.getDatabaseName(), dataRow, "UTC");
+                client.sendData("public", tableId.identifier(), dataRow, "UTC");
             });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        // 4. 停止服务器
         sandboxSocketServer.stop();
 
-        // 等待服务器完全停止
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        // 5. 验证数据
         List<Tuple> sanboxData = sandbox.getData(tableId);
         assertThat(sanboxData).isNotEmpty();
         assertThat(sanboxData.size()).isEqualTo(2);

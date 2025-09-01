@@ -24,29 +24,33 @@ import java.util.List;
 
 public class TableInfo {
     private final TableId tableId;
-    private final TableType type;
+    private final TableType tableType;
     private final List<ColumnInfo> columns;
 
-    public TableInfo(TableId tableId, TableType type, List<ColumnInfo> columns) {
+    public TableInfo(TableId tableId, TableType tableType, List<ColumnInfo> columns) {
         this.tableId = tableId;
-        this.type = type;
+        this.tableType = tableType;
         this.columns = columns;
     }
 
-    public static TableInfo of(TableId tableId, TableType type, List<ColumnInfo> columns) {
-        return new TableInfo(tableId, type, columns);
+    public static TableInfo of(TableId tableId, TableType tableType, List<ColumnInfo> columns) {
+        return new TableInfo(tableId, tableType, columns);
     }
 
-    public static TableInfo of(TableId tableId, TableType type) {
-        return new TableInfo(tableId, type, new ArrayList<>());
+    public static TableInfo of(TableId tableId, TableType tableType) {
+        return new TableInfo(tableId, tableType, new ArrayList<>());
+    }
+
+    public static TableInfo of(TableId tableId, List<ColumnInfo> columns) {
+        return new TableInfo(tableId, null, columns);
     }
 
     public TableId getTableId() {
         return tableId;
     }
 
-    public TableType getType() {
-        return type;
+    public TableType getTableType() {
+        return tableType;
     }
 
     public List<ColumnInfo> getColumns() {

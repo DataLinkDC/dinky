@@ -23,12 +23,18 @@ import org.dinky.context.SpringContextUtils;
 import org.dinky.data.model.job.History;
 import org.dinky.data.result.SelectResult;
 import org.dinky.job.JobReadHandler;
+import org.dinky.sandbox.metadata.ColumnInfo;
+import org.dinky.sandbox.metadata.TableId;
+import org.dinky.sandbox.metadata.TableInfo;
 import org.dinky.service.HistoryService;
 import org.dinky.utils.JsonUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.DependsOn;
 
@@ -66,5 +72,48 @@ public class JobReadMysqlHandler implements JobReadHandler {
             return SelectResult.buildFailed();
         }
         return JsonUtils.toBean(result, SelectResult.class);
+    }
+
+    @Override
+    public SelectResult readResultDataFromStorage(Integer jobId, String tableName) {
+        History history = historyService.getById(jobId);
+        if (Objects.isNull(history)) {
+            return SelectResult.buildFailed();
+        }
+        String result = history.getResult();
+        if (StringUtils.isBlank(result)) {
+            return SelectResult.buildFailed();
+        }
+        final List<SelectResult> selectResults = JsonUtils.toList(result, SelectResult.class);
+        return selectResults.stream()
+                .filter(selectResult -> {
+                    final TableId tableId = TableId.withPrivate(jobId.toString(), tableName);
+                    return tableId.identifier().equals(selectResult.getTableName());
+                })
+                .findFirst()
+                .orElse(SelectResult.buildFailed());
+    }
+
+    @Override
+    public List<TableInfo> readResultTableNameFromStorage(Integer jobId) {
+        final List<TableInfo> tableInfos = new ArrayList<>();
+        History history = historyService.getById(jobId);
+        if (Objects.isNull(history)) {
+            return tableInfos;
+        }
+        String result = history.getResult();
+        if (StringUtils.isBlank(result)) {
+            return tableInfos;
+        }
+        final List<SelectResult> selectResults = JsonUtils.toList(result, SelectResult.class);
+        return selectResults.stream()
+                .map(selectResult -> {
+                    final TableId tableId = TableId.withPrivate(jobId.toString(), selectResult.getTableName());
+                    final List<ColumnInfo> columnInfos = selectResult.getColumns().stream()
+                            .map(ColumnInfo::withString)
+                            .collect(Collectors.toList());
+                    return TableInfo.of(tableId, columnInfos);
+                })
+                .collect(Collectors.toList());
     }
 }

@@ -30,6 +30,10 @@
 
     <name>Dinky : Connectors</name>
 
+    <modules>
+        <module>dinky-connector-embedded</module>
+    </modules>
+
     <profiles>
         <profile>
             <id>flink-1.14</id>

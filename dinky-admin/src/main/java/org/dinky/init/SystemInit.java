@@ -31,12 +31,16 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.data.model.rbac.Tenant;
+import org.dinky.data.socket.AddressInfo;
 import org.dinky.function.FlinkUDFDiscover;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.resource.BaseResourceManager;
+import org.dinky.sandbox.Sandbox;
+import org.dinky.sandbox.SandboxFactory;
+import org.dinky.sandbox.socket.SandboxSocketServer;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -46,6 +50,7 @@ import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
 import org.dinky.url.RsURLStreamHandlerFactory;
+import org.dinky.utils.HttpUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.UDFUtils;
 
@@ -110,6 +115,7 @@ public class SystemInit implements ApplicationRunner {
             discoverUDF();
             updateGitBuildState();
             registerURL();
+            initSandboxSocketServer();
         } catch (NoClassDefFoundError e) {
             if (e.getMessage().contains("org/apache/flink")) {
                 log.error(
@@ -237,5 +243,19 @@ public class SystemInit implements ApplicationRunner {
                     .forEach(Model::updateById);
             FileUtil.del(path);
         }
+    }
+
+    public void initSandboxSocketServer() {
+        // 获取 dinky 地址: http://localhost:8081
+        String dinkyAddress = SystemConfiguration.getInstances().getDinkyAddr().getValue();
+        if (Asserts.isNullString(dinkyAddress)) {
+            dinkyAddress = "http://127.0.0.1:8888";
+        }
+        // 从 dinky 地址中解析 host 和 port
+        AddressInfo addressInfo = HttpUtils.parseAddress(dinkyAddress);
+        Sandbox sandbox = SandboxFactory.getDefaultSandbox();
+        // 2. 创建 SandboxSocketServer
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, addressInfo.getPort() - 1);
+        sandboxSocketServer.start();
     }
 }

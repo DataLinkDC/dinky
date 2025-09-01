@@ -19,7 +19,9 @@
 
 package org.dinky.utils;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.data.model.ProxyConfig;
+import org.dinky.data.socket.AddressInfo;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -167,5 +169,64 @@ public class HttpUtils {
                         }))
                         .toArray(CompletableFuture[]::new))
                 .join();
+    }
+
+    public static AddressInfo parseAddress(String address) {
+        if (Asserts.isNullString(address)) {
+            throw new IllegalArgumentException("address is empty");
+        }
+
+        // Remove the protocol prefix
+        String cleanAddress = address;
+        if (address.contains("://")) {
+            String[] protocolSplit = address.split("://", 2);
+            if (protocolSplit.length != 2) {
+                throw new IllegalArgumentException("Invalid URL format: " + address);
+            }
+            cleanAddress = protocolSplit[1];
+        }
+
+        // IPv6
+        if (cleanAddress.startsWith("[") && cleanAddress.contains("]:")) {
+            int endBracket = cleanAddress.indexOf("]");
+            if (endBracket == -1) {
+                throw new IllegalArgumentException("Invalid IPv6 address format: " + address);
+            }
+            String host = cleanAddress.substring(1, endBracket);
+            String portStr = cleanAddress.substring(endBracket + 2);
+            try {
+                int port = Integer.parseInt(portStr);
+                if (port < 1 || port > 65535) {
+                    throw new IllegalArgumentException("Port number out of range: " + port);
+                }
+                return new AddressInfo(host, port);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid port number: " + portStr);
+            }
+        }
+
+        String[] split = cleanAddress.split(":");
+        if (split.length != 2) {
+            throw new IllegalArgumentException("Address format error, expected host:port, got: " + address);
+        }
+
+        String host = split[0];
+        String portStr = split[1];
+
+        // Verify that the hostname is not empty
+        if (Asserts.isNullString(host)) {
+            throw new IllegalArgumentException("Host cannot be empty");
+        }
+
+        // Verify the port
+        try {
+            int port = Integer.parseInt(portStr);
+            if (port < 1 || port > 65535) {
+                throw new IllegalArgumentException("Port number out of range: " + port);
+            }
+            return new AddressInfo(host, port);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid port number: " + portStr);
+        }
     }
 }

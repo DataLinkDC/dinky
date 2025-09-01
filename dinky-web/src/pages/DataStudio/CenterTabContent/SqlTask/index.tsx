@@ -601,6 +601,15 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               rowData: result.data.result.rowData
             }
           });
+        } else {
+          updateAction({
+            actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
+            params: {
+              taskId: currentState.taskId,
+              dialect: currentState.dialect,
+              async: true
+            }
+          });
         }
       }
     } finally {
@@ -622,15 +631,25 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
         { ...currentState }
       );
       if (res?.success && res?.data?.result?.success) {
-        updateAction({
-          actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
-          params: {
-            taskId: params.taskId,
-            isMockSinkResult: res.data?.result?.mockSinkResult,
-            columns: res.data?.result?.columns ?? [],
-            rowData: res.data?.result?.rowData ?? []
-          }
-        });
+        if (res.data?.result?.mockSinkResult) {
+          updateAction({
+            actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
+            params: {
+              taskId: currentState.taskId,
+              dialect: currentState.dialect,
+              async: true
+            }
+          });
+        } else {
+          updateAction({
+            actionType: DataStudioActionType.TASK_PREVIEW_RESULT,
+            params: {
+              taskId: params.taskId,
+              columns: res.data?.result?.columns ?? [],
+              rowData: res.data?.result?.rowData ?? []
+            }
+          });
+        }
         setCurrentState((prevState) => {
           return {
             ...prevState,

@@ -50,6 +50,8 @@ public interface Sandbox extends AutoCloseable {
 
     List<TableInfo> getAllTables();
 
+    List<TableInfo> getAllTables(String boxName);
+
     List<Tuple> getData(TableId tableId);
 
     void writeRowData(TableId tableId, Row row, String timeZone);

@@ -19,22 +19,27 @@
 
 package org.dinky.sandbox.socket;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.data.socket.CreateTableEventSocketMessage;
+import org.dinky.data.socket.DataChangeEventSocketMessage;
 import org.dinky.sandbox.Sandbox;
+import org.dinky.sandbox.metadata.ColumnInfo;
 import org.dinky.sandbox.metadata.TableId;
+import org.dinky.sandbox.metadata.TableType;
+
+import org.apache.flink.types.Row;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Socket 数据处理器
- * 负责处理 Socket 连接接收到的数据并写入 Sandbox
- */
 public class SocketDataProcessor implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketDataProcessor.class);
@@ -56,89 +61,100 @@ public class SocketDataProcessor implements Runnable {
     @Override
     public void run() {
         String clientAddress = socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
-        logger.info("开始处理客户端连接: {}", clientAddress);
+        logger.info("Start processing the client connection: {}", clientAddress);
 
         try {
             while (running.get() && !socket.isClosed()) {
                 try {
-                    // 读取 Socket 消息
                     Object obj = inputStream.readObject();
 
-                    if (obj instanceof SocketMessage) {
-                        SocketMessage message = (SocketMessage) obj;
-                        processMessage(message);
+                    if (obj instanceof DataChangeEventSocketMessage) {
+                        processDataMessage((DataChangeEventSocketMessage) obj);
+                    } else if (obj instanceof CreateTableEventSocketMessage) {
+                        processCreateTableSocketMessage((CreateTableEventSocketMessage) obj);
                     } else {
-                        logger.warn("接收到未知类型的消息: {}", obj.getClass().getName());
+                        logger.warn(
+                                "Received a message of an unknown type: {}",
+                                obj.getClass().getName());
                     }
                 } catch (java.io.EOFException e) {
-                    // 客户端正常断开连接
-                    logger.info("客户端断开连接: {}", clientAddress);
+                    logger.info("The client disconnected: {}", clientAddress);
                     break;
-                } catch (IOException e) {
+                } catch (java.io.IOException e) {
                     if (running.get()) {
-                        logger.error("读取 Socket 数据失败: {}", clientAddress, e);
+                        logger.error("Failed to read data from the Socket: {}", clientAddress, e);
                     }
                     break;
                 } catch (ClassNotFoundException e) {
-                    logger.error("反序列化消息失败: {}", clientAddress, e);
+                    logger.error("Failed to deserialize the message: {}", clientAddress, e);
                     break;
                 }
             }
         } catch (Exception e) {
-            logger.error("处理客户端连接时发生异常: {}", clientAddress, e);
+            logger.error("An exception occurred while processing the client connection: {}", clientAddress, e);
         } finally {
             close();
-            logger.info("客户端连接处理结束: {}", clientAddress);
+            logger.info("The processing of the client connection is completed: {}", clientAddress);
         }
     }
 
-    /**
-     * 处理接收到的消息
-     */
-    private void processMessage(SocketMessage message) {
-        processDataMessage(message);
-    }
-
-    /**
-     * 处理数据消息
-     */
-    private void processDataMessage(SocketMessage message) {
+    private void processCreateTableSocketMessage(CreateTableEventSocketMessage message) {
         try {
-            String tableName = message.getTableName();
-            String databaseName = message.getDatabaseName();
+            String tableIdentifier = message.getTableId();
 
-            if (tableName == null || tableName.trim().isEmpty()) {
-                throw new IllegalArgumentException("表名不能为空");
+            if (tableIdentifier == null || tableIdentifier.trim().isEmpty()) {
+                throw new IllegalArgumentException("The table name cannot be empty.");
             }
 
-            // 创建 TableId
-            TableId tableId = TableId.of(databaseName, tableName);
+            TableId tableId = TableId.parse(tableIdentifier);
+            if (Asserts.isNotNullString(message.getBoxId())) {
+                tableId = TableId.withPrivate(message.getBoxId(), tableIdentifier);
+            }
 
-            // 检查表是否存在
-            if (!sandbox.existTable(tableId)) {
-                logger.warn("表不存在: {}, 跳过数据写入", tableId);
+            if (sandbox.existTable(tableId)) {
+                logger.warn("The table exists: {}, skip automatic table creation", tableId);
                 return;
             }
-
-            // 写入数据到 Sandbox
-            String timeZone = message.getTimeZone() != null ? message.getTimeZone() : "UTC";
-            sandbox.writeRowData(tableId, message.getDataRow(), timeZone);
+            if (Asserts.isNotNull(message.getColumns()) && message.getColumns() instanceof List) {
+                sandbox.registerTable(
+                        tableId, TableType.valueOf(message.getTableType()), (List<ColumnInfo>) message.getColumns());
+            } else {
+                sandbox.registerTable(tableId, TableType.valueOf(message.getTableType()), new ArrayList<>());
+            }
         } catch (Exception e) {
-            logger.error("处理数据消息失败: {}", message, e);
+            logger.error("Failed to process the data message: {}", message, e);
         }
     }
 
-    /**
-     * 停止处理器
-     */
+    private void processDataMessage(DataChangeEventSocketMessage message) {
+        try {
+            String tableIdentifier = message.getTableId();
+
+            if (tableIdentifier == null || tableIdentifier.trim().isEmpty()) {
+                throw new IllegalArgumentException("The table name cannot be empty.");
+            }
+
+            TableId tableId = TableId.parse(tableIdentifier);
+            if (Asserts.isNotNullString(message.getBoxId())) {
+                tableId = TableId.withPrivate(message.getBoxId(), tableIdentifier);
+            }
+
+            if (!sandbox.existTable(tableId)) {
+                logger.warn("The table exists: {}, skip automatic table creation", tableId);
+                return;
+            }
+            String timeZone = message.getTimeZone() != null ? message.getTimeZone() : "UTC";
+            sandbox.writeRowData(tableId, (Row) message.getDataRow(), timeZone);
+        } catch (Exception e) {
+            logger.error("Failed to process the data message: {}", message, e);
+        }
+    }
+
     public void stop() {
         running.set(false);
         close();
     }
 
-    /**
-     * 关闭资源
-     */
     private void close() {
         try {
             if (inputStream != null) {
@@ -151,7 +167,7 @@ public class SocketDataProcessor implements Runnable {
                 socket.close();
             }
         } catch (IOException e) {
-            logger.error("关闭 Socket 资源时发生异常", e);
+            logger.error("An exception occurred while closing Socket resources.", e);
         }
     }
 }

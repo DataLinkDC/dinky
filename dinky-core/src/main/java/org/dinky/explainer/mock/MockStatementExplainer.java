@@ -19,13 +19,19 @@
 
 package org.dinky.explainer.mock;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.connector.flink.sink.sandbox.SandboxDynamicTableSinkFactory;
 import org.dinky.connector.mock.sink.MockDynamicTableSinkFactory;
 import org.dinky.data.job.JobStatement;
 import org.dinky.data.job.JobStatementType;
 import org.dinky.data.job.SqlType;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.socket.AddressInfo;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.PlannerTableEnvironmentImpl;
+import org.dinky.job.JobConfig;
 import org.dinky.job.JobStatementPlan;
+import org.dinky.utils.HttpUtils;
 import org.dinky.utils.JsonUtils;
 
 import org.apache.calcite.config.Lex;
@@ -52,20 +58,24 @@ public class MockStatementExplainer {
 
     // Because calcite cannot parse flink sql ddl, a table environment is designed here for flink sql ddl pars
     private final CustomTableEnvironment tableEnv;
+    private final JobConfig jobConfig;
+    private final Integer jobId;
     private final SqlParser.Config calciteConfig;
     private final String DROP_TABLE_SQL_TEMPLATE = "DROP TABLE IF EXISTS {0}";
     private final String MOCK_SQL_TEMPLATE = "CREATE TABLE {0} ({1}) WITH ({2})";
 
-    public static MockStatementExplainer build(CustomTableEnvironment tableEnv) {
-        return new MockStatementExplainer(tableEnv);
+    public static MockStatementExplainer build(CustomTableEnvironment tableEnv, JobConfig jobConfig, Integer jobId) {
+        return new MockStatementExplainer(tableEnv, jobConfig, jobId);
     }
 
-    public MockStatementExplainer(CustomTableEnvironment tableEnv) {
+    public MockStatementExplainer(CustomTableEnvironment tableEnv, JobConfig jobConfig, Integer jobId) {
+        this.jobId = jobId;
         this.tableEnv = tableEnv;
+        this.jobConfig = jobConfig;
         this.calciteConfig = SqlParser.config().withLex(Lex.JAVA);
     }
 
-    public void jobStatementPlanMock(JobStatementPlan jobStatementPlan) {
+    public void mockJobStatementPlan(JobStatementPlan jobStatementPlan) {
         mockSink(jobStatementPlan);
     }
 
@@ -159,12 +169,29 @@ public class MockStatementExplainer {
      * @return ddl that connector is changed as well as other options not changed
      */
     private String getSinkMockDdlStatement(String tableName, String columns) {
-        String mockedOption = "'connector'='" + MockDynamicTableSinkFactory.IDENTIFIER + "'";
+        String mockedOption =
+                "'connector'='%s','host'='%s','port'='%s','box-id'='%s','table'='%s','max-row-num'='%s','auto-cancel'='%s','use-change-log'='%s'";
+        // 获取 dinky 地址: http://localhost:8081
+        String dinkyAddress = SystemConfiguration.getInstances().getDinkyAddr().getValue();
+        if (Asserts.isNullString(dinkyAddress)) {
+            dinkyAddress = "http://127.0.0.1:8888";
+        }
+        // 从 dinky 地址中解析 host 和 port
+        AddressInfo addressInfo = HttpUtils.parseAddress(dinkyAddress);
         return MessageFormat.format(
                 MOCK_SQL_TEMPLATE,
                 StringUtils.join(generateMockedTableIdentifier(tableName), "."),
                 columns,
-                mockedOption);
+                String.format(
+                        mockedOption,
+                        SandboxDynamicTableSinkFactory.CONNECTOR_KEY,
+                        addressInfo.getHost(),
+                        addressInfo.getPort() - 1,
+                        jobId,
+                        tableName,
+                        jobConfig.getMaxRowNum(),
+                        jobConfig.isUseAutoCancel(),
+                        jobConfig.isUseChangeLog()));
     }
 
     /**

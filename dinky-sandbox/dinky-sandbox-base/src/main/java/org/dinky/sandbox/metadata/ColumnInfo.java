@@ -19,7 +19,12 @@
 
 package org.dinky.sandbox.metadata;
 
-public class ColumnInfo {
+import org.apache.flink.table.types.logical.RowType;
+
+import java.io.Serializable;
+
+public class ColumnInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final String name;
     // TODO: Change it to a field type enumeration
     private final String dataType;
@@ -37,11 +42,23 @@ public class ColumnInfo {
         return new ColumnInfo(name, "STRING", "", false);
     }
 
+    public static ColumnInfo of(String name, String dataType) {
+        return new ColumnInfo(name, dataType, "", false);
+    }
+
     public static ColumnInfo buildByFlinkColumn(org.apache.flink.table.catalog.Column column, boolean isPrimaryKey) {
         return new ColumnInfo(
                 column.getName(),
                 column.getDataType().getLogicalType().toString(),
                 column.getComment().orElse(""),
+                isPrimaryKey);
+    }
+
+    public static ColumnInfo buildByFlinkColumn(RowType.RowField column, boolean isPrimaryKey) {
+        return new ColumnInfo(
+                column.getName(),
+                column.getType().toString(),
+                column.getDescription().orElse(""),
                 isPrimaryKey);
     }
 

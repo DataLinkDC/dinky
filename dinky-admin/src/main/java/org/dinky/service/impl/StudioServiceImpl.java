@@ -42,8 +42,15 @@ import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.sqllineage.SQLLineageBuilder;
 import org.dinky.job.JobConfig;
+import org.dinky.job.JobHandler;
 import org.dinky.job.JobManager;
+import org.dinky.job.JobReadHandler;
 import org.dinky.metadata.driver.Driver;
+import org.dinky.sandbox.Sandbox;
+import org.dinky.sandbox.SandboxFactory;
+import org.dinky.sandbox.metadata.TableId;
+import org.dinky.sandbox.metadata.TableInfo;
+import org.dinky.sandbox.metadata.Tuple;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.StudioService;
@@ -78,6 +85,7 @@ public class StudioServiceImpl implements StudioService {
     private final TaskService taskService;
     private final Cache<String, JobManager> jobManagerCache = CacheUtil.newTimedCache(1000 * 60 * 2);
     private final String DEFAULT_CATALOG = "default_catalog";
+    private final Sandbox sandbox = SandboxFactory.getDefaultSandbox();
 
     private IResult executeMSFlinkSql(StudioMetaStoreDTO studioMetaStoreDTO) {
         String envSql = taskService.buildEnvSql(studioMetaStoreDTO);
@@ -99,6 +107,28 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public SelectResult getJobData(String jobId) {
         return JobManager.getJobData(jobId);
+    }
+
+    @Override
+    public SelectResult getJobDataByTableName(String boxName, String tableName) {
+        final TableId tableId = TableId.withPrivate(boxName, tableName);
+        if (sandbox.existTable(tableId)) {
+            TableInfo tableInfo = sandbox.getTableInfo(tableId);
+            List<Tuple> data = sandbox.getData(tableId);
+            return SelectResult.buildBySandbox(boxName, tableInfo, data);
+        }
+        JobReadHandler readHandler = JobHandler.build().getReadHandler();
+        return readHandler.readResultDataFromStorage(Integer.parseInt(boxName), tableName);
+    }
+
+    @Override
+    public List<TableInfo> getJobDataTableInfos(String jobId) {
+        final List<TableInfo> allTables = sandbox.getAllTables(jobId);
+        if (allTables.isEmpty()) {
+            JobReadHandler readHandler = JobHandler.build().getReadHandler();
+            return readHandler.readResultTableNameFromStorage(Integer.parseInt(jobId));
+        }
+        return allTables;
     }
 
     @Override

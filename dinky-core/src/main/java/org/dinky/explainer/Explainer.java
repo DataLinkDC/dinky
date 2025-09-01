@@ -90,8 +90,11 @@ public class Explainer {
         jobStatementPlanWithMock.getJobStatementList().addAll(jobStatementPlan.getJobStatementList());
         if (!jobManager.isPlanMode() && jobManager.getConfig().isMockSinkFunction()) {
             executor.setMockTest(true);
-            MockStatementExplainer.build(executor.getCustomTableEnvironment())
-                    .jobStatementPlanMock(jobStatementPlanWithMock);
+            MockStatementExplainer.build(
+                            executor.getCustomTableEnvironment(),
+                            jobManager.getConfig(),
+                            jobManager.getJob().getId())
+                    .mockJobStatementPlan(jobStatementPlanWithMock);
         }
         return jobStatementPlanWithMock;
     }

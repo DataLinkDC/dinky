@@ -174,6 +174,17 @@ export enum API_CONSTANTS {
   UDF_TEMPLATE_ENABLE = '/api/udf/template/enable',
   UDF_TEMPLATE_TREE = '/api/udf/template/tree',
 
+  // ------------------------------------ operator ------------------------------------
+  OPERATOR = '/api/operator',
+  OPERATOR_DELETE = '/api/operator/delete',
+  OPERATOR_ENABLE = '/api/operator/enable',
+
+  // ------------------------------------ app ------------------------------------
+  APP = '/api/app',
+  APP_ENABLED_ALL = '/api/app/listEnabledSorted',
+  APP_DELETE = '/api/app/delete',
+  APP_ENABLE = '/api/app/enable',
+
   /** --------------------------------------------  setting center ------------------------------------------------ */
   // ------------------------------------ system settings ------------------------------------
   GET_NEEDED_CFG = '/api/sysConfig/getNeededCfg',
@@ -211,7 +222,8 @@ export enum API_CONSTANTS {
   GET_JOB_METRICS_ITEMS = '/api/jobInstance/getJobMetricsItems',
   JOB_INSTANCE_GET_LINEAGE = '/api/jobInstance/getLineage',
   GET_STATUS_COUNT = '/api/jobInstance/getStatusCount',
-  GET_JOB_DATA = '/api/studio/getJobData',
+  GET_JOB_DATA = '/api/studio/getJobDataByTableName',
+  GET_JOB_DATA_TABLE_INFOS = '/api/studio/getJobDataTableInfos',
 
   // ------------------------------------ devops studio  ------------------------------------
   STUDIO_GET_LINEAGE = '/api/studio/getLineage',

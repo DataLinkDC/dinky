@@ -20,6 +20,7 @@
 package org.dinky.data.result;
 
 import org.dinky.sandbox.metadata.TableInfo;
+import org.dinky.sandbox.metadata.TableType;
 import org.dinky.sandbox.metadata.Tuple;
 import org.dinky.utils.JsonUtils;
 
@@ -51,6 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SelectResult extends AbstractResult implements IResult {
 
     private String jobID;
+    private String tableName;
     private List<Map<String, Object>> rowData;
     private Integer total;
     private LinkedHashSet<String> columns;
@@ -69,6 +71,17 @@ public class SelectResult extends AbstractResult implements IResult {
         this.columns = columns;
         this.jobID = jobID;
         this.success = success;
+        this.isDestroyed = false;
+    }
+
+    public SelectResult(
+            String jobID, String tableName, List<Map<String, Object>> rowData, LinkedHashSet<String> columns) {
+        this.jobID = jobID;
+        this.tableName = tableName;
+        this.rowData = rowData;
+        this.total = rowData.size();
+        this.columns = columns;
+        this.success = true;
         this.isDestroyed = false;
     }
 
@@ -161,6 +174,16 @@ public class SelectResult extends AbstractResult implements IResult {
         tableInfo.getColumns().forEach(columnInfo -> {
             columns.add(columnInfo.getName());
         });
+        if (columns.isEmpty()) {
+            if (data.size() > 0) {
+                if (TableType.CHANGE_LOG.equals(tableInfo.getTableType())) {
+                    columns.add("__op__");
+                }
+                for (int i = 0; i < data.get(0).size(); i++) {
+                    columns.add("f" + i);
+                }
+            }
+        }
         List<Map<String, Object>> rowData = new ArrayList<>();
         data.forEach(tuple -> {
             Map<String, Object> map = new HashMap<>();
@@ -169,6 +192,6 @@ public class SelectResult extends AbstractResult implements IResult {
             }
             rowData.add(map);
         });
-        return new SelectResult(jobID, rowData, columns);
+        return new SelectResult(jobID, tableInfo.getTableId().identifier(), rowData, columns);
     }
 }

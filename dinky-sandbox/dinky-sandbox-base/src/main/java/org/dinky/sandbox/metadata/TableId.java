@@ -77,26 +77,34 @@ public class TableId implements Serializable {
         return new TableId("public", "default_catalog", databaseName, tableName, false);
     }
 
+    public static TableId of(String tableName) {
+        return new TableId("public", "default_catalog", "default_database", tableName, false);
+    }
+
     public static TableId withPrivate(String boxName) {
         return new TableId(boxName, "default_catalog", "default_database", "result", true);
     }
 
+    public static TableId withPrivate(String boxName, String name) {
+        TableId parsedTableId = parse(name);
+        return new TableId(
+                boxName,
+                parsedTableId.getCatalogName(),
+                parsedTableId.getDatabaseName(),
+                parsedTableId.getTableName(),
+                true);
+    }
+
     public static TableId parse(String name) {
-        if (!name.contains(".")) {
-            return TableId.withPrivate(name);
-        } else {
-            String[] parts = name.split("\\.");
-            if (parts.length == 2) {
-                return TableId.of(parts[0], parts[1]);
-            } else if (parts.length == 3) {
-                return TableId.of(parts[0], parts[1], parts[2]);
-            } else if (parts.length == 4) {
-                return TableId.of(parts[0], parts[1], parts[2], parts[3]);
-            } else if (parts.length == 1) {
-                return TableId.withPrivate(parts[0]);
-            }
+        String[] parts = name.split("\\.");
+        if (parts.length == 2) {
+            return TableId.of(parts[0], parts[1]);
+        } else if (parts.length == 3) {
+            return TableId.of(parts[0], parts[1], parts[2]);
+        } else if (parts.length >= 4) {
+            return TableId.of(parts[0], parts[1], parts[2], parts[3]);
         }
-        return TableId.withPrivate(name);
+        return TableId.of(parts[0]);
     }
 
     public String getPrivateName() {
@@ -141,6 +149,16 @@ public class TableId implements Serializable {
             return catalogName + "." + databaseName + "." + tableName;
         }
         return boxName + "." + catalogName + "." + databaseName + "." + tableName;
+    }
+
+    public String tableName() {
+        if (Asserts.isNullString(catalogName)) {
+            if (Asserts.isNullString(databaseName)) {
+                return tableName;
+            }
+            return databaseName + "." + tableName;
+        }
+        return catalogName + "." + databaseName + "." + tableName;
     }
 
     public String toString() {

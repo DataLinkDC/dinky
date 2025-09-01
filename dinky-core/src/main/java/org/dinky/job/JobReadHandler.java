@@ -20,6 +20,9 @@
 package org.dinky.job;
 
 import org.dinky.data.result.SelectResult;
+import org.dinky.sandbox.metadata.TableInfo;
+
+import java.util.List;
 
 /**
  * JobReadHandler.
@@ -38,4 +41,15 @@ public interface JobReadHandler {
      * @return result data
      */
     SelectResult readResultDataFromStorage(Integer jobId);
+
+    /**
+     * Read result data from persistent storage.
+     *
+     * @param jobId job id
+     * @param tableName table name
+     * @return result data
+     */
+    SelectResult readResultDataFromStorage(Integer jobId, String tableName);
+
+    List<TableInfo> readResultTableNameFromStorage(Integer jobId);
 }

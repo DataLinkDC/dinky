@@ -610,11 +610,17 @@ export const transformTreeData = <T,>(data: T[]): T[] => {
   });
 };
 
-export const transformTableDataToCsv = <T,>(column: string[], data: T[]): string => {
+export const transformTableDataToCsv = <T,>(
+  columns: {
+    name: string;
+    dataType: string;
+  }[],
+  data: T[]
+): string => {
   let row = '';
   let csvData = '';
-  for (const title of column) {
-    row += '"' + title + '",';
+  for (const column of columns) {
+    row += '"' + column.name + '",';
   }
   const delimiter = '\r\n';
   csvData += row + delimiter; // 添加换行符号
