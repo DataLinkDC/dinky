@@ -27,9 +27,9 @@ title: 数据源管理
 
 **密码：** 连接数据库的密码
 
-**Flink 连接配置：** 避免私密信息泄露，同时作为全局变量复用连接配置，在FlinkSQL中可使用 **${名称}** 来加载连接配置，如 **${ods}**。说明：名称指的是英文唯一标识，即如图所示的名称。注意需要开启全局变量（原片段机制）
+**Flink 连接配置：** 避免私密信息泄露，同时作为全局变量复用连接配置，在FlinkSQL中可使用 **`${名称}`** 来加载连接配置，如 **`${ods}`**。说明：名称指的是英文唯一标识，即如图所示的名称。注意需要开启全局变量（原片段机制）
 
-**Flink 连接模板：** Flink 连接模板作用是为生成 FlinkSQL DDL 而扩展的功能。其中 **${schemaName}** 动态获取数据库，**${tableName}** 动态获取表名称。更多参数请参考[Flink 官网](https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/overview/)
+**Flink 连接模板：** Flink 连接模板作用是为生成 FlinkSQL DDL 而扩展的功能。其中 **`${schemaName}`** 动态获取数据库，**`${tableName}`** 动态获取表名称。更多参数请参考[Flink 官网](https://nightlies.apache.org/flink/flink-docs-master/docs/connectors/table/overview/)
 
 **注释：** 自定义
 

@@ -52,7 +52,7 @@ FlinkDDL 等。
 以上图创建的数据源为例。
 
 **FLink链接配置：**将一些固定参数如数据库的地址、端口、账号、密码等填在此处  
-开启全局变量，使用** ${数据源名称} ** 代替数据源连接的隐私信息，*使用方法*如下：  
+开启全局变量，使用** `${数据源名称}` ** 代替数据源连接的隐私信息，*使用方法*如下：  
 ![create_database_jdbc_mysql](http://pic.dinky.org.cn/dinky/docs/test/datasource6.png)
 
 **Flink连接模板：**作为预设信息，在生成flinksql时无需手动填写flink的相关参数，自动填充。  
@@ -116,9 +116,9 @@ FlinkDDL 等。
 
 ![create_database_jdbc_mysql](http://pic.dinky.org.cn/dinky/docs/test/datasource555.png)  
 :::tip 说明
-在 Dinky 1.0.0 之前的版本，动态获取库名和表名的变量格式为'${schemaName}' 和 '${tableName}',其主要场景应用于 FlinkSQL DDL 中的 with 配置中和整库同步的场景。
+在 Dinky 1.0.0 之前的版本，动态获取库名和表名的变量格式为`'${schemaName}'` 和 `'${tableName}'`,其主要场景应用于 FlinkSQL DDL 中的 with 配置中和整库同步的场景。
 
-在 Dinky 1.0.0 之后，此处为避免与全局变量冲突，动态获取表名的变量格式为'#{schemaName}' 和 '#{tableName}',此不兼容变更对 FlinkSQL DDL 中的 with 配置无影响, 但是对于整库同步的场景需要注意修改为新的变量格式'#{schemaName}' 和 '#{tableName}' ,与此同时,在整库同步的场景下,也可以支持使用全局变量了.
+在 Dinky 1.0.0 之后，此处为避免与全局变量冲突，动态获取表名的变量格式为`'#{schemaName}'` 和 `'#{tableName}'`,此不兼容变更对 FlinkSQL DDL 中的 with 配置无影响, 但是对于整库同步的场景需要注意修改为新的变量格式`'#{schemaName}'` 和 `'#{tableName}'` ,与此同时,在整库同步的场景下,也可以支持使用全局变量了.
 :::
 
 ## 获取数据源元数据信息

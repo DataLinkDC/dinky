@@ -55,7 +55,7 @@ mysql>
 flush privileges;
 ```
 
-在 Dinky 根目录 sql 文件夹下分别放置了 dinky.sql 、 upgrade/${version}_schema/mysql/ddl 和 dml。如果第一次部署，可以直接将 sql/dinky.sql 文件在 dlink 数据库下执行。（如果之前已经部署，那 upgrade 目录下 存放了各版本的升级 sql ，根据版本号按需执行即可）
+在 Dinky 根目录 sql 文件夹下分别放置了 dinky.sql 、 `upgrade/${version}_schema/mysql/ddl` 和 dml。如果第一次部署，可以直接将 sql/dinky.sql 文件在 dlink 数据库下执行。（如果之前已经部署，那 upgrade 目录下 存放了各版本的升级 sql ，根据版本号按需执行即可）
 
 #### 第一次部署
 

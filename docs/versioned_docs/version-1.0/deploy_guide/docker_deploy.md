@@ -124,7 +124,7 @@ docker compose --profile standalone -f docker-compose.yml -f docker-compose.dev.
 docker compose --profile ms -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 (适配自身nginx的docker/web/default.conf配置)
-对于1.15上版本,需要手动将容器中/opt/diny/plugin/flink{version}/flink-table-planner-loader*.jar移除,
+对于1.15上版本,需要手动将容器中`/opt/diny/plugin/flink{version}/flink-table-planner-loader*.jar`移除,
 替换为相应版本的flink-table-planner_*.jar文件.
 创建容器时,可映射到容器/opt/diny/customJar文件夹,添加自定义jar包.
 

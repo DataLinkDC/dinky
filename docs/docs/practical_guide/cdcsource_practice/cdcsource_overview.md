@@ -52,8 +52,8 @@ sink，也可以使用 FlinkSQL 无需修改代码直接扩展新的 sink。
 
 1. 禁用语句集
 2. 禁用批模式
-3. 自 Dinky v1.0.0 开始可以支持 全局变量, 区分整库同步内部变量 #{schemaName} 和 #{tableName} ,全局变量则使用
-   ${varName} , 请注意区分
+3. 自 Dinky v1.0.0 开始可以支持 全局变量, 区分整库同步内部变量 `#{schemaName}` 和 `#{tableName}` ,全局变量则使用
+   `${varName}` , 请注意区分
 
 :::
 
@@ -63,9 +63,9 @@ sink，也可以使用 FlinkSQL 无需修改代码直接扩展新的 sink。
 
 | 变量名        | 说明                    | 值示例     | 使用示例          |
 |------------|-----------------------|---------|---------------|
-| schemaName | 当前表的 schema 名称，即数据库名称 | test    | #{schemaName} |
-| tableName  | 当前表的表名                | student | #{tableName}  |
-| pkList     | 当前表的主键列表              | id,name | #{pkList}     |
+| schemaName | 当前表的 schema 名称，即数据库名称 | test    | `#{schemaName}` |
+| tableName  | 当前表的表名                | student | `#{tableName}`  |
+| pkList     | 当前表的主键列表              | id,name | `#{pkList}`     |
 
 ### Flink 版本区分
 
@@ -144,7 +144,7 @@ add customjar 'flink-sql-connector-mysql-cdc-2.3.0.jar'
 | sink.auto.create               | 否    | false         | 目标数据源自动建表，目前只支持 Mysql，其他可自行扩展                                                                                                      |
 | sink.timezone                  | 否    | UTC           | 指定目标数据源的时区，在数据类型转换时自动生效                                                                                                            |
 | sink.column.replace.line-break | 否    | false         | 指定是否去除换行符，即在数据转换中进行 REGEXP_REPLACE(column, '\\n', '')                                                                              |
-| sink.*                         | 否    | 无             | 目标数据源的配置信息，同 FlinkSQL，使用 ${schemaName} 和 ${tableName} 可注入经过处理的源表名                                                                  |
+| sink.*                         | 否    | 无             | 目标数据源的配置信息，同 FlinkSQL，使用 `${schemaName}` 和 `${tableName}` 可注入经过处理的源表名                                                                  |
 | sink[N].*                      | 否    | 无             | N代表为多数据源写入, 默认从0开始到N, 其他配置参数信息参考sink.*的配置.                                                                                         |
 
 ### 支持debezium参数

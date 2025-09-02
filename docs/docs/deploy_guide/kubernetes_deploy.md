@@ -17,7 +17,10 @@ https://www.dinky.org.cn/download/download
 
 ### 修改配置
 #### 修改镜像地址
+```shell
 cd dinky-release-${FLINK-VERSION}-${DINKY-VERSION}/deploy/kubernetes/helm/dinky
+```
+
 ```yaml
 image:
   repository: "dinkydocker/dinky-standalone-server"

@@ -117,7 +117,7 @@ spring:
 
 ### 上传依赖
 
-Dinky 需要具备内置的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下 extends/flink${FLINK_VERSION} 文件夹上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。
+Dinky 需要具备内置的 Flink 环境，该 Flink 环境的实现需要用户自己在 Dinky 根目录下 `extends/flink${FLINK_VERSION}` 文件夹上传相关的 Flink 依赖，如 flink-dist, flink-table 等，具体见下文。当然也可在启动文件中指定 FLINK_HOME，但不建议这样做。
 
 :::warning 注意事项
 1. Dinky 并没有内置的 mysql/postgres 数据库驱动，需要用户自己上传 mysql-connector-java-xxx.jar/postgresql-xxx.jar 等jdbc 驱动到 `lib 下`或者`extends 下`
@@ -188,7 +188,7 @@ https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?r
     └── upgrade  -- 各个版本的升级 SQL
 ```
 ### 添加Flink依赖
-对应 `Flink` 版本的依赖，放在Dinky 安装目录下 extends/flink${FLINK_VERSION} 下，
+对应 `Flink` 版本的依赖，放在Dinky 安装目录下 `extends/flink${FLINK_VERSION}` 下，
 :::warning 注意事项
 Flink自带lib里的planner是带loader的,比如:flink-table-planner-loader-1.16.1.jar,
 需要删除带loader的jar包，换一个不带loader的jar, 可前往flink根下的opt目录中找到，
@@ -219,7 +219,7 @@ log4j-slf4j-impl-2.17.1.jar
 :::tip
 1.0.0 之前的版本 Flink 相关依赖是放在 plugins 目录下，1.0.0 及之后是放在 extends 目录下。
 
-推荐公共 jar 包放在 extends 目录下，Flink 版本的依赖放在 extends/flink${FLINK_VERSION} 下
+推荐公共 jar 包放在 extends 目录下，Flink 版本的依赖放在 `extends/flink${FLINK_VERSION}` 下
 :::
 
 ### 启动 Dinky
@@ -241,7 +241,7 @@ sh auto.sh startOnPending 1.20
 
 #### 版本适配
 启动指令的第二个参数则是版本选择，支持 【1.14, 1.15, 1.16, 1.17, 1.18, 1.19】,参考指令如下：
-> 自 1.0.2 版本开始加入了自动检测 Flink 版本的功能，如果不传入版本号，则会自动检测 Flink 版本作为启动版本(即检测 extends 目录下的 flink${FLINK_VERSION} 文件夹)
+> 自 1.0.2 版本开始加入了自动检测 Flink 版本的功能，如果不传入版本号，则会自动检测 Flink 版本作为启动版本(即检测 extends 目录下的 `flink${FLINK_VERSION}` 文件夹)
 ```shell
 #启动
 sh ./bin/auto.sh start 1.16

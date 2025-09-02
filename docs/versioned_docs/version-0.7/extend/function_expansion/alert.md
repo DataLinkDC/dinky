@@ -24,7 +24,7 @@ Dinky 学习了 ``Apache Dolphinscheduler`` 的插件扩展机制，可以在 Di
 - 在 dlink-alert 新建子模块 , 命名规则为 `dlink-alert-{报警类型}` 在子模块中实现 `dlink-alert-{报警类型}` 的报警机制
 
 ## 后端开发
-- 在 **dlink-alert** 模块中， 右键**新建子模块**, 命名规则: **dlink-alert-{报警类型}**
+- 在 **dlink-alert** 模块中， 右键**新建子模块**, 命名规则: **`dlink-alert-{报警类型}`**
 - **代码层面** 根据告警场景自行实现报警逻辑 
     - 注意事项:
         - 不可在父类的基础上修改代码，可以在子类中进行扩展 ,或者重写父类方法
@@ -101,7 +101,7 @@ export const EmailSvg = () => (
       {svg 相关代码}
 );
 ```
-**注意:** svg 相关代码中需要将 **width**  **height** 统一更换为 **width={svgSize} height={svgSize}**
+**注意:** svg 相关代码中需要将 **width**  **height** 统一更换为 **`width={svgSize} height={svgSize}`**
 
 如下图:
 ![extened_alert_icon](http://pic.dinky.org.cn/dinky/docs/zh-CN/extend/function_expansion/alert/extened_alert_icon.png)

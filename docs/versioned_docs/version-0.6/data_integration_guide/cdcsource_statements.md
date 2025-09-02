@@ -79,7 +79,7 @@ WITH 参数通常用于指定 CDCSOURCE 所需参数，语法为`'key1'='value1'
 | sink.table.suffix | 否       | 无            | 目标表的表名后缀                                             |
 | sink.table.upper  | 否       | 无            | 目标表的表名全大写                                           |
 | sink.table.lower  | 否       | 无            | 目标表的表名全小写                                           |
-| sink.*            | 否       | 无            | 目标数据源的配置信息，同 FlinkSQL，使用 ${schemaName} 和 ${tableName} 可注入经过处理的源表名 |
+| sink.*            | 否       | 无            | 目标数据源的配置信息，同 FlinkSQL，使用 `${schemaName}` 和 `${tableName}` 可注入经过处理的源表名 |
 
 ## 示例
 

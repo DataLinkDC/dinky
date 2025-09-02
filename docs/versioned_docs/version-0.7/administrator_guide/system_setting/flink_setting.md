@@ -18,8 +18,8 @@ title: Flink 设置
 **参数配置说明:**
 
 - **提交 FlinkSQL 的 Jar文件路径:** 此参数是为了引入 Dinky 中提交 **Application 模式**的 jar包文件，
-  - **服务器部署方式:** 需要上传到相应的HDFS路径，jar包在 Dinky 解压根目录下的jar文件夹下；eg: hdfs:///dlink/jar/dlink-app-${dlink-version}-jar-with-dependencies.jar
-  - **本地调试方式:** 需要本地 install后 将其设置为eg: $idea_work_dir/dlink/dlink-app/target/dlink-app-${dlink-version}-jar-with-dependencies.jar
+  - **服务器部署方式:** 需要上传到相应的HDFS路径，jar包在 Dinky 解压根目录下的jar文件夹下；eg: `hdfs:///dlink/jar/dlink-app-${dlink-version}-jar-with-dependencies.jar`
+  - **本地调试方式:** 需要本地 install后 将其设置为eg: `$idea_work_dir/dlink/dlink-app/target/dlink-app-${dlink-version}-jar-with-dependencies.jar`
 - **提交 FlinkSQL 的 Jar 的主类入参：** 默认为空，不需要修改，配合提交FlinkSQL的Jar文件路径使用；
 - **提交 FlinkSQL 的 Jar 的主类：** 默认 com.dlink.app.MainApp,不需要修改，配合提交FlinkSQL的Jar文件路径使用；
 - **使用 RestAPI:** 默认开启,开启后 FlinkSQL 停止等操作通过此参数进行；
