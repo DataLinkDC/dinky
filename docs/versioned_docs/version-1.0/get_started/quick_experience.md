@@ -28,7 +28,7 @@ docker run -p 8888:8888 \
 生产环境请使用MySQL或Postgres，更多参数配置请参考Docker部署章节获取详细内容，
 :::
 
-Docker启动成功后，在浏览器里输入地址http://ip:8081，看到以下界面，说明Dinky启动成功。
+Docker启动成功后，在浏览器里输入地址`http://ip:8081`，看到以下界面，说明Dinky启动成功。
 ![login](http://pic.dinky.org.cn/dinky/docs/zh-CN//fast-guide-login.png)
 > 初始账户：
 > 用户名 dinky

@@ -15,7 +15,7 @@ FlinkSQL常用术语如下
 |     Schema      |         表示一个表的结构信息，例如各个列名、列类型等         |
 |    时间模式     | FlinkSQL 处理数据时获取的时间戳，目前支持 Event Time、Processing Time 两种模式 |
 |   Event Time    | Event Time 时间模式下，时间戳由输入数据的字段提供，可以用 WATERMARK FOR 语句<br/>指定该字段并启用 Event Time 时间模式 |
-|    Watermark    | 表示一个特定的时间点，在该时间点之前的所有数据已经得到妥善处理。<br/>Watermark 由系统自动生成,你可以通过WATERMARK FOR columnName AS <watermark_strategy_expression>定义。 |
+|    Watermark    | 表示一个特定的时间点，在该时间点之前的所有数据已经得到妥善处理。<br/>Watermark 由系统自动生成,你可以通过`WATERMARK FOR columnName AS <watermark_strategy_expression>`定义。 |
 | Processing Time | Processing Time 时间模式下，时间戳由系统自动生成并添加到数据源中（以`PROCTIME`命名，SELECT *时不可见，使用时必须显式指定）。它以每条数据被系统处理的时间作为时间戳 |
 |     计算列      | 计算列是一个使用 `column_name AS computed_column_expression` 语法生成的虚拟列。它由使用同一表中其他列的非查询表达式生成，并且不会在表中进行物理存储. |
 |    时间窗口     | 目前系统支持 TUMBLE、HOP、Session、CUMULATE三种时间窗口,具体详见[时间窗口](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/table/sql/queries/window-tvf/) |
