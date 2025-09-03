@@ -103,11 +103,6 @@ const config = {
                             path: '/0.7',
                             banner: 'unmaintained',
                         },
-                        0.6: {
-                            label: '0.6',
-                            path: '/0.6',
-                            banner: 'unmaintained',
-                        },
                     },
                     sidebarPath: require.resolve('./sidebars.js'),
                     sidebarCollapsible: true,
