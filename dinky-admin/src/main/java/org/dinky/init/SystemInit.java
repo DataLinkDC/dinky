@@ -36,6 +36,7 @@ import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.ClearJobHistoryTask;
 import org.dinky.job.FlinkJobTask;
+import org.dinky.job.RecheckJobTask;
 import org.dinky.resource.BaseResourceManager;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
@@ -159,6 +160,9 @@ public class SystemInit implements ApplicationRunner {
         // Init clear job history task
         DaemonTask clearJobHistoryTask = DaemonTask.build(new DaemonTaskConfig(ClearJobHistoryTask.TYPE));
         schedule.addSchedule(clearJobHistoryTask, new PeriodicTrigger(1, TimeUnit.HOURS));
+
+        DaemonTask recheckJobTask = DaemonTask.build(new DaemonTaskConfig(RecheckJobTask.TYPE));
+        schedule.addSchedule(recheckJobTask, new PeriodicTrigger(5, TimeUnit.MINUTES));
 
         // Add flink running job task to flink job thread pool
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
