@@ -28,9 +28,7 @@
     <artifactId>dinky-core</artifactId>
     <packaging>jar</packaging>
     <name>Dinky : Core</name>
-    <properties>
-        <hadoop.version>3.1.0</hadoop.version>
-    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.dinky</groupId>
