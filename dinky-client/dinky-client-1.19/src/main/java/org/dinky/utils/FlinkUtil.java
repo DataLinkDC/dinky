@@ -21,8 +21,7 @@ package org.dinky.utils;
 
 import org.apache.flink.api.common.JobID;
 import org.apache.flink.client.program.ClusterClient;
-import org.apache.flink.configuration.ConfigOption;
-import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.HighAvailabilityOptions;
 import org.apache.flink.core.execution.SavepointFormatType;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
@@ -91,8 +90,7 @@ public class FlinkUtil {
                 .toString();
     }
 
-    public static int getZookeeperSessionTimeout(
-            Configuration configuration, ConfigOption<Integer> zookeeperSessionTimeout) {
-        return Convert.toInt(configuration.get(zookeeperSessionTimeout));
+    public static int getZookeeperSessionTimeout(Configuration configuration) {
+        return Convert.toInt(configuration.get(HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT));
     }
 }

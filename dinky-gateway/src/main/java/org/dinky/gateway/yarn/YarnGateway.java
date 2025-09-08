@@ -513,8 +513,7 @@ public abstract class YarnGateway extends AbstractGateway {
                         + HighAvailabilityOptions.HA_ZOOKEEPER_QUORUM.key()
                         + "'.");
             }
-            int sessionTimeout = FlinkUtil.getZookeeperSessionTimeout(
-                    configuration, HighAvailabilityOptions.ZOOKEEPER_SESSION_TIMEOUT);
+            int sessionTimeout = FlinkUtil.getZookeeperSessionTimeout(configuration);
             String root = configuration.getValue(HighAvailabilityOptions.HA_ZOOKEEPER_ROOT);
             String namespace = configuration.getValue(HighAvailabilityOptions.HA_CLUSTER_ID);
 
