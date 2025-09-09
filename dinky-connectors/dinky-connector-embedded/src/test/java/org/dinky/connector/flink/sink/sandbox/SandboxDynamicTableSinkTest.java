@@ -54,6 +54,7 @@ public class SandboxDynamicTableSinkTest {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        env.setParallelism(1);
 
         String sourceDDL = "CREATE TABLE source_table (" + "id INT"
                 + ") WITH ("
@@ -102,6 +103,7 @@ public class SandboxDynamicTableSinkTest {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        env.setParallelism(1);
 
         String sourceDDL = "CREATE TABLE source_table_max_row (" + "id INT"
                 + ") WITH ("
@@ -150,6 +152,7 @@ public class SandboxDynamicTableSinkTest {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        env.setParallelism(1);
 
         String sourceDDL = "CREATE TABLE source_table_auto_cancel (" + "id INT"
                 + ") WITH ("
@@ -202,6 +205,7 @@ public class SandboxDynamicTableSinkTest {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        env.setParallelism(1);
 
         String sourceDDL = "CREATE TABLE source_table_change_log (" + "id INT"
                 + ") WITH ("
@@ -234,7 +238,7 @@ public class SandboxDynamicTableSinkTest {
         assertNotNull(sandboxData);
         assertEquals(5, sandboxData.size());
         String[] actualSandboxData = sandboxData.stream().map(Object::toString).toArray(String[]::new);
-        assertArrayEquals(new String[] {"[1]", "[2]", "[3]", "[4]", "[5]"}, actualSandboxData);
+        assertArrayEquals(new String[] {"[+I, 1]", "[+I, 2]", "[+I, 3]", "[+I, 4]", "[+I, 5]"}, actualSandboxData);
 
         assertNotNull(sandbox.getTableInfo(tableId));
         assertEquals(TableType.CHANGE_LOG, sandbox.getTableInfo(tableId).getTableType());
@@ -250,6 +254,7 @@ public class SandboxDynamicTableSinkTest {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        env.setParallelism(1);
 
         String sourceDDL = "CREATE TABLE source_table_combined (" + "id INT"
                 + ") WITH ("
@@ -284,6 +289,8 @@ public class SandboxDynamicTableSinkTest {
         assertNotNull(sandboxData);
         assertEquals(7, sandboxData.size());
         String[] actualSandboxData = sandboxData.stream().map(Object::toString).toArray(String[]::new);
-        assertArrayEquals(new String[] {"[1]", "[2]", "[3]", "[4]", "[5]", "[6]", "[7]"}, actualSandboxData);
+        assertArrayEquals(
+                new String[] {"[+I, 1]", "[+I, 2]", "[+I, 3]", "[+I, 4]", "[+I, 5]", "[+I, 6]", "[+I, 7]"},
+                actualSandboxData);
     }
 }
