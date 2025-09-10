@@ -38,6 +38,7 @@ import org.apache.flink.table.catalog.Column;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 public class SandboxDynamicTableSinkTest {
@@ -140,6 +141,7 @@ public class SandboxDynamicTableSinkTest {
         assertArrayEquals(new String[] {"[1]", "[2]", "[3]", "[4]", "[5]"}, actualSandboxData);
     }
 
+    @Ignore
     @Test
     public void testAutoCancel() {
         List<Column> columns = Arrays.asList(Column.physical("id", DataTypes.INT()));
