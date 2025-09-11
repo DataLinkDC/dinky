@@ -353,7 +353,7 @@ public class FlinkAPI {
                 + containerId
                 + FlinkRestAPIConstant.METRICS
                 + FlinkRestAPIConstant.GET
-                + buildMetricsParams(FlinkRestAPIConstant.JOB_MANAGER));
+                + buildMetricsParams(FlinkRestAPIConstant.TASK_MANAGER));
     }
 
     /**
@@ -406,11 +406,40 @@ public class FlinkAPI {
                 + FlinkRestAPIConstant.METRICS + "?get=" + URLEncodeUtil.encode(metrics));
     }
 
+    public JsonNode getJobVerticeMetrics(String jobId, String verticeId) {
+        JsonNode metrics = this.getJobMetricsItems(jobId, verticeId);
+        StringBuilder sb = new StringBuilder();
+        for (JsonNode node : metrics) {
+            if (Asserts.isNull(node)) {
+                continue;
+            }
+
+            final JsonNode id = node.get(ID);
+            if (Asserts.isNull(id)) {
+                continue;
+            }
+
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append(id.asText());
+        }
+        return this.getJobMetricsData(jobId, verticeId, sb.toString());
+    }
+
     /**
      * GET backpressure
      */
     public String getBackPressure(String jobId, String verticeId) {
         return getResult(FlinkRestAPIConstant.JOBS
+                + jobId
+                + FlinkRestAPIConstant.VERTICES
+                + verticeId
+                + FlinkRestAPIConstant.BACKPRESSURE);
+    }
+
+    public JsonNode getBackPressureJson(String jobId, String verticeId) {
+        return get(FlinkRestAPIConstant.JOBS
                 + jobId
                 + FlinkRestAPIConstant.VERTICES
                 + verticeId

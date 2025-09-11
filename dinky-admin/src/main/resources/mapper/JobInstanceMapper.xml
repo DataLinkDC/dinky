@@ -103,4 +103,16 @@
         from dinky_job_instance
         where id = #{id}
     </select>
+
+    <select id="listAllJobInstances" resultType="org.dinky.data.model.job.JobInstance">
+        select dji.*
+        from dinky_job_instance dji
+        join (
+            select task_id, max(create_time) as max_ct
+            from dinky_job_instance
+            group by task_id
+        ) latest
+        on dji.task_id = latest.task_id and dji.create_time = latest.max_ct
+        order by dji.id desc;
+    </select>
 </mapper>
