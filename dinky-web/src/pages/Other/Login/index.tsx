@@ -61,6 +61,10 @@ const Login: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    initSomeThing();
+  }, []);
+
   /**
    * When the token is expired, redirect to login
    */
@@ -180,8 +184,7 @@ const Login: React.FC = () => {
     await handleChooseTenant(result);
     handleTenantVisible(false);
   };
-  // 进入登录页初始化一些东西
-  initSomeThing();
+
   return (
     <div className={containerClassName}>
       <HelmetTitle />

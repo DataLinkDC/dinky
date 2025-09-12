@@ -22,6 +22,7 @@ import { ErrorMessage } from '@/utils/messages';
 import { v4 as uuidv4 } from 'uuid';
 import { TOKEN_KEY } from '@/services/constants';
 import { TOKEN_MODEL_ASYNC } from '@/pages/AuthCenter/Token/component/model';
+import { useModel } from '@umijs/max';
 
 export type WsData = {
   topic: string;
@@ -49,18 +50,34 @@ export type WsState = {
   wsUrl: string;
 };
 
-export default () => {
+export default (): {
+  subscribeTopic: (topic: Topic, params: string[], onMessage: (data: WsData) => void) => () => void;
+  reconnect: () => void;
+  wsState: WsState;
+} => {
   const subscriberRef = useRef<SubscriberData[]>([]);
   const lastPongTimeRef = useRef<number>(new Date().getTime());
+  const { initialState }: { initialState: any } = useModel('@@initialState');
 
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
   const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
   const wsUrl = `${protocol}://${window.location.hostname}:${window.location.port}/api/ws/global/${token}`;
-  const [wsState, setWsState] = useState<WsState>({ wsOnReady: true, wsUrl });
+
+  // Check if the user is logged in. Establish a WebSocket connection only when the user is in a logged in state.
+  const isLoggedIn: boolean = !!(initialState?.currentUser && token);
+  const [wsState, setWsState] = useState<WsState>({
+    wsOnReady: isLoggedIn,
+    wsUrl: isLoggedIn ? wsUrl : ''
+  });
 
   const ws = useRef<WebSocket>();
 
   const reconnect = () => {
+    // Only attempt to reconnect when in a logged - in state.
+    if (!isLoggedIn) {
+      return;
+    }
+
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       ws.current.close();
     }
@@ -76,6 +93,11 @@ export default () => {
   };
 
   const subscribe = () => {
+    // Only attempt to subscribe when you are logged in.
+    if (!isLoggedIn) {
+      return;
+    }
+
     const topics: Record<string, string[]> = {};
     subscriberRef.current.forEach((sub) => {
       if (!topics[sub.topic]) {
@@ -114,8 +136,13 @@ export default () => {
   };
 
   useEffect(() => {
+    // Only initialize the WebSocket connection when logged in.
+    if (!isLoggedIn) {
+      return;
+    }
+
     receiveMessage();
-    setInterval(() => {
+    const interval = setInterval(() => {
       if (!ws.current || ws.current.readyState != WebSocket.OPEN) {
         reconnect();
       } else {
@@ -127,16 +154,27 @@ export default () => {
         }
       }
     }, 2000);
-  }, []);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isLoggedIn]);
 
   const subscribeTopic = (topic: Topic, params: string[], onMessage: (data: WsData) => void) => {
     const sub: SubscriberData = { topic: topic, call: onMessage, params: params, key: uuidv4() };
     subscriberRef.current.push(sub);
-    subscribe();
-    return () => {
-      //组件卸载回调方法，取消订阅此topic
-      subscriberRef.current = subscriberRef.current.filter((item) => item.key !== sub.key);
+
+    // Only attempt to subscribe when in the logged in state.
+    if (isLoggedIn) {
       subscribe();
+    }
+
+    return () => {
+      // Callback method for component unmounting. Unsubscribe from this topic.
+      subscriberRef.current = subscriberRef.current.filter((item) => item.key !== sub.key);
+      if (isLoggedIn) {
+        subscribe();
+      }
     };
   };
 

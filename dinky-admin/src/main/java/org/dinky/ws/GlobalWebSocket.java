@@ -174,7 +174,10 @@ public class GlobalWebSocket {
             Map<GlobalWebSocketTopic, Set<String>> topics = requestDTO.getTopics();
             if ((topics.containsKey(topic) && topics.get(topic).contains(params))
                     || params.equals(WsMessageEventHandler.NONE_PARAMS)) {
-                tempMap.computeIfAbsent(session, k -> topics.get(topic)).add(params);
+                Set<String> stringSet = tempMap.computeIfAbsent(session, k -> topics.get(topic));
+                if (stringSet != null) {
+                    stringSet.add(params);
+                }
             }
         }));
 
