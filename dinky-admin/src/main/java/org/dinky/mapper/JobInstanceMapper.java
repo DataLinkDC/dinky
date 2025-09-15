@@ -50,9 +50,6 @@ public interface JobInstanceMapper extends SuperMapper<JobInstance> {
     List<JobInstance> listJobInstanceActive();
 
     @InterceptorIgnore(tenantLine = "true")
-    List<JobInstance> listJobInstancesToRecheck();
-
-    @InterceptorIgnore(tenantLine = "true")
     List<JobInstance> listAllJobInstances();
 
     JobInstance getJobInstanceByTaskId(Integer id);
