@@ -50,6 +50,11 @@ public class MetricController {
 
     private final PrometheusService prometheusService;
 
+    @GetMapping(value = "/prometheus", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String prometheus() {
+        return prometheusService.retrieveAllFlinkJobMetrics(null);
+    }
+
     @GetMapping(value = "/prometheus/{types}", produces = MediaType.TEXT_PLAIN_VALUE)
     public String prometheus(@PathVariable List<MetricType> types) {
         return prometheusService.retrieveAllFlinkJobMetrics(types);

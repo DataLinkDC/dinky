@@ -29,6 +29,7 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,13 +63,15 @@ public abstract class MetricService<T> {
 
     protected abstract T formatFlinkJobMetrics(List<HashMap<String, Object>> metrics);
 
+    protected abstract T mergeFlinkJobMetrics(List<T> metricGroups);
+
     public T retrieveAllFlinkJobMetrics(List<MetricType> types) {
-        if (this.metricCaches == null || this.metricCaches.isEmpty()) {
+        if (!this.isScheduleStart) {
             synchronized (this) {
                 if (!this.isScheduleStart) {
                     this.isScheduleStart = true;
                     schedule.addSchedule(
-                            "retrieve.all.flink.job.metrics",
+                            "retrieve.all.flink.status.metrics",
                             () -> this.runRetrieveAllFlinkJobMetrics(MetricType.STATUS),
                             new PeriodicTrigger(1, TimeUnit.MINUTES));
                     schedule.addSchedule(
@@ -76,18 +79,24 @@ public abstract class MetricService<T> {
                             () -> this.runRetrieveAllFlinkJobMetrics(MetricType.JOBMANAGER),
                             new PeriodicTrigger(1, TimeUnit.MINUTES));
                     schedule.addSchedule(
-                            "retrieve.all.flink.job.metrics",
+                            "retrieve.all.flink.task.metrics",
                             () -> this.runRetrieveAllFlinkJobMetrics(MetricType.TASKMANAGER),
                             new PeriodicTrigger(1, TimeUnit.MINUTES));
                     schedule.addSchedule(
-                            "retrieve.all.flink.job.metrics",
+                            "retrieve.all.flink.vertices.metrics",
                             () -> this.runRetrieveAllFlinkJobMetrics(MetricType.VERTICES),
                             new PeriodicTrigger(2, TimeUnit.MINUTES));
                 }
             }
         }
-        MetricType type = types == null || types.isEmpty() ? MetricType.STATUS : types.get(0);
-        return this.metricCaches.getOrDefault(type, null);
+        List<MetricType> _types = types == null || types.isEmpty()
+                ? Arrays.asList(MetricType.STATUS, MetricType.JOBMANAGER, MetricType.TASKMANAGER, MetricType.VERTICES)
+                : types;
+        List<T> metricGroups = this.metricCaches.entrySet().stream()
+                .filter(e -> _types.contains(e.getKey()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
+        return mergeFlinkJobMetrics(metricGroups);
     }
 
     private void runRetrieveAllFlinkJobMetrics(MetricType type) {
@@ -100,7 +109,6 @@ public abstract class MetricService<T> {
     private T runRetrieveAllFlinkJobMetricsWithJobList(List<JobInstance> jobInstances, MetricType type) {
         List<HashMap<String, Object>> metrics = new ArrayList<>();
         for (JobInstance jobInstance : jobInstances) {
-            long start = System.currentTimeMillis();
             try {
                 JobInfoDetail jobInfoDetail = jobInstanceService.getJobInfoDetail(jobInstance.getId());
                 if (type == MetricType.STATUS) {
@@ -120,9 +128,6 @@ public abstract class MetricService<T> {
                 }
             } catch (Exception e) {
                 log.error("JobInstance {} failed: {}", jobInstance.getId(), e.getMessage(), e);
-            } finally {
-                long cost = System.currentTimeMillis() - start;
-                log.info("JobInstance {} metric type {} retrieval cost {} ms", jobInstance.getName(), type, cost);
             }
         }
         return this.formatFlinkJobMetrics(metrics);

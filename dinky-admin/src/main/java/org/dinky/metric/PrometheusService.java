@@ -66,4 +66,9 @@ public class PrometheusService extends MetricService<String> {
 
         return sb.toString();
     }
+
+    @Override
+    protected String mergeFlinkJobMetrics(List<String> metricGroups) {
+        return String.join("\n", metricGroups);
+    }
 }
