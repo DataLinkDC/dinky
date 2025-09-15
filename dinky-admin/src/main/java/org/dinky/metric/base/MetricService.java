@@ -151,10 +151,11 @@ public abstract class MetricService<T> {
                     String taskManagerId = taskManager.get("id").asText();
                     JsonNode taskManagerMetrics = flinkAPI.getTaskManagerMetrics(taskManagerId);
                     for (JsonNode metric : Lists.newArrayList(taskManagerMetrics)) {
-                        HashMap<String, String> other = new HashMap<>(Map.of(
+                        HashMap<String, String> other = new HashMap<>();
+                        other.put(
                                 MetricKeys.DINKY_FLINK_TASK_MANAGER_ID,
                                 taskManagerId.substring(
-                                        jobInfoDetail.getInstance().getName().length() + 1)));
+                                        jobInfoDetail.getInstance().getName().length() + 1));
                         metricList.add(buildMetric(jobInfoDetail, metric, other));
                     }
                     return metricList.stream();
@@ -181,8 +182,8 @@ public abstract class MetricService<T> {
                     HashMap<String, List<String>> whitelist =
                             this.getWhitelistMetricsFromJobVertices(jobInfoDetail, vertice);
                     if (!whitelist.isEmpty()) {
-                        HashMap<String, String> other =
-                                new HashMap<>(Map.of(MetricKeys.DINKY_FLINK_TASK_VERTICE_ID, vertice));
+                        HashMap<String, String> other = new HashMap<>();
+                        other.put(MetricKeys.DINKY_FLINK_TASK_VERTICE_ID, vertice);
                         for (String name : whitelist.keySet()) {
                             List<JsonNode> verticeMetrics = new ArrayList<>();
                             for (List<String> metricGroup : Lists.partition(whitelist.get(name), 15)) {
@@ -306,10 +307,10 @@ public abstract class MetricService<T> {
         HashMap<String, Object> baseMetrics = this.retrieveJobInfoMetrics(jobInfoDetail);
 
         List<HashMap<String, Object>> metricList = new ArrayList<>();
-        Map<String, Object> metricsMap = Map.of(
-                MetricNames.DINKY_FLINK_TASK_BACKPRESSURE_LEVEL, backpressureLevel,
-                MetricNames.DINKY_FLINK_TASK_BACKPRESSURE_RATE_MAX, backpressureRateMax,
-                MetricNames.DINKY_FLINK_TASK_BACKPRESSURE_RATE_MIN, backpressureRateMin);
+        Map<String, Object> metricsMap = new HashMap<>();
+        metricsMap.put(MetricNames.DINKY_FLINK_TASK_BACKPRESSURE_LEVEL, backpressureLevel);
+        metricsMap.put(MetricNames.DINKY_FLINK_TASK_BACKPRESSURE_RATE_MAX, backpressureRateMax);
+        metricsMap.put(MetricNames.DINKY_FLINK_TASK_BACKPRESSURE_RATE_MIN, backpressureRateMin);
 
         metricsMap.forEach((name, value) -> {
             HashMap<String, Object> metric = new HashMap<>(baseMetrics);
