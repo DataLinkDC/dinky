@@ -19,14 +19,10 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
+import org.dinky.data.types.ColumnType;
 import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.config.IConnectConfig;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * ITypeConvert
@@ -35,10 +31,6 @@ import java.sql.SQLException;
  */
 public interface ITypeConvert<T extends IConnectConfig> {
 
-    default String convertToDB(Column column) {
-        return convertToDB(column.getJavaType());
-    }
-
     ColumnType convert(Column column);
 
     default ColumnType convert(Column column, DriverConfig<T> driverConfig) {
@@ -46,46 +38,4 @@ public interface ITypeConvert<T extends IConnectConfig> {
     }
 
     String convertToDB(ColumnType columnType);
-
-    default Object convertValue(ResultSet results, String columnName, String javaType) throws SQLException {
-        if (Asserts.isNull(javaType)) {
-            return results.getString(columnName);
-        }
-        switch (javaType.toLowerCase()) {
-            case "string":
-            case "text":
-            case "varchar":
-                return results.getString(columnName);
-            case "double":
-                return results.getDouble(columnName);
-            case "int":
-                return results.getInt(columnName);
-            case "float":
-                return results.getFloat(columnName);
-            case "bigint":
-                return results.getLong(columnName);
-            case "decimal":
-                return results.getBigDecimal(columnName);
-            case "date":
-            case "localdate":
-                return results.getDate(columnName);
-            case "time":
-            case "localtime":
-                return results.getTime(columnName);
-            case "timestamp":
-                return results.getTimestamp(columnName);
-            case "blob":
-                return results.getBlob(columnName);
-            case "boolean":
-            case "bool":
-            case "bit":
-                return results.getBoolean(columnName);
-            case "byte":
-                return results.getByte(columnName);
-            case "bytes":
-                return results.getBytes(columnName);
-            default:
-                return results.getString(columnName);
-        }
-    }
 }

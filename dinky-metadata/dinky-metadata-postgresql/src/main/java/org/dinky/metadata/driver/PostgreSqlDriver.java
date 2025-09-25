@@ -23,16 +23,13 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
-import org.dinky.metadata.config.AbstractJdbcConfig;
-import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.PostgreSqlTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.PostgreSqlQuery;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +50,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new PostgreSqlTypeConvert();
     }
 
@@ -65,11 +62,6 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
     @Override
     public String getName() {
         return "PostgreSql 数据库";
-    }
-
-    @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        return new HashMap<>();
     }
 
     @Override
@@ -155,26 +147,30 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
 
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
-
-        String where = queryData.getOption().getWhere();
-        String order = queryData.getOption().getOrder();
-        int limitStart = queryData.getOption().getLimitStart();
-        int limitEnd = queryData.getOption().getLimitEnd();
-
         StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
+                .append("select * from \"")
                 .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+                .append("\".\"")
+                .append(queryData.getTableName())
+                .append("\"");
 
-        if (where != null && !where.equals("")) {
-            optionBuilder.append(" where ").append(where);
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            optionBuilder
+                    .append(" offset ")
+                    .append(limitStart)
+                    .append(" limit ")
+                    .append(limitEnd);
         }
-        if (order != null && !order.equals("")) {
-            optionBuilder.append(" order by ").append(order);
-        }
-        optionBuilder.append(" offset ").append(limitStart).append(" limit ").append(limitEnd);
-
         return optionBuilder;
     }
 

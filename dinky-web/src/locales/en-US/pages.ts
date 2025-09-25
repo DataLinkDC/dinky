@@ -1025,7 +1025,7 @@ export default {
   'rc.ds.groupName': 'Group Type',
   'rc.ds.groupNamePlaceholder': 'Please select a group type!',
   'rc.ds.isNull': 'Not Null',
-  'rc.ds.javaType': 'Java Type',
+  'rc.ds.dataType': 'Data Type',
   'rc.ds.length': 'Length',
   'rc.ds.management': 'DataSource Management',
   'rc.ds.modify': 'Modify DataSource',

@@ -22,20 +22,18 @@ package org.dinky.metadata.driver;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
-import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.data.types.DataTypes;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -51,21 +49,21 @@ class AbstractDriverTest {
                 Column.builder()
                         .name("column1")
                         .type("int")
-                        .javaType(ColumnType.INT)
+                        .dataType(DataTypes.INT.toColumnType(false, 10))
                         .comment("comment abc")
                         .keyFlag(true)
                         .build(),
                 Column.builder()
                         .name("column2")
                         .type("varchar")
-                        .javaType(ColumnType.STRING)
+                        .dataType(DataTypes.STRING.toColumnType(false, 50))
                         .comment("comment 'abc'")
                         .keyFlag(true)
                         .build(),
                 Column.builder()
                         .name("column3")
                         .type("double")
-                        .javaType(ColumnType.DOUBLE)
+                        .dataType(DataTypes.DOUBLE.toColumnType(true, 10))
                         .comment("comment \"abc\"")
                         .build());
 
@@ -73,19 +71,19 @@ class AbstractDriverTest {
                 Column.builder()
                         .name("column1")
                         .type("int")
-                        .javaType(ColumnType.INT)
+                        .dataType(DataTypes.INT.toColumnType(true, 10))
                         .comment("comment abc")
                         .build(),
                 Column.builder()
                         .name("column2")
                         .type("varchar")
-                        .javaType(ColumnType.STRING)
+                        .dataType(DataTypes.STRING.toColumnType(true, 50))
                         .comment("comment 'abc'")
                         .build(),
                 Column.builder()
                         .name("column3")
                         .type("double")
-                        .javaType(ColumnType.DOUBLE)
+                        .dataType(DataTypes.DOUBLE.toColumnType(true, 10))
                         .comment("comment \"abc\"")
                         .build());
 
@@ -104,7 +102,7 @@ class AbstractDriverTest {
                         + " FROM SchemaOrigin.TableNameOrigin;\n"));
     }
 
-    private static class SubAbstractDriver extends AbstractDriver<AbstractJdbcConfig> {
+    private static class SubAbstractDriver extends AbstractDriver {
         @Override
         public IDBQuery getDBQuery() {
             return null;
@@ -189,11 +187,6 @@ class AbstractDriverTest {
         }
 
         @Override
-        public boolean generateCreateTable(Table table) throws Exception {
-            return false;
-        }
-
-        @Override
         public boolean dropTable(Table table) throws Exception {
             return false;
         }
@@ -215,11 +208,6 @@ class AbstractDriverTest {
 
         @Override
         public String getTruncateTableSql(Table table) {
-            return null;
-        }
-
-        @Override
-        public String generateCreateTableSql(Table table) {
             return null;
         }
 
@@ -250,11 +238,6 @@ class AbstractDriverTest {
 
         @Override
         public List<SqlExplainResult> explain(String sql) {
-            return null;
-        }
-
-        @Override
-        public Map<String, String> getFlinkColumnTypeConversion() {
             return null;
         }
 

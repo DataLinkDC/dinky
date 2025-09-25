@@ -19,7 +19,6 @@
 
 package org.dinky.utils;
 
-import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Schema;
@@ -124,10 +123,7 @@ public class FlinkTableMetadataUtil {
                             column.setScale(((DecimalType) logicalType).getScale());
                         }
 
-                        String dataTypeName =
-                                flinkColumn.getDataType().getConversionClass().getName();
-                        ColumnType columnType = ColumnType.getByJavaType(dataTypeName);
-                        column.setJavaType(columnType);
+                        column.buildDataType();
                         columns.add(column);
                     }
                 });

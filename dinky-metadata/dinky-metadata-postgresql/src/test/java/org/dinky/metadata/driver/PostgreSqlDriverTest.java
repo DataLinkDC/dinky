@@ -21,9 +21,9 @@ package org.dinky.metadata.driver;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Table;
+import org.dinky.data.types.DataTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ class PostgreSqlDriverTest {
         columns.add(Column.builder()
                 .name("id")
                 .type("BIGINT")
-                .javaType(ColumnType.LONG)
+                .dataType(DataTypes.BIGINT.toColumnType(false, 10))
                 .keyFlag(true)
                 .comment("用户id")
                 .build());
@@ -49,41 +49,41 @@ class PostgreSqlDriverTest {
                 .name("username")
                 .type("VARCHAR")
                 .length(255)
-                .javaType(ColumnType.STRING)
+                .dataType(DataTypes.STRING.toColumnType(true, 50))
                 .comment("用户名")
                 .build());
         columns.add(Column.builder()
                 .name("password")
                 .type("VARCHAR")
                 .length(255)
-                .javaType(ColumnType.STRING)
+                .dataType(DataTypes.STRING.toColumnType(true, 50))
                 .comment("密码")
                 .build());
         columns.add(Column.builder()
                 .name("email")
                 .type("VARCHAR")
                 .length(255)
-                .javaType(ColumnType.STRING)
+                .dataType(DataTypes.STRING.toColumnType(true, 50))
                 .comment("邮箱")
                 .build());
         columns.add(Column.builder()
                 .name("phone")
                 .type("VARCHAR")
                 .length(20)
-                .javaType(ColumnType.STRING)
+                .dataType(DataTypes.STRING.toColumnType(true, 50))
                 .comment("电话号码")
                 .build());
         columns.add(Column.builder()
                 .name("age")
                 .type("INT")
-                .javaType(ColumnType.INTEGER)
+                .dataType(DataTypes.INT.toColumnType(true, 10))
                 .isNullable(true)
                 .comment("年龄")
                 .build());
         columns.add(Column.builder()
                 .name("gender")
                 .type("BOOLEAN")
-                .javaType(ColumnType.BOOLEAN)
+                .dataType(DataTypes.BOOLEAN.toColumnType(true, 1))
                 .isNullable(true)
                 .comment("性别")
                 .build());
@@ -92,21 +92,21 @@ class PostgreSqlDriverTest {
                 .type("DECIMAL")
                 .precision(5)
                 .scale(2)
-                .javaType(ColumnType.DECIMAL)
+                .dataType(DataTypes.DECIMAL.toColumnType(true, 7, 5, 2))
                 .isNullable(true)
                 .comment("身高")
                 .build());
         columns.add(Column.builder()
                 .name("birthday")
                 .type("DATE")
-                .javaType(ColumnType.LOCAL_DATE)
+                .dataType(DataTypes.DATE.toColumnType(true, 50))
                 .isNullable(true)
                 .comment("生日")
                 .build());
         columns.add(Column.builder()
                 .name("register_time")
                 .type("TIMESTAMP")
-                .javaType(ColumnType.LOCAL_DATETIME)
+                .dataType(DataTypes.TIMESTAMP.toColumnType(true, 50))
                 .comment("注册时间")
                 .build());
 

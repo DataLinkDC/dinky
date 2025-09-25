@@ -271,13 +271,22 @@ declare namespace DataSources {
     autoIncrement: boolean;
     defaultValue: string;
     nullable: string;
-    javaType: string;
+    dataType: DataType;
     columnFamily: string;
     position: number;
     precision: number;
     scale: number;
     characterSet: string;
     collation: string;
+  };
+
+  export type DataType = {
+    value: string;
+    logicalType: {
+      children: [];
+      nullable: boolean;
+      typeRoot: string;
+    };
   };
 
   /**

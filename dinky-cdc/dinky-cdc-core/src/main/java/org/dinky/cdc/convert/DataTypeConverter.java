@@ -61,24 +61,18 @@ public class DataTypeConverter {
     public static final long MILLIS_PER_DAY = 86400000L; // = 24 * 60 * 60 * 1000
 
     public static LogicalType getLogicalType(Column column) {
-        switch (column.getJavaType()) {
+        switch (column.getDataType().getValue()) {
             case BOOLEAN:
-            case JAVA_LANG_BOOLEAN:
                 return new BooleanType();
-            case BYTE:
-            case JAVA_LANG_BYTE:
+            case TINYINT:
                 return new TinyIntType();
-            case SHORT:
-            case JAVA_LANG_SHORT:
+            case SMALLINT:
                 return new SmallIntType();
-            case LONG:
-            case JAVA_LANG_LONG:
+            case BIGINT:
                 return new BigIntType();
             case FLOAT:
-            case JAVA_LANG_FLOAT:
                 return new FloatType();
             case DOUBLE:
-            case JAVA_LANG_DOUBLE:
                 return new DoubleType();
             case DECIMAL:
                 if (column.getPrecision() == null || column.getPrecision() == 0) {
@@ -87,19 +81,15 @@ public class DataTypeConverter {
                     return new DecimalType(column.getPrecision(), column.getScale());
                 }
             case INT:
-            case INTEGER:
                 return new IntType();
             case TIME:
-            case LOCALTIME:
                 return new TimeType(
                         column.isNullable(),
                         column.getLength() == 0
                                 ? (column.getPrecision() == null ? 0 : column.getPrecision())
                                 : column.getLength());
             case DATE:
-            case LOCAL_DATE:
                 return new DateType();
-            case LOCAL_DATETIME:
             case TIMESTAMP:
                 if (Asserts.isNotNull(column.getLength())) {
                     return new TimestampType(column.getLength());

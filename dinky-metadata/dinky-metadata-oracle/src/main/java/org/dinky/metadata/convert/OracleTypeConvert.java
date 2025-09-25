@@ -19,70 +19,77 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.data.enums.ColumnType;
+import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
-import org.dinky.metadata.config.DriverConfig;
+import org.dinky.data.types.ColumnType;
+import org.dinky.data.types.DataTypes;
+import org.dinky.data.types.LogicalTypeParam;
 
-import java.util.Optional;
-
-/**
- * OracleTypeConvert
- *
- * @since 2021/7/21 16:00
- */
 public class OracleTypeConvert extends AbstractJdbcTypeConvert {
 
-    public OracleTypeConvert() {
-        this.convertMap.clear();
-        register("char", ColumnType.STRING);
-        register("date", ColumnType.LOCAL_DATETIME);
-        register("timestamp", ColumnType.TIMESTAMP);
-        register("time", ColumnType.TIME);
-        register("number", OracleTypeConvert::convertNumber);
-        register("float", ColumnType.JAVA_LANG_FLOAT);
-        register("clob", ColumnType.STRING);
-        register("blob", ColumnType.BYTES);
-    }
+    public OracleTypeConvert() {}
 
-    private static Optional<ColumnType> convertNumber(Column column, DriverConfig driverConfig) {
+    @Override
+    public ColumnType convert(Column column) {
+        if (Asserts.isNull(column)) {
+            throw new RuntimeException("Column is null");
+        }
+        int length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
+        String type = Asserts.isNull(column.getType()) ? "" : column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        String t = column.getType().toLowerCase();
-
-        if (t.matches("number\\(+\\d\\)")) {
-            if (isNullable) {
-                return Optional.of(ColumnType.INTEGER);
-            }
-            return Optional.of(ColumnType.INT);
+        final LogicalTypeParam logicalTypeParam =
+                LogicalTypeParam.of(isNullable, length, column.getPrecision(), column.getScale());
+        if (type.matches("number\\(+\\d\\)")) {
+            return ColumnType.of(DataTypes.INT, DataTypes.INT.copyLogicalType(logicalTypeParam));
+        } else if (type.matches("number\\(+\\d{2}+\\)")) {
+            return ColumnType.of(DataTypes.DECIMAL, DataTypes.DECIMAL.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("numeric") || type.contains("decimal")) {
+            return ColumnType.of(DataTypes.DECIMAL, DataTypes.DECIMAL.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("float")) {
+            return ColumnType.of(DataTypes.FLOAT, DataTypes.FLOAT.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("timestamp")) {
+            return ColumnType.of(DataTypes.TIMESTAMP, DataTypes.TIMESTAMP.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("date")) {
+            return ColumnType.of(DataTypes.DATE, DataTypes.DATE.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("varchar")) {
+            return ColumnType.of(DataTypes.VARCHAR, DataTypes.VARCHAR.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("char")) {
+            return ColumnType.of(DataTypes.CHAR, DataTypes.CHAR.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("blob")) {
+            return ColumnType.of(DataTypes.BYTES, DataTypes.BYTES.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("int")) {
+            return ColumnType.of(DataTypes.INT, DataTypes.INT.copyLogicalType(logicalTypeParam));
         }
-        if (t.matches("number\\(+\\d{2}+\\)")) {
-            if (isNullable) {
-                return Optional.of(ColumnType.JAVA_LANG_LONG);
-            }
-            return Optional.of(ColumnType.LONG);
-        }
-        return Optional.of(ColumnType.DECIMAL);
+        // clob
+        return ColumnType.of(DataTypes.STRING, DataTypes.STRING.copyLogicalType(logicalTypeParam));
     }
 
     @Override
     public String convertToDB(ColumnType columnType) {
-        switch (columnType) {
-            case STRING:
-                return "varchar";
+        if (columnType == null) {
+            return "varchar";
+        }
+        switch (columnType.getValue()) {
+            case DECIMAL:
+                return "decimal";
+            case FLOAT:
+                return "float";
+            case DOUBLE:
+                return "number";
+            case BOOLEAN:
+                return "boolean";
+            case TIMESTAMP:
+                return "datetime";
             case DATE:
                 return "date";
-            case TIMESTAMP:
-                return "timestamp";
-            case INTEGER:
-            case INT:
-            case LONG:
-            case JAVA_LANG_LONG:
-            case DECIMAL:
-                return "number";
-            case FLOAT:
-            case JAVA_LANG_FLOAT:
-                return "float";
+            case CHAR:
+                return "char";
             case BYTES:
                 return "blob";
+            case INT:
+                return "int";
+            case STRING:
+            case VARCHAR:
             default:
                 return "varchar";
         }

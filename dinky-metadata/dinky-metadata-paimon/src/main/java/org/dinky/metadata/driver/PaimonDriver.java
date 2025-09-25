@@ -22,8 +22,8 @@ package org.dinky.metadata.driver;
 import static org.dinky.metadata.convert.SqlToPaimonPredicateConverter.convertSqlWhereToPaimonPredicate;
 import static org.dinky.metadata.convert.SqlToPaimonPredicateConverter.convertToPlainSelect;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
-import org.dinky.data.enums.ColumnType;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
@@ -57,7 +57,6 @@ import org.apache.paimon.utils.CloseableIterator;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -241,13 +240,13 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
                 Column column = new Column();
                 column.setName(field.name());
                 column.setType(field.type().toString());
+                column.setNullable(field.type().isNullable());
                 column.setComment(field.description());
                 // TODO: 使用CovertType
-                column.setJavaType(ColumnType.STRING);
+                column.setDataType(getTypeConvert().convert(column));
                 column.setKeyFlag(primaryKeys.contains(field.name()));
                 //
                 // column.setPartaionKey(partitionKeys.contains(field.name()));
-                column.setNullable(field.type().isNullable());
                 columns.add(column);
             }
             tableBuilder
@@ -280,11 +279,6 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     }
 
     @Override
-    public boolean generateCreateTable(Table table) throws Exception {
-        return false;
-    }
-
-    @Override
     public boolean dropTable(Table table) throws Exception {
         Identifier identifier = Identifier.create(table.getSchema(), table.getName());
         catalog.dropTable(identifier, true);
@@ -312,11 +306,6 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
     }
 
     @Override
-    public String generateCreateTableSql(Table table) {
-        return null;
-    }
-
-    @Override
     public boolean execute(String sql) throws Exception {
         return false;
     }
@@ -333,7 +322,26 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
 
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
-        return null;
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
+        }
+        return optionBuilder;
     }
 
     @Override
@@ -343,11 +351,6 @@ public class PaimonDriver extends AbstractDriver<PaimonConfig> {
 
     @Override
     public List<SqlExplainResult> explain(String sql) {
-        return null;
-    }
-
-    @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
         return null;
     }
 

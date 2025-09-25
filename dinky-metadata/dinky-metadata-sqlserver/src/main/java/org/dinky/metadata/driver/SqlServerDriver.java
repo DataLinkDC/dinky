@@ -23,18 +23,15 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
-import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.SqlServerConstant;
-import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.SqlServerTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.SqlServerQuery;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SqlServerDriver extends AbstractJdbcDriver {
 
@@ -44,7 +41,7 @@ public class SqlServerDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new SqlServerTypeConvert();
     }
 
@@ -63,26 +60,35 @@ public class SqlServerDriver extends AbstractJdbcDriver {
         return "SqlServer数据库";
     }
 
-    /** sql拼接，目前还未实现limit方法 */
+    /** SQL Server sql拼接，支持TOP实现limit功能 */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
+        StringBuilder optionBuilder = new StringBuilder().append("select ");
+        // SQL Server使用TOP实现limit功能
+        if (Asserts.isNotNull(queryData.getOption())) {
+            int limitEnd = queryData.getOption().getLimitEnd();
+            if (limitEnd > 0) {
+                optionBuilder.append("top ").append(limitEnd).append(" ");
+            }
+        }
 
-        String where = queryData.getOption().getWhere();
-        String order = queryData.getOption().getOrder();
-
-        StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
+        optionBuilder
+                .append("* from [")
                 .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+                .append("].[")
+                .append(queryData.getTableName())
+                .append("]");
 
-        if (where != null && !"".equals(where)) {
-            optionBuilder.append(" where ").append(where);
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
         }
-        if (order != null && !"".equals(order)) {
-            optionBuilder.append(" order by ").append(order);
-        }
-
         return optionBuilder;
     }
 
@@ -130,7 +136,8 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             if (i > 0) {
                 sb.append(",\n");
             }
-            sb.append("[" + columns.get(i).getName() + "]" + getTypeConvert().convertToDB(columns.get(i)));
+            sb.append("[" + columns.get(i).getName() + "]"
+                    + getTypeConvert().convertToDB(columns.get(i).getDataType()));
             if (columns.get(i).isNullable()) {
                 sb.append(" NULL");
             } else {
@@ -167,10 +174,5 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        return new HashMap<>();
     }
 }
