@@ -19,7 +19,9 @@
 
 package org.dinky.data.model;
 
-import org.dinky.data.enums.ColumnType;
+import org.dinky.data.types.ColumnType;
+import org.dinky.data.types.DataTypes;
+import org.dinky.data.types.LogicalTypeParam;
 
 import java.io.Serializable;
 
@@ -51,7 +53,7 @@ public class Column implements Serializable {
     private boolean autoIncrement;
     private String defaultValue;
     private boolean isNullable;
-    private ColumnType javaType;
+    private ColumnType dataType;
     private String columnFamily;
     private Integer position;
     private Integer length;
@@ -60,17 +62,10 @@ public class Column implements Serializable {
     private String characterSet;
     private String collation;
 
-    public String getFlinkType() {
-        String flinkType = javaType.getFlinkType();
-        if (!flinkType.equals("DECIMAL")) {
-            return flinkType;
-        }
-
-        Integer defaultPrecision = precision;
-        if (precision == null || precision == 0) {
-            defaultPrecision = 38;
-        }
-
-        return String.format("%s(%d,%d)", flinkType, defaultPrecision, scale);
+    public ColumnType buildDataType() {
+        final LogicalTypeParam logicalTypeParam = LogicalTypeParam.of(isNullable, length, precision, scale);
+        final DataTypes dataTypes = DataTypes.of(type);
+        dataType = ColumnType.of(dataTypes, dataTypes.copyLogicalType(logicalTypeParam));
+        return dataType;
     }
 }

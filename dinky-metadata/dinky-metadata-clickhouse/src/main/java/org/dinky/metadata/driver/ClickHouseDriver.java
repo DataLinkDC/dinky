@@ -21,12 +21,13 @@ package org.dinky.metadata.driver;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
+import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
+import org.dinky.data.types.DataTypes;
 import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
-import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.ClickHouseTypeConvert;
-import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.enums.ClickHouseDataTypeEnum;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.parser.Clickhouse20StatementParser;
@@ -39,9 +40,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,7 +73,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new ClickHouseTypeConvert();
     }
 
@@ -126,7 +125,9 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 preparedStatement = conn.get().prepareStatement("explain " + current);
                 results = preparedStatement.executeQuery();
                 while (results.next()) {
-                    explain.append(getTypeConvert().convertValue(results, "explain", "string") + "\r\n");
+                    explain.append(
+                            getTypeConvert().convertValue(results, "explain", DataTypes.STRING.toColumnType(true))
+                                    + "\r\n");
                 }
                 sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
             }
@@ -172,8 +173,26 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        return new HashMap<>();
+    public StringBuilder genQueryOption(QueryData queryData) {
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
+        }
+        return optionBuilder;
     }
 
     @Override
@@ -226,7 +245,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                 if (Objects.nonNull(precision)) {
                     field.setPrecision(precision);
                 }
-                field.setJavaType(getTypeConvert().convert(field));
+                field.setDataType(getTypeConvert().convert(field));
                 columns.add(field);
             }
         } catch (SQLException e) {

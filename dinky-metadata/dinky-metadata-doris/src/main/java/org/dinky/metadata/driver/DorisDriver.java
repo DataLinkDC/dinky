@@ -21,10 +21,10 @@ package org.dinky.metadata.driver;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
+import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
-import org.dinky.metadata.config.AbstractJdbcConfig;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.DorisTypeConvert;
-import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.source.MysqlType;
 import org.dinky.metadata.convert.source.OracleType;
 import org.dinky.metadata.convert.source.PostgresType;
@@ -38,9 +38,7 @@ import org.dinky.utils.SqlUtil;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.text.CharSequenceUtil;
@@ -55,7 +53,7 @@ public class DorisDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new DorisTypeConvert();
     }
 
@@ -121,26 +119,6 @@ public class DorisDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("BOOLEAN", "BOOLEAN");
-        map.put("TINYINT", "TINYINT");
-        map.put("SMALLINT", "SMALLINT");
-        map.put("INT", "INT");
-        map.put("VARCHAR", "STRING");
-        map.put("TEXT", "STRING");
-        map.put("DATETIME", "TIMESTAMP");
-        return map;
-    }
-
-    @Override
-    public String generateCreateTableSql(Table table) {
-        String genTableSql = genTable(table);
-        log.info("Auto generateCreateTableSql {}", genTableSql);
-        return genTableSql;
-    }
-
-    @Override
     public String getCreateTableSql(Table table) {
         return genTable(table);
     }
@@ -161,12 +139,20 @@ public class DorisDriver extends AbstractJdbcDriver {
                 : columnKeys.stream().collect(Collectors.joining(",", "\n UNIQUE KEY (", ")"));
 
         // 默认开启 BUCKETS AUTO
-        String distributeKeyStr = columnKeys.isEmpty()
-                ? ""
-                : columnKeys.stream().collect(Collectors.joining(",", "\n DISTRIBUTED BY HASH (", ") BUCKETS AUTO"));
+        String distributeKeyStr = "";
+        if (Asserts.isNullString(table.getOptions())
+                || (Asserts.isNotNullString(table.getOptions())
+                        && !table.getOptions().toUpperCase().contains("DISTRIBUTED"))) {
+            distributeKeyStr = columnKeys.isEmpty()
+                    ? ""
+                    : columnKeys.stream()
+                            .collect(Collectors.joining(",", "\n DISTRIBUTED BY HASH (", ") BUCKETS AUTO"));
+        }
 
         // 默认开启light_schema_change
-        String propertiesStr = "\n PROPERTIES ( \"light_schema_change\" = \"true\" )";
+        String propertiesStr = Asserts.isNullString(table.getOptions())
+                ? "\n PROPERTIES ( \"light_schema_change\" = \"true\" )"
+                : "\n " + table.getOptions();
 
         String commentStr =
                 Asserts.isNullString(table.getComment()) ? "" : String.format("\n COMMENT \"%s\"", table.getComment());
@@ -192,7 +178,7 @@ public class DorisDriver extends AbstractJdbcDriver {
                 columnType = MysqlType.toDorisType(column.getType(), length, scale);
                 break;
             case DORIS:
-                columnType = new DorisTypeConvert().convertToDB(column);
+                columnType = new DorisTypeConvert().convertToDB(column.getDataType());
                 break;
             case ORACLE:
                 columnType = OracleType.toDorisType(column.getType(), length, scale);
@@ -232,5 +218,30 @@ public class DorisDriver extends AbstractJdbcDriver {
             return "''";
         }
         return "'" + defaultValue + "'";
+    }
+
+    @Override
+    public StringBuilder genQueryOption(QueryData queryData) {
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from `")
+                .append(queryData.getSchemaName())
+                .append("`.`")
+                .append(queryData.getTableName())
+                .append("`");
+
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
+        }
+        return optionBuilder;
     }
 }

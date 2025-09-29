@@ -119,8 +119,8 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       ellipsis: true
     },
     {
-      title: l('rc.ds.javaType'),
-      dataIndex: 'javaType',
+      title: l('rc.ds.dataType'),
+      dataIndex: ['dataType', 'value'],
       ellipsis: true,
       width: '8%'
     },

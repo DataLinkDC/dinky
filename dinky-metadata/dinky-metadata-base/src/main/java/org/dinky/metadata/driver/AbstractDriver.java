@@ -53,6 +53,8 @@ public abstract class AbstractDriver<T extends IConnectConfig> implements Driver
         return query(queryOption.toString(), null);
     }
 
+    public abstract StringBuilder genQueryOption(QueryData queryData);
+
     public boolean canHandle(String type) {
         return Asserts.isEqualsIgnoreCase(getType(), type);
     }
@@ -64,13 +66,6 @@ public abstract class AbstractDriver<T extends IConnectConfig> implements Driver
     public List<Schema> getSchemasAndTables() {
         return listSchemas().stream()
                 .peek(schema -> schema.setTables(listTables(schema.getName())))
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    public List<Table> getTablesAndColumns(String schema) {
-        return listTables(schema).stream()
-                .peek(table -> table.setColumns(listColumns(schema, table.getName())))
                 .sorted()
                 .collect(Collectors.toList());
     }
@@ -127,5 +122,10 @@ public abstract class AbstractDriver<T extends IConnectConfig> implements Driver
     @Override
     public List<Map<String, String>> getSplitSchemaList() {
         throw new RuntimeException("该数据源暂不支持分库分表");
+    }
+
+    @Override
+    public long count(String schemaName, String tableName) {
+        return 0;
     }
 }

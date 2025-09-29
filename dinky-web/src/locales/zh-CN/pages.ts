@@ -946,7 +946,7 @@ export default {
   'rc.ds.groupName': '分组类型',
   'rc.ds.groupNamePlaceholder': '请选择分组类型!',
   'rc.ds.isNull': '非空',
-  'rc.ds.javaType': 'Java 类型',
+  'rc.ds.dataType': 'Data 类型',
   'rc.ds.length': '长度',
   'rc.ds.management': '数据源管理',
   'rc.ds.modify': '修改数据源',

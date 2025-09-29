@@ -19,59 +19,103 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.data.enums.ColumnType;
+import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
-import org.dinky.metadata.config.AbstractJdbcConfig;
-import org.dinky.metadata.config.DriverConfig;
+import org.dinky.data.types.ColumnType;
+import org.dinky.data.types.DataTypes;
+import org.dinky.data.types.LogicalTypeParam;
 
-import java.util.Optional;
-
-/**
- * PostgreSqlTypeConvert
- *
- * @since 2021/7/22 9:33
- */
 public class PostgreSqlTypeConvert extends AbstractJdbcTypeConvert {
 
-    public PostgreSqlTypeConvert() {
-        this.convertMap.clear();
-        register("smallint", ColumnType.INT, ColumnType.INTEGER);
-        register("int2", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
-        register("smallserial", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
-        register("serial2", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
-        register("integer", ColumnType.INT, ColumnType.INTEGER);
-        register("int4", ColumnType.INT, ColumnType.INTEGER);
-        register("serial", ColumnType.INT, ColumnType.INTEGER);
-        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
-        register("int8", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
-        register("bigserial", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
-        register("real", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
-        register("float4", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
-        register("float8", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
-        register("double precision", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
-        register("numeric", PostgreSqlTypeConvert::convertDecimalOrNumeric);
-        register("decimal", PostgreSqlTypeConvert::convertDecimalOrNumeric);
-        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
-        register("bool", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
-        register("timestamp", ColumnType.TIMESTAMP);
-        register("date", ColumnType.DATE);
-        register("time", ColumnType.TIME);
-        register("char", ColumnType.STRING);
-        register("text", ColumnType.STRING);
-        register("bytea", ColumnType.BYTES);
-        register("jsonb", ColumnType.STRING);
-        register("json", ColumnType.STRING);
+    public PostgreSqlTypeConvert() {}
+
+    @Override
+    public ColumnType convert(Column column) {
+        if (Asserts.isNull(column)) {
+            throw new RuntimeException("Column is null");
+        }
+        int length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
+        String type = Asserts.isNull(column.getType()) ? "" : column.getType().toLowerCase();
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
+        final LogicalTypeParam logicalTypeParam =
+                LogicalTypeParam.of(isNullable, length, column.getPrecision(), column.getScale());
+        if (type.contains("numeric") || type.contains("decimal")) {
+            int intValue = column.getPrecision().intValue();
+            if (intValue > 38) {
+                return ColumnType.of(DataTypes.STRING, DataTypes.STRING.copyLogicalType(logicalTypeParam));
+            }
+            return ColumnType.of(DataTypes.DECIMAL, DataTypes.DECIMAL.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("bigint") || type.contains("int8") || type.contains("bigserial")) {
+            return ColumnType.of(DataTypes.BIGINT, DataTypes.BIGINT.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("float4") || type.contains("real")) {
+            return ColumnType.of(DataTypes.FLOAT, DataTypes.FLOAT.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("double") || type.contains("float8")) {
+            return ColumnType.of(DataTypes.DOUBLE, DataTypes.DOUBLE.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("bool") || type.contains("bit")) {
+            return ColumnType.of(DataTypes.BOOLEAN, DataTypes.BOOLEAN.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("datetime") || type.contains("timestamp")) {
+            return ColumnType.of(DataTypes.TIMESTAMP, DataTypes.TIMESTAMP.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("date")) {
+            return ColumnType.of(DataTypes.DATE, DataTypes.DATE.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("time")) {
+            return ColumnType.of(DataTypes.TIME, DataTypes.TIME.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("varchar")) {
+            return ColumnType.of(DataTypes.VARCHAR, DataTypes.VARCHAR.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("char")) {
+            return ColumnType.of(DataTypes.CHAR, DataTypes.CHAR.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("bytea")) {
+            return ColumnType.of(DataTypes.BYTES, DataTypes.BYTES.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("tinyint")) {
+            return ColumnType.of(DataTypes.TINYINT, DataTypes.TINYINT.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("int2")
+                || type.contains("smallserial")
+                || type.contains("serial2")
+                || type.contains("smallint")) {
+            return ColumnType.of(DataTypes.SMALLINT, DataTypes.SMALLINT.copyLogicalType(logicalTypeParam));
+        } else if (type.contains("serial") || type.contains("int")) {
+            return ColumnType.of(DataTypes.INT, DataTypes.INT.copyLogicalType(logicalTypeParam));
+        }
+        // text, json, jsonb
+        return ColumnType.of(DataTypes.STRING, DataTypes.STRING.copyLogicalType(logicalTypeParam));
     }
 
-    private static Optional<ColumnType> convertDecimalOrNumeric(
-            Column column, DriverConfig<AbstractJdbcConfig> driverConfig) {
-        if (column.getPrecision() == null) {
-            return Optional.of(ColumnType.DECIMAL);
+    @Override
+    public String convertToDB(ColumnType columnType) {
+        if (columnType == null) {
+            return "varchar";
         }
-        int intValue = column.getPrecision().intValue();
-        if (intValue > 38) {
-            return Optional.of(ColumnType.STRING);
+        switch (columnType.getValue()) {
+            case DECIMAL:
+                return "decimal";
+            case BIGINT:
+                return "bigint";
+            case FLOAT:
+                return "float4";
+            case DOUBLE:
+                return "double";
+            case BOOLEAN:
+                return "boolean";
+            case TIMESTAMP:
+                return "datetime";
+            case DATE:
+                return "date";
+            case TIME:
+                return "time";
+            case VARCHAR:
+                return "varchar";
+            case CHAR:
+                return "char";
+            case BYTES:
+                return "bytea";
+            case TINYINT:
+                return "tinyint";
+            case SMALLINT:
+                return "smallint";
+            case INT:
+                return "int";
+            case STRING:
+            default:
+                return "text";
         }
-        return Optional.of(ColumnType.DECIMAL);
     }
 }

@@ -19,8 +19,9 @@
 
 package org.dinky.metadata.driver;
 
-import org.dinky.metadata.config.AbstractJdbcConfig;
-import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.assertion.Asserts;
+import org.dinky.data.model.QueryData;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.StarRocksTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
@@ -30,9 +31,7 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StarRocksDriver extends AbstractJdbcDriver {
 
@@ -42,7 +41,7 @@ public class StarRocksDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new StarRocksTypeConvert();
     }
 
@@ -98,15 +97,27 @@ public class StarRocksDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("BOOLEAN", "BOOLEAN");
-        map.put("TINYINT", "TINYINT");
-        map.put("SMALLINT", "SMALLINT");
-        map.put("INT", "INT");
-        map.put("VARCHAR", "STRING");
-        map.put("TEXT", "STRING");
-        map.put("DATETIME", "TIMESTAMP");
-        return map;
+    public StringBuilder genQueryOption(QueryData queryData) {
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from `")
+                .append(queryData.getSchemaName())
+                .append("`.`")
+                .append(queryData.getTableName())
+                .append("`");
+
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
+        }
+        return optionBuilder;
     }
 }

@@ -246,7 +246,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
 
     void checkAndCreateSinkTable(Driver driver, Table table) throws Exception {
         if (null != driver && !driver.existTable(table)) {
-            driver.generateCreateTable(table);
+            driver.createTable(table);
         }
     }
 }

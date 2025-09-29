@@ -23,16 +23,13 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
-import org.dinky.metadata.config.AbstractJdbcConfig;
-import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.OracleTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.OracleQuery;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -61,7 +58,7 @@ public class OracleDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new OracleTypeConvert();
     }
 
@@ -75,30 +72,42 @@ public class OracleDriver extends AbstractJdbcDriver {
         return "Oracle数据库";
     }
 
-    /** oracel sql拼接，目前还未实现limit方法 */
+    /** Oracle sql拼接，支持ROWNUM实现limit功能 */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
-
-        String where = queryData.getOption().getWhere();
-        String order = queryData.getOption().getOrder();
-
         StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append("\"")
+                .append("select * from \"")
                 .append(queryData.getSchemaName())
-                .append("\"")
-                .append(".")
-                .append("\"")
+                .append("\".\"")
                 .append(queryData.getTableName())
                 .append("\"");
 
-        if (where != null && !"".equals(where)) {
-            optionBuilder.append(" where ").append(where);
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            if (limitStart > 0) {
+                // Oracle分页需要使用子查询
+                StringBuilder paginatedQuery = new StringBuilder()
+                        .append("select * from (")
+                        .append("select rownum rn, t.* from (")
+                        .append(optionBuilder)
+                        .append(") t where rownum <= ")
+                        .append(limitStart + limitEnd)
+                        .append(") where rn > ")
+                        .append(limitStart);
+                return paginatedQuery;
+            } else {
+                optionBuilder.append(" and ROWNUM <= ").append(limitEnd);
+            }
         }
-        if (order != null && !"".equals(order)) {
-            optionBuilder.append(" order by ").append(order);
-        }
-
         return optionBuilder;
     }
 
@@ -147,7 +156,8 @@ public class OracleDriver extends AbstractJdbcDriver {
             if (i > 0) {
                 sb.append(",\n");
             }
-            sb.append("\"" + columns.get(i).getName() + "\" " + getTypeConvert().convertToDB(columns.get(i)));
+            sb.append("\"" + columns.get(i).getName() + "\" "
+                    + getTypeConvert().convertToDB(columns.get(i).getDataType()));
             if (columns.get(i).isNullable()) {
                 sb.append(" NOT NULL");
             }
@@ -176,10 +186,5 @@ public class OracleDriver extends AbstractJdbcDriver {
                     + "';\n");
         }
         return sb.toString();
-    }
-
-    @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        return new HashMap<>();
     }
 }

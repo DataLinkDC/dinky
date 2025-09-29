@@ -23,17 +23,14 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Table;
-import org.dinky.metadata.config.AbstractJdbcConfig;
-import org.dinky.metadata.convert.ITypeConvert;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.MySqlTypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.MySqlQuery;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.NumberUtil;
@@ -54,7 +51,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new MySqlTypeConvert();
     }
 
@@ -71,23 +68,6 @@ public class MySqlDriver extends AbstractJdbcDriver {
     @Override
     public String getDriverClass() {
         return "com.mysql.cj.jdbc.Driver";
-    }
-
-    @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("VARCHAR", "STRING");
-        map.put("TEXT", "STRING");
-        map.put("INT", "INT");
-        map.put("DATETIME", "TIMESTAMP");
-        return map;
-    }
-
-    @Override
-    public String generateCreateTableSql(Table table) {
-        String genTableSql = genTable(table);
-        log.info("Auto generateCreateTableSql {}", genTableSql);
-        return genTableSql;
     }
 
     @Override
@@ -159,30 +139,33 @@ public class MySqlDriver extends AbstractJdbcDriver {
                 table.getName(),
                 columnStrs,
                 primaryKeyStr,
-                table.getEngine(),
+                Asserts.isNotNullString(table.getEngine()) ? table.getEngine() : "InnoDB",
                 Asserts.isNotNullString(table.getOptions()) ? String.format(" %s", table.getOptions()) : "",
                 Asserts.isNotNullString(table.getComment()) ? String.format(" COMMENT='%s'", table.getComment()) : "");
     }
 
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
-
-        String where = queryData.getOption().getWhere();
-        String order = queryData.getOption().getOrder();
-        int limitStart = queryData.getOption().getLimitStart();
-        int limitEnd = queryData.getOption().getLimitEnd();
-
         StringBuilder optionBuilder = new StringBuilder()
-                .append(String.format("select * from `%s`.`%s`", queryData.getSchemaName(), queryData.getTableName()));
+                .append("select * from `")
+                .append(queryData.getSchemaName())
+                .append("`.`")
+                .append(queryData.getTableName())
+                .append("`");
 
-        if (where != null && !where.isEmpty()) {
-            optionBuilder.append(" where ").append(where);
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
         }
-        if (order != null && !order.isEmpty()) {
-            optionBuilder.append(" order by ").append(order);
-        }
-        optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
-
         return optionBuilder;
     }
 

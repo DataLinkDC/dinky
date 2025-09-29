@@ -29,6 +29,7 @@ import org.dinky.data.model.Table;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.config.DriverConfig;
+import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.utils.JsonUtils;
@@ -43,11 +44,6 @@ import java.util.stream.Stream;
 
 import cn.hutool.core.text.StrFormatter;
 
-/**
- * Driver
- *
- * @since 2021/7/19 23:15
- */
 public interface Driver extends AutoCloseable {
 
     static Optional<Driver> get(String type) {
@@ -170,6 +166,8 @@ public interface Driver extends AutoCloseable {
     @Override
     void close();
 
+    ITypeConvert getTypeConvert();
+
     List<Schema> listSchemas();
 
     boolean existSchema(String schemaName);
@@ -188,15 +186,11 @@ public interface Driver extends AutoCloseable {
 
     List<Schema> getSchemasAndTables();
 
-    List<Table> getTablesAndColumns(String schemaName);
-
     Table getTable(String schemaName, String tableName);
 
     boolean existTable(Table table);
 
     boolean createTable(Table table) throws Exception;
-
-    boolean generateCreateTable(Table table) throws Exception;
 
     boolean dropTable(Table table) throws Exception;
 
@@ -210,18 +204,6 @@ public interface Driver extends AutoCloseable {
 
     String getTruncateTableSql(Table table);
 
-    String generateCreateTableSql(Table table);
-
-    /*
-     * boolean insert(Table table, JsonNode data);
-     *
-     * boolean update(Table table, JsonNode data);
-     *
-     * boolean delete(Table table, JsonNode data);
-     *
-     * SelectResult select(String sql);
-     */
-
     boolean execute(String sql) throws Exception;
 
     int executeUpdate(String sql) throws Exception;
@@ -230,13 +212,11 @@ public interface Driver extends AutoCloseable {
 
     JdbcSelectResult query(QueryData queryData);
 
-    StringBuilder genQueryOption(QueryData queryData);
+    long count(String schemaName, String tableName);
 
     JdbcSelectResult executeSql(String sql, Integer limit);
 
     List<SqlExplainResult> explain(String sql);
-
-    Map<String, String> getFlinkColumnTypeConversion();
 
     /**
      * 得到分割表

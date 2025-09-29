@@ -80,7 +80,8 @@ public class FlinkStatementUtil {
         sb.append("` (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < table.getColumns().size(); i++) {
-            String type = table.getColumns().get(i).getFlinkType();
+            String type =
+                    table.getColumns().get(i).getDataType().getLogicalType().asSummaryString();
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");

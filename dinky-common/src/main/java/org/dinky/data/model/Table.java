@@ -128,7 +128,11 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                         comment = String.format(
                                 " COMMENT '%s'", column.getComment().replaceAll("[\"']", ""));
                     }
-                    return String.format("    `%s` %s%s", column.getName(), column.getFlinkType(), comment);
+                    return String.format(
+                            "    `%s` %s %s",
+                            column.getName(),
+                            column.getDataType().getLogicalType().asSummaryString(),
+                            comment);
                 })
                 .collect(Collectors.joining(",\n"));
 

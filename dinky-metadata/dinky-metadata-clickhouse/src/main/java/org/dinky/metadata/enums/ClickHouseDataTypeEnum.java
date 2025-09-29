@@ -19,7 +19,7 @@
 
 package org.dinky.metadata.enums;
 
-import org.dinky.data.enums.ColumnType;
+import org.dinky.data.types.DataTypes;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -47,30 +47,30 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ClickHouseDataTypeEnum {
-    Nullable("Nullable", Boolean.TRUE, 0, null, null),
+    Nullable("Nullable", Boolean.TRUE, 0, null),
 
-    Array("Array", Boolean.TRUE, 0, ColumnType.T, ColumnType.T),
-    Map("Map", Boolean.TRUE, 0, ColumnType.MAP, ColumnType.MAP),
+    Array("Array", Boolean.TRUE, 0, DataTypes.ARRAY),
+    Map("Map", Boolean.TRUE, 0, DataTypes.MAP),
 
-    UInt8("UInt8", Boolean.FALSE, 0, ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT),
-    UInt16("UInt16", Boolean.FALSE, 0, ColumnType.INT, ColumnType.INTEGER),
-    UInt32("UInt32", Boolean.FALSE, 0, ColumnType.LONG, ColumnType.JAVA_LANG_LONG),
-    UInt64("UInt64", Boolean.FALSE, 0, ColumnType.BIG_INTEGER, ColumnType.BIG_INTEGER),
-    UInt128("UInt128", Boolean.FALSE, 0, ColumnType.BIG_INTEGER, ColumnType.BIG_INTEGER),
-    UInt256("UInt256", Boolean.FALSE, 0, ColumnType.BIG_INTEGER, ColumnType.BIG_INTEGER),
+    UInt8("UInt8", Boolean.FALSE, 0, DataTypes.TINYINT),
+    UInt16("UInt16", Boolean.FALSE, 0, DataTypes.SMALLINT),
+    UInt32("UInt32", Boolean.FALSE, 0, DataTypes.INT),
+    UInt64("UInt64", Boolean.FALSE, 0, DataTypes.BIGINT),
+    UInt128("UInt128", Boolean.FALSE, 0, DataTypes.DECIMAL),
+    UInt256("UInt256", Boolean.FALSE, 0, DataTypes.DECIMAL),
 
-    Int8("Int8", Boolean.FALSE, 0, ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE),
-    Int16("Int16", Boolean.FALSE, 0, ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT),
-    Int32("Int32", Boolean.FALSE, 0, ColumnType.INT, ColumnType.INTEGER),
-    Int64("Int64", Boolean.FALSE, 0, ColumnType.LONG, ColumnType.JAVA_LANG_LONG),
-    Int128("Int128", Boolean.FALSE, 0, ColumnType.BIG_INTEGER, ColumnType.BIG_INTEGER),
-    Int256("Int256", Boolean.FALSE, 0, ColumnType.BIG_INTEGER, ColumnType.BIG_INTEGER),
+    Int8("Int8", Boolean.FALSE, 0, DataTypes.TINYINT),
+    Int16("Int16", Boolean.FALSE, 0, DataTypes.SMALLINT),
+    Int32("Int32", Boolean.FALSE, 0, DataTypes.INT),
+    Int64("Int64", Boolean.FALSE, 0, DataTypes.BIGINT),
+    Int128("Int128", Boolean.FALSE, 0, DataTypes.DECIMAL),
+    Int256("Int256", Boolean.FALSE, 0, DataTypes.DECIMAL),
 
-    Float32("Float32", Boolean.FALSE, 0, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT),
-    Float64("Float64", Boolean.FALSE, 0, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE),
+    Float32("Float32", Boolean.FALSE, 0, DataTypes.FLOAT),
+    Float64("Float64", Boolean.FALSE, 0, DataTypes.DOUBLE),
 
-    String("String", Boolean.FALSE, 0, ColumnType.STRING, ColumnType.STRING),
-    FixedString("FixedString", Boolean.TRUE, 0, ColumnType.STRING, ColumnType.STRING) {
+    String("String", Boolean.FALSE, 0, DataTypes.STRING),
+    FixedString("FixedString", Boolean.TRUE, 0, DataTypes.STRING) {
         @Override
         public Integer getLength(String dataType) {
             // FixedString(N)
@@ -85,14 +85,14 @@ public enum ClickHouseDataTypeEnum {
         }
     },
 
-    Bool("Bool", Boolean.FALSE, 0, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN),
+    Bool("Bool", Boolean.FALSE, 0, DataTypes.BOOLEAN),
 
-    Date("Date", Boolean.FALSE, 0, ColumnType.LOCAL_DATE, ColumnType.LOCAL_DATE),
-    Date32("Date32", Boolean.FALSE, 0, ColumnType.LOCAL_DATE, ColumnType.LOCAL_DATE),
-    DateTime("DateTime", Boolean.TRUE, 0, ColumnType.LOCAL_DATETIME, ColumnType.LOCAL_DATETIME),
-    DateTime64("DateTime64", Boolean.TRUE, 1, ColumnType.LOCAL_DATETIME, ColumnType.LOCAL_DATETIME),
+    Date("Date", Boolean.FALSE, 0, DataTypes.DATE),
+    Date32("Date32", Boolean.FALSE, 0, DataTypes.DATE),
+    DateTime("DateTime", Boolean.TRUE, 0, DataTypes.TIMESTAMP),
+    DateTime64("DateTime64", Boolean.TRUE, 1, DataTypes.TIMESTAMP),
 
-    Decimal("Decimal", Boolean.TRUE, 0, ColumnType.DECIMAL, ColumnType.DECIMAL) {
+    Decimal("Decimal", Boolean.TRUE, 0, DataTypes.DECIMAL) {
         @Override
         public Integer getScale(String dataType) {
             // Decimal Decimal(P) Decimal(P, S)
@@ -132,7 +132,7 @@ public enum ClickHouseDataTypeEnum {
             return Integer.parseInt(pStr);
         }
     },
-    Decimal32("Decimal32", Boolean.TRUE, 1, ColumnType.DECIMAL, ColumnType.DECIMAL) {
+    Decimal32("Decimal32", Boolean.TRUE, 1, DataTypes.DECIMAL) {
         @Override
         public Integer getScale(String dataType) {
             // Decimal32(S)
@@ -155,7 +155,7 @@ public enum ClickHouseDataTypeEnum {
             return 9 - scale;
         }
     },
-    Decimal64("Decimal64", Boolean.TRUE, 2, ColumnType.DECIMAL, ColumnType.DECIMAL) {
+    Decimal64("Decimal64", Boolean.TRUE, 2, DataTypes.DECIMAL) {
         @Override
         public Integer getScale(String dataType) {
             // Decimal64(S)
@@ -178,7 +178,7 @@ public enum ClickHouseDataTypeEnum {
             return 18 - scale;
         }
     },
-    Decimal128("Decimal128", Boolean.TRUE, 3, ColumnType.DECIMAL, ColumnType.DECIMAL) {
+    Decimal128("Decimal128", Boolean.TRUE, 3, DataTypes.DECIMAL) {
         @Override
         public Integer getScale(String dataType) {
             // Decimal128(S)
@@ -201,7 +201,7 @@ public enum ClickHouseDataTypeEnum {
             return 38 - scale;
         }
     },
-    Decimal256("Decimal256", Boolean.TRUE, 4, ColumnType.DECIMAL, ColumnType.DECIMAL) {
+    Decimal256("Decimal256", Boolean.TRUE, 4, DataTypes.DECIMAL) {
         @Override
         public Integer getScale(String dataType) {
             // Decimal256(S)
@@ -225,11 +225,11 @@ public enum ClickHouseDataTypeEnum {
         }
     },
 
-    UUID("UUID", Boolean.FALSE, 0, ColumnType.STRING, ColumnType.STRING),
+    UUID("UUID", Boolean.FALSE, 0, DataTypes.STRING),
     // Enum Enum8 Enum16 -> String
-    Enum("Enum", Boolean.TRUE, 0, ColumnType.STRING, ColumnType.STRING),
+    Enum("Enum", Boolean.TRUE, 0, DataTypes.STRING),
     // Tuple -> Json String
-    Tuple("Tuple", Boolean.TRUE, 0, ColumnType.STRING, ColumnType.STRING);
+    Tuple("Tuple", Boolean.TRUE, 0, DataTypes.STRING);
 
     private final String name;
 
@@ -241,9 +241,7 @@ public enum ClickHouseDataTypeEnum {
      */
     private final Integer matchPriority;
 
-    private final ColumnType columnType;
-
-    private final ColumnType nullColumnType;
+    private final DataTypes columnType;
 
     /**
      * cache data type map

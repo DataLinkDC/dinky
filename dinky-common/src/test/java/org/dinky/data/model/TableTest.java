@@ -22,7 +22,7 @@ package org.dinky.data.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.dinky.data.enums.ColumnType;
+import org.dinky.data.types.DataTypes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,21 +43,21 @@ class TableTest {
                 Column.builder()
                         .name("column1")
                         .type("int")
-                        .javaType(ColumnType.INT)
+                        .dataType(DataTypes.INT.toColumnType(false, 10))
                         .comment("comment abc")
                         .keyFlag(true)
                         .build(),
                 Column.builder()
                         .name("column2")
                         .type("varchar")
-                        .javaType(ColumnType.STRING)
+                        .dataType(DataTypes.STRING.toColumnType(false, 50))
                         .comment("comment 'abc'")
                         .keyFlag(true)
                         .build(),
                 Column.builder()
                         .name("column3")
                         .type("double")
-                        .javaType(ColumnType.DOUBLE)
+                        .dataType(DataTypes.DOUBLE.toColumnType(true, 10))
                         .comment("comment \"abc\"")
                         .build());
 
@@ -65,19 +65,19 @@ class TableTest {
                 Column.builder()
                         .name("column1")
                         .type("int")
-                        .javaType(ColumnType.INT)
+                        .dataType(DataTypes.INT.toColumnType(true, 10))
                         .comment("comment abc")
                         .build(),
                 Column.builder()
                         .name("column2")
                         .type("varchar")
-                        .javaType(ColumnType.STRING)
+                        .dataType(DataTypes.STRING.toColumnType(true, 50))
                         .comment("comment 'abc'")
                         .build(),
                 Column.builder()
                         .name("column3")
                         .type("double")
-                        .javaType(ColumnType.DOUBLE)
+                        .dataType(DataTypes.DOUBLE.toColumnType(true, 10))
                         .comment("comment \"abc\"")
                         .build());
 
@@ -93,23 +93,21 @@ class TableTest {
         assertThat(
                 result,
                 equalTo("CREATE TABLE IF NOT EXISTS NewTableName (\n"
-                        + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
-                        + "    `column2` STRING COMMENT 'comment abc',\n"
-                        + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
+                        + "    `column1` INT NOT NULL  COMMENT 'comment abc',\n"
+                        + "    `column2` VARCHAR(50) NOT NULL  COMMENT 'comment abc',\n"
+                        + "    `column3` DOUBLE  COMMENT 'comment abc',\n"
                         + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
                         + ") WITH (\n"
-                        + "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc,"
-                        + " #{}=null, bcd=bcd)\n"));
+                        + "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc, #{}=null, bcd=bcd)\n"));
 
         result = tableWithoutKey.getFlinkDDL(flinkConfig, "NewTableNameWithoutKey");
         assertThat(
                 result,
                 equalTo("CREATE TABLE IF NOT EXISTS NewTableNameWithoutKey (\n"
-                        + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
-                        + "    `column2` STRING COMMENT 'comment abc',\n"
-                        + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc') WITH (\n"
-                        + "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc,"
-                        + " #{}=null, bcd=bcd)\n"));
+                        + "    `column1` INT  COMMENT 'comment abc',\n"
+                        + "    `column2` VARCHAR(50)  COMMENT 'comment abc',\n"
+                        + "    `column3` DOUBLE  COMMENT 'comment abc') WITH (\n"
+                        + "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc, #{}=null, bcd=bcd)\n"));
     }
 
     @Test
@@ -125,14 +123,12 @@ class TableTest {
         String result = table.getFlinkTableSql("CatalogName", flinkConfig);
         assertThat(
                 result,
-                equalTo("DROP TABLE IF EXISTS TableNameOrigin;\n"
-                        + "CREATE TABLE IF NOT EXISTS TableNameOrigin (\n"
-                        + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
-                        + "    `column2` STRING COMMENT 'comment abc',\n"
-                        + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
+                equalTo("DROP TABLE IF EXISTS TableNameOrigin;\n" + "CREATE TABLE IF NOT EXISTS TableNameOrigin (\n"
+                        + "    `column1` INT NOT NULL  COMMENT 'comment abc',\n"
+                        + "    `column2` VARCHAR(50) NOT NULL  COMMENT 'comment abc',\n"
+                        + "    `column3` DOUBLE  COMMENT 'comment abc',\n"
                         + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
                         + ") WITH (\n"
-                        + "SchemaOrigin=schemaName, TableNameOrigin=tableName, #{abc}=abc,"
-                        + " #{}=null, bcd=bcd)\n"));
+                        + "SchemaOrigin=schemaName, TableNameOrigin=tableName, #{abc}=abc, #{}=null, bcd=bcd)\n"));
     }
 }

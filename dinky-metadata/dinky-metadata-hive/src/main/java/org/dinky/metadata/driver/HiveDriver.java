@@ -21,12 +21,12 @@ package org.dinky.metadata.driver;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
+import org.dinky.data.model.QueryData;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
-import org.dinky.metadata.config.AbstractJdbcConfig;
 import org.dinky.metadata.constant.HiveConstant;
+import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.convert.HiveTypeConvert;
-import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.enums.DriverType;
 import org.dinky.metadata.query.HiveQuery;
 import org.dinky.metadata.query.IDBQuery;
@@ -41,10 +41,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class HiveDriver extends AbstractJdbcDriver implements Driver {
 
@@ -177,7 +175,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
                         field.setComment(columnComment);
                     }
                     field.setPosition(positionId++);
-                    field.setJavaType(getTypeConvert().convert(field));
+                    field.setDataType(getTypeConvert().convert(field));
                 }
                 columns.add(field);
             }
@@ -243,15 +241,15 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
                 close(preparedStatement, results);
                 return result;
             }
+            final AbstractJdbcTypeConvert typeConvert = getTypeConvert();
             ResultSetMetaData metaData = results.getMetaData();
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 columnNameList.add(metaData.getColumnLabel(i));
                 Column column = new Column();
                 column.setName(metaData.getColumnLabel(i));
                 column.setType(metaData.getColumnTypeName(i));
-                column.setAutoIncrement(metaData.isAutoIncrement(i));
-                column.setNullable(metaData.isNullable(i) == 0 ? false : true);
-                column.setJavaType(getTypeConvert().convert(column));
+                column.setNullable(metaData.isNullable(i) != ResultSetMetaData.columnNoNulls);
+                column.setDataType(typeConvert.convert(column));
                 columns.add(column);
             }
             result.setColumns(columnNameList);
@@ -260,11 +258,10 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
                 for (int i = 0; i < columns.size(); i++) {
                     data.put(
                             columns.get(i).getName(),
-                            getTypeConvert()
-                                    .convertValue(
-                                            results,
-                                            columns.get(i).getName(),
-                                            columns.get(i).getType()));
+                            typeConvert.convertValue(
+                                    results,
+                                    columns.get(i).getName(),
+                                    columns.get(i).getDataType()));
                 }
                 datas.add(data);
                 count++;
@@ -289,7 +286,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
     }
 
     @Override
-    public ITypeConvert<AbstractJdbcConfig> getTypeConvert() {
+    public AbstractJdbcTypeConvert getTypeConvert() {
         return new HiveTypeConvert();
     }
 
@@ -309,15 +306,26 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
     }
 
     @Override
-    public Map<String, String> getFlinkColumnTypeConversion() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("BOOLEAN", "BOOLEAN");
-        map.put("TINYINT", "TINYINT");
-        map.put("SMALLINT", "SMALLINT");
-        map.put("INT", "INT");
-        map.put("VARCHAR", "STRING");
-        map.put("TEXT", "STRING");
-        map.put("DATETIME", "TIMESTAMP");
-        return map;
+    public StringBuilder genQueryOption(QueryData queryData) {
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
+
+        if (Asserts.isNotNull(queryData.getOption())) {
+            String where = queryData.getOption().getWhere();
+            if (Asserts.isNotNullString(where)) {
+                optionBuilder.append(" where ").append(where);
+            }
+            String order = queryData.getOption().getOrder();
+            if (Asserts.isNotNullString(order)) {
+                optionBuilder.append(" order by ").append(order);
+            }
+            int limitStart = queryData.getOption().getLimitStart();
+            int limitEnd = queryData.getOption().getLimitEnd();
+            optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
+        }
+        return optionBuilder;
     }
 }
