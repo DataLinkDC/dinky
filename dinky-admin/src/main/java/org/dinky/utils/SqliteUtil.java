@@ -65,14 +65,10 @@ public enum SqliteUtil {
     }
 
     public void executeSql(String sql) throws SQLException {
-//     修复异常：  Failed to recyle database:database in auto-commit mode
-//        Statement pstmt = connection.createStatement();
-//        pstmt.executeUpdate(sql);
-//        connection.commit();
         try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(sql);
             if (!connection.getAutoCommit()) {
-                connection.commit(); // 在自动提交模式下不调用 commit()
+                connection.commit(); // Not called in auto-commit mode commit()
             }
         }
     }
