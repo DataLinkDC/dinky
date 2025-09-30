@@ -19,8 +19,10 @@
 
 package org.dinky.cdc.sql;
 
+import org.apache.flink.table.api.Schema;
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.Column;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 
@@ -32,6 +34,7 @@ import org.apache.flink.types.Row;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -49,7 +52,12 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         String viewName = replaceViewNameMiddleLineToUnderLine("VIEW_" + table.getSchemaTableNameWithUnderline());
 
         customTableEnvironment.createTemporaryView(
-                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
+                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream, Schema.newBuilder()
+                        .primaryKey(table.getColumns().stream()
+                                .filter(Column::isKeyFlag)
+                                .map(Column::getName)
+                                .collect(Collectors.toList()))
+                        .build()));
         logger.info("Create {} temporaryView successful...", viewName);
         return viewName;
     }
