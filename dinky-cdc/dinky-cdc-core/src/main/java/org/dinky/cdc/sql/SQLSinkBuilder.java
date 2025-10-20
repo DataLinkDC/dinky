@@ -62,7 +62,6 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         final String sinkTableName = getSinkTableName(table);
         final FlinkTableObjectIdentifier sinkTable = FlinkTableObjectIdentifier.of(sinkTableName);
 
-
         // Multiple sinks and single sink
         if (CollectionUtils.isEmpty(config.getSinks())) {
             addSinkInsert(table, viewName, sinkTable, sinkSchemaName, sinkTable);
@@ -80,10 +79,13 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     }
 
     private List<Operation> addSinkInsert(
-            Table table, FlinkTableObjectIdentifier sourceTable, FlinkTableObjectIdentifier targetTable, String sinkSchemaName, FlinkTableObjectIdentifier sinkTable) {
+            Table table,
+            FlinkTableObjectIdentifier sourceTable,
+            FlinkTableObjectIdentifier targetTable,
+            String sinkSchemaName,
+            FlinkTableObjectIdentifier sinkTable) {
         String pkList = StringUtils.join(getPKList(table), ".");
-        String flinkDDL =
-                FlinkStatementUtil.getFlinkDDL(table, targetTable, config, sinkSchemaName, sinkTable, pkList);
+        String flinkDDL = FlinkStatementUtil.getFlinkDDL(table, targetTable, config, sinkSchemaName, sinkTable, pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
         logger.info("Create {} FlinkSQL DDL successful...", targetTable);

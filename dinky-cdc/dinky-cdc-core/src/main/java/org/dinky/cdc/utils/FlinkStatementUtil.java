@@ -19,7 +19,6 @@
 
 package org.dinky.cdc.utils;
 
-import org.apache.flink.table.catalog.ObjectIdentifier;
 import org.dinky.data.flink.table.FlinkTableObjectIdentifier;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.FlinkCDCConfig;
@@ -36,7 +35,11 @@ public class FlinkStatementUtil {
 
     private FlinkStatementUtil() {}
 
-    public static String getCDCInsertSql(Table table, FlinkTableObjectIdentifier targetTable, FlinkTableObjectIdentifier sourceTable, FlinkCDCConfig config) {
+    public static String getCDCInsertSql(
+            Table table,
+            FlinkTableObjectIdentifier targetTable,
+            FlinkTableObjectIdentifier sourceTable,
+            FlinkCDCConfig config) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
         sb.append(targetTable.toTablePath());
         sb.append(" SELECT\n");

@@ -19,7 +19,6 @@
 
 package org.dinky.cdc.sql;
 
-import cn.hutool.core.util.StrUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractSinkBuilder;
 import org.dinky.cdc.convert.DataTypeConverter;
@@ -48,7 +47,6 @@ import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
-import org.dinky.utils.StringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,6 +54,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import cn.hutool.core.util.StrUtil;
 
 public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
@@ -230,7 +230,8 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
         return viewName;
     }
 
-    protected List<Operation> createInsertOperations(Table table, FlinkTableObjectIdentifier sourceTable, FlinkTableObjectIdentifier targetTable) {
+    protected List<Operation> createInsertOperations(
+            Table table, FlinkTableObjectIdentifier sourceTable, FlinkTableObjectIdentifier targetTable) {
         String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, targetTable, sourceTable, config);
         logger.info(cdcSqlInsert);
 

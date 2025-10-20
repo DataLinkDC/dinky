@@ -54,7 +54,10 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                 viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
 
-        createInsertOperations(table, FlinkTableObjectIdentifier.of(viewName), FlinkTableObjectIdentifier.of(catalogName,sinkSchemaName,tableName));
+        createInsertOperations(
+                table,
+                FlinkTableObjectIdentifier.of(viewName),
+                FlinkTableObjectIdentifier.of(catalogName, sinkSchemaName, tableName));
     }
 
     @Override
