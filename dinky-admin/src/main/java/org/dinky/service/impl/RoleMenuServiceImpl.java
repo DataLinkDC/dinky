@@ -38,36 +38,28 @@ import cn.hutool.core.collection.CollUtil;
 @Service
 public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMenu> implements RoleMenuService {
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> assignMenuToRole(AssignMenuToRoleDTO assignMenuToRoleDto) {
 
         if (CollUtil.isEmpty(assignMenuToRoleDto.getMenuIds())) {
             return Result.failed(Status.SELECT_MENU);
         }
-
-        int insertSize = 0;
         // 先删除原有的关系
-        List<RoleMenu> roleMenus = getBaseMapper()
-                .selectList(
-                        new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, assignMenuToRoleDto.getRoleId()));
-
-        // if not empty , delete all role menus
-        if (CollUtil.isNotEmpty(roleMenus)) {
-            roleMenus.forEach(rm -> {
-                getBaseMapper().delete(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getMenuId, rm.getMenuId()));
-            });
-        }
-
-        // then insert new role menus
-        for (Integer id : assignMenuToRoleDto.getMenuIds()) {
-            RoleMenu roleMenu = new RoleMenu();
-            roleMenu.setRoleId(assignMenuToRoleDto.getRoleId());
-            roleMenu.setMenuId(id);
-            insertSize += getBaseMapper().insert(roleMenu);
-        }
-
-        if (assignMenuToRoleDto.getMenuIds().size() == insertSize) {
+        getBaseMapper()
+                .delete(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, assignMenuToRoleDto.getRoleId()));
+        List<RoleMenu> newRoles = assignMenuToRoleDto.getMenuIds().stream()
+                .map(menuId -> {
+                    RoleMenu roleMenu = new RoleMenu();
+                    roleMenu.setRoleId(assignMenuToRoleDto.getRoleId());
+                    roleMenu.setMenuId(menuId);
+                    return roleMenu;
+                })
+                .collect(Collectors.toList());
+        boolean res = saveBatch(newRoles);
+        if (res) {
             return Result.succeed(Status.ASSIGN_MENU_SUCCESS);
+        } else {
+            return Result.failed(Status.ASSIGN_MENU_FAILED);
         }
-        return Result.failed(Status.ASSIGN_MENU_FAILED);
     }
 }
