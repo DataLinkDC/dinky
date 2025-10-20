@@ -21,6 +21,7 @@ package org.dinky.cdc.sql;
 
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.flink.table.FlinkTableObjectIdentifier;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 
@@ -44,47 +45,49 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         super(config);
     }
 
-    private String addSourceTableView(DataStream<Row> rowDataDataStream, Table table) {
+    private FlinkTableObjectIdentifier addSourceTableView(DataStream<Row> rowDataDataStream, Table table) {
         // Because the name of the view on Flink is not allowed to have -, it needs to be replaced with - here_
         String viewName = replaceViewNameMiddleLineToUnderLine("VIEW_" + table.getSchemaTableNameWithUnderline());
 
         customTableEnvironment.createTemporaryView(
                 viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
-        return viewName;
+        return FlinkTableObjectIdentifier.of(viewName);
     }
 
     @Override
     protected void addTableSink(DataStream<Row> rowDataDataStream, Table table) {
-        final String viewName = addSourceTableView(rowDataDataStream, table);
+        final FlinkTableObjectIdentifier viewName = addSourceTableView(rowDataDataStream, table);
         final String sinkSchemaName = getSinkSchemaName(table);
         final String sinkTableName = getSinkTableName(table);
+        final FlinkTableObjectIdentifier sinkTable = FlinkTableObjectIdentifier.of(sinkTableName);
+
 
         // Multiple sinks and single sink
         if (CollectionUtils.isEmpty(config.getSinks())) {
-            addSinkInsert(table, viewName, sinkTableName, sinkSchemaName, sinkTableName);
+            addSinkInsert(table, viewName, sinkTable, sinkSchemaName, sinkTable);
         } else {
             for (int index = 0; index < config.getSinks().size(); index++) {
-                String tableName = sinkTableName;
+                FlinkTableObjectIdentifier newSinkTable = sinkTable;
                 if (config.getSinks().size() != 1) {
-                    tableName = sinkTableName + "_" + index;
+                    newSinkTable = FlinkTableObjectIdentifier.of(sinkTable + "_" + index);
                 }
 
                 config.setSink(config.getSinks().get(index));
-                addSinkInsert(table, viewName, tableName, sinkSchemaName, sinkTableName);
+                addSinkInsert(table, viewName, newSinkTable, sinkSchemaName, sinkTable);
             }
         }
     }
 
     private List<Operation> addSinkInsert(
-            Table table, String viewName, String tableName, String sinkSchemaName, String sinkTableName) {
+            Table table, FlinkTableObjectIdentifier sourceTable, FlinkTableObjectIdentifier targetTable, String sinkSchemaName, FlinkTableObjectIdentifier sinkTable) {
         String pkList = StringUtils.join(getPKList(table), ".");
         String flinkDDL =
-                FlinkStatementUtil.getFlinkDDL(table, tableName, config, sinkSchemaName, sinkTableName, pkList);
+                FlinkStatementUtil.getFlinkDDL(table, targetTable, config, sinkSchemaName, sinkTable, pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
-        logger.info("Create {} FlinkSQL DDL successful...", tableName);
-        return createInsertOperations(table, viewName, tableName);
+        logger.info("Create {} FlinkSQL DDL successful...", targetTable);
+        return createInsertOperations(table, sourceTable, targetTable);
     }
 
     @Override

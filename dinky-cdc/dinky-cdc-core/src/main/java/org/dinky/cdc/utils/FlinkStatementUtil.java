@@ -19,6 +19,8 @@
 
 package org.dinky.cdc.utils;
 
+import org.apache.flink.table.catalog.ObjectIdentifier;
+import org.dinky.data.flink.table.FlinkTableObjectIdentifier;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
@@ -34,9 +36,9 @@ public class FlinkStatementUtil {
 
     private FlinkStatementUtil() {}
 
-    public static String getCDCInsertSql(Table table, String targetName, String sourceName, FlinkCDCConfig config) {
+    public static String getCDCInsertSql(Table table, FlinkTableObjectIdentifier targetTable, FlinkTableObjectIdentifier sourceTable, FlinkCDCConfig config) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(targetName);
+        sb.append(targetTable.toTablePath());
         sb.append(" SELECT\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             sb.append("    ");
@@ -45,9 +47,8 @@ public class FlinkStatementUtil {
             }
             sb.append(getColumnProcessing(table.getColumns().get(i), config)).append(" \n");
         }
-        sb.append(" FROM `");
-        sb.append(sourceName);
-        sb.append("`");
+        sb.append(" FROM ");
+        sb.append(sourceTable.toTablePath());
         return sb.toString();
     }
 
@@ -65,19 +66,19 @@ public class FlinkStatementUtil {
 
     public static String getFlinkDDL(
             Table table,
-            String tableName,
+            FlinkTableObjectIdentifier flinkTable,
             FlinkCDCConfig config,
             String sinkSchemaName,
-            String sinkTableName,
+            FlinkTableObjectIdentifier sinkTableName,
             String pkList) {
         StringBuilder sb = new StringBuilder();
         if (Integer.parseInt(EnvironmentInformation.getVersion().split("\\.")[1]) < 13) {
-            sb.append("CREATE TABLE  `");
+            sb.append("CREATE TABLE  ");
         } else {
-            sb.append("CREATE TABLE IF NOT EXISTS `");
+            sb.append("CREATE TABLE IF NOT EXISTS ");
         }
-        sb.append(tableName);
-        sb.append("` (\n");
+        sb.append(flinkTable.toTablePath());
+        sb.append(" (\n");
         List<String> pks = new ArrayList<>();
         for (int i = 0; i < table.getColumns().size(); i++) {
             String type = table.getColumns().get(i).getFlinkType();
@@ -109,7 +110,7 @@ public class FlinkStatementUtil {
             sb.append(pksb);
         }
         sb.append(") WITH (\n");
-        sb.append(getSinkConfigurationString(config, sinkSchemaName, sinkTableName, pkList));
+        sb.append(getSinkConfigurationString(config, sinkSchemaName, sinkTableName.getObjectName(), pkList));
         sb.append(")\n");
         return sb.toString();
     }
