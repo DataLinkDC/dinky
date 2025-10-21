@@ -11,9 +11,9 @@ if [ -z "$DINKY_HOME_PARAMS" ]; then
 fi
 
 while true; do
-  read -e -p "Please select a database type (1.MySQL 2.PostgresSQL)：" db_type
+  read -e -p "Please select a database type (1.MySQL 2.PostgresSQL): " db_type
   while [ -z "$db_type" ]; do
-     read -e -p "Please select a database type (1.MySQL 2.PostgresSQL)：" db_type
+     read -e -p "Please select a database type (1.MySQL 2.PostgresSQL): " db_type
   done
   read -e -p "Please enter the database address (hostname or IP, default localhost): " -i "localhost" db_host
   read -p "Please enter the database port : " db_port
@@ -39,7 +39,7 @@ while true; do
     1)
       echo -e "${YELLOW}Configuring MySQL database related information...${RESET}"
       config_file="${DINKY_HOME_PARAMS}/config/application-mysql.yml"
-      echo -e "${GREEN} The automatic initialization script uses the export environment variable method to support the loading of environment variables of the data source. The configuration file is：${config_file} ${RESET}"
+      echo -e "${GREEN} The automatic initialization script uses the export environment variable method to support the loading of environment variables of the data source. The configuration file is: ${config_file} ${RESET}"
 
       add_to_env "DB_ACTIVE" "mysql" "$DB_ENV_FILE"
       add_to_env "MYSQL_ADDR" "${db_host}:${db_port}" "$DB_ENV_FILE"
@@ -51,7 +51,7 @@ while true; do
       sleep 2
       source "$DB_ENV_FILE"
 
-      echo -e "${GREEN}MySQLThe configuration of database related information is completed. Please confirm whether the following configuration is correct：${RESET}"
+      echo -e "${GREEN}MySQLThe configuration of database related information is completed. Please confirm whether the following configuration is correct: ${RESET}"
       grep -E '^(export DB_ACTIVE|export MYSQL_ADDR|export MYSQL_DATABASE|export MYSQL_USERNAME|export MYSQL_PASSWORD)' $DB_ENV_FILE | grep -v "^#" | grep -v "^$"
       break
       ;;
@@ -59,7 +59,7 @@ while true; do
        echo -e "${YELLOW}Configuring PostgresSQL database related information...${RESET}"
        config_file="${DINKY_HOME_PARAMS}/config/application-postgresql.yml"
 
-        echo -e "${GREEN}The automatic initialization script uses the export environment variable method to support the loading of environment variables from the data source configuration file. The configuration file is：${config_file} ${RESET}"
+        echo -e "${GREEN}The automatic initialization script uses the export environment variable method to support the loading of environment variables from the data source configuration file. The configuration file is: ${config_file} ${RESET}"
 
        add_to_env "DB_ACTIVE" "postgresql" "$DB_ENV_FILE"
        add_to_env "POSTGRES_ADDR" "${db_host}:${db_port}" "$DB_ENV_FILE"
@@ -69,7 +69,7 @@ while true; do
        sleep 2
        source $DB_ENV_FILE
 
-       echo -e "${GREEN}PostgresSQL The configuration of database related information is completed. Please confirm whether the following configuration is correct：${RESET}"
+       echo -e "${GREEN}PostgresSQL The configuration of database related information is completed. Please confirm whether the following configuration is correct: ${RESET}"
        grep -E '^(export DB_ACTIVE|export POSTGRES_ADDR|export POSTGRES_DB|export POSTGRES_USER|export POSTGRES_PASSWORD)' $DB_ENV_FILE | grep -v "^#" | grep -v "^$"
 
        break
