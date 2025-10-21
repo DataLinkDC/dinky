@@ -105,7 +105,7 @@ check_command() {
             echo -e "${YELLOW}Try using apt-get to install the missing command...${RESET}"
             sudo apt-get install -y "$cmd"
         else
-            echo -e "${RED} $cmd The command was not found. Please install it manually and then run this script.。${RESET}"
+            echo -e "${RED} $cmd The command was not found. Please install it manually and then run this script.${RESET}"
             exit 1
         fi
     fi
@@ -117,7 +117,7 @@ source "${APP_HOME}/bin/init_check_network.sh"
 
 check_command "wget"
 
-echo -e "${GREEN}The pre-check is completed. Welcome to use the Dinky initialization script. The current Dinky root path is：${APP_HOME} ${RESET}"
+echo -e "${GREEN}The pre-check is completed. Welcome to use the Dinky initialization script. The current Dinky root path is: ${APP_HOME} ${RESET}"
 
 function download_file() {
     source_url=$1
@@ -157,13 +157,13 @@ echo
 
 function init_env() {
     while true; do
-        read -p "Do you need to configure the DINKY_HOME environment variable? (yes/no)：" is_init_dinky_home
+        read -p "Do you need to configure the DINKY_HOME environment variable? (yes/no): " is_init_dinky_home
         is_init_dinky_home=$(echo "$is_init_dinky_home" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
         case $is_init_dinky_home in
           yes | y)
             # Use source transparent transmission in debug mode
             source "${APP_HOME}"/bin/init_env.sh ${APP_HOME} ${ENV_FILE}
-            echo -e "${GREEN}DINKY_HOME environment variable configuration completed. the configuration file is：${ENV_FILE} ${RESET}"
+            echo -e "${GREEN}DINKY_HOME environment variable configuration completed. the configuration file is: ${ENV_FILE} ${RESET}"
             break
             ;;
           no | n)
@@ -188,7 +188,7 @@ else
     echo -e "${RED}DINKY_HOME is not equal to the current path, The previous one was: ${DINKY_HOME_TMP}. The current one is: ${APP_HOME}, which needs to be reconfigured.${RESET}"
     init_env
   else
-      echo -e "${GREEN}DINKY_HOME environment variable has been configured at ${DINKY_HOME_TMP}，Skip configuration.${RESET}"
+      echo -e "${GREEN}DINKY_HOME environment variable has been configured at ${DINKY_HOME_TMP}, Skip configuration.${RESET}"
   fi
 fi
 
@@ -208,7 +208,7 @@ while true; do
     echo -e "${BLUE} ==================================== 2. postgresql =========================================  ${RESET}"
     echo -e "${BLUE} ================================ 3. Skip this step ==========================================  ${RESET}"
     echo -e "${BLUE} ================================ Enter number selection ==================================  ${RESET}"
-    read -p "Please enter your database type：" db_type
+    read -p "Please enter your database type: " db_type
     case $db_type in
         1)
              # Use source transparent transmission in debug mode
@@ -220,7 +220,7 @@ while true; do
             break
             ;;
         3)
-            echo -e "${GREEN}Skip this step。${RESET}"
+            echo -e "${GREEN}Skip this step.${RESET}"
             break
             ;;
         *)
@@ -271,11 +271,11 @@ while true; do
             break
             ;;
         exit | e )
-            echo -e "${GREEN}If you choose exit, the program will exit。${RESET}"
+            echo -e "${GREEN}If you choose exit, the program will exit.${RESET}"
             exit 0
             ;;
         *)
-            echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
+            echo -e "${RED}Invalid input, please re-enter yes/no/exit.${RESET}"
             ;;
     esac
 done
@@ -304,38 +304,38 @@ while true; do
             exit 0
             ;;
         *)
-            echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
+            echo -e "${RED}Invalid input, please re-enter yes/no/exit.${RESET}"
             ;;
     esac
 done
 echo -e "${GREEN} ======================Hadoop dependency initialization script -> end ====================== ${RESET}"
 echo
 
-echo -e "${GREEN} === After the environment initialization is completed, you can configure the application configuration file in Dinky's config directory to perform database-related configuration, or execute the initialization configuration file.。====  ${RESET}"
+echo -e "${GREEN} === After the environment initialization is completed, you can configure the application configuration file in Dinky's config directory to perform database-related configuration, or execute the initialization configuration file. ====  ${RESET}"
 echo
 
 echo -e "${GREEN} ====================== Database configuration file initialization script -> Start ====================== ${RESET}"
 
 while true; do
-    read -p "Do you need to initialize the database configuration file?？(yes/no)：" is_init_db
+    read -p "Do you need to initialize the database configuration file?？(yes/no): " is_init_db
     is_init_db=$(echo "$is_init_db" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
     case $is_init_db in
         yes | y )
              # Use source transparent transmission in debug mode
             source  "${APP_HOME}/bin/init_db.sh" "${DINKY_HOME}" "${DB_ENV_FILE}"
-            echo -e "${GREEN}The database configuration file initialization script has been executed successfully the configuration file is：${DB_ENV_FILE} ${RESET}"
+            echo -e "${GREEN}The database configuration file initialization script has been executed successfully the configuration file is: ${DB_ENV_FILE} ${RESET}"
             break
             ;;
         no | n )
-            echo -e "${GREEN}The database initialization operation has been skipped, please manually configure the database ${APP_HOME}/config/application.yml file and ${DINKY_HOME}/config/application-[mysql/postgresql].yml file。${RESET}"
+            echo -e "${GREEN}The database initialization operation has been skipped, please manually configure the database ${APP_HOME}/config/application.yml file and ${DINKY_HOME}/config/application-[mysql/postgresql].yml file.${RESET}"
             break
             ;;
         exit | e )
-            echo -e "${GREEN}The script has exited, please manually configure the database ${APP_HOME}/config/application.yml file and ${APP_HOME}/config/application-[mysql/postgresql].yml file。${RESET}"
+            echo -e "${GREEN}The script has exited, please manually configure the database ${APP_HOME}/config/application.yml file and ${APP_HOME}/config/application-[mysql/postgresql].yml file.${RESET}"
             exit 0
             ;;
         *)
-            echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
+            echo -e "${RED}Invalid input, please re-enter yes/no/exit.${RESET}"
             ;;
     esac
 done
@@ -361,16 +361,16 @@ while true; do
         no | n )
             echo_warning_msg
             echo
-            echo -e "${GREEN}The Dinky service startup script has been skipped, Please execute the above command first, and then start the service manually -> ${APP_HOME}/bin/auto.sh restart | start。${RESET}"
+            echo -e "${GREEN}The Dinky service startup script has been skipped, Please execute the above command first, and then start the service manually -> ${APP_HOME}/bin/auto.sh restart | start.${RESET}"
             break
             ;;
         exit | e )
           echo_warning_msg
-          echo -e "${GREEN}If you choose exit, the program will exit。${RESET}"
+          echo -e "${GREEN}If you choose exit, the program will exit.${RESET}"
           exit 0
           ;;
         *)
-          echo -e "${RED}Invalid input, please re-enter yes/no/exit。${RESET}"
+          echo -e "${RED}Invalid input, please re-enter yes/no/exit.${RESET}"
           ;;
         esac
 done
