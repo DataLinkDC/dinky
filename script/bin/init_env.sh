@@ -20,7 +20,7 @@ while true; do
         add_to_env "PATH" "\$DINKY_HOME/bin:\$PATH" "$ENV_FILE"
         sleep 2
         source $ENV_FILE
-        echo -e "${GREEN}DINKY_HOME environment variable configuration completed. Please confirm whether the following configuration is correct：${RESET}"
+        echo -e "${GREEN}DINKY_HOME environment variable configuration completed. Please confirm whether the following configuration is correct: ${RESET}"
         grep -E '^(export DINKY_HOME)' $ENV_FILE | grep -v "^#" | grep -v "^$"
         break
         ;;
@@ -36,7 +36,7 @@ while true; do
             add_to_env "PATH" "\$DINKY_HOME/bin:\$PATH" "$ENV_FILE"
             sleep 2
             source $ENV_FILE
-            echo -e "${GREEN}DINKY_HOME environment variable configuration completed. Please confirm whether the following configuration is correct：${RESET}"
+            echo -e "${GREEN}DINKY_HOME environment variable configuration completed. Please confirm whether the following configuration is correct: ${RESET}"
             grep -E '^(export DINKY_HOME)' $ENV_FILE | grep -v "^#" | grep -v "^$"
         fi
         break
