@@ -73,9 +73,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import lombok.Getter;
+
 /**
- * 自定义 catalog 检查connection done. 默认db，会被强制指定，不管输入的是什么，都会指定为 default_database
- * 可以读取配置文件信息来获取数据库连接，而不是在sql语句中强制指定。
+ * DinkyMysqlCatalog is a catalog implementation for MySQL.
  */
 public class DinkyMysqlCatalog extends AbstractCatalog {
 
@@ -89,77 +90,87 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         try {
             Class.forName(MYSQL_DRIVER);
         } catch (ClassNotFoundException e) {
-            throw new CatalogException("未加载 mysql 驱动！", e);
+            throw new CatalogException("Failed to load MySQL driver: " + MYSQL_DRIVER, e);
         }
     }
 
     private static final String COMMENT = "comment";
-    /** 判断是否发生过SQL异常，如果发生过，那么conn可能失效。要注意判断 */
+    /** Determine whether an SQL exception has occurred, and if so, conn may fail. Pay attention to judgment
+     */
     private boolean sqlExceptionHappened = false;
 
-    /** 对象类型，例如 库、表、视图等 */
+    /** Object types, such as libraries, tables, views, etc.
+     */
     protected static class ObjectType {
-        /** 数据库 */
+
+        /**
+         *  Database
+         * */
         public static final String DATABASE = "database";
 
-        /** 数据表 */
+        /**
+         *  Table
+         * */
         public static final String TABLE = "TABLE";
 
-        /** 视图 */
+        /** View */
         public static final String VIEW = "VIEW";
     }
 
-    /** 对象类型，例如 库、表、视图等 */
+    /**
+     *
+     *  object type, such as library, table, view, etc.
+     *
+     * */
     protected static class ColumnType {
-        /** 物理字段 */
+
+        /** physical field
+         */
         public static final String PHYSICAL = "physical";
 
-        /** 计算字段 */
+        /** computed field
+         */
         public static final String COMPUTED = "computed";
 
-        /** 元数据字段 */
+        /**
+         *  metadata field
+         * */
         public static final String METADATA = "metadata";
 
-        /** 水印 */
+        /**
+         *  watermark field
+         *
+         * */
         public static final String WATERMARK = "watermark";
     }
 
-    /** 数据库用户名 */
+    /** 数据库用户名
+     * -- GETTER --
+     *  数据库用户名
+     *
+     * @return 数据库用户名
+     */
+    @Getter
     private final String user;
-    /** 数据库密码 */
+    /** 数据库密码
+     * -- GETTER --
+     *  数据库密码
+     *
+     * @return 数据库密码
+     */
+    @Getter
     private final String pwd;
-    /** 数据库连接 */
+    /** 数据库连接
+     * -- GETTER --
+     *  数据库用户名
+     *
+     * @return 数据库用户名
+     */
+    @Getter
     private final String url;
 
     /** 默认database */
     private static final String defaultDatabase = "default_database";
-
-    /**
-     * 数据库用户名
-     *
-     * @return 数据库用户名
-     */
-    public String getUser() {
-        return user;
-    }
-
-    /**
-     * 数据库密码
-     *
-     * @return 数据库密码
-     */
-    public String getPwd() {
-        return pwd;
-    }
-
-    /**
-     * 数据库用户名
-     *
-     * @return 数据库用户名
-     */
-    public String getUrl() {
-        return url;
-    }
 
     public DinkyMysqlCatalog(String name, String url, String user, String pwd) {
         super(name, defaultDatabase);
@@ -177,14 +188,13 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public void open() throws CatalogException {
-        // 验证连接是否有效
-        // 获取默认db看看是否存在
+
         Integer defaultDbId = getDatabaseId(defaultDatabase);
         if (defaultDbId == null) {
             try {
                 createDatabase(defaultDatabase, new CatalogDatabaseImpl(new HashMap<>(), ""), true);
             } catch (DatabaseAlreadyExistException a) {
-                logger.info("重复创建默认库");
+                logger.info("The default database already exists");
             }
         }
     }
@@ -233,7 +243,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     @Override
     public List<String> listDatabases() throws CatalogException {
         List<String> myDatabases = new ArrayList<>();
-        String querySql = "SELECT database_name FROM metadata_database";
+        String querySql = "SELECT database_name FROM metadata_database WHERE is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(querySql)) {
 
@@ -251,7 +261,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public CatalogDatabase getDatabase(String databaseName) throws DatabaseNotExistException, CatalogException {
-        String querySql = "SELECT id, database_name,description " + " FROM metadata_database where database_name=?";
+        String querySql =
+                "SELECT id, database_name,description FROM metadata_database where database_name=? and is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(querySql)) {
             ps.setString(1, databaseName);
@@ -263,7 +274,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
                 Map<String, String> map = new HashMap<>();
 
-                String sql = "select `key`,`value` " + "from metadata_database_property " + "where database_id=? ";
+                String sql =
+                        "select `key`,`value` from metadata_database_property where database_id=? and is_delete = 0";
                 try (PreparedStatement pStat = conn.prepareStatement(sql)) {
                     pStat.setInt(1, id);
                     ResultSet prs = pStat.executeQuery();
@@ -292,7 +304,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     }
 
     private Integer getDatabaseId(String databaseName) throws CatalogException {
-        String querySql = "select id from metadata_database where database_name=?";
+        String querySql = "select id from metadata_database where database_name=? and is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(querySql)) {
             ps.setString(1, databaseName);
@@ -304,13 +316,13 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                     id = rs.getInt(1);
                     multiDB = true;
                 } else {
-                    throw new CatalogException("存在多个同名database: " + databaseName);
+                    throw new CatalogException("the database name is not unique");
                 }
             }
             return id;
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException(String.format("获取 database 信息失败：%s.%s", getName(), databaseName), e);
+            throw new CatalogException(String.format("get database info fail：%s.%s", getName(), databaseName), e);
         }
     }
 
@@ -325,9 +337,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                 throw new DatabaseAlreadyExistException(getName(), databaseName);
             }
         } else {
-            // 在这里实现创建库的代码
             Connection conn = getConnection();
-            // 启动事务
             String insertSql = "insert into metadata_database(database_name, description) values(?, ?)";
 
             try (PreparedStatement stat = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -341,7 +351,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                         && db.getProperties().size() > 0) {
                     int id = idRs.getInt(1);
                     String propInsertSql =
-                            "insert into metadata_database_property(database_id, " + "`key`,`value`) values (?,?,?)";
+                            "insert into metadata_database_property(database_id, `key`,`value`) values (?,?,?)";
                     PreparedStatement pstat = conn.prepareStatement(propInsertSql);
                     for (Map.Entry<String, String> entry : db.getProperties().entrySet()) {
                         pstat.setInt(1, id);
@@ -355,7 +365,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                 conn.commit();
             } catch (SQLException e) {
                 sqlExceptionHappened = true;
-                logger.error("创建 database 信息失败：", e);
+                logger.error("create database info failed：", e);
             }
         }
     }
@@ -364,9 +374,9 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     public void dropDatabase(String name, boolean ignoreIfNotExists, boolean cascade)
             throws DatabaseNotExistException, DatabaseNotEmptyException, CatalogException {
         if (name.equals(defaultDatabase)) {
-            throw new CatalogException("默认 database 不可以删除");
+            throw new CatalogException("the default database can't be deleted");
         }
-        // 1、取出db id，
+
         Integer id = getDatabaseId(name);
         if (id == null) {
             if (!ignoreIfNotExists) {
@@ -379,7 +389,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             conn.setAutoCommit(false);
             // 查询是否有表
             List<String> tables = listTables(name);
-            if (tables.size() > 0) {
+            if (!tables.isEmpty()) {
                 if (!cascade) {
                     // 有表，不做级联删除。
                     throw new DatabaseNotEmptyException(getName(), name);
@@ -389,17 +399,16 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                     try {
                         dropTable(new ObjectPath(name, table), true);
                     } catch (TableNotExistException t) {
-                        logger.warn("表{}不存在", name + "." + table);
+                        logger.warn("table {} is not exits", name + "." + table);
                     }
                 }
             }
-            // todo: 现在是真实删除，后续设计是否做记录保留。
-            String deletePropSql = "delete from metadata_database_property where database_id=?";
+            String deletePropSql = "update metadata_database set is_delete=1 where id=?";
             PreparedStatement dStat = conn.prepareStatement(deletePropSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteDbSql = "delete from metadata_database where id=?";
+            String deleteDbSql = "update metadata_database set is_delete=1 where id=?";
             dStat = conn.prepareStatement(deleteDbSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
@@ -407,7 +416,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             conn.commit();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("删除 database 信息失败：", e);
+            throw new CatalogException("drop database failed：", e);
         }
     }
 
@@ -415,9 +424,9 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     public void alterDatabase(String name, CatalogDatabase newDb, boolean ignoreIfNotExists)
             throws DatabaseNotExistException, CatalogException {
         if (name.equals(defaultDatabase)) {
-            throw new CatalogException("默认 database 不可以修改");
+            throw new CatalogException("the default database can't be altered");
         }
-        // 1、取出db id，
+
         Integer id = getDatabaseId(name);
         if (id == null) {
             if (!ignoreIfNotExists) {
@@ -428,8 +437,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         Connection conn = getConnection();
         try {
             conn.setAutoCommit(false);
-            // 1、名称不能改，类型不能改。只能改备注
-            String updateCommentSql = "update metadata_database set description=? where id=?";
+
+            String updateCommentSql = "update metadata_database set description=? where id=? and is_delete = 0";
             PreparedStatement uState = conn.prepareStatement(updateCommentSql);
             uState.setString(1, newDb.getComment());
             uState.setInt(2, id);
@@ -453,7 +462,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             conn.commit();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("修改 database 信息失败：", e);
+            throw new CatalogException("alert database info failed：", e);
         }
     }
 
@@ -476,7 +485,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
         // get all schemas
         // 要给出table 或 view
-        String querySql = "SELECT table_name FROM metadata_table where table_type=? and database_id = ?";
+        String querySql =
+                "SELECT table_name FROM metadata_table where table_type=? and database_id = ? and is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(querySql)) {
             ps.setString(1, tableType);
@@ -497,10 +507,6 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
     @Override
     public CatalogBaseTable getTable(ObjectPath tablePath) throws TableNotExistException, CatalogException {
-        // 还是分步骤来
-        // 1、先取出表 这可能是view也可能是table
-        // 2、取出列
-        // 3、取出属性
         Integer id = getTableId(tablePath);
 
         if (id == null) {
@@ -510,7 +516,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         Connection conn = getConnection();
         try {
             String queryTable =
-                    "SELECT table_name " + " ,description, table_type " + " FROM metadata_table " + " where  id=?";
+                    "SELECT table_name  ,description, table_type  FROM metadata_table where  id=? and is_delete = 0";
             PreparedStatement ps = conn.prepareStatement(queryTable);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -526,7 +532,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             }
             if (tableType.equals(ObjectType.TABLE)) {
                 // 这个是 table
-                String propSql = "SELECT `key`, `value` from metadata_table_property " + "WHERE table_id=?";
+                String propSql =
+                        "SELECT `key`, `value` from metadata_table_property WHERE table_id=?  and is_delete = 0";
                 PreparedStatement pState = conn.prepareStatement(propSql);
                 pState.setInt(1, id);
                 ResultSet prs = pState.executeQuery();
@@ -540,11 +547,10 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                 props.put(COMMENT, description);
                 return CatalogTable.fromProperties(props);
             } else if (tableType.equals(ObjectType.VIEW)) {
-                // 1、从库中取出table信息。（前面已做）
-                // 2、取出字段。
+
                 String colSql = "SELECT column_name, column_type, data_type, description "
                         + " FROM metadata_column WHERE "
-                        + " table_id=?";
+                        + " table_id=?  and is_delete = 0";
                 PreparedStatement cStat = conn.prepareStatement(colSql);
                 cStat.setInt(1, id);
                 ResultSet crs = cStat.executeQuery();
@@ -556,13 +562,13 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
 
                     builder.column(colName, dataType);
                     String cDesc = crs.getString("description");
-                    if (null != cDesc && cDesc.length() > 0) {
+                    if (null != cDesc && !cDesc.isEmpty()) {
                         builder.withComment(cDesc);
                     }
                 }
                 cStat.close();
                 // 3、取出query
-                String qSql = "SELECT `key`, value FROM metadata_table_property" + " WHERE table_id=? ";
+                String qSql = "SELECT `key`, value FROM metadata_table_property WHERE table_id=? and is_delete = 0";
                 PreparedStatement qStat = conn.prepareStatement(qSql);
                 qStat.setInt(1, id);
                 ResultSet qrs = qStat.executeQuery();
@@ -583,11 +589,11 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                 // 合成view
                 return CatalogView.of(builder.build(), description, originalQuery, expandedQuery, options);
             } else {
-                throw new CatalogException("不支持的数据类型。" + tableType);
+                throw new CatalogException("an unsupported data type。" + tableType);
             }
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("获取 表信息失败。", e);
+            throw new CatalogException("Failed to obtain table information。", e);
         }
     }
 
@@ -603,7 +609,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             return null;
         }
         // 获取id
-        String getIdSql = "select id from metadata_table " + " where table_name=? and database_id=?";
+        String getIdSql = "select id from metadata_table where table_name=? and database_id=? and is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(getIdSql)) {
             gStat.setString(1, tablePath.getObjectName());
@@ -630,19 +636,20 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         }
         Connection conn = getConnection();
         try {
-            // todo: 现在是真实删除，后续设计是否做记录保留。
             conn.setAutoCommit(false);
-            String deletePropSql = "delete from metadata_table_property " + " where table_id=?";
+
+            String deletePropSql = "update metadata_table_property set is_delete=1 where table_id=?";
             PreparedStatement dStat = conn.prepareStatement(deletePropSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteColSql = "delete from metadata_column " + " where table_id=?";
+            String deleteColSql = "update metadata_column set is_delete=1 where table_id=?";
             dStat = conn.prepareStatement(deleteColSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteDbSql = "delete from metadata_table " + " where id=?";
+            //            String deleteDbSql = "delete from metadata_table " + " where id=?";
+            String deleteDbSql = "update metadata_table set is_delete=1 where id=?";
             dStat = conn.prepareStatement(deleteDbSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
@@ -667,7 +674,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         if (tableExists(newPath)) {
             throw new TableAlreadyExistException(getName(), newPath);
         }
-        String updateSql = "UPDATE metadata_table SET table_name=? WHERE id=?";
+        String updateSql = "UPDATE metadata_table SET table_name=? WHERE id=? and is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
             ps.setString(1, newTableName);
@@ -675,7 +682,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             ps.executeUpdate();
         } catch (SQLException ex) {
             sqlExceptionHappened = true;
-            throw new CatalogException("修改表名失败", ex);
+            throw new CatalogException("Failed to modify table name", ex);
         }
     }
 
@@ -692,12 +699,14 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             }
             return;
         }
-        // 插入表
-        // 插入到table表。这里，它可能是table也可能是view
-        // 如果是一个table，我们认为它是一个 resolved table，就可以使用properties方式来进行序列化并保存。
-        // 如果是一个view，我们认为它只能有物理字段
+        // Insert table
+        // Insert into the table table. Here, it could be a table or a view
+        // If it is a table, we think it is a resolved table, so we can use the properties method to serialize and save
+        // it.
+        // If it is a view, we think it can only have physical fields
         if (!(table instanceof ResolvedCatalogBaseTable)) {
-            throw new UnsupportedOperationException("暂时不支持输入非 ResolvedCatalogBaseTable 类型的表");
+            throw new UnsupportedOperationException(
+                    "Entering tables of non-ResolvedCatalogBaseTable types is temporarily not supported");
         }
         Connection conn = getConnection();
         try {
@@ -720,7 +729,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             ResultSet idRs = iStat.getGeneratedKeys();
             if (!idRs.next()) {
                 iStat.close();
-                throw new CatalogException("插入元数据表信息失败");
+                throw new CatalogException("Failed to insert metadata table information");
             }
             int id = idRs.getInt(1);
             iStat.close();
@@ -728,8 +737,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             if (table instanceof ResolvedCatalogTable) {
                 // table 就可以直接拿properties了。
                 Map<String, String> props = ((ResolvedCatalogTable) table).toProperties();
-                String propInsertSql =
-                        "insert into metadata_table_property(table_id," + "`key`,`value`) values (?,?,?)";
+                String propInsertSql = "insert into metadata_table_property(table_id, `key`,`value`) values (?,?,?)";
                 PreparedStatement pStat = conn.prepareStatement(propInsertSql);
                 for (Map.Entry<String, String> entry : props.entrySet()) {
                     pStat.setInt(1, id);
@@ -759,7 +767,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                             Schema.UnresolvedPhysicalColumn pCol = (Schema.UnresolvedPhysicalColumn) col;
                             if (!(pCol.getDataType() instanceof DataType)) {
                                 throw new UnsupportedOperationException(String.format(
-                                        "类型识别失败，该列不是有效类型：%s.%s.%s : %s",
+                                        "Type identification failed. The column is not a valid type：%s.%s.%s : %s",
                                         tablePath.getDatabaseName(),
                                         tablePath.getObjectName(),
                                         pCol.getName(),
@@ -776,7 +784,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                             colIStat.setObject(7, null); // view没有主键
                             colIStat.addBatch();
                         } else {
-                            throw new UnsupportedOperationException("暂时认为view 不会出现 非物理字段");
+                            throw new UnsupportedOperationException(
+                                    "Temporarily, it is believed that non-physical fields will not appear in view");
                         }
                     }
                     colIStat.executeBatch();
@@ -805,8 +814,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             conn.commit();
         } catch (SQLException ex) {
             sqlExceptionHappened = true;
-            logger.error("插入数据库失败", ex);
-            throw new CatalogException("插入数据库失败", ex);
+            logger.error("Failed to insert database\n", ex);
+            throw new CatalogException("Failed to insert database\n", ex);
         }
     }
 
@@ -836,7 +845,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                 ps.executeBatch();
             } catch (SQLException ex) {
                 sqlExceptionHappened = true;
-                throw new CatalogException("修改表名失败", ex);
+                throw new CatalogException("Failed to modify table name", ex);
             }
         }
     }
@@ -845,36 +854,36 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     @Override
     public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath)
             throws TableNotExistException, TableNotPartitionedException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     @Override
     public List<CatalogPartitionSpec> listPartitions(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException,
                     CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     @Override
     public List<CatalogPartitionSpec> listPartitionsByFilter(ObjectPath tablePath, List<Expression> filters)
             throws TableNotExistException, TableNotPartitionedException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     @Override
     public CatalogPartition getPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     @Override
     public boolean partitionExists(ObjectPath tablePath, CatalogPartitionSpec partitionSpec) throws CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     @Override
@@ -885,15 +894,15 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             boolean ignoreIfExists)
             throws TableNotExistException, TableNotPartitionedException, PartitionSpecInvalidException,
                     PartitionAlreadyExistsException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     @Override
     public void dropPartition(ObjectPath tablePath, CatalogPartitionSpec partitionSpec, boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     @Override
@@ -903,8 +912,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             CatalogPartition newPartition,
             boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。
+        throw new UnsupportedOperationException("The method is not yet complete\n");
     }
 
     /** *********************Functions********************* */
@@ -914,7 +923,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         if (null == dbId) {
             throw new DatabaseNotExistException(getName(), dbName);
         }
-        String querySql = "SELECT function_name from metadata_function " + " WHERE database_id=?";
+        String querySql = "SELECT function_name from metadata_function  WHERE database_id=? and is_delete = 0";
 
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(querySql)) {
@@ -928,7 +937,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             return functions;
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("获取 UDF 列表失败");
+            throw new CatalogException("Failed to get UDF list", e);
         }
     }
 
@@ -939,7 +948,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             throw new FunctionNotExistException(getName(), functionPath);
         }
 
-        String querySql = "SELECT class_name,function_language from metadata_function " + " WHERE id=?";
+        String querySql = "SELECT class_name,function_language from metadata_function  WHERE id=? and is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(querySql)) {
             gStat.setInt(1, id);
@@ -955,7 +964,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         } catch (SQLException e) {
             sqlExceptionHappened = true;
             throw new CatalogException(
-                    "获取 UDF 失败：" + functionPath.getDatabaseName() + "." + functionPath.getObjectName());
+                    "Failed to get UDF list：" + functionPath.getDatabaseName() + "." + functionPath.getObjectName());
         }
     }
 
@@ -971,7 +980,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             return null;
         }
         // 获取id
-        String getIdSql = "select id from metadata_function " + " where function_name=? and database_id=?";
+        String getIdSql = "select id from metadata_function where function_name=? and database_id=? and is_delete = 0";
         Connection conn = getConnection();
         try (PreparedStatement gStat = conn.prepareStatement(getIdSql)) {
             gStat.setString(1, functionPath.getObjectName());
@@ -1014,7 +1023,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             ps.executeUpdate();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("创建 函数 失败", e);
+            throw new CatalogException("Failed to create function", e);
         }
     }
 
@@ -1030,7 +1039,8 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "update metadata_function " + "set (class_name =?, function_language=?) " + " where id=?";
+        String insertSql =
+                "update metadata_function set (class_name =?, function_language=?) " + " where id=? and is_delete = 0";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setString(1, newFunction.getClassName());
             ps.setString(2, newFunction.getFunctionLanguage().toString());
@@ -1038,7 +1048,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             ps.executeUpdate();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("修改 函数 失败", e);
+            throw new CatalogException("Failed to modify function", e);
         }
     }
 
@@ -1054,38 +1064,38 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         }
 
         Connection conn = getConnection();
-        String insertSql = "delete from metadata_function " + " where id=?";
+        //        String insertSql = "delete from metadata_function " + " where id=?";
+        String insertSql = "update metadata_function set is_delete = 1 where id=?";
         try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             sqlExceptionHappened = true;
-            throw new CatalogException("删除 函数 失败", e);
+            throw new CatalogException("drop function fail.", e);
         }
     }
 
     @Override
     public CatalogTableStatistics getTableStatistics(ObjectPath tablePath)
             throws TableNotExistException, CatalogException {
-        // todo: 补充完成该方法。
+        // todo: The method is not yet complete。。
         checkNotNull(tablePath);
 
         if (!tableExists(tablePath)) {
             throw new TableNotExistException(getName(), tablePath);
         }
-        /*if (!isPartitionedTable(tablePath)) {
-            CatalogTableStatistics result = tableStats.get(tablePath);
-            return result != null ? result.copy() : CatalogTableStatistics.UNKNOWN;
-        } else {
-            return CatalogTableStatistics.UNKNOWN;
-        }*/
+        /*
+         * if (!isPartitionedTable(tablePath)) { CatalogTableStatistics result = tableStats.get(tablePath); return
+         * result != null ? result.copy() : CatalogTableStatistics.UNKNOWN; } else { return
+         * CatalogTableStatistics.UNKNOWN; }
+         */
         return CatalogTableStatistics.UNKNOWN;
     }
 
     @Override
     public CatalogColumnStatistics getTableColumnStatistics(ObjectPath tablePath)
             throws TableNotExistException, CatalogException {
-        // todo: 补充完成该方法。
+        // todo: The method is not yet complete。。
         checkNotNull(tablePath);
 
         if (!tableExists(tablePath)) {
@@ -1100,32 +1110,32 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
     @Override
     public CatalogTableStatistics getPartitionStatistics(ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。。
+        throw new UnsupportedOperationException("The method is not yet complete。");
     }
 
     @Override
     public CatalogColumnStatistics getPartitionColumnStatistics(
             ObjectPath tablePath, CatalogPartitionSpec partitionSpec)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。。
+        throw new UnsupportedOperationException("The method is not yet complete。");
     }
 
     @Override
     public void alterTableStatistics(
             ObjectPath tablePath, CatalogTableStatistics tableStatistics, boolean ignoreIfNotExists)
             throws TableNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。。
+        throw new UnsupportedOperationException("The method is not yet complete。");
     }
 
     @Override
     public void alterTableColumnStatistics(
             ObjectPath tablePath, CatalogColumnStatistics columnStatistics, boolean ignoreIfNotExists)
             throws TableNotExistException, CatalogException, TablePartitionedException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。。
+        throw new UnsupportedOperationException("The method is not yet complete。");
     }
 
     @Override
@@ -1146,7 +1156,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             CatalogColumnStatistics columnStatistics,
             boolean ignoreIfNotExists)
             throws PartitionNotExistException, CatalogException {
-        // todo: 补充完成该方法。
-        throw new UnsupportedOperationException("该方法尚未完成");
+        // todo: The method is not yet complete。。
+        throw new UnsupportedOperationException("The method is not yet complete。");
     }
 }

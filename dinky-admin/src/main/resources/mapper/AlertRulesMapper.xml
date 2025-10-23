@@ -16,7 +16,7 @@
                dat.template_content
         from dinky_alert_rules dar
                  left join dinky_alert_template dat on dar.template_id = dat.id
-        where dar.enabled = 1
+        where dar.enabled = 1 and dar.is_delete = false
     </select>
 
 

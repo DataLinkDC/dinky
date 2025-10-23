@@ -23,7 +23,7 @@
         select id, name, parent_id, order_num,
                path, component, type, display,
             ifnull(perms,'') as perms, icon, create_time, update_time
-        from dinky_sys_menu
+        from dinky_sys_menu where is_delete = false
     </sql>
 
     <select id="listAllMenus" resultMap="DinkySysMenuResult">
@@ -31,23 +31,10 @@
         order by parent_id, order_num
     </select>
 
-    <select id="selectMenuList" parameterType="org.dinky.data.model.rbac.Menu" resultMap="DinkySysMenuResult">
-        <include refid="selectMenuVo"/>
-        <where>
-            <if test="name != null and name != ''">
-                AND `name` like concat('%', #{name}, '%')
-            </if>
-            <if test="display != null and display != ''">
-                AND display = #{display}
-            </if>
-        </where>
-        order by parent_id, order_num
-    </select>
-
     <select id="listMenus4SuperAdmin" resultMap="DinkySysMenuResult">
         select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
         from dinky_sys_menu m
-        where m.type in ('0', '1')
+        where m.type in ('0', '1') and m.is_delete = false
         order by m.parent_id, m.order_num
     </select>
 
@@ -58,7 +45,7 @@
         left join dinky_sys_role_menu rm on m.id = rm.menu_id
         left join dinky_user_role ur on rm.role_id = ur.role_id
         left join dinky_role ro on ur.role_id = ro.role_id
-        where ur.user_id = #{params.userId}
+        where ur.user_id = #{params.userId} and m.is_delete = false and rm.is_delete = false and ur.is_delete = false and ro.is_delete = false
         <if test="name != null and name != ''">
             AND m.`name` like concat('%', #{name}, '%')
         </if>
@@ -74,27 +61,11 @@
                  left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
                  left join dinky_role ro on ur.role_id = ro.role_id
-                 left join sys_user u on ur.user_id = u.user_id
-        where u.user_id = #{userId}
+                 left join dinky_user u on ur.user_id = u.id
+        where u.id = #{userId}
           and m.type in ('0', '1')
-          AND ro.is_delete = 0
+          AND ro.is_delete = false and m.is_delete = false and rm.is_delete = false and ur.is_delete = false and ro.is_delete = false and u.is_delete = false
         order by m.parent_id, m.order_num
-    </select>
-
-    <select id="selectMenuListByRoleId" parameterType="Long" resultType="Integer">
-        select m.id, m.parent_id
-        from dinky_sys_menu m
-                 left join dinky_sys_role_menu rm on m.id = rm.menu_id
-        where rm.role_id = #{roleId}
-          and m.id not in (select m.parent_id from dinky_sys_menu m inner join dinky_sys_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
-        order by m.parent_id, m.order_num
-    </select>
-
-    <select id="selectMenuPerms" resultType="String">
-        select distinct m.perms
-        from dinky_sys_menu m
-                 left join dinky_sys_role_menu rm on m.id = rm.menu_id
-                 left join dinky_user_role ur on rm.role_id = ur.role_id
     </select>
 
     <select id="selectMenuPermsByUserId" parameterType="Integer" resultType="String">
@@ -103,25 +74,21 @@
                  left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
                  left join dinky_role r on r.id = ur.role_id
-        where r.is_delete = 0 and ur.user_id = #{userId}
+        where r.is_delete = false and ur.user_id = #{userId}
     </select>
 
 
 
     <select id="hasChildByMenuId" resultType="Integer">
-        select count(1) from dinky_sys_menu where parent_id = #{menuId} limit 1
+        select count(1) from dinky_sys_menu where parent_id = #{menuId} and is_delete = false limit 1
     </select>
 
-    <select id="checkMenuNameUnique" parameterType="org.dinky.data.model.rbac.Menu" resultMap="DinkySysMenuResult">
-        <include refid="selectMenuVo"/>
-        where `name`=#{name} and parent_id = #{parentId}
-    </select>
 
     <select id="selectMenuPermsByRoleId" parameterType="Integer" resultType="String">
         select distinct m.perms
         from dinky_sys_menu m
                  left join dinky_sys_role_menu rm on m.id = rm.menu_id
-        where rm.role_id = #{roleId}
+        where rm.role_id = #{roleId} and m.is_delete = false and rm.is_delete = false
     </select>
 
     <select id="selectForProTable" resultType="org.dinky.data.model.rbac.Menu">

@@ -30,6 +30,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -94,6 +95,10 @@ public class Savepoints implements Serializable {
             dataType = "String",
             notes = "Timestamp indicating the creation time of the savepoint")
     private LocalDateTime createTime;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @TableField(fill = FieldFill.INSERT)
     @ApiModelProperty(value = "Creator", dataType = "String", notes = "Creator of the savepoint")

@@ -29,7 +29,6 @@ import javax.validation.constraints.NotNull;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import io.swagger.annotations.ApiModel;
@@ -79,10 +78,6 @@ public class User extends DateBaseEntity<User> implements Serializable {
 
     @ApiModelProperty(value = "Enabled", dataType = "Boolean", notes = "Whether the user is enabled")
     private Boolean enabled;
-
-    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
-    @TableLogic
-    private Boolean isDelete;
 
     @ApiModelProperty(value = "Super Admin Flag", dataType = "Boolean", notes = "Whether the user is a super admin")
     private Boolean superAdminFlag;

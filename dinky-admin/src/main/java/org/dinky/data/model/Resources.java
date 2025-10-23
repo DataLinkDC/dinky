@@ -27,6 +27,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -104,6 +105,10 @@ public class Resources extends Model<Resources> {
             dataType = "Boolean",
             notes = "Flag indicating if the resource is a directory")
     private Boolean isDirectory;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

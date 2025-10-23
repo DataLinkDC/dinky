@@ -13,17 +13,6 @@
 
     </resultMap>
 
-    <sql id="role">
-        select dr.id
-             , dr.tenant_id
-             , dr.role_code
-             , dr.role_name
-             , dr.note
-             , dr.create_time
-             , dr.update_time
-        from dinky_role dr
-
-    </sql>
     <select id="selectForProTable" resultType="org.dinky.data.model.rbac.Role">
         select
             a.*
@@ -54,53 +43,16 @@
         </where>
     </select>
 
-    <select id="getRoleByIds" resultType="org.dinky.data.model.rbac.Role">
-        select id
-        ,tenant_id
-        ,role_code
-        ,role_name
-        ,is_delete
-        ,note
-        ,create_time
-        ,update_time
-        from dinky_role
-        where id in
-        <foreach collection="roleIds" item="id" separator="," open="(" close=")" index="">
-            #{id}
-        </foreach>
-    </select>
-
-    <select id="getRoleByTenantIdAndIds" resultType="org.dinky.data.model.rbac.Role">
-        select id
-        ,tenant_id
-        ,role_code
-        ,role_name
-        ,is_delete
-        ,note
-        ,create_time
-        ,update_time
-        from dinky_role
-        <where>
-            1=1
-            <if test='tenantId!=null and tenantId!=""'>
-                and tenant_id = #{tenantId}
-            </if>
-            and id in
-            <foreach collection="roleIds" item="id" separator="," open="(" close=")" index="">
-                #{id}
-            </foreach>
-        </where>
-    </select>
 
     <select id="selectRolePermissionByUserId" parameterType="Integer" resultMap="roleResultMap">
         select distinct r.id, r.tenant_id, r.role_name, r.role_code, r.is_delete, r.note
         from dinky_role r
                  left join dinky_user_role urole on urole.role_id = r.id
                  left join dinky_user u on u.id = urole.user_id
-        WHERE r.is_delete = 0 and urole.user_id = #{userId}
+        WHERE r.is_delete = false and urole.user_id = #{userId} and u.is_delete = false and urole.is_delete = false
     </select>
 
     <select id="selectRoleListByUserId" parameterType="Integer" resultType="Integer">
-        select role_id from dinky_user_role where user_id = #{userId}
+        select role_id from dinky_user_role where user_id = #{userId} and is_delete = false
     </select>
 </mapper>

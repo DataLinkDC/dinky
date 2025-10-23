@@ -23,14 +23,7 @@ import org.dinky.data.model.rbac.Tenant;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
-import java.util.Set;
 
 /** tenant mapper interface */
 @Mapper
-public interface TenantMapper extends SuperMapper<Tenant> {
-
-    List<Tenant> getTenantByIds(@Param("tenantIds") Set<Integer> tenantIds);
-}
+public interface TenantMapper extends SuperMapper<Tenant> {}

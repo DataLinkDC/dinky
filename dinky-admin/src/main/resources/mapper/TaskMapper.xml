@@ -51,7 +51,7 @@
     <select id="getTaskByNameAndTenantId" resultType="org.dinky.data.model.Task">
         select *
         from dinky_task
-        where 1 = 1
+        where 1 = 1 and is_delete=false
           and name = #{name}
           and tenant_id = #{tenantId}
     </select>
@@ -59,39 +59,9 @@
     <select id="getTenantByTaskId" resultType="java.lang.Integer">
         select tenant_id
         from dinky_task
-        where id = #{id}
+        where id = #{id} and is_delete=false
     </select>
 
-    <select id="queryOnLineTaskByDoneStatus" resultType="org.dinky.data.model.Task">
-        select t.id as id, t.name as name
-        from dinky_task t
-        left join dinky_catalogue c on c.task_id = t.id
-        left join dinky_job_instance i on i.id = t.job_instance_id
-        where
-        c.parent_id in
-        <foreach collection="parentIds" item="parentId" open="(" close=")" separator=",">
-            #{parentId}
-        </foreach>
-        and c.task_id is not null
-        and c.is_leaf = 1
-        and t.step in
-        <foreach collection="stepIds" item="stepId" open="(" close=")" separator=",">
-            #{stepId}
-        </foreach>
-        and t.enabled = 1
-        <if test="includeNull == true">
-            and ((i.status is null) or (i.status in <foreach collection="jobStatuses" item="jobStatus" open="("
-                                                             close=")" separator=",">
-            #{jobStatus}
-        </foreach>))
-        </if>
-        <if test="includeNull != true">
-            and i.status in
-            <foreach collection="jobStatuses" item="jobStatus" open="(" close=")" separator=",">
-                #{jobStatus}
-            </foreach>
-        </if>
-    </select>
 
     <select id="getTaskOnlineRate" resultType="org.dinky.data.model.home.JobTypeOverView">
         SELECT dialect  jobType,
@@ -103,7 +73,7 @@
         100, 0),
         2) rate
         FROM dinky_task
-        WHERE enabled = 1
+        WHERE enabled = 1 and is_delete=false
         GROUP BY dialect
     </select>
 
@@ -114,7 +84,7 @@
         from (select case a.batch_model when 0 then 'streaming' when 1 then 'batch' end as batch_model,
                      coalesce(count(1), 0)                                                           as cnt
               from dinky_task a
-              where a.batch_model is not null
+              where a.batch_model is not null and a.enabled = 1 and a.is_delete = false
                 and a.dialect in (
                                   'FlinkSql',
                                   'FlinkJar',

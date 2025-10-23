@@ -34,7 +34,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "LoginLog", description = "Login Log Information")
 @TableName("dinky_sys_login_log")
@@ -84,9 +86,6 @@ public class LoginLog extends DateBaseEntity<LoginLog> implements Serializable {
 
     @ApiModelProperty(value = "Message", dataType = "String", notes = "Additional message or details about the login")
     private String msg;
-
-    @ApiModelProperty(value = "Is Deleted", dataType = "Boolean", notes = "Flag indicating if the login log is deleted")
-    private Boolean isDeleted;
 
     @ApiModelProperty(value = "Access Time", dataType = "String", notes = "Timestamp indicating the time of login")
     private LocalDateTime accessTime;

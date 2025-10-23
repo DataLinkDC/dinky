@@ -27,6 +27,7 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -102,6 +103,10 @@ public class JobInstance implements Serializable {
 
     @ApiModelProperty(value = "Error", dataType = "String", notes = "Error message associated with the job instance")
     private String error;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)

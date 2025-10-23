@@ -28,18 +28,4 @@
             </if>
         </where>
     </select>
-    <select id="getTenantByIds" resultType="org.dinky.data.model.rbac.Tenant">
-        select id
-              ,tenant_code
-              ,is_delete
-              ,note
-              ,create_time
-              ,update_time
-         from dinky_tenant a
-        where  1=1
-          and  id in
-        <foreach collection="tenantIds"  item="id" separator="," open="(" close=")" index="">
-            #{id}
-        </foreach>
-    </select>
 </mapper>

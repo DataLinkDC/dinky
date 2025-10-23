@@ -30,6 +30,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -51,7 +52,9 @@ import lombok.Setter;
 @ApiModel(value = "SuperEntity", description = "Super Base Entity", parent = Model.class)
 public class SuperEntity<T extends Model<?>> extends Model<T> {
 
-    /** 主键ID */
+    /**
+     * 主键ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value = "ID", required = true, dataType = "Integer", example = "1", notes = "Primary Key")
     private Integer id;
@@ -95,6 +98,10 @@ public class SuperEntity<T extends Model<?>> extends Model<T> {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "Updater", required = true, dataType = "String", example = "Updater")
     private Integer updater;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @Override
     public Serializable pkVal() {

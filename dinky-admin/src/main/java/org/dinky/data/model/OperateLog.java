@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -48,6 +49,10 @@ public class OperateLog implements Serializable {
             example = "User Management",
             notes = "Name of the operation module")
     private String moduleName;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @ApiModelProperty(
             value = "Business Type",

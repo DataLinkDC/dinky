@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -128,6 +129,10 @@ public class History implements Serializable {
             updateStrategy = FieldStrategy.NEVER)
     @ApiModelProperty(value = "Group by count", dataType = "Integer")
     private Long count;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @ApiModelProperty(hidden = true)
     public JobInstance buildJobInstance() {

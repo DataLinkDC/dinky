@@ -5,7 +5,7 @@
     <select id="getByIdWithoutTenant" resultType="org.dinky.data.model.job.JobHistory">
         select *
         from dinky_job_history
-        where id = #{id}
+        where id = #{id} and is_delete = false
         limit 1
     </select>
 

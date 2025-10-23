@@ -33,10 +33,6 @@ public interface MenuMapper extends SuperMapper<Menu> {
 
     List<Menu> listAllMenus();
 
-    List<Menu> selectMenuList(Menu menu);
-
-    List<String> selectMenuPerms();
-
     List<Menu> selectMenuListByUserId(Menu menu);
 
     List<String> selectMenuPermsByUserId(Integer userId);
@@ -45,11 +41,7 @@ public interface MenuMapper extends SuperMapper<Menu> {
 
     List<Menu> selectMenuTreeByUserId(@Param("userId") Integer userId);
 
-    List<Integer> selectMenuListByRoleId(Integer roleId);
-
     int hasChildByMenuId(Integer menuId);
-
-    Menu checkMenuNameUnique(@Param("name") String name, @Param("parentId") Integer parentId);
 
     List<String> selectMenuPermsByRoleId(Integer roleId);
 }

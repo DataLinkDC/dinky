@@ -31,6 +31,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -44,7 +45,7 @@ public enum SqliteUtil {
         try {
             SqliteUtil.INSTANCE.connect(
                     DirConstant.getTempRootDir() + DirConstant.FILE_SEPARATOR + MonitorTableConstant.DINKY_DB);
-            SqliteUtil.INSTANCE.recyleData();
+            SqliteUtil.INSTANCE.recycleData();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -60,17 +61,17 @@ public enum SqliteUtil {
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
-            log.error("Failed to create table: " + e.getMessage());
+            log.error("Failed to create table: {}", e.getMessage());
         }
     }
 
     public void executeSql(String sql) throws SQLException {
-        Statement pstmt = connection.createStatement();
-        pstmt.executeUpdate(sql);
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(sql);
         connection.commit();
     }
 
-    public void recyleData() {
+    public void recycleData() {
         long now = System.currentTimeMillis();
         if (now - lastRecycle.get() < 1000 * 60 * 60) {
             return;
@@ -81,7 +82,7 @@ public enum SqliteUtil {
             executeSql(sql);
             executeSql("VACUUM");
         } catch (SQLException e) {
-            log.error("Failed to recyle database: " + e.getMessage());
+            log.error("Failed to recycle database: {}", e.getMessage());
         }
     }
 
@@ -99,9 +100,9 @@ public enum SqliteUtil {
             pstmt.executeBatch();
             connection.commit();
         } catch (SQLException e) {
-            log.error("Failed to write to SQLite: " + e.getMessage());
+            log.error("Failed to write to SQLite: {}", e.getMessage());
         }
-        recyleData();
+        recycleData();
     }
 
     private static String createInsertSql(String tableName, List<String> columns) {
@@ -134,6 +135,7 @@ public enum SqliteUtil {
         }
     }
 
+    @Getter
     public static class PreparedResultSet implements AutoCloseable {
         private final PreparedStatement pstmt;
         private final ResultSet rs;
@@ -141,14 +143,6 @@ public enum SqliteUtil {
         public PreparedResultSet(PreparedStatement pstmt, ResultSet rs) {
             this.pstmt = pstmt;
             this.rs = rs;
-        }
-
-        public PreparedStatement getPstmt() {
-            return pstmt;
-        }
-
-        public ResultSet getRs() {
-            return rs;
         }
 
         @Override

@@ -63,12 +63,6 @@ public class Role extends DateBaseEntity<Role> implements Serializable {
     @ApiModelProperty(value = "Role Name", dataType = "String", example = "Administrator", notes = "Name of the role")
     private String roleName;
 
-    @ApiModelProperty(
-            value = "Is Delete",
-            dataType = "Boolean",
-            notes = "Flag indicating if the role is marked as deleted")
-    private Boolean isDelete;
-
     @ApiModelProperty(value = "Note", dataType = "String", notes = "Additional notes or details about the role")
     private String note;
 

@@ -31,12 +31,15 @@ import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.Properties;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Intercepts({
     @Signature(
             type = StatementHandler.class,
             method = "prepare",
             args = {Connection.class, Integer.class})
 })
+@Slf4j
 public class PostgreSQLPrepareInterceptor implements Interceptor {
     @Override
     public Object intercept(final Invocation invocation) throws Throwable {
@@ -44,12 +47,19 @@ public class PostgreSQLPrepareInterceptor implements Interceptor {
         BoundSql boundSql = statementHandler.getBoundSql();
         Field field = boundSql.getClass().getDeclaredField("sql");
         field.setAccessible(true);
+
+        field.set(boundSql, boundSql.getSql().replace("`", "\"").toLowerCase());
+        field.set(boundSql, boundSql.getSql().replaceAll("is_delete = 0", "is_delete = false"));
+        field.set(boundSql, boundSql.getSql().replaceAll("is_delete = 1", "is_delete = true"));
+        field.set(boundSql, boundSql.getSql().replaceAll("set is_delete = 0", "set is_delete = false"));
+        field.set(boundSql, boundSql.getSql().replaceAll("set is_delete = 1", "set is_delete = true"));
         field.set(
                 boundSql,
                 boundSql.getSql()
                         .replace("`", "\"")
                         .replace("concat('%', ?, '%')", "concat('%', ?::text, '%')")
                         .toLowerCase());
+
         return invocation.proceed();
     }
 

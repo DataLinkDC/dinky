@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -80,6 +81,10 @@ public class JobHistory implements Serializable {
             notes = "JSON representation of the job")
     @TableField(typeHandler = JSONObjectHandler.class)
     private FlinkJobDetailInfo jobJson;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @ApiModelProperty(
             value = "Exceptions JSON",

@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -59,6 +60,10 @@ public class TaskVersion implements Serializable {
     @ApiModelProperty(value = "Task ID", dataType = "Integer", notes = "ID of the task associated with this version")
     @TableField(value = "task_id")
     private Integer taskId;
+
+    @ApiModelProperty(value = "Is Delete", dataType = "Boolean", notes = "Whether the user is deleted")
+    @TableLogic
+    private Boolean isDelete;
 
     @ApiModelProperty(value = "Version ID", dataType = "Integer", notes = "ID of the version")
     @TableField(value = "version_id")

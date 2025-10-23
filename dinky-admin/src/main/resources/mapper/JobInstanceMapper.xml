@@ -5,7 +5,7 @@
     <select id="getByIdWithoutTenant" resultType="org.dinky.data.model.job.JobInstance">
         select *
         from dinky_job_instance
-        where id = #{id}
+        where id = #{id} and is_delete = false
         limit 1
     </select>
 
@@ -69,9 +69,10 @@
         from dinky_job_instance a
                  inner join (
             select max(ji.id) as id
-            from dinky_job_instance ji
+            from dinky_job_instance ji where ji.is_delete=false
             group by ji.task_id
         ) snap on snap.id = a.id
+            where a.is_delete = false
         group by status
     </select>
 
@@ -79,28 +80,30 @@
         select sum(case when b.batch then 1 else 0 end ) as batchJobCount,
                sum(case when b.batch then 0 else 1 end ) as streamingJobCount
         from (select batch_model as batch
-                 from (select max(ji.id) as id from dinky_job_instance ji group by ji.task_id) as a
+                 from (select max(ji.id) as id from dinky_job_instance ji where ji.is_delete=false group by ji.task_id) as a
         left join dinky_job_instance dji on dji.id = a.id
-        left join dinky_history dh on dji.history_id = dh.id) b
+        left join dinky_history dh on dji.history_id = dh.id
+             where dji.is_delete=false and dh.is_delete=false
+             ) b
     </select>
 
     <select id="listJobInstanceActive" resultType="org.dinky.data.model.job.JobInstance">
         select *
         from dinky_job_instance
-        where status not in ('FAILED', 'CANCELED', 'FINISHED', 'UNKNOWN')
+        where status not in ('FAILED', 'CANCELED', 'FINISHED', 'UNKNOWN') and is_delete = false
         order by id desc
     </select>
 
     <select id="getJobInstanceByTaskId" resultType="org.dinky.data.model.job.JobInstance">
         select *
         from dinky_job_instance
-        where task_id = #{id}
+        where task_id = #{id} and is_delete = false
         order by id desc limit 1
     </select>
 
     <select id="getTenantByJobInstanceId" resultType="java.lang.Integer">
         select tenant_id
         from dinky_job_instance
-        where id = #{id}
+        where id = #{id} and is_delete = false
     </select>
 </mapper>
