@@ -275,6 +275,7 @@ public class JobManager {
                 setCurrentSql(jobStatement.getStatement());
                 jobRunnerFactory.getJobRunner(jobStatement.getStatementType()).run(jobStatement);
             }
+            job.setEndTime(LocalDateTime.now());
             if (job.isFailed()) {
                 failed();
             } else {
