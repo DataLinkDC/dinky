@@ -22,6 +22,7 @@ package org.dinky.cdc.sql.catalog;
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.flink.table.FlinkTableObjectIdentifier;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 
@@ -46,7 +47,6 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         String catalogName = config.getSink().get("catalog.name");
         String sinkSchemaName = getSinkSchemaName(table);
         String tableName = getSinkTableName(table);
-        String sinkTableName = catalogName + ".`" + sinkSchemaName + "`.`" + tableName + "`";
         // Because the name of the view on Flink is not allowed to have -, it needs to be replaced with - here_
         String viewName = replaceViewNameMiddleLineToUnderLine("VIEW_" + table.getSchemaTableNameWithUnderline());
 
@@ -54,7 +54,10 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                 viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
         logger.info("Create {} temporaryView successful...", viewName);
 
-        createInsertOperations(table, viewName, sinkTableName);
+        createInsertOperations(
+                table,
+                FlinkTableObjectIdentifier.of(viewName),
+                FlinkTableObjectIdentifier.of(catalogName, sinkSchemaName, tableName));
     }
 
     @Override
