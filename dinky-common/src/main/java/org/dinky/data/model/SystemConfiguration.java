@@ -327,6 +327,11 @@ public class SystemConfiguration {
             .defaultValue(true)
             .note(Status.SYS_RESOURCE_SETTINGS_PATH_STYLE_ACCESS_NOTE);
 
+    private final Configuration<Boolean> isOwnerReference = key(Status.SYS_ENV_SETTINGS_IS_OWNER_REFERENCE)
+            .booleanType()
+            .defaultValue(true)
+            .note(Status.SYS_ENV_SETTINGS_IS_OWNER_REFERENCE_NOTE);
+
     /**
      * Initialize after spring bean startup
      */
@@ -453,5 +458,9 @@ public class SystemConfiguration {
             config.put("historyserver.archive.clean-expired-jobs", "true");
         }
         return config;
+    }
+
+    public Boolean isOwnerReference() {
+        return isOwnerReference.getValue();
     }
 }

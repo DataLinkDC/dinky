@@ -19,6 +19,7 @@
 
 package org.dinky.gateway.kubernetes.utils;
 
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.kubernetes.decorate.DinkySqlConfigMapDecorate;
 import org.dinky.gateway.kubernetes.watcher.DeploymentStatusWatcher;
 import org.dinky.utils.TextUtil;
@@ -125,17 +126,19 @@ public class K8sClientHelper {
         Deployment deployment = deploymentRollableScalableResource.get();
         List<HasMetadata> resources = getSqlFileDecorate().buildResources();
         // set owner reference
-        OwnerReference deploymentOwnerReference = new OwnerReferenceBuilder()
-                .withName(deployment.getMetadata().getName())
-                .withApiVersion(deployment.getApiVersion())
-                .withUid(deployment.getMetadata().getUid())
-                .withKind(deployment.getKind())
-                .withController(true)
-                .withBlockOwnerDeletion(true)
-                .build();
+        if (SystemConfiguration.getInstances().isOwnerReference()) {
+            OwnerReference deploymentOwnerReference = new OwnerReferenceBuilder()
+                    .withName(deployment.getMetadata().getName())
+                    .withApiVersion(deployment.getApiVersion())
+                    .withUid(deployment.getMetadata().getUid())
+                    .withKind(deployment.getKind())
+                    .withController(true)
+                    .withBlockOwnerDeletion(true)
+                    .build();
 
-        resources.forEach(resource ->
-                resource.getMetadata().setOwnerReferences(Collections.singletonList(deploymentOwnerReference)));
+            resources.forEach(resource ->
+                    resource.getMetadata().setOwnerReferences(Collections.singletonList(deploymentOwnerReference)));
+        }
         // create resources
         resources.forEach(resource -> log.info(Serialization.asYaml(resource)));
         deploymentRollableScalableResource.watch(deploymentStatusWatch);

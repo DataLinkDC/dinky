@@ -21,6 +21,7 @@ package org.dinky.gateway.kubernetes.ingress;
 
 import static org.dinky.assertion.Asserts.checkNotNull;
 
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.kubernetes.utils.K8sClientHelper;
 
 import java.util.Map;
@@ -47,13 +48,11 @@ public class DinkyKubernetesIngress {
 
     public void configureIngress(String clusterId, String domain, String namespace) {
         log.info("Dinky ingress configure ingress for cluster {} in namespace {}", clusterId, namespace);
-        OwnerReference ownerReference = getOwnerReference(namespace, clusterId);
-        Ingress ingress = new IngressBuilder()
+        IngressBuilder ingressBuilder = new IngressBuilder()
                 .withNewMetadata()
                 .withName(clusterId)
                 .addToAnnotations(buildIngressAnnotations(clusterId, namespace))
                 .addToLabels(buildIngressLabels(clusterId))
-                .addToOwnerReferences(ownerReference) // Add OwnerReference
                 .endMetadata()
                 .withNewSpec()
                 .addNewRule()
@@ -85,8 +84,15 @@ public class DinkyKubernetesIngress {
                 .endPath()
                 .endHttp()
                 .endRule()
-                .endSpec()
-                .build();
+                .endSpec();
+        if (SystemConfiguration.getInstances().isOwnerReference()) {
+            OwnerReference ownerReference = getOwnerReference(namespace, clusterId);
+            ingressBuilder = ingressBuilder
+                    .editOrNewMetadata()
+                    .addToOwnerReferences(ownerReference) // Add OwnerReference
+                    .endMetadata();
+        }
+        Ingress ingress = ingressBuilder.build();
         try (KubernetesClient kubernetesClient = k8sClientHelper.getKubernetesClient()) {
             kubernetesClient.network().v1().ingresses().inNamespace(namespace).create(ingress);
         }
