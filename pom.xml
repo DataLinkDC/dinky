@@ -66,6 +66,7 @@
         <flyway.version>7.15.0</flyway.version>
         <guava.version>31.1-jre</guava.version>
         <h2database.version>1.4.200</h2database.version>
+        <hadoop.version>3.3.2</hadoop.version>
         <hamcrest.version>1.3</hamcrest.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.13</httpclient.version>
