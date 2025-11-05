@@ -113,7 +113,8 @@ public class FlinkStatementUtil {
             sb.append(pksb);
         }
         sb.append(") WITH (\n");
-        sb.append(getSinkConfigurationString(config, sinkSchemaName, sinkTableName.getObjectName(), pkList));        sb.append(")\n");
+        sb.append(getSinkConfigurationString(config, sinkSchemaName, sinkTableName.getObjectName(), pkList));
+        sb.append(")\n");
         return sb.toString();
     }
 

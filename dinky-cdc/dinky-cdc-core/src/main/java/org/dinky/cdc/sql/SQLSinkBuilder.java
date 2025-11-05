@@ -73,7 +73,8 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                 }
 
                 config.setSink(config.getSinks().get(index));
-                addSinkInsert(table, viewName, newSinkTable, sinkSchemaName, sinkTable);            }
+                addSinkInsert(table, viewName, newSinkTable, sinkSchemaName, sinkTable);
+            }
         }
     }
 
