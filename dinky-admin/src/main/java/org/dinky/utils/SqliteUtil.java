@@ -65,9 +65,12 @@ public enum SqliteUtil {
     }
 
     public void executeSql(String sql) throws SQLException {
-        Statement pstmt = connection.createStatement();
-        pstmt.executeUpdate(sql);
-        connection.commit();
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(sql);
+            if (!connection.getAutoCommit()) {
+                connection.commit(); // Not called in auto-commit mode commit()
+            }
+        }
     }
 
     public void recyleData() {
