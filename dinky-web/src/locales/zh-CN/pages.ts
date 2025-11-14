@@ -222,6 +222,7 @@ export default {
   'devops.jobinfo.config.submitType': '提交模式',
   'devops.jobinfo.config.taskId': 'Dinky作业ID',
   'devops.jobinfo.config.useSqlFragment': '语句集',
+  'devops.jobinfo.config.numRestarts': '累计重启次数',
   'devops.jobinfo.job.key': '{key} 任务',
   'devops.jobinfo.job.key.success': '{key} 成功',
   'devops.jobinfo.job.keyConfirm': '确定 {key} 该作业吗？',

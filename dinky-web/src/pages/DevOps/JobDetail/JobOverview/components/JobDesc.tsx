@@ -93,6 +93,12 @@ const JobDesc = (props: JobProps) => {
             </Tag>
           </Descriptions.Item>
 
+          <Descriptions.Item label={l('devops.jobinfo.config.numRestarts')}>
+            <Tag color='red'>
+              {jobDetail?.instance?.failedRestartCount}
+            </Tag>
+          </Descriptions.Item>
+
           <Descriptions.Item label={l('devops.jobinfo.config.ClusterInstanceName')}>
             <Link to={'/registration/cluster/instance'}>{jobDetail?.clusterInstance?.alias}</Link>
           </Descriptions.Item>
