@@ -51,6 +51,7 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.catalogue.context.CatalogueTreeBuildContext;
 import org.dinky.service.catalogue.factory.CatalogueFactory;
 import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
 import org.dinky.service.catalogue.strategy.CatalogueTreeSortStrategy;
@@ -61,15 +62,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -141,11 +135,21 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     .collect(Collectors.toList());
         }
         List<Task> taskList = taskService.list();
+
+        Map<Integer, List<Catalogue>> childMap = catalogueList.stream()
+                .collect(Collectors.groupingBy(
+                        Catalogue::getParentId, LinkedHashMap::new, Collectors.toList()));
+        Map<Integer, Task> taskMap = taskList.stream()
+                .filter(task -> task.getId() != null)
+                .collect(Collectors.toMap(Task::getId, Function.identity(), (existing, replacement) -> existing));
+        CatalogueTreeBuildContext context = new CatalogueTreeBuildContext(childMap, taskMap);
+
+
         List<Catalogue> returnList = new ArrayList<>();
         for (Catalogue catalogue : catalogueList) {
             //  get all child catalogue of parent catalogue id , the 0 is root catalogue
             if (catalogue.getParentId() == 0) {
-                recursionBuildCatalogueAndChildren(catalogueList, catalogue, taskList);
+                recursionBuildCatalogueAndChildren(catalogue, context);
                 returnList.add(catalogue);
             }
         }
@@ -161,22 +165,18 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
      * @param list
      * @param catalogues
      */
-    private void recursionBuildCatalogueAndChildren(List<Catalogue> list, Catalogue catalogues, List<Task> taskList) {
-        // 得到子节点列表
-        List<Catalogue> childList = getChildList(list, catalogues);
+    private void recursionBuildCatalogueAndChildren(Catalogue catalogues, CatalogueTreeBuildContext context) {
+        List<Catalogue> childList = context.getChildren(catalogues.getId());
         catalogues.setChildren(childList);
         for (Catalogue tChild : childList) {
-            if (hasChild(list, tChild)) {
-                // Determine whether there are child nodes
-                for (Catalogue children : childList) {
-                    recursionBuildCatalogueAndChildren(list, children, taskList);
-                }
+            if (context.hasChild(tChild.getId())) {
+                recursionBuildCatalogueAndChildren(tChild, context);
             } else {
                 if (tChild.getIsLeaf() || null != tChild.getTaskId()) {
-                    taskList.stream()
-                            .filter(t -> t.getId().equals(tChild.getTaskId()))
-                            .findFirst()
-                            .ifPresent(tChild::setTaskAndNote);
+                    Task task = context.getTask(tChild.getTaskId());
+                    if (task != null) {
+                        tChild.setTaskAndNote(task);
+                    }
                 }
             }
         }
