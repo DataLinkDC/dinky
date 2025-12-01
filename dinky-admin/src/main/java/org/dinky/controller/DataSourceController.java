@@ -98,7 +98,7 @@ public class DataSourceController {
             mode = SaMode.OR)
     public Result<Void> saveOrUpdateDataBase(@RequestBody DataBaseDTO dataBaseDTO) {
         if (databaseService.saveOrUpdateDataBase(dataBaseDTO)) {
-            DriverPool.remove(dataBaseDTO.getName());
+            DriverPool.remove(dataBaseDTO.getName() + dataBaseDTO.getType());
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);

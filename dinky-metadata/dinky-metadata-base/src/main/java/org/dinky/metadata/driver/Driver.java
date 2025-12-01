@@ -76,23 +76,27 @@ public interface Driver extends AutoCloseable {
         }
     }
 
+    /**
+     * key只用connector无法区分，需要额外增加type。<br>
+     * 比如mysql、postgres的connector都是jdbc，需要由jdbc+MySQL、jdbc+PostgreSql来区分
+     */
     static Driver build(String name, String type, Map<String, Object> config) {
-        if (DriverPool.exist(name)) {
-            return getHealthDriver(name);
+        if (DriverPool.exist(name + type)) {
+            return getHealthDriver(name + type);
         }
         Driver driver = getDriver(type).buildDriverConfig(name, type, config).connect();
-        DriverPool.push(name, driver);
+        DriverPool.push(name + type, driver);
         return driver;
     }
 
     static <T> Driver build(DriverConfig<T> config) {
-        if (DriverPool.exist(config.getName())) {
-            return getHealthDriver(config.getName());
+        if (DriverPool.exist(config.getName() + config.getType())) {
+            return getHealthDriver(config.getName() + config.getType());
         }
         Driver driver = getDriver(config.getType())
                 .buildDriverConfig(config.getName(), config.getType(), config.getConnectConfig())
                 .connect();
-        DriverPool.push(config.getName(), driver);
+        DriverPool.push(config.getName() + config.getType(), driver);
         return driver;
     }
 
