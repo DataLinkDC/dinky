@@ -272,6 +272,7 @@ export type TaskState = {
   updateTime: Date;
   status: string;
   mockSinkFunction: boolean;
+  autoRestart?: boolean;
 };
 /**
  * @description:

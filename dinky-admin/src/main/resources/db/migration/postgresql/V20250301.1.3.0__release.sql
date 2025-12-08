@@ -79,3 +79,6 @@ insert into public.dinky_sys_menu (id, parent_id, name, path, component, perms, 
                               order_num, create_time, update_time, note)
 values (178, 177, '编辑', '/settings/globalsetting/approval/edit', null, 'settings:globalsetting:approval:edit',
         'EditOutlined', 'F', 0, 171, '2024-12-30 23:45:30', '2024-12-30 23:45:30', null);
+
+ALTER TABLE public.dinky_task ADD COLUMN IF NOT EXISTS auto_restart boolean DEFAULT FALSE;
+COMMENT ON COLUMN public.dinky_task.auto_restart IS '是否自动重启，当作业失败或UNKNOWN时自动从最新checkpoint重启';

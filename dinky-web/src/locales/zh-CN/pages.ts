@@ -512,6 +512,9 @@ export default {
   'pages.datastudio.label.jobConfig.savePointpath': 'Savepoint路径',
   'pages.datastudio.label.jobConfig.savePointpath.tip1': '从SavepointPath恢复Flink任务',
   'pages.datastudio.label.jobConfig.savePointpath.tip2': 'HDFS',
+  'pages.datastudio.label.jobConfig.autoRestart': '自动重启',
+  'pages.datastudio.label.jobConfig.autoRestart.tip':
+    '开启后，当平台监测到作业失败(FAILED)或未知(UNKNOWN)状态时，自动从最新的checkpoint重启作业',
   'pages.datastudio.label.jobInfo.dialect': '方言',
   'pages.datastudio.label.jobInfo.id': '任务ID',
   'pages.datastudio.label.jobInfo.name': '任务名称',

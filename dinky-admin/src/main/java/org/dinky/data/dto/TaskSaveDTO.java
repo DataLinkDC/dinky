@@ -165,6 +165,13 @@ public class TaskSaveDTO {
     @TableField(typeHandler = ListTypeHandler.class)
     private List<Integer> secondLevelOwners;
 
+    @ApiModelProperty(
+            value = "Auto Restart",
+            dataType = "Boolean",
+            example = "false",
+            notes = "Auto Restart option for the task")
+    private Boolean autoRestart;
+
     public Task toTaskEntity() {
         Task task = new Task();
         BeanUtil.copyProperties(this, task);

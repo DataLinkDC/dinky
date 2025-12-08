@@ -184,6 +184,14 @@ public class JobConfig {
     private Integer maxRowNum;
 
     @ApiModelProperty(
+            value = "Auto Restart",
+            dataType = "Boolean",
+            example = "false",
+            notes =
+                    "Whether to automatically restart the job from the latest checkpoint when it fails or becomes UNKNOWN")
+    private Boolean autoRestart;
+
+    @ApiModelProperty(
             value = "Flag indicating whether to mock sink function",
             dataType = "boolean",
             example = "true",

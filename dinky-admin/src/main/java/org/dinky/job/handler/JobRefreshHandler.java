@@ -41,6 +41,7 @@ import org.dinky.data.flink.watermark.FlinkJobNodeWaterMark;
 import org.dinky.data.model.ClusterInstance;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.ext.JobInfoDetail;
+import org.dinky.data.model.job.History;
 import org.dinky.data.model.job.JobInstance;
 import org.dinky.gateway.Gateway;
 import org.dinky.gateway.config.GatewayConfig;
@@ -52,6 +53,7 @@ import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
+import org.dinky.service.TaskService;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
@@ -83,12 +85,14 @@ public class JobRefreshHandler {
     private static final JobHistoryService jobHistoryService;
     private static final ClusterInstanceService clusterInstanceService;
     private static final HistoryService historyService;
+    private static final TaskService taskService;
 
     static {
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
         clusterInstanceService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceService.class);
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
+        taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
     }
 
     /**
@@ -170,7 +174,7 @@ public class JobRefreshHandler {
 
         boolean isTransition = false;
 
-        if (JobStatus.isTransition(jobInstance.getStatus())) {
+        if (JobStatus.isTransition(jobInstance.getStatus(), jobDataDto.getJob().getEndTime())) {
             Long finishTime = TimeUtil.localDateTimeToLong(jobInstance.getFinishTime());
             long duration = Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
                     .toMinutes();
@@ -217,6 +221,10 @@ public class JobRefreshHandler {
         if (isDone) {
             try {
                 log.debug("Job is done: {}->{}", jobInstance.getId(), jobInstance.getName());
+                // 检查是否需要自动重启
+                if (shouldAutoRestart(jobInstance, jobInfoDetail)) {
+                    tryAutoRestart(jobInstance, jobInfoDetail);
+                }
                 handleJobDone(jobInfoDetail);
             } catch (Exception e) {
                 log.error("failed handel job done：", e);
@@ -344,6 +352,94 @@ public class JobRefreshHandler {
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
         }
+    }
+
+    /**
+     * Check if the job should be auto-restarted.
+     *
+     * @param jobInstance The job instance.
+     * @param jobInfoDetail The job info detail.
+     * @return True if the job should be auto-restarted, false otherwise.
+     */
+    private static boolean shouldAutoRestart(JobInstance jobInstance, JobInfoDetail jobInfoDetail) {
+        String status = jobInstance.getStatus();
+        // 只对FAILED和UNKNOWN状态进行自动重启
+        if (!JobStatus.FAILED.getValue().equals(status)
+                && !JobStatus.UNKNOWN.getValue().equals(status)) {
+            return false;
+        }
+
+        // 检查任务配置中是否启用了自动重启
+        try {
+            History history = jobInfoDetail.getHistory();
+            if (Asserts.isNull(history) || Asserts.isNull(history.getConfigJson())) {
+                return false;
+            }
+
+            JobConfig jobConfig = history.getConfigJson();
+            Boolean autoRestart = jobConfig.getAutoRestart();
+            return Boolean.TRUE.equals(autoRestart);
+        } catch (Exception e) {
+            log.warn("Failed to check auto restart config for job {}: {}", jobInstance.getId(), e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Try to auto-restart the job from the latest checkpoint.
+     *
+     * @param jobInstance The job instance.
+     * @param jobInfoDetail The job info detail.
+     */
+    private static void tryAutoRestart(JobInstance jobInstance, JobInfoDetail jobInfoDetail) {
+        if (Asserts.isNull(jobInstance.getTaskId())) {
+            log.warn("Cannot auto restart job {}: taskId is null", jobInstance.getId());
+            return;
+        }
+
+        try {
+            // 获取最新的checkpoint路径
+            String checkpointPath = getLatestCheckpointPath(jobInfoDetail.getJobDataDto());
+            log.info("Auto restarting job {} from checkpoint: {}", jobInstance.getId(), checkpointPath);
+            taskService.restartTask(jobInstance.getTaskId(), checkpointPath);
+            log.info("Auto restart job {} triggered successfully", jobInstance.getId());
+        } catch (Exception e) {
+            log.error("Failed to auto restart job {}: {}", jobInstance.getId(), e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Get the latest checkpoint path from JobDataDto.
+     *
+     * @param jobDataDto The job data DTO.
+     * @return The latest checkpoint path, or null if not found.
+     */
+    private static String getLatestCheckpointPath(JobDataDto jobDataDto) {
+        if (Asserts.isNull(jobDataDto) || Asserts.isNull(jobDataDto.getCheckpoints())) {
+            return null;
+        }
+
+        CheckPointOverView checkpoints = jobDataDto.getCheckpoints();
+        CheckPointOverView.LatestCheckpoints latestCheckpoints = checkpoints.getLatestCheckpoints();
+        if (Asserts.isNull(latestCheckpoints)) {
+            return null;
+        }
+
+        // 优先使用completed checkpoint
+        CheckPointOverView.CompletedCheckpointStatistics completedCheckpoint =
+                latestCheckpoints.getCompletedCheckpointStatistics();
+        if (Asserts.isNotNull(completedCheckpoint) && Asserts.isNotNullString(completedCheckpoint.getExternalPath())) {
+            return completedCheckpoint.getExternalPath();
+        }
+
+        // 如果没有completed checkpoint，尝试使用savepoint
+        CheckPointOverView.CompletedCheckpointStatistics savepointStatistics =
+                latestCheckpoints.getSavepointStatistics();
+        if (Asserts.isNotNull(savepointStatistics) && Asserts.isNotNullString(savepointStatistics.getExternalPath())) {
+            return savepointStatistics.getExternalPath();
+        }
+
+        return null;
     }
 
     /**

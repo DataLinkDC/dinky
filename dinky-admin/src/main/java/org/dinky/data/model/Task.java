@@ -161,6 +161,14 @@ public class Task extends SuperEntity<Task> {
             notes = "ID of the version associated with the task")
     private Integer versionId;
 
+    @ApiModelProperty(
+            value = "Auto Restart",
+            dataType = "Boolean",
+            example = "false",
+            notes =
+                    "Whether to automatically restart the job from the latest checkpoint when it fails or becomes UNKNOWN")
+    private Boolean autoRestart;
+
     @ApiModelProperty(value = "Enabled", dataType = "Boolean", example = "true", notes = "Whether the task is enabled")
     private Boolean enabled;
 

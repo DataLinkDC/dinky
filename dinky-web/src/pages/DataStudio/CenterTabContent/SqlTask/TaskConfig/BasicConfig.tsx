@@ -155,6 +155,18 @@ export const BasicConfig = (props: {
           options={buildAlertGroupOptions(alertGroup)}
           allowClear={false}
         />
+
+        <ProFormSwitch
+          label={l('pages.datastudio.label.jobConfig.autoRestart')}
+          name='autoRestart'
+          valuePropName='checked'
+          tooltip={{
+            title: l('pages.datastudio.label.jobConfig.autoRestart.tip'),
+            icon: <InfoCircleOutlined />
+          }}
+          {...SWITCH_OPTIONS()}
+        />
+
         <ProFormFlinkConfig
           containerWidth={containerWidth}
           flinkConfigOptions={flinkConfigOptions}

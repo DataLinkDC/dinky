@@ -1349,6 +1349,7 @@ CREATE TABLE `dinky_task`  (
                              `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Job Note',
                              `step` int(11) NULL DEFAULT 1 COMMENT 'Job lifecycle,',
                              `job_instance_id` bigint(20) NULL DEFAULT NULL COMMENT 'job instance id',
+                             `auto_restart` tinyint(1) NULL DEFAULT 0 COMMENT '是否自动重启，当作业失败或UNKNOWN时自动从最新checkpoint重启',
                              `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
                              `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                              `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',

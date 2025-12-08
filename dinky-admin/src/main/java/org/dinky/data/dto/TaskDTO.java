@@ -157,6 +157,14 @@ public class TaskDTO extends AbstractStatementDTO {
             notes = "ID of the version associated with the task")
     private Integer versionId;
 
+    @ApiModelProperty(
+            value = "Auto Restart",
+            dataType = "Boolean",
+            example = "false",
+            notes =
+                    "Whether to automatically restart the job from the latest checkpoint when it fails or becomes UNKNOWN")
+    private Boolean autoRestart;
+
     @ApiModelProperty(value = "Enabled", required = true, dataType = "Boolean", example = "true")
     private Boolean enabled;
 

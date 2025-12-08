@@ -70,5 +70,7 @@ insert into `dinky_sys_menu` (`id`, `parent_id`, `name`, `path`, `component`, `p
 values (178, 177, '编辑', '/settings/globalsetting/approval/edit', null, 'settings:globalsetting:approval:edit',
         'EditOutlined', 'F', 0, 171, '2024-12-30 23:45:30', '2024-12-30 23:45:30', null);
 
+ALTER TABLE `dinky_task` ADD COLUMN `auto_restart` tinyint(1) NULL DEFAULT 0 COMMENT '是否自动重启，当作业失败或UNKNOWN时自动从最新checkpoint重启';
+
 SET
     FOREIGN_KEY_CHECKS = 1;

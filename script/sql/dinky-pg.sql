@@ -2726,6 +2726,7 @@ CREATE TABLE dinky_task
     note                     varchar(255),
     step                     int                         DEFAULT 1,
     job_instance_id          bigint,
+    auto_restart                  boolean            NOT NULL DEFAULT false,
     enabled                  boolean            NOT NULL DEFAULT true,
     create_time              timestamp          NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_time              timestamp          NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -2761,6 +2762,7 @@ COMMENT ON COLUMN dinky_task.config_json IS 'configuration json';
 COMMENT ON COLUMN dinky_task.note IS 'Job Note';
 COMMENT ON COLUMN dinky_task.step IS 'Job lifecycle';
 COMMENT ON COLUMN dinky_task.job_instance_id IS 'job instance id';
+COMMENT ON COLUMN dinky_task.auto_restart IS '是否自动重启，当作业失败或UNKNOWN时自动从最新checkpoint重启';
 COMMENT ON COLUMN dinky_task.enabled IS 'is enable';
 COMMENT ON COLUMN dinky_task.create_time IS 'create_time';
 COMMENT ON COLUMN dinky_task.update_time IS 'update_time';

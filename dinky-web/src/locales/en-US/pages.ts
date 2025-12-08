@@ -576,6 +576,9 @@ export default {
   'pages.datastudio.label.jobConfig.savePointpath': 'Savepoint Path',
   'pages.datastudio.label.jobConfig.savePointpath.tip1': 'Restore Flink task from Savepoint path',
   'pages.datastudio.label.jobConfig.savePointpath.tip2': 'hdfs',
+  'pages.datastudio.label.jobConfig.autoRestart': 'Auto Restart',
+  'pages.datastudio.label.jobConfig.autoRestart.tip':
+    'When enabled, the platform will automatically restart the job from the latest checkpoint when it detects that the job has failed (FAILED) or is in an unknown (UNKNOWN) state',
   'pages.datastudio.label.jobInfo.dialect': 'Dialect',
   'pages.datastudio.label.jobInfo.id': 'Job ID',
   'pages.datastudio.label.jobInfo.name': 'Job name',

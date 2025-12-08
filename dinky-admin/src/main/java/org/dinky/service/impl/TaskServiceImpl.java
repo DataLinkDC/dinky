@@ -326,8 +326,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 sql += envTask.getStatement() + CommonConstant.LineSep;
             }
         }
-        log.info("Initializing data permissions...");
-        userService.buildRowPermission();
+        /*log.info("Initializing data permissions...");
+        userService.buildRowPermission();*/
         log.info("Finish initialize FlinkSQLEnv.");
         return sql;
     }
