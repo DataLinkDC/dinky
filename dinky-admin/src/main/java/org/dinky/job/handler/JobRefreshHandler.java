@@ -174,7 +174,9 @@ public class JobRefreshHandler {
 
         boolean isTransition = false;
 
-        if (JobStatus.isTransition(jobInstance.getStatus(), jobDataDto.getJob().getEndTime())) {
+        if (JobStatus.isTransition(
+                jobInstance.getStatus(),
+                Asserts.isNull(jobDataDto.getJob()) ? null : jobDataDto.getJob().getEndTime())) {
             Long finishTime = TimeUtil.localDateTimeToLong(jobInstance.getFinishTime());
             long duration = Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
                     .toMinutes();

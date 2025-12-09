@@ -112,7 +112,7 @@ public enum JobStatus {
     public static boolean isTransition(String value, Long endTime) {
         switch (get(value)) {
             case FAILED:
-                return endTime == null || endTime == -1;
+                return endTime == -1;
             case RECONNECTING:
                 return true;
             default:
