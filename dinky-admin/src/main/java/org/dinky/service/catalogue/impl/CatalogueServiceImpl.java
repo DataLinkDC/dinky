@@ -66,12 +66,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.LinkedHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -146,13 +146,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         List<Task> taskList = taskService.list();
 
         Map<Integer, List<Catalogue>> childMap = catalogueList.stream()
-                .collect(Collectors.groupingBy(
-                        Catalogue::getParentId, LinkedHashMap::new, Collectors.toList()));
+                .collect(Collectors.groupingBy(Catalogue::getParentId, LinkedHashMap::new, Collectors.toList()));
         Map<Integer, Task> taskMap = taskList.stream()
                 .filter(task -> task.getId() != null)
                 .collect(Collectors.toMap(Task::getId, Function.identity(), (existing, replacement) -> existing));
         CatalogueTreeBuildContext context = new CatalogueTreeBuildContext(childMap, taskMap);
-
 
         List<Catalogue> returnList = new ArrayList<>();
         for (Catalogue catalogue : catalogueList) {

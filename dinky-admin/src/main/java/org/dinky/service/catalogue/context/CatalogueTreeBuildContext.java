@@ -16,15 +16,17 @@
  *  limitations under the License.
  *
  */
+
 package org.dinky.service.catalogue.context;
 
-import cn.hutool.core.collection.CollectionUtil;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import cn.hutool.core.collection.CollectionUtil;
 
 public class CatalogueTreeBuildContext {
     private final Map<Integer, List<Catalogue>> childMap;
