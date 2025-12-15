@@ -241,7 +241,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 } catch (GatewayException e) {
                     throw e;
                 } catch (Exception ex) {
-                    logger.error("Get job status failed,{}", ex.getMessage());
+                    logger.error("Get job status failed.", ex);
                 }
             }
             Thread.sleep(5000);
