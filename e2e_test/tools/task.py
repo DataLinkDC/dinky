@@ -26,8 +26,8 @@ class FlinkRunMode(Enum):
 
     @staticmethod
     def getAllMode():
-        # todo 这里暂时剔除 local，因为并发场景下，会出现接口卡住问题
-        return [FlinkRunMode.STANDALONE, FlinkRunMode.YARN_APPLICATION, FlinkRunMode.KUBERNETES_APPLICATION]
+        # todo 这里暂时剔除 local，因为并发场景下，会出现接口卡住问题。由于资源限制暂时去除 FlinkRunMode.KUBERNETES_APPLICATION
+        return [FlinkRunMode.STANDALONE, FlinkRunMode.YARN_APPLICATION]
 
 
 class Task:
