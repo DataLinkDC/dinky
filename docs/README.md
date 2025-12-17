@@ -4,24 +4,17 @@
 
 ## 条件
 
-Dinky 网站基于 Docusaurus 。如果您的 Docusaurus 版本低于 2.2.0，请升级到 2.2.0。另请确保您的Node版本为 18+。
+Dinky 网站基于 Docusaurus 。如果您的 Docusaurus 版本低于 3.9.2，请升级到 3.9.2。另请确保您的Node版本为 18+。
 
 ### 安装
 
 ```shell
-yarn  
-或者
-npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps --registry https://repo.huaweicloud.com/repository/npm/
-
+pnpm install
 ```
 ### 本地启动
 
 ```shell
-yarn start
-或者 
-npm run start
-或者 
-npx docusaurus start [--port 3111 ] [--host localhost ]
+pnpm run start
 ```
 默认端口为 3000
 
@@ -29,16 +22,14 @@ npx docusaurus start [--port 3111 ] [--host localhost ]
 
 ### 编译
 
-```
-yarn build 
-或者
-npm run build
+```shell
+pnpm run build
 ```
 
 
 ## 生成新版本
 ```shell
-npm run docusaurus docs:version 0.7
+pnpm run docusaurus docs:version 0.7
 ```
 
 ## 生成国际化json
