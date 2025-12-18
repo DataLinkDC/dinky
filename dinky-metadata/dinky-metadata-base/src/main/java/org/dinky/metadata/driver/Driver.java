@@ -146,7 +146,7 @@ public interface Driver extends AutoCloseable {
                 .username(username)
                 .password(password)
                 .build();
-        return build(connector, type, JsonUtils.toMap(config));
+        return buildWithOutPool(url, type, JsonUtils.toMap(config));
     }
 
     <T> Driver buildDriverConfig(String name, String type, T config);
