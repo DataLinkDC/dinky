@@ -33,6 +33,7 @@ public class FlinkCDCConfig {
 
     public static final String SINK_DB = "sink.db";
     public static final String AUTO_CREATE = "auto.create";
+    public static final String AUTO_CREATE_OPTIONS = "auto.create.options";
     public static final String TABLE_PREFIX = "table.prefix";
     public static final String TABLE_SUFFIX = "table.suffix";
     public static final String TABLE_UPPER = "table.upper";
@@ -151,6 +152,7 @@ public class FlinkCDCConfig {
         switch (key) {
             case SINK_DB:
             case AUTO_CREATE:
+            case AUTO_CREATE_OPTIONS:
             case TABLE_PREFIX:
             case TABLE_SUFFIX:
             case TABLE_UPPER:

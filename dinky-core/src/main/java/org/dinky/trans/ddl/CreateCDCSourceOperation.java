@@ -131,9 +131,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     schemaList.add(schema);
 
                     if (null != sinkDriver) {
+                        final String createTableOptions = config.getSink().get(FlinkCDCConfig.AUTO_CREATE_OPTIONS);
                         Table sinkTable = (Table) table.clone();
                         sinkTable.setSchema(sinkBuilder.getSinkSchemaName(table));
                         sinkTable.setName(sinkBuilder.getSinkTableName(table));
+                        sinkTable.setOptions(createTableOptions);
                         checkAndCreateSinkTable(sinkDriver, sinkTable);
                     }
                 }
@@ -170,10 +172,12 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     }
 
                     if (null != sinkDriver) {
+                        final String createTableOptions = config.getSink().get(FlinkCDCConfig.AUTO_CREATE_OPTIONS);
                         for (Table table : schema.getTables()) {
                             Table sinkTable = (Table) table.clone();
                             sinkTable.setSchema(sinkBuilder.getSinkSchemaName(table));
                             sinkTable.setName(sinkBuilder.getSinkTableName(table));
+                            sinkTable.setOptions(createTableOptions);
                             checkAndCreateSinkTable(sinkDriver, sinkTable);
                         }
                     }
