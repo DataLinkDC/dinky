@@ -108,6 +108,11 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     }
 
     @Transient
+    public List<String> getPrimaryKeys() {
+        return columns.stream().filter(Column::isKeyFlag).map(Column::getName).collect(Collectors.toList());
+    }
+
+    @Transient
     public String getFlinkTableWith(String flinkConfig) {
         if (Asserts.isNotNullString(flinkConfig)) {
             Map<String, String> replacements = new HashMap<>();

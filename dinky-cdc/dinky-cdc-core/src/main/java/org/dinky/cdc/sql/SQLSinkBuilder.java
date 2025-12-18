@@ -28,10 +28,16 @@ import org.dinky.data.model.Table;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.table.api.Schema;
+import org.apache.flink.table.catalog.Column;
+import org.apache.flink.table.catalog.ResolvedSchema;
+import org.apache.flink.table.catalog.UniqueConstraint;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.types.AtomicDataType;
 import org.apache.flink.types.Row;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
@@ -48,9 +54,19 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     private FlinkTableObjectIdentifier addSourceTableView(DataStream<Row> rowDataDataStream, Table table) {
         // Because the name of the view on Flink is not allowed to have -, it needs to be replaced with - here_
         String viewName = replaceViewNameMiddleLineToUnderLine("VIEW_" + table.getSchemaTableNameWithUnderline());
-
+        final ResolvedSchema resolvedSchema =
+                customTableEnvironment.fromChangelogStream(rowDataDataStream).getResolvedSchema();
+        List<Column> columns = new ArrayList<>();
+        for (Column column : resolvedSchema.getColumns()) {
+            columns.add(column.copy(new AtomicDataType(
+                    column.getDataType().getLogicalType().copy(false),
+                    column.getDataType().getConversionClass())));
+        }
+        final UniqueConstraint primaryKey = UniqueConstraint.primaryKey(viewName + "_pk", table.getPrimaryKeys());
+        final ResolvedSchema sinkSchema = new ResolvedSchema(columns, resolvedSchema.getWatermarkSpecs(), primaryKey);
+        final Schema schema = Schema.newBuilder().fromResolvedSchema(sinkSchema).build();
         customTableEnvironment.createTemporaryView(
-                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream));
+                viewName, customTableEnvironment.fromChangelogStream(rowDataDataStream, schema));
         logger.info("Create {} temporaryView successful...", viewName);
         return FlinkTableObjectIdentifier.of(viewName);
     }
