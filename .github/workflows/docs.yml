@@ -25,10 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v4
       - name: Build documentation
         run: |
-          cd docs && pnpm install && pnpm run build
+          cd docs && npm install -g pnpm && pnpm install && pnpm run build
       - name: Upload documentation
         uses: burnett01/rsync-deployments@5.2
         with:
