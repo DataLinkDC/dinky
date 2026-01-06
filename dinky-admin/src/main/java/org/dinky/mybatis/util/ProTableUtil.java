@@ -73,7 +73,7 @@ public class ProTableUtil {
 
     private static void buildSort(
             String sortField, String sortValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
-        if (sortField != null && sortValue != null) {
+        if (sortField != null && sortValue != null && !"undefined".equals(sortField)) {
             if (camelToUnderscore) {
                 sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
             }
@@ -91,7 +91,7 @@ public class ProTableUtil {
 
     private static void buildFilter(
             String searchField, JsonNode searchValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
-        if (searchField != null && !searchField.equals("") && searchValue != null) {
+        if (searchField != null && !searchField.equals("") && !"undefined".equals(searchField) && searchValue != null) {
             if (camelToUnderscore) {
                 searchField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, searchField);
             }
