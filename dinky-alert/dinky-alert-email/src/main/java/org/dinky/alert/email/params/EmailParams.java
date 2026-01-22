@@ -38,7 +38,7 @@ public class EmailParams {
     private Integer serverPort;
     private String sender;
     private Boolean enableSmtpAuth;
-    private Boolean starttlsEnable;
+    private Boolean starttlsEnable = false;
     private Boolean sslEnable;
     private String user;
     private String password;

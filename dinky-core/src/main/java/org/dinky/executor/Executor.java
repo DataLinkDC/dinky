@@ -190,6 +190,8 @@ public abstract class Executor {
         if (executorConfig.isValidConfig()) {
             for (Map.Entry<String, String> entry : executorConfig.getConfig().entrySet()) {
                 configuration.setString(entry.getKey(), entry.getValue());
+                setConfig.put(entry.getKey(), entry.getValue());
+                logger.info("setConfig key: [{}], value: [{}]", entry.getKey(), entry.getValue());
             }
         }
         if (executorConfig.isValidVariables()) {
