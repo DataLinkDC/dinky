@@ -87,6 +87,38 @@ class TableTest {
         flinkConfig = "#{schemaName}=schemaName, #{tableName}=tableName, #{abc}=abc, #{}=null, bcd=bcd";
     }
 
+    // ---- sinkTable field (added in this commit) ----
+
+    @Test
+    void sinkTable_defaultIsNull() {
+        assertThat(table.getSinkTable(), equalTo(null));
+    }
+
+    @Test
+    void sinkTable_setAndGet() {
+        Table sink = new Table("sink_orders", "target_schema", null);
+        table.setSinkTable(sink);
+        assertThat(table.getSinkTable(), equalTo(sink));
+        assertThat(table.getSinkTable().getName(), equalTo("sink_orders"));
+    }
+
+    @Test
+    void sinkTable_doesNotAffectSourceTableFields() {
+        Table sink = new Table("sink_orders", "target_schema", null);
+        table.setSinkTable(sink);
+        // Source table fields must remain unchanged
+        assertThat(table.getName(), equalTo("TableNameOrigin"));
+        assertThat(table.getSchema(), equalTo("SchemaOrigin"));
+    }
+
+    @Test
+    void sinkTable_canBeResetToNull() {
+        Table sink = new Table("sink_orders", "target_schema", null);
+        table.setSinkTable(sink);
+        table.setSinkTable(null);
+        assertThat(table.getSinkTable(), equalTo(null));
+    }
+
     @Test
     void getFlinkDDL() {
         String result = table.getFlinkDDL(flinkConfig, "NewTableName");
