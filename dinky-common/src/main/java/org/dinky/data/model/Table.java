@@ -67,6 +67,9 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     private List<Column> columns;
 
+    /** The sink table for the source table */
+    private Table sinkTable;
+
     /** 驱动类型, @see org.dinky.metadata.enums.DriverType */
     private String driverType;
 

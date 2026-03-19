@@ -100,12 +100,16 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             FlinkTableObjectIdentifier targetTable,
             String sinkSchemaName,
             FlinkTableObjectIdentifier sinkTable) {
-        String pkList = StringUtils.join(getPKList(table), ".");
-        String flinkDDL = FlinkStatementUtil.getFlinkDDL(table, targetTable, config, sinkSchemaName, sinkTable, pkList);
+        Table sinkTableObject = table.getSinkTable();
+        if (sinkTableObject == null) {
+            sinkTableObject = table;
+        }
+        String pkList = StringUtils.join(getPKList(sinkTableObject), ".");
+        String flinkDDL = FlinkStatementUtil.getFlinkDDL(sinkTableObject, targetTable, config, sinkSchemaName, sinkTable, pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
         logger.info("Create {} FlinkSQL DDL successful...", targetTable);
-        return createInsertOperations(table, sourceTable, targetTable);
+        return createInsertOperations(sinkTableObject, sourceTable, targetTable);
     }
 
     @Override

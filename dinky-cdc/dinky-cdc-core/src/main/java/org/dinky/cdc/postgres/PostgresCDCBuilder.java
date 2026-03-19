@@ -118,4 +118,29 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
     protected String getMetadataType() {
         return METADATA_TYPE;
     }
+
+    @Override
+    public Map<String, String> parseMetaDataConfig() {
+        String url = String.format(
+                "jdbc:postgres://%s:%d/%s",
+                config.getHostname(), config.getPort(), composeJdbcProperties(config.getJdbc()));
+        return parseMetaDataSingleConfig(url);
+    }
+
+    private String composeJdbcProperties(Map<String, String> jdbcProperties) {
+        if (jdbcProperties == null || jdbcProperties.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('?');
+        jdbcProperties.forEach((k, v) -> {
+            sb.append(k);
+            sb.append("=");
+            sb.append(v);
+            sb.append("&");
+        });
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
 }
