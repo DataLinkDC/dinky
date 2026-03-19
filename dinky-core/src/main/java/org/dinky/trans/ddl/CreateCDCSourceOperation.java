@@ -130,7 +130,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     table.setColumns(driver.listColumnsSortByPK(realSchemaName, tableName));
                     schemaList.add(schema);
                     Driver sinkRealDriver = getDriver(config, schemaName);
-                    final List<Table> sinkTables= getSinkTables(config, schemaName);
+                    final List<Table> sinkTables = getSinkTables(config, schemaName);
                     setSinkTable(table, sinkTables, sinkBuilder, sinkRealDriver);
                     if (null != sinkDriver) {
                         final String createTableOptions = config.getSink().get(FlinkCDCConfig.AUTO_CREATE_OPTIONS);
@@ -154,7 +154,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
 
                     final List<Table> tables = driver.listTables(schemaName);
                     Driver sinkRealDriver = getDriver(config, schemaName);
-                    final List<Table> sinkTables= getSinkTables(config, schemaName);
+                    final List<Table> sinkTables = getSinkTables(config, schemaName);
                     for (Table table : tables) {
                         if (!Asserts.isEquals(table.getType(), "VIEW")) {
                             if (Asserts.isNotNullCollection(tableRegList)) {
@@ -229,7 +229,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         return tableResultBuilder.build();
     }
 
-    private static void setSinkTable(Table table, List<Table> sinkTables, SinkBuilder sinkBuilder, Driver sinkRealDriver) {
+    private static void setSinkTable(
+            Table table, List<Table> sinkTables, SinkBuilder sinkBuilder, Driver sinkRealDriver) {
         String sinkTableName = sinkBuilder.getSinkTableName(table);
         for (Table sinkTable : sinkTables) {
             String sinkTableSchema = sinkTable.getSchema();

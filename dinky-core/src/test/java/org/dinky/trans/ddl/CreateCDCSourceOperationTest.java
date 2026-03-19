@@ -47,15 +47,14 @@ class CreateCDCSourceOperationTest {
     @BeforeEach
     void setUp() throws Exception {
         setSinkTableMethod = CreateCDCSourceOperation.class.getDeclaredMethod(
-                "setSinkTable", Table.class, List.class, SinkBuilder.class,
-                org.dinky.metadata.driver.Driver.class);
+                "setSinkTable", Table.class, List.class, SinkBuilder.class, org.dinky.metadata.driver.Driver.class);
         setSinkTableMethod.setAccessible(true);
 
         sinkBuilder = mock(SinkBuilder.class);
     }
 
-    private void invoke(Table table, List<Table> sinkTables, SinkBuilder sb,
-            org.dinky.metadata.driver.Driver driver) throws Exception {
+    private void invoke(Table table, List<Table> sinkTables, SinkBuilder sb, org.dinky.metadata.driver.Driver driver)
+            throws Exception {
         setSinkTableMethod.invoke(null, table, sinkTables, sb, driver);
     }
 
@@ -119,8 +118,7 @@ class CreateCDCSourceOperationTest {
         when(sinkBuilder.getSinkTableName(sourceTable)).thenReturn("orders");
 
         org.dinky.metadata.driver.Driver driver = mock(org.dinky.metadata.driver.Driver.class);
-        when(driver.listColumnsSortByPK("public", "orders"))
-                .thenReturn(Collections.emptyList());
+        when(driver.listColumnsSortByPK("public", "orders")).thenReturn(Collections.emptyList());
 
         invoke(sourceTable, Collections.singletonList(sinkTable), sinkBuilder, driver);
 

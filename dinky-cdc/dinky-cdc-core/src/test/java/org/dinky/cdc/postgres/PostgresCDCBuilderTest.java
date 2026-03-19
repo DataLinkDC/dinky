@@ -108,7 +108,10 @@ public class PostgresCDCBuilderTest {
         Assert.assertTrue("URL should contain sslmode param", url.contains("sslmode=require"));
         Assert.assertFalse("URL must not end with '&'", url.endsWith("&"));
         // Exactly one '?' in the query string part
-        Assert.assertEquals("URL should have exactly one '?'", 1, url.chars().filter(c -> c == '?').count());
+        Assert.assertEquals(
+                "URL should have exactly one '?'",
+                1,
+                url.chars().filter(c -> c == '?').count());
     }
 
     /** Host / port embedded correctly in URL */
