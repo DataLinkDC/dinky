@@ -179,7 +179,7 @@ public class JobJarRunner extends AbstractJobRunner {
                         ? savePointPath
                         : configJson.get(SavepointConfigOptions.SAVEPOINT_PATH.key());
                 JarSubmitParam submitParam = JarSubmitParam.getInfo(jobStatement.getStatement());
-                boolean allowNonRestored = Boolean.TRUE.equals(submitParam.getAllowNonRestoredState());
+                boolean allowNonRestored = submitParam.getAllowNonRestoredState();
                 log.info(
                         "Setting savepoint restore settings, path: {}, allowNonRestoredState: {}",
                         effectivePath,
