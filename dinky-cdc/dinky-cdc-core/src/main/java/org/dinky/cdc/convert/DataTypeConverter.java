@@ -100,8 +100,15 @@ public class DataTypeConverter {
                 return new VarBinaryType(Integer.MAX_VALUE);
             case STRING:
             default:
-                return new VarCharType(Asserts.isNull(column.getLength()) ? Integer.MAX_VALUE : column.getLength());
+                return new VarCharType(normalizeVarCharLength(column.getLength()));
         }
+    }
+
+    private static int normalizeVarCharLength(Integer length) {
+        if (Asserts.isNull(length) || length < VarCharType.MIN_LENGTH) {
+            return VarCharType.MAX_LENGTH;
+        }
+        return length;
     }
 
     public static Object convertToRow(Object value, LogicalType logicalType, ZoneId timeZone) {

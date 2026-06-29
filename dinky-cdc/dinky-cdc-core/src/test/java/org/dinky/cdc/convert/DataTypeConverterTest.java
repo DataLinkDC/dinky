@@ -19,13 +19,35 @@
 
 package org.dinky.cdc.convert;
 
+import org.dinky.data.model.Column;
+import org.dinky.data.types.DataTypes;
+
+import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.VarCharType;
 
 import java.time.ZoneId;
 
 import org.junit.Assert;
+import org.junit.Test;
 
 public class DataTypeConverterTest {
+
+    @Test
+    public void testGetLogicalTypeWithZeroLengthString() {
+        Column column = Column.builder()
+                .name("enum_column")
+                .type("VARCHAR")
+                .isNullable(true)
+                .length(0)
+                .dataType(DataTypes.VARCHAR.toColumnType(true, 0))
+                .build();
+
+        LogicalType logicalType = DataTypeConverter.getLogicalType(column);
+
+        Assert.assertTrue(logicalType instanceof VarCharType);
+        Assert.assertEquals(VarCharType.MAX_LENGTH, ((VarCharType) logicalType).getLength());
+    }
 
     // todo: check the time zone of Timestamp
     //    @Test
