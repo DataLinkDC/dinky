@@ -23,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.dinky.data.model.Column;
 import org.dinky.data.model.Table;
+import org.dinky.data.types.ColumnType;
 import org.dinky.data.types.DataTypes;
+import org.dinky.metadata.convert.PostgreSqlTypeConvert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,5 +146,20 @@ class PostgreSqlDriverTest {
                 + "COMMENT ON COLUMN \"public\".\"user\".\"birthday\" IS '生日';\n"
                 + "COMMENT ON COLUMN \"public\".\"user\".\"register_time\" IS '注册时间';\n";
         assertEquals(expect, tableDDL);
+    }
+
+    @Test
+    void convertMoneyTypeToDecimal() {
+        Column moneyColumn = Column.builder()
+                .name("balance")
+                .type("money")
+                .precision(19)
+                .scale(2)
+                .isNullable(true)
+                .build();
+
+        ColumnType columnType = new PostgreSqlTypeConvert().convert(moneyColumn);
+
+        assertEquals(DataTypes.DECIMAL, columnType.getValue());
     }
 }

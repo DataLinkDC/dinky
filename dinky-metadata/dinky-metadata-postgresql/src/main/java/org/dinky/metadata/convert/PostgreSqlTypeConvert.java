@@ -39,9 +39,9 @@ public class PostgreSqlTypeConvert extends AbstractJdbcTypeConvert {
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         final LogicalTypeParam logicalTypeParam =
                 LogicalTypeParam.of(isNullable, length, column.getPrecision(), column.getScale());
-        if (type.contains("numeric") || type.contains("decimal")) {
-            int intValue = column.getPrecision().intValue();
-            if (intValue > 38) {
+        if (type.contains("numeric") || type.contains("decimal") || type.contains("money")) {
+            Integer precision = column.getPrecision();
+            if (Asserts.isNotNull(precision) && precision > 38) {
                 return ColumnType.of(DataTypes.STRING, DataTypes.STRING.copyLogicalType(logicalTypeParam));
             }
             return ColumnType.of(DataTypes.DECIMAL, DataTypes.DECIMAL.copyLogicalType(logicalTypeParam));
