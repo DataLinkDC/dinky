@@ -129,7 +129,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     String tableName = schemaTableName.split("\\.")[1];
                     table.setColumns(driver.listColumnsSortByPK(realSchemaName, tableName));
                     schemaList.add(schema);
-
+                    Driver sinkRealDriver = getDriver(config, schemaName);
+                    final List<Table> sinkTables = getSinkTables(config, schemaName);
+                    setSinkTable(table, sinkTables, sinkBuilder, sinkRealDriver);
                     if (null != sinkDriver) {
                         Table sinkTable = (Table) table.clone();
                         sinkTable.setSchema(sinkBuilder.getSinkSchemaName(table));
@@ -149,6 +151,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     Driver driver = Driver.build(confMap.get("name"), confMap.get("type"), JsonUtils.toMap(confMap));
 
                     final List<Table> tables = driver.listTables(schemaName);
+                    Driver sinkRealDriver = getDriver(config, schemaName);
+                    final List<Table> sinkTables = getSinkTables(config, schemaName);
                     for (Table table : tables) {
                         if (!Asserts.isEquals(table.getType(), "VIEW")) {
                             if (Asserts.isNotNullCollection(tableRegList)) {
@@ -158,6 +162,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                                         table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                                         schema.getTables().add(table);
                                         schemaTableNameList.add(table.getSchemaTableName());
+                                        setSinkTable(table, sinkTables, sinkBuilder, sinkRealDriver);
                                         break;
                                     }
                                 }
@@ -165,6 +170,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                                 table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
                                 schemaTableNameList.add(table.getSchemaTableName());
                                 schema.getTables().add(table);
+                                setSinkTable(table, sinkTables, sinkBuilder, sinkRealDriver);
                             }
                         }
                     }
@@ -219,19 +225,71 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         return tableResultBuilder.build();
     }
 
+    private static void setSinkTable(
+            Table table, List<Table> sinkTables, SinkBuilder sinkBuilder, Driver sinkRealDriver) {
+        String sinkTableName = sinkBuilder.getSinkTableName(table);
+        for (Table sinkTable : sinkTables) {
+            String sinkTableSchema = sinkTable.getSchema();
+            String sinkTableSchemaTableName = sinkTable.getSchemaTableName();
+            String currentSinkTableName = sinkTableSchemaTableName;
+            if (Asserts.isContainsString(sinkTableSchemaTableName, ".")) {
+                currentSinkTableName = sinkTableSchemaTableName.split("\\.")[1];
+            }
+            if (sinkTableName.equals(currentSinkTableName)) {
+                if (null != sinkRealDriver) {
+                    sinkTable.setColumns(sinkRealDriver.listColumnsSortByPK(sinkTableSchema, currentSinkTableName));
+                }
+                table.setSinkTable(sinkTable);
+                break;
+            }
+        }
+    }
+
+    private List<Table> getSinkTables(FlinkCDCConfig config, String schemaName) throws Exception {
+        List<Table> sinkTables;
+        Driver sinkDriver = getDriver(config, schemaName);
+        if (null == sinkDriver) {
+            return new ArrayList<>();
+        }
+        Map<String, String> sink = config.getSink();
+        String schema = schemaName;
+        String sinkDb = sink.get(FlinkCDCConfig.SINK_DB);
+        if (Asserts.isNotNullString(sinkDb)) {
+            schema = SqlUtil.replaceAllParam(sinkDb, "schemaName", schemaName);
+        }
+        sinkTables = sinkDriver.listTables(schema);
+        return sinkTables;
+    }
+
     private Driver checkAndCreateSinkSchema(FlinkCDCConfig config, String schemaName) throws Exception {
         Map<String, String> sink = config.getSink();
         String autoCreate = sink.get(FlinkCDCConfig.AUTO_CREATE);
         if (!Asserts.isEqualsIgnoreCase(autoCreate, "true") || Asserts.isNullString(schemaName)) {
             return null;
         }
-        String url = sink.get("url");
+        return getDriver(config, schemaName);
+    }
+
+    private Driver getDriver(FlinkCDCConfig config, String schemaName) throws Exception {
+        Map<String, String> sink = config.getSink();
+        String connector = sink.get("connector");
+        String url;
+        if (Asserts.isEquals(connector, "starrocks")) {
+            url = sink.get("jdbc-url");
+        } else if (Asserts.isEqualsIgnoreCase(connector, "doris")) {
+            url = "jdbc:mysql://" + sink.get("fenodes");
+        } else if (Asserts.isEqualsIgnoreCase(connector, "jdbc")) {
+            url = sink.get("url");
+        } else {
+            return null;
+        }
         String schema = schemaName;
         String sinkDb = sink.get(FlinkCDCConfig.SINK_DB);
         if (Asserts.isNotNullString(sinkDb)) {
             schema = SqlUtil.replaceAllParam(sinkDb, "schemaName", schemaName);
         }
-        Driver driver = Driver.build(sink.get("connector"), url, sink.get("username"), sink.get("password"));
+
+        Driver driver = Driver.build(connector, url, sink.get("username"), sink.get("password"));
         if (null != driver && !driver.existSchema(schema)) {
             driver.createSchema(schema);
         }
