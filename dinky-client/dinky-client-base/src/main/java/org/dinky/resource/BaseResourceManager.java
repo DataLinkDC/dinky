@@ -155,6 +155,9 @@ public interface BaseResourceManager {
         if (!basePath.endsWith("/")) {
             basePath += "/";
         }
+        if (!basePath.startsWith("/")) {
+            basePath = "/" + basePath;
+        }
         return basePath;
     }
 }
