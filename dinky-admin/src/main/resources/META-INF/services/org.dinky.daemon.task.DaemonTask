@@ -1,3 +1,4 @@
 org.dinky.job.FlinkJobTask
 org.dinky.job.SystemMetricsTask
 org.dinky.job.ClearJobHistoryTask
+org.dinky.job.RecheckJobTask
