@@ -21,6 +21,7 @@ package org.dinky.service;
 
 import org.dinky.data.dto.AssignRoleDTO;
 import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.LoginSSODTO;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.model.rbac.Role;
@@ -31,6 +32,8 @@ import org.dinky.data.result.Result;
 import org.dinky.data.vo.UserVo;
 import org.dinky.mybatis.service.ISuperService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -79,6 +82,15 @@ public interface UserService extends ISuperService<User> {
      * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
      */
     Result<UserDTO> loginUser(LoginDTO loginDTO);
+
+
+
+    /**
+     *
+     * @param loginSSODTO
+     */
+    UserDTO loginSSOUser(LoginSSODTO loginSSODTO) throws URISyntaxException, IOException;
+
 
     /**
      * get user by username

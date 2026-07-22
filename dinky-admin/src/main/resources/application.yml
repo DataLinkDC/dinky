@@ -165,3 +165,7 @@ knife4j:
 crypto:
   enabled: false
   encryption-password:
+sso:
+  clientSecret: ""
+  tokenVerifyUri: ""
+  callbackUrl: ""

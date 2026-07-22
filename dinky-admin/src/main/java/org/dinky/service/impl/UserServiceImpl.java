@@ -19,13 +19,26 @@
 
 package org.dinky.service.impl;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
+import org.dinky.data.constant.BaseConstant;
 import org.dinky.data.dto.AssignRoleDTO;
 import org.dinky.data.dto.AssignUserToTenantDTO;
 import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.LoginSSODTO;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
@@ -56,15 +69,20 @@ import org.dinky.service.UserRoleService;
 import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -108,6 +126,15 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final MenuService menuService;
     private final TokenService tokenService;
     private final TokenMapper tokenMapper;
+
+    @Value("${sso.clientSecret}")
+    private String ssoClientSecret;
+
+    @Value("${sso.tokenVerifyUri}")
+    private String ssoTokenUri;
+
+    @Value("${sso.callbackUrl}")
+    private String callbackUrl;
 
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -208,6 +235,132 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
+    }
+
+    @Override
+    public UserDTO loginSSOUser(LoginSSODTO loginSSODTO) throws URISyntaxException, IOException {
+        CloseableHttpClient client = HttpClients.createDefault();
+        URI uri = new URI(ssoTokenUri);
+        HttpPost post = new HttpPost(uri);
+
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("ticket", loginSSODTO.getTicket()));
+        params.add(new BasicNameValuePair("secret_key", ssoClientSecret));
+
+        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, "UTF-8");
+        post.setEntity(entity);
+        HttpResponse res = client.execute(post);
+
+        if (res.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String resp = EntityUtils.toString(res.getEntity());
+            JSONObject jsonObject = JSON.parseObject(resp);
+            String userName = jsonObject.getString("username");
+            String nickName = jsonObject.getString("full_name");
+
+            User user = getUserByUsername(userName);
+            if (Objects.isNull(user)) {
+
+                User userAdd = new User();
+                String passWord = String.valueOf(System.currentTimeMillis());
+                userAdd.setPassword(SaSecureUtil.md5(passWord));
+                userAdd.setEnabled(true);
+                userAdd.setIsDelete(false);
+                userAdd.setNickname(nickName);
+                userAdd.setUsername(userName);
+                userAdd.setUserType(UserType.LOCAL.getCode());
+                boolean saveRes = save(userAdd);
+
+                if (saveRes) {
+                    StpUtil.login(userAdd.getId(), true);
+                    List<Tenant> tenantList = tenantService.getTenantListByUserId(userAdd.getId());
+                    List<UserTenant> tenantUserList = new ArrayList<>();
+                    if (CollectionUtils.isEmpty(tenantList)) {
+                        UserTenant userTenant = new UserTenant();
+                        userTenant.setTenantId(1);
+                        userTenant.setUserId(userAdd.getId());
+                        tenantUserList.add(userTenant);
+                        // save or update user role
+                        boolean result = userTenantService.saveOrUpdateBatch(
+                                tenantUserList, BaseConstant.DEFAULT_BATCH_INSERT_SIZE);
+                        log.info("sso save userTenant res {}", result);
+                    }
+
+                    List<UserRole> userRoleList = new ArrayList<>();
+                    List<Role> roleList = roleService.getRoleByUserId(userAdd.getId());
+                    if (CollectionUtils.isEmpty(roleList)) {
+                        UserRole userRole = new UserRole();
+                        userRole.setUserId(userAdd.getId());
+                        userRole.setRoleId(6);
+                        userRoleList.add(userRole);
+                        // save or update user role
+                        boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
+                        log.info("sso save userRole res {}", result);
+                    }
+
+                    // save login log record
+                    UserDTO userDTO = refreshUserInfo(userAdd);
+                    userDTO.setUserRoleList(userRoleList);
+                    // save login log record
+                    loginLogService.saveLoginLog(userDTO.getUser(), Status.LOGIN_SUCCESS);
+                    upsertTokenSso(userDTO);
+                    userDTO.setRedirectUri(callbackUrl);
+                    return userDTO;
+                } else {
+                    log.error("sso save user failed {}", saveRes);
+                    return null;
+                }
+
+            } else {
+
+                StpUtil.login(user.getId(), true);
+                UserDTO userDTO = refreshUserInfo(user);
+                List<UserRole> userRoleList = userRoleService.getUserRoleByUserId(user.getId());
+                userDTO.setUserRoleList(userRoleList);
+
+                // save login log record
+                loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
+                upsertTokenSso(userDTO);
+                userDTO.setRedirectUri(callbackUrl);
+
+                return userDTO;
+            }
+        } else {
+            log.error("sso failed result is {}", res);
+            return null;
+        }
+    }
+
+    private void upsertTokenSso(UserDTO userInfo) {
+        Integer userId = userInfo.getUser().getId();
+        SysToken sysToken = new SysToken();
+        String tokenValue = userInfo.getTokenInfo().getTokenValue();
+        sysToken.setTokenValue(tokenValue);
+        sysToken.setUserId(userId);
+        // todo 权限和租户暂未接入
+        sysToken.setRoleId(userInfo.getUserRoleList().get(0).getId());
+        sysToken.setTenantId(userInfo.getTenantList().get(0).getId());
+        sysToken.setExpireType(3);
+        DateTime date = DateUtil.date();
+        sysToken.setExpireStartTime(date);
+        sysToken.setExpireEndTime(DateUtil.offsetDay(date, 1));
+        sysToken.setCreator(userId);
+        sysToken.setUpdater(userId);
+        sysToken.setSource(SysToken.Source.LOGIN);
+        try {
+            lock.lock();
+            SysToken lastSysToken =
+                    tokenMapper.selectOne(new LambdaQueryWrapper<SysToken>().eq(SysToken::getTokenValue, tokenValue));
+            if (Asserts.isNull(lastSysToken)) {
+                tokenMapper.insert(sysToken);
+            } else {
+                sysToken.setId(lastSysToken.getId());
+                tokenMapper.updateById(sysToken);
+            }
+        } catch (Exception e) {
+            log.error("update token info failed", e);
+        } finally {
+            lock.unlock();
+        }
     }
 
     private void upsertToken(UserDTO userInfo) {

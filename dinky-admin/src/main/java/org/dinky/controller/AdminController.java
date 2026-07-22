@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.DinkyVersion;
 import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.LoginSSODTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.rbac.Tenant;
@@ -46,6 +47,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * AdminController
@@ -86,6 +93,42 @@ public class AdminController {
     public Result<Void> outLogin() {
         userService.outLogin();
         return Result.succeed(Status.SIGN_OUT_SUCCESS.getMessage());
+    }
+
+    /**
+     * user sso login
+     * @param ticket
+     */
+    @GetMapping("/redirect/login/sso")
+    @SaIgnore
+    public void loginsso(@RequestParam("ticket") String ticket, HttpServletResponse response)
+            throws URISyntaxException, IOException {
+
+        log.info("ticket is {}", ticket);
+        LoginSSODTO loginSSODTO = new LoginSSODTO();
+        loginSSODTO.setTicket(ticket);
+        UserDTO user = userService.loginSSOUser(loginSSODTO);
+        if (Objects.nonNull(user)) {
+            log.info("sso user succ {}", user);
+
+            Cookie cookie = new Cookie("dinky-token", user.getTokenInfo().getTokenValue());
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
+            Cookie cookieTen = new Cookie(
+                    "tenantId", String.valueOf(user.getTenantList().get(0).getId()));
+            cookieTen.setPath("/");
+            response.addCookie(cookieTen);
+
+            Cookie cookieLan = new Cookie("language", "zh-CN");
+            cookieLan.setPath("/");
+            response.addCookie(cookieLan);
+
+            response.sendRedirect(user.getRedirectUri());
+        } else {
+            log.error("loginsso failed user {}", user);
+            response.sendRedirect(user.getRedirectUri());
+        }
     }
 
     /**
