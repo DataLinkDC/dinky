@@ -159,6 +159,12 @@ public interface TaskService extends ISuperService<Task> {
     void initTenantByTaskId(Integer id);
 
     /**
+     * Initialize the tenant by task name.
+     * @param taskName task name
+     */
+    void initTenantByTaskName(String taskName);
+
+    /**
      * Change the life cycle of the given task.
      *
      * @param taskId The ID of the task to change the life cycle for.

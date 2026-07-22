@@ -575,6 +575,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public void initTenantByTaskName(String taskName) {
+        Integer tenantId = baseMapper.getTenantByTaskName(taskName);
+        Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMessage());
+        TenantContextHolder.set(tenantId);
+        log.info("Init task tenant finished..");
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean changeTaskLifeRecyle(Integer taskId, JobLifeCycle lifeCycle) throws SqlExplainExcepition {
         TaskDTO task = getTaskInfoById(taskId);
