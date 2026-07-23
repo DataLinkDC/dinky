@@ -77,6 +77,11 @@ public class StarRocksTypeConvert extends AbstractJdbcTypeConvert {
         }
         switch (columnType.getValue()) {
             case DECIMAL:
+                if (columnType.getLogicalType() instanceof org.dinky.data.types.DecimalType) {
+                    org.dinky.data.types.DecimalType decimalType =
+                            (org.dinky.data.types.DecimalType) columnType.getLogicalType();
+                    return String.format("decimal(%d,%d)", decimalType.getPrecision(), decimalType.getScale());
+                }
                 return "decimal";
             case BIGINT:
                 return "bigint";
