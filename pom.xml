@@ -112,6 +112,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
+        <redisson.version>3.39.0</redisson.version>
         <reflections.version>0.10.2</reflections.version>
         <revision>1.3.0-SNAPSHOT</revision>
         <sa-token.version>1.37.0</sa-token.version>
@@ -788,6 +789,11 @@
                 <groupId>com.google.auto.service</groupId>
                 <artifactId>auto-service</artifactId>
                 <version>1.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

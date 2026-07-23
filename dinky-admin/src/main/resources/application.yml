@@ -20,6 +20,7 @@ spring:
     include:
       - jmx
       - flyway
+      - redis
   lifecycle:
     timeout-per-shutdown-phase: 30s
 

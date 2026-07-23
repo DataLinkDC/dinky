@@ -27,8 +27,8 @@ import org.dinky.utils.HttpUtils;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.TimeUtil;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,13 +89,8 @@ public class JobMetricsHandler {
         }
 
         String metricsName = String.join(",", m.keySet());
-        String urlParam = null;
-        try {
-            urlParam = String.format(
-                    "/jobs/%s/vertices/%s/metrics?get=%s", jid, v, URLEncoder.encode(metricsName, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        String urlParam = String.format(
+                "/jobs/%s/vertices/%s/metrics?get=%s", jid, v, URLEncoder.encode(metricsName, StandardCharsets.UTF_8));
 
         HttpUtils.request(new ArrayList<>(Arrays.asList(urlList)), urlParam, NetConstant.READ_TIME_OUT, x -> {
             List<Dict> array = JsonUtils.toList(x.body(), Dict.class);

@@ -1,0 +1,43 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    # redis operating mode,standalone\embedded
+    mode: embedded
+    database: 8
+    redisson:
+      # Single-node configuration
+      singleServerConfig:
+        # Connection idle timeout, in milliseconds
+        idleConnectionTimeout: 10000
+        # Connection timeout in milliseconds
+        connectTimeout: 10000
+        # Command wait timeout, in milliseconds
+        timeout: 3000
+        # Command Failed Retries (an error is thrown if the attempt reaches retryAttempts and the command still fails to send the command to a specified node).
+        # If the attempt to send within this limit is successful, timeout timing is enabled.
+        retryAttempts: 3
+        # The command retry send interval in milliseconds
+        retryInterval: 1500
+        # password
+        password: ${spring.redis.password}
+        # clientName
+        clientName: dinky-redis
+        # The maximum number of subscriptions for a single connection
+        subscriptionsPerConnection: 5
+        # Node address
+        address: redis://${spring.redis.host}:${spring.redis.port}
+        # The minimum number of idle connections for publish and subscribe connections
+        subscriptionConnectionMinimumIdleSize: 1
+        # Pub and sub connection pool size
+        subscriptionConnectionPoolSize: 50
+        # Minimum number of idle connections
+        connectionMinimumIdleSize: 5
+        # Connection pool size
+        connectionPoolSize: 10
+        # Database number
+        database: ${spring.redis.database}
+        # DNS monitoring interval, in milliseconds
+        dnsMonitoringInterval: 5000
+        # Transmission mode
+      transportMode: "NIO"
