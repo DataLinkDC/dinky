@@ -266,10 +266,26 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                 new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
         String fullName;
         if (currentUploadResource != null) {
+            // Same-name overwrite: update remote storage and invalidate local tmp/rs cache
+            long oldSize = Opt.ofNullable(currentUploadResource.getSize()).orElse(0L);
             if (desc != null) {
                 currentUploadResource.setDescription(desc);
             }
             fullName = currentUploadResource.getFullName();
+            currentUploadResource.setSize(size);
+            updateById(currentUploadResource);
+            uploadAction.accept(fullName);
+            URLUtils.clearRsLocalCache(fullName);
+
+            long delta = size - oldSize;
+            if (delta != 0) {
+                List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), pid);
+                resourceByPidToParent.forEach(x -> {
+                    long parentSize = Opt.ofNullable(x.getSize()).orElse(0L);
+                    x.setSize(Math.max(0L, parentSize + delta));
+                });
+                updateBatchById(resourceByPidToParent);
+            }
         } else {
             Resources resources = new Resources();
             resources.setPid(pid);
@@ -283,12 +299,12 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
             resources.setSize(size);
             resources.setDescription(desc);
             saveOrUpdate(resources);
-        }
-        uploadAction.accept(fullName);
+            uploadAction.accept(fullName);
 
-        List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), pid);
-        resourceByPidToParent.forEach(x -> x.setSize(x.getSize() + size));
-        updateBatchById(resourceByPidToParent);
+            List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), pid);
+            resourceByPidToParent.forEach(x -> x.setSize(x.getSize() + size));
+            updateBatchById(resourceByPidToParent);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -338,6 +354,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
                         systemConfiguration.getResourcesModel().getValue().name(),
                         byId.getFullName());
             }
+            // Always clear local rs cache so deleted/overwritten resources are not reused
+            URLUtils.clearRsLocalCache(byId.getFullName());
             if (isExistsChildren(id)) {
                 if (byId.getIsDirectory()) {
                     List<Resources> resourceByPidToChildren =
