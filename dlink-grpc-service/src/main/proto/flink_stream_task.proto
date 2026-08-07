@@ -1,0 +1,303 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.dlink.grpc.proto";
+option java_outer_classname = "FlinkStreamTaskProto";
+
+package dlink.grpc;
+
+// ==================== 通用响应 ====================
+message CommonResponse {
+  int32 code = 1;
+  string message = 2;
+  bool success = 3;
+}
+
+// ==================== 任务相关请求 ====================
+message StreamTaskConfig {
+  string task_name = 1;
+  string flink_sql = 2;
+  int32 parallelism = 3;
+  string cluster_id = 4;
+  map<string, string> config_params = 5;
+  string savepoint_path = 6;
+  bool allow_non_restored = 7;
+  string tenant_code = 8;
+  string user_id = 9;
+}
+
+message TaskIdRequest {
+  int64 task_id = 1;
+  string tenant_code = 2;
+  string user_id = 3;
+}
+
+message SavepointOperateRequest {
+  int64 task_id = 1;
+  string savepoint_type = 2; // CANCEL_WITH_SAVEPOINT, STOP_WITH_SAVEPOINT
+  string savepoint_path = 3;
+  string tenant_code = 4;
+  string user_id = 5;
+}
+
+// ==================== 集群相关请求 ====================
+message ClusterConfig {
+  string cluster_name = 1;
+  string cluster_type = 2; // KUBERNETES, YARN, STANDALONE
+  string version = 3;
+  string job_manager_url = 4;
+  map<string, string> config_params = 5;
+}
+
+message ClusterIdRequest {
+  string cluster_id = 1;
+}
+
+// ==================== 数据源相关请求 ====================
+message DataSourceConfig {
+  string source_name = 1;
+  string url = 2;
+  string username = 3;
+  string password = 4;
+  string type = 5; // MYSQL, KAFKA, DORIS, etc.
+  map<string, string> extended_params = 6;
+}
+
+message DataSourceTestRequest {
+  string source_name = 1;
+  string url = 2;
+  string username = 3;
+  string password = 4;
+  string type = 5;
+  string cluster_id = 6;
+}
+
+// ==================== 监控相关请求 ====================
+message TaskMonitorRequest {
+  int64 task_id = 1;
+  string metric_type = 2; // CHECKPOINT, BACKPRESSURE, METRICS
+}
+
+message TaskStatusStreamRequest {
+  repeated int64 task_ids = 1;
+  string tenant_code = 2;
+}
+
+message TaskStatusInfo {
+  int64 task_id = 1;
+  string status = 2; // RUNNING, FAILED, FINISHED, CANCELED
+  string start_time = 3;
+  string end_time = 4;
+  int32 parallelism = 5;
+  CheckpointInfo checkpoint_info = 6;
+  BackPressureInfo back_pressure_info = 7;
+}
+
+message CheckpointInfo {
+  int64 total_checkpoints = 1;
+  int64 failed_checkpoints = 2;
+  int64 last_checkpoint_duration = 3;
+  string last_checkpoint_state = 4;
+  int64 last_checkpoint_size = 5;
+}
+
+message BackPressureInfo {
+  double avg_backpressure_ratio = 1;
+  int32 high_backpressure_nodes = 2;
+}
+
+// ==================== Flink 流式任务服务 ====================
+service FlinkStreamTaskService {
+  // 创建任务
+  rpc CreateTask(StreamTaskConfig) returns (CommonResponse);
+  
+  // 提交任务
+  rpc SubmitTask(TaskIdRequest) returns (CommonResponse);
+  
+  // 启动任务
+  rpc StartTask(TaskIdRequest) returns (CommonResponse);
+  
+  // 停止任务（支持 Savepoint）
+  rpc StopTask(SavepointOperateRequest) returns (CommonResponse);
+  
+  // 重启任务
+  rpc RestartTask(TaskIdRequest) returns (CommonResponse);
+  
+  // 删除任务
+  rpc DeleteTask(TaskIdRequest) returns (CommonResponse);
+  
+  // 获取任务详情
+  rpc GetTaskDetail(TaskIdRequest) returns (TaskDetailResponse);
+}
+
+// ==================== 任务监控服务 ====================
+service FlinkStreamTaskMonitorService {
+  // 获取任务状态
+  rpc GetTaskStatus(TaskIdRequest) returns (TaskStatusResponse);
+  
+  // 获取 Checkpoint 信息
+  rpc GetCheckpointInfo(TaskMonitorRequest) returns (CheckpointInfoResponse);
+  
+  // 获取背压信息
+  rpc GetBackPressureInfo(TaskMonitorRequest) returns (BackPressureInfoResponse);
+  
+  // 订阅任务状态流（双向流）
+  rpc SubscribeTaskStatusStream(stream TaskStatusStreamRequest) returns (stream TaskStatusInfo);
+  
+  // 获取任务指标
+  rpc GetTaskMetrics(TaskMonitorRequest) returns (MetricsResponse);
+}
+
+// ==================== Flink 集群服务 ====================
+service FlinkClusterService {
+  // 注册集群
+  rpc RegisterCluster(ClusterConfig) returns (CommonResponse);
+  
+  // 更新集群
+  rpc UpdateCluster(ClusterConfig) returns (CommonResponse);
+  
+  // 删除集群
+  rpc DeleteCluster(ClusterIdRequest) returns (CommonResponse);
+  
+  // 获取集群列表
+  rpc ListClusters(ClusterListRequest) returns (ClusterListResponse);
+  
+  // 获取集群详情
+  rpc GetClusterDetail(ClusterIdRequest) returns (ClusterDetailResponse);
+  
+  // 测试集群连通性
+  rpc TestClusterConnectivity(ClusterIdRequest) returns (CommonResponse);
+}
+
+// ==================== 数据源服务 ====================
+service FlinkDataSourceService {
+  // 注册数据源
+  rpc RegisterDataSource(DataSourceConfig) returns (CommonResponse);
+  
+  // 更新数据源
+  rpc UpdateDataSource(DataSourceConfig) returns (CommonResponse);
+  
+  // 删除数据源
+  rpc DeleteDataSource(DataSourceIdRequest) returns (CommonResponse);
+  
+  // 测试数据源连通性
+  rpc TestDataSourceConnectivity(DataSourceTestRequest) returns (CommonResponse);
+  
+  // 验证数据源并关联集群
+  rpc ValidateDataSourceWithCluster(DataSourceTestRequest) returns (ValidationResponse);
+  
+  // 获取数据源列表
+  rpc ListDataSources(DataSourceListRequest) returns (DataSourceListResponse);
+}
+
+// ==================== 响应消息 ====================
+message TaskDetailResponse {
+  CommonResponse response = 1;
+  TaskInfo task_info = 2;
+}
+
+message TaskInfo {
+  int64 task_id = 1;
+  string task_name = 2;
+  string flink_sql = 3;
+  int32 parallelism = 4;
+  string cluster_id = 5;
+  string status = 6;
+  string start_time = 7;
+  string end_time = 8;
+  string savepoint_path = 9;
+}
+
+message TaskStatusResponse {
+  CommonResponse response = 1;
+  string status = 2;
+  string start_time = 3;
+  string end_time = 4;
+  int32 parallelism = 5;
+}
+
+message CheckpointInfoResponse {
+  CommonResponse response = 1;
+  CheckpointInfo checkpoint_info = 2;
+}
+
+message BackPressureInfoResponse {
+  CommonResponse response = 1;
+  BackPressureInfo back_pressure_info = 2;
+}
+
+message MetricsResponse {
+  CommonResponse response = 1;
+  map<string, double> metrics = 2;
+}
+
+message ClusterListRequest {
+  int32 page_num = 1;
+  int32 page_size = 2;
+  string cluster_type = 3;
+}
+
+message ClusterListResponse {
+  CommonResponse response = 1;
+  repeated ClusterInfo clusters = 2;
+  int32 total = 3;
+}
+
+message ClusterInfo {
+  string cluster_id = 1;
+  string cluster_name = 2;
+  string cluster_type = 3;
+  string version = 4;
+  string status = 5;
+  string job_manager_url = 6;
+}
+
+message ClusterDetailResponse {
+  CommonResponse response = 1;
+  ClusterDetail cluster_detail = 2;
+}
+
+message ClusterDetail {
+  string cluster_id = 1;
+  string cluster_name = 2;
+  string cluster_type = 3;
+  string version = 4;
+  string status = 5;
+  string job_manager_url = 6;
+  map<string, string> config_params = 7;
+  string create_time = 8;
+  string update_time = 9;
+}
+
+message DataSourceIdRequest {
+  int64 source_id = 1;
+}
+
+message ValidationResponse {
+  CommonResponse response = 1;
+  bool is_valid = 2;
+  string validation_message = 3;
+  string suggested_cluster_id = 4;
+}
+
+message DataSourceListRequest {
+  int32 page_num = 1;
+  int32 page_size = 2;
+  string source_type = 3;
+}
+
+message DataSourceListResponse {
+  CommonResponse response = 1;
+  repeated DataSourceInfo data_sources = 2;
+  int32 total = 3;
+}
+
+message DataSourceInfo {
+  int64 source_id = 1;
+  string source_name = 2;
+  string url = 3;
+  string username = 4;
+  string type = 5;
+  string status = 6;
+  string create_time = 7;
+}

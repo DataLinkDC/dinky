@@ -47,6 +47,8 @@
         <module>dinky-app</module>
         <module>dinky-admin</module>
         <module>dinky-assembly</module>
+        <!-- Dinky gRPC Microservice Module -->
+        <module>dlink-grpc-service</module>
     </modules>
 
     <properties>
