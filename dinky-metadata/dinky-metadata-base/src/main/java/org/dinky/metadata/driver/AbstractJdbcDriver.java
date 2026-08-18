@@ -130,37 +130,70 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         ds.setPassword(connectConfig.getPassword());
         ds.setValidationQuery(validationQuery);
         ds.setTestWhileIdle(true);
-        ds.setBreakAfterAcquireFailure(true);
+        // Allow the pool to recover after a connection failure instead of breaking permanently
+        ds.setBreakAfterAcquireFailure(false);
         ds.setFailFast(true);
         ds.setInitialSize(1);
         ds.setMaxActive(8);
         ds.setMinIdle(5);
+        // Keep idle connections alive via validation query to prevent server-side wait_timeout closure
+        ds.setKeepAlive(true);
+        // Evict connections idle for more than 5 minutes (min) / 15 minutes (max)
+        ds.setMinEvictableIdleTimeMillis(300000);
+        ds.setMaxEvictableIdleTimeMillis(900000);
     }
 
     @Override
     public Driver connect() {
-        if (Asserts.isNull(conn.get())) {
-            try {
-                Class.forName(getDriverClass());
-                DruidPooledConnection connection = createDataSource().getConnection();
-                conn.set(connection);
-            } catch (ClassNotFoundException | SQLException e) {
-                throw new RuntimeException(e);
+        try {
+            Connection currentConn = conn.get();
+            if (Asserts.isNotNull(currentConn)) {
+                PreparedStatement preparedStatement = null;
+                try {
+                    // Validate existing connection by executing the validation query
+                    preparedStatement = currentConn.prepareStatement(validationQuery);
+                    preparedStatement.executeQuery();
+                    return this;
+                } catch (Exception e) {
+                    // Connection is invalid (closed, disabled, or timed out), reconnect
+                    log.warn("Connection is invalid, reconnecting: {}", e.getMessage());
+                    try {
+                        currentConn.close();
+                    } catch (Exception ignore) {
+                    }
+                    conn.remove();
+                } finally {
+                    close(preparedStatement, null);
+                }
             }
+            // Connection is null or invalid, create new connection
+            Class.forName(getDriverClass());
+            DruidPooledConnection connection = createDataSource().getConnection();
+            conn.set(connection);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
         }
         return this;
     }
 
     @Override
     public boolean isHealth() {
+        PreparedStatement preparedStatement = null;
         try {
             if (Asserts.isNotNull(conn.get())) {
-                return !conn.get().isClosed();
+                // Use validation query to truly test connectivity instead of just isClosed().
+                // isClosed() only checks the Druid wrapper state, not the underlying physical
+                // connection which may have been closed by the server due to wait_timeout.
+                preparedStatement = conn.get().prepareStatement(validationQuery);
+                preparedStatement.executeQuery();
+                return true;
             }
             return false;
         } catch (Exception e) {
-            log.error("check is health errr:", e);
+            log.warn("Connection health check failed, will reconnect: {}", e.getMessage());
             return false;
+        } finally {
+            close(preparedStatement, null);
         }
     }
 
