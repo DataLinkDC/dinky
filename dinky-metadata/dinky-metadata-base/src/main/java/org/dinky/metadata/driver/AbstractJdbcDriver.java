@@ -155,11 +155,16 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
                     preparedStatement.executeQuery();
                     return this;
                 } catch (Exception e) {
-                    // Connection is invalid (closed, disabled, or timed out), reconnect
-                    log.warn("Connection is invalid, reconnecting: {}", e.getMessage());
+                    // Stale connection detected (e.g. closed by server due to wait_timeout),
+                    // close and discard it, then rebuild via the pool below
+                    log.warn(
+                            "Stale connection detected, closing it and reconnecting, datasource: {}, reason: {}",
+                            config.getName(),
+                            e.getMessage());
                     try {
                         currentConn.close();
                     } catch (Exception ignore) {
+                        // connection already broken, close failure is expected
                     }
                     conn.remove();
                 } finally {
@@ -179,18 +184,33 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
     @Override
     public boolean isHealth() {
         PreparedStatement preparedStatement = null;
+        Connection currentConn = conn.get();
         try {
             if (Asserts.isNotNull(conn.get())) {
                 // Use validation query to truly test connectivity instead of just isClosed().
                 // isClosed() only checks the Druid wrapper state, not the underlying physical
                 // connection which may have been closed by the server due to wait_timeout.
-                preparedStatement = conn.get().prepareStatement(validationQuery);
+                preparedStatement = currentConn.prepareStatement(validationQuery);
                 preparedStatement.executeQuery();
                 return true;
             }
             return false;
         } catch (Exception e) {
-            log.warn("Connection health check failed, will reconnect: {}", e.getMessage());
+            log.warn(
+                    "Connection health check failed, stale connection will be closed and reconnected, datasource: {}, reason: {}",
+                    config.getName(),
+                    e.getMessage());
+            // The probe has already confirmed the connection is dead, close and remove
+            // it right here, so that connect() won't probe the same broken connection
+            // a second time (which would cost another round of timeout)
+            conn.remove();
+            if (Asserts.isNotNull(currentConn)) {
+                try {
+                    currentConn.close();
+                } catch (Exception ignore) {
+                    // connection already broken, close failure is expected
+                }
+            }
             return false;
         } finally {
             close(preparedStatement, null);
