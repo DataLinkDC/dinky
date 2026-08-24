@@ -69,11 +69,16 @@ spec:
   name: rest
   extraEnv:
     flinkVersion: "1.17"
+    # Override Dinky JVM options. Leave unset to use the image default
+    # (UseContainerSupport + 70% of container memory).
+    # jvmOpts: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0"
 
   affinity: {}
   nodeSelector: {}
   tolerations: []
   resources: {}
+  # Set memory limits when using the image default MaxRAMPercentage (70%).
+  # Without a limit, the percentage is taken from node-visible memory.
   # resources:
   #   limits:
   #     memory: "2Gi"

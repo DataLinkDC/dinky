@@ -5,6 +5,9 @@ services:
     image: "dinkydocker/dinky-standalone-server:${DINKY_VERSION}-flink${FLINK_VERSION}"
     ports:
       - "8888:8888"
+    # JVM_OPTS is not listed here on purpose: an empty value would override the
+    # image default (container RAM percentage). Set it via `docker run -e` or
+    # add it only to this service when you need a custom heap.
     env_file: .env
     networks:
       - dinky

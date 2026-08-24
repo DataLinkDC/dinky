@@ -54,7 +54,11 @@ spec:
   name: rest
   extraEnv:
     flinkVersion: "1.17"
+    # 可选。不设置则使用镜像默认：容器内存的 70%
+    # jvmOpts: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0"
 ```
+自定义 Dinky 进程 JVM 参数时设置 `spec.extraEnv.jvmOpts`，并建议同时配置 `spec.resources.limits.memory`，否则 `MaxRAMPercentage` 会按节点/cgroup 可见内存计算。
+
 例如，mysql数据源完整配置如下：
 完整配置如下：
 ```yaml
@@ -129,6 +133,8 @@ spec:
   name: rest
   extraEnv:
     flinkVersion: "1.17"
+    # 可选。不设置则使用镜像默认：容器内存的 70%
+    # jvmOpts: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0"
 
   affinity: {}
   nodeSelector: {}
@@ -285,6 +291,8 @@ spec:
   name: rest
   extraEnv:
     flinkVersion: "1.17"
+    # 可选。不设置则使用镜像默认：容器内存的 70%
+    # jvmOpts: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0"
 
   affinity: {}
   nodeSelector: {}

@@ -179,8 +179,15 @@ PARAMS_OPT="-Ddinky.logs.path=${DINKY_LOG_PATH} -Ddinky.root.path=${APP_HOME} -D
 JAR_PARAMS_OPT="--logging.config=${LOG_CONFIG}"
 # JMX path
 JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.20.0.jar=10087:$APP_HOME/config/jmx/jmx_exporter_config.yaml"
-#JVM OPTS
-JVM_OPTS="-Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M"
+# JVM options. Override via JVM_OPTS (Docker ENV / K8s env / systemd / /etc/profile.d/dinky_env).
+# PermGen (-XX:PermSize / -XX:MaxPermSize) was removed in JDK 8; do not set them here.
+DEFAULT_JVM_OPTS="-Xms512M -Xmx2048M"
+JVM_OPTS="${JVM_OPTS:-${DEFAULT_JVM_OPTS}}"
+case "$1" in
+  start|startOnPending|startWithJmx|restart|restartWithJmx)
+    echo -e "${GREEN}JVM_OPTS : ${JVM_OPTS}${RESET}"
+    ;;
+esac
 
 # Check whether the pid path exists
 PID_PATH="${APP_HOME}/run"

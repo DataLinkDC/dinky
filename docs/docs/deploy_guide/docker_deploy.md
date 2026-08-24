@@ -49,6 +49,20 @@ docker run --restart=always -p 8888:8888 \
   -v /opt/lib:/opt/dinky/customJar/ \ 
   dinkydocker/dinky-standalone-server:1.1.0-flink1.17
 ```
+
+### 自定义 JVM 内存
+
+镜像默认使用容器内存的 70% 作为堆（`UseContainerSupport` + `MaxRAMPercentage`），无需修改启动脚本。通过环境变量 `JVM_OPTS` 覆盖：
+
+```bash
+docker run --restart=always -p 8888:8888 \
+  --name dinky \
+  -e JVM_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0" \
+  dinkydocker/dinky-standalone-server:1.1.0-flink1.17
+```
+
+建议同时为容器设置 memory limit（例如 `--memory=2g`），否则百分比会按宿主机可见内存计算。不要在共享的 `deploy/docker/.env` 中设置 `JVM_OPTS`（该文件会同时注入 Flink JM/TM）。不要只把 GC 参数写进 `JVM_OPTS`：该变量是整段替换，不是追加。
+
 ---
 ### 使用docker-compose 
 docker-compose可快速帮你搭建起来dinky与flink集群环境，

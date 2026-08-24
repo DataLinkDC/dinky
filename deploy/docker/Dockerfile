@@ -14,6 +14,7 @@ RUN cp /opt/flink/opt/flink-python*.jar /opt/flink/lib/ && cp /opt/flink/opt/fli
 ENV FLINK_VERSION=${FLINK_VERSION}
 ENV DINKY_HOME=/opt/dinky/
 ENV H2_DB=./tmp/db/h2
+ENV JVM_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0"
 
 
 USER root
@@ -21,7 +22,7 @@ USER root
 WORKDIR /opt/dinky/
 
 
-RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && mkdir /dinky && chmod -R 777 /dinky/ && sed -i 's/-Xms512M -Xmx2048M -XX:ermSize=512M/-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0/g' ./bin/auto.sh
+RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && mkdir /dinky && chmod -R 777 /dinky/
 
 EXPOSE 8888
 
