@@ -9,6 +9,7 @@ ARG FLINK_VERSION
 ENV FLINK_VERSION=${FLINK_VERSION}
 ENV DINKY_HOME=/opt/dinky/
 ENV H2_DB=./tmp/db/h2
+ENV JVM_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=70.0"
 ADD build/dinky-release*.tar.gz /opt
 RUN ls /opt && mv /opt/dinky-release* /opt/dinky
 
@@ -20,7 +21,7 @@ COPY --from=flink-base  /opt/flink/lib/*.jar  /opt/dinky/extends/flink${FLINK_VE
 
 COPY --from=flink-base  /opt/flink/opt/flink-table-planner*.jar /opt/dinky/extends/flink${FLINK_VERSION}/flink/
 
-RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/ && sed -i 's/-Xms512M -Xmx2048M -XX:PermSize=512M/-XX:+UseContainerSupport -XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0/g' ./bin/auto.sh
+RUN mkdir /opt/dinky/customJar && chmod -R 777 /opt/dinky/
 
 EXPOSE 8888
 

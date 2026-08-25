@@ -239,6 +239,17 @@ sh auto.sh startOnPending 1.20
 
 ```
 
+#### JVM 内存
+
+启动脚本读取环境变量 `JVM_OPTS`，未设置时默认为 `-Xms512M -Xmx2048M`。
+
+```shell
+export JVM_OPTS="-Xms1g -Xmx4g"
+sh ./bin/auto.sh start 1.20
+```
+
+也可写入 `/etc/profile.d/dinky_env`。JDK 8 已移除 PermGen，请使用 `-Xms` / `-Xmx`，不要再设置 `-XX:PermSize` / `-XX:MaxPermSize`。
+
 #### 版本适配
 启动指令的第二个参数则是版本选择，支持 【1.14, 1.15, 1.16, 1.17, 1.18, 1.19】,参考指令如下：
 > 自 1.0.2 版本开始加入了自动检测 Flink 版本的功能，如果不传入版本号，则会自动检测 Flink 版本作为启动版本(即检测 extends 目录下的 flink${FLINK_VERSION} 文件夹)

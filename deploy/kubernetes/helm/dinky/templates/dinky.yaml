@@ -73,6 +73,10 @@ spec:
             {{- end }}
             {{- end }}
             {{- include "dinky.dbActive" . | nindent 12 }}
+            {{- with .Values.spec.extraEnv.jvmOpts }}
+            - name: JVM_OPTS
+              value: {{ . | quote }}
+            {{- end }}
           envFrom:
             {{- if .Values.mysql.enabled }}
             - secretRef:
