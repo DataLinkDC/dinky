@@ -28,8 +28,8 @@ if __name__ == '__main__':
         task_name = file_name.split(".")[0]
         flink_sql_datagen_test.runFlinkTask(sql, task_name, is_async=True)
 
-    # flink_jar_sql_task_path = "dinky_task/flink_jar_sql"
-    # for file_name in traverse_files(flink_jar_sql_task_path):
-    #     sql = open(os.path.join(flink_jar_sql_task_path, file_name)).read()
-    #     task_name = file_name.split(".")[0]
-    #     flink_sql_datagen_test.runFlinkTask(sql, task_name,"FlinkJar", is_async=True)
+    flink_jar_sql_task_path = "dinky_task/flink_jar_sql"
+    for file_name in traverse_files(flink_jar_sql_task_path):
+        sql = open(os.path.join(flink_jar_sql_task_path, file_name)).read()
+        task_name = file_name.split(".")[0]
+        flink_sql_datagen_test.runFlinkTask(sql, task_name,"FlinkJar", is_async=True)
