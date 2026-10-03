@@ -65,7 +65,11 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -78,279 +82,378 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 
+import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.HttpServer;
 
 class FlinkJobTaskTest {
 
-    private static final JobInstanceService JOB_INSTANCE_SERVICE = mock(JobInstanceService.class);
-
-    private static StaticApplicationContext applicationContext;
-    private static ApplicationContext previousApplicationContext;
-
-    private final Map<Integer, Integer> jobTenants = new HashMap<>();
-    private final Map<Integer, String> persistedStatuses = new HashMap<>();
-
-    @BeforeAll
-    static void registerServices() {
-        previousApplicationContext = SpringContextUtils.applicationContext;
-        applicationContext = new StaticApplicationContext();
-        applicationContext.getBeanFactory().registerSingleton("jobInstanceServiceImpl", JOB_INSTANCE_SERVICE);
-        applicationContext.getBeanFactory().registerSingleton("monitorServiceImpl", mock(MonitorService.class));
-        applicationContext.getBeanFactory().registerSingleton("jobHistoryServiceImpl", mock(JobHistoryService.class));
-        applicationContext
-                .getBeanFactory()
-                .registerSingleton("clusterInstanceServiceImpl", mock(ClusterInstanceService.class));
-        applicationContext.getBeanFactory().registerSingleton("historyServiceImpl", mock(HistoryService.class));
-        applicationContext.getBeanFactory().registerSingleton("taskServiceImpl", mock(TaskService.class));
-        applicationContext
-                .getBeanFactory()
-                .registerSingleton("alertHistoryServiceImpl", mock(AlertHistoryService.class));
-        applicationContext.getBeanFactory().registerSingleton("userServiceImpl", mock(UserService.class));
-        AlertRuleServiceImpl alertRuleService = mock(AlertRuleServiceImpl.class);
-        AlertRulesMapper alertRulesMapper = mock(AlertRulesMapper.class);
-        when(alertRuleService.getBaseMapper()).thenReturn(alertRulesMapper);
-        when(alertRulesMapper.selectWithTemplate()).thenReturn(Collections.emptyList());
-        applicationContext.getBeanFactory().registerSingleton("alertRuleServiceImpl", alertRuleService);
-        SpringContextUtils.applicationContext = applicationContext;
-    }
-
-    @AfterAll
-    static void restoreApplicationContext() {
-        SpringContextUtils.applicationContext = previousApplicationContext;
-        applicationContext.close();
-    }
-
-    @BeforeEach
-    void prepareTenantScopedPersistence() {
-        TenantContextHolder.clear();
-        reset(JOB_INSTANCE_SERVICE);
-        doAnswer(invocation -> {
-                    TenantContextHolder.set(jobTenants.get(invocation.getArgument(0)));
-                    return null;
-                })
-                .when(JOB_INSTANCE_SERVICE)
-                .initTenantByJobInstanceId(anyInt());
-        when(JOB_INSTANCE_SERVICE.updateById(any(JobInstance.class))).thenAnswer(invocation -> {
-            JobInstance instance = invocation.getArgument(0);
-            // A tenant-filtered update matches no row when a worker keeps another job's tenant.
-            if (!jobTenants.get(instance.getId()).equals(TenantContextHolder.get())) {
-                return false;
-            }
-            persistedStatuses.put(instance.getId(), instance.getStatus());
-            return true;
-        });
-    }
-
-    @AfterEach
-    void clearTenantContext() {
-        TenantContextHolder.clear();
+    @Test
+    void persistsTerminalStatusUsingTheJobTenant() throws Throwable {
+        runIsolated("persistsTerminalStatusUsingTheJobTenant");
     }
 
     @Test
-    void persistsTerminalStatusUsingTheJobTenant() {
-        TenantContextHolder.set(1);
-        FlinkJobTask task = task(101, 2);
-
-        assertTrue(task.dealTask());
-
-        assertAll(
-                () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
-                () -> assertEquals(1, TenantContextHolder.get()));
+    void clearsTenantContextWhenTheWorkerHadNoTenant() throws Throwable {
+        runIsolated("clearsTenantContextWhenTheWorkerHadNoTenant");
     }
 
     @Test
-    void clearsTenantContextWhenTheWorkerHadNoTenant() {
-        FlinkJobTask task = task(101, 2);
-
-        assertTrue(task.dealTask());
-
-        assertAll(
-                () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
-                () -> assertNull(TenantContextHolder.get()));
+    void refreshesDifferentTenantsOnTheSameWorker() throws Throwable {
+        runIsolated("refreshesDifferentTenantsOnTheSameWorker");
     }
 
     @Test
-    void refreshesDifferentTenantsOnTheSameWorker() {
-        TenantContextHolder.set(1);
-        FlinkJobTask firstTask = task(101, 2);
-        FlinkJobTask secondTask = task(102, 3);
-
-        assertTrue(firstTask.dealTask());
-        assertTrue(secondTask.dealTask());
-
-        assertAll(
-                () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
-                () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(102)),
-                () -> assertEquals(1, TenantContextHolder.get()));
+    void restoresPreviousTenantWhenRefreshFails() throws Throwable {
+        runIsolated("restoresPreviousTenantWhenRefreshFails");
     }
 
     @Test
-    void restoresPreviousTenantWhenRefreshFails() {
-        TenantContextHolder.set(1);
-        FlinkJobTask task = task(101, 2);
-        IllegalStateException failure = new IllegalStateException("Unable to persist status");
-        doAnswer(invocation -> {
-                    assertEquals(2, TenantContextHolder.get());
-                    throw failure;
-                })
-                .when(JOB_INSTANCE_SERVICE)
-                .updateById(any(JobInstance.class));
-
-        assertSame(failure, assertThrows(IllegalStateException.class, task::dealTask));
-        assertEquals(1, TenantContextHolder.get());
+    void clearsTenantContextWhenRefreshFailsWithoutPreviousTenant() throws Throwable {
+        runIsolated("clearsTenantContextWhenRefreshFailsWithoutPreviousTenant");
     }
 
     @Test
-    void clearsTenantContextWhenRefreshFailsWithoutPreviousTenant() {
-        FlinkJobTask task = task(101, 2);
-        IllegalStateException failure = new IllegalStateException("Unable to persist status");
-        doThrow(failure).when(JOB_INSTANCE_SERVICE).updateById(any(JobInstance.class));
-
-        assertSame(failure, assertThrows(IllegalStateException.class, task::dealTask));
-        assertNull(TenantContextHolder.get());
+    void preservesTheTenantForManualRefresh() throws Throwable {
+        runIsolated("preservesTheTenantForManualRefresh");
     }
 
     @Test
-    void preservesTheTenantForManualRefresh() {
-        TenantContextHolder.set(2);
-        FlinkJobTask task = task(101, 2);
-
-        assertTrue(task.dealTask());
-
-        assertAll(
-                () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
-                () -> assertEquals(2, TenantContextHolder.get()));
+    void persistsFailedYarnSessionJobWithTenantFilteringEnabled() throws Throwable {
+        runIsolated("persistsFailedYarnSessionJobWithTenantFilteringEnabled");
     }
 
-    @Test
-    void persistsFailedYarnSessionJobWithTenantFilteringEnabled() throws Exception {
-        HttpServer flink = failedJobServer();
-        Boolean metricsEnabled =
-                SystemConfiguration.getInstances().getMetricsSysEnable().getValue();
-        Integer resendInterval =
-                SystemConfiguration.getInstances().getJobReSendDiffSecond().getValue();
-        SystemConfiguration.getInstances().getMetricsSysEnable().setValue(false);
-        SystemConfiguration.getInstances().getJobReSendDiffSecond().setValue(60);
-        UnpooledDataSource dataSource =
-                new UnpooledDataSource("org.h2.Driver", "jdbc:h2:mem:" + UUID.randomUUID(), "sa", "");
-
-        try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement()) {
-            statement.execute(
-                    "CREATE TABLE dinky_job_instance (id INT PRIMARY KEY, tenant_id INT, status VARCHAR(32))");
-            statement.execute("INSERT INTO dinky_job_instance VALUES (101, 2, 'RUNNING'), (102, 1, 'RUNNING')");
-            Configuration configuration =
-                    new Configuration(new Environment("test", new JdbcTransactionFactory(), dataSource));
-            configuration.addInterceptor(
-                    new MybatisPlusConfig(new MybatisPlusFillProperties()).mybatisPlusInterceptor());
-            configuration.addMapper(JobStatusMapper.class);
-
-            try (SqlSession session =
-                    new SqlSessionFactoryBuilder().build(configuration).openSession(true)) {
-                JobStatusMapper mapper = session.getMapper(JobStatusMapper.class);
-                TenantContextHolder.set(1);
-                assertFalse(TenantContextHolder.isIgnoreTenant());
-                FlinkJobTask task = task(101, 2);
-                JobInfoDetail detail = task.getJobInfoDetail();
-                JobInstance instance = detail.getInstance();
-                instance.setTaskId(10);
-                instance.setName("failed-job");
-                instance.setJid("job-101");
-                instance.setStatus(JobStatus.FAILED.getValue());
-                assertEquals(0, mapper.updateStatus(instance), "Another tenant must not be able to update this row");
-                instance.setStatus(JobStatus.RUNNING.getValue());
-                detail.setJobDataDto(JobDataDto.builder().id(101).tenantId(2).build());
-                ClusterInstance cluster = new ClusterInstance();
-                cluster.setName("yarn-session");
-                cluster.setType(GatewayType.YARN_SESSION.getLongValue());
-                cluster.setJobManagerHost("127.0.0.1:" + flink.getAddress().getPort());
-                cluster.setHosts(cluster.getJobManagerHost());
-                detail.setClusterInstance(cluster);
-                doAnswer(invocation -> mapper.updateStatus(invocation.getArgument(0)) == 1)
-                        .when(JOB_INSTANCE_SERVICE)
-                        .updateById(any(JobInstance.class));
-
-                assertTrue(task.dealTask());
-
-                assertAll(
-                        () -> assertEquals(JobStatus.FAILED.getValue(), persistedStatus(connection, 101)),
-                        () -> assertEquals(JobStatus.RUNNING.getValue(), persistedStatus(connection, 102)),
-                        () -> assertEquals(1, TenantContextHolder.get()),
-                        () -> assertFalse(TenantContextHolder.isIgnoreTenant()));
+    private void runIsolated(String testMethod) throws Throwable {
+        ClassLoader previousLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader isolatedLoader = new FixtureClassLoader(getClass().getClassLoader());
+        try {
+            Thread.currentThread().setContextClassLoader(isolatedLoader);
+            Class<?> fixtureClass = isolatedLoader.loadClass(getClass().getName() + "$Fixture");
+            Constructor<?> constructor = fixtureClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            Object fixture = constructor.newInstance();
+            invoke(fixture, "registerServices");
+            try {
+                invoke(fixture, "prepareTenantScopedPersistence");
+                invoke(fixture, testMethod);
+            } finally {
+                try {
+                    invoke(fixture, "clearTenantContext");
+                } finally {
+                    invoke(fixture, "restoreApplicationContext");
+                }
             }
         } finally {
-            flink.stop(0);
-            SystemConfiguration.getInstances().getMetricsSysEnable().setValue(metricsEnabled);
-            SystemConfiguration.getInstances().getJobReSendDiffSecond().setValue(resendInterval);
+            Thread.currentThread().setContextClassLoader(previousLoader);
         }
     }
 
-    private static HttpServer failedJobServer() throws IOException {
-        Map<String, String> responses = new HashMap<>();
-        responses.put(
-                "/jobs/job-101",
-                "{\"jid\":\"job-101\",\"name\":\"failed-job\",\"state\":\"FAILED\","
-                        + "\"start-time\":1000,\"end-time\":2000,\"duration\":1000,\"vertices\":[],\"plan\":{\"nodes\":[]}}");
-        responses.put("/jobs/job-101/config", "{\"jid\":\"job-101\",\"name\":\"failed-job\",\"execution-config\":{}}");
-        responses.put("/jobs/job-101/checkpoints", "{\"errors\":[]}");
-        responses.put("/jobs/job-101/checkpoints/config", "{\"errors\":[]}");
-        responses.put(
-                "/jobs/job-101/exceptions",
-                "{\"all-exceptions\":[],\"root-exception\":\"\",\"timestamp\":2000,\"truncated\":false,"
-                        + "\"exceptionHistory\":{\"entries\":[],\"truncated\":false}}");
-        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
-        server.createContext("/jobs/job-101", exchange -> {
-            String response = responses.get(exchange.getRequestURI().getPath());
-            boolean validRequest = "GET".equals(exchange.getRequestMethod()) && response != null;
-            byte[] body = (validRequest ? response : "{\"errors\":[\"Unexpected request\"]}")
-                    .getBytes(StandardCharsets.UTF_8);
-            exchange.getResponseHeaders().set("Content-Type", "application/json");
-            exchange.sendResponseHeaders(validRequest ? 200 : 404, body.length);
-            try (OutputStream output = exchange.getResponseBody()) {
-                output.write(body);
-            }
-        });
-        server.start();
-        return server;
+    private static void invoke(Object fixture, String methodName) throws Throwable {
+        Method method = fixture.getClass().getDeclaredMethod(methodName);
+        method.setAccessible(true);
+        try {
+            method.invoke(fixture);
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        }
     }
 
-    private static String persistedStatus(Connection connection, int id) throws SQLException {
-        try (PreparedStatement statement =
-                connection.prepareStatement("SELECT status FROM dinky_job_instance WHERE id = ?")) {
-            statement.setInt(1, id);
-            try (ResultSet rows = statement.executeQuery()) {
-                assertTrue(rows.next());
-                return rows.getString("status");
+    // The handlers retain static service references and configuration listeners. Load the complete
+    // Dinky fixture in its own namespace so those references cannot affect other tests or IDE reruns.
+    private static class FixtureClassLoader extends ClassLoader {
+
+        FixtureClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (!name.startsWith("org.dinky.")) {
+                return super.loadClass(name, resolve);
+            }
+            synchronized (getClassLoadingLock(name)) {
+                Class<?> loaded = findLoadedClass(name);
+                if (loaded == null) {
+                    String resource = name.replace('.', '/') + ".class";
+                    try (InputStream input = getParent().getResourceAsStream(resource)) {
+                        if (input == null) {
+                            throw new ClassNotFoundException(name);
+                        }
+                        byte[] bytes = ByteStreams.toByteArray(input);
+                        loaded = defineClass(name, bytes, 0, bytes.length);
+                    } catch (IOException e) {
+                        throw new ClassNotFoundException(name, e);
+                    }
+                }
+                if (resolve) {
+                    resolveClass(loaded);
+                }
+                return loaded;
             }
         }
     }
 
-    interface JobStatusMapper {
-        @Update("UPDATE dinky_job_instance SET status = #{status} WHERE id = #{id}")
-        int updateStatus(JobInstance instance);
-    }
+    private static class Fixture {
 
-    private FlinkJobTask task(int id, int tenantId) {
-        JobInstance instance = new JobInstance();
-        instance.setId(id);
-        instance.setTenantId(tenantId);
-        instance.setStatus(JobStatus.RUNNING.getValue());
-        jobTenants.put(id, tenantId);
-        persistedStatuses.put(id, JobStatus.RUNNING.getValue());
+        private static final JobInstanceService JOB_INSTANCE_SERVICE = mock(JobInstanceService.class);
 
-        // Missing cluster metadata is a terminal refresh path that needs no Flink or YARN server.
-        JobInfoDetail detail = new JobInfoDetail(id);
-        detail.setInstance(instance);
-        FlinkJobTask task = new FlinkJobTask();
-        task.setJobInfoDetail(detail);
-        return task;
+        private static StaticApplicationContext applicationContext;
+        private static ApplicationContext previousApplicationContext;
+
+        private final Map<Integer, Integer> jobTenants = new HashMap<>();
+        private final Map<Integer, String> persistedStatuses = new HashMap<>();
+
+        static void registerServices() {
+            previousApplicationContext = SpringContextUtils.applicationContext;
+            applicationContext = new StaticApplicationContext();
+            applicationContext.getBeanFactory().registerSingleton("jobInstanceServiceImpl", JOB_INSTANCE_SERVICE);
+            applicationContext.getBeanFactory().registerSingleton("monitorServiceImpl", mock(MonitorService.class));
+            applicationContext
+                    .getBeanFactory()
+                    .registerSingleton("jobHistoryServiceImpl", mock(JobHistoryService.class));
+            applicationContext
+                    .getBeanFactory()
+                    .registerSingleton("clusterInstanceServiceImpl", mock(ClusterInstanceService.class));
+            applicationContext.getBeanFactory().registerSingleton("historyServiceImpl", mock(HistoryService.class));
+            applicationContext.getBeanFactory().registerSingleton("taskServiceImpl", mock(TaskService.class));
+            applicationContext
+                    .getBeanFactory()
+                    .registerSingleton("alertHistoryServiceImpl", mock(AlertHistoryService.class));
+            applicationContext.getBeanFactory().registerSingleton("userServiceImpl", mock(UserService.class));
+            AlertRuleServiceImpl alertRuleService = mock(AlertRuleServiceImpl.class);
+            AlertRulesMapper alertRulesMapper = mock(AlertRulesMapper.class);
+            when(alertRuleService.getBaseMapper()).thenReturn(alertRulesMapper);
+            when(alertRulesMapper.selectWithTemplate()).thenReturn(Collections.emptyList());
+            applicationContext.getBeanFactory().registerSingleton("alertRuleServiceImpl", alertRuleService);
+            SpringContextUtils.applicationContext = applicationContext;
+        }
+
+        static void restoreApplicationContext() {
+            SpringContextUtils.applicationContext = previousApplicationContext;
+            applicationContext.close();
+        }
+
+        void prepareTenantScopedPersistence() {
+            TenantContextHolder.clear();
+            reset(JOB_INSTANCE_SERVICE);
+            doAnswer(invocation -> {
+                        TenantContextHolder.set(jobTenants.get(invocation.getArgument(0)));
+                        return null;
+                    })
+                    .when(JOB_INSTANCE_SERVICE)
+                    .initTenantByJobInstanceId(anyInt());
+            when(JOB_INSTANCE_SERVICE.updateById(any(JobInstance.class))).thenAnswer(invocation -> {
+                JobInstance instance = invocation.getArgument(0);
+                // A tenant-filtered update matches no row when a worker keeps another job's tenant.
+                if (!jobTenants.get(instance.getId()).equals(TenantContextHolder.get())) {
+                    return false;
+                }
+                persistedStatuses.put(instance.getId(), instance.getStatus());
+                return true;
+            });
+        }
+
+        void clearTenantContext() {
+            TenantContextHolder.clear();
+        }
+
+        void persistsTerminalStatusUsingTheJobTenant() {
+            TenantContextHolder.set(1);
+            FlinkJobTask task = task(101, 2);
+
+            assertTrue(task.dealTask());
+
+            assertAll(
+                    () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
+                    () -> assertEquals(1, TenantContextHolder.get()));
+        }
+
+        void clearsTenantContextWhenTheWorkerHadNoTenant() {
+            FlinkJobTask task = task(101, 2);
+
+            assertTrue(task.dealTask());
+
+            assertAll(
+                    () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
+                    () -> assertNull(TenantContextHolder.get()));
+        }
+
+        void refreshesDifferentTenantsOnTheSameWorker() {
+            TenantContextHolder.set(1);
+            FlinkJobTask firstTask = task(101, 2);
+            FlinkJobTask secondTask = task(102, 3);
+
+            assertTrue(firstTask.dealTask());
+            assertTrue(secondTask.dealTask());
+
+            assertAll(
+                    () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
+                    () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(102)),
+                    () -> assertEquals(1, TenantContextHolder.get()));
+        }
+
+        void restoresPreviousTenantWhenRefreshFails() {
+            TenantContextHolder.set(1);
+            FlinkJobTask task = task(101, 2);
+            IllegalStateException failure = new IllegalStateException("Unable to persist status");
+            doAnswer(invocation -> {
+                        assertEquals(2, TenantContextHolder.get());
+                        throw failure;
+                    })
+                    .when(JOB_INSTANCE_SERVICE)
+                    .updateById(any(JobInstance.class));
+
+            assertSame(failure, assertThrows(IllegalStateException.class, task::dealTask));
+            assertEquals(1, TenantContextHolder.get());
+        }
+
+        void clearsTenantContextWhenRefreshFailsWithoutPreviousTenant() {
+            FlinkJobTask task = task(101, 2);
+            IllegalStateException failure = new IllegalStateException("Unable to persist status");
+            doThrow(failure).when(JOB_INSTANCE_SERVICE).updateById(any(JobInstance.class));
+
+            assertSame(failure, assertThrows(IllegalStateException.class, task::dealTask));
+            assertNull(TenantContextHolder.get());
+        }
+
+        void preservesTheTenantForManualRefresh() {
+            TenantContextHolder.set(2);
+            FlinkJobTask task = task(101, 2);
+
+            assertTrue(task.dealTask());
+
+            assertAll(
+                    () -> assertEquals(JobStatus.UNKNOWN.getValue(), persistedStatuses.get(101)),
+                    () -> assertEquals(2, TenantContextHolder.get()));
+        }
+
+        void persistsFailedYarnSessionJobWithTenantFilteringEnabled() throws Exception {
+            HttpServer flink = failedJobServer();
+            Boolean metricsEnabled =
+                    SystemConfiguration.getInstances().getMetricsSysEnable().getValue();
+            Integer resendInterval =
+                    SystemConfiguration.getInstances().getJobReSendDiffSecond().getValue();
+            SystemConfiguration.getInstances().getMetricsSysEnable().setValue(false);
+            SystemConfiguration.getInstances().getJobReSendDiffSecond().setValue(60);
+            UnpooledDataSource dataSource =
+                    new UnpooledDataSource("org.h2.Driver", "jdbc:h2:mem:" + UUID.randomUUID(), "sa", "");
+
+            try (Connection connection = dataSource.getConnection();
+                    Statement statement = connection.createStatement()) {
+                statement.execute(
+                        "CREATE TABLE dinky_job_instance (id INT PRIMARY KEY, tenant_id INT, status VARCHAR(32))");
+                statement.execute("INSERT INTO dinky_job_instance VALUES (101, 2, 'RUNNING'), (102, 1, 'RUNNING')");
+                Configuration configuration =
+                        new Configuration(new Environment("test", new JdbcTransactionFactory(), dataSource));
+                configuration.addInterceptor(
+                        new MybatisPlusConfig(new MybatisPlusFillProperties()).mybatisPlusInterceptor());
+                configuration.addMapper(JobStatusMapper.class);
+
+                try (SqlSession session =
+                        new SqlSessionFactoryBuilder().build(configuration).openSession(true)) {
+                    JobStatusMapper mapper = session.getMapper(JobStatusMapper.class);
+                    TenantContextHolder.set(1);
+                    assertFalse(TenantContextHolder.isIgnoreTenant());
+                    FlinkJobTask task = task(101, 2);
+                    JobInfoDetail detail = task.getJobInfoDetail();
+                    JobInstance instance = detail.getInstance();
+                    instance.setTaskId(10);
+                    instance.setName("failed-job");
+                    instance.setJid("job-101");
+                    instance.setStatus(JobStatus.FAILED.getValue());
+                    assertEquals(
+                            0, mapper.updateStatus(instance), "Another tenant must not be able to update this row");
+                    instance.setStatus(JobStatus.RUNNING.getValue());
+                    detail.setJobDataDto(
+                            JobDataDto.builder().id(101).tenantId(2).build());
+                    ClusterInstance cluster = new ClusterInstance();
+                    cluster.setName("yarn-session");
+                    cluster.setType(GatewayType.YARN_SESSION.getLongValue());
+                    cluster.setJobManagerHost("127.0.0.1:" + flink.getAddress().getPort());
+                    cluster.setHosts(cluster.getJobManagerHost());
+                    detail.setClusterInstance(cluster);
+                    doAnswer(invocation -> mapper.updateStatus(invocation.getArgument(0)) == 1)
+                            .when(JOB_INSTANCE_SERVICE)
+                            .updateById(any(JobInstance.class));
+
+                    assertTrue(task.dealTask());
+
+                    assertAll(
+                            () -> assertEquals(JobStatus.FAILED.getValue(), persistedStatus(connection, 101)),
+                            () -> assertEquals(JobStatus.RUNNING.getValue(), persistedStatus(connection, 102)),
+                            () -> assertEquals(1, TenantContextHolder.get()),
+                            () -> assertFalse(TenantContextHolder.isIgnoreTenant()));
+                }
+            } finally {
+                flink.stop(0);
+                SystemConfiguration.getInstances().getMetricsSysEnable().setValue(metricsEnabled);
+                SystemConfiguration.getInstances().getJobReSendDiffSecond().setValue(resendInterval);
+            }
+        }
+
+        private static HttpServer failedJobServer() throws IOException {
+            Map<String, String> responses = new HashMap<>();
+            responses.put(
+                    "/jobs/job-101",
+                    "{\"jid\":\"job-101\",\"name\":\"failed-job\",\"state\":\"FAILED\","
+                            + "\"start-time\":1000,\"end-time\":2000,\"duration\":1000,\"vertices\":[],\"plan\":{\"nodes\":[]}}");
+            responses.put(
+                    "/jobs/job-101/config", "{\"jid\":\"job-101\",\"name\":\"failed-job\",\"execution-config\":{}}");
+            responses.put("/jobs/job-101/checkpoints", "{\"errors\":[]}");
+            responses.put("/jobs/job-101/checkpoints/config", "{\"errors\":[]}");
+            responses.put(
+                    "/jobs/job-101/exceptions",
+                    "{\"all-exceptions\":[],\"root-exception\":\"\",\"timestamp\":2000,\"truncated\":false,"
+                            + "\"exceptionHistory\":{\"entries\":[],\"truncated\":false}}");
+            HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+            server.createContext("/jobs/job-101", exchange -> {
+                String response = responses.get(exchange.getRequestURI().getPath());
+                boolean validRequest = "GET".equals(exchange.getRequestMethod()) && response != null;
+                byte[] body = (validRequest ? response : "{\"errors\":[\"Unexpected request\"]}")
+                        .getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(validRequest ? 200 : 404, body.length);
+                try (OutputStream output = exchange.getResponseBody()) {
+                    output.write(body);
+                }
+            });
+            server.start();
+            return server;
+        }
+
+        private static String persistedStatus(Connection connection, int id) throws SQLException {
+            try (PreparedStatement statement =
+                    connection.prepareStatement("SELECT status FROM dinky_job_instance WHERE id = ?")) {
+                statement.setInt(1, id);
+                try (ResultSet rows = statement.executeQuery()) {
+                    assertTrue(rows.next());
+                    return rows.getString("status");
+                }
+            }
+        }
+
+        interface JobStatusMapper {
+            @Update("UPDATE dinky_job_instance SET status = #{status} WHERE id = #{id}")
+            int updateStatus(JobInstance instance);
+        }
+
+        private FlinkJobTask task(int id, int tenantId) {
+            JobInstance instance = new JobInstance();
+            instance.setId(id);
+            instance.setTenantId(tenantId);
+            instance.setStatus(JobStatus.RUNNING.getValue());
+            jobTenants.put(id, tenantId);
+            persistedStatuses.put(id, JobStatus.RUNNING.getValue());
+
+            // Missing cluster metadata is a terminal refresh path that needs no Flink or YARN server.
+            JobInfoDetail detail = new JobInfoDetail(id);
+            detail.setInstance(instance);
+            FlinkJobTask task = new FlinkJobTask();
+            task.setJobInfoDetail(detail);
+            return task;
+        }
     }
 }
