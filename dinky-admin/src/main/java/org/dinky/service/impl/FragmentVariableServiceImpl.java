@@ -85,7 +85,7 @@ public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariab
 
     @Override
     public List<FragmentVariable> listEnabledAll() {
-        return list(new LambdaQueryWrapper<FragmentVariable>().eq(FragmentVariable::getEnabled, 1));
+        return list(new LambdaQueryWrapper<FragmentVariable>().eq(FragmentVariable::getEnabled, true));
     }
 
     @Override

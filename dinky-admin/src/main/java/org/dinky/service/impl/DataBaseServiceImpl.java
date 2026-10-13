@@ -124,7 +124,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
 
     @Override
     public List<DataBase> listEnabledAll() {
-        return this.list(new QueryWrapper<DataBase>().eq("enabled", 1));
+        return this.list(new QueryWrapper<DataBase>().eq("enabled", true));
     }
 
     /**

@@ -63,7 +63,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     public List<AlertInstance> listEnabledAll() {
-        return list(new LambdaQueryWrapper<AlertInstance>().eq(AlertInstance::getEnabled, 1));
+        return list(new LambdaQueryWrapper<AlertInstance>().eq(AlertInstance::getEnabled, true));
     }
 
     @Override
