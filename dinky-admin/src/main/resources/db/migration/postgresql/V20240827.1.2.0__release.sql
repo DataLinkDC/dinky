@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.drop_index_if_exists(
+CREATE OR REPLACE FUNCTION ${dinky_schema}.drop_index_if_exists(
     schema_name text,
     index_name text,
     table_name text
@@ -23,10 +23,10 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-SELECT public.drop_index_if_exists('public', 'cluster_un_idx1', 'dinky_cluster');
+SELECT ${dinky_schema}.drop_index_if_exists('${dinky_schema}', 'cluster_un_idx1', 'dinky_cluster');
 
 
-CREATE TABLE IF NOT EXISTS public.dinky_dashboard
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_dashboard
 (
     id               SERIAL PRIMARY KEY          NOT NULL,
     name             VARCHAR(255),
@@ -37,18 +37,18 @@ CREATE TABLE IF NOT EXISTS public.dinky_dashboard
     update_time      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-COMMENT ON COLUMN public.dinky_dashboard.id IS 'ID';
-COMMENT ON COLUMN public.dinky_dashboard.name IS 'name';
-COMMENT ON COLUMN public.dinky_dashboard.remark IS 'remark';
-COMMENT ON COLUMN public.dinky_dashboard.chart_theme IS 'chart theme';
-COMMENT ON COLUMN public.dinky_dashboard.layouts IS 'layouts';
-COMMENT ON COLUMN public.dinky_dashboard.create_time IS 'create time';
-COMMENT ON COLUMN public.dinky_dashboard.update_time IS 'update time';
+COMMENT ON COLUMN ${dinky_schema}.dinky_dashboard.id IS 'ID';
+COMMENT ON COLUMN ${dinky_schema}.dinky_dashboard.name IS 'name';
+COMMENT ON COLUMN ${dinky_schema}.dinky_dashboard.remark IS 'remark';
+COMMENT ON COLUMN ${dinky_schema}.dinky_dashboard.chart_theme IS 'chart theme';
+COMMENT ON COLUMN ${dinky_schema}.dinky_dashboard.layouts IS 'layouts';
+COMMENT ON COLUMN ${dinky_schema}.dinky_dashboard.create_time IS 'create time';
+COMMENT ON COLUMN ${dinky_schema}.dinky_dashboard.update_time IS 'update time';
 
 CREATE OR REPLACE TRIGGER update_dinky_dashboard_update_time
               BEFORE UPDATE
-                         ON public.dinky_dashboard
+                         ON ${dinky_schema}.dinky_dashboard
                          FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
-SELECT add_column_if_not_exists('public','dinky_metrics', 'vertices_title', 'text', 'null', 'vertices title');
+SELECT add_column_if_not_exists('${dinky_schema}','dinky_metrics', 'vertices_title', 'text', 'null', 'vertices title');
