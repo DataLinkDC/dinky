@@ -64,7 +64,8 @@ public class URLUtils {
                 File tmpFile = FileUtil.file(target.getAbsolutePath() + ".downloading");
                 try {
                     FileUtil.writeFromStream(urlConnection.getInputStream(), tmpFile);
-                    return FileUtil.move(tmpFile, target, true);
+                    FileUtil.move(tmpFile, target, true);
+                    return target;
                 } finally {
                     if (FileUtil.exist(tmpFile)) {
                         FileUtil.del(tmpFile);
