@@ -24,6 +24,7 @@ import org.dinky.data.socket.CreateTableEventSocketMessage;
 import org.dinky.data.socket.DataChangeEventSocketMessage;
 import org.dinky.sandbox.metadata.ColumnInfo;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -127,21 +128,41 @@ public class SocketClient implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (connected.compareAndSet(true, false)) {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-                if (socket != null && !socket.isClosed()) {
-                    socket.close();
-                }
-                logger.info("The client connection has been closed.");
-            } catch (IOException e) {
-                logger.error("An exception occurred while closing the client connection.", e);
+        if (!connected.compareAndSet(true, false)) {
+            return;
+        }
+        try {
+            // Flush then half-close the output so the server reads every object and then EOF.
+            // Closing the input first would close the whole socket and can drop unread rows.
+            if (outputStream != null) {
+                outputStream.flush();
             }
+            if (socket != null && !socket.isClosed() && !socket.isOutputShutdown()) {
+                socket.shutdownOutput();
+            }
+        } catch (IOException e) {
+            logger.warn("Failed to half-close sandbox socket output", e);
+        }
+        closeQuietly(inputStream);
+        closeQuietly(outputStream);
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            logger.error("An exception occurred while closing the client connection.", e);
+        }
+        logger.info("The client connection has been closed.");
+    }
+
+    private void closeQuietly(Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            logger.warn("Failed to close sandbox socket stream", e);
         }
     }
 }

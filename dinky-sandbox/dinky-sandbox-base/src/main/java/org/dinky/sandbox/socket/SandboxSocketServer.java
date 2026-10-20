@@ -26,6 +26,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
@@ -103,24 +104,31 @@ public class SandboxSocketServer {
      * 停止 Socket 服务器
      */
     public void stop() {
-        if (running.compareAndSet(true, false)) {
-            try {
-                if (serverSocket != null && !serverSocket.isClosed()) {
-                    serverSocket.close();
-                }
-
-                if (executorService != null) {
-                    executorService.shutdown();
-                }
-
-                if (serverThread != null) {
-                    serverThread.interrupt();
-                }
-
-                logger.info("Sandbox Socket Server 已停止");
-            } catch (IOException e) {
-                logger.error("停止 Sandbox Socket Server 时发生异常", e);
+        if (!running.compareAndSet(true, false)) {
+            return;
+        }
+        try {
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
             }
+            // Accept loop exits after the listening socket is closed. Join it before shutting down
+            // workers so a connection accepted in this window is still submitted.
+            if (serverThread != null) {
+                serverThread.join(TimeUnit.SECONDS.toMillis(5));
+            }
+            if (executorService != null) {
+                executorService.shutdown();
+                if (!executorService.awaitTermination(30, TimeUnit.SECONDS)) {
+                    logger.warn("Sandbox Socket Server did not finish processing clients in time");
+                    executorService.shutdownNow();
+                }
+            }
+            logger.info("Sandbox Socket Server 已停止");
+        } catch (IOException e) {
+            logger.error("停止 Sandbox Socket Server 时发生异常", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("停止 Sandbox Socket Server 时发生异常", e);
         }
     }
 
