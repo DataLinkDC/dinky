@@ -98,6 +98,13 @@
         order by id desc limit 1
     </select>
 
+    <select id="getJobInstanceByTaskName" resultType="org.dinky.data.model.job.JobInstance">
+        select *
+        from dinky_job_instance
+        where name = #{taskName}
+        order by id desc limit 1
+    </select>
+
     <select id="getTenantByJobInstanceId" resultType="java.lang.Integer">
         select tenant_id
         from dinky_job_instance

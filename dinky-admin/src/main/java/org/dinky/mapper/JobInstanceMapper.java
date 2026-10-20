@@ -51,6 +51,8 @@ public interface JobInstanceMapper extends SuperMapper<JobInstance> {
 
     JobInstance getJobInstanceByTaskId(Integer id);
 
+    JobInstance getJobInstanceByTaskName(String taskName);
+
     @InterceptorIgnore(tenantLine = "true")
     Integer getTenantByJobInstanceId(@Param("id") Integer id);
 }
