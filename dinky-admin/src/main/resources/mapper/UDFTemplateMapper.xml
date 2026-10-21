@@ -27,7 +27,7 @@
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
-                and `name` like concat('%',#{param.name},'%')
+                and name like concat('%',#{param.name},'%')
             </if>
             <if test='param.codeType!=null and param.codeType!=""'>
                 and code_type = #{param.codeType}

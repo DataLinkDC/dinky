@@ -78,7 +78,7 @@
         <foreach collection="stepIds" item="stepId" open="(" close=")" separator=",">
             #{stepId}
         </foreach>
-        and t.enabled = 1
+        and t.enabled = true
         <if test="includeNull == true">
             and ((i.status is null) or (i.status in <foreach collection="jobStatuses" item="jobStatus" open="("
                                                              close=")" separator=",">
@@ -103,7 +103,7 @@
         100, 0),
         2) rate
         FROM dinky_task
-        WHERE enabled = 1
+        WHERE enabled = true
         GROUP BY dialect
     </select>
 

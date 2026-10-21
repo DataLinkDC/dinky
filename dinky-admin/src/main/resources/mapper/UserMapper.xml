@@ -49,7 +49,7 @@
 
 <!--    recoveryUser -->
     <update id="recoveryUser" parameterType="java.lang.Integer" >
-        update dinky_user set is_delete = 0 where id = #{id}
+        update dinky_user set is_delete = false where id = #{id}
     </update>
 
 </mapper>
