@@ -74,6 +74,10 @@ public class ProTableUtil {
     private static void buildSort(
             String sortField, String sortValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
         if (sortField != null && sortValue != null) {
+            // 过滤无效的排序字段
+            if ("undefined".equalsIgnoreCase(sortField) || "null".equalsIgnoreCase(sortField) || sortField.trim().isEmpty()) {
+                return;
+            }
             if (camelToUnderscore) {
                 sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
             }
