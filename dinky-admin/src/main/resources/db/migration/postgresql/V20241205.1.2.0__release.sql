@@ -1,15 +1,15 @@
 
 CREATE OR REPLACE TRIGGER set_update_time_dinky_user
               BEFORE UPDATE
-                         ON public.dinky_user
+                         ON ${dinky_schema}.dinky_user
                          FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
 
 
 
--- Table structure for public.dinky_resources
-CREATE TABLE IF NOT EXISTS public.dinky_resources_backup
+-- Table structure for ${dinky_schema}.dinky_resources
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_resources_backup
 (
     id           SERIAL PRIMARY KEY          NOT NULL,
     file_name    VARCHAR(64),
@@ -26,31 +26,31 @@ CREATE TABLE IF NOT EXISTS public.dinky_resources_backup
     updater      INT
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS dinky_resources_un1 ON public.dinky_resources_backup (full_name, type);
+CREATE UNIQUE INDEX IF NOT EXISTS dinky_resources_un1 ON ${dinky_schema}.dinky_resources_backup (full_name, type);
 
-COMMENT ON TABLE public.dinky_resources_backup IS 'resources';
+COMMENT ON TABLE ${dinky_schema}.dinky_resources_backup IS 'resources';
 
-COMMENT ON COLUMN public.dinky_resources_backup.id IS 'key';
-COMMENT ON COLUMN public.dinky_resources_backup.file_name IS 'file name';
-COMMENT ON COLUMN public.dinky_resources_backup.user_id IS 'user id';
-COMMENT ON COLUMN public.dinky_resources_backup.type IS 'resource type,0:FILE，1:UDF';
-COMMENT ON COLUMN public.dinky_resources_backup.size IS 'resource size';
+COMMENT ON COLUMN ${dinky_schema}.dinky_resources_backup.id IS 'key';
+COMMENT ON COLUMN ${dinky_schema}.dinky_resources_backup.file_name IS 'file name';
+COMMENT ON COLUMN ${dinky_schema}.dinky_resources_backup.user_id IS 'user id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_resources_backup.type IS 'resource type,0:FILE，1:UDF';
+COMMENT ON COLUMN ${dinky_schema}.dinky_resources_backup.size IS 'resource size';
 
--- public.dinky_git_project
+-- ${dinky_schema}.dinky_git_project
 CREATE OR REPLACE TRIGGER update_dinky_dinky_resources
               BEFORE UPDATE
-                         ON public.dinky_resources_backup
+                         ON ${dinky_schema}.dinky_resources_backup
                          FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
-insert into public.dinky_resources_backup(id, file_name, description, user_id, type, size, pid, full_name, is_directory, create_time, update_time, creator, updater)
+insert into ${dinky_schema}.dinky_resources_backup(id, file_name, description, user_id, type, size, pid, full_name, is_directory, create_time, update_time, creator, updater)
 select id, file_name, description, user_id, type, size, pid, full_name,
        case when is_directory = 0 then false else true end as is_directory
         , create_time, update_time, creator, updater
-from public.dinky_resources;
+from ${dinky_schema}.dinky_resources;
 
-drop table if exists public.dinky_resources;
-alter table public.dinky_resources_backup rename to dinky_resources;
+drop table if exists ${dinky_schema}.dinky_resources;
+alter table ${dinky_schema}.dinky_resources_backup rename to dinky_resources;
 
 
 
@@ -59,11 +59,11 @@ alter table public.dinky_resources_backup rename to dinky_resources;
 
 
 -- ----------------------------
--- Table structure for public.dinky_alert_instance
+-- Table structure for ${dinky_schema}.dinky_alert_instance
 -- ----------------------------
 
 
-CREATE TABLE IF NOT EXISTS public.dinky_alert_instance_backup
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_alert_instance_backup
 (
     id          SERIAL PRIMARY KEY NOT NULL,
     name        VARCHAR(50)        NOT NULL,
@@ -79,44 +79,44 @@ CREATE TABLE IF NOT EXISTS public.dinky_alert_instance_backup
 );
 
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.id IS 'id';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.id IS 'id';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.name IS 'alert instance name';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.name IS 'alert instance name';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.tenant_id IS 'tenant id';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.tenant_id IS 'tenant id';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.type IS 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.type IS 'alert instance type such as: DingTalk,Wechat(Webhook,app) Feishu ,email';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.params IS 'configuration';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.params IS 'configuration';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.enabled IS 'is enable';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.enabled IS 'is enable';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.create_time IS 'create time';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.create_time IS 'create time';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.update_time IS 'update time';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.update_time IS 'update time';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.creator IS 'creator user id';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.creator IS 'creator user id';
 COMMENT
-    ON COLUMN public.dinky_alert_instance_backup.updater IS 'updater user id';
+    ON COLUMN ${dinky_schema}.dinky_alert_instance_backup.updater IS 'updater user id';
 COMMENT
-    ON TABLE public.dinky_alert_instance_backup IS 'Alert instance';
+    ON TABLE ${dinky_schema}.dinky_alert_instance_backup IS 'Alert instance';
 
 
 CREATE OR REPLACE TRIGGER set_update_time_dinky_alert_instance
               BEFORE UPDATE
-                         ON public.dinky_alert_instance_backup
+                         ON ${dinky_schema}.dinky_alert_instance_backup
                          FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
 
-insert into public.dinky_alert_instance_backup(id, name, tenant_id, type, params, enabled, create_time, update_time, creator, updater)
+insert into ${dinky_schema}.dinky_alert_instance_backup(id, name, tenant_id, type, params, enabled, create_time, update_time, creator, updater)
 select id, name, tenant_id, type, params,
-        case when enabled = 0 then false else true end as enabled
+        case when enabled::int = 0 then false else true end as enabled
        , create_time, update_time, creator, updater
-from public.dinky_alert_instance;
+from ${dinky_schema}.dinky_alert_instance;
 
-drop table if exists public.dinky_alert_instance;
-alter table public.dinky_alert_instance_backup rename to dinky_alert_instance;
+drop table if exists ${dinky_schema}.dinky_alert_instance;
+alter table ${dinky_schema}.dinky_alert_instance_backup rename to dinky_alert_instance;
 
 
 
@@ -127,10 +127,10 @@ alter table public.dinky_alert_instance_backup rename to dinky_alert_instance;
 
 
 -- ----------------------------
--- Table structure for public.dinky_alert_group
+-- Table structure for ${dinky_schema}.dinky_alert_group
 -- ----------------------------
 
-CREATE TABLE IF NOT EXISTS public.dinky_alert_group_backup
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_alert_group_backup
 (
     id                 SERIAL PRIMARY KEY NOT NULL,
     name               VARCHAR(50)        NOT NULL,
@@ -146,49 +146,49 @@ CREATE TABLE IF NOT EXISTS public.dinky_alert_group_backup
 );
 
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.id IS 'id';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.id IS 'id';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.name IS 'alert group name';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.name IS 'alert group name';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.tenant_id IS 'tenant id';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.tenant_id IS 'tenant id';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.alert_instance_ids IS 'Alert instance IDS';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.alert_instance_ids IS 'Alert instance IDS';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.note IS 'note';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.note IS 'note';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.enabled IS 'is enable';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.enabled IS 'is enable';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.create_time IS 'create time';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.create_time IS 'create time';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.update_time IS 'update time';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.update_time IS 'update time';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.creator IS 'creator user id';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.creator IS 'creator user id';
 COMMENT
-    ON COLUMN public.dinky_alert_group_backup.updater IS 'updater user id';
+    ON COLUMN ${dinky_schema}.dinky_alert_group_backup.updater IS 'updater user id';
 COMMENT
-    ON TABLE public.dinky_alert_group_backup IS 'Alert group';
+    ON TABLE ${dinky_schema}.dinky_alert_group_backup IS 'Alert group';
 
 CREATE OR REPLACE TRIGGER set_update_time_dinky_alert_group
     BEFORE UPDATE
-    ON public.dinky_alert_group_backup
+    ON ${dinky_schema}.dinky_alert_group_backup
     FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
-insert into public.dinky_alert_group_backup(id, name, tenant_id, alert_instance_ids, note, enabled, create_time, update_time, creator, updater)
+insert into ${dinky_schema}.dinky_alert_group_backup(id, name, tenant_id, alert_instance_ids, note, enabled, create_time, update_time, creator, updater)
 select id, name, tenant_id, alert_instance_ids, note,
-        case when enabled = 0 then false else true end as enabled
+        case when enabled::int = 0 then false else true end as enabled
        , create_time, update_time, creator, updater
-from public.dinky_alert_group;
-drop table if exists public.dinky_alert_group;
-alter table public.dinky_alert_group_backup rename to dinky_alert_group;
+from ${dinky_schema}.dinky_alert_group;
+drop table if exists ${dinky_schema}.dinky_alert_group;
+alter table ${dinky_schema}.dinky_alert_group_backup rename to dinky_alert_group;
 
 
 
 
 -- ----------------------------
--- Table structure for public.dinky_alert_template
+-- Table structure for ${dinky_schema}.dinky_alert_template
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS public.dinky_alert_template_backup
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_alert_template_backup
 (
     id               SERIAL PRIMARY KEY          NOT NULL,
     name             VARCHAR(20),
@@ -201,32 +201,32 @@ CREATE TABLE IF NOT EXISTS public.dinky_alert_template_backup
     CONSTRAINT dinky_alert_template_unx_idx UNIQUE (name)
 );
 
-COMMENT ON COLUMN public.dinky_alert_template_backup.id IS 'id';
-COMMENT ON COLUMN public.dinky_alert_template_backup.name IS 'emplate name';
-COMMENT ON COLUMN public.dinky_alert_template_backup.template_content IS 'template content';
-COMMENT ON COLUMN public.dinky_alert_template_backup.enabled IS 'is enable';
--- public.dinky_git_project
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_template_backup.id IS 'id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_template_backup.name IS 'emplate name';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_template_backup.template_content IS 'template content';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_template_backup.enabled IS 'is enable';
+-- ${dinky_schema}.dinky_git_project
 CREATE OR REPLACE TRIGGER update_dinky_alert_template
     BEFORE UPDATE
-    ON public.dinky_alert_template_backup
+    ON ${dinky_schema}.dinky_alert_template_backup
     FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
-insert into public.dinky_alert_template_backup(id, name, template_content, enabled, create_time, update_time, creator, updater)
+insert into ${dinky_schema}.dinky_alert_template_backup(id, name, template_content, enabled, create_time, update_time, creator, updater)
 select id, name, template_content,
-        case when enabled = 0 then false else true end as enabled
+        case when enabled::int = 0 then false else true end as enabled
        , create_time, update_time, creator, updater
-from public.dinky_alert_template;
-drop table if exists public.dinky_alert_template;
-alter table public.dinky_alert_template_backup rename to dinky_alert_template;
+from ${dinky_schema}.dinky_alert_template;
+drop table if exists ${dinky_schema}.dinky_alert_template;
+alter table ${dinky_schema}.dinky_alert_template_backup rename to dinky_alert_template;
 
 
 
 
 -- ----------------------------
--- Table structure for public.dinky_alert_rules
+-- Table structure for ${dinky_schema}.dinky_alert_rules
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS public.dinky_alert_rules_backup
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_alert_rules_backup
 (
     id                 SERIAL PRIMARY KEY,
     name               VARCHAR(40)                 NOT NULL,
@@ -241,41 +241,41 @@ CREATE TABLE IF NOT EXISTS public.dinky_alert_rules_backup
     creator            INT,
     updater            INT
 );
-CREATE UNIQUE INDEX IF NOT EXISTS dinky_alert_rules_name_unx ON public.dinky_alert_rules (name);
+CREATE UNIQUE INDEX IF NOT EXISTS dinky_alert_rules_name_unx ON ${dinky_schema}.dinky_alert_rules (name);
 
-COMMENT ON COLUMN public.dinky_alert_rules_backup.id IS 'id';
-COMMENT ON COLUMN public.dinky_alert_rules_backup.name IS 'rule name';
-COMMENT ON COLUMN public.dinky_alert_rules_backup.rule IS 'specify rule';
-COMMENT ON COLUMN public.dinky_alert_rules_backup.template_id IS 'template id';
-COMMENT ON COLUMN public.dinky_alert_rules_backup.rule_type IS 'alert rule type';
-COMMENT ON COLUMN public.dinky_alert_rules_backup.trigger_conditions IS 'trigger conditions';
-COMMENT ON COLUMN public.dinky_alert_rules_backup.description IS 'description';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_rules_backup.id IS 'id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_rules_backup.name IS 'rule name';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_rules_backup.rule IS 'specify rule';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_rules_backup.template_id IS 'template id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_rules_backup.rule_type IS 'alert rule type';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_rules_backup.trigger_conditions IS 'trigger conditions';
+COMMENT ON COLUMN ${dinky_schema}.dinky_alert_rules_backup.description IS 'description';
 
--- public.dinky_git_project
+-- ${dinky_schema}.dinky_git_project
 CREATE OR REPLACE TRIGGER update_dinky_alert_rules
     BEFORE UPDATE
-    ON public.dinky_alert_rules_backup
+    ON ${dinky_schema}.dinky_alert_rules_backup
     FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
 
-insert into public.dinky_alert_rules_backup(id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater)
+insert into ${dinky_schema}.dinky_alert_rules_backup(id, name, rule, template_id, rule_type, trigger_conditions, description, enabled, create_time, update_time, creator, updater)
 select id, name, rule, template_id, rule_type, trigger_conditions, description,
-        case when enabled = 0 then false else true end as enabled
+        case when enabled::int = 0 then false else true end as enabled
        , create_time, update_time, creator, updater
-from public.dinky_alert_rules;
-drop table if exists public.dinky_alert_rules;
-alter table public.dinky_alert_rules_backup rename to dinky_alert_rules;
+from ${dinky_schema}.dinky_alert_rules;
+drop table if exists ${dinky_schema}.dinky_alert_rules;
+alter table ${dinky_schema}.dinky_alert_rules_backup rename to dinky_alert_rules;
 
 
 
 
 
 -- ----------------------------
--- Table structure for public.dinky_fragment
+-- Table structure for ${dinky_schema}.dinky_fragment
 -- ----------------------------
 
-CREATE TABLE IF NOT EXISTS public.dinky_fragment_backup
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_fragment_backup
 (
     id             serial PRIMARY KEY          NOT NULL,
     name           varchar(50)                 NOT NULL,
@@ -290,31 +290,31 @@ CREATE TABLE IF NOT EXISTS public.dinky_fragment_backup
     UNIQUE (name, tenant_id)
 );
 
-COMMENT ON TABLE public.dinky_fragment_backup is 'fragment management';
-COMMENT ON COLUMN public.dinky_fragment_backup.id is 'id';
-COMMENT ON COLUMN public.dinky_fragment_backup.name is 'fragment name';
-COMMENT ON COLUMN public.dinky_fragment_backup.tenant_id is 'tenant id';
-COMMENT ON COLUMN public.dinky_fragment_backup.fragment_value is 'fragment value';
-COMMENT ON COLUMN public.dinky_fragment_backup.note is 'note';
-COMMENT ON COLUMN public.dinky_fragment_backup.enabled is 'enabled';
-COMMENT ON COLUMN public.dinky_fragment_backup.create_time is 'create time';
-COMMENT ON COLUMN public.dinky_fragment_backup.update_time is 'update time';
-COMMENT ON COLUMN public.dinky_fragment_backup.creator is 'creator';
-COMMENT ON COLUMN public.dinky_fragment_backup.updater is 'updater';
+COMMENT ON TABLE ${dinky_schema}.dinky_fragment_backup is 'fragment management';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.id is 'id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.name is 'fragment name';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.tenant_id is 'tenant id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.fragment_value is 'fragment value';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.note is 'note';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.enabled is 'enabled';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.create_time is 'create time';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.update_time is 'update time';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.creator is 'creator';
+COMMENT ON COLUMN ${dinky_schema}.dinky_fragment_backup.updater is 'updater';
 
 CREATE OR REPLACE TRIGGER update_dinky_fragment_modtime
     BEFORE UPDATE
-    ON public.dinky_fragment_backup
+    ON ${dinky_schema}.dinky_fragment_backup
     FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
-insert into public.dinky_fragment_backup(id, name, tenant_id, fragment_value, note, enabled, create_time, update_time, creator, updater)
+insert into ${dinky_schema}.dinky_fragment_backup(id, name, tenant_id, fragment_value, note, enabled, create_time, update_time, creator, updater)
 select id, name, tenant_id, fragment_value, note,
-        case when enabled = 0 then false else true end as enabled
+        case when enabled::int = 0 then false else true end as enabled
        , create_time, update_time, creator, updater
-from public.dinky_fragment;
-drop table if exists public.dinky_fragment;
-alter table public.dinky_fragment_backup rename to dinky_fragment;
+from ${dinky_schema}.dinky_fragment;
+drop table if exists ${dinky_schema}.dinky_fragment;
+alter table ${dinky_schema}.dinky_fragment_backup rename to dinky_fragment;
 
 
 
