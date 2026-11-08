@@ -45,13 +45,13 @@ jobs:
            backend:
              - '!dinky-web/**'
 
-      # palantir-java-format 调用 javac 内部 API，只在 JDK 11 上与当前格式化器匹配
-      - name: Set up JDK 11
+      # 镜像已带 JDK 11。默认 JDK 的 javac 内部 API 与 palantir-java-format 不一致
+      - name: Use preinstalled JDK 11
         if: steps.filter.outputs.backend == 'true'
-        uses: actions/setup-java@v2
-        with:
-          java-version: 11
-          distribution: 'adopt'
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME_11_X64/bin" >> "$GITHUB_PATH"
+          "$JAVA_HOME_11_X64/bin/java" -version
       - name: Run spotless apply
         if:  steps.filter.outputs.backend == 'true'
         run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
