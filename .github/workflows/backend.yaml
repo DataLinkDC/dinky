@@ -39,6 +39,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      # palantir-java-format 调用 javac 内部 API，只在 JDK 11 上与当前格式化器匹配
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
       - name: Check Style
         run: |
           ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check -P flink-all
