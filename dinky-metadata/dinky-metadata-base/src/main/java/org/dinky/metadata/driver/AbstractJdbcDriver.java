@@ -134,37 +134,76 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
         ds.setPassword(connectConfig.getPassword());
         ds.setValidationQuery(validationQuery);
         ds.setTestWhileIdle(true);
-        ds.setBreakAfterAcquireFailure(true);
+        // 获取失败后继续重建连接。为 true 时一次失败会停掉创建任务，数据源直到进程重启都不可用
+        ds.setBreakAfterAcquireFailure(false);
         ds.setFailFast(true);
         ds.setInitialSize(1);
         ds.setMaxActive(8);
         ds.setMinIdle(5);
+        // 保活池内空闲连接，并在空闲超过 15 分钟时回收，避免被服务端 wait_timeout 关闭
+        ds.setKeepAlive(true);
+        ds.setMinEvictableIdleTimeMillis(300000);
+        ds.setMaxEvictableIdleTimeMillis(900000);
     }
 
     @Override
     public Driver connect() {
-        if (Asserts.isNull(conn.get())) {
-            try {
-                Class.forName(getDriverClass());
-                DruidPooledConnection connection = createDataSource().getConnection();
-                conn.set(connection);
-            } catch (ClassNotFoundException | SQLException e) {
-                throw new RuntimeException(e);
+        try {
+            Connection currentConn = conn.get();
+            if (Asserts.isNotNull(currentConn) && probeConnection(currentConn)) {
+                return this;
             }
+            Class.forName(getDriverClass());
+            DruidPooledConnection connection = createDataSource().getConnection();
+            conn.set(connection);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
         }
         return this;
     }
 
     @Override
     public boolean isHealth() {
+        Connection currentConn = conn.get();
+        if (Asserts.isNull(currentConn)) {
+            return false;
+        }
+        return probeConnection(currentConn);
+    }
+
+    /**
+     * 执行 validationQuery 确认物理连接仍可用。isClosed() 只反映 Druid 包装状态，
+     * 服务端 wait_timeout 关掉连接后仍可能返回 false。探测失败时移出当前线程缓存并关闭，
+     * 后续 connect() 直接向连接池要新连接，不再对同一条死连接做第二次超时探测。
+     */
+    private boolean probeConnection(Connection currentConn) {
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
         try {
-            if (Asserts.isNotNull(conn.get())) {
-                return !conn.get().isClosed();
-            }
-            return false;
+            preparedStatement = currentConn.prepareStatement(validationQuery);
+            results = preparedStatement.executeQuery();
+            return true;
         } catch (Exception e) {
-            log.error("check is health errr:", e);
+            log.warn("元数据连接已失效，即将关闭并重建。数据源: {}，原因: {}", config.getName(), e.getMessage());
+            close(preparedStatement, results);
+            preparedStatement = null;
+            results = null;
+            discardConnection(currentConn);
             return false;
+        } finally {
+            close(preparedStatement, results);
+        }
+    }
+
+    private void discardConnection(Connection currentConn) {
+        conn.remove();
+        if (Asserts.isNull(currentConn)) {
+            return;
+        }
+        try {
+            currentConn.close();
+        } catch (Exception ignore) {
+            // 连接已被服务端关闭时，客户端 close 失败是预期情况
         }
     }
 

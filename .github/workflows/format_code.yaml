@@ -45,6 +45,13 @@ jobs:
            backend:
              - '!dinky-web/**'
 
+      # 镜像已带 JDK 11。默认 JDK 的 javac 内部 API 与 palantir-java-format 不一致
+      - name: Use preinstalled JDK 11
+        if: steps.filter.outputs.backend == 'true'
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME_11_X64" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME_11_X64/bin" >> "$GITHUB_PATH"
+          "$JAVA_HOME_11_X64/bin/java" -version
       - name: Run spotless apply
         if:  steps.filter.outputs.backend == 'true'
         run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
