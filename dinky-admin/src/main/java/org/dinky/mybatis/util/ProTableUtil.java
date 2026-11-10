@@ -73,20 +73,37 @@ public class ProTableUtil {
 
     private static void buildSort(
             String sortField, String sortValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
-        if (sortField != null && sortValue != null) {
-            if (camelToUnderscore) {
-                sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
-            }
-            if (sortValue.equals("descend")) {
-                if (!sortField.contains(".")) {
-                    wrapper.orderByDesc("a." + sortField);
-                }
-            } else {
-                if (!sortField.contains(".")) {
-                    wrapper.orderByAsc("a." + sortField);
-                }
-            }
+        if (sortField != null) {
+            sortField = sortField.trim();
         }
+        if (!isSortableField(sortField) || !isSortOrder(sortValue)) {
+            return;
+        }
+        if (camelToUnderscore) {
+            sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
+        }
+        if (sortField.contains(".")) {
+            return;
+        }
+        if ("descend".equals(sortValue)) {
+            wrapper.orderByDesc("a." + sortField);
+        } else {
+            wrapper.orderByAsc("a." + sortField);
+        }
+    }
+
+    /**
+     * ProTable 在翻页时可能提交字段名为 undefined/null 的排序。这类字段不能拼进 ORDER BY，否则查询失败，列表无法翻页。
+     */
+    private static boolean isSortableField(String sortField) {
+        return sortField != null
+                && !sortField.isEmpty()
+                && !"undefined".equalsIgnoreCase(sortField)
+                && !"null".equalsIgnoreCase(sortField);
+    }
+
+    private static boolean isSortOrder(String sortValue) {
+        return "ascend".equals(sortValue) || "descend".equals(sortValue);
     }
 
     private static void buildFilter(
