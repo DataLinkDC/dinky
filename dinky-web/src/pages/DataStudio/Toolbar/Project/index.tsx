@@ -142,6 +142,9 @@ export const Project = (props: any) => {
       // 创建根目录
       case DataStudioActionType.PROJECT_CREATE_ROOT_DIR:
         setOpenCreateRootDir(true);
+        // Reset the action, otherwise the modal would pop up again when this effect
+        // re-runs on the tree data refresh triggered after the directory is created.
+        updateAction({ actionType: null, params: null });
         break;
       // todo 右键没做
       case DataStudioActionType.PROJECT_RIGHT_CLICK:
