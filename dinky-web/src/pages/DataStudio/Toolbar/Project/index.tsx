@@ -165,6 +165,7 @@ export const Project = (props: any) => {
       case DataStudioActionType.PROJECT_REFRESH:
         setInitDid(true);
         refresh();
+        updateAction({ actionType: null, params: null });
         break;
     }
   }, [actionType, params, data, treeData]);
