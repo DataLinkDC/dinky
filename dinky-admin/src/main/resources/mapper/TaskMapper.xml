@@ -20,6 +20,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.TaskMapper">
+    <resultMap id="jobModelOverviewMap" type="org.dinky.data.model.home.JobModelOverview">
+        <result column="streaming_job_count" property="streamingJobCount"/>
+        <result column="batch_job_count" property="batchJobCount"/>
+    </resultMap>
+
     <select id="selectForProTable" resultType="org.dinky.data.model.Task">
         select
         a.*
@@ -108,19 +113,15 @@
     </select>
 
 
-    <select id="getJobStreamingOrBatchModelOverview" resultType="org.dinky.data.model.home.JobModelOverview">
-        select coalesce(sum(case when batch_model = 'streaming' then cnt else 0 end),0) as streamingJobCount,
-               coalesce(sum(case when batch_model = 'batch' then cnt else 0 end) ,0)    as batchJobCount
-        from (select case a.batch_model when 0 then 'streaming' when 1 then 'batch' end as batch_model,
-                     coalesce(count(1), 0)                                                           as cnt
-              from dinky_task a
-              where a.batch_model is not null
-                and a.dialect in (
-                                  'FlinkSql',
-                                  'FlinkJar',
-                                  'KubernetesApplication')
-              group by a.batch_model) a
-        ;
+    <select id="getJobStreamingOrBatchModelOverview" resultMap="jobModelOverviewMap">
+        select coalesce(sum(case when a.batch_model is false then 1 else 0 end), 0) as streaming_job_count,
+               coalesce(sum(case when a.batch_model is true then 1 else 0 end), 0)  as batch_job_count
+        from dinky_task a
+        where a.batch_model is not null
+          and lower(a.dialect) in (
+                                   'flinksql',
+                                   'flinkjar',
+                                   'kubernetesapplication')
     </select>
 
 
