@@ -149,6 +149,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     }
 
     @Override
+    public List<JobInstance> listAllJobInstances() {
+        return baseMapper.listAllJobInstances();
+    }
+
+    @Override
     public JobInfoDetail getJobInfoDetail(Integer id) {
         if (Asserts.isNull(TenantContextHolder.get())) {
             initTenantByJobInstanceId(id);

@@ -61,6 +61,8 @@ public interface JobInstanceService extends ISuperService<JobInstance> {
      */
     List<JobInstance> listJobInstanceActive();
 
+    List<JobInstance> listAllJobInstances();
+
     /**
      * Get the job information detail for the given ID.
      *
