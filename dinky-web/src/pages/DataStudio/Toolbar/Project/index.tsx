@@ -142,6 +142,9 @@ export const Project = (props: any) => {
       // 创建根目录
       case DataStudioActionType.PROJECT_CREATE_ROOT_DIR:
         setOpenCreateRootDir(true);
+        // 打开后立即清空动作。该 effect 依赖 data / treeData，创建成功后的目录树刷新
+        // 会再次进入这里；若不重置，弹窗会被重新打开。
+        updateAction({ actionType: null, params: null });
         break;
       // todo 右键没做
       case DataStudioActionType.PROJECT_RIGHT_CLICK:
