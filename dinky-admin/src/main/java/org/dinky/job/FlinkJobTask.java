@@ -21,6 +21,7 @@ package org.dinky.job;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.SpringContextUtils;
+import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
@@ -101,14 +102,25 @@ public class FlinkJobTask implements DaemonTask {
     public boolean dealTask() {
         volatilityBalance();
 
-        boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
-        if (Asserts.isAllNotNull(jobInfoDetail.getClusterInstance())) {
-            JobAlertHandler.getInstance().check(jobInfoDetail);
-            if (SystemConfiguration.getInstances().getMetricsSysEnable().getValue()) {
-                JobMetricsHandler.refreshAndWriteFlinkMetrics(jobInfoDetail, verticesAndMetricsMap);
+        Object previousTenant = TenantContextHolder.get();
+        try {
+            // A reused monitor worker may have inherited another job's tenant.
+            TenantContextHolder.set(jobInfoDetail.getInstance().getTenantId());
+            boolean isDone = JobRefreshHandler.refreshJob(jobInfoDetail, isNeedSave());
+            if (Asserts.isAllNotNull(jobInfoDetail.getClusterInstance())) {
+                JobAlertHandler.getInstance().check(jobInfoDetail);
+                if (SystemConfiguration.getInstances().getMetricsSysEnable().getValue()) {
+                    JobMetricsHandler.refreshAndWriteFlinkMetrics(jobInfoDetail, verticesAndMetricsMap);
+                }
+            }
+            return isDone;
+        } finally {
+            if (previousTenant == null) {
+                TenantContextHolder.clear();
+            } else {
+                TenantContextHolder.set(previousTenant);
             }
         }
-        return isDone;
     }
 
     /**
