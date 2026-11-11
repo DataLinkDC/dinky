@@ -20,6 +20,7 @@
 package org.dinky.configure;
 
 import org.dinky.context.TenantContextHolder;
+import org.dinky.interceptor.DinkySchemaInnerInterceptor;
 import org.dinky.interceptor.PostgreSQLPrepareInterceptor;
 import org.dinky.interceptor.PostgreSQLQueryInterceptor;
 import org.dinky.mybatis.handler.DateMetaObjectHandler;
@@ -28,6 +29,7 @@ import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 import java.util.Set;
 
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -51,12 +53,13 @@ import net.sf.jsqlparser.expression.NullValue;
 /** mybatisPlus config class */
 @Configuration
 @MapperScan("org.dinky.mapper")
-@EnableConfigurationProperties(MybatisPlusFillProperties.class)
+@EnableConfigurationProperties({MybatisPlusFillProperties.class, DinkyMetadataProperties.class})
 @Slf4j
 @RequiredArgsConstructor
 public class MybatisPlusConfig {
 
     private final MybatisPlusFillProperties autoFillProperties;
+    private final DinkyMetadataProperties metadataProperties;
 
     private static final Set<String> IGNORE_TABLE_NAMES = ImmutableSet.of(
             "dinky_namespace",
@@ -97,8 +100,22 @@ public class MybatisPlusConfig {
         return new PostgreSQLPrepareInterceptor();
     }
 
+    /**
+     * MyBatis-Plus interceptor that dynamically prepends a custom PostgreSQL schema
+     * prefix to all Dinky business table names. Only active when the
+     * {@code postgresql} profile is enabled and a non-{@code public} schema is configured.
+     *
+     * @return the schema interceptor instance (can be a no-op handler map)
+     */
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+    @Profile("postgresql")
+    public DinkySchemaInnerInterceptor dinkySchemaInnerInterceptor() {
+        return new DinkySchemaInnerInterceptor(metadataProperties.getSchema());
+    }
+
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor(
+            ObjectProvider<DinkySchemaInnerInterceptor> schemaInterceptorProvider) {
         log.info("mybatis plus interceptor execute");
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
@@ -120,6 +137,9 @@ public class MybatisPlusConfig {
                 return !IGNORE_TABLE_NAMES.contains(tableName);
             }
         }));
+        // Add schema prefix interceptor after tenant interceptor so that ignoreTable
+        // still matches the original (un-prefixed) table names
+        schemaInterceptorProvider.ifAvailable(interceptor::addInnerInterceptor);
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return interceptor;
     }

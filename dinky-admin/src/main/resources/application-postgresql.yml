@@ -21,4 +21,17 @@ spring:
     password: ${POSTGRES_PASSWORD:dinky}
     driver-class-name: org.postgresql.Driver
     # The POSTGRES_ADDR variable is not officially provided. If you use docker, please manually add an env to support it.
-    url: jdbc:postgresql://${POSTGRES_ADDR:localhost:5432}/${POSTGRES_DB:dinky}?stringtype=unspecified
+    url: jdbc:postgresql://${POSTGRES_ADDR:localhost:5432}/${POSTGRES_DB:dinky}?stringtype=unspecified&currentSchema=${dinky.metadata.schema:public}
+  flyway:
+    default-schema: ${dinky.metadata.schema:public}
+    schemas: ${dinky.metadata.schema:public}
+    create-schemas: true
+    placeholder-replacement: true
+    placeholder-prefix: '${'
+    placeholder-suffix: '}'
+    placeholders:
+      dinky_schema: ${dinky.metadata.schema:public}
+
+dinky:
+  metadata:
+    schema: ${DINKY_METADATA_SCHEMA:public}

@@ -81,7 +81,7 @@ $$ LANGUAGE plpgsql;
 
 
 
-update public.dinky_sys_menu
+update ${dinky_schema}.dinky_sys_menu
 set "path"='/registration/alert/rule',
     "component"='./RegCenter/Alert/AlertRule',
     "perms"='registration:alert:rule',
@@ -93,12 +93,12 @@ set "path"='/registration/alert/rule/add',
     "perms"='registration:alert:rule:add'
 where "id" = 117;
 
-update public.dinky_sys_menu
+update ${dinky_schema}.dinky_sys_menu
 set "path"='/registration/alert/rule/delete',
     "perms"='registration:alert:rule:delete'
 where "id" = 118;
 
-update public.dinky_sys_menu
+update ${dinky_schema}.dinky_sys_menu
 set "path"='/registration/alert/rule/edit',
     "perms"='registration:alert:rule:edit'
 where "id" = 119;
@@ -106,21 +106,21 @@ where "id" = 119;
 
 
 -- Increase class_name column's length from 50 to 100.
-ALTER TABLE public.dinky_udf_manage ALTER COLUMN class_name TYPE VARCHAR(100);
-COMMENT ON COLUMN public.dinky_udf_manage."class_name" IS 'Complete class name';
+ALTER TABLE ${dinky_schema}.dinky_udf_manage ALTER COLUMN class_name TYPE VARCHAR(100);
+COMMENT ON COLUMN ${dinky_schema}.dinky_udf_manage."class_name" IS 'Complete class name';
 
 
-SELECT add_column_if_not_exists('public','dinky_task', 'first_level_owner', 'int', 'null', 'primary responsible person id');
-SELECT add_column_if_not_exists('public','dinky_task', 'second_level_owners', 'varchar(128)', 'null', 'list of secondary responsible persons ids');
+SELECT add_column_if_not_exists('${dinky_schema}','dinky_task', 'first_level_owner', 'int', 'null', 'primary responsible person id');
+SELECT add_column_if_not_exists('${dinky_schema}','dinky_task', 'second_level_owners', 'varchar(128)', 'null', 'list of secondary responsible persons ids');
 
 
-update public.dinky_task set "first_level_owner" = "creator";
+update ${dinky_schema}.dinky_task set "first_level_owner" = "creator";
 
-UPDATE public.dinky_user SET "password" = 'f4b3a484ee745b98d64cd69c429b2aa2' WHERE "id" =1 and "password"= '21232f297a57a5a743894a0e4a801fc3';
+UPDATE ${dinky_schema}.dinky_user SET "password" = 'f4b3a484ee745b98d64cd69c429b2aa2' WHERE "id" =1 and "password"= '21232f297a57a5a743894a0e4a801fc3';
 
-ALTER TABLE public.dinky_resources ALTER COLUMN file_name TYPE TEXT;
+ALTER TABLE ${dinky_schema}.dinky_resources ALTER COLUMN file_name TYPE TEXT;
 
-SELECT add_column_if_not_exists('public','dinky_udf_manage', 'language', 'varchar(10)', 'null', 'udf language');
+SELECT add_column_if_not_exists('${dinky_schema}','dinky_udf_manage', 'language', 'varchar(10)', 'null', 'udf language');
 
 UPDATE
     dinky_udf_manage duml
