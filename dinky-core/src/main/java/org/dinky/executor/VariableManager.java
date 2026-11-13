@@ -218,6 +218,32 @@ public final class VariableManager {
      * @param statement A sql will be parsed.
      * @throws CatalogException if the name of the variable under the given sql failed.
      */
+    /**
+     * Replace {@code ${name}} placeholders that match registered variable names.
+     * Other placeholders are left unchanged, and expression evaluation is not applied.
+     *
+     * @param statement SQL text that may contain registered variable placeholders
+     * @return the statement with registered variable names replaced by their values
+     */
+    public String replaceRegisteredVariable(String statement) {
+        if (Asserts.isNullString(statement)) {
+            return statement;
+        }
+        Matcher m = CommonConstant.GLOBAL_VARIABLE_PATTERN.matcher(statement);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            String key = m.group(1);
+            if (variables.containsKey(key)) {
+                String value = variables.get(key);
+                m.appendReplacement(sb, Matcher.quoteReplacement(value == null ? "" : value));
+            } else {
+                m.appendReplacement(sb, Matcher.quoteReplacement(m.group(0)));
+            }
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
     public String parseVariable(String statement) {
         if (Asserts.isNullString(statement)) {
             return statement;
