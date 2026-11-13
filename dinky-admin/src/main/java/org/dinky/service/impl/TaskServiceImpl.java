@@ -673,7 +673,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return this.list(new QueryWrapper<Task>()
                 .lambda()
                 .eq(Task::getDialect, Dialect.FLINK_SQL_ENV.getValue())
-                .eq(Task::getEnabled, 1));
+                .eq(Task::getEnabled, true));
     }
 
     @Override
@@ -755,7 +755,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                                 Dialect.JAVA.getValue(),
                                 Dialect.SCALA.getValue(),
                                 Dialect.PYTHON.getValue())
-                        .eq(Task::getEnabled, 1)
+                        .eq(Task::getEnabled, true)
                         .eq(Task::getStep, JobLifeCycle.PUBLISH.getValue()))
                 .stream()
                 .filter(task -> Asserts.isNotNullString(
@@ -988,8 +988,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public Result<Tree<Integer>> queryAllCatalogue() {
         final LambdaQueryWrapper<Catalogue> queryWrapper = new LambdaQueryWrapper<Catalogue>()
                 .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)
-                .eq(Catalogue::getIsLeaf, 0)
-                .eq(Catalogue::getEnabled, 1)
+                .eq(Catalogue::getIsLeaf, false)
+                .eq(Catalogue::getEnabled, true)
                 .isNull(Catalogue::getTaskId);
         final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
         return Result.succeed(

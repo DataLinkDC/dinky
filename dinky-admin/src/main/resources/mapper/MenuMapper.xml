@@ -22,7 +22,7 @@
     <sql id="selectMenuVo">
         select id, name, parent_id, order_num,
                path, component, type, display,
-            ifnull(perms,'') as perms, icon, create_time, update_time
+            coalesce(perms,'') as perms, icon, create_time, update_time
         from dinky_sys_menu
     </sql>
 
@@ -35,7 +35,7 @@
         <include refid="selectMenuVo"/>
         <where>
             <if test="name != null and name != ''">
-                AND `name` like concat('%', #{name}, '%')
+                AND name like concat('%', #{name}, '%')
             </if>
             <if test="display != null and display != ''">
                 AND display = #{display}
@@ -45,22 +45,22 @@
     </select>
 
     <select id="listMenus4SuperAdmin" resultMap="DinkySysMenuResult">
-        select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
+        select distinct m.id, m.parent_id, m.name, m.path, m.component, m.display, coalesce(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
         from dinky_sys_menu m
         where m.type in ('0', '1')
         order by m.parent_id, m.order_num
     </select>
 
     <select id="selectMenuListByUserId" parameterType="org.dinky.data.model.rbac.Menu" resultMap="DinkySysMenuResult">
-        select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms,
+        select distinct m.id, m.parent_id, m.name, m.path, m.component, m.display, coalesce(m.perms,'') as perms,
         m.type, m.icon, m.order_num, m.create_time
         from dinky_sys_menu m
         left join dinky_sys_role_menu rm on m.id = rm.menu_id
         left join dinky_user_role ur on rm.role_id = ur.role_id
-        left join dinky_role ro on ur.role_id = ro.role_id
+        left join dinky_role ro on ur.role_id = ro.id
         where ur.user_id = #{params.userId}
         <if test="name != null and name != ''">
-            AND m.`name` like concat('%', #{name}, '%')
+            AND m.name like concat('%', #{name}, '%')
         </if>
         <if test="display != null and display != ''">
             AND m.display = #{display}
@@ -69,13 +69,12 @@
     </select>
 
     <select id="selectMenuTreeByUserId" resultMap="DinkySysMenuResult">
-        select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
+        select distinct m.id, m.parent_id, m.name, m.path, m.component, m.display, coalesce(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
         from dinky_sys_menu m
                  left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
-                 left join dinky_role ro on ur.role_id = ro.role_id
-                 left join sys_user u on ur.user_id = u.user_id
-        where u.user_id = #{userId}
+                 left join dinky_role ro on ur.role_id = ro.id
+        where ur.user_id = #{userId}
           and m.type in ('0', '1')
           AND ro.is_delete = 0
         order by m.parent_id, m.order_num
@@ -114,7 +113,7 @@
 
     <select id="checkMenuNameUnique" parameterType="org.dinky.data.model.rbac.Menu" resultMap="DinkySysMenuResult">
         <include refid="selectMenuVo"/>
-        where `name`=#{name} and parent_id = #{parentId}
+        where name=#{name} and parent_id = #{parentId}
     </select>
 
     <select id="selectMenuPermsByRoleId" parameterType="Integer" resultType="String">

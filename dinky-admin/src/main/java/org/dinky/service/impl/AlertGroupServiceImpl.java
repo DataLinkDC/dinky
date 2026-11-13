@@ -68,7 +68,7 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
 
     @Override
     public List<AlertGroup> listEnabledAllAlertGroups() {
-        return list(new LambdaQueryWrapper<AlertGroup>().eq(AlertGroup::getEnabled, 1));
+        return list(new LambdaQueryWrapper<AlertGroup>().eq(AlertGroup::getEnabled, true));
     }
 
     @Override
