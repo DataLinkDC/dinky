@@ -29,8 +29,10 @@ import org.dinky.sandbox.metadata.TableType;
 
 import org.apache.flink.types.Row;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.InvalidClassException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -43,19 +45,26 @@ import org.slf4j.LoggerFactory;
 public class SocketDataProcessor implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketDataProcessor.class);
+    private static final int HANDSHAKE_TIMEOUT_MS = 10_000;
+    public static final String HANDSHAKE_OK = "OK";
+    public static final String HANDSHAKE_REJECTED = "REJECTED";
 
     private final Socket socket;
     private final Sandbox sandbox;
+    private final SandboxSessionChecker sessionChecker;
     private final AtomicBoolean running;
-    private final ObjectInputStream inputStream;
-    private final ObjectOutputStream outputStream;
+    private SandboxPayloadInputStream inputStream;
+    private ObjectOutputStream outputStream;
 
-    public SocketDataProcessor(Socket socket, Sandbox sandbox) throws IOException {
+    public SocketDataProcessor(Socket socket, Sandbox sandbox) {
+        this(socket, sandbox, null);
+    }
+
+    public SocketDataProcessor(Socket socket, Sandbox sandbox, SandboxSessionChecker sessionChecker) {
         this.socket = socket;
         this.sandbox = sandbox;
+        this.sessionChecker = sessionChecker;
         this.running = new AtomicBoolean(true);
-        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
-        this.inputStream = new ObjectInputStream(socket.getInputStream());
     }
 
     @Override
@@ -64,6 +73,9 @@ public class SocketDataProcessor implements Runnable {
         logger.info("Start processing the client connection: {}", clientAddress);
 
         try {
+            if (!completeHandshake(clientAddress)) {
+                return;
+            }
             while (running.get() && !socket.isClosed()) {
                 try {
                     Object obj = inputStream.readObject();
@@ -80,13 +92,16 @@ public class SocketDataProcessor implements Runnable {
                 } catch (java.io.EOFException e) {
                     logger.info("The client disconnected: {}", clientAddress);
                     break;
+                } catch (InvalidClassException e) {
+                    logger.warn("Received an unsupported sandbox payload from {}", clientAddress);
+                    break;
                 } catch (java.io.IOException e) {
                     if (running.get()) {
                         logger.error("Failed to read data from the Socket: {}", clientAddress, e);
                     }
                     break;
                 } catch (ClassNotFoundException e) {
-                    logger.error("Failed to deserialize the message: {}", clientAddress, e);
+                    logger.error("Failed to read the message: {}", clientAddress, e);
                     break;
                 }
             }
@@ -95,6 +110,31 @@ public class SocketDataProcessor implements Runnable {
         } finally {
             close();
             logger.info("The processing of the client connection is completed: {}", clientAddress);
+        }
+    }
+
+    private boolean completeHandshake(String clientAddress) {
+        try {
+            socket.setSoTimeout(HANDSHAKE_TIMEOUT_MS);
+            DataInputStream handshakeIn = new DataInputStream(socket.getInputStream());
+            DataOutputStream handshakeOut = new DataOutputStream(socket.getOutputStream());
+            String sessionToken = handshakeIn.readUTF();
+            boolean accepted = sessionChecker != null && sessionChecker.accept(sessionToken);
+            if (!accepted) {
+                handshakeOut.writeUTF(HANDSHAKE_REJECTED);
+                handshakeOut.flush();
+                logger.info("Sandbox socket handshake was rejected: {}", clientAddress);
+                return false;
+            }
+            handshakeOut.writeUTF(HANDSHAKE_OK);
+            handshakeOut.flush();
+            socket.setSoTimeout(0);
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            inputStream = new SandboxPayloadInputStream(socket.getInputStream());
+            return true;
+        } catch (IOException e) {
+            logger.info("Sandbox socket handshake failed: {}", clientAddress);
+            return false;
         }
     }
 

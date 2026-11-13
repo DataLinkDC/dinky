@@ -42,6 +42,7 @@ public class SandboxDynamicTableSink implements DynamicTableSink, Serializable {
     private final Integer maxRowNum;
     private final boolean autoCancel;
     private final boolean useChangeLog;
+    private final String token;
 
     public SandboxDynamicTableSink(
             String host,
@@ -51,7 +52,8 @@ public class SandboxDynamicTableSink implements DynamicTableSink, Serializable {
             RowType rowType,
             Integer maxRowNum,
             boolean autoCancel,
-            boolean useChangeLog) {
+            boolean useChangeLog,
+            String token) {
         this.host = host;
         this.port = port;
         this.boxId = boxId;
@@ -60,6 +62,7 @@ public class SandboxDynamicTableSink implements DynamicTableSink, Serializable {
         this.maxRowNum = maxRowNum;
         this.autoCancel = autoCancel;
         this.useChangeLog = useChangeLog;
+        this.token = token;
     }
 
     @Override
@@ -70,12 +73,14 @@ public class SandboxDynamicTableSink implements DynamicTableSink, Serializable {
     @Override
     public SinkRuntimeProvider getSinkRuntimeProvider(Context context) {
         return SinkFunctionProvider.of(
-                new SandboxSinkFunction(host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog), 1);
+                new SandboxSinkFunction(host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog, token),
+                1);
     }
 
     @Override
     public DynamicTableSink copy() {
-        return new SandboxDynamicTableSink(host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog);
+        return new SandboxDynamicTableSink(
+                host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog, token);
     }
 
     @Override
@@ -99,11 +104,12 @@ public class SandboxDynamicTableSink implements DynamicTableSink, Serializable {
                 && Objects.equals(rowType, that.rowType)
                 && Objects.equals(maxRowNum, that.maxRowNum)
                 && Objects.equals(autoCancel, that.autoCancel)
-                && Objects.equals(useChangeLog, that.useChangeLog);
+                && Objects.equals(useChangeLog, that.useChangeLog)
+                && Objects.equals(token, that.token);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog);
+        return Objects.hash(host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog, token);
     }
 }
