@@ -34,15 +34,17 @@ import org.dinky.utils.SqlUtil;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -61,7 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@ServerEndpoint("/api/ws/sql-gateway/")
+@ServerEndpoint(value = "/api/ws/sql-gateway/", configurator = SqlGatewayConfigurator.class)
 public class SqlGateway {
 
     private Session session;
@@ -85,7 +87,7 @@ public class SqlGateway {
      * */
     private static final ExecutorService executor = ThreadUtil.newExecutor();
 
-    private void startClient(SqlClientOptions options) {
+    protected void startClient(SqlClientOptions options) {
         try {
             PipedInputStream in2client = new PipedInputStream();
 
@@ -140,46 +142,53 @@ public class SqlGateway {
     }
 
     @OnOpen
-    public void onOpen(Session session) throws UnsupportedEncodingException, SQLException {
+    public void onOpen(Session session) {
         this.session = session;
-
-        String cols = getParameter("cols", true);
-        String rows = getParameter("rows", true);
-        SqlClientOptions.TerminalSize size =
-                new SqlClientOptions.TerminalSize(Integer.parseInt(cols), Integer.parseInt(rows));
-
-        if (db == null) {
-            db = Db.use(new SimpleDataSource(url, username, password));
+        Map<String, List<String>> handshakeHeaders = SqlGatewayConfigurator.takeHeaders();
+        if (!handshakeHeaders.isEmpty()) {
+            session.getUserProperties().put(SqlGatewayConfigurator.HANDSHAKE_HEADERS, handshakeHeaders);
         }
-        Entity option = Entity.create("dinky_fragment").set("enabled", true);
-        List<FragmentVariable> entities = db.find(option, FragmentVariable.class);
-        Map<String, String> variableMap = new LinkedHashMap<>();
-        if (entities != null) {
-            for (FragmentVariable variable : entities) {
-                if (FragmentVariableUtils.isSensitive(variable.getName()) && variable.getFragmentValue() != null) {
-                    variableMap.put(variable.getName(), cryptoComponent.decryptText(variable.getFragmentValue()));
-                } else {
-                    variableMap.put(variable.getName(), variable.getFragmentValue());
-                }
+
+        try {
+            String token = SqlGatewayHandshake.resolveToken(
+                    session.getRequestParameterMap(), getHandshakeHeaders(session));
+            if (!SqlGatewayHandshake.hasValidLoginSession(token)) {
+                closeHandshake("login session is required");
+                return;
             }
+
+            String cols = getParameter("cols", true);
+            String rows = getParameter("rows", true);
+            SqlClientOptions.TerminalSize size =
+                    new SqlClientOptions.TerminalSize(Integer.parseInt(cols), Integer.parseInt(rows));
+
+            String connectAddress = getParameter("connectAddress", true);
+            if (!SqlGatewayHandshake.isKnownClusterAddress(connectAddress, loadKnownClusterAddresses())) {
+                closeHandshake("connect address is not a known cluster address");
+                return;
+            }
+
+            String initSql = URLDecoder.decode(getParameter("initSql"), "UTF-8");
+            initSql = prepareInitSql(initSql);
+
+            SqlClientOptions options = SqlClientOptions.builder()
+                    .mode(SqlCliMode.fromString(getParameter("mode", true)))
+                    .sessionId(getParameter("sessionId"))
+                    .connectAddress(connectAddress)
+                    .initSql(initSql)
+                    .historyFilePath("./tmp/flink-sql-history/history")
+                    .terminalSize(size)
+                    .build();
+
+            startClient(options);
+            startHeartbeat();
+        } catch (Exception e) {
+            log.error("sql gateway handshake failed", e);
+            closeHandshake("sql gateway handshake failed");
         }
-        VariableManager variableManager = new VariableManager();
-        variableManager.registerVariable(variableMap);
-        String initSql = URLDecoder.decode(getParameter("initSql"), "UTF-8");
-        initSql = SqlUtil.removeNote(initSql);
-        initSql = variableManager.parseVariable(initSql);
+    }
 
-        SqlClientOptions options = SqlClientOptions.builder()
-                .mode(SqlCliMode.fromString(getParameter("mode", true)))
-                .sessionId(getParameter("sessionId"))
-                .connectAddress(getParameter("connectAddress", true))
-                .initSql(initSql)
-                .historyFilePath("./tmp/flink-sql-history/history")
-                .terminalSize(size)
-                .build();
-
-        startClient(options);
-
+    protected void startHeartbeat() {
         executor.execute(() -> {
             while (isRunning) {
                 try {
@@ -193,6 +202,95 @@ public class SqlGateway {
             }
             log.info("Sql Client Heart Thread Closed :");
         });
+    }
+
+    private void closeHandshake(String reason) {
+        isRunning = false;
+        if (session == null) {
+            return;
+        }
+        try {
+            if (session.isOpen()) {
+                session.close(new CloseReason(CloseReason.CloseCodes.CANNOT_ACCEPT, reason));
+            }
+        } catch (IOException e) {
+            log.error("close sql gateway session error", e);
+            CloseUtil.closeNoErrorPrint(session);
+        }
+    }
+
+    private Map<String, List<String>> getHandshakeHeaders(Session session) {
+        Object headers = session.getUserProperties().get(SqlGatewayConfigurator.HANDSHAKE_HEADERS);
+        if (headers instanceof Map) {
+            return (Map<String, List<String>>) headers;
+        }
+        return null;
+    }
+
+
+    protected String prepareInitSql(String initSql) throws SQLException {
+        initSql = SqlUtil.removeNote(initSql);
+        VariableManager variableManager = new VariableManager();
+        variableManager.registerVariable(loadFragmentVariables(initSql));
+        return variableManager.replaceRegisteredVariable(initSql);
+    }
+
+    protected List<String> loadKnownClusterAddresses() throws SQLException {
+        ensureDb();
+        List<String> addresses = new ArrayList<>();
+        List<Entity> rows = db.findAll("dinky_cluster");
+        if (rows == null) {
+            return addresses;
+        }
+        for (Entity row : rows) {
+            SqlGatewayHandshake.collectClusterAddress(addresses, firstColumn(row, "hosts"));
+            SqlGatewayHandshake.collectClusterAddress(addresses, firstColumn(row, "job_manager_host", "jobManagerHost"));
+        }
+        return addresses;
+    }
+
+    private static String firstColumn(Entity row, String... names) {
+        if (row == null || names == null) {
+            return "";
+        }
+        for (String name : names) {
+            String value = row.getStr(name);
+            if (value != null && !value.isEmpty()) {
+                return value;
+            }
+        }
+        return "";
+    }
+
+    protected Map<String, String> loadFragmentVariables(String initSql) throws SQLException {
+        Set<String> referenced = SqlGatewayHandshake.findPlaceholderNames(initSql);
+        Map<String, String> variableMap = new LinkedHashMap<>();
+        if (referenced.isEmpty()) {
+            return variableMap;
+        }
+        ensureDb();
+        Entity option = Entity.create("dinky_fragment").set("enabled", true);
+        List<FragmentVariable> entities = db.find(option, FragmentVariable.class);
+        if (entities == null) {
+            return variableMap;
+        }
+        for (FragmentVariable variable : entities) {
+            if (variable == null || !referenced.contains(variable.getName())) {
+                continue;
+            }
+            if (FragmentVariableUtils.isSensitive(variable.getName()) && variable.getFragmentValue() != null) {
+                variableMap.put(variable.getName(), cryptoComponent.decryptText(variable.getFragmentValue()));
+            } else {
+                variableMap.put(variable.getName(), variable.getFragmentValue());
+            }
+        }
+        return variableMap;
+    }
+
+    private void ensureDb() {
+        if (db == null) {
+            db = Db.use(new SimpleDataSource(url, username, password));
+        }
     }
 
     @OnClose
