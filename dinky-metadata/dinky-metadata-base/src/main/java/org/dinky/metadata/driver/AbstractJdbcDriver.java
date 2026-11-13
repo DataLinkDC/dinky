@@ -38,6 +38,7 @@ import org.dinky.metadata.config.DriverConfig;
 import org.dinky.metadata.convert.AbstractJdbcTypeConvert;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
+import org.dinky.utils.JdbcAddress;
 import org.dinky.utils.JsonUtils;
 import org.dinky.utils.LogUtil;
 
@@ -92,6 +93,10 @@ public abstract class AbstractJdbcDriver extends AbstractDriver<AbstractJdbcConf
     public String test() {
         Asserts.checkNotNull(config, "无效的数据源配置");
         try {
+            JdbcAddress.requireWellDefined(
+                    config.getConnectConfig() == null
+                            ? null
+                            : config.getConnectConfig().getUrl());
             Class.forName(getDriverClass());
             DriverManager.getConnection(
                             config.getConnectConfig().getUrl(),
