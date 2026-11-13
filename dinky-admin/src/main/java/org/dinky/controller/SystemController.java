@@ -90,7 +90,7 @@ public class SystemController {
     @GetMapping("/readFile")
     @ApiOperation("Read File By File Path")
     @ApiImplicitParam(name = "path", value = "File Path", required = true, dataType = "String")
-    @SaCheckLogin
+    @SaCheckPermission(PermissionConstants.SYSTEM_SETTING_INFO_LOG_LIST)
     public Result<String> readFile(@RequestParam String path) {
         return Result.data(systemService.readFile(path));
     }
