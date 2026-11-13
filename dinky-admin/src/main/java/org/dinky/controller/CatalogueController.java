@@ -23,7 +23,6 @@ import org.dinky.data.annotations.CatalogueId;
 import org.dinky.data.annotations.CheckTaskOwner;
 import org.dinky.data.annotations.Log;
 import org.dinky.data.annotations.TaskId;
-import org.dinky.data.constant.DirConstant;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.dto.ImportCatalogueDTO;
@@ -36,7 +35,6 @@ import org.dinky.data.vo.TreeVo;
 import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
 
-import java.io.File;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
@@ -54,8 +52,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.ZipUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -82,34 +78,7 @@ public class CatalogueController {
     @Log(title = "Upload Catalogue", businessType = BusinessType.UPLOAD)
     @ApiOperation("Upload Zip Package And Create Catalogue")
     public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
-        // 获取上传的路径
-        String filePath = DirConstant.getRootPath();
-        // 获取源文件的名称
-        String fileName = file.getOriginalFilename();
-        String zipPath = filePath + File.separator + fileName;
-        String unzipFileName = FileUtil.mainName(fileName);
-        String unzipPath = filePath + File.separator + unzipFileName;
-        File unzipFile = new File(unzipPath);
-        File zipFile = new File(zipPath);
-        if (unzipFile.exists()) {
-            FileUtil.del(zipFile);
-            return Result.failed("工程已存在");
-        }
-        try {
-            // 文件写入上传的路径
-            FileUtil.writeBytes(file.getBytes(), zipPath);
-            Thread.sleep(1L);
-            if (!unzipFile.exists()) {
-                ZipUtil.unzip(zipPath, filePath);
-                Catalogue cata = catalogueService.getCatalogue(id, unzipFileName);
-                catalogueService.traverseFile(unzipPath, cata);
-            }
-        } catch (Exception e) {
-            return Result.failed(e.getMessage());
-        } finally {
-            FileUtil.del(zipFile);
-        }
-        return Result.succeed("上传zip包并创建工程成功");
+        return catalogueService.uploadCatalogueZip(file, id);
     }
 
     /**
