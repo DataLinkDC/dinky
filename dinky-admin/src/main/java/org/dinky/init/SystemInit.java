@@ -40,6 +40,7 @@ import org.dinky.job.FlinkJobTask;
 import org.dinky.resource.BaseResourceManager;
 import org.dinky.sandbox.Sandbox;
 import org.dinky.sandbox.SandboxFactory;
+import org.dinky.sandbox.SandboxSocketSessionChecker;
 import org.dinky.sandbox.socket.SandboxSocketServer;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
@@ -254,8 +255,8 @@ public class SystemInit implements ApplicationRunner {
         // 从 dinky 地址中解析 host 和 port
         AddressInfo addressInfo = HttpUtils.parseAddress(dinkyAddress);
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
-        // 2. 创建 SandboxSocketServer
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, addressInfo.getPort() - 1);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(
+                sandbox, addressInfo.getHost(), addressInfo.getPort() - 1, 100, new SandboxSocketSessionChecker());
         sandboxSocketServer.start();
     }
 }

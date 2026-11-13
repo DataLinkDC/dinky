@@ -21,19 +21,27 @@ package org.dinky.sandbox;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.dinky.data.socket.CreateTableEventSocketMessage;
 import org.dinky.sandbox.metadata.ColumnInfo;
 import org.dinky.sandbox.metadata.TableId;
 import org.dinky.sandbox.metadata.TableInfo;
 import org.dinky.sandbox.metadata.TableType;
 import org.dinky.sandbox.metadata.Tuple;
+import org.dinky.sandbox.socket.SandboxSessionChecker;
 import org.dinky.sandbox.socket.SandboxSocketServer;
 import org.dinky.sandbox.socket.SocketClient;
+import org.dinky.sandbox.socket.SocketDataProcessor;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.catalog.Column;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,6 +50,8 @@ import org.junit.Test;
 public class SandboxSocketServerTest {
 
     private static final int SERVER_PORT = 9999;
+    private static final String SESSION_TOKEN = "sandbox-session-token";
+    private static final SandboxSessionChecker SESSION_CHECKER = SESSION_TOKEN::equals;
 
     @Test
     public void createTableTest() {
@@ -53,7 +63,7 @@ public class SandboxSocketServerTest {
         TableId tableId = TableId.of("test_db", "test_create_table");
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
 
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         try {
@@ -62,7 +72,7 @@ public class SandboxSocketServerTest {
             Thread.currentThread().interrupt();
         }
 
-        try (SocketClient client = new SocketClient("localhost", SERVER_PORT)) {
+        try (SocketClient client = new SocketClient("localhost", SERVER_PORT, SESSION_TOKEN)) {
             client.connect();
 
             boolean success = client.sendCreateTableEvent("public", tableId.identifier(), columns, "PRIMARY_KEY_TABLE");
@@ -109,7 +119,7 @@ public class SandboxSocketServerTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         sandbox.registerTable(tableId, TableType.APPEND_TABLE, columns, new int[] {0});
 
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         try {
@@ -118,7 +128,7 @@ public class SandboxSocketServerTest {
             Thread.currentThread().interrupt();
         }
 
-        try (SocketClient client = new SocketClient("localhost", SERVER_PORT)) {
+        try (SocketClient client = new SocketClient("localhost", SERVER_PORT, SESSION_TOKEN)) {
             client.connect();
 
             data.forEach(dataRow -> {
@@ -156,7 +166,7 @@ public class SandboxSocketServerTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         sandbox.registerTable(tableId, TableType.PRIMARY_KEY_TABLE, columns, new int[] {0});
 
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, SERVER_PORT, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         try {
@@ -165,7 +175,7 @@ public class SandboxSocketServerTest {
             Thread.currentThread().interrupt();
         }
 
-        try (SocketClient client = new SocketClient("localhost", SERVER_PORT)) {
+        try (SocketClient client = new SocketClient("localhost", SERVER_PORT, SESSION_TOKEN)) {
             client.connect();
 
             data.forEach(dataRow -> {
@@ -188,5 +198,109 @@ public class SandboxSocketServerTest {
         assertThat(sanboxData.size()).isEqualTo(2);
         String[] actualOutputs = sanboxData.stream().map(Object::toString).toArray(String[]::new);
         assertThat(actualOutputs).containsExactly("[2, Bob]", "[1, Alice Updated]");
+    }
+
+    @Test
+    public void rejectConnectionWithoutSessionToken() {
+        TableId tableId = TableId.of("test_db", "test_missing_session");
+        Sandbox sandbox = SandboxFactory.getDefaultSandbox();
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 0, SESSION_CHECKER);
+        sandboxSocketServer.start();
+        int port = sandboxSocketServer.getPort();
+
+        boolean connected = true;
+        try (SocketClient client = new SocketClient("localhost", port, "wrong-session-token")) {
+            client.connect();
+            client.sendCreateTableEvent(
+                    "public", tableId.identifier(), Arrays.asList(ColumnInfo.withString("id")), "PRIMARY_KEY_TABLE");
+        } catch (Exception e) {
+            connected = false;
+        }
+
+        sandboxSocketServer.stop();
+        assertThat(connected).isFalse();
+        assertThat(sandbox.existTable(tableId)).isFalse();
+    }
+
+    @Test
+    public void acceptConnectionWithValidSessionToken() {
+        TableId tableId = TableId.of("test_db", "test_valid_session");
+        Sandbox sandbox = SandboxFactory.getDefaultSandbox();
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 0, SESSION_CHECKER);
+        sandboxSocketServer.start();
+        int port = sandboxSocketServer.getPort();
+
+        try (SocketClient client = new SocketClient("localhost", port, SESSION_TOKEN)) {
+            client.connect();
+            boolean success = client.sendCreateTableEvent(
+                    "public", tableId.identifier(), Arrays.asList(ColumnInfo.withString("id")), "PRIMARY_KEY_TABLE");
+            assertThat(success).isTrue();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        sandboxSocketServer.stop();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        assertThat(sandbox.existTable(tableId)).isTrue();
+    }
+
+    @Test
+    public void ignoreUnexpectedPayloadAfterHandshake() {
+        TableId tableId = TableId.of("test_db", "test_unexpected_payload");
+        Sandbox sandbox = SandboxFactory.getDefaultSandbox();
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 0, SESSION_CHECKER);
+        sandboxSocketServer.start();
+        int port = sandboxSocketServer.getPort();
+
+        try (Socket socket = new Socket("localhost", port)) {
+            DataOutputStream handshakeOut = new DataOutputStream(socket.getOutputStream());
+            handshakeOut.writeUTF(SESSION_TOKEN);
+            handshakeOut.flush();
+            DataInputStream handshakeIn = new DataInputStream(socket.getInputStream());
+            assertThat(handshakeIn.readUTF()).isEqualTo(SocketDataProcessor.HANDSHAKE_OK);
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            outputStream.writeObject(new File("unexpected-payload"));
+            outputStream.flush();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        sandboxSocketServer.stop();
+        assertThat(sandbox.existTable(tableId)).isFalse();
+    }
+
+    @Test
+    public void ignoreConnectionWithoutHandshake() {
+        TableId tableId = TableId.of("test_db", "test_missing_handshake");
+        Sandbox sandbox = SandboxFactory.getDefaultSandbox();
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 0, SESSION_CHECKER);
+        sandboxSocketServer.start();
+        int port = sandboxSocketServer.getPort();
+
+        try (Socket socket = new Socket("localhost", port)) {
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            outputStream.writeObject(new CreateTableEventSocketMessage(
+                    "public", tableId.identifier(), Arrays.asList(ColumnInfo.withString("id")), "PRIMARY_KEY_TABLE"));
+            outputStream.flush();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        } catch (Exception e) {
+            // The server closes the connection when the handshake is missing.
+        }
+
+        sandboxSocketServer.stop();
+        assertThat(sandbox.existTable(tableId)).isFalse();
     }
 }
