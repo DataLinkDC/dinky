@@ -72,6 +72,8 @@ public class PermissionConstants {
     /**
      * cluster config
      */
+    public static final String REGISTRATION_CLUSTER_CONFIG_LIST = "registration:cluster:config";
+
     public static final String REGISTRATION_CLUSTER_CONFIG_ADD = "registration:cluster:config:add";
 
     public static final String REGISTRATION_CLUSTER_CONFIG_EDIT = "registration:cluster:config:edit";
