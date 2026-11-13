@@ -24,6 +24,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,6 +40,15 @@ import com.google.common.base.CaseFormat;
  * @since 2021/5/25
  */
 public class ProTableUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(ProTableUtil.class);
+
+    /**
+     * Accept only simple identifiers: letters, digits and underscores, optionally one dotted
+     * property. This covers current ProTable column names such as createTime or enabled.
+     */
+    private static final Pattern IDENTIFIER_PATTERN =
+            Pattern.compile("^[A-Za-z_][A-Za-z0-9_]*(\\.[A-Za-z_][A-Za-z0-9_]*)?$");
 
     /**
      * @Author wenmo @Description 自动装载表格分页排序参数 @Date 2021/5/18 @Param [para, wrapper,
@@ -76,75 +89,118 @@ public class ProTableUtil {
         if (sortField != null) {
             sortField = sortField.trim();
         }
-        if (!isSortableField(sortField) || !isSortOrder(sortValue)) {
+        if (isPlaceholderField(sortField)) {
+            return;
+        }
+        if (!isSafeIdentifier(sortField) || !isSortOrder(sortValue)) {
+            log.warn("Ignore unexpected ProTable sort field or direction: {}, {}", sortField, sortValue);
             return;
         }
         if (camelToUnderscore) {
-            sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
+            sortField = toColumnName(sortField, true);
         }
-        if (sortField.contains(".")) {
+        if (!isSafeIdentifier(sortField)) {
+            log.warn("Ignore unexpected ProTable sort field after conversion: {}", sortField);
             return;
         }
         if ("descend".equals(sortValue)) {
-            wrapper.orderByDesc("a." + sortField);
+            wrapper.orderByDesc(qualifyColumn(sortField));
         } else {
-            wrapper.orderByAsc("a." + sortField);
+            wrapper.orderByAsc(qualifyColumn(sortField));
         }
     }
 
     /**
      * ProTable 在翻页时可能提交字段名为 undefined/null 的排序。这类字段不能拼进 ORDER BY，否则查询失败，列表无法翻页。
      */
-    private static boolean isSortableField(String sortField) {
-        return sortField != null
-                && !sortField.isEmpty()
-                && !"undefined".equalsIgnoreCase(sortField)
-                && !"null".equalsIgnoreCase(sortField);
+    private static boolean isPlaceholderField(String field) {
+        return field == null
+                || field.isEmpty()
+                || "undefined".equalsIgnoreCase(field)
+                || "null".equalsIgnoreCase(field);
+    }
+
+    private static boolean isSafeIdentifier(String field) {
+        return field != null && IDENTIFIER_PATTERN.matcher(field).matches();
     }
 
     private static boolean isSortOrder(String sortValue) {
         return "ascend".equals(sortValue) || "descend".equals(sortValue);
     }
 
+    private static String toColumnName(String field, boolean camelToUnderscore) {
+        if (!camelToUnderscore) {
+            return field;
+        }
+        int dot = field.indexOf('.');
+        if (dot < 0) {
+            return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field);
+        }
+        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.substring(0, dot))
+                + "."
+                + CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, field.substring(dot + 1));
+    }
+
+    /**
+     * Default ProTable queries alias the main table as {@code a}. An already-qualified name is kept
+     * as-is.
+     */
+    private static String qualifyColumn(String field) {
+        if (field.contains(".")) {
+            return field;
+        }
+        return "a." + field;
+    }
+
     private static void buildFilter(
             String searchField, JsonNode searchValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
-        if (searchField != null && !searchField.equals("") && searchValue != null) {
-            if (camelToUnderscore) {
-                searchField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, searchField);
+        if (searchField != null) {
+            searchField = searchField.trim();
+        }
+        if (isPlaceholderField(searchField) || searchValue == null) {
+            return;
+        }
+        if (!isSafeIdentifier(searchField)) {
+            log.warn("Ignore unexpected ProTable filter field: {}", searchField);
+            return;
+        }
+        searchField = toColumnName(searchField, camelToUnderscore);
+        if (!isSafeIdentifier(searchField)) {
+            log.warn("Ignore unexpected ProTable filter field after conversion: {}", searchField);
+            return;
+        }
+        final String field = qualifyColumn(searchField);
+        List<String> searchValues = new ArrayList<>();
+        String type = "String";
+        if (searchValue.isArray()) {
+            for (final JsonNode objNode : searchValue) {
+                if (objNode.getNodeType() == JsonNodeType.NUMBER) {
+                    type = "Number";
+                }
+                searchValues.add(objNode.asText());
             }
-            final String field = searchField;
-            List<String> searchValues = new ArrayList<>();
-            String type = "String";
-            if (searchValue.isArray()) {
-                for (final JsonNode objNode : searchValue) {
-                    if (objNode.getNodeType() == JsonNodeType.NUMBER) {
-                        type = "Number";
+        }
+        if (searchValues.size() > 0) {
+            if ("Number".equals(type)) {
+                wrapper.and(qw -> {
+                    for (int i = 0; i < searchValues.size(); i++) {
+                        Double itemField = Double.parseDouble(searchValues.get(i));
+                        if (i > 0) {
+                            qw.or();
+                        }
+                        qw.eq(field, itemField);
                     }
-                    searchValues.add(objNode.asText());
-                }
-            }
-            if (searchValues.size() > 0) {
-                if ("Number".equals(type)) {
-                    wrapper.and(qw -> {
-                        for (int i = 0; i < searchValues.size(); i++) {
-                            Double itemField = Double.parseDouble(searchValues.get(i));
-                            if (i > 0) {
-                                qw.or();
-                            }
-                            qw.eq("a." + field, itemField);
+                });
+            } else {
+                wrapper.and(qw -> {
+                    for (int i = 0; i < searchValues.size(); i++) {
+                        String itemField = searchValues.get(i);
+                        if (i > 0) {
+                            qw.or();
                         }
-                    });
-                } else {
-                    wrapper.and(qw -> {
-                        for (int i = 0; i < searchValues.size(); i++) {
-                            String itemField = searchValues.get(i);
-                            if (i > 0) {
-                                qw.or();
-                            }
-                            qw.eq("a." + field, itemField);
-                        }
-                    });
-                }
+                        qw.eq(field, itemField);
+                    }
+                });
             }
         }
     }
@@ -163,23 +219,24 @@ public class ProTableUtil {
                 Map.Entry<String, JsonNode> entry = it.next();
                 String mapKey = entry.getKey();
                 if (blacklist.indexOf(mapKey) == -1 || writelist.indexOf(mapKey) > -1) {
+                    if (!isSafeIdentifier(mapKey)) {
+                        log.warn("Ignore unexpected ProTable query field: {}", mapKey);
+                        continue;
+                    }
+                    String column = toColumnName(mapKey, camelToUnderscore);
+                    if (!isSafeIdentifier(column)) {
+                        log.warn("Ignore unexpected ProTable query field after conversion: {}", mapKey);
+                        continue;
+                    }
                     if (entry.getValue().getNodeType() == JsonNodeType.NUMBER) {
                         Double mapValue = entry.getValue().asDouble();
                         if (mapValue != null) {
-                            if (camelToUnderscore) {
-                                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapKey), mapValue);
-                            } else {
-                                wrapper.eq(mapKey, mapValue);
-                            }
+                            wrapper.eq(column, mapValue);
                         }
                     } else {
                         String mapValue = entry.getValue().asText();
                         if (mapValue != null && !"".equals(mapValue)) {
-                            if (camelToUnderscore) {
-                                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapKey), mapValue);
-                            } else {
-                                wrapper.eq(mapKey, mapValue);
-                            }
+                            wrapper.eq(column, mapValue);
                         }
                     }
                 }
