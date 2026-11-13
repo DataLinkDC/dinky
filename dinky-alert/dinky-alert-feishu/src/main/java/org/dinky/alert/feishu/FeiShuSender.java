@@ -20,6 +20,7 @@
 package org.dinky.alert.feishu;
 
 import org.dinky.alert.AlertResult;
+import org.dinky.alert.AlertSenderAddress;
 import org.dinky.alert.feishu.params.FeiShuParams;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.ProxyConfig;
@@ -96,6 +97,7 @@ public final class FeiShuSender {
      */
     public AlertResult send(String content) {
         try {
+            AlertSenderAddress.requireWellDefined(feiShuParams.getWebhook());
             return checkSendMsgResult(HttpUtils.post(feiShuParams.getWebhook(), content, proxyConfig));
         } catch (Exception e) {
             logger.error("send fei shu alert msg  exception : {}", e.getMessage(), e);

@@ -23,6 +23,8 @@ import static java.util.Objects.requireNonNull;
 
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
+import org.dinky.alert.AlertSenderAddress;
+import org.dinky.alert.AlertSenderRedirectStrategy;
 import org.dinky.alert.wechat.params.WechatParams;
 import org.dinky.utils.HttpUtils;
 import org.dinky.utils.JsonUtils;
@@ -102,6 +104,7 @@ public class WeChatSender {
             } else {
                 url = wechatParams.getWebhook();
             }
+            AlertSenderAddress.requireWellDefined(url);
             return checkWeChatSendMsgResult(HttpUtils.post(url, content));
         } catch (Exception e) {
             logger.error("send we chat alert msg  exception : {}", e.getMessage());
@@ -114,7 +117,10 @@ public class WeChatSender {
     private String getToken() {
         try {
             String resp;
-            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            AlertSenderAddress.requireWellDefined(weChatTokenUrlReplace);
+            try (CloseableHttpClient httpClient = HttpClients.custom()
+                    .setRedirectStrategy(new AlertSenderRedirectStrategy())
+                    .build()) {
                 HttpGet httpGet = new HttpGet(weChatTokenUrlReplace);
                 try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                     HttpEntity entity = response.getEntity();
