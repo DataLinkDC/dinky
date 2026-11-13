@@ -12,6 +12,9 @@ Dinky 平台提供 OpenAPI 能力，通过调用 Dinky 的 OpenAPI 可以使用 
 Dinky 的 OpenAPI 提供多种 API 功能。通过调用 API，可以快速进行操作和系统集成对接等工作，提高数据开发效率，满足企业定制化需求。您还可以通过开放平台，轻松获取
 OpenAPI 的使用情况。
 :::
+
+调用 OpenAPI 时，请在请求中携带与其他 API 请求相同的登录 Token。
+
 当前支持的 OpenAPI 包括如下：
 
 | 序号 |      执行模式      |        类型名称        |             作用             |
