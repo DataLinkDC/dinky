@@ -19,6 +19,8 @@
 
 package org.dinky.utils;
 
+import org.dinky.context.SpringContextUtils;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +69,11 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
     protected synchronized void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws ServletException, IOException {
 
+        if (!FlinkProxySupport.hasValidLoginSession(servletRequest)) {
+            servletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "login session is required");
+            return;
+        }
+
         if (!servletRequest.getRequestURI().contains(FLINK_WEB_PROXY)) {
             // iframe inner request
             int i = 0;
@@ -78,10 +86,18 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
             }
 
             if (AUTHORITY != null) {
-                service(servletRequest, servletResponse, AUTHORITY);
+                if (!acceptTargetAddress(AUTHORITY, servletResponse)) {
+                    return;
+                }
+                forwardToTarget(servletRequest, servletResponse, AUTHORITY);
             } else {
                 logger.debug("AUTHORITY is null, skip service");
             }
+            return;
+        }
+
+        String authority = servletRequest.getParameter(FlinkProxySupport.AUTHORITY_PARAM);
+        if (!acceptTargetAddress(authority, servletResponse)) {
             return;
         }
 
@@ -91,16 +107,38 @@ public class FlinkWebURITemplateProxyServlet extends ProxyServlet {
             String newTargetUri = getNewTargetUri(targetUriTemplate, params);
             try {
                 URI target = new URI(newTargetUri);
-                AUTHORITY = URIUtils.extractHost(target).toString();
+                String extracted = URIUtils.extractHost(target).toString();
+                if (!acceptTargetAddress(extracted, servletResponse)) {
+                    return;
+                }
+                AUTHORITY = extracted;
             } catch (URISyntaxException e) {
                 throw new ServletException("Rewritten targetUri is invalid: " + newTargetUri, e);
             }
         }
 
-        service(servletRequest, servletResponse, targetUriTemplate);
+        forwardToTarget(servletRequest, servletResponse, targetUriTemplate);
     }
 
-    private void service(
+    protected boolean acceptTargetAddress(String address, HttpServletResponse servletResponse) throws IOException {
+        FlinkProxySupport.AddressCheck check = FlinkProxySupport.checkAddress(address, loadKnownClusterAddresses());
+        if (check == FlinkProxySupport.AddressCheck.OK) {
+            return true;
+        }
+        if (check == FlinkProxySupport.AddressCheck.MALFORMED) {
+            servletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "address is malformed");
+        } else {
+            servletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "address is not a known cluster address");
+        }
+        return false;
+    }
+
+    protected Collection<String> loadKnownClusterAddresses() {
+        KnownClusterAddressLoader loader = SpringContextUtils.getBeanByClass(KnownClusterAddressLoader.class);
+        return loader.load();
+    }
+
+    protected void forwardToTarget(
             HttpServletRequest servletRequest, HttpServletResponse servletResponse, String targetUriTemplateCurrent)
             throws ServletException, IOException {
 
