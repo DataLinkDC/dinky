@@ -29,5 +29,9 @@ spring:
     password: dinky
   h2:
     console:
-      enabled: true
+      # The console is off by default. For local development, set H2_CONSOLE_ENABLED=true
+      # or spring.h2.console.enabled=true.
+      enabled: ${H2_CONSOLE_ENABLED:false}
       path: /api/h2
+      settings:
+        web-allow-others: false
