@@ -492,7 +492,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         // query tenant admin user count
         long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>()
                 .eq(UserTenant::getTenantId, tenantId)
-                .eq(UserTenant::getTenantAdminFlag, 1));
+                .eq(UserTenant::getTenantAdminFlag, true));
         if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {
             return Result.failed(Status.TENANT_ADMIN_ALREADY_EXISTS);
         }

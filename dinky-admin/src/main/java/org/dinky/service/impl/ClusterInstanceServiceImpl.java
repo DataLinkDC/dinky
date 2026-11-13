@@ -132,7 +132,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
 
     @Override
     public List<ClusterInstance> listEnabledAllClusterInstance() {
-        return this.list(new LambdaQueryWrapper<ClusterInstance>().eq(ClusterInstance::getEnabled, 1));
+        return this.list(new LambdaQueryWrapper<ClusterInstance>().eq(ClusterInstance::getEnabled, true));
     }
 
     @Override
@@ -143,8 +143,8 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public List<ClusterInstance> listAutoEnable() {
         return list(new LambdaQueryWrapper<ClusterInstance>()
-                .eq(ClusterInstance::getEnabled, 1)
-                .eq(ClusterInstance::isAutoRegisters, 1));
+                .eq(ClusterInstance::getEnabled, true)
+                .eq(ClusterInstance::isAutoRegisters, true));
     }
 
     @Override

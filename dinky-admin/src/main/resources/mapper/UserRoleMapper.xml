@@ -64,6 +64,6 @@
             dinky_user_role a
                 inner join dinky_role b on b.id = a.role_id
         where a.user_id =  #{userId}
-          and b.is_delete = 0
+          and b.is_delete = false
     </select>
 </mapper>

@@ -106,7 +106,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
     public Tenant getTenantByTenantCode(String tenantCode) {
         return getOne(new LambdaQueryWrapper<Tenant>()
                 .eq(Tenant::getTenantCode, tenantCode)
-                .eq(Tenant::getIsDelete, 0));
+                .eq(Tenant::getIsDelete, false));
     }
 
     /**
