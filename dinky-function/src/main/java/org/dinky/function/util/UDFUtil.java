@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.config.Dialect;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.context.FreeMarkerHolder;
 import org.dinky.data.enums.GatewayType;
 import org.dinky.data.exception.DinkyException;
 import org.dinky.data.model.FlinkUdfManifest;
@@ -82,9 +83,6 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.digest.MD5;
-import cn.hutool.extra.template.TemplateConfig;
-import cn.hutool.extra.template.TemplateEngine;
-import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 
 /**
  * UDFUtil
@@ -121,7 +119,6 @@ public class UDFUtil {
     public static final String PYTHON_UDF_DEF = "@ud(?:f|tf|af|taf).*\\n+def\\s+(.*)\\(.*\\):";
     public static final String SCALA_UDF_CLASS = "class\\s+(\\w+)(\\s*\\(.*\\)){0,1}\\s+extends";
     public static final String SCALA_UDF_PACKAGE = "package\\s+(.*);";
-    private static final TemplateEngine ENGINE = new FreemarkerEngine(new TemplateConfig());
 
     /**
      * 模板解析
@@ -142,13 +139,28 @@ public class UDFUtil {
                 Dict data = Dict.create()
                         .set("className", clazz)
                         .set("package", Asserts.isNullString(packageName) ? "" : StrUtil.strip(packageName, "."));
-                return ENGINE.getTemplate(template).render(data);
+                return renderTemplate(template, data);
             case PYTHON:
             default:
                 String clazzName = split.get(0);
                 Dict data2 =
                         Dict.create().set("className", clazzName).set("attr", split.size() > 1 ? split.get(1) : null);
-                return ENGINE.getTemplate(template).render(data2);
+                return renderTemplate(template, data2);
+        }
+    }
+
+    /**
+     * Render a template only against the provided data model.
+     *
+     * @param template the template content
+     * @param data     the data provided to the template
+     * @return the rendered template
+     */
+    private static String renderTemplate(String template, Map<String, Object> data) {
+        try {
+            return FreeMarkerHolder.render(template, data);
+        } catch (Exception e) {
+            throw new DinkyException(e);
         }
     }
 
