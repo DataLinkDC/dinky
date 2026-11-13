@@ -195,6 +195,10 @@ public class DataSourceController {
             dataType = "DataBaseDTO",
             paramType = "body",
             dataTypeClass = DataBaseDTO.class)
+    @SaCheckPermission(
+            value = {PermissionConstants.REGISTRATION_DATA_SOURCE_ADD, PermissionConstants.REGISTRATION_DATA_SOURCE_EDIT
+            },
+            mode = SaMode.OR)
     public Result<Void> testConnect(@RequestBody DataBaseDTO dataBaseDTO) {
         String msg = databaseService.testConnect(dataBaseDTO);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
