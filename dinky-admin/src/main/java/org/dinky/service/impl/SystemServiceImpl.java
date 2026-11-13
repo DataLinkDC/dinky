@@ -21,8 +21,8 @@ package org.dinky.service.impl;
 
 import org.dinky.data.constant.DirConstant;
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.service.SystemFileReadHelper;
 import org.dinky.service.SystemService;
-import org.dinky.utils.DirUtil;
 import org.dinky.utils.TreeUtil;
 
 import java.io.File;
@@ -68,7 +68,7 @@ public class SystemServiceImpl implements SystemService {
 
     @Override
     public String readFile(String path) {
-        return DirUtil.readFile(path);
+        return SystemFileReadHelper.readFile(new File(DirConstant.getRootLogsPath()), path);
     }
 
     /**
