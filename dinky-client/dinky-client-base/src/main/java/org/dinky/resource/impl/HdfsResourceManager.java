@@ -57,7 +57,10 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public void rename(String path, String newPath) {
         try {
-            getHdfs().rename(new Path(getFilePath(path)), new Path(getFilePath(newPath)));
+            boolean renamed = getHdfs().rename(new Path(getFilePath(path)), new Path(getFilePath(newPath)));
+            if (!renamed) {
+                throw new BusException(Status.RESOURCE_FILE_RENAME_FAILED);
+            }
         } catch (IOException e) {
             throw new BusException(Status.RESOURCE_FILE_RENAME_FAILED, e);
         }
