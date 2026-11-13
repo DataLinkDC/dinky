@@ -64,9 +64,9 @@ public class ProTableUtil {
     private static void buildDelete(QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete) {
         if (isDelete) {
             if (camelToUnderscore) {
-                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "is_delete"), 0);
+                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "is_delete"), false);
             } else {
-                wrapper.eq("is_delete", 0);
+                wrapper.eq("is_delete", false);
             }
         }
     }

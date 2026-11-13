@@ -76,7 +76,7 @@
                  left join dinky_role ro on ur.role_id = ro.id
         where ur.user_id = #{userId}
           and m.type in ('0', '1')
-          AND ro.is_delete = 0
+          AND ro.is_delete = false
         order by m.parent_id, m.order_num
     </select>
 
@@ -102,7 +102,7 @@
                  left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
                  left join dinky_role r on r.id = ur.role_id
-        where r.is_delete = 0 and ur.user_id = #{userId}
+        where r.is_delete = false and ur.user_id = #{userId}
     </select>
 
 

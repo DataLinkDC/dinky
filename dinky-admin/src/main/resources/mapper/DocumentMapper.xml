@@ -49,8 +49,8 @@
             <if test='param.enabled != null and param.enabled != ""'>
                 and a.enabled =
                 <choose>
-                    <when test='param.enabled == true or param.enabled == 1 or param.enabled == "true" or param.enabled == "1"'>1</when>
-                    <otherwise>0</otherwise>
+                    <when test='param.enabled == true or param.enabled == 1 or param.enabled == "true" or param.enabled == "1"'>true</when>
+                    <otherwise>false</otherwise>
                 </choose>
             </if>
             <if test='param.version!=null and param.version!=""'>

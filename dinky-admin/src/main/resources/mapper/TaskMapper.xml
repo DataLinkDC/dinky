@@ -78,7 +78,7 @@
             #{parentId}
         </foreach>
         and c.task_id is not null
-        and c.is_leaf = 1
+        and c.is_leaf = true
         and t.step in
         <foreach collection="stepIds" item="stepId" open="(" close=")" separator=",">
             #{stepId}
