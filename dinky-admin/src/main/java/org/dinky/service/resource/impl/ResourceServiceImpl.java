@@ -144,8 +144,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
     @Transactional(rollbackFor = Exception.class)
     public void rename(Integer id, String fileName, String desc) {
         Resources byId = getById(id);
-        String sourceFullName = byId.getFullName();
         DinkyAssert.checkNull(byId, Status.RESOURCE_DIR_OR_FILE_NOT_EXIST);
+        String sourceFullName = byId.getFullName();
         long count = count(new LambdaQueryWrapper<Resources>()
                 .eq(Resources::getPid, byId.getPid())
                 .eq(Resources::getFileName, fileName)
@@ -160,25 +160,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourcesMapper, Resources>
         byId.setFileName(fileName);
         byId.setFullName(fullName);
         updateById(byId);
-        boolean isRunStorageMove = false;
-        if (!byId.getIsDirectory()) {
-            List<Resources> list = list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
-            if (CollUtil.isNotEmpty(list)) {
-                for (Resources resources : list) {
-                    resources.setFullName(fullName + "/" + resources.getFileName());
-                    isRunStorageMove = !resources.getIsDirectory() && !isRunStorageMove;
-                }
-                updateBatchById(list);
-            }
-        } else {
-            isRunStorageMove = true;
-            if (!isExistsChildren(id)) {
-                return;
-            }
+        if (sourceFullName.equals(fullName) || (byId.getIsDirectory() && !isExistsChildren(id))) {
+            return;
         }
-        if (isRunStorageMove) {
-            getBaseResourceManager().rename(sourceFullName, fullName);
-        }
+        getBaseResourceManager().rename(sourceFullName, fullName);
     }
 
     @Override
