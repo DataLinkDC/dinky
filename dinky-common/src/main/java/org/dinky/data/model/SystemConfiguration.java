@@ -130,6 +130,7 @@ public class SystemConfiguration {
     private final Configuration<String> dinkyToken = key(Status.SYS_ENV_SETTINGS_DINKYTOKEN)
             .stringType()
             .defaultValue("efda1551-7958-4e0f-80a8-dfd107df3e38")
+            .desensitizedHandler(DesensitizedUtil::password)
             .note(Status.SYS_ENV_SETTINGS_DINKYTOKEN_NOTE);
 
     private final Configuration<Integer> jobReSendDiffSecond = key(Status.SYS_ENV_SETTINGS_JOB_RESEND_DIFF_SECOND)
@@ -183,6 +184,7 @@ public class SystemConfiguration {
     private final Configuration<String> dolphinschedulerToken = key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_TOKEN)
             .stringType()
             .defaultValue("")
+            .desensitizedHandler(DesensitizedUtil::password)
             .note(Status.SYS_DOLPHINSCHEDULER_SETTINGS_TOKEN_NOTE);
     private final Configuration<String> dolphinschedulerProjectName =
             key(Status.SYS_DOLPHINSCHEDULER_SETTINGS_PROJECTNAME)
@@ -201,6 +203,7 @@ public class SystemConfiguration {
     private final Configuration<String> ldapUserPassword = key(Status.SYS_LDAP_SETTINGS_USERPASSWORD)
             .stringType()
             .defaultValue("")
+            .desensitizedHandler(DesensitizedUtil::password)
             .note(Status.SYS_LDAP_SETTINGS_USERPASSWORD_NOTE);
 
     private final Configuration<Integer> ldapTimeLimit = key(Status.SYS_LDAP_SETTINGS_TIMELIMIT)
@@ -291,11 +294,13 @@ public class SystemConfiguration {
     private final Configuration<String> resourcesOssAccessKey = key(Status.SYS_RESOURCE_SETTINGS_OSS_ACCESSKEY)
             .stringType()
             .defaultValue("minioadmin")
+            .desensitizedHandler(DesensitizedUtil::password)
             .note(Status.SYS_RESOURCE_SETTINGS_OSS_ACCESSKEY_NOTE);
 
     private final Configuration<String> resourcesOssSecretKey = key(Status.SYS_RESOURCE_SETTINGS_OSS_SECRETKEY)
             .stringType()
             .defaultValue("minioadmin")
+            .desensitizedHandler(DesensitizedUtil::password)
             .note(Status.SYS_RESOURCE_SETTINGS_OSS_SECRETKEY_NOTE);
 
     private final Configuration<String> resourcesOssBucketName = key(Status.SYS_RESOURCE_SETTINGS_OSS_BUCKETNAME)
