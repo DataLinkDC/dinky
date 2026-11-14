@@ -89,7 +89,6 @@ public class AppConfig implements WebMvcConfigurer {
                         "/api/login",
                         "/api/sysConfig/getNeededCfg",
                         "/api/sysConfig/setInitConfig",
-                        "/download/**",
                         "/druid/**",
                         "/api/version");
 
