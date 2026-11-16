@@ -35,6 +35,8 @@ import org.dinky.data.vo.task.JobInstanceVo;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.service.JobInstanceService;
 import org.dinky.utils.BuildConfiguration;
+import org.dinky.utils.FlinkProxySupport;
+import org.dinky.utils.KnownClusterAddressLoader;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -72,6 +74,7 @@ import lombok.extern.slf4j.Slf4j;
 @SaCheckLogin
 public class JobInstanceController {
     private final JobInstanceService jobInstanceService;
+    private final KnownClusterAddressLoader knownClusterAddressLoader;
 
     @PutMapping
     @Log(title = "update JobInstance Job Id", businessType = BusinessType.INSERT_OR_UPDATE)
@@ -198,6 +201,11 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result<String> getJobManagerLog(@RequestParam String address) {
+        Result rejected = validateClusterAddress(address);
+        if (rejected != null) {
+            return rejected;
+        }
+
         return Result.succeed(FlinkAPI.build(address).getJobManagerLog(), "");
     }
 
@@ -210,6 +218,11 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result<String> getJobManagerStdOut(@RequestParam String address) {
+        Result rejected = validateClusterAddress(address);
+        if (rejected != null) {
+            return rejected;
+        }
+
         return Result.succeed(FlinkAPI.build(address).getJobManagerStdOut(), "");
     }
 
@@ -222,6 +235,11 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result<String> getJobManagerThreadDump(@RequestParam String address) {
+        Result rejected = validateClusterAddress(address);
+        if (rejected != null) {
+            return rejected;
+        }
+
         return Result.succeed(FlinkAPI.build(address).getJobManagerThreadDump(), "");
     }
 
@@ -234,6 +252,11 @@ public class JobInstanceController {
             paramType = "query",
             required = true)
     public Result<Set<TaskManagerConfiguration>> getTaskManagerList(@RequestParam String address) {
+        Result rejected = validateClusterAddress(address);
+        if (rejected != null) {
+            return rejected;
+        }
+
         Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
         if (Asserts.isNotNullString(address)) {
             FlinkAPI flinkAPI = FlinkAPI.build(address);
@@ -264,6 +287,11 @@ public class JobInstanceController {
                 required = true)
     })
     public Result<String> getTaskManagerLog(@RequestParam String address, @RequestParam String containerId) {
+        Result rejected = validateClusterAddress(address);
+        if (rejected != null) {
+            return rejected;
+        }
+
         return Result.succeed(FlinkAPI.build(address).getTaskManagerLog(containerId), "");
     }
 
@@ -286,6 +314,11 @@ public class JobInstanceController {
     })
     public Result<JsonNode> getJobMetricsItems(
             @RequestParam String address, @RequestParam String jobId, @RequestParam String verticeId) {
+        Result rejected = validateClusterAddress(address);
+        if (rejected != null) {
+            return rejected;
+        }
+
         return Result.succeed(FlinkAPI.build(address).getJobMetricsItems(jobId, verticeId));
     }
 
@@ -317,7 +350,24 @@ public class JobInstanceController {
             @RequestParam String jobId,
             @RequestParam String verticeId,
             @RequestParam String metrics) {
+        Result rejected = validateClusterAddress(address);
+        if (rejected != null) {
+            return rejected;
+        }
+
         return Result.succeed(FlinkAPI.build(address).getJobMetricsData(jobId, verticeId, metrics));
+    }
+
+    private <T> Result<T> validateClusterAddress(String address) {
+        FlinkProxySupport.AddressCheck check =
+                FlinkProxySupport.checkAddress(address, knownClusterAddressLoader.load());
+        if (check == FlinkProxySupport.AddressCheck.OK) {
+            return null;
+        }
+        if (check == FlinkProxySupport.AddressCheck.MALFORMED) {
+            return Result.failed("address is malformed");
+        }
+        return Result.failed("address is not a known cluster address");
     }
 
     @GetMapping("/hookJobDone")

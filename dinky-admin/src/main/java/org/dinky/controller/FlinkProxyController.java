@@ -19,9 +19,14 @@
 
 package org.dinky.controller;
 
+import org.dinky.utils.FlinkProxySupport;
+import org.dinky.utils.KnownClusterAddressLoader;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,18 +43,26 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 @Controller
 @Api(tags = "Flink Proxy API", hidden = true)
 @RequestMapping(FlinkProxyController.API)
+@RequiredArgsConstructor
 @SaCheckLogin
 public class FlinkProxyController {
     public static final String API = "/api/flink/";
 
+    private final KnownClusterAddressLoader knownClusterAddressLoader;
+
     @RequestMapping("/**")
     @ApiOperation("Flink Proxy API")
-    public void proxyUba(HttpServletRequest request, HttpServletResponse resp) throws URISyntaxException {
+    public void proxyUba(HttpServletRequest request, HttpServletResponse resp) throws URISyntaxException, IOException {
+        if (!FlinkProxySupport.hasValidLoginSession(request)) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "login session is required");
+            return;
+        }
         // String url = URLDecoder.decode(request.getRequestURL().toString(), "UTF-8");
         URI uri = new URI(request.getRequestURI());
         String path = uri.getPath();
@@ -58,6 +71,18 @@ public class FlinkProxyController {
         }
         path = path.replace(API, "");
         if (StrUtil.isBlank(path)) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "address is malformed");
+            return;
+        }
+        String targetAddress = FlinkProxySupport.extractTargetAddress(path);
+        FlinkProxySupport.AddressCheck check =
+                FlinkProxySupport.checkAddress(targetAddress, loadKnownClusterAddresses());
+        if (check != FlinkProxySupport.AddressCheck.OK) {
+            if (check == FlinkProxySupport.AddressCheck.MALFORMED) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "address is malformed");
+            } else {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "address is not a known cluster address");
+            }
             return;
         }
         String query = request.getQueryString();
@@ -65,6 +90,14 @@ public class FlinkProxyController {
             path = HttpUtil.urlWithForm(path, URLUtil.decode(query), StandardCharsets.UTF_8, true);
         }
         HttpRequest httpRequest = HttpUtil.createRequest(Method.valueOf(request.getMethod()), path);
+        executeProxy(httpRequest, resp);
+    }
+
+    protected Collection<String> loadKnownClusterAddresses() {
+        return knownClusterAddressLoader.load();
+    }
+
+    protected void executeProxy(HttpRequest httpRequest, HttpServletResponse resp) {
         try (HttpResponse httpResponse = httpRequest.execute()) {
             writeToHttpServletResponse(httpResponse, resp);
         }
