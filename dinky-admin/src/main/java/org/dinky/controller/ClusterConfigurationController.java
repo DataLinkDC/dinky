@@ -101,6 +101,7 @@ public class ClusterConfigurationController {
      */
     @GetMapping("/list")
     @ApiOperation("Cluster Config List")
+    @SaCheckPermission(PermissionConstants.REGISTRATION_CLUSTER_CONFIG_LIST)
     public Result<List<ClusterConfigurationDTO>> listClusterConfigList(@RequestParam String keyword) {
         return Result.succeed(clusterConfigurationService.selectListByKeyWord(keyword));
     }

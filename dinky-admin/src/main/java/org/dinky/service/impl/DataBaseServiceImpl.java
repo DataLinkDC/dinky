@@ -44,6 +44,7 @@ import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.TaskService;
+import org.dinky.utils.JdbcAddress;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -75,6 +76,10 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
 
     @Override
     public String testConnect(DataBaseDTO db) {
+        if (!JdbcAddress.requireWellDefinedUrlIfPresent(db.getConnectConfig())
+                && !"Paimon".equalsIgnoreCase(db.getType())) {
+            JdbcAddress.requireWellDefined(null);
+        }
         return Driver.buildUnconnected(db.getName(), db.getType(), db.getConnectConfig())
                 .test();
     }
