@@ -24,7 +24,10 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import freemarker.cache.StringTemplateLoader;
+import freemarker.core.TemplateClassResolver;
 import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
@@ -52,6 +55,22 @@ public class FreeMarkerHolder {
         configuration.setNumberFormat("computer");
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        configureTemplateRendering(configuration);
+    }
+
+    /**
+     * Configures template rendering so a template is processed only against the data provided to it,
+     * and can only construct types that the configuration explicitly allows (none by default).
+     *
+     * @param configuration The FreeMarker configuration to apply these settings to.
+     */
+    static void configureTemplateRendering(Configuration configuration) {
+        configuration.setNewBuiltinClassResolver(TemplateClassResolver.ALLOWS_NOTHING_RESOLVER);
+        configuration.setAPIBuiltinEnabled(false);
+        DefaultObjectWrapperBuilder objectWrapperBuilder =
+                new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_32);
+        objectWrapperBuilder.setExposureLevel(DefaultObjectWrapper.EXPOSE_SAFE);
+        configuration.setObjectWrapper(objectWrapperBuilder.build());
     }
 
     /**
@@ -81,5 +100,22 @@ public class FreeMarkerHolder {
         StringWriter stringWriter = new StringWriter();
         template.process(dataModel, stringWriter);
         return stringWriter.toString();
+    }
+
+    /**
+     * Renders the given template content against the provided data model.
+     *
+     * @param templateContent The template content as a string.
+     * @param dataModel       The data model containing variables to populate the template.
+     * @return A string representation of the template after processing.
+     * @throws IOException       If an I/O error occurs while processing the template.
+     * @throws TemplateException If an error occurs during template processing.
+     */
+    public static String render(String templateContent, Map<String, Object> dataModel)
+            throws IOException, TemplateException {
+        FreeMarkerHolder holder = new FreeMarkerHolder();
+        String name = "inline";
+        holder.putTemplate(name, templateContent);
+        return holder.buildWithData(name, dataModel);
     }
 }
