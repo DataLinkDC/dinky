@@ -20,6 +20,8 @@
 package org.dinky.alert.http;
 
 import org.dinky.alert.AlertResult;
+import org.dinky.alert.AlertSenderAddress;
+import org.dinky.alert.AlertSenderRedirectStrategy;
 import org.dinky.alert.http.params.HttpParams;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.ext.ConfigItem;
@@ -90,6 +92,7 @@ public class HttpSender {
     }
 
     private void createHttpRequest(String title, String content) {
+        AlertSenderAddress.requireWellDefined(httpParams.getUrl());
         if (HttpConstants.REQUEST_TYPE_POST.equals(httpParams.getMethod())) {
             httpRequest = new HttpPost(httpParams.getUrl());
             buildRequestHeader();
@@ -100,7 +103,9 @@ public class HttpSender {
     }
 
     public String getResponseString(HttpRequestBase httpRequest) throws IOException {
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+                .setRedirectStrategy(new AlertSenderRedirectStrategy())
+                .build()) {
             CloseableHttpResponse response = httpClient.execute(httpRequest);
             HttpEntity entity = response.getEntity();
             return EntityUtils.toString(entity, HttpConstants.DEFAULT_CHARSET);

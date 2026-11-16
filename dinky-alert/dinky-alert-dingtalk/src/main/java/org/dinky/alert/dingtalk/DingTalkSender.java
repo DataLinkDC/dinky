@@ -21,6 +21,7 @@ package org.dinky.alert.dingtalk;
 
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
+import org.dinky.alert.AlertSenderAddress;
 import org.dinky.alert.dingtalk.params.DingTalkParams;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.ProxyConfig;
@@ -89,6 +90,7 @@ public class DingTalkSender {
             String httpUrl = Asserts.isNotNullString(dingTalkParams.getSecret())
                     ? generateSignedUrl()
                     : dingTalkParams.getWebhook();
+            AlertSenderAddress.requireWellDefined(httpUrl);
             return checkMsgResult(HttpUtils.post(httpUrl, content, proxyConfig));
         } catch (Exception e) {
             logger.error("send ding talk alert msg  exception : {}", e.getMessage());
