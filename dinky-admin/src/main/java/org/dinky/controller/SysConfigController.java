@@ -84,7 +84,6 @@ public class SysConfigController {
      */
     @GetMapping("/getAll")
     @ApiOperation("Query All System Config List")
-    @SaIgnore
     public Result<Map<String, List<Configuration<?>>>> getAll() {
         Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
         Map<String, List<Configuration<?>>> map =
@@ -107,6 +106,7 @@ public class SysConfigController {
                 .filter(entry -> entry.getKey().startsWith(type))
                 .map(Map.Entry::getValue)
                 .flatMap(List::stream)
+                .map(Configuration::show)
                 .collect(Collectors.toList());
         return Result.succeed(configList);
     }
