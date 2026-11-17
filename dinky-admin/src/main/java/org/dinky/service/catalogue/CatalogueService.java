@@ -30,6 +30,8 @@ import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * CatalogueService
  *
@@ -189,4 +191,14 @@ public interface CatalogueService extends ISuperService<Catalogue> {
      * @param importCatalogueDto ImportCatalogueDTO
      */
     void importCatalogue(ImportCatalogueDTO importCatalogueDto);
+
+    /**
+     * Upload a zip package and create the corresponding catalogue tree, keeping written files under
+     * the intended target directory.
+     *
+     * @param file uploaded zip package
+     * @param id parent catalogue id
+     * @return result of the upload
+     */
+    Result<String> uploadCatalogueZip(MultipartFile file, Integer id);
 }
