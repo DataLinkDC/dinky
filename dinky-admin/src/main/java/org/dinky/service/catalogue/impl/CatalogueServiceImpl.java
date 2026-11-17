@@ -24,6 +24,7 @@ import static org.dinky.assertion.Asserts.isNull;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.bo.catalogue.export.ExportCatalogueBO;
 import org.dinky.data.bo.catalogue.export.ExportTaskBO;
+import org.dinky.data.constant.DirConstant;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.dto.CatalogueTreeQueryDTO;
 import org.dinky.data.dto.ImportCatalogueDTO;
@@ -51,6 +52,7 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.MonitorService;
 import org.dinky.service.TaskService;
 import org.dinky.service.catalogue.CatalogueService;
+import org.dinky.service.catalogue.CatalogueUploadHelper;
 import org.dinky.service.catalogue.context.CatalogueTreeBuildContext;
 import org.dinky.service.catalogue.factory.CatalogueFactory;
 import org.dinky.service.catalogue.factory.CatalogueTreeSortFactory;
@@ -77,6 +79,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -88,6 +91,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.BiMap;
 import cn.hutool.core.util.ObjectUtil;
@@ -843,5 +847,46 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             exportCatalogueBo.setChildren(subExportCatalogueBo);
         }
         return exportCatalogueBo;
+    }
+
+    /**
+     * Upload a zip package and create the corresponding catalogue tree, keeping written files under
+     * the intended target directory.
+     *
+     * @param file uploaded zip package
+     * @param id parent catalogue id
+     * @return result of the upload
+     */
+    @Override
+    public Result<String> uploadCatalogueZip(MultipartFile file, Integer id) {
+        File targetDir = new File(DirConstant.getRootPath());
+        File zipFile = null;
+        try {
+            CatalogueUploadHelper.ResolvedUploadPaths paths =
+                    CatalogueUploadHelper.resolveUploadPaths(targetDir, file.getOriginalFilename());
+            zipFile = paths.getZipFile();
+            if (paths.getUnzipDir().exists()) {
+                CatalogueUploadHelper.deleteInsideDirectory(targetDir, zipFile);
+                return Result.failed("工程已存在");
+            }
+            FileUtil.writeBytes(file.getBytes(), zipFile);
+            Thread.sleep(1L);
+            if (!paths.getUnzipDir().exists()) {
+                CatalogueUploadHelper.unzipInsideDirectory(zipFile, paths.getTargetDir());
+                Catalogue cata = getCatalogue(id, paths.getUnzipFileName());
+                traverseFile(paths.getUnzipDir().getPath(), cata);
+            }
+        } catch (Exception e) {
+            return Result.failed(e.getMessage());
+        } finally {
+            if (zipFile != null) {
+                try {
+                    CatalogueUploadHelper.deleteInsideDirectory(targetDir, zipFile);
+                } catch (Exception ignored) {
+                    // ignore cleanup errors
+                }
+            }
+        }
+        return Result.succeed("上传zip包并创建工程成功");
     }
 }
