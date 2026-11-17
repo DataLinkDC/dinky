@@ -28,6 +28,7 @@ import org.dinky.sandbox.SandboxFactory;
 import org.dinky.sandbox.metadata.TableId;
 import org.dinky.sandbox.metadata.TableType;
 import org.dinky.sandbox.metadata.Tuple;
+import org.dinky.sandbox.socket.SandboxSessionChecker;
 import org.dinky.sandbox.socket.SandboxSocketServer;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -42,6 +43,9 @@ import org.junit.jupiter.api.Test;
 
 public class SandboxDynamicTableSinkTest {
 
+    private static final String SESSION_TOKEN = "sandbox-session-token";
+    private static final SandboxSessionChecker SESSION_CHECKER = SESSION_TOKEN::equals;
+
     @Test
     public void testSql() throws Exception {
         List<Column> columns = Arrays.asList(Column.physical("id", DataTypes.INT()));
@@ -49,7 +53,7 @@ public class SandboxDynamicTableSinkTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         sandbox.registerTable(tableId, TableType.PRIMARY_KEY_TABLE, columns, new int[] {0});
 
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9999);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9999, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -70,6 +74,7 @@ public class SandboxDynamicTableSinkTest {
                 + ") WITH ("
                 + "'connector' = 'dinky-sandbox',"
                 + "'host' = 'localhost',"
+                + "'token' = 'sandbox-session-token',"
                 + "'port' = '9999',"
                 + "'table' = 'default_database.test_table'"
                 + ")";
@@ -98,7 +103,7 @@ public class SandboxDynamicTableSinkTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         sandbox.registerTable(tableId, TableType.PRIMARY_KEY_TABLE, columns, new int[] {0});
 
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9998);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9998, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -119,6 +124,7 @@ public class SandboxDynamicTableSinkTest {
                 + ") WITH ("
                 + "'connector' = 'dinky-sandbox',"
                 + "'host' = 'localhost',"
+                + "'token' = 'sandbox-session-token',"
                 + "'port' = '9998',"
                 + "'table' = 'default_database.test_max_row_table',"
                 + "'max-row-num' = '5',"
@@ -147,7 +153,7 @@ public class SandboxDynamicTableSinkTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
         sandbox.registerTable(tableId, TableType.PRIMARY_KEY_TABLE, columns, new int[] {0});
 
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9997);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9997, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -168,6 +174,7 @@ public class SandboxDynamicTableSinkTest {
                 + ") WITH ("
                 + "'connector' = 'dinky-sandbox',"
                 + "'host' = 'localhost',"
+                + "'token' = 'sandbox-session-token',"
                 + "'port' = '9997',"
                 + "'table' = 'default_database.test_auto_cancel_table',"
                 + "'max-row-num' = '3',"
@@ -200,7 +207,7 @@ public class SandboxDynamicTableSinkTest {
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
 
         // Note: Do not register the table in advance. Let the Sink automatically create a table of the CHANGE_LOG type.
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9996);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9996, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -221,6 +228,7 @@ public class SandboxDynamicTableSinkTest {
                 + ") WITH ("
                 + "'connector' = 'dinky-sandbox',"
                 + "'host' = 'localhost',"
+                + "'token' = 'sandbox-session-token',"
                 + "'port' = '9996',"
                 + "'table' = 'default_database.test_change_log_table',"
                 + "'use-change-log' = 'true'"
@@ -249,7 +257,7 @@ public class SandboxDynamicTableSinkTest {
         TableId tableId = TableId.of("default_database", "test_combined_table");
         Sandbox sandbox = SandboxFactory.getDefaultSandbox();
 
-        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9995);
+        SandboxSocketServer sandboxSocketServer = new SandboxSocketServer(sandbox, 9995, SESSION_CHECKER);
         sandboxSocketServer.start();
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -270,6 +278,7 @@ public class SandboxDynamicTableSinkTest {
                 + ") WITH ("
                 + "'connector' = 'dinky-sandbox',"
                 + "'host' = 'localhost',"
+                + "'token' = 'sandbox-session-token',"
                 + "'port' = '9995',"
                 + "'table' = 'default_database.test_combined_table',"
                 + "'max-row-num' = '7',"

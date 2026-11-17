@@ -25,6 +25,8 @@ import org.dinky.data.socket.DataChangeEventSocketMessage;
 import org.dinky.sandbox.metadata.ColumnInfo;
 
 import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -41,14 +43,20 @@ public class SocketClient implements AutoCloseable {
 
     private final String host;
     private final int port;
+    private final String sessionToken;
     private Socket socket;
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private final AtomicBoolean connected;
 
     public SocketClient(String host, int port) {
+        this(host, port, null);
+    }
+
+    public SocketClient(String host, int port, String sessionToken) {
         this.host = host;
         this.port = port;
+        this.sessionToken = sessionToken;
         this.connected = new AtomicBoolean(false);
     }
 
@@ -56,11 +64,28 @@ public class SocketClient implements AutoCloseable {
         if (connected.compareAndSet(false, true)) {
             try {
                 socket = new Socket(host, port);
+                DataOutputStream handshakeOut = new DataOutputStream(socket.getOutputStream());
+                handshakeOut.writeUTF(sessionToken == null ? "" : sessionToken);
+                handshakeOut.flush();
+                DataInputStream handshakeIn = new DataInputStream(socket.getInputStream());
+                String handshakeResult = handshakeIn.readUTF();
+                if (!SocketDataProcessor.HANDSHAKE_OK.equals(handshakeResult)) {
+                    throw new IOException("Sandbox socket handshake was rejected");
+                }
                 outputStream = new ObjectOutputStream(socket.getOutputStream());
                 inputStream = new ObjectInputStream(socket.getInputStream());
                 logger.info("Successfully connected to the server: {}:{}", host, port);
             } catch (IOException e) {
                 connected.set(false);
+                closeQuietly(inputStream);
+                closeQuietly(outputStream);
+                if (socket != null && !socket.isClosed()) {
+                    try {
+                        socket.close();
+                    } catch (IOException closeError) {
+                        logger.warn("Failed to close sandbox socket after a failed handshake", closeError);
+                    }
+                }
                 logger.error("Failed to connect to the server: {}:{}", host, port, e);
                 throw e;
             }
