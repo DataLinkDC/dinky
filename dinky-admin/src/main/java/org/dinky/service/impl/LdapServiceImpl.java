@@ -60,9 +60,8 @@ public class LdapServiceImpl implements LdapService {
     @Override
     public User authenticate(LoginDTO loginDTO) throws AuthException {
         LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
-        // Build LDAP filter, The LdapCastUsername is map to Dinky UserName
-        String filter = String.format(
-                "(&%s(%s=%s))",
+        // Build the login filter from a well-defined pattern; special characters in the username are escaped
+        String filter = LdapLoginFilter.build(
                 configuration.getLdapFilter().getValue(),
                 configuration.getLdapCastUsername().getValue(),
                 loginDTO.getUsername());
