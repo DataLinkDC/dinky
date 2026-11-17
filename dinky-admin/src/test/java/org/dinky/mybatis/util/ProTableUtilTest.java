@@ -48,4 +48,72 @@ public class ProTableUtilTest {
         Assert.assertTrue(sql.contains("create_time"));
         Assert.assertTrue(sql.toLowerCase().contains("desc"));
     }
+
+    @Test
+    public void keepValidColumnSortAscend() throws Exception {
+        QueryWrapper<Object> wrapper = new QueryWrapper<>();
+        ProTableUtil.autoQueryDefalut(mapper.readTree("{\"sorter\":{\"name\":\"ascend\"}}"), wrapper);
+
+        String sql = wrapper.getSqlSegment();
+        Assert.assertTrue(sql.contains("a.name"));
+        Assert.assertTrue(sql.toLowerCase().contains("asc"));
+    }
+
+    @Test
+    public void ignoreMalformedSortField() throws Exception {
+        String unusualField = "createTime,status";
+        QueryWrapper<Object> wrapper = new QueryWrapper<>();
+        ProTableUtil.autoQueryDefalut(mapper.readTree("{\"sorter\":{\"" + unusualField + "\":\"descend\"}}"), wrapper);
+
+        String sql = String.valueOf(wrapper.getSqlSegment());
+        Assert.assertFalse(sql.contains(unusualField));
+        Assert.assertFalse(sql.toLowerCase().contains("order by"));
+    }
+
+    @Test
+    public void ignoreUnexpectedSortDirection() throws Exception {
+        QueryWrapper<Object> wrapper = new QueryWrapper<>();
+        ProTableUtil.autoQueryDefalut(mapper.readTree("{\"sorter\":{\"createTime\":\"desc nulls last\"}}"), wrapper);
+
+        String sql = String.valueOf(wrapper.getSqlSegment());
+        Assert.assertFalse(sql.toLowerCase().contains("nulls last"));
+        Assert.assertFalse(sql.toLowerCase().contains("order by"));
+    }
+
+    @Test
+    public void keepValidColumnFilter() throws Exception {
+        QueryWrapper<Object> wrapper = new QueryWrapper<>();
+        ProTableUtil.autoQueryDefalut(mapper.readTree("{\"filter\":{\"enabled\":[1,0]}}"), wrapper);
+
+        String sql = wrapper.getSqlSegment();
+        Assert.assertTrue(sql.contains("a.enabled"));
+        Assert.assertTrue(sql.contains("#{ew.paramNameValuePairs."));
+        Assert.assertEquals(2, wrapper.getParamNameValuePairs().size());
+        Assert.assertTrue(wrapper.getParamNameValuePairs().containsValue(1.0d));
+        Assert.assertTrue(wrapper.getParamNameValuePairs().containsValue(0.0d));
+    }
+
+    @Test
+    public void keepValidStringFilter() throws Exception {
+        QueryWrapper<Object> wrapper = new QueryWrapper<>();
+        ProTableUtil.autoQueryDefalut(mapper.readTree("{\"filter\":{\"type\":[\"FUN_UDF\"]}}"), wrapper);
+
+        String sql = wrapper.getSqlSegment();
+        Assert.assertTrue(sql.contains("a.type"));
+        Assert.assertTrue(sql.contains("#{ew.paramNameValuePairs."));
+        Assert.assertFalse(sql.contains("FUN_UDF"));
+        Assert.assertTrue(wrapper.getParamNameValuePairs().containsValue("FUN_UDF"));
+    }
+
+    @Test
+    public void ignoreMalformedFilterField() throws Exception {
+        String unusualField = "enabled or name";
+        QueryWrapper<Object> wrapper = new QueryWrapper<>();
+        ProTableUtil.autoQueryDefalut(mapper.readTree("{\"filter\":{\"" + unusualField + "\":[1]}}"), wrapper);
+
+        String sql = String.valueOf(wrapper.getSqlSegment());
+        Assert.assertFalse(sql.contains(unusualField));
+        Assert.assertTrue(wrapper.getParamNameValuePairs() == null
+                || wrapper.getParamNameValuePairs().isEmpty());
+    }
 }
