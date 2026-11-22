@@ -19,14 +19,14 @@
 
 package org.dinky.executor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import org.dinky.context.EngineContextHolder;
 
 import org.junit.jupiter.api.Test;
 
 import cn.hutool.core.lang.Dict;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class VariableManagerTest {
 
