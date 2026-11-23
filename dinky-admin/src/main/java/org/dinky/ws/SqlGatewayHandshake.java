@@ -48,8 +48,7 @@ public final class SqlGatewayHandshake {
 
     private SqlGatewayHandshake() {}
 
-    public static String resolveToken(
-            Map<String, List<String>> queryParams, Map<String, List<String>> headers) {
+    public static String resolveToken(Map<String, List<String>> queryParams, Map<String, List<String>> headers) {
         String token = firstParameter(queryParams, TOKEN_QUERY_PARAM);
         if (StrUtil.isNotBlank(token)) {
             return token;
