@@ -36,8 +36,8 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,8 +150,8 @@ public class SqlGateway {
         }
 
         try {
-            String token = SqlGatewayHandshake.resolveToken(
-                    session.getRequestParameterMap(), getHandshakeHeaders(session));
+            String token =
+                    SqlGatewayHandshake.resolveToken(session.getRequestParameterMap(), getHandshakeHeaders(session));
             if (!SqlGatewayHandshake.hasValidLoginSession(token)) {
                 closeHandshake("login session is required");
                 return;
@@ -227,7 +227,6 @@ public class SqlGateway {
         return null;
     }
 
-
     protected String prepareInitSql(String initSql) throws SQLException {
         initSql = SqlUtil.removeNote(initSql);
         VariableManager variableManager = new VariableManager();
@@ -244,7 +243,8 @@ public class SqlGateway {
         }
         for (Entity row : rows) {
             SqlGatewayHandshake.collectClusterAddress(addresses, firstColumn(row, "hosts"));
-            SqlGatewayHandshake.collectClusterAddress(addresses, firstColumn(row, "job_manager_host", "jobManagerHost"));
+            SqlGatewayHandshake.collectClusterAddress(
+                    addresses, firstColumn(row, "job_manager_host", "jobManagerHost"));
         }
         return addresses;
     }
