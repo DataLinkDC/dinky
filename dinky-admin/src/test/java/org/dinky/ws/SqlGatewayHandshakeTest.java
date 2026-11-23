@@ -194,8 +194,7 @@ public class SqlGatewayHandshakeTest {
 
         Map<String, List<String>> cookieHeaders = new HashMap<>();
         cookieHeaders.put("Cookie", Collections.singletonList("tenantId=1; dinky-token=cookie-token"));
-        Assert.assertEquals(
-                "cookie-token", SqlGatewayHandshake.resolveToken(Collections.emptyMap(), cookieHeaders));
+        Assert.assertEquals("cookie-token", SqlGatewayHandshake.resolveToken(Collections.emptyMap(), cookieHeaders));
     }
 
     @Test
@@ -242,11 +241,10 @@ public class SqlGatewayHandshakeTest {
 
     private static void assertClosedWithReason(Session session, String reason) throws IOException {
         AtomicReference<CloseReason> captured = new AtomicReference<>();
-        Mockito.verify(session)
-                .close(Mockito.argThat(closeReason -> {
-                    captured.set(closeReason);
-                    return true;
-                }));
+        Mockito.verify(session).close(Mockito.argThat(closeReason -> {
+            captured.set(closeReason);
+            return true;
+        }));
         Assert.assertNotNull(captured.get());
         Assert.assertEquals(reason, captured.get().getReasonPhrase());
         Assert.assertEquals(CloseReason.CloseCodes.CANNOT_ACCEPT, captured.get().getCloseCode());
