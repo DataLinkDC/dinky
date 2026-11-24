@@ -26,6 +26,7 @@ import {
   TerminalEvent,
   TermProps
 } from './TerminalConfig';
+import { TOKEN_KEY } from '@/services/constants';
 import { FitAddon } from '@xterm/addon-fit';
 import { Terminal } from '@xterm/xterm';
 import './xterm.css';
@@ -69,7 +70,8 @@ const TerminalContent: React.FC<TermProps> = (props) => {
     const termCols = term.cols;
     const termRows = term.rows;
 
-    const params = `mode=${mode}&cols=${termCols}&rows=${termRows}&sessionId=${sessionId}&initSql=${encodeURIComponent(initSql ?? '')}&connectAddress=${connectAddress}`;
+    const token = JSON.parse(localStorage.getItem(TOKEN_KEY) ?? '{}')?.tokenValue;
+    const params = `mode=${mode}&cols=${termCols}&rows=${termRows}&sessionId=${sessionId}&initSql=${encodeURIComponent(initSql ?? '')}&connectAddress=${connectAddress}&token=${encodeURIComponent(token ?? '')}`;
 
     ws = new WebSocket(`${wsUrl}/?${params}`);
 
