@@ -138,6 +138,7 @@ public class LocalResourceManager implements BaseResourceManager {
         try (HttpResponse exec = HttpUtil.createGet(
                         systemConfiguration.getDinkyAddr().getValue() + "/download/downloadFromRs?path="
                                 + URLUtil.encode(path))
+                .header("token", systemConfiguration.getDinkyToken().getValue())
                 .execute()) {
             return exec.bodyStream();
         } catch (Exception e) {
