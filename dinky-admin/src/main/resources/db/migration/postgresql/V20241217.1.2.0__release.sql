@@ -1,6 +1,6 @@
 
--- Table structure for public.dinky_user_tenant
-CREATE TABLE IF NOT EXISTS public.dinky_user_tenant_backup
+-- Table structure for ${dinky_schema}.dinky_user_tenant
+CREATE TABLE IF NOT EXISTS ${dinky_schema}.dinky_user_tenant_backup
 (
     id                serial PRIMARY KEY,
     user_id           int       NOT NULL,
@@ -10,28 +10,28 @@ CREATE TABLE IF NOT EXISTS public.dinky_user_tenant_backup
     update_time       timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS  user_tenant_un_idx1 ON public.dinky_user_tenant_backup (user_id, tenant_id);
+CREATE UNIQUE INDEX IF NOT EXISTS  user_tenant_un_idx1 ON ${dinky_schema}.dinky_user_tenant_backup (user_id, tenant_id);
 
-COMMENT ON TABLE public.dinky_user_tenant_backup IS 'Relationship between users and tenants';
-COMMENT ON COLUMN public.dinky_user_tenant_backup.id IS 'id';
-COMMENT ON COLUMN public.dinky_user_tenant_backup.user_id IS 'user id';
-COMMENT ON COLUMN public.dinky_user_tenant_backup.tenant_id IS 'tenant id';
-COMMENT ON COLUMN public.dinky_user_tenant_backup.tenant_admin_flag IS 'tenant admin flag(0:false,1:true)';
+COMMENT ON TABLE ${dinky_schema}.dinky_user_tenant_backup IS 'Relationship between users and tenants';
+COMMENT ON COLUMN ${dinky_schema}.dinky_user_tenant_backup.id IS 'id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_user_tenant_backup.user_id IS 'user id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_user_tenant_backup.tenant_id IS 'tenant id';
+COMMENT ON COLUMN ${dinky_schema}.dinky_user_tenant_backup.tenant_admin_flag IS 'tenant admin flag(0:false,1:true)';
 
 CREATE OR REPLACE TRIGGER set_update_time_dinky_user_tenant
     BEFORE UPDATE
-    ON public.dinky_user_tenant_backup
+    ON ${dinky_schema}.dinky_user_tenant_backup
     FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 
-insert into public.dinky_user_tenant_backup(id, user_id, tenant_id, tenant_admin_flag, create_time, update_time)
+insert into ${dinky_schema}.dinky_user_tenant_backup(id, user_id, tenant_id, tenant_admin_flag, create_time, update_time)
 select id, user_id, tenant_id,
        case when tenant_admin_flag = 0 then false else true end as tenant_admin_flag,
        create_time, update_time
-from public.dinky_user_tenant;
+from ${dinky_schema}.dinky_user_tenant;
 
-drop table if exists public.dinky_user_tenant;
-alter table public.dinky_user_tenant_backup rename to dinky_user_tenant;
+drop table if exists ${dinky_schema}.dinky_user_tenant;
+alter table ${dinky_schema}.dinky_user_tenant_backup rename to dinky_user_tenant;
 
 
 
