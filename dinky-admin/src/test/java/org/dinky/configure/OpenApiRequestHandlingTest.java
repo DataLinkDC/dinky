@@ -114,13 +114,24 @@ public class OpenApiRequestHandlingTest {
     }
 
     private static HandlerInterceptor saInterceptor() {
-        InterceptorRegistry registry = new InterceptorRegistry();
+        CapturingInterceptorRegistry registry = new CapturingInterceptorRegistry();
         new AppConfig().addInterceptors(registry);
-        for (InterceptorRegistration registration : registry.getInterceptors()) {
-            if (registration.getInterceptor() instanceof SaInterceptor) {
-                return registration.getInterceptor();
-            }
+        if (registry.saInterceptor == null) {
+            throw new IllegalStateException("SaInterceptor is not registered");
         }
-        throw new IllegalStateException("SaInterceptor is not registered");
+        return registry.saInterceptor;
+    }
+
+    private static class CapturingInterceptorRegistry extends InterceptorRegistry {
+
+        private HandlerInterceptor saInterceptor;
+
+        @Override
+        public InterceptorRegistration addInterceptor(HandlerInterceptor interceptor) {
+            if (interceptor instanceof SaInterceptor) {
+                this.saInterceptor = interceptor;
+            }
+            return super.addInterceptor(interceptor);
+        }
     }
 }
