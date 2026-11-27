@@ -157,6 +157,8 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
     enable: false
   });
   const [originStatementValue, setOriginStatementValue] = useState<string>('');
+  const submitLockRef = useRef(false);
+  const debugLockRef = useRef(false);
   const [currentState, setCurrentState] = useState<TaskState>({
     alertGroupId: -1,
     batchModel: false,
@@ -565,6 +567,10 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
   }, [currentState, updateAction]);
 
   const handleSubmit = useCallback(async () => {
+    if (submitLockRef.current) {
+      return;
+    }
+    submitLockRef.current = true;
     setIsSubmitting(true);
     try {
       if (currentState.step !== JOB_LIFE_CYCLE.PUBLISH) {
@@ -614,10 +620,15 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       }
     } finally {
       setIsSubmitting(false);
+      submitLockRef.current = false;
     }
   }, [updateAction, currentState.envId, handleSave, currentState.taskId, currentState.dialect]);
 
   const handleDebug = useCallback(async () => {
+    if (debugLockRef.current) {
+      return;
+    }
+    debugLockRef.current = true;
     updateAction({
       actionType: DataStudioActionType.TASK_RUN_DEBUG,
       params: {
@@ -667,6 +678,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
       }
     } finally {
       setIsSubmitting(false);
+      debugLockRef.current = false;
     }
   }, [currentState, updateAction]);
 
@@ -974,6 +986,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               }
               showDesc={showDesc}
               disabled={isLockTask || isSubmitting}
+              loading={isSubmitting}
               color={'green'}
               desc={l('pages.datastudio.editor.exec')}
               icon={<CaretRightOutlined />}
@@ -990,6 +1003,7 @@ export const SqlTask = memo((props: FlinkSqlProps & any) => {
               }
               showDesc={showDesc}
               disabled={isLockTask || isSubmitting}
+              loading={isSubmitting}
               color={'red'}
               desc={l('pages.datastudio.editor.debug')}
               icon={<BugOutlined />}
