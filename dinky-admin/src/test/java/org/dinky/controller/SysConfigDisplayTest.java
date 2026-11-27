@@ -103,7 +103,8 @@ public class SysConfigDisplayTest {
         String originalLdapPassword = configuration.getLdapUserPassword().getValue();
         String originalAccessKey = configuration.getResourcesOssAccessKey().getValue();
         String originalSecretKey = configuration.getResourcesOssSecretKey().getValue();
-        String originalMavenPassword = configuration.getMavenRepositoryPassword().getValue();
+        String originalMavenPassword =
+                configuration.getMavenRepositoryPassword().getValue();
         try {
             configuration.getDinkyToken().setValue(SAMPLE_TOKEN);
             configuration.getDolphinschedulerToken().setValue(SAMPLE_DS_TOKEN);
@@ -135,11 +136,19 @@ public class SysConfigDisplayTest {
             assertMasked(displayed, configuration.getMavenRepositoryPassword().getKey(), SAMPLE_MAVEN_PASSWORD);
 
             Assert.assertEquals(SAMPLE_TOKEN, configuration.getDinkyToken().getValue());
-            Assert.assertEquals(SAMPLE_DS_TOKEN, configuration.getDolphinschedulerToken().getValue());
-            Assert.assertEquals(SAMPLE_LDAP_PASSWORD, configuration.getLdapUserPassword().getValue());
-            Assert.assertEquals(SAMPLE_OSS_ACCESS_KEY, configuration.getResourcesOssAccessKey().getValue());
-            Assert.assertEquals(SAMPLE_OSS_SECRET_KEY, configuration.getResourcesOssSecretKey().getValue());
-            Assert.assertEquals(SAMPLE_MAVEN_PASSWORD, configuration.getMavenRepositoryPassword().getValue());
+            Assert.assertEquals(
+                    SAMPLE_DS_TOKEN, configuration.getDolphinschedulerToken().getValue());
+            Assert.assertEquals(
+                    SAMPLE_LDAP_PASSWORD, configuration.getLdapUserPassword().getValue());
+            Assert.assertEquals(
+                    SAMPLE_OSS_ACCESS_KEY,
+                    configuration.getResourcesOssAccessKey().getValue());
+            Assert.assertEquals(
+                    SAMPLE_OSS_SECRET_KEY,
+                    configuration.getResourcesOssSecretKey().getValue());
+            Assert.assertEquals(
+                    SAMPLE_MAVEN_PASSWORD,
+                    configuration.getMavenRepositoryPassword().getValue());
         } finally {
             configuration.getDinkyToken().setValue(originalToken);
             configuration.getDolphinschedulerToken().setValue(originalDsToken);
