@@ -37,6 +37,7 @@ export type RunToolBarButtonProps = {
   hotKey?: HotKeyProps;
   isShow?: boolean;
   disabled?: boolean;
+  loading?: boolean;
   style?: CSSProperties;
 };
 
@@ -51,20 +52,25 @@ export default (props: RunToolBarButtonProps) => {
     hotKey,
     isShow = true,
     disabled = false,
+    loading: externalLoading = false,
     style
   } = props;
-  const [loading, setLoading] = useState(false);
+  const [internalLoading, setInternalLoading] = useState(false);
+  const loading = internalLoading || externalLoading;
 
   const onClickHandle = useCallback(async () => {
-    setLoading(true);
+    if (loading) {
+      return;
+    }
+    setInternalLoading(true);
     if (onClick) {
       try {
         await onClick();
       } catch (e) {}
     }
     await sleep(sleepTime ?? 100);
-    setLoading(false);
-  }, [onClick, sleepTime]);
+    setInternalLoading(false);
+  }, [loading, onClick, sleepTime]);
   useEffect(() => {
     const hotKeyFuncHandle = (e: KeyboardEvent) => {
       if (hotKey?.hotKeyHandle(e)) {
