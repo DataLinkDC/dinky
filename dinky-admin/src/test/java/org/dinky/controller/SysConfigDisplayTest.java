@@ -23,6 +23,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.dinky.configure.AppConfig;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.Result;
@@ -98,20 +99,20 @@ public class SysConfigDisplayTest {
     @Test
     public void getAllWithLoginSessionMasksSensitiveValues() throws Exception {
         SystemConfiguration configuration = SystemConfiguration.getInstances();
+        Configuration<String> mavenRepositoryPassword = mavenRepositoryPasswordConfig(configuration);
         String originalToken = configuration.getDinkyToken().getValue();
         String originalDsToken = configuration.getDolphinschedulerToken().getValue();
         String originalLdapPassword = configuration.getLdapUserPassword().getValue();
         String originalAccessKey = configuration.getResourcesOssAccessKey().getValue();
         String originalSecretKey = configuration.getResourcesOssSecretKey().getValue();
-        String originalMavenPassword =
-                configuration.getMavenRepositoryPassword().getValue();
+        String originalMavenPassword = mavenRepositoryPassword.getValue();
         try {
             configuration.getDinkyToken().setValue(SAMPLE_TOKEN);
             configuration.getDolphinschedulerToken().setValue(SAMPLE_DS_TOKEN);
             configuration.getLdapUserPassword().setValue(SAMPLE_LDAP_PASSWORD);
             configuration.getResourcesOssAccessKey().setValue(SAMPLE_OSS_ACCESS_KEY);
             configuration.getResourcesOssSecretKey().setValue(SAMPLE_OSS_SECRET_KEY);
-            configuration.getMavenRepositoryPassword().setValue(SAMPLE_MAVEN_PASSWORD);
+            mavenRepositoryPassword.setValue(SAMPLE_MAVEN_PASSWORD);
 
             SysConfigController controller = new SysConfigController(overviewService());
             MockHttpServletRequest request = bindRequest("/api/sysConfig/getAll");
@@ -133,7 +134,7 @@ public class SysConfigDisplayTest {
             assertMasked(displayed, configuration.getLdapUserPassword().getKey(), SAMPLE_LDAP_PASSWORD);
             assertMasked(displayed, configuration.getResourcesOssAccessKey().getKey(), SAMPLE_OSS_ACCESS_KEY);
             assertMasked(displayed, configuration.getResourcesOssSecretKey().getKey(), SAMPLE_OSS_SECRET_KEY);
-            assertMasked(displayed, configuration.getMavenRepositoryPassword().getKey(), SAMPLE_MAVEN_PASSWORD);
+            assertMasked(displayed, mavenRepositoryPassword.getKey(), SAMPLE_MAVEN_PASSWORD);
 
             Assert.assertEquals(SAMPLE_TOKEN, configuration.getDinkyToken().getValue());
             Assert.assertEquals(
@@ -146,16 +147,14 @@ public class SysConfigDisplayTest {
             Assert.assertEquals(
                     SAMPLE_OSS_SECRET_KEY,
                     configuration.getResourcesOssSecretKey().getValue());
-            Assert.assertEquals(
-                    SAMPLE_MAVEN_PASSWORD,
-                    configuration.getMavenRepositoryPassword().getValue());
+            Assert.assertEquals(SAMPLE_MAVEN_PASSWORD, mavenRepositoryPassword.getValue());
         } finally {
             configuration.getDinkyToken().setValue(originalToken);
             configuration.getDolphinschedulerToken().setValue(originalDsToken);
             configuration.getLdapUserPassword().setValue(originalLdapPassword);
             configuration.getResourcesOssAccessKey().setValue(originalAccessKey);
             configuration.getResourcesOssSecretKey().setValue(originalSecretKey);
-            configuration.getMavenRepositoryPassword().setValue(originalMavenPassword);
+            mavenRepositoryPassword.setValue(originalMavenPassword);
         }
     }
 
@@ -189,6 +188,19 @@ public class SysConfigDisplayTest {
         SysConfigService service = mock(SysConfigService.class);
         when(service.getAll()).thenReturn(SystemConfiguration.getInstances().getAllConfiguration());
         return service;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Configuration<String> mavenRepositoryPasswordConfig(SystemConfiguration configuration) {
+        String key = Status.SYS_MAVEN_SETTINGS_REPOSITORYPASSWORD.getKey();
+        for (List<Configuration<?>> group : configuration.getAllConfiguration().values()) {
+            for (Configuration<?> item : group) {
+                if (key.equals(item.getKey())) {
+                    return (Configuration<String>) item;
+                }
+            }
+        }
+        throw new IllegalStateException("Missing configuration key: " + key);
     }
 
     private static void assertMasked(Map<String, Object> displayed, String key, String original) {
