@@ -170,7 +170,7 @@ public class MockStatementExplainer {
      */
     private String getSinkMockDdlStatement(String tableName, String columns) {
         String mockedOption =
-                "'connector'='%s','host'='%s','port'='%s','box-id'='%s','table'='%s','max-row-num'='%s','auto-cancel'='%s','use-change-log'='%s'";
+                "'connector'='%s','host'='%s','port'='%s','box-id'='%s','table'='%s','max-row-num'='%s','auto-cancel'='%s','use-change-log'='%s','token'='%s'";
         // 获取 dinky 地址: http://localhost:8081
         String dinkyAddress = SystemConfiguration.getInstances().getDinkyAddr().getValue();
         if (Asserts.isNullString(dinkyAddress)) {
@@ -178,6 +178,11 @@ public class MockStatementExplainer {
         }
         // 从 dinky 地址中解析 host 和 port
         AddressInfo addressInfo = HttpUtils.parseAddress(dinkyAddress);
+        String sessionToken = SystemConfiguration.getInstances().getDinkyToken().getValue();
+        if (sessionToken == null) {
+            sessionToken = "";
+        }
+        sessionToken = sessionToken.replace("%", "%%").replace("'", "''");
         return MessageFormat.format(
                 MOCK_SQL_TEMPLATE,
                 StringUtils.join(generateMockedTableIdentifier(tableName), "."),
@@ -191,7 +196,8 @@ public class MockStatementExplainer {
                         tableName,
                         jobConfig.getMaxRowNum(),
                         jobConfig.isUseAutoCancel(),
-                        jobConfig.isUseChangeLog()));
+                        jobConfig.isUseChangeLog(),
+                        sessionToken));
     }
 
     /**

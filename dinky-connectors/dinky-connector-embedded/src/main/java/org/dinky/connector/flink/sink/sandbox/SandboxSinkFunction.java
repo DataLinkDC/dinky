@@ -48,6 +48,7 @@ public class SandboxSinkFunction<IN> extends RichSinkFunction<IN> {
     private final Integer maxRowNum;
     private final boolean autoCancel;
     private final boolean useChangeLog;
+    private final String token;
     private final List<ColumnInfo> columnInfos;
     private final AtomicInteger counter;
 
@@ -63,7 +64,8 @@ public class SandboxSinkFunction<IN> extends RichSinkFunction<IN> {
             RowType rowType,
             Integer maxRowNum,
             boolean autoCancel,
-            boolean useChangeLog) {
+            boolean useChangeLog,
+            String token) {
         this.host = host;
         this.port = port;
         this.boxId = boxId;
@@ -72,6 +74,7 @@ public class SandboxSinkFunction<IN> extends RichSinkFunction<IN> {
         this.maxRowNum = maxRowNum;
         this.autoCancel = autoCancel;
         this.useChangeLog = useChangeLog;
+        this.token = token;
         this.columnInfos = rowType.getFields().stream()
                 .map(field -> ColumnInfo.buildByFlinkColumn(field, false))
                 .collect(Collectors.toList());
@@ -86,7 +89,8 @@ public class SandboxSinkFunction<IN> extends RichSinkFunction<IN> {
             List<ColumnInfo> columnInfos,
             Integer maxRowNum,
             boolean autoCancel,
-            boolean useChangeLog) {
+            boolean useChangeLog,
+            String token) {
         this.host = host;
         this.port = port;
         this.boxId = boxId;
@@ -95,6 +99,7 @@ public class SandboxSinkFunction<IN> extends RichSinkFunction<IN> {
         this.maxRowNum = maxRowNum;
         this.autoCancel = autoCancel;
         this.useChangeLog = useChangeLog;
+        this.token = token;
         this.columnInfos = columnInfos;
         this.counter = new AtomicInteger(0);
     }
@@ -110,7 +115,7 @@ public class SandboxSinkFunction<IN> extends RichSinkFunction<IN> {
                 rowRowConverter.open(Thread.currentThread().getContextClassLoader());
             }
 
-            socketClient = new SocketClient(host, port);
+            socketClient = new SocketClient(host, port, token);
             socketClient.connect();
             isConnected = true;
 
@@ -187,7 +192,7 @@ public class SandboxSinkFunction<IN> extends RichSinkFunction<IN> {
                 socketClient.close();
             }
 
-            socketClient = new SocketClient(host, port);
+            socketClient = new SocketClient(host, port, token);
             socketClient.connect();
             isConnected = true;
 

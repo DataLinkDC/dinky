@@ -22,6 +22,7 @@ package org.dinky.sandbox.socket;
 import org.dinky.sandbox.Sandbox;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -39,11 +40,13 @@ import org.slf4j.LoggerFactory;
 public class SandboxSocketServer {
 
     private static final Logger logger = LoggerFactory.getLogger(SandboxSocketServer.class);
+    private static final String DEFAULT_HOST = "127.0.0.1";
 
     private final Sandbox delegateSandbox;
     private final int port;
     private final String host;
     private final int maxConnections;
+    private final SandboxSessionChecker sessionChecker;
 
     private ServerSocket serverSocket;
     private ExecutorService executorService;
@@ -57,7 +60,18 @@ public class SandboxSocketServer {
      * @param port 监听端口
      */
     public SandboxSocketServer(Sandbox delegateSandbox, int port) {
-        this(delegateSandbox, "0.0.0.0", port, 100);
+        this(delegateSandbox, DEFAULT_HOST, port, 100, null);
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param delegateSandbox 委托的 Sandbox 实现
+     * @param port 监听端口
+     * @param sessionChecker 握手阶段使用的会话校验
+     */
+    public SandboxSocketServer(Sandbox delegateSandbox, int port, SandboxSessionChecker sessionChecker) {
+        this(delegateSandbox, DEFAULT_HOST, port, 100, sessionChecker);
     }
 
     /**
@@ -69,10 +83,25 @@ public class SandboxSocketServer {
      * @param maxConnections 最大连接数
      */
     public SandboxSocketServer(Sandbox delegateSandbox, String host, int port, int maxConnections) {
+        this(delegateSandbox, host, port, maxConnections, null);
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param delegateSandbox 委托的 Sandbox 实现
+     * @param host 监听主机
+     * @param port 监听端口
+     * @param maxConnections 最大连接数
+     * @param sessionChecker 握手阶段使用的会话校验
+     */
+    public SandboxSocketServer(
+            Sandbox delegateSandbox, String host, int port, int maxConnections, SandboxSessionChecker sessionChecker) {
         this.delegateSandbox = delegateSandbox;
-        this.host = host;
+        this.host = (host == null || host.trim().isEmpty()) ? DEFAULT_HOST : host;
         this.port = port;
         this.maxConnections = maxConnections;
+        this.sessionChecker = sessionChecker;
         this.running = new AtomicBoolean(false);
     }
 
@@ -82,14 +111,15 @@ public class SandboxSocketServer {
     public void start() {
         if (running.compareAndSet(false, true)) {
             try {
-                serverSocket = new ServerSocket(port);
+                InetAddress bindAddress = InetAddress.getByName(host);
+                serverSocket = new ServerSocket(port, maxConnections, bindAddress);
                 executorService = Executors.newFixedThreadPool(maxConnections);
 
-                serverThread = new Thread(this::runServer, "SandboxSocketServer-" + port);
+                serverThread = new Thread(this::runServer, "SandboxSocketServer-" + getPort());
                 serverThread.setDaemon(true);
                 serverThread.start();
 
-                logger.info("Sandbox Socket Server 启动成功，监听地址: {}:{}", host, port);
+                logger.info("Sandbox Socket Server 启动成功，监听地址: {}:{}", host, getPort());
             } catch (IOException e) {
                 running.set(false);
                 logger.error("启动 Sandbox Socket Server 失败", e);
@@ -142,7 +172,7 @@ public class SandboxSocketServer {
                 logger.info(
                         "接受新的客户端连接: {}", clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
 
-                SocketDataProcessor processor = new SocketDataProcessor(clientSocket, delegateSandbox);
+                SocketDataProcessor processor = new SocketDataProcessor(clientSocket, delegateSandbox, sessionChecker);
                 executorService.submit(processor);
 
             } catch (IOException e) {
@@ -164,6 +194,9 @@ public class SandboxSocketServer {
      * 获取监听端口
      */
     public int getPort() {
+        if (serverSocket != null && !serverSocket.isClosed()) {
+            return serverSocket.getLocalPort();
+        }
         return port;
     }
 

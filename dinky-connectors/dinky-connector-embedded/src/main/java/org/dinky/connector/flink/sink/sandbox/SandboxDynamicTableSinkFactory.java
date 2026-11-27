@@ -64,6 +64,11 @@ public class SandboxDynamicTableSinkFactory implements DynamicTableSinkFactory {
             .defaultValue(false)
             .withDescription("Use Change Log");
 
+    public static final ConfigOption<String> TOKEN = ConfigOptions.key("token")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("Session token used for the Sandbox Socket handshake");
+
     @Override
     public String factoryIdentifier() {
         return CONNECTOR_KEY;
@@ -76,7 +81,7 @@ public class SandboxDynamicTableSinkFactory implements DynamicTableSinkFactory {
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return Sets.newHashSet(BOX_ID, TABLE, MAX_ROW_NUM, AUTO_CANCEL, USE_CHANGE_LOG);
+        return Sets.newHashSet(BOX_ID, TABLE, MAX_ROW_NUM, AUTO_CANCEL, USE_CHANGE_LOG, TOKEN);
     }
 
     @Override
@@ -92,12 +97,14 @@ public class SandboxDynamicTableSinkFactory implements DynamicTableSinkFactory {
         final Integer maxRowNum = helper.getOptions().get(MAX_ROW_NUM);
         final boolean autoCancel = helper.getOptions().get(AUTO_CANCEL);
         final boolean useChangeLog = helper.getOptions().get(USE_CHANGE_LOG);
+        final String token = helper.getOptions().get(TOKEN);
 
         final RowType rowType = (RowType) context.getCatalogTable()
                 .getResolvedSchema()
                 .toPhysicalRowDataType()
                 .getLogicalType();
 
-        return new SandboxDynamicTableSink(host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog);
+        return new SandboxDynamicTableSink(
+                host, port, boxId, table, rowType, maxRowNum, autoCancel, useChangeLog, token);
     }
 }
